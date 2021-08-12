@@ -31,3 +31,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 #quazip: http://quazip.sourceforge.net/
 include(3rdparty/quazip-0.7.3/quazip.pri)
+
+#murmurhash: https://github.com/aappleby/smhasher
+include(3rdparty/MurmurHash/murmurhash.pri)
