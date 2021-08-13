@@ -10,15 +10,18 @@ CONFIG += c++11
 
 SOURCES += \
     modmanager/main.cpp \
+    modmanager/modentrywidget.cpp \
     modmanager/modinfo.cpp \
     modmanager/modmanager.cpp
 
 HEADERS += \
+    modmanager/modentrywidget.h \
     modmanager/modinfo.h \
     modmanager/modmanager.h \
     util/qjsonutil.hpp
 
 FORMS += \
+    modmanager/modentrywidget.ui \
     modmanager/modmanager.ui
 
 TRANSLATIONS += \

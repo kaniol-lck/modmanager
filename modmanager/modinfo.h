@@ -3,6 +3,8 @@
 
 #include <QString>
 
+class QImage;
+
 class ModInfo
 {
 private:
@@ -13,6 +15,7 @@ private:
     QString description;
     QString sha1;
     QString murmurhash;
+    QByteArray iconContent;
 
     bool hasFabricManifest = false;
 
@@ -30,6 +33,7 @@ public:
     const QString &getDescription() const;
     const QString &getSha1() const;
     const QString &getMurmurhash() const;
+    const QByteArray &getIconContent() const;
 };
 
 #endif // MODINFO_H

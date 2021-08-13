@@ -16,7 +16,14 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0" rowspan="2">
-     <widget class="QListWidget" name="pathSelectorWidget"/>
+     <widget class="QListWidget" name="pathSelectorWidget">
+      <property name="maximumSize">
+       <size>
+        <width>200</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
     </item>
     <item row="0" column="1" rowspan="2">
      <widget class="QStackedWidget" name="stackedWidget">
@@ -42,7 +49,14 @@
          </spacer>
         </item>
         <item row="1" column="1">
-         <widget class="QTextBrowser" name="modInfoText"/>
+         <widget class="QTextBrowser" name="modInfoText">
+          <property name="maximumSize">
+           <size>
+            <width>400</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

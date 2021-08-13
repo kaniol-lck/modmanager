@@ -11,17 +11,28 @@
 #include <QJsonDocument>
 #include <QCryptographicHash>
 
+#include "modmanager/modentrywidget.h"
+
 ModManager::ModManager(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::ModManager)
 {
     ui->setupUi(this);
+
     auto modDir = QDir("/run/media/kaniol/SanDisk/Minecraft/1.17.1/.minecraft/mods/");
-    for (auto entryInfo : modDir.entryInfoList(QDir::Files)) {
+    for (const QFileInfo& entryInfo : modDir.entryInfoList(QDir::Files)) {
         ModInfo modInfo(entryInfo.absoluteFilePath());
         if(!modInfo.isFabricMod()) continue;
         modList.append(modInfo);
-        ui->modListWidget->addItem(modInfo.getName());
+
+//        ui->modListWidget->addItem(modInfo.getName());
+        auto *listItem = new QListWidgetItem();
+        listItem->setSizeHint(QSize(500, 100));
+        auto modEntryWidget = new ModEntryWidget(ui->modListWidget, modInfo);
+
+        ui->modListWidget->addItem(listItem);
+        ui->modListWidget->setItemWidget(listItem, modEntryWidget);
+
     }
 }
 

@@ -6,6 +6,8 @@
 #include <QJsonDocument>
 #include <QCryptographicHash>
 #include "MurmurHash2.h"
+#include <QDebug>
+#include <QImage>
 
 #include "util/qjsonutil.hpp"
 
@@ -50,6 +52,11 @@ const QString &ModInfo::getMurmurhash() const
     return murmurhash;
 }
 
+const QByteArray &ModInfo::getIconContent() const
+{
+    return iconContent;
+}
+
 bool ModInfo::acquireInfo(QString &path)
 {
     QFile modFile(path);
@@ -58,16 +65,15 @@ bool ModInfo::acquireInfo(QString &path)
 
     //file open error
     if(!modFile.open(QIODevice::ReadOnly)) return false;
-    QByteArray jarContent = modFile.readAll();
+    QByteArray fileContent = modFile.readAll();
     modFile.close();
 
-    //jar file and fabric mod json
+    //file handles
     if(!modJar.open(QuaZip::mdUnzip)) return false;
     modJar.setCurrentFile("fabric.mod.json");
     if(!modJarFile.open(QIODevice::ReadOnly)) return false;
     QByteArray json = modJarFile.readAll();
     modJarFile.close();
-    modJar.close();
 
     //parse json
     QJsonParseError error;
@@ -88,8 +94,27 @@ bool ModInfo::acquireInfo(QString &path)
     version = value(result, "version").toString();
     name = value(result, "name").toString();
     description = value(result, "description").toString();
-    sha1 = QCryptographicHash::hash(jarContent, QCryptographicHash::Sha1).toHex();
-    murmurhash = QByteArray::number(MurmurHash2(jarContent.data(), jarContent.length(), 1));
+    sha1 = QCryptographicHash::hash(fileContent, QCryptographicHash::Sha1).toHex();
+
+    //icon
+    auto iconFilePath = value(result, "icon").toString();
+    if(!iconFilePath.isEmpty()){
+        qDebug()<< iconFilePath;
+        modJar.setCurrentFile(iconFilePath);
+        if(modJarFile.open(QIODevice::ReadOnly)){
+            iconContent = modJarFile.readAll();
+            modJarFile.close();
+        }
+    }
+    modJar.close();
+
+    //exclude some bytes for murmurhash
+    QByteArray filteredFileContent;
+    for (const char& b : fileContent){
+        if (b == 0x9 || b == 0xa || b == 0xd || b == 0x20) continue;
+        filteredFileContent.append(b);
+    }
+    murmurhash = QByteArray::number(MurmurHash2(filteredFileContent.constData(), filteredFileContent.length(), 1));
 
     return true;
 }
