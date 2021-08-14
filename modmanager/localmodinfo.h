@@ -1,13 +1,13 @@
-#ifndef MODINFO_H
-#define MODINFO_H
+#ifndef LOCALMODINFO_H
+#define LOCALMODINFO_H
 
 #include <QString>
 #include <QFileInfo>
 
-class ModInfo
+class LocalModInfo
 {
 public:
-    ModInfo(QString path);
+    LocalModInfo(QString path);
 
     bool isFabricMod();
 
@@ -39,4 +39,4 @@ private:
 
 };
 
-#endif // MODINFO_H
+#endif // LOCALMODINFO_H

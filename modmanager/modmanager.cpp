@@ -8,7 +8,8 @@
 #include <QDebug>
 #include <QDir>
 
-#include "modbrowserwidget.h"
+#include "localmodbrowser.h"
+#include "curseforgemodbrowser.h"
 
 ModManager::ModManager(QWidget *parent)
     : QMainWindow(parent)
@@ -28,10 +29,13 @@ ModManager::ModManager(QWidget *parent)
     modDirList.append(modDirInfo);
     modDirList.append(modDirInfo2);
 
-    for(auto modDirInfo : modDirList){
+    ui->modDirSelectorWidget->addItem("Explore");
+    ui->stackedWidget->addWidget(new CurseforgeModBrowser(this));
+
+    for(const auto &modDirInfo : qAsConst(modDirList)){
         if(modDirInfo.exists()) {
             ui->modDirSelectorWidget->addItem(modDirInfo.getGameVersion());
-            ui->stackedWidget->addWidget(new ModBrowserWidget(this, modDirInfo.getModDir()));
+            ui->stackedWidget->addWidget(new LocalModBrowser(this, modDirInfo.getModDir()));
         }
     }
 

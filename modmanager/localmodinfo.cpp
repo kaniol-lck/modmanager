@@ -1,4 +1,4 @@
-#include "modinfo.h"
+#include "localmodinfo.h"
 
 #include <QFile>
 #include "quazip.h"
@@ -11,54 +11,54 @@
 
 #include "util/qjsonutil.hpp"
 
-ModInfo::ModInfo(QString path) :
+LocalModInfo::LocalModInfo(QString path) :
     modPath(path),
     modFileInfo(path)
 {
     acquireInfo(path);
 }
 
-const QString &ModInfo::getId() const
+const QString &LocalModInfo::getId() const
 {
     return id;
 }
 
-const QString &ModInfo::getModPath() const
+const QString &LocalModInfo::getModPath() const
 {
     return modPath;
 }
 
-const QString &ModInfo::getName() const
+const QString &LocalModInfo::getName() const
 {
     return name;
 }
 
-const QString &ModInfo::getVersion() const
+const QString &LocalModInfo::getVersion() const
 {
     return version;
 }
 
-const QString &ModInfo::getDescription() const
+const QString &LocalModInfo::getDescription() const
 {
     return description;
 }
 
-const QString &ModInfo::getSha1() const
+const QString &LocalModInfo::getSha1() const
 {
     return sha1;
 }
 
-const QString &ModInfo::getMurmurhash() const
+const QString &LocalModInfo::getMurmurhash() const
 {
     return murmurhash;
 }
 
-const QByteArray &ModInfo::getIconBytes() const
+const QByteArray &LocalModInfo::getIconBytes() const
 {
     return iconBytes;
 }
 
-bool ModInfo::acquireInfo(QString &path)
+bool LocalModInfo::acquireInfo(QString &path)
 {
     QFile modFile(path);
     QuaZip modJar(path);
@@ -119,12 +119,12 @@ bool ModInfo::acquireInfo(QString &path)
     return true;
 }
 
-bool ModInfo::isFabricMod()
+bool LocalModInfo::isFabricMod()
 {
     return hasFabricManifest;
 }
 
-QDateTime ModInfo::getFileModificationTime() const
+QDateTime LocalModInfo::getFileModificationTime() const
 {
     return modFileInfo.fileTime(QFile::FileModificationTime);
 }

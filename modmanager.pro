@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,22 +9,30 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    modmanager/curseforgemod.cpp \
+    modmanager/curseforgemodbrowser.cpp \
+    modmanager/curseforgemoditemwidget.cpp \
+    modmanager/localmodbrowser.cpp \
+    modmanager/localmodinfo.cpp \
+    modmanager/localmoditemwidget.cpp \
     modmanager/main.cpp \
-    modmanager/modbrowserwidget.cpp \
     modmanager/moddirinfo.cpp \
-    modmanager/modentrywidget.cpp \
-    modmanager/modinfo.cpp \
     modmanager/modmanager.cpp
 
 HEADERS += \
-    modmanager/modbrowserwidget.h \
+    modmanager/curseforgemod.h \
+    modmanager/curseforgemodbrowser.h \
+    modmanager/curseforgemoditemwidget.h \
+    modmanager/localmodbrowser.h \
+    modmanager/localmodinfo.h \
+    modmanager/localmoditemwidget.h \
     modmanager/moddirinfo.h \
-    modmanager/modentrywidget.h \
-    modmanager/modinfo.h \
     modmanager/modmanager.h \
     util/qjsonutil.hpp
 
 FORMS += \
+    modmanager/curseforgemodbrowser.ui \
+    modmanager/curseforgemoditemwidget.ui \
     modmanager/modbrowserwidget.ui \
     modmanager/modentrywidget.ui \
     modmanager/modmanager.ui

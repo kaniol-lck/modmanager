@@ -1,13 +1,14 @@
-#include "modentrywidget.h"
+#include "localmoditemwidget.h"
 #include "ui_modentrywidget.h"
 
-#include "modinfo.h"
+#include "localmodinfo.h"
 
-ModEntryWidget::ModEntryWidget(QWidget *parent, const ModInfo &modInfo) :
+LocalModItemWidget::LocalModItemWidget(QWidget *parent, const LocalModInfo &modInfo) :
     QWidget(parent),
     ui(new Ui::ModEntryWidget)
 {
     ui->setupUi(this);
+    ui->modIcon->setFixedSize(80, 80);
     ui->modName->setText(modInfo.getName());
     ui->modVersion->setText(modInfo.getVersion());
     ui->modDescription->setText(modInfo.getDescription());
@@ -17,10 +18,9 @@ ModEntryWidget::ModEntryWidget(QWidget *parent, const ModInfo &modInfo) :
         pixelmap.loadFromData(modInfo.getIconBytes());
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     }
-    ui->modIcon->setFixedSize(80, 80);
 }
 
-ModEntryWidget::~ModEntryWidget()
+LocalModItemWidget::~LocalModItemWidget()
 {
     delete ui;
 }

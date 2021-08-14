@@ -3,19 +3,19 @@
 
 #include <QWidget>
 
-class ModInfo;
+class LocalModInfo;
 
 namespace Ui {
 class ModEntryWidget;
 }
 
-class ModEntryWidget : public QWidget
+class LocalModItemWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ModEntryWidget(QWidget *parent, const ModInfo& modInfo);
-    ~ModEntryWidget();
+    explicit LocalModItemWidget(QWidget *parent, const LocalModInfo& modInfo);
+    ~LocalModItemWidget();
 
 private:
     Ui::ModEntryWidget *ui;
