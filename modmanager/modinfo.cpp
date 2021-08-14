@@ -12,7 +12,8 @@
 #include "util/qjsonutil.hpp"
 
 ModInfo::ModInfo(QString path) :
-    modPath(path)
+    modPath(path),
+    modFileInfo(path)
 {
     acquireInfo(path);
 }
@@ -52,9 +53,9 @@ const QString &ModInfo::getMurmurhash() const
     return murmurhash;
 }
 
-const QByteArray &ModInfo::getIconContent() const
+const QByteArray &ModInfo::getIconBytes() const
 {
-    return iconContent;
+    return iconBytes;
 }
 
 bool ModInfo::acquireInfo(QString &path)
@@ -99,10 +100,9 @@ bool ModInfo::acquireInfo(QString &path)
     //icon
     auto iconFilePath = value(result, "icon").toString();
     if(!iconFilePath.isEmpty()){
-        qDebug()<< iconFilePath;
         modJar.setCurrentFile(iconFilePath);
         if(modJarFile.open(QIODevice::ReadOnly)){
-            iconContent = modJarFile.readAll();
+            iconBytes = modJarFile.readAll();
             modJarFile.close();
         }
     }
@@ -110,7 +110,7 @@ bool ModInfo::acquireInfo(QString &path)
 
     //exclude some bytes for murmurhash
     QByteArray filteredFileContent;
-    for (const char& b : fileContent){
+    for (const char& b : qAsConst(fileContent)){
         if (b == 0x9 || b == 0xa || b == 0xd || b == 0x20) continue;
         filteredFileContent.append(b);
     }
@@ -122,4 +122,9 @@ bool ModInfo::acquireInfo(QString &path)
 bool ModInfo::isFabricMod()
 {
     return hasFabricManifest;
+}
+
+QDateTime ModInfo::getFileModificationTime() const
+{
+    return modFileInfo.fileTime(QFile::FileModificationTime);
 }

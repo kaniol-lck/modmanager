@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include <QList>
-#include "modinfo.h"
+
+#include "moddirinfo.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ModManager; }
@@ -18,10 +19,10 @@ public:
     ~ModManager();
 
 private slots:
-    void on_modListWidget_currentRowChanged(int currentRow);
+    void on_modDirSelectorWidget_currentRowChanged(int currentRow);
 
 private:
     Ui::ModManager *ui;
-    QList<ModInfo> modList;
+    QList<ModDirInfo> modDirList;
 };
 #endif // MODMANAGER_H

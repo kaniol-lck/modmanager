@@ -7,33 +7,35 @@
 
 #include <QDebug>
 #include <QDir>
-#include <QJsonParseError>
-#include <QJsonDocument>
-#include <QCryptographicHash>
 
-#include "modmanager/modentrywidget.h"
+#include "modbrowserwidget.h"
 
 ModManager::ModManager(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::ModManager)
 {
     ui->setupUi(this);
-
-    auto modDir = QDir("/run/media/kaniol/SanDisk/Minecraft/1.17.1/.minecraft/mods/");
-    for (const QFileInfo& entryInfo : modDir.entryInfoList(QDir::Files)) {
-        ModInfo modInfo(entryInfo.absoluteFilePath());
-        if(!modInfo.isFabricMod()) continue;
-        modList.append(modInfo);
-
-//        ui->modListWidget->addItem(modInfo.getName());
-        auto *listItem = new QListWidgetItem();
-        listItem->setSizeHint(QSize(500, 100));
-        auto modEntryWidget = new ModEntryWidget(ui->modListWidget, modInfo);
-
-        ui->modListWidget->addItem(listItem);
-        ui->modListWidget->setItemWidget(listItem, modEntryWidget);
-
+    for(int i = ui->stackedWidget->count(); i >= 0; i--)
+    {
+        QWidget* widget = ui->stackedWidget->widget(i);
+        ui->stackedWidget->removeWidget(widget);
+        widget->deleteLater();
     }
+
+    ModDirInfo modDirInfo(QDir("/run/media/kaniol/SanDisk/Minecraft/1.17.1/.minecraft/mods/"), "1.17.1");
+    ModDirInfo modDirInfo2(QDir("/run/media/kaniol/SanDisk/Minecraft/1.16.5/.minecraft/mods/"), "1.16.5");
+
+    modDirList.append(modDirInfo);
+    modDirList.append(modDirInfo2);
+
+    for(auto modDirInfo : modDirList){
+        if(modDirInfo.exists()) {
+            ui->modDirSelectorWidget->addItem(modDirInfo.getGameVersion());
+            ui->stackedWidget->addWidget(new ModBrowserWidget(this, modDirInfo.getModDir()));
+        }
+    }
+
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 ModManager::~ModManager()
@@ -41,17 +43,8 @@ ModManager::~ModManager()
     delete ui;
 }
 
-
-void ModManager::on_modListWidget_currentRowChanged(int currentRow)
+void ModManager::on_modDirSelectorWidget_currentRowChanged(int currentRow)
 {
-    ModInfo modInfo = modList.at(currentRow);
-    QStringList stringList;
-    stringList << "id: " + modInfo.getId();
-    stringList << "version: " + modInfo.getVersion();
-    stringList << "name: " + modInfo.getName();
-    stringList << "description: " + modInfo.getDescription();
-    stringList << "sha1: " + modInfo.getSha1();
-    stringList << "murmurhash: " + modInfo.getMurmurhash();
-    ui->modInfoText->setText(stringList.join("\n"));
+    ui->stackedWidget->setCurrentIndex(currentRow);
 }
 
