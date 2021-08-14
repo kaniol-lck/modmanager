@@ -28,12 +28,22 @@ CurseforgeMod *CurseforgeMod::fromVariant(QObject *parent, QVariant variant)
     curseforgeMod->id = value(variant, "id").toInt();
     curseforgeMod->name = value(variant, "name").toString();
     curseforgeMod->summary = value(variant, "summary").toString();
+    curseforgeMod->websiteUrl = value(variant, "websiteUrl").toUrl();
 
+    //authors
+    auto authorsList = value(variant, "authors").toList();
+    for(const auto &author : qAsConst(authorsList))
+        curseforgeMod->authors << value(author, "name").toString();
+
+    //thumbnail image
     QNetworkRequest request;
-    QUrl url = value(value(variant, "attachments").toList().at(0), "thumbnailUrl").toUrl();
+    auto attachmentsList = value(variant, "attachments").toList();
+    if(!attachmentsList.isEmpty()){
+        QUrl url = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
 
-    request.setUrl(url);
-    curseforgeMod->accessManager->get(request);
+        request.setUrl(url);
+        curseforgeMod->accessManager->get(request);
+    }
 
     return curseforgeMod;
 }
@@ -61,6 +71,26 @@ void CurseforgeMod::thumbnailDownloadFinished(QNetworkReply *reply)
 
     if(!thumbnailBytes.isEmpty())
         emit thumbnailReady();
+}
+
+const QString &CurseforgeMod::getDescription() const
+{
+    return description;
+}
+
+void CurseforgeMod::setDescription(const QString &newDescription)
+{
+    description = newDescription;
+}
+
+const QStringList &CurseforgeMod::getAuthors() const
+{
+    return authors;
+}
+
+const QUrl &CurseforgeMod::getWebsiteUrl() const
+{
+    return websiteUrl;
 }
 
 const QByteArray &CurseforgeMod::getThumbnailBytes() const

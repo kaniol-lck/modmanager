@@ -6,7 +6,7 @@
 class LocalModInfo;
 
 namespace Ui {
-class ModEntryWidget;
+class LocalModItemWidget;
 }
 
 class LocalModItemWidget : public QWidget
@@ -18,7 +18,7 @@ public:
     ~LocalModItemWidget();
 
 private:
-    Ui::ModEntryWidget *ui;
+    Ui::LocalModItemWidget *ui;
 };
 
 #endif // MODENTRYWIDGET_H

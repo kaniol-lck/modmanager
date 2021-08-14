@@ -22,11 +22,18 @@ public:
 private slots:
     void on_searchButton_clicked();
     void downloadFinished(QNetworkReply* reply);
+    void onSliderChanged(int i);
+
+    void on_modListWidget_doubleClicked(const QModelIndex &index);
 
 private:
     Ui::CurseforgeModBrowser *ui;
     QNetworkAccessManager *accessManager;
     QList<CurseforgeMod*> modList;
+    QString currentName;
+    int currentIndex;
+
+    void getModList(QString name, int index);
 
 };
 

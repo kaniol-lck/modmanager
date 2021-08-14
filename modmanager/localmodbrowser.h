@@ -18,12 +18,18 @@ public:
     explicit LocalModBrowser(QWidget *parent, QDir path);
     ~LocalModBrowser();
 
+signals:
+    void modsDirUpdated();
+
+public slots:
+    void updateModList();
+
 private slots:
     void on_modListWidget_currentRowChanged(int currentRow);
 
 private:
     Ui::LocalModBrowser *ui;
-    QDir modFolderPath;
+    QDir modsDir;
     QList<LocalModInfo> modList;
 };
 

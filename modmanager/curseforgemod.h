@@ -22,6 +22,14 @@ public:
 
     const QByteArray &getThumbnailBytes() const;
 
+    const QUrl &getWebsiteUrl() const;
+
+    const QStringList &getAuthors() const;
+
+    void setDescription(const QString &newDescription);
+
+    const QString &getDescription() const;
+
 signals:
     void thumbnailReady();
 
@@ -32,7 +40,10 @@ private:
     int id;
     QString name;
     QString summary;
+    QUrl websiteUrl;
+    QStringList authors;
     QByteArray thumbnailBytes;
+    QString description;
 
     QNetworkAccessManager *accessManager;
 

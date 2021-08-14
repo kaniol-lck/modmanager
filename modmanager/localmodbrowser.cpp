@@ -9,11 +9,24 @@
 LocalModBrowser::LocalModBrowser(QWidget *parent, QDir path) :
     QWidget(parent),
     ui(new Ui::LocalModBrowser),
-    modFolderPath(path)
+    modsDir(path)
 {
     ui->setupUi(this);
 
-    for (const QFileInfo& entryInfo : modFolderPath.entryInfoList(QDir::Files)) {
+    //async load
+    connect(this, &LocalModBrowser::modsDirUpdated, this, &LocalModBrowser::updateModList, Qt::QueuedConnection);
+
+    emit modsDirUpdated();
+}
+
+LocalModBrowser::~LocalModBrowser()
+{
+    delete ui;
+}
+
+void LocalModBrowser::updateModList()
+{
+    for (const QFileInfo& entryInfo : modsDir.entryInfoList(QDir::Files)) {
         LocalModInfo modInfo(entryInfo.absoluteFilePath());
         if(!modInfo.isFabricMod()) continue;
         modList.append(modInfo);
@@ -26,11 +39,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, QDir path) :
         ui->modListWidget->setItemWidget(listItem, modEntryWidget);
 
     }
-}
-
-LocalModBrowser::~LocalModBrowser()
-{
-    delete ui;
 }
 
 void LocalModBrowser::on_modListWidget_currentRowChanged(int currentRow)

@@ -39,7 +39,6 @@ ModManager::ModManager(QWidget *parent)
         }
     }
 
-    ui->stackedWidget->setCurrentIndex(1);
 }
 
 ModManager::~ModManager()

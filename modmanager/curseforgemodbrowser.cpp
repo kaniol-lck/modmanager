@@ -1,6 +1,8 @@
 #include "curseforgemodbrowser.h"
 #include "ui_curseforgemodbrowser.h"
 
+#include <QScrollBar>
+#include <QUrlQuery>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QJsonDocument>
@@ -9,6 +11,7 @@
 #include "util/qjsonutil.hpp"
 #include "curseforgemod.h"
 #include "curseforgemoditemwidget.h"
+#include "curseforgemodinfodialog.h"
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -17,6 +20,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(accessManager, &QNetworkAccessManager::finished, this, &CurseforgeModBrowser::downloadFinished);
+    connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
 }
 
 CurseforgeModBrowser::~CurseforgeModBrowser()
@@ -26,22 +30,21 @@ CurseforgeModBrowser::~CurseforgeModBrowser()
 
 void CurseforgeModBrowser::on_searchButton_clicked()
 {
-    ui->searchButton->setText(tr("Searching..."));
-    ui->searchButton->setEnabled(false);
-    QNetworkRequest request;
-    QUrl url = QString("https://addons-ecs.forgesvc.net/api/v2/addon/search?categoryId=0&gameId=432&index=0&pageSize=20&searchFilter=%1&sectionId=6&sort=0")
-            .arg(ui->searchText->text());
-
-    request.setUrl(url);
-    accessManager->get(request);
+    currentName = ui->searchText->text();
+    currentIndex = 0;
+    getModList(currentName, currentIndex);
 }
 
 void CurseforgeModBrowser::downloadFinished(QNetworkReply *reply)
 {
     ui->searchButton->setText(tr("&Search"));
     ui->searchButton->setEnabled(true);
-    modList.clear();
-    ui->modListWidget->clear();
+
+    //new search
+    if(currentIndex == 0){
+        modList.clear();
+        ui->modListWidget->clear();
+    }
 
     if(reply->error() != QNetworkReply::NoError) {
         qDebug() << reply->errorString();
@@ -61,8 +64,6 @@ void CurseforgeModBrowser::downloadFinished(QNetworkReply *reply)
         auto curseforgeMod = CurseforgeMod::fromVariant(this, entry);
         modList.append(curseforgeMod);
 
-        qDebug()<<curseforgeMod->getName();
-
         auto *listItem = new QListWidgetItem();
         listItem->setSizeHint(QSize(500, 100));
         auto modEntryWidget = new CurseforgeModItemWidget(ui->modListWidget, curseforgeMod);
@@ -70,5 +71,41 @@ void CurseforgeModBrowser::downloadFinished(QNetworkReply *reply)
         ui->modListWidget->addItem(listItem);
         ui->modListWidget->setItemWidget(listItem, modEntryWidget);
     }
+}
+
+void CurseforgeModBrowser::onSliderChanged(int i)
+{
+    if(i == ui->modListWidget->verticalScrollBar()->maximum()){
+        currentIndex += 20;
+        getModList(currentName, currentIndex);
+    }
+}
+
+void CurseforgeModBrowser::getModList(QString name, int index)
+{
+    ui->searchButton->setText(tr("Searching..."));
+    ui->searchButton->setEnabled(false);
+    QNetworkRequest request;
+    QUrl url("https://addons-ecs.forgesvc.net/api/v2/addon/search");
+    QUrlQuery urlQuery{
+        {"categoryId", "0"},
+        {"gameId", "432"},  //minecraft
+        {"index", QString::number(index)},
+        {"pageSize", "20"},
+        {"searchFilter", name},
+        {"sectionId", "6"},
+        {"sort", "0"}
+    };
+
+    url.setQuery(urlQuery);
+    request.setUrl(url);
+    accessManager->get(request);
+}
+
+void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
+{
+    auto mod = modList.at(index.row());
+    auto dialog = new CurseforgeModInfoDialog(this, mod);
+    dialog->show();
 }
 

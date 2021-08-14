@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     modmanager/curseforgemod.cpp \
     modmanager/curseforgemodbrowser.cpp \
+    modmanager/curseforgemodinfodialog.cpp \
     modmanager/curseforgemoditemwidget.cpp \
     modmanager/localmodbrowser.cpp \
     modmanager/localmodinfo.cpp \
@@ -22,6 +23,7 @@ SOURCES += \
 HEADERS += \
     modmanager/curseforgemod.h \
     modmanager/curseforgemodbrowser.h \
+    modmanager/curseforgemodinfodialog.h \
     modmanager/curseforgemoditemwidget.h \
     modmanager/localmodbrowser.h \
     modmanager/localmodinfo.h \
@@ -32,9 +34,10 @@ HEADERS += \
 
 FORMS += \
     modmanager/curseforgemodbrowser.ui \
+    modmanager/curseforgemodinfodialog.ui \
     modmanager/curseforgemoditemwidget.ui \
+    modmanager/localmoditemwidget.ui \
     modmanager/modbrowserwidget.ui \
-    modmanager/modentrywidget.ui \
     modmanager/modmanager.ui
 
 TRANSLATIONS += \

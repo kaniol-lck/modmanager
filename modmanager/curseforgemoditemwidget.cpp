@@ -14,6 +14,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 
     ui->modName->setText(mod->getName());
     ui->modSummary->setText(mod->getSummary());
+    ui->modAuthors->setText(mod->getAuthors().join(", ").prepend(tr("by ")));
 }
 
 CurseforgeModItemWidget::~CurseforgeModItemWidget()

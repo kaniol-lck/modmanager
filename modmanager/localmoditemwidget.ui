@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ModEntryWidget</class>
- <widget class="QWidget" name="ModEntryWidget">
+ <class>LocalModItemWidget</class>
+ <widget class="QWidget" name="LocalModItemWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>140</height>
+    <width>412</width>
+    <height>92</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,24 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" rowspan="2">
     <widget class="QLabel" name="modIcon">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>80</width>
+       <height>80</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>80</width>
+       <height>80</height>
+      </size>
+     </property>
      <property name="text">
       <string>ICON</string>
      </property>
@@ -23,6 +41,12 @@
    </item>
    <item row="0" column="1">
     <widget class="QLabel" name="modName">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="font">
       <font>
        <pointsize>15</pointsize>
@@ -37,6 +61,12 @@
    </item>
    <item row="0" column="2">
     <widget class="QLabel" name="modVersion">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Version</string>
      </property>
@@ -44,6 +74,12 @@
    </item>
    <item row="1" column="1" colspan="2">
     <widget class="QLabel" name="modDescription">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="font">
       <font>
        <italic>true</italic>
@@ -51,6 +87,9 @@
      </property>
      <property name="text">
       <string>Description: balabalabalabalabalabalabalabalabala</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
