@@ -2,9 +2,9 @@
 #define CURSEFORGEMODBROWSER_H
 
 #include <QWidget>
-#include <QNetworkAccessManager>
 #include <QList>
 
+class QNetworkReply;
 class CurseforgeMod;
 
 namespace Ui {
@@ -28,7 +28,6 @@ private slots:
 
 private:
     Ui::CurseforgeModBrowser *ui;
-    QNetworkAccessManager *accessManager;
     QList<CurseforgeMod*> modList;
     QString currentName;
     int currentIndex;

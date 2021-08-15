@@ -18,7 +18,9 @@ SOURCES += \
     modmanager/localmoditemwidget.cpp \
     modmanager/main.cpp \
     modmanager/moddirinfo.cpp \
-    modmanager/modmanager.cpp
+    modmanager/modmanager.cpp \
+    util/downloader.cpp \
+    util/downloaderthread.cpp
 
 HEADERS += \
     modmanager/curseforgemod.h \
@@ -30,6 +32,8 @@ HEADERS += \
     modmanager/localmoditemwidget.h \
     modmanager/moddirinfo.h \
     modmanager/modmanager.h \
+    util/downloader.h \
+    util/downloaderthread.h \
     util/qjsonutil.hpp
 
 FORMS += \

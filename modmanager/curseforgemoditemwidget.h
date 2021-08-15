@@ -2,6 +2,7 @@
 #define CURSEFORGEMODITEMWIDGET_H
 
 #include <QWidget>
+#include <QTimer>
 
 class CurseforgeMod;
 
@@ -19,10 +20,15 @@ public:
 
 private slots:
     void updateThumbnail();
+    void updateDownlaodSpeed();
+
+    void on_downloadButton_clicked();
 
 private:
     Ui::CurseforgeModItemWidget *ui;
     CurseforgeMod *curseforgeMod;
+    QTimer speedTimer;
+    qint64 lastDownloadBytes = 0;
 };
 
 #endif // CURSEFORGEMODITEMWIDGET_H

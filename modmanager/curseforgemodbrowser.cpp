@@ -15,11 +15,9 @@
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::CurseforgeModBrowser),
-    accessManager(new QNetworkAccessManager(this))
+    ui(new Ui::CurseforgeModBrowser)
 {
     ui->setupUi(this);
-    connect(accessManager, &QNetworkAccessManager::finished, this, &CurseforgeModBrowser::downloadFinished);
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
 }
 
@@ -58,18 +56,19 @@ void CurseforgeModBrowser::downloadFinished(QNetworkReply *reply)
         qDebug("%s", error.errorString().toUtf8().constData());
         return;
     }
-    QVariant result = jsonDocument.toVariant();
+    auto resultList = jsonDocument.toVariant().toList();
 
-    for(const auto &entry : result.toList()){
+    for(const auto &entry : qAsConst(resultList)){
         auto curseforgeMod = CurseforgeMod::fromVariant(this, entry);
+        curseforgeMod->downloadThumbnail();
         modList.append(curseforgeMod);
 
         auto *listItem = new QListWidgetItem();
         listItem->setSizeHint(QSize(500, 100));
-        auto modEntryWidget = new CurseforgeModItemWidget(ui->modListWidget, curseforgeMod);
+        auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, curseforgeMod);
 
         ui->modListWidget->addItem(listItem);
-        ui->modListWidget->setItemWidget(listItem, modEntryWidget);
+        ui->modListWidget->setItemWidget(listItem, modItemWidget);
     }
 }
 
@@ -85,7 +84,6 @@ void CurseforgeModBrowser::getModList(QString name, int index)
 {
     ui->searchButton->setText(tr("Searching..."));
     ui->searchButton->setEnabled(false);
-    QNetworkRequest request;
     QUrl url("https://addons-ecs.forgesvc.net/api/v2/addon/search");
     QUrlQuery urlQuery{
         {"categoryId", "0"},
@@ -98,7 +96,9 @@ void CurseforgeModBrowser::getModList(QString name, int index)
     };
 
     url.setQuery(urlQuery);
-    request.setUrl(url);
+    QNetworkRequest request(url);
+    auto accessManager = new QNetworkAccessManager(this);
+    connect(accessManager, &QNetworkAccessManager::finished, this, &CurseforgeModBrowser::downloadFinished);
     accessManager->get(request);
 }
 

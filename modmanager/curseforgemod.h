@@ -3,7 +3,10 @@
 
 #include <QObject>
 #include <QVariant>
-#include <QNetworkAccessManager>
+#include <QUrl>
+
+class QNetworkReply;
+class QNetworkAccessManager;
 
 class CurseforgeMod : public QObject
 {
@@ -13,6 +16,8 @@ public:
 
     static CurseforgeMod *fromFingerprint(QObject *parent, QString murmurhash);
     static CurseforgeMod *fromVariant(QObject *parent, QVariant variant);
+
+    void downloadThumbnail();
 
     int getId() const;
 
@@ -30,6 +35,12 @@ public:
 
     const QString &getDescription() const;
 
+    const QUrl &getLatestFileUrl() const;
+
+    const QString &getLatestFileName() const;
+
+    int getLatestFileLength() const;
+
 signals:
     void thumbnailReady();
 
@@ -42,7 +53,11 @@ private:
     QString summary;
     QUrl websiteUrl;
     QStringList authors;
+    QUrl thumbnailUrl;
     QByteArray thumbnailBytes;
+    QUrl latestFileUrl;
+    QString latestFileName;
+    int latestFileLength;
     QString description;
 
     QNetworkAccessManager *accessManager;

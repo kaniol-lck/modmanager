@@ -4,10 +4,11 @@
 #include <QNetworkReply>
 
 #include "util/qjsonutil.hpp"
+#include "util/downloader.h"
 
 CurseforgeMod::CurseforgeMod(QObject *parent) :
     QObject(parent),
-    accessManager(new QNetworkAccessManager)
+    accessManager(new QNetworkAccessManager(this))
 {
     connect(accessManager, &QNetworkAccessManager::finished, this, &CurseforgeMod::thumbnailDownloadFinished);
 }
@@ -36,16 +37,27 @@ CurseforgeMod *CurseforgeMod::fromVariant(QObject *parent, QVariant variant)
         curseforgeMod->authors << value(author, "name").toString();
 
     //thumbnail image
-    QNetworkRequest request;
     auto attachmentsList = value(variant, "attachments").toList();
-    if(!attachmentsList.isEmpty()){
-        QUrl url = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
+    if(!attachmentsList.isEmpty())
+        curseforgeMod->thumbnailUrl = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
 
-        request.setUrl(url);
-        curseforgeMod->accessManager->get(request);
+    //latest file url
+    auto latestFileslist = value(variant, "latestFiles").toList();
+    if (!latestFileslist.isEmpty()){
+        curseforgeMod->latestFileUrl = value(latestFileslist.at(0), "downloadUrl").toUrl();
+        curseforgeMod->latestFileName = value(latestFileslist.at(0), "fileName").toString();
+        curseforgeMod->latestFileLength = value(latestFileslist.at(0), "fileLength").toInt();
     }
 
     return curseforgeMod;
+}
+
+void CurseforgeMod::downloadThumbnail()
+{
+    if(thumbnailUrl.isEmpty()) return;
+
+    QNetworkRequest request(thumbnailUrl);
+    accessManager->get(request);
 }
 
 int CurseforgeMod::getId() const
@@ -65,12 +77,29 @@ const QString &CurseforgeMod::getSummary() const
 
 void CurseforgeMod::thumbnailDownloadFinished(QNetworkReply *reply)
 {
-    if(reply->error() != QNetworkReply::NoError) return;
+    if(reply->error() != QNetworkReply::NoError) {
+        return;
+    }
 
     thumbnailBytes = reply->readAll();
 
     if(!thumbnailBytes.isEmpty())
         emit thumbnailReady();
+}
+
+int CurseforgeMod::getLatestFileLength() const
+{
+    return latestFileLength;
+}
+
+const QString &CurseforgeMod::getLatestFileName() const
+{
+    return latestFileName;
+}
+
+const QUrl &CurseforgeMod::getLatestFileUrl() const
+{
+    return latestFileUrl;
 }
 
 const QString &CurseforgeMod::getDescription() const
