@@ -19,6 +19,9 @@ public:
     explicit CurseforgeModBrowser(QWidget *parent = nullptr);
     ~CurseforgeModBrowser();
 
+public slots:
+    void updateVersions();
+
 private slots:
     void on_searchButton_clicked();
     void downloadFinished(QNetworkReply* reply);
@@ -26,13 +29,17 @@ private slots:
 
     void on_modListWidget_doubleClicked(const QModelIndex &index);
 
+    void on_versionSelect_currentIndexChanged(int);
+
+    void on_sortSelect_currentIndexChanged(int);
+
 private:
     Ui::CurseforgeModBrowser *ui;
     QList<CurseforgeMod*> modList;
     QString currentName;
     int currentIndex;
 
-    void getModList(QString name, int index);
+    void getModList(QString name, int index = 0);
 
 };
 

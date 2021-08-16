@@ -7,15 +7,18 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QFuture>
+#include <QtConcurrent/QtConcurrent>
 
 #include "localmodbrowser.h"
 #include "curseforgemodbrowser.h"
 #include "localmodbrowsersettingsdialog.h"
 #include "gameversion.h"
 
-ModManager::ModManager(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::ModManager)
+ModManager::ModManager(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::ModManager),
+    updateVersionsWatcher(new QFutureWatcher<void>(this))
 {
     ui->setupUi(this);
     for(int i = ui->stackedWidget->count(); i >= 0; i--)
@@ -31,8 +34,10 @@ ModManager::ModManager(QWidget *parent)
     modDirList.append(modDirInfo);
     modDirList.append(modDirInfo2);
 
+    auto curseforgeModBrowser = new CurseforgeModBrowser(this);
+
     ui->modDirSelectorWidget->addItem("Explore");
-    ui->stackedWidget->addWidget(new CurseforgeModBrowser(this));
+    ui->stackedWidget->addWidget(curseforgeModBrowser);
 
     for(const auto &modDirInfo : qAsConst(modDirList)){
         if(modDirInfo.exists()) {
@@ -44,7 +49,11 @@ ModManager::ModManager(QWidget *parent)
             ui->stackedWidget->addWidget(localModBrowser);
         }
     }
-    GameVersion::initVersionList();
+
+    //start update
+    QFuture<void> future = QtConcurrent::run(&GameVersion::initVersionList);
+    updateVersionsWatcher->setFuture(future);
+    connect(updateVersionsWatcher, &QFutureWatcher<void>::finished, curseforgeModBrowser, &CurseforgeModBrowser::updateVersions);
 }
 
 ModManager::~ModManager()
@@ -70,6 +79,7 @@ void ModManager::on_newLocalBrowserButton_clicked()
         ui->stackedWidget->addWidget(localModBrowser);
         qDebug()<< modDirInfo.getModDir();
     });
+    connect(updateVersionsWatcher, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
     dialog->exec();
 }
 
@@ -87,6 +97,7 @@ void ModManager::on_modDirSelectorWidget_doubleClicked(const QModelIndex &index)
         dirWidgetItemList[row - 1]->setText(newInfo.getGameVersion());
         localModBrowserList[row - 1]->setModDirInfo(newInfo);
     });
+    connect(updateVersionsWatcher, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
     dialog->exec();
 }
 

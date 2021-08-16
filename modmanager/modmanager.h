@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QList>
+#include <QFutureWatcher>
 
 #include "moddirinfo.h"
 
@@ -33,5 +34,6 @@ private:
     QList<ModDirInfo> modDirList;
     QList<QListWidgetItem*> dirWidgetItemList;
     QList<LocalModBrowser*> localModBrowserList;
+    QFutureWatcher<void> *updateVersionsWatcher;
 };
 #endif // MODMANAGER_H

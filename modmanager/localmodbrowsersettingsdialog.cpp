@@ -11,9 +11,7 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
     ui(new Ui::LocalModBrowserSettingsDialog)
 {
     ui->setupUi(this);
-
-    for(const auto &version : qAsConst(GameVersion::versionList))
-        ui->versionSelect->addItem(version);
+    updateVersions();
 }
 
 LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, const ModDirInfo &info) :
@@ -27,6 +25,13 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, co
 LocalModBrowserSettingsDialog::~LocalModBrowserSettingsDialog()
 {
     delete ui;
+}
+
+void LocalModBrowserSettingsDialog::updateVersions()
+{
+    ui->versionSelect->clear();
+    for(const auto &version : qAsConst(GameVersion::versionList))
+        ui->versionSelect->addItem(version);
 }
 
 void LocalModBrowserSettingsDialog::on_modDirButton_clicked()

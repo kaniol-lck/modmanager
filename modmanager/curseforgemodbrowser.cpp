@@ -12,6 +12,7 @@
 #include "curseforgemod.h"
 #include "curseforgemoditemwidget.h"
 #include "curseforgemodinfodialog.h"
+#include "gameversion.h"
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -26,11 +27,18 @@ CurseforgeModBrowser::~CurseforgeModBrowser()
     delete ui;
 }
 
+void CurseforgeModBrowser::updateVersions()
+{
+    ui->versionSelect->clear();
+    ui->versionSelect->addItem(tr("Any"));
+    for(const auto &version : qAsConst(GameVersion::versionList))
+        ui->versionSelect->addItem(version);
+}
+
 void CurseforgeModBrowser::on_searchButton_clicked()
 {
     currentName = ui->searchText->text();
-    currentIndex = 0;
-    getModList(currentName, currentIndex);
+    getModList(currentName);
 }
 
 void CurseforgeModBrowser::downloadFinished(QNetworkReply *reply)
@@ -82,18 +90,31 @@ void CurseforgeModBrowser::onSliderChanged(int i)
 
 void CurseforgeModBrowser::getModList(QString name, int index)
 {
+    if(!index) currentIndex = 0;
     ui->searchButton->setText(tr("Searching..."));
     ui->searchButton->setEnabled(false);
     QUrl url("https://addons-ecs.forgesvc.net/api/v2/addon/search");
-    QUrlQuery urlQuery{
-        {"categoryId", "0"},
-        {"gameId", "432"},  //minecraft
-        {"index", QString::number(index)},
-        {"pageSize", "20"},
-        {"searchFilter", name},
-        {"sectionId", "6"},
-        {"sort", "0"}
-    };
+
+    //url query
+    QUrlQuery urlQuery;
+
+    //?
+    urlQuery.addQueryItem("categoryId", "0");
+    //minecraft
+    urlQuery.addQueryItem("gameId", "432");
+    //game version
+    if(ui->versionSelect->currentIndex())
+        urlQuery.addQueryItem("gameVersion", ui->versionSelect->currentText());
+    //index
+    urlQuery.addQueryItem("index", QString::number(index));
+    //search page size, 20 by default [Customize it]
+    urlQuery.addQueryItem("pageSize", "20");
+    //search by name
+    urlQuery.addQueryItem("searchFilter", name);
+    //mod
+    urlQuery.addQueryItem("sectionId", "6");
+    //sort, 0 for no sort spec
+    urlQuery.addQueryItem("sort", QString::number(ui->sortSelect->currentIndex()));
 
     url.setQuery(urlQuery);
     QNetworkRequest request(url);
@@ -107,5 +128,17 @@ void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &ind
     auto mod = modList.at(index.row());
     auto dialog = new CurseforgeModInfoDialog(this, mod);
     dialog->show();
+}
+
+
+void CurseforgeModBrowser::on_versionSelect_currentIndexChanged(int)
+{
+    getModList(currentName);
+}
+
+
+void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
+{
+    getModList(currentName);
 }
 
