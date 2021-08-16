@@ -1,15 +1,15 @@
 #include "localmodbrowser.h"
-#include "ui_modbrowserwidget.h"
+#include "ui_localmodbrowser.h"
 
 #include <QDir>
 #include <QDateTime>
 
 #include "localmoditemwidget.h"
 
-LocalModBrowser::LocalModBrowser(QWidget *parent, QDir path) :
+LocalModBrowser::LocalModBrowser(QWidget *parent, const ModDirInfo &info) :
     QWidget(parent),
     ui(new Ui::LocalModBrowser),
-    modsDir(path)
+    modDirInfo(info)
 {
     ui->setupUi(this);
 
@@ -26,7 +26,9 @@ LocalModBrowser::~LocalModBrowser()
 
 void LocalModBrowser::updateModList()
 {
-    for (const QFileInfo& entryInfo : modsDir.entryInfoList(QDir::Files)) {
+    modList.clear();
+    ui->modListWidget->clear();
+    for (const QFileInfo& entryInfo : modDirInfo.getModDir().entryInfoList(QDir::Files)) {
         LocalModInfo modInfo(entryInfo.absoluteFilePath());
         if(!modInfo.isFabricMod()) continue;
         modList.append(modInfo);
@@ -53,5 +55,11 @@ void LocalModBrowser::on_modListWidget_currentRowChanged(int currentRow)
     stringList << "murmurhash: " + modInfo.getMurmurhash();
     stringList << "file modfication time: " + modInfo.getFileModificationTime().toString(Qt::DateFormat::DefaultLocaleLongDate);
     ui->modInfoText->setText(stringList.join("\n"));
+}
+
+void LocalModBrowser::setModDirInfo(const ModDirInfo &newModDirInfo)
+{
+    modDirInfo = newModDirInfo;
+    emit modsDirUpdated();
 }
 

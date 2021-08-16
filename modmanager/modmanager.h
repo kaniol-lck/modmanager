@@ -6,6 +6,9 @@
 
 #include "moddirinfo.h"
 
+class QListWidgetItem;
+class LocalModBrowser;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class ModManager; }
 QT_END_NAMESPACE
@@ -21,8 +24,14 @@ public:
 private slots:
     void on_modDirSelectorWidget_currentRowChanged(int currentRow);
 
+    void on_newLocalBrowserButton_clicked();
+
+    void on_modDirSelectorWidget_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::ModManager *ui;
     QList<ModDirInfo> modDirList;
+    QList<QListWidgetItem*> dirWidgetItemList;
+    QList<LocalModBrowser*> localModBrowserList;
 };
 #endif // MODMANAGER_H

@@ -3,19 +3,24 @@
 
 #include <QDir>
 
+#include "gameversion.h"
+
 class ModDirInfo
 {
 public:
-    ModDirInfo(QDir dir, QString version);
+    ModDirInfo(const QDir &dir, const GameVersion &version, const QString &type);
 
     bool exists() const;
 
     const QDir &getModDir() const;
-    const QString &getGameVersion() const;
+    const GameVersion &getGameVersion() const;
+
+    const QString &getLoaderType() const;
 
 private:
     QDir modDir;
-    QString gameVersion;
+    GameVersion gameVersion;
+    QString loaderType;
 };
 
 #endif // MODDIRINFO_H

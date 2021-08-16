@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QDir>
 
+#include "moddirinfo.h"
 #include "localmodinfo.h"
 
 namespace Ui {
@@ -15,8 +16,10 @@ class LocalModBrowser : public QWidget
     Q_OBJECT
 
 public:
-    explicit LocalModBrowser(QWidget *parent, QDir path);
+    explicit LocalModBrowser(QWidget *parent, const ModDirInfo &info);
     ~LocalModBrowser();
+
+    void setModDirInfo(const ModDirInfo &newModDirInfo);
 
 signals:
     void modsDirUpdated();
@@ -29,7 +32,7 @@ private slots:
 
 private:
     Ui::LocalModBrowser *ui;
-    QDir modsDir;
+    ModDirInfo modDirInfo;
     QList<LocalModInfo> modList;
 };
 

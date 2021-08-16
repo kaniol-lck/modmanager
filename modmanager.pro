@@ -2,7 +2,7 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -13,7 +13,9 @@ SOURCES += \
     modmanager/curseforgemodbrowser.cpp \
     modmanager/curseforgemodinfodialog.cpp \
     modmanager/curseforgemoditemwidget.cpp \
+    modmanager/gameversion.cpp \
     modmanager/localmodbrowser.cpp \
+    modmanager/localmodbrowsersettingsdialog.cpp \
     modmanager/localmodinfo.cpp \
     modmanager/localmoditemwidget.cpp \
     modmanager/main.cpp \
@@ -28,7 +30,9 @@ HEADERS += \
     modmanager/curseforgemodbrowser.h \
     modmanager/curseforgemodinfodialog.h \
     modmanager/curseforgemoditemwidget.h \
+    modmanager/gameversion.h \
     modmanager/localmodbrowser.h \
+    modmanager/localmodbrowsersettingsdialog.h \
     modmanager/localmodinfo.h \
     modmanager/localmoditemwidget.h \
     modmanager/moddirinfo.h \
@@ -42,8 +46,9 @@ FORMS += \
     modmanager/curseforgemodbrowser.ui \
     modmanager/curseforgemodinfodialog.ui \
     modmanager/curseforgemoditemwidget.ui \
+    modmanager/localmodbrowser.ui \
+    modmanager/localmodbrowsersettingsdialog.ui \
     modmanager/localmoditemwidget.ui \
-    modmanager/modbrowserwidget.ui \
     modmanager/modmanager.ui
 
 TRANSLATIONS += \
