@@ -8,7 +8,7 @@
 #include <QJsonDocument>
 #include <QDebug>
 
-#include "util/qjsonutil.hpp"
+#include "util/tutil.hpp"
 #include "curseforgemod.h"
 #include "curseforgemoditemwidget.h"
 #include "curseforgemodinfodialog.h"

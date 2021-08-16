@@ -9,7 +9,7 @@
 #include <QDebug>
 #include <QImage>
 
-#include "util/qjsonutil.hpp"
+#include "util/tutil.hpp"
 
 LocalModInfo::LocalModInfo(QString path) :
     modPath(path),

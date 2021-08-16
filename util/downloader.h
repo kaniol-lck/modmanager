@@ -14,7 +14,7 @@ class Downloader : public QObject
 public:
     explicit Downloader(QObject *parent = nullptr);
 
-    bool download(const QUrl &url, const QString &filename = "", int size = 0);
+    bool download(const QUrl &url, const QString &filename = "");
 
 signals:
     void finished();
@@ -34,6 +34,8 @@ private:
     qint64 downloadSize;
     QVector<qint64> bytesReceived;
     QVector<qint64> bytesTotal;
+
+    void handleRedirect();
 
 };
 

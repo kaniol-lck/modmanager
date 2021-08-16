@@ -17,7 +17,7 @@ Downloader::Downloader(QObject *parent) :
 
 }
 
-bool Downloader::download(const QUrl &url, const QString &filename, int size)
+bool Downloader::download(const QUrl &url, const QString &filename)
 {
     downloadUrl = url;
 
@@ -35,34 +35,26 @@ bool Downloader::download(const QUrl &url, const QString &filename, int size)
 
     if(!downloadFile.open(QIODevice::WriteOnly)) return false;
 
-    //get size
-    if(size)
-        downloadSize = size;
-    else {
-        QEventLoop loop;
-        QNetworkReply *reply = accessManager->head(QNetworkRequest(url));
-        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit, Qt::ConnectionType::DirectConnection);
-        loop.exec();
-        disconnect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-        reply->deleteLater();
-        downloadSize = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
-    }
+    //handle redirect
+    //this will update url and size
+    handleRedirect();
+
+    downloadFile.resize(downloadSize);
 
     qDebug() << "file size:" << downloadSize;
 
     //slice file into threads
-    for(int i=0; i < THREAD_COUNT; i++)
-        {
-            qint64 startPos = downloadSize * i / THREAD_COUNT;
-            qint64 endPos = downloadSize * (i+1) / THREAD_COUNT;
+    for(int i=0; i < THREAD_COUNT; i++){
+        qint64 startPos = downloadSize * i / THREAD_COUNT;
+        qint64 endPos = downloadSize * (i+1) / THREAD_COUNT;
 
-            auto thread = new DownloaderThread(this);
-            connect(thread, &DownloaderThread::threadFinished, this, &Downloader::threadFinished);
-            connect(thread, &DownloaderThread::threadDownloadProgress, this, &Downloader::updateProgress);
-            connect(thread, &DownloaderThread::threadErrorOccurred, [](int index, QNetworkReply::NetworkError code){
-                qDebug() << code;
-            });
-            thread->download(i, downloadUrl, &downloadFile, startPos, endPos);
+        auto thread = new DownloaderThread(this);
+        connect(thread, &DownloaderThread::threadFinished, this, &Downloader::threadFinished);
+        connect(thread, &DownloaderThread::threadDownloadProgress, this, &Downloader::updateProgress);
+        connect(thread, &DownloaderThread::threadErrorOccurred, [](int index, QNetworkReply::NetworkError code){
+            qDebug() << index << code;
+        });
+        thread->download(i, downloadUrl, &downloadFile, startPos, endPos);
     }
 
     return true;
@@ -71,7 +63,7 @@ bool Downloader::download(const QUrl &url, const QString &filename, int size)
 void Downloader::threadFinished(int index)
 {
     finishedThreadCount++;
-    qDebug() << finishedThreadCount << "/" << THREAD_COUNT;
+//    qDebug() << finishedThreadCount << "/" << THREAD_COUNT;
     if(finishedThreadCount == THREAD_COUNT)
         emit finished();
 }
@@ -85,4 +77,37 @@ void Downloader::updateProgress(int index, qint64 threadBytesReceived, qint64 th
     auto bytesTotalSum = std::accumulate(bytesTotal.begin(), bytesTotal.end(), 0);
 
     emit downloadProgress(bytesReceivedSum, bytesTotalSum);
+}
+
+void Downloader::handleRedirect()
+{
+    int tryTimes = 3;
+    while(tryTimes--)
+    {
+        QNetworkRequest request(downloadUrl);
+        #ifndef QT_NO_SSL
+        QSslConfiguration sslConfig = request.sslConfiguration();
+        sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
+        request.setSslConfiguration(sslConfig);
+        #endif
+
+        auto reply = accessManager->head(request);
+        if(!reply) continue;
+        QEventLoop loop;
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        if(reply->error() != QNetworkReply::NoError) continue;
+
+        //update size
+        downloadSize = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
+        QVariant redirection = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+        if(!redirection.isNull()){
+            //update url
+            downloadUrl = redirection.toString();
+            handleRedirect();
+        }
+        reply->deleteLater();
+        return;
+    }
 }

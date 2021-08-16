@@ -20,7 +20,8 @@ SOURCES += \
     modmanager/moddirinfo.cpp \
     modmanager/modmanager.cpp \
     util/downloader.cpp \
-    util/downloaderthread.cpp
+    util/downloaderthread.cpp \
+    util/funcutil.cpp
 
 HEADERS += \
     modmanager/curseforgemod.h \
@@ -34,7 +35,8 @@ HEADERS += \
     modmanager/modmanager.h \
     util/downloader.h \
     util/downloaderthread.h \
-    util/qjsonutil.hpp
+    util/funcutil.h \
+    util/tutil.hpp
 
 FORMS += \
     modmanager/curseforgemodbrowser.ui \

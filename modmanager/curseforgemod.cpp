@@ -3,7 +3,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-#include "util/qjsonutil.hpp"
+#include "util/tutil.hpp"
 #include "util/downloader.h"
 
 CurseforgeMod::CurseforgeMod(QObject *parent) :
