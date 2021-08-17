@@ -141,9 +141,11 @@ void CurseforgeModBrowser::setItemHidden(QListWidgetItem *item, const Curseforge
     //forge
     case 2:
         item->setHidden(!mod->isForgeMod());
+        break;
     //rift
     case 3:
         item->setHidden(!mod->isRiftMod());
+        break;
     }
 }
 

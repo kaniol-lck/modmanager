@@ -9,47 +9,47 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    modmanager/curseforgemod.cpp \
-    modmanager/curseforgemodbrowser.cpp \
-    modmanager/curseforgemodinfodialog.cpp \
-    modmanager/curseforgemoditemwidget.cpp \
-    modmanager/gameversion.cpp \
-    modmanager/localmodbrowser.cpp \
-    modmanager/localmodbrowsersettingsdialog.cpp \
-    modmanager/localmodinfo.cpp \
-    modmanager/localmoditemwidget.cpp \
-    modmanager/main.cpp \
-    modmanager/moddirinfo.cpp \
-    modmanager/modmanager.cpp \
+    src/curseforgemod.cpp \
+    src/curseforgemodbrowser.cpp \
+    src/curseforgemodinfodialog.cpp \
+    src/curseforgemoditemwidget.cpp \
+    src/gameversion.cpp \
+    src/localmodbrowser.cpp \
+    src/localmodbrowsersettingsdialog.cpp \
+    src/localmodinfo.cpp \
+    src/localmoditemwidget.cpp \
+    src/main.cpp \
+    src/moddirinfo.cpp \
+    src/modmanager.cpp \
     util/downloader.cpp \
     util/downloaderthread.cpp \
     util/funcutil.cpp
 
 HEADERS += \
-    modmanager/curseforgemod.h \
-    modmanager/curseforgemodbrowser.h \
-    modmanager/curseforgemodinfodialog.h \
-    modmanager/curseforgemoditemwidget.h \
-    modmanager/gameversion.h \
-    modmanager/localmodbrowser.h \
-    modmanager/localmodbrowsersettingsdialog.h \
-    modmanager/localmodinfo.h \
-    modmanager/localmoditemwidget.h \
-    modmanager/moddirinfo.h \
-    modmanager/modmanager.h \
+    src/curseforgemod.h \
+    src/curseforgemodbrowser.h \
+    src/curseforgemodinfodialog.h \
+    src/curseforgemoditemwidget.h \
+    src/gameversion.h \
+    src/localmodbrowser.h \
+    src/localmodbrowsersettingsdialog.h \
+    src/localmodinfo.h \
+    src/localmoditemwidget.h \
+    src/moddirinfo.h \
+    src/modmanager.h \
     util/downloader.h \
     util/downloaderthread.h \
     util/funcutil.h \
     util/tutil.hpp
 
 FORMS += \
-    modmanager/curseforgemodbrowser.ui \
-    modmanager/curseforgemodinfodialog.ui \
-    modmanager/curseforgemoditemwidget.ui \
-    modmanager/localmodbrowser.ui \
-    modmanager/localmodbrowsersettingsdialog.ui \
-    modmanager/localmoditemwidget.ui \
-    modmanager/modmanager.ui
+    src/curseforgemodbrowser.ui \
+    src/curseforgemodinfodialog.ui \
+    src/curseforgemoditemwidget.ui \
+    src/localmodbrowser.ui \
+    src/localmodbrowsersettingsdialog.ui \
+    src/localmoditemwidget.ui \
+    src/modmanager.ui
 
 TRANSLATIONS += \
     languages/zh_CN.ts
