@@ -36,7 +36,7 @@ ModManager::ModManager(QWidget *parent) :
 
     auto curseforgeModBrowser = new CurseforgeModBrowser(this);
 
-    ui->modDirSelectorWidget->addItem("Explore");
+    ui->modDirSelectorWidget->addItem("Curseforge");
     ui->stackedWidget->addWidget(curseforgeModBrowser);
 
     for(const auto &modDirInfo : qAsConst(modDirList)){
@@ -69,7 +69,7 @@ void ModManager::on_modDirSelectorWidget_currentRowChanged(int currentRow)
 void ModManager::on_newLocalBrowserButton_clicked()
 {
     auto dialog = new LocalModBrowserSettingsDialog(this);
-    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, [=](const ModDirInfo &modDirInfo){
+    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &modDirInfo){
         modDirList.append(modDirInfo);
         auto item = new QListWidgetItem(modDirInfo.getGameVersion());
         auto localModBrowser = new LocalModBrowser(this, modDirInfo);
@@ -92,7 +92,8 @@ void ModManager::on_modDirSelectorWidget_doubleClicked(const QModelIndex &index)
 
     auto modDirInfo = modDirList.at(row - 1);
     auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);
-    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, [=](const ModDirInfo &newInfo){
+    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
+        //exclude curseforge page
         modDirList[row - 1] = newInfo;
         dirWidgetItemList[row - 1]->setText(newInfo.getGameVersion());
         localModBrowserList[row - 1]->setModDirInfo(newInfo);

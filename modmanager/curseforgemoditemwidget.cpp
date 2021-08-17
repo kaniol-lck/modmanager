@@ -14,12 +14,13 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
-    ui->downloadSpeedText->setText(filesize2String(curseforgeMod->getLatestFileLength()));
     connect(curseforgeMod, &CurseforgeMod::thumbnailReady, this, &CurseforgeModItemWidget::updateThumbnail);
 
     ui->modName->setText(mod->getName());
     ui->modSummary->setText(mod->getSummary());
-    ui->modAuthors->setText(mod->getAuthors().join(", ").prepend(tr("by ")));
+    ui->modAuthors->setText(mod->getAuthors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    ui->downloadSpeedText->setText(numberConvert(curseforgeMod->getLatestFileLength(), "B") + "\n"
+                                   + numberConvert(mod->getDownloadCount(), "", 3, 1000) + tr(" Downloads"));
 
     //set timer
     speedTimer.setInterval(1000 / 4);
@@ -44,7 +45,7 @@ void CurseforgeModItemWidget::updateDownlaodSpeed()
     auto bytes = (downloadBytes - lastDownloadBytes) * 4;
     lastDownloadBytes = downloadBytes;
 
-    ui->downloadSpeedText->setText(filesize2String(bytes) + "/s");
+    ui->downloadSpeedText->setText(numberConvert(bytes, "B/s"));
 
 }
 
@@ -60,13 +61,13 @@ void CurseforgeModItemWidget::on_downloadButton_clicked()
     downloader->download(curseforgeMod->getLatestFileUrl(), curseforgeMod->getLatestFileName());
     ui->downloadProgress->setMaximum(curseforgeMod->getLatestFileLength());
 
-    connect(downloader, &Downloader::downloadProgress, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
         ui->downloadProgress->setMaximum(curseforgeMod->getLatestFileLength());
     });
-    connect(downloader, &Downloader::finished, [=]{
+    connect(downloader, &Downloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(filesize2String(curseforgeMod->getLatestFileLength()));
+        ui->downloadSpeedText->setText(numberConvert(curseforgeMod->getLatestFileLength(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
         speedTimer.stop();
         lastDownloadBytes = 0;

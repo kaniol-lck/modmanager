@@ -2,34 +2,36 @@
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QDebug>
 
 #include "util/tutil.hpp"
 #include "util/downloader.h"
 
-CurseforgeMod::CurseforgeMod(QObject *parent) :
+CurseforgeMod::CurseforgeMod(QObject *parent, QNetworkAccessManager *manager) :
     QObject(parent),
-    accessManager(new QNetworkAccessManager(this))
+    accessManager(manager)
 {
-    connect(accessManager, &QNetworkAccessManager::finished, this, &CurseforgeMod::thumbnailDownloadFinished);
 }
 
-CurseforgeMod *CurseforgeMod::fromFingerprint(QObject *parent, QString murmurhash)
+CurseforgeMod *CurseforgeMod::fromFingerprint(QObject *parent, QNetworkAccessManager *manager, QString murmurhash)
 {
-    auto curseforgeMod = new CurseforgeMod(parent);
+    auto curseforgeMod = new CurseforgeMod(parent, manager);
 
     //wip
 
     return curseforgeMod;
 }
 
-CurseforgeMod *CurseforgeMod::fromVariant(QObject *parent, QVariant variant)
+CurseforgeMod *CurseforgeMod::fromVariant(QObject *parent, QNetworkAccessManager *manager, QVariant variant)
 {
-    auto curseforgeMod = new CurseforgeMod(parent);
+    auto curseforgeMod = new CurseforgeMod(parent, manager);
 
     curseforgeMod->id = value(variant, "id").toInt();
     curseforgeMod->name = value(variant, "name").toString();
     curseforgeMod->summary = value(variant, "summary").toString();
     curseforgeMod->websiteUrl = value(variant, "websiteUrl").toUrl();
+    curseforgeMod->downloadCount = value(variant, "downloadCount").toInt();
+    curseforgeMod->modLoaders = value(variant, "modLoaders").toStringList();
 
     //authors
     auto authorsList = value(variant, "authors").toList();
@@ -57,7 +59,14 @@ void CurseforgeMod::downloadThumbnail()
     if(thumbnailUrl.isEmpty()) return;
 
     QNetworkRequest request(thumbnailUrl);
-    accessManager->get(request);
+    auto reply = accessManager->get(request);
+    connect(reply, &QNetworkReply::finished, this, [=]{
+        if(reply->error() != QNetworkReply::NoError) return;
+        thumbnailBytes = reply->readAll();
+        if(!thumbnailBytes.isEmpty())
+            emit thumbnailReady();
+        reply->deleteLater();
+    });
 }
 
 int CurseforgeMod::getId() const
@@ -75,16 +84,24 @@ const QString &CurseforgeMod::getSummary() const
     return summary;
 }
 
-void CurseforgeMod::thumbnailDownloadFinished(QNetworkReply *reply)
+int CurseforgeMod::getDownloadCount() const
 {
-    if(reply->error() != QNetworkReply::NoError) {
-        return;
-    }
+    return downloadCount;
+}
 
-    thumbnailBytes = reply->readAll();
+bool CurseforgeMod::isFabricMod() const
+{
+    return modLoaders.contains("Fabric");
+}
 
-    if(!thumbnailBytes.isEmpty())
-        emit thumbnailReady();
+bool CurseforgeMod::isForgeMod() const
+{
+    return modLoaders.contains("Forge");
+}
+
+bool CurseforgeMod::isRiftMod() const
+{
+    return modLoaders.contains("Rift");
 }
 
 int CurseforgeMod::getLatestFileLength() const

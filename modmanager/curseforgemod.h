@@ -5,17 +5,16 @@
 #include <QVariant>
 #include <QUrl>
 
-class QNetworkReply;
 class QNetworkAccessManager;
 
 class CurseforgeMod : public QObject
 {
     Q_OBJECT
 public:
-    CurseforgeMod(QObject *parent);
+    CurseforgeMod(QObject *parent, QNetworkAccessManager *manager);
 
-    static CurseforgeMod *fromFingerprint(QObject *parent, QString murmurhash);
-    static CurseforgeMod *fromVariant(QObject *parent, QVariant variant);
+    static CurseforgeMod *fromFingerprint(QObject *parent, QNetworkAccessManager *manager, QString murmurhash);
+    static CurseforgeMod *fromVariant(QObject *parent, QNetworkAccessManager *manager, QVariant variant);
 
     void downloadThumbnail();
 
@@ -41,11 +40,16 @@ public:
 
     int getLatestFileLength() const;
 
+    int getDownloadCount() const;
+
+    bool isFabricMod() const;
+
+    bool isForgeMod() const;
+
+    bool isRiftMod() const;
+
 signals:
     void thumbnailReady();
-
-private slots:
-    void thumbnailDownloadFinished(QNetworkReply* reply);
 
 private:
     int id;
@@ -59,6 +63,8 @@ private:
     QString latestFileName;
     int latestFileLength;
     QString description;
+    int downloadCount;
+    QStringList modLoaders;
 
     QNetworkAccessManager *accessManager;
 

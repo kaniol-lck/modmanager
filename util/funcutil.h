@@ -3,6 +3,6 @@
 
 #include <QString>
 
-QString filesize2String(int size, int prec = 3);
+QString numberConvert(int size, const QString &suffix, int prec = 3, int limit = 850);
 
 #endif // FUNCUTIL_H

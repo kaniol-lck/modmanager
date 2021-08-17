@@ -4,8 +4,10 @@
 #include <QWidget>
 #include <QList>
 
+class QNetworkAccessManager;
 class QNetworkReply;
 class CurseforgeMod;
+class QListWidgetItem;
 
 namespace Ui {
 class CurseforgeModBrowser;
@@ -24,7 +26,6 @@ public slots:
 
 private slots:
     void on_searchButton_clicked();
-    void downloadFinished(QNetworkReply* reply);
     void onSliderChanged(int i);
 
     void on_modListWidget_doubleClicked(const QModelIndex &index);
@@ -33,13 +34,18 @@ private slots:
 
     void on_sortSelect_currentIndexChanged(int);
 
+    void on_loaderSelect_currentIndexChanged(int);
+
 private:
     Ui::CurseforgeModBrowser *ui;
     QList<CurseforgeMod*> modList;
     QString currentName;
     int currentIndex;
+    QNetworkAccessManager *accessManager;
 
     void getModList(QString name, int index = 0);
+
+    void setItemHidden(QListWidgetItem *item, const CurseforgeMod *mod);
 
 };
 

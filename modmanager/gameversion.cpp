@@ -56,7 +56,8 @@ void GameVersion::initVersionList()
         QJsonParseError error;
         auto json = QJsonDocument::fromJson(reply->readAll(), &error);
         if(error.error == QJsonParseError::NoError){
-            for(const auto &entry : json.toVariant().toList())
+            auto list = json.toVariant().toList();
+            for(const auto &entry : qAsConst(list))
                 versionList.append(value(entry, "versionString").toString());
         }
     } else{

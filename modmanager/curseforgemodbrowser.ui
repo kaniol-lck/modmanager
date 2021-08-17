@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
-    <height>367</height>
+    <width>887</width>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -113,6 +113,40 @@
        <item>
         <property name="text">
          <string>Total Downloads</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Mod Loader:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="loaderSelect">
+       <item>
+        <property name="text">
+         <string>Any</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Fabric</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Forge</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Rift</string>
         </property>
        </item>
       </widget>
