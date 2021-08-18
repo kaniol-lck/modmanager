@@ -13,7 +13,6 @@ class CurseforgeMod : public QObject
 public:
     CurseforgeMod(QObject *parent, QNetworkAccessManager *manager);
 
-    static CurseforgeMod *fromFingerprint(QObject *parent, QNetworkAccessManager *manager, QString murmurhash);
     static CurseforgeMod *fromVariant(QObject *parent, QNetworkAccessManager *manager, QVariant variant);
 
     void downloadThumbnail();

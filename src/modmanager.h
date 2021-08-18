@@ -14,6 +14,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class ModManager; }
 QT_END_NAMESPACE
 
+class QNetworkAccessManager;
+
 class ModManager : public QMainWindow
 {
     Q_OBJECT
@@ -35,5 +37,6 @@ private:
     QList<QListWidgetItem*> dirWidgetItemList;
     QList<LocalModBrowser*> localModBrowserList;
     QFutureWatcher<void> *updateVersionsWatcher;
+    QNetworkAccessManager *accessManager;
 };
 #endif // MODMANAGER_H

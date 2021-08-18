@@ -3,13 +3,15 @@
 
 #include <QDir>
 #include <QDateTime>
+#include <QtConcurrent/QtConcurrent>
 
 #include "localmoditemwidget.h"
 
-LocalModBrowser::LocalModBrowser(QWidget *parent, const ModDirInfo &info) :
+LocalModBrowser::LocalModBrowser(QWidget *parent, QNetworkAccessManager *manager, const ModDirInfo &info) :
     QWidget(parent),
     ui(new Ui::LocalModBrowser),
-    modDirInfo(info)
+    modDirInfo(info),
+    accessManager(manager)
 {
     ui->setupUi(this);
 
@@ -35,7 +37,8 @@ void LocalModBrowser::updateModList()
 
         auto *listItem = new QListWidgetItem();
         listItem->setSizeHint(QSize(500, 100));
-        auto modEntryWidget = new LocalModItemWidget(ui->modListWidget, modInfo);
+        auto modEntryWidget = new LocalModItemWidget(ui->modListWidget, accessManager, modInfo);
+        modEntryWidget->searchOnCurseforge();
 
         ui->modListWidget->addItem(listItem);
         ui->modListWidget->setItemWidget(listItem, modEntryWidget);

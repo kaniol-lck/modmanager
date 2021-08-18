@@ -7,6 +7,8 @@
 #include "moddirinfo.h"
 #include "localmodinfo.h"
 
+class QNetworkAccessManager;
+
 namespace Ui {
 class LocalModBrowser;
 }
@@ -16,7 +18,7 @@ class LocalModBrowser : public QWidget
     Q_OBJECT
 
 public:
-    explicit LocalModBrowser(QWidget *parent, const ModDirInfo &info);
+    explicit LocalModBrowser(QWidget *parent, QNetworkAccessManager *manager, const ModDirInfo &info);
     ~LocalModBrowser();
 
     void setModDirInfo(const ModDirInfo &newModDirInfo);
@@ -34,6 +36,8 @@ private:
     Ui::LocalModBrowser *ui;
     ModDirInfo modDirInfo;
     QList<LocalModInfo> modList;
+
+    QNetworkAccessManager *accessManager;
 };
 
 #endif // LOCALMODBROWSER_H

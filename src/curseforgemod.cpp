@@ -13,15 +13,6 @@ CurseforgeMod::CurseforgeMod(QObject *parent, QNetworkAccessManager *manager) :
 {
 }
 
-CurseforgeMod *CurseforgeMod::fromFingerprint(QObject *parent, QNetworkAccessManager *manager, QString murmurhash)
-{
-    auto curseforgeMod = new CurseforgeMod(parent, manager);
-
-    //wip
-
-    return curseforgeMod;
-}
-
 CurseforgeMod *CurseforgeMod::fromVariant(QObject *parent, QNetworkAccessManager *manager, QVariant variant)
 {
     auto curseforgeMod = new CurseforgeMod(parent, manager);
