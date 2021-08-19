@@ -12,6 +12,7 @@ INCLUDEPATH += $$PWD/src
 
 SOURCES += \
     src/curseforge/curseforgeapi.cpp \
+    src/curseforge/curseforgefileinfo.cpp \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodinfo.cpp \
     src/ui/curseforgemodbrowser.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
 
 HEADERS += \
     src/curseforge/curseforgeapi.h \
+    src/curseforge/curseforgefileinfo.h \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodinfo.h \
     src/ui/curseforgemodbrowser.h \

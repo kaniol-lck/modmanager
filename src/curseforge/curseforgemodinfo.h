@@ -3,6 +3,9 @@
 
 #include <QVariant>
 #include <QUrl>
+#include <optional>
+
+#include "curseforgefileinfo.h"
 
 class CurseforgeMod;
 
@@ -14,8 +17,6 @@ public:
     CurseforgeModInfo();
 
     static CurseforgeModInfo fromVariant(const QVariant &variant);
-
-    static CurseforgeModInfo fromGetInfo(const QVariant &variant);
 
     int getId() const;
 
@@ -31,12 +32,6 @@ public:
 
     const QByteArray &getThumbnailBytes() const;
 
-    const QUrl &getLatestFileUrl() const;
-
-    const QString &getLatestFileName() const;
-
-    int getLatestFileLength() const;
-
     const QString &getDescription() const;
 
     int getDownloadCount() const;
@@ -49,6 +44,10 @@ public:
 
     bool isRiftMod() const;
 
+    const QList<CurseforgeFileInfo> &getFileInfoList() const;
+
+    std::optional<CurseforgeFileInfo> getFileInfo(const GameVersion &version, const QString &modLoader) const;
+
 private:
     int id;
     QString name;
@@ -57,12 +56,10 @@ private:
     QStringList authors;
     QUrl thumbnailUrl;
     QByteArray thumbnailBytes;
-    QUrl latestFileUrl;
-    QString latestFileName;
-    int latestFileLength;
     QString description;
     int downloadCount;
     QStringList modLoaders;
+    QList<CurseforgeFileInfo> fileInfoList;
 };
 
 #endif // CURSEFORGEMODINFO_H

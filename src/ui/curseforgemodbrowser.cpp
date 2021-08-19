@@ -82,7 +82,10 @@ void CurseforgeModBrowser::getModList(QString name, int index)
 
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 100));
-            auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, curseforgeMod);
+            auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::ANY;
+            auto loaderType = ui->loaderSelect->currentIndex()? ui->loaderSelect->currentText() : "";
+            auto fileInfo = curseforgeMod->getModInfo().getFileInfo(version, loaderType);
+            auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, curseforgeMod, fileInfo);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
             setItemHidden(listItem, curseforgeMod->getModInfo());

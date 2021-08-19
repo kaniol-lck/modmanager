@@ -7,13 +7,14 @@
 class GameVersion
 {
 public:
+    GameVersion() = default;
     GameVersion(const QString string);
 
     const QString &getVersionString() const;
 
     operator QString() const;
-    bool operator==(GameVersion& another) const;
-    bool operator!=(GameVersion& another) const;
+    bool operator==(const GameVersion& another) const;
+    bool operator!=(const GameVersion& another) const;
 
     static std::optional<GameVersion> deduceFromString(const QString &string);
 

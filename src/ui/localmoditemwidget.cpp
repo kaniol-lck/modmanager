@@ -52,6 +52,7 @@ CurseforgeMod *LocalModItemWidget::getCurseforgeMod() const
 
 void LocalModItemWidget::on_curseforgeButton_clicked()
 {
+    curseforgeMod->downloadThumbnail();
     auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod);
     dialog->show();
 }

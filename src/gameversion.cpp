@@ -30,12 +30,12 @@ GameVersion::operator QString() const
     return versionString;
 }
 
-bool GameVersion::operator==(GameVersion &another) const
+bool GameVersion::operator==(const GameVersion &another) const
 {
     return versionString == another.versionString;
 }
 
-bool GameVersion::operator!=(GameVersion &another) const
+bool GameVersion::operator!=(const GameVersion &another) const
 {
     return versionString != another.versionString;
 }
@@ -43,9 +43,7 @@ bool GameVersion::operator!=(GameVersion &another) const
 std::optional<GameVersion> GameVersion::deduceFromString(const QString &string)
 {
     QRegExp re(R"((\d+\.\d+(\.\d+)?))");
-    qDebug() << string;
-    qDebug() << re.indexIn(string);
-    if(re.indexIn(string)){
+    if(re.indexIn(string) != -1){
         //2nd cap
         auto str = re.cap(1);
         if(versionList.contains(str))

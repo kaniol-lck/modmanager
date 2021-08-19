@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QTimer>
 
+#include "curseforge/curseforgefileinfo.h"
+
 class CurseforgeMod;
 
 namespace Ui {
@@ -15,7 +17,7 @@ class CurseforgeModItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod);
+    explicit CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &fileInfo);
     ~CurseforgeModItemWidget();
 
 private slots:
@@ -29,6 +31,7 @@ private:
     CurseforgeMod *curseforgeMod;
     QTimer speedTimer;
     qint64 lastDownloadBytes = 0;
+    std::optional<CurseforgeFileInfo> curseforgeFileInfo;
 };
 
 #endif // CURSEFORGEMODITEMWIDGET_H
