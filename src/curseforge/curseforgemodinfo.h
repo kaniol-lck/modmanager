@@ -1,21 +1,21 @@
-#ifndef CURSEFORGEMOD_H
-#define CURSEFORGEMOD_H
+#ifndef CURSEFORGEMODINFO_H
+#define CURSEFORGEMODINFO_H
 
-#include <QObject>
 #include <QVariant>
 #include <QUrl>
 
-class QNetworkAccessManager;
+class CurseforgeMod;
 
-class CurseforgeMod : public QObject
+
+class CurseforgeModInfo
 {
-    Q_OBJECT
+    friend class CurseforgeMod;
 public:
-    CurseforgeMod(QObject *parent, QNetworkAccessManager *manager);
+    CurseforgeModInfo();
 
-    static CurseforgeMod *fromVariant(QObject *parent, QNetworkAccessManager *manager, QVariant variant);
+    static CurseforgeModInfo fromVariant(const QVariant &variant);
 
-    void downloadThumbnail();
+    static CurseforgeModInfo fromGetInfo(const QVariant &variant);
 
     int getId() const;
 
@@ -23,15 +23,13 @@ public:
 
     const QString &getSummary() const;
 
-    const QByteArray &getThumbnailBytes() const;
-
     const QUrl &getWebsiteUrl() const;
 
     const QStringList &getAuthors() const;
 
-    void setDescription(const QString &newDescription);
+    const QUrl &getThumbnailUrl() const;
 
-    const QString &getDescription() const;
+    const QByteArray &getThumbnailBytes() const;
 
     const QUrl &getLatestFileUrl() const;
 
@@ -39,16 +37,17 @@ public:
 
     int getLatestFileLength() const;
 
+    const QString &getDescription() const;
+
     int getDownloadCount() const;
+
+    const QStringList &getModLoaders() const;
 
     bool isFabricMod() const;
 
     bool isForgeMod() const;
 
     bool isRiftMod() const;
-
-signals:
-    void thumbnailReady();
 
 private:
     int id;
@@ -64,9 +63,6 @@ private:
     QString description;
     int downloadCount;
     QStringList modLoaders;
-
-    QNetworkAccessManager *accessManager;
-
 };
 
-#endif // CURSEFORGEMOD_H
+#endif // CURSEFORGEMODINFO_H
