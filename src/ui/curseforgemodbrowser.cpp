@@ -10,7 +10,8 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
-#include "curseforgemod.h"
+#include "curseforge/curseforgemod.h"
+#include "curseforge/curseforgeapi.h"
 #include "curseforgemoditemwidget.h"
 #include "curseforgemodinfodialog.h"
 #include "gameversion.h"
@@ -56,33 +57,11 @@ void CurseforgeModBrowser::getModList(QString name, int index)
     if(!index) currentIndex = 0;
     ui->searchButton->setText(tr("Searching..."));
     ui->searchButton->setEnabled(false);
-    QUrl url("https://addons-ecs.forgesvc.net/api/v2/addon/search");
 
-    //url query
-    QUrlQuery urlQuery;
+    GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::ANY;
+    auto sort = ui->sortSelect->currentIndex();
 
-    //?
-    urlQuery.addQueryItem("categoryId", "0");
-    //minecraft
-    urlQuery.addQueryItem("gameId", "432");
-    //game version
-    if(ui->versionSelect->currentIndex())
-        urlQuery.addQueryItem("gameVersion", ui->versionSelect->currentText());
-    //index
-    urlQuery.addQueryItem("index", QString::number(index));
-    //search page size, 20 by default [Customize it]
-    urlQuery.addQueryItem("pageSize", "30");
-    //search by name
-    urlQuery.addQueryItem("searchFilter", name);
-    //mod
-    urlQuery.addQueryItem("sectionId", "6");
-    //sort, 0 for no sort spec
-    urlQuery.addQueryItem("sort", QString::number(ui->sortSelect->currentIndex()));
-
-    url.setQuery(urlQuery);
-    QNetworkRequest request(url);
-    auto reply = accessManager->get(request);
-    connect(reply, &QNetworkReply::finished, this, [=]{
+    CurseforgeAPI::searchMods(gameVersion, index, name, sort, [=](const QList<CurseforgeModInfo> &infoList){
         ui->searchButton->setText(tr("&Search"));
         ui->searchButton->setEnabled(true);
 
@@ -96,22 +75,9 @@ void CurseforgeModBrowser::getModList(QString name, int index)
             ui->modListWidget->clear();
         }
 
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
-
-        //parse json
-        QJsonParseError error;
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
-        if (error.error != QJsonParseError::NoError) {
-            qDebug("%s", error.errorString().toUtf8().constData());
-            return;
-        }
-        auto resultList = jsonDocument.toVariant().toList();
-
-        for(const auto &entry : qAsConst(resultList)){
-            auto curseforgeMod = CurseforgeMod::fromVariant(this, accessManager, entry);
+        //show them
+        for(const auto &info : qAsConst(infoList)){
+            auto curseforgeMod = new CurseforgeMod(this, accessManager, info);
             modList.append(curseforgeMod);
 
             auto *listItem = new QListWidgetItem();
@@ -119,14 +85,16 @@ void CurseforgeModBrowser::getModList(QString name, int index)
             auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, curseforgeMod);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
-            setItemHidden(listItem, curseforgeMod);
+            setItemHidden(listItem, curseforgeMod->getModInfo());
             if(!listItem->isHidden())
                 curseforgeMod->downloadThumbnail();
+
         }
+
     });
 }
 
-void CurseforgeModBrowser::setItemHidden(QListWidgetItem *item, const CurseforgeMod *mod)
+void CurseforgeModBrowser::setItemHidden(QListWidgetItem *item, const CurseforgeModInfo &modInfo)
 {
     int index = ui->loaderSelect->currentIndex();
     switch (index) {
@@ -136,15 +104,15 @@ void CurseforgeModBrowser::setItemHidden(QListWidgetItem *item, const Curseforge
         break;
     //fabric
     case 1:
-        item->setHidden(!mod->isFabricMod());
+        item->setHidden(!modInfo.isFabricMod());
         break;
     //forge
     case 2:
-        item->setHidden(!mod->isForgeMod());
+        item->setHidden(!modInfo.isForgeMod());
         break;
     //rift
     case 3:
-        item->setHidden(!mod->isRiftMod());
+        item->setHidden(!modInfo.isRiftMod());
         break;
     }
 }
@@ -175,8 +143,8 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
         auto item = ui->modListWidget->item(i);
         auto b = item->isHidden();
         auto mod = modList.at(i);
-        setItemHidden(item, mod);
-        if(b && !item->isHidden() && mod->getThumbnailBytes().isEmpty())
+        setItemHidden(item, mod->getModInfo());
+        if(b && !item->isHidden() && mod->getModInfo().getThumbnailBytes().isEmpty())
             mod->downloadThumbnail();
     }
 }

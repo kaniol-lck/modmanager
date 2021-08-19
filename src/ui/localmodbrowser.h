@@ -5,7 +5,7 @@
 #include <QDir>
 
 #include "moddirinfo.h"
-#include "localmodinfo.h"
+#include "local/localmodinfo.h"
 
 class QNetworkAccessManager;
 

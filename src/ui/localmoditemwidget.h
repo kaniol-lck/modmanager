@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "localmodinfo.h"
+#include "local/localmodinfo.h"
 
 class QNetworkAccessManager;
 class CurseforgeMod;

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QList>
+#include "curseforge/curseforgemodinfo.h"
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -45,7 +46,7 @@ private:
 
     void getModList(QString name, int index = 0);
 
-    void setItemHidden(QListWidgetItem *item, const CurseforgeMod *mod);
+    void setItemHidden(QListWidgetItem *item, const CurseforgeModInfo &modInfo);
 
 };
 

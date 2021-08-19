@@ -5,8 +5,9 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 
-#include "localmodinfo.h"
-#include "curseforgemod.h"
+#include "local/localmodinfo.h"
+#include "curseforge/curseforgeapi.h"
+#include "curseforge/curseforgemod.h"
 #include "curseforgemodinfodialog.h"
 #include "util/tutil.hpp"
 
@@ -35,26 +36,12 @@ LocalModItemWidget::~LocalModItemWidget()
 
 void LocalModItemWidget::searchOnCurseforge()
 {
-    auto accessManager = new QNetworkAccessManager(this);
-    QNetworkRequest request(QUrl("https://addons-ecs.forgesvc.net/api/v2/fingerprint"));
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    auto reply = accessManager->post(request, QString("[ %1 ]").arg(localModInfo.getMurmurhash()).toUtf8());
-    connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) return ;
-
-        QJsonParseError error;
-        auto json = QJsonDocument::fromJson(reply->readAll(), &error);
-        if(error.error != QJsonParseError::NoError) return;
-
-        auto exactMatchList = value(json.toVariant(), "exactMatches").toList();
-
-        if(exactMatchList.isEmpty()) return;
-        auto result = exactMatchList.at(0);
-        curseforgeMod = CurseforgeMod::fromVariant(this, accessManager, result);
-        ui->curseforgeButton->setEnabled(true);
-        emit curseforgeModGot();
-        reply->deleteLater();
+    CurseforgeAPI::getIdByFingerprint(localModInfo.getMurmurhash(), [=](int id){
+        CurseforgeAPI::getInfo(id, [=](const CurseforgeModInfo &modInfo){
+            ui->curseforgeButton->setEnabled(true);
+            curseforgeMod = new CurseforgeMod(this, accessManager, modInfo);
+            emit curseforgeModGot();
+        });
     });
 }
 

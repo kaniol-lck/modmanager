@@ -21,7 +21,6 @@ public:
 
 private slots:
     void updateThumbnail();
-    void updateDescription(QNetworkReply *reply);
 
 private:
     Ui::CurseforgeModInfoDialog *ui;

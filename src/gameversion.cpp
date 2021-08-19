@@ -12,6 +12,8 @@
 
 QStringList GameVersion::versionList;
 
+GameVersion GameVersion::ANY = GameVersion("");
+
 GameVersion::GameVersion(const QString string) :
     versionString(string)
 {
@@ -26,6 +28,16 @@ const QString &GameVersion::getVersionString() const
 GameVersion::operator QString() const
 {
     return versionString;
+}
+
+bool GameVersion::operator==(GameVersion &another) const
+{
+    return versionString == another.versionString;
+}
+
+bool GameVersion::operator!=(GameVersion &another) const
+{
+    return versionString != another.versionString;
 }
 
 std::optional<GameVersion> GameVersion::deduceFromString(const QString &string)

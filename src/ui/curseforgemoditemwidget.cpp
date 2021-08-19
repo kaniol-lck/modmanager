@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-#include "curseforgemod.h"
+#include "curseforge/curseforgemod.h"
 #include "util/downloader.h"
 #include "util/funcutil.h"
 
@@ -16,11 +16,11 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     ui->downloadProgress->setVisible(false);
     connect(curseforgeMod, &CurseforgeMod::thumbnailReady, this, &CurseforgeModItemWidget::updateThumbnail);
 
-    ui->modName->setText(mod->getName());
-    ui->modSummary->setText(mod->getSummary());
-    ui->modAuthors->setText(mod->getAuthors().join("</b>, <b>").prepend("by <b>").append("</b>"));
-    ui->downloadSpeedText->setText(numberConvert(curseforgeMod->getLatestFileLength(), "B") + "\n"
-                                   + numberConvert(mod->getDownloadCount(), "", 3, 1000) + tr(" Downloads"));
+    ui->modName->setText(mod->getModInfo().getName());
+    ui->modSummary->setText(mod->getModInfo().getSummary());
+    ui->modAuthors->setText(mod->getModInfo().getAuthors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    ui->downloadSpeedText->setText(numberConvert(curseforgeMod->getModInfo().getLatestFileLength(), "B") + "\n"
+                                   + numberConvert(mod->getModInfo().getDownloadCount(), "", 3, 1000) + tr(" Downloads"));
 
     //set timer
     speedTimer.setInterval(1000 / 4);
@@ -35,7 +35,7 @@ CurseforgeModItemWidget::~CurseforgeModItemWidget()
 void CurseforgeModItemWidget::updateThumbnail()
 {
     QPixmap pixelmap;
-    pixelmap.loadFromData(curseforgeMod->getThumbnailBytes());
+    pixelmap.loadFromData(curseforgeMod->getModInfo().getThumbnailBytes());
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
 }
 
@@ -58,16 +58,16 @@ void CurseforgeModItemWidget::on_downloadButton_clicked()
 
     //download latest file by defsult
     //TODO: select file to download
-    downloader->download(curseforgeMod->getLatestFileUrl(), curseforgeMod->getLatestFileName());
-    ui->downloadProgress->setMaximum(curseforgeMod->getLatestFileLength());
+    downloader->download(curseforgeMod->getModInfo().getLatestFileUrl(), curseforgeMod->getModInfo().getLatestFileName());
+    ui->downloadProgress->setMaximum(curseforgeMod->getModInfo().getLatestFileLength());
 
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
-        ui->downloadProgress->setMaximum(curseforgeMod->getLatestFileLength());
+        ui->downloadProgress->setMaximum(curseforgeMod->getModInfo().getLatestFileLength());
     });
     connect(downloader, &Downloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(numberConvert(curseforgeMod->getLatestFileLength(), "B"));
+        ui->downloadSpeedText->setText(numberConvert(curseforgeMod->getModInfo().getLatestFileLength(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
         speedTimer.stop();
         lastDownloadBytes = 0;

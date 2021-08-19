@@ -8,48 +8,54 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+INCLUDEPATH += $$PWD/src
+
 SOURCES += \
-    src/curseforgemod.cpp \
-    src/curseforgemodbrowser.cpp \
-    src/curseforgemodinfodialog.cpp \
-    src/curseforgemoditemwidget.cpp \
+    src/curseforge/curseforgeapi.cpp \
+    src/curseforge/curseforgemod.cpp \
+    src/curseforge/curseforgemodinfo.cpp \
+    src/ui/curseforgemodbrowser.cpp \
+    src/ui/curseforgemodinfodialog.cpp \
+    src/ui/curseforgemoditemwidget.cpp \
     src/gameversion.cpp \
-    src/localmodbrowser.cpp \
-    src/localmodbrowsersettingsdialog.cpp \
-    src/localmodinfo.cpp \
-    src/localmoditemwidget.cpp \
+    src/ui/localmodbrowser.cpp \
+    src/ui/localmodbrowsersettingsdialog.cpp \
+    src/local/localmodinfo.cpp \
+    src/ui/localmoditemwidget.cpp \
     src/main.cpp \
     src/moddirinfo.cpp \
-    src/modmanager.cpp \
-    util/downloader.cpp \
-    util/downloaderthread.cpp \
-    util/funcutil.cpp
+    src/ui/modmanager.cpp \
+    src/util/downloader.cpp \
+    src/util/downloaderthread.cpp \
+    src/util/funcutil.cpp
 
 HEADERS += \
-    src/curseforgemod.h \
-    src/curseforgemodbrowser.h \
-    src/curseforgemodinfodialog.h \
-    src/curseforgemoditemwidget.h \
+    src/curseforge/curseforgeapi.h \
+    src/curseforge/curseforgemod.h \
+    src/curseforge/curseforgemodinfo.h \
+    src/ui/curseforgemodbrowser.h \
+    src/ui/curseforgemodinfodialog.h \
+    src/ui/curseforgemoditemwidget.h \
     src/gameversion.h \
-    src/localmodbrowser.h \
-    src/localmodbrowsersettingsdialog.h \
-    src/localmodinfo.h \
-    src/localmoditemwidget.h \
+    src/ui/localmodbrowser.h \
+    src/ui/localmodbrowsersettingsdialog.h \
+    src/local/localmodinfo.h \
+    src/ui/localmoditemwidget.h \
     src/moddirinfo.h \
-    src/modmanager.h \
-    util/downloader.h \
-    util/downloaderthread.h \
-    util/funcutil.h \
-    util/tutil.hpp
+    src/ui/modmanager.h \
+    src/util/downloader.h \
+    src/util/downloaderthread.h \
+    src/util/funcutil.h \
+    src/util/tutil.hpp
 
 FORMS += \
-    src/curseforgemodbrowser.ui \
-    src/curseforgemodinfodialog.ui \
-    src/curseforgemoditemwidget.ui \
-    src/localmodbrowser.ui \
-    src/localmodbrowsersettingsdialog.ui \
-    src/localmoditemwidget.ui \
-    src/modmanager.ui
+    src/ui/curseforgemodbrowser.ui \
+    src/ui/curseforgemodinfodialog.ui \
+    src/ui/curseforgemoditemwidget.ui \
+    src/ui/localmodbrowser.ui \
+    src/ui/localmodbrowsersettingsdialog.ui \
+    src/ui/localmoditemwidget.ui \
+    src/ui/modmanager.ui
 
 TRANSLATIONS += \
     languages/zh_CN.ts

@@ -1,4 +1,4 @@
-#include "modmanager.h"
+#include "ui/modmanager.h"
 
 #include <QApplication>
 #include <QLocale>
