@@ -43,6 +43,7 @@ private:
     QString currentName;
     int currentIndex;
     QNetworkAccessManager *accessManager;
+    bool isUiSet = false;
 
     void getModList(QString name, int index = 0);
 

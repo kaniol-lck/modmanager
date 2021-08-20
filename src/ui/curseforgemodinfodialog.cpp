@@ -6,6 +6,7 @@
 #include <QNetworkReply>
 
 #include "curseforge/curseforgemod.h"
+#include "ui/curseforgefileitemwidget.h"
 
 CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod *mod) :
     QDialog(parent),
@@ -21,30 +22,52 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
     ui->modUrl->setText(QString("<a href= \"%1\">%1</a>").arg(mod->getModInfo().getWebsiteUrl().toString()));
     ui->modAuthors->setText(mod->getModInfo().getAuthors().join(", ").prepend(tr("by ")));
 
-    if(!curseforgeMod->getModInfo().getThumbnailBytes().isEmpty()){
+    //update thumbnail
+    auto updateThumbnail = [=]{
+        QPixmap pixelmap;
+        pixelmap.loadFromData(curseforgeMod->getModInfo().getThumbnailBytes());
+        ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+    };
+
+    if(!curseforgeMod->getModInfo().getThumbnailBytes().isEmpty())
         updateThumbnail();
-    } else {
-        connect(curseforgeMod, &CurseforgeMod::thumbnailReady, this, &CurseforgeModInfoDialog::updateThumbnail);
+    else {
+        connect(curseforgeMod, &CurseforgeMod::thumbnailReady, this, updateThumbnail);
     }
 
-    if(!curseforgeMod->getModInfo().getDescription().isEmpty()){
+    //update description
+    auto updateDescription = [=]{
         ui->modDescription->setText(curseforgeMod->getModInfo().getDescription());
-    } else{
+    };
+
+    if(!curseforgeMod->getModInfo().getDescription().isEmpty())
+        updateDescription();
+    else{
         mod->getDescription();
-        connect(mod, &CurseforgeMod::descriptionReady,this, [=]{
-            ui->modDescription->setText(curseforgeMod->getModInfo().getDescription());
-        });
+        connect(mod, &CurseforgeMod::descriptionReady, this, updateDescription);
+    }
+
+    //update file list
+    auto updateFileList = [=]{
+        ui->fileListWidget->clear();
+        for(const auto &fileInfo : curseforgeMod->getModInfo().getAllFiles()){
+            auto *listItem = new QListWidgetItem();
+            listItem->setSizeHint(QSize(500, 90));
+            auto itemWidget = new CurseforgeFileItemWidget(this, fileInfo);
+            ui->fileListWidget->addItem(listItem);
+            ui->fileListWidget->setItemWidget(listItem, itemWidget);
+        }
+    };
+
+    if(!curseforgeMod->getModInfo().getAllFiles().isEmpty())
+        updateFileList();
+    else {
+        mod->getAllFileList();
+        connect(mod, &CurseforgeMod::allFileListReady, this, updateFileList);
     }
 }
 
 CurseforgeModInfoDialog::~CurseforgeModInfoDialog()
 {
     delete ui;
-}
-
-void CurseforgeModInfoDialog::updateThumbnail()
-{
-    QPixmap pixelmap;
-    pixelmap.loadFromData(curseforgeMod->getModInfo().getThumbnailBytes());
-    ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
 }

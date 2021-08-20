@@ -28,6 +28,8 @@ public:
 
     const QString &getFileName() const;
 
+    int getReleaseType() const;
+
 private:
     int id;
     QString displayName;
@@ -36,6 +38,7 @@ private:
     QList<GameVersion> gameVersions;
     QList<ModLoaderType::Type> modLoaders;
     int fileLength;
+    int releaseType;
 };
 
 #endif // CURSEFORGEMODFILEINFO_H

@@ -1,5 +1,7 @@
 #include "curseforgemodinfo.h"
 
+#include <QDebug>
+
 #include "util/tutil.hpp"
 
 CurseforgeModInfo::CurseforgeModInfo()
@@ -33,7 +35,7 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     //latest file url
     auto latestFileList = value(variant, "latestFiles").toList();
     for(const auto &variant : latestFileList)
-        curseforgeModInfo.fileInfoList.append(CurseforgeFileInfo::fromVariant(variant));
+        curseforgeModInfo.latestFiles.append(CurseforgeFileInfo::fromVariant(variant));
 
     return curseforgeModInfo;
 }
@@ -103,17 +105,23 @@ bool CurseforgeModInfo::isRiftMod() const
     return modLoaders.contains(ModLoaderType::Rift);
 }
 
-const QList<CurseforgeFileInfo> &CurseforgeModInfo::getFileInfoList() const
+const QList<CurseforgeFileInfo> &CurseforgeModInfo::getLatestFiles() const
 {
-    return fileInfoList;
+    return latestFiles;
 }
 
-std::optional<CurseforgeFileInfo> CurseforgeModInfo::getFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const
+std::optional<CurseforgeFileInfo> CurseforgeModInfo::getlatestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const
 {
-    for(auto info : fileInfoList){
-        if((version == GameVersion::ANY || info.getGameVersions().contains(version) || info.getGameVersions().isEmpty()) &&
-                (loaderType == ModLoaderType::Any || info.getModLoaders().contains(loaderType) || info.getModLoaders().isEmpty()))
-            return {info};
+    //latest last
+    for(auto iter = latestFiles.rbegin(); iter < latestFiles.rend(); iter++){
+        if((version == GameVersion::ANY || iter->getGameVersions().contains(version) || iter->getGameVersions().isEmpty()) &&
+                (loaderType == ModLoaderType::Any || iter->getModLoaders().contains(loaderType) || iter->getModLoaders().isEmpty()))
+            return {*iter};
     }
     return std::nullopt;
+}
+
+const QList<CurseforgeFileInfo> &CurseforgeModInfo::getAllFiles() const
+{
+    return allFiles;
 }

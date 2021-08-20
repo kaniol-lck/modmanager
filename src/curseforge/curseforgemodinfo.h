@@ -46,9 +46,11 @@ public:
 
     bool isRiftMod() const;
 
-    const QList<CurseforgeFileInfo> &getFileInfoList() const;
+    const QList<CurseforgeFileInfo> &getLatestFiles() const;
 
-    std::optional<CurseforgeFileInfo> getFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
+    std::optional<CurseforgeFileInfo> getlatestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
+
+    const QList<CurseforgeFileInfo> &getAllFiles() const;
 
 private:
     int id;
@@ -61,7 +63,8 @@ private:
     QString description;
     int downloadCount;
     QList<ModLoaderType::Type> modLoaders;
-    QList<CurseforgeFileInfo> fileInfoList;
+    QList<CurseforgeFileInfo> latestFiles;
+    QList<CurseforgeFileInfo> allFiles;
 };
 
 #endif // CURSEFORGEMODINFO_H

@@ -17,12 +17,14 @@ public:
 
     void downloadThumbnail();
     void getDescription();
+    void getAllFileList();
 
     const CurseforgeModInfo &getModInfo() const;
 
 signals:
     void thumbnailReady();
     void descriptionReady();
+    void allFileListReady();
 
 private:
     QNetworkAccessManager *accessManager;

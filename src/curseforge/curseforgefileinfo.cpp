@@ -18,6 +18,7 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
     curseforgeModFileInfo.fileName = value(variant, "fileName").toString();
     curseforgeModFileInfo.downloadUrl = value(variant, "downloadUrl").toUrl();
     curseforgeModFileInfo.fileLength = value(variant, "fileLength").toInt();
+    curseforgeModFileInfo.releaseType = value(variant, "releaseType").toInt();
 
     //I don't know why curseforge put game verison and modloader together
     auto versionList = value(variant, "gameVersion").toStringList();
@@ -70,4 +71,9 @@ int CurseforgeFileInfo::getFileLength() const
 const QString &CurseforgeFileInfo::getFileName() const
 {
     return fileName;
+}
+
+int CurseforgeFileInfo::getReleaseType() const
+{
+    return releaseType;
 }

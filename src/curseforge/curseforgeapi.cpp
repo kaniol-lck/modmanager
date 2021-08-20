@@ -127,6 +127,38 @@ void CurseforgeAPI::getDescription(int id, std::function<void (QString)> callbac
     });
 }
 
+void CurseforgeAPI::getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback)
+{
+    QUrl url = BASE_URL + "/api/v2/addon/" + QString::number(id) + "/files";
+
+    QNetworkRequest request(url);
+    auto reply = api()->accessManager.get(request);
+    connect(reply, &QNetworkReply::finished, api(), [=]{
+        if(reply->error() != QNetworkReply::NoError) {
+            qDebug() << reply->errorString();
+            return;
+        }
+
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return;
+        }
+        auto resultList = jsonDocument.toVariant().toList();
+        QList<CurseforgeFileInfo> fileInfoList;
+
+        for(const auto &result : qAsConst(resultList)){
+            auto curseforgeModInfo = CurseforgeFileInfo::fromVariant(result);
+            fileInfoList.append(curseforgeModInfo);
+        }
+
+        callback(fileInfoList);
+        reply->deleteLater();
+    });
+}
+
 void CurseforgeAPI::getInfo(int id, std::function<void (CurseforgeModInfo)> callback)
 {
     QUrl url = BASE_URL + "/api/v2/addon/" + QString::number(id);

@@ -19,9 +19,6 @@ public:
     explicit CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod *mod);
     ~CurseforgeModInfoDialog();
 
-private slots:
-    void updateThumbnail();
-
 private:
     Ui::CurseforgeModInfoDialog *ui;
     CurseforgeMod *curseforgeMod;

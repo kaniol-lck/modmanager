@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
-    <height>410</height>
+    <width>622</width>
+    <height>624</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -117,10 +117,34 @@
     </widget>
    </item>
    <item row="4" column="0" colspan="3">
-    <widget class="QTextBrowser" name="modDescription">
-     <property name="openExternalLinks">
-      <bool>true</bool>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
+     <widget class="QWidget" name="descriptionTab">
+      <attribute name="title">
+       <string>Description</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QTextBrowser" name="modDescription">
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="filesTab">
+      <attribute name="title">
+       <string>Files</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QListWidget" name="fileListWidget"/>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>

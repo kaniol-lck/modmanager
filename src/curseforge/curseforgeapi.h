@@ -22,7 +22,7 @@ public:
     static void getChangelog(int id, int FileID, std::function<void(QString)> callback);
     static void getDownloadUrl(int id, int FileID, std::function<void(QString)> callback);
 //    static void getFileInfo(int id, int FileID, std::function<void(CurseforgeFileInfo)> callback);
-//    static void getFiles(int id, int FileID, std::function<void(QList<CurseforgeFileInfo>)> callback);
+    static void getFiles(int id, std::function<void(QList<CurseforgeFileInfo>)> callback);
     static void getInfo(int id, std::function<void (CurseforgeModInfo)> callback);
     static void getTimestamp(std::function<void(QString)> callback);
 

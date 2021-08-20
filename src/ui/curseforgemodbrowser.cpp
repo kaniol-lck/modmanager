@@ -23,7 +23,10 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     accessManager(new QNetworkAccessManager(this))
 {
     ui->setupUi(this);
+
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
+
+    getModList(currentName);
 }
 
 CurseforgeModBrowser::~CurseforgeModBrowser()
@@ -33,10 +36,12 @@ CurseforgeModBrowser::~CurseforgeModBrowser()
 
 void CurseforgeModBrowser::updateVersions()
 {
+    isUiSet = false;
     ui->versionSelect->clear();
     ui->versionSelect->addItem(tr("Any"));
     for(const auto &version : qAsConst(GameVersion::versionList))
         ui->versionSelect->addItem(version);
+    isUiSet = true;
 }
 
 void CurseforgeModBrowser::on_searchButton_clicked()
@@ -85,7 +90,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
             listItem->setSizeHint(QSize(500, 100));
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::ANY;
             auto loaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
-            auto fileInfo = curseforgeMod->getModInfo().getFileInfo(version, loaderType);
+            auto fileInfo = curseforgeMod->getModInfo().getlatestFileInfo(version, loaderType);
             auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, curseforgeMod, fileInfo);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
@@ -117,13 +122,13 @@ void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &ind
 
 void CurseforgeModBrowser::on_versionSelect_currentIndexChanged(int)
 {
-    getModList(currentName);
+    if(isUiSet) getModList(currentName);
 }
 
 
 void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
 {
-    getModList(currentName);
+    if(isUiSet) getModList(currentName);
 }
 
 

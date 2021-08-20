@@ -38,6 +38,14 @@ void CurseforgeMod::getDescription()
     });
 }
 
+void CurseforgeMod::getAllFileList()
+{
+    CurseforgeAPI::getFiles(curseforgeModInfo.getId(), [=](const QList<CurseforgeFileInfo> &fileList){
+        curseforgeModInfo.allFiles = fileList;
+        emit allFileListReady();
+    });
+}
+
 const CurseforgeModInfo &CurseforgeMod::getModInfo() const
 {
     return curseforgeModInfo;
