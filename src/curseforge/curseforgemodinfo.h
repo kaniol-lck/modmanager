@@ -4,8 +4,10 @@
 #include <QVariant>
 #include <QUrl>
 #include <optional>
+#include <modloadertype.h>
 
 #include "curseforgefileinfo.h"
+#include "modloadertype.h"
 
 class CurseforgeMod;
 
@@ -36,7 +38,7 @@ public:
 
     int getDownloadCount() const;
 
-    const QStringList &getModLoaders() const;
+    const QList<ModLoaderType::Type> &getModLoaders() const;
 
     bool isFabricMod() const;
 
@@ -46,7 +48,7 @@ public:
 
     const QList<CurseforgeFileInfo> &getFileInfoList() const;
 
-    std::optional<CurseforgeFileInfo> getFileInfo(const GameVersion &version, const QString &modLoader) const;
+    std::optional<CurseforgeFileInfo> getFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
 
 private:
     int id;
@@ -58,7 +60,7 @@ private:
     QByteArray thumbnailBytes;
     QString description;
     int downloadCount;
-    QStringList modLoaders;
+    QList<ModLoaderType::Type> modLoaders;
     QList<CurseforgeFileInfo> fileInfoList;
 };
 

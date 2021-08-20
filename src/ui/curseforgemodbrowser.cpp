@@ -15,6 +15,7 @@
 #include "curseforgemoditemwidget.h"
 #include "curseforgemodinfodialog.h"
 #include "gameversion.h"
+#include "modloadertype.h"
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -83,7 +84,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 100));
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::ANY;
-            auto loaderType = ui->loaderSelect->currentIndex()? ui->loaderSelect->currentText() : "";
+            auto loaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
             auto fileInfo = curseforgeMod->getModInfo().getFileInfo(version, loaderType);
             auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, curseforgeMod, fileInfo);
             ui->modListWidget->addItem(listItem);
@@ -99,25 +100,11 @@ void CurseforgeModBrowser::getModList(QString name, int index)
 
 void CurseforgeModBrowser::setItemHidden(QListWidgetItem *item, const CurseforgeModInfo &modInfo)
 {
-    int index = ui->loaderSelect->currentIndex();
-    switch (index) {
-    //any
-    case 0:
+    auto selectedLoaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
+    if(selectedLoaderType == ModLoaderType::Any || modInfo.getModLoaders().contains(selectedLoaderType))
         item->setHidden(false);
-        break;
-    //fabric
-    case 1:
-        item->setHidden(!modInfo.isFabricMod());
-        break;
-    //forge
-    case 2:
-        item->setHidden(!modInfo.isForgeMod());
-        break;
-    //rift
-    case 3:
-        item->setHidden(!modInfo.isRiftMod());
-        break;
-    }
+    else
+        item->setHidden(true);
 }
 
 void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)

@@ -15,6 +15,7 @@ SOURCES += \
     src/curseforge/curseforgefileinfo.cpp \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodinfo.cpp \
+    src/modloadertype.cpp \
     src/ui/curseforgemodbrowser.cpp \
     src/ui/curseforgemodinfodialog.cpp \
     src/ui/curseforgemoditemwidget.cpp \
@@ -35,6 +36,7 @@ HEADERS += \
     src/curseforge/curseforgefileinfo.h \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodinfo.h \
+    src/modloadertype.h \
     src/ui/curseforgemodbrowser.h \
     src/ui/curseforgemodinfodialog.h \
     src/ui/curseforgemoditemwidget.h \

@@ -16,7 +16,9 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     curseforgeModInfo.summary = value(variant, "summary").toString();
     curseforgeModInfo.websiteUrl = value(variant, "websiteUrl").toUrl();
     curseforgeModInfo.downloadCount = value(variant, "downloadCount").toInt();
-    curseforgeModInfo.modLoaders = value(variant, "modLoaders").toStringList();
+
+    for(const auto &str : value(variant, "modLoaders").toStringList())
+        curseforgeModInfo.modLoaders << ModLoaderType::fromString(str);
 
     //authors
     auto authorsList = value(variant, "authors").toList();
@@ -81,24 +83,24 @@ int CurseforgeModInfo::getDownloadCount() const
     return downloadCount;
 }
 
-const QStringList &CurseforgeModInfo::getModLoaders() const
+const QList<ModLoaderType::Type> &CurseforgeModInfo::getModLoaders() const
 {
     return modLoaders;
 }
 
 bool CurseforgeModInfo::isFabricMod() const
 {
-    return modLoaders.contains("Fabric");
+    return modLoaders.contains(ModLoaderType::Fabric);
 }
 
 bool CurseforgeModInfo::isForgeMod() const
 {
-    return modLoaders.contains("Forge");
+    return modLoaders.contains(ModLoaderType::Forge);
 }
 
 bool CurseforgeModInfo::isRiftMod() const
 {
-    return modLoaders.contains("Rift");
+    return modLoaders.contains(ModLoaderType::Rift);
 }
 
 const QList<CurseforgeFileInfo> &CurseforgeModInfo::getFileInfoList() const
@@ -106,11 +108,11 @@ const QList<CurseforgeFileInfo> &CurseforgeModInfo::getFileInfoList() const
     return fileInfoList;
 }
 
-std::optional<CurseforgeFileInfo> CurseforgeModInfo::getFileInfo(const GameVersion &version, const QString &modLoader) const
+std::optional<CurseforgeFileInfo> CurseforgeModInfo::getFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const
 {
     for(auto info : fileInfoList){
         if((version == GameVersion::ANY || info.getGameVersions().contains(version) || info.getGameVersions().isEmpty()) &&
-                (modLoader == "Any" || info.getModLoaders().contains(modLoader) || info.getModLoaders().empty()))
+                (loaderType == ModLoaderType::Any || info.getModLoaders().contains(loaderType) || info.getModLoaders().isEmpty()))
             return {info};
     }
     return std::nullopt;

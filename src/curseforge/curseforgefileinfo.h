@@ -5,6 +5,7 @@
 #include <QUrl>
 
 #include "gameversion.h"
+#include "modloadertype.h"
 
 class CurseforgeFileInfo
 {
@@ -21,7 +22,7 @@ public:
 
     const QList<GameVersion> &getGameVersions() const;
 
-    const QStringList &getModLoaders() const;
+    const QList<ModLoaderType::Type> &getModLoaders() const;
 
     int getFileLength() const;
 
@@ -33,7 +34,7 @@ private:
     QString fileName;
     QUrl downloadUrl;
     QList<GameVersion> gameVersions;
-    QStringList modLoaders;
+    QList<ModLoaderType::Type> modLoaders;
     int fileLength;
 };
 
