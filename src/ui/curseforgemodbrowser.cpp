@@ -63,6 +63,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
     if(!index) currentIndex = 0;
     ui->searchButton->setText(tr("Searching..."));
     ui->searchButton->setEnabled(false);
+    setCursor(Qt::BusyCursor);
 
     GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::ANY;
     auto sort = ui->sortSelect->currentIndex();
@@ -70,6 +71,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
     CurseforgeAPI::searchMods(gameVersion, index, name, sort, [=](const QList<CurseforgeModInfo> &infoList){
         ui->searchButton->setText(tr("&Search"));
         ui->searchButton->setEnabled(true);
+        setCursor(Qt::ArrowCursor);
 
         //new search
         if(currentIndex == 0){
@@ -82,6 +84,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
         }
 
         //show them
+        int shownCount = 0;
         for(const auto &info : qAsConst(infoList)){
             auto curseforgeMod = new CurseforgeMod(this, accessManager, info);
             modList.append(curseforgeMod);
@@ -94,22 +97,20 @@ void CurseforgeModBrowser::getModList(QString name, int index)
             auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, curseforgeMod, fileInfo);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
-            setItemHidden(listItem, curseforgeMod->getModInfo());
-            if(!listItem->isHidden())
+            auto selectedLoaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
+            auto isShown = selectedLoaderType == ModLoaderType::Any || info.getModLoaders().contains(selectedLoaderType);
+            listItem->setHidden(!isShown);
+            if(isShown){
+                shownCount++;
                 curseforgeMod->downloadThumbnail();
-
+            }
+        }
+        if(shownCount != infoList.count() && shownCount == 0){
+            currentIndex += 20;
+            getModList(currentName, currentIndex);
         }
 
     });
-}
-
-void CurseforgeModBrowser::setItemHidden(QListWidgetItem *item, const CurseforgeModInfo &modInfo)
-{
-    auto selectedLoaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
-    if(selectedLoaderType == ModLoaderType::Any || modInfo.getModLoaders().contains(selectedLoaderType))
-        item->setHidden(false);
-    else
-        item->setHidden(true);
 }
 
 void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
@@ -136,10 +137,12 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
 {
     for(int i = 0; i < ui->modListWidget->count(); i++){
         auto item = ui->modListWidget->item(i);
-        auto b = item->isHidden();
+        auto isHidden = item->isHidden();
         auto mod = modList.at(i);
-        setItemHidden(item, mod->getModInfo());
-        if(b && !item->isHidden() && mod->getModInfo().getThumbnailBytes().isEmpty())
+        auto selectedLoaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
+        auto isShown = selectedLoaderType == ModLoaderType::Any || mod->getModInfo().getModLoaders().contains(selectedLoaderType);
+        //hidden -> shown, while not have downloaded thumbnail yet
+        if(isHidden && isShown && mod->getModInfo().getThumbnailBytes().isEmpty())
             mod->downloadThumbnail();
     }
 }

@@ -47,8 +47,6 @@ private:
 
     void getModList(QString name, int index = 0);
 
-    void setItemHidden(QListWidgetItem *item, const CurseforgeModInfo &modInfo);
-
 };
 
 #endif // CURSEFORGEMODBROWSER_H

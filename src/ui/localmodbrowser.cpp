@@ -48,16 +48,16 @@ void LocalModBrowser::updateModList()
 
 void LocalModBrowser::on_modListWidget_currentRowChanged(int currentRow)
 {
-    LocalModInfo modInfo = modList.at(currentRow);
-    QStringList stringList;
-    stringList << "id: " + modInfo.getId();
-    stringList << "version: " + modInfo.getVersion();
-    stringList << "name: " + modInfo.getName();
-    stringList << "description: " + modInfo.getDescription();
-    stringList << "sha1: " + modInfo.getSha1();
-    stringList << "murmurhash: " + modInfo.getMurmurhash();
-    stringList << "file modfication time: " + modInfo.getFileModificationTime().toString(Qt::DateFormat::DefaultLocaleLongDate);
-    ui->modInfoText->setText(stringList.join("\n"));
+//    LocalModInfo modInfo = modList.at(currentRow);
+//    QStringList stringList;
+//    stringList << "id: " + modInfo.getId();
+//    stringList << "version: " + modInfo.getVersion();
+//    stringList << "name: " + modInfo.getName();
+//    stringList << "description: " + modInfo.getDescription();
+//    stringList << "sha1: " + modInfo.getSha1();
+//    stringList << "murmurhash: " + modInfo.getMurmurhash();
+//    stringList << "file modfication time: " + modInfo.getFileModificationTime().toString(Qt::DateFormat::DefaultLocaleLongDate);
+//    ui->modInfoText->setText(stringList.join("\n"));
 }
 
 void LocalModBrowser::setModDirInfo(const ModDirInfo &newModDirInfo)

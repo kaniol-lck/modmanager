@@ -27,22 +27,26 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
         QPixmap pixelmap;
         pixelmap.loadFromData(curseforgeMod->getModInfo().getThumbnailBytes());
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+        ui->modIcon->setCursor(Qt::ArrowCursor);
     };
 
     if(!curseforgeMod->getModInfo().getThumbnailBytes().isEmpty())
         updateThumbnail();
     else {
+        ui->modIcon->setCursor(Qt::BusyCursor);
         connect(curseforgeMod, &CurseforgeMod::thumbnailReady, this, updateThumbnail);
     }
 
     //update description
     auto updateDescription = [=]{
         ui->modDescription->setText(curseforgeMod->getModInfo().getDescription());
+        ui->modDescription->setCursor(Qt::ArrowCursor);
     };
 
     if(!curseforgeMod->getModInfo().getDescription().isEmpty())
         updateDescription();
     else{
+        ui->modDescription->setCursor(Qt::BusyCursor);
         mod->getDescription();
         connect(mod, &CurseforgeMod::descriptionReady, this, updateDescription);
     }
@@ -50,18 +54,23 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
     //update file list
     auto updateFileList = [=]{
         ui->fileListWidget->clear();
-        for(const auto &fileInfo : curseforgeMod->getModInfo().getAllFiles()){
+        auto files = curseforgeMod->getModInfo().getAllFiles();
+        //TODO: sort file list
+        for(auto iter = files.rbegin(); iter < files.rend(); iter++){
+            auto fileInfo = *iter;
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 90));
             auto itemWidget = new CurseforgeFileItemWidget(this, fileInfo);
             ui->fileListWidget->addItem(listItem);
             ui->fileListWidget->setItemWidget(listItem, itemWidget);
         }
+        ui->fileListWidget->setCursor(Qt::ArrowCursor);
     };
 
     if(!curseforgeMod->getModInfo().getAllFiles().isEmpty())
         updateFileList();
     else {
+        ui->fileListWidget->setCursor(Qt::BusyCursor);
         mod->getAllFileList();
         connect(mod, &CurseforgeMod::allFileListReady, this, updateFileList);
     }

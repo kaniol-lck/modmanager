@@ -98,7 +98,7 @@
         </size>
        </property>
        <property name="value">
-        <number>24</number>
+        <number>0</number>
        </property>
        <property name="textVisible">
         <bool>false</bool>
@@ -133,7 +133,7 @@
      <item>
       <widget class="QLabel" name="gameVersionText">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -146,12 +146,15 @@
        <property name="text">
         <string>1.16.5</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QLabel" name="loaderTypeText">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -163,6 +166,9 @@
        </property>
        <property name="text">
         <string>Fabric</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
