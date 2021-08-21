@@ -13,23 +13,28 @@ class CurseforgeMod : public QObject
 {
     Q_OBJECT
 public:
-    CurseforgeMod(QObject *parent, QNetworkAccessManager *manager, const CurseforgeModInfo &info);
+    CurseforgeMod(QObject *parent, const CurseforgeModInfo &info);
 
-    void downloadThumbnail();
-    void getDescription();
-    void getAllFileList();
+    void acquireBasicInfo();
+    void acquireThumbnail();
+    void acquireDescription();
+    void acquireAllFileList();
 
     const CurseforgeModInfo &getModInfo() const;
 
 signals:
+    void basicInfoReady();
     void thumbnailReady();
     void descriptionReady();
     void allFileListReady();
 
 private:
-    QNetworkAccessManager *accessManager;
-
     CurseforgeModInfo curseforgeModInfo;
+
+    bool gettingBasicInfo = false;
+    bool gettingThumbnail = false;
+    bool gettingDescription = false;
+    bool gettingAllFileList = false;
 
 };
 

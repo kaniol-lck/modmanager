@@ -5,7 +5,7 @@
 #include <QDir>
 
 #include "moddirinfo.h"
-#include "local/localmodinfo.h"
+#include "local/localmod.h"
 
 class QNetworkAccessManager;
 
@@ -32,10 +32,12 @@ public slots:
 private slots:
     void on_modListWidget_currentRowChanged(int currentRow);
 
+    void on_modListWidget_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::LocalModBrowser *ui;
     ModDirInfo modDirInfo;
-    QList<LocalModInfo> modList;
+    QList<LocalMod*> modList;
 
     QNetworkAccessManager *accessManager;
 };

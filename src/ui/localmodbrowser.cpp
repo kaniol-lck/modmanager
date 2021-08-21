@@ -6,6 +6,7 @@
 #include <QtConcurrent/QtConcurrent>
 
 #include "localmoditemwidget.h"
+#include "localmodinfodialog.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, QNetworkAccessManager *manager, const ModDirInfo &info) :
     QWidget(parent),
@@ -33,12 +34,13 @@ void LocalModBrowser::updateModList()
     for (const QFileInfo& entryInfo : modDirInfo.getModDir().entryInfoList(QDir::Files)) {
         LocalModInfo modInfo(entryInfo.absoluteFilePath());
         if(!modInfo.isFabricMod()) continue;
-        modList.append(modInfo);
+        auto localMod = new LocalMod(this, modInfo);
+        localMod->searchOnCurseforge();
+        modList << localMod;
 
         auto *listItem = new QListWidgetItem();
         listItem->setSizeHint(QSize(500, 100));
         auto modEntryWidget = new LocalModItemWidget(ui->modListWidget, accessManager, modInfo);
-        modEntryWidget->searchOnCurseforge();
 
         ui->modListWidget->addItem(listItem);
         ui->modListWidget->setItemWidget(listItem, modEntryWidget);
@@ -64,5 +66,13 @@ void LocalModBrowser::setModDirInfo(const ModDirInfo &newModDirInfo)
 {
     modDirInfo = newModDirInfo;
     emit modsDirUpdated();
+}
+
+
+void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
+{
+    auto mod = modList.at(index.row());
+    auto dialog = new LocalModInfoDialog(this, mod);
+    dialog->show();
 }
 

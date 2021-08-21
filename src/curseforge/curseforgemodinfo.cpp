@@ -4,15 +4,16 @@
 
 #include "util/tutil.hpp"
 
-CurseforgeModInfo::CurseforgeModInfo()
+CurseforgeModInfo::CurseforgeModInfo(int addonId) :
+    id(addonId)
 {
-
 }
 
 CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
 {
     CurseforgeModInfo curseforgeModInfo;
 
+    curseforgeModInfo.basicInfo = true;
     curseforgeModInfo.id = value(variant, "id").toInt();
     curseforgeModInfo.name = value(variant, "name").toString();
     curseforgeModInfo.summary = value(variant, "summary").toString();
@@ -124,4 +125,14 @@ std::optional<CurseforgeFileInfo> CurseforgeModInfo::getlatestFileInfo(const Gam
 const QList<CurseforgeFileInfo> &CurseforgeModInfo::getAllFiles() const
 {
     return allFiles;
+}
+
+void CurseforgeModInfo::setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles)
+{
+    latestFiles = newLatestFiles;
+}
+
+bool CurseforgeModInfo::hasBasicInfo() const
+{
+    return basicInfo;
 }

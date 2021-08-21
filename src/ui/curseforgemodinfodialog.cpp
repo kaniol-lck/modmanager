@@ -12,30 +12,41 @@
 CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod *mod) :
     QDialog(parent),
     ui(new Ui::CurseforgeModInfoDialog),
-    curseforgeMod(mod),
-    accessManager(new QNetworkAccessManager(this))
+    curseforgeMod(mod)
 {
     ui->setupUi(this);
-    setWindowTitle(mod->getModInfo().getName());
 
-    ui->modName->setText(mod->getModInfo().getName());
-    ui->modSummary->setText(mod->getModInfo().getSummary());
-    ui->modUrl->setText(QString("<a href= \"%1\">%1</a>").arg(mod->getModInfo().getWebsiteUrl().toString()));
-    ui->modAuthors->setText(mod->getModInfo().getAuthors().join(", ").prepend(tr("by ")));
+    //update basic info
+    auto updateBasicInfo = [=]{
+        setWindowTitle(mod->getModInfo().getName() + tr(" - Curseforge"));
+        ui->modName->setText(mod->getModInfo().getName());
+        ui->modSummary->setText(mod->getModInfo().getSummary());
+        ui->modUrl->setText(QString("<a href= \"%1\">%1</a>").arg(mod->getModInfo().getWebsiteUrl().toString()));
+        ui->modAuthors->setText(mod->getModInfo().getAuthors().join(", ").prepend(tr("by ")));
 
-    //update thumbnail
-    auto updateThumbnail = [=]{
-        QPixmap pixelmap;
-        pixelmap.loadFromData(curseforgeMod->getModInfo().getThumbnailBytes());
-        ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
-        ui->modIcon->setCursor(Qt::ArrowCursor);
+        //update thumbnail
+        //included by basic info
+        auto updateThumbnail = [=]{
+            QPixmap pixelmap;
+            pixelmap.loadFromData(curseforgeMod->getModInfo().getThumbnailBytes());
+            ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+            ui->modIcon->setCursor(Qt::ArrowCursor);
+        };
+
+        if(!curseforgeMod->getModInfo().getThumbnailBytes().isEmpty())
+            updateThumbnail();
+        else {
+            mod->acquireThumbnail();
+            ui->modIcon->setCursor(Qt::BusyCursor);
+            connect(curseforgeMod, &CurseforgeMod::thumbnailReady, this, updateThumbnail);
+        }
     };
 
-    if(!curseforgeMod->getModInfo().getThumbnailBytes().isEmpty())
-        updateThumbnail();
+    if(curseforgeMod->getModInfo().hasBasicInfo())
+        updateBasicInfo();
     else {
-        ui->modIcon->setCursor(Qt::BusyCursor);
-        connect(curseforgeMod, &CurseforgeMod::thumbnailReady, this, updateThumbnail);
+        mod->acquireBasicInfo();
+        connect(curseforgeMod, &CurseforgeMod::basicInfoReady, this, updateBasicInfo);
     }
 
     //update description
@@ -48,7 +59,7 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
         updateDescription();
     else{
         ui->modDescription->setCursor(Qt::BusyCursor);
-        mod->getDescription();
+        mod->acquireDescription();
         connect(mod, &CurseforgeMod::descriptionReady, this, updateDescription);
     }
 
@@ -56,7 +67,6 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
     auto updateFileList = [=]{
         ui->fileListWidget->clear();
         auto files = curseforgeMod->getModInfo().getAllFiles();
-        //TODO: sort file list
         for(const auto &fileInfo : files){
             auto *listItem = new DateTimeSortItem();
             listItem->setData(DateTimeSortItem::Role, fileInfo.getFileDate());
@@ -73,7 +83,7 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
         updateFileList();
     else {
         ui->fileListWidget->setCursor(Qt::BusyCursor);
-        mod->getAllFileList();
+        mod->acquireAllFileList();
         connect(mod, &CurseforgeMod::allFileListReady, this, updateFileList);
     }
 }

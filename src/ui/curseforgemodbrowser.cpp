@@ -86,7 +86,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
         //show them
         int shownCount = 0;
         for(const auto &info : qAsConst(infoList)){
-            auto curseforgeMod = new CurseforgeMod(this, accessManager, info);
+            auto curseforgeMod = new CurseforgeMod(this, info);
             modList.append(curseforgeMod);
 
             auto *listItem = new QListWidgetItem();
@@ -102,7 +102,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
             listItem->setHidden(!isShown);
             if(isShown){
                 shownCount++;
-                curseforgeMod->downloadThumbnail();
+                curseforgeMod->acquireThumbnail();
             }
         }
         if(shownCount != infoList.count() && shownCount == 0){
@@ -143,7 +143,7 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
         auto isShown = selectedLoaderType == ModLoaderType::Any || mod->getModInfo().getModLoaders().contains(selectedLoaderType);
         //hidden -> shown, while not have downloaded thumbnail yet
         if(isHidden && isShown && mod->getModInfo().getThumbnailBytes().isEmpty())
-            mod->downloadThumbnail();
+            mod->acquireThumbnail();
     }
 }
 

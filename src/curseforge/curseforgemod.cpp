@@ -7,21 +7,35 @@
 #include "curseforge/curseforgeapi.h"
 #include "util/tutil.hpp"
 #include "util/downloader.h"
+#include "util/funcutil.h"
 
-CurseforgeMod::CurseforgeMod(QObject *parent, QNetworkAccessManager *manager, const CurseforgeModInfo &modInfo) :
+CurseforgeMod::CurseforgeMod(QObject *parent, const CurseforgeModInfo &modInfo) :
     QObject(parent),
-    accessManager(manager),
     curseforgeModInfo(modInfo)
 {
 }
 
-void CurseforgeMod::downloadThumbnail()
+void CurseforgeMod::acquireBasicInfo()
 {
-    if(curseforgeModInfo.thumbnailUrl.isEmpty()) return;
+    if(gettingBasicInfo) return;
+    gettingBasicInfo = true;
+    CurseforgeAPI::getInfo(curseforgeModInfo.id, [=](const auto &info){
+        gettingBasicInfo = false;
+        curseforgeModInfo = info;
+        emit basicInfoReady();
+        curseforgeModInfo.basicInfo = true;
+    });
+}
 
+void CurseforgeMod::acquireThumbnail()
+{
+    if(curseforgeModInfo.thumbnailUrl.isEmpty() || gettingThumbnail) return;
+    gettingThumbnail = true;
     QNetworkRequest request(curseforgeModInfo.thumbnailUrl);
-    auto reply = accessManager->get(request);
+    qDebug() << curseforgeModInfo.thumbnailUrl;
+    auto reply = accessManager()->get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
+        gettingThumbnail = false;
         if(reply->error() != QNetworkReply::NoError) return;
         curseforgeModInfo.thumbnailBytes = reply->readAll();
         if(!curseforgeModInfo.thumbnailBytes.isEmpty())
@@ -30,17 +44,23 @@ void CurseforgeMod::downloadThumbnail()
     });
 }
 
-void CurseforgeMod::getDescription()
+void CurseforgeMod::acquireDescription()
 {
+    if(gettingDescription) return;
+    gettingDescription = true;
     CurseforgeAPI::getDescription(curseforgeModInfo.getId(), [=](const QString &description){
+        gettingDescription = false;
         curseforgeModInfo.description = description;
         emit descriptionReady();
     });
 }
 
-void CurseforgeMod::getAllFileList()
+void CurseforgeMod::acquireAllFileList()
 {
+    if(gettingAllFileList) return;
+    gettingAllFileList = true;
     CurseforgeAPI::getFiles(curseforgeModInfo.getId(), [=](const QList<CurseforgeFileInfo> &fileList){
+        gettingAllFileList = false;
         curseforgeModInfo.allFiles = fileList;
         emit allFileListReady();
     });

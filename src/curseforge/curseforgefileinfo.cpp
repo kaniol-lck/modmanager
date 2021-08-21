@@ -4,11 +4,6 @@
 
 #include "util/tutil.hpp"
 
-CurseforgeFileInfo::CurseforgeFileInfo()
-{
-
-}
-
 CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
 {
     CurseforgeFileInfo curseforgeFileInfo;

@@ -11,7 +11,7 @@
 class CurseforgeFileInfo
 {
 public:
-    CurseforgeFileInfo();
+    CurseforgeFileInfo() = default;
 
     static CurseforgeFileInfo fromVariant(const QVariant &variant);
 

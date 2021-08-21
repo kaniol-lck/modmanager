@@ -15,6 +15,7 @@ SOURCES += \
     src/curseforge/curseforgefileinfo.cpp \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodinfo.cpp \
+    src/local/localmod.cpp \
     src/modloadertype.cpp \
     src/ui/curseforgefileitemwidget.cpp \
     src/ui/curseforgemodbrowser.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
     src/ui/localmodbrowser.cpp \
     src/ui/localmodbrowsersettingsdialog.cpp \
     src/local/localmodinfo.cpp \
+    src/ui/localmodinfodialog.cpp \
     src/ui/localmoditemwidget.cpp \
     src/main.cpp \
     src/moddirinfo.cpp \
@@ -38,6 +40,7 @@ HEADERS += \
     src/curseforge/curseforgefileinfo.h \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodinfo.h \
+    src/local/localmod.h \
     src/modloadertype.h \
     src/ui/curseforgefileitemwidget.h \
     src/ui/curseforgemodbrowser.h \
@@ -47,6 +50,7 @@ HEADERS += \
     src/ui/localmodbrowser.h \
     src/ui/localmodbrowsersettingsdialog.h \
     src/local/localmodinfo.h \
+    src/ui/localmodinfodialog.h \
     src/ui/localmoditemwidget.h \
     src/moddirinfo.h \
     src/ui/modmanager.h \
@@ -63,6 +67,7 @@ FORMS += \
     src/ui/curseforgemoditemwidget.ui \
     src/ui/localmodbrowser.ui \
     src/ui/localmodbrowsersettingsdialog.ui \
+    src/ui/localmodinfodialog.ui \
     src/ui/localmoditemwidget.ui \
     src/ui/modmanager.ui
 

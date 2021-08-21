@@ -16,7 +16,8 @@ class CurseforgeModInfo
 {
     friend class CurseforgeMod;
 public:
-    CurseforgeModInfo();
+    CurseforgeModInfo() = default;
+    explicit CurseforgeModInfo(int addonId);
 
     static CurseforgeModInfo fromVariant(const QVariant &variant);
 
@@ -52,6 +53,10 @@ public:
 
     const QList<CurseforgeFileInfo> &getAllFiles() const;
 
+    void setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles);
+
+    bool hasBasicInfo() const;
+
 private:
     int id;
     QString name;
@@ -65,6 +70,8 @@ private:
     QList<ModLoaderType::Type> modLoaders;
     QList<CurseforgeFileInfo> latestFiles;
     QList<CurseforgeFileInfo> allFiles;
+
+    bool basicInfo = false;
 };
 
 #endif // CURSEFORGEMODINFO_H
