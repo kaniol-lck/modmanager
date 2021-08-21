@@ -30,7 +30,8 @@ SOURCES += \
     src/ui/modmanager.cpp \
     src/util/downloader.cpp \
     src/util/downloaderthread.cpp \
-    src/util/funcutil.cpp
+    src/util/funcutil.cpp \
+    src/util/datetimesortitem.cpp
 
 HEADERS += \
     src/curseforge/curseforgeapi.h \
@@ -52,7 +53,8 @@ HEADERS += \
     src/util/downloader.h \
     src/util/downloaderthread.h \
     src/util/funcutil.h \
-    src/util/tutil.hpp
+    src/util/tutil.hpp \
+    src/util/datetimesortitem.h
 
 FORMS += \
     src/ui/curseforgefileitemwidget.ui \

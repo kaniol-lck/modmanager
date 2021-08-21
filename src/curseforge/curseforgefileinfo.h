@@ -3,6 +3,7 @@
 
 #include <QVariant>
 #include <QUrl>
+#include <QDateTime>
 
 #include "gameversion.h"
 #include "modloadertype.h"
@@ -30,6 +31,8 @@ public:
 
     int getReleaseType() const;
 
+    const QDateTime &getFileDate() const;
+
 private:
     int id;
     QString displayName;
@@ -39,6 +42,7 @@ private:
     QList<ModLoaderType::Type> modLoaders;
     int fileLength;
     int releaseType;
+    QDateTime fileDate;
 };
 
 #endif // CURSEFORGEMODFILEINFO_H

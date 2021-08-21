@@ -11,31 +11,32 @@ CurseforgeFileInfo::CurseforgeFileInfo()
 
 CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
 {
-    CurseforgeFileInfo curseforgeModFileInfo;
+    CurseforgeFileInfo curseforgeFileInfo;
 
-    curseforgeModFileInfo.id = value(variant, "id").toInt();
-    curseforgeModFileInfo.displayName = value(variant, "displayName").toString();
-    curseforgeModFileInfo.fileName = value(variant, "fileName").toString();
-    curseforgeModFileInfo.downloadUrl = value(variant, "downloadUrl").toUrl();
-    curseforgeModFileInfo.fileLength = value(variant, "fileLength").toInt();
-    curseforgeModFileInfo.releaseType = value(variant, "releaseType").toInt();
+    curseforgeFileInfo.id = value(variant, "id").toInt();
+    curseforgeFileInfo.displayName = value(variant, "displayName").toString();
+    curseforgeFileInfo.fileName = value(variant, "fileName").toString();
+    curseforgeFileInfo.downloadUrl = value(variant, "downloadUrl").toUrl();
+    curseforgeFileInfo.fileLength = value(variant, "fileLength").toInt();
+    curseforgeFileInfo.releaseType = value(variant, "releaseType").toInt();
+    curseforgeFileInfo.fileDate = value(variant, "fileDate").toDateTime();
 
     //I don't know why curseforge put game verison and modloader together
     auto versionList = value(variant, "gameVersion").toStringList();
     for(const auto &version : versionList){
         auto v = GameVersion::deduceFromString(version);
         if(v.has_value()){
-            curseforgeModFileInfo.gameVersions << v.value();
+            curseforgeFileInfo.gameVersions << v.value();
             continue;
         }
         auto loaderType = ModLoaderType::fromString(version);
         if(loaderType != ModLoaderType::Any){
-            curseforgeModFileInfo.modLoaders << loaderType;
+            curseforgeFileInfo.modLoaders << loaderType;
             continue;
         }
     }
 
-    return curseforgeModFileInfo;
+    return curseforgeFileInfo;
 }
 
 int CurseforgeFileInfo::getId() const
@@ -76,4 +77,9 @@ const QString &CurseforgeFileInfo::getFileName() const
 int CurseforgeFileInfo::getReleaseType() const
 {
     return releaseType;
+}
+
+const QDateTime &CurseforgeFileInfo::getFileDate() const
+{
+    return fileDate;
 }

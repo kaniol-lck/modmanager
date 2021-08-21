@@ -2,6 +2,8 @@
 #define CURSEFORGEMODINFODIALOG_H
 
 #include <QDialog>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 
 class QNetworkAccessManager;
 class CurseforgeMod;
@@ -23,6 +25,8 @@ private:
     Ui::CurseforgeModInfoDialog *ui;
     CurseforgeMod *curseforgeMod;
     QNetworkAccessManager *accessManager;
+    QStandardItemModel model;
+    QSortFilterProxyModel proxyModel;
 };
 
 #endif // CURSEFORGEMODINFODIALOG_H

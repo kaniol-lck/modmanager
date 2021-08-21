@@ -7,6 +7,7 @@
 
 #include "curseforge/curseforgemod.h"
 #include "ui/curseforgefileitemwidget.h"
+#include "util/datetimesortitem.h"
 
 CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod *mod) :
     QDialog(parent),
@@ -56,14 +57,15 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
         ui->fileListWidget->clear();
         auto files = curseforgeMod->getModInfo().getAllFiles();
         //TODO: sort file list
-        for(auto iter = files.rbegin(); iter < files.rend(); iter++){
-            auto fileInfo = *iter;
-            auto *listItem = new QListWidgetItem();
+        for(const auto &fileInfo : files){
+            auto *listItem = new DateTimeSortItem();
+            listItem->setData(DateTimeSortItem::Role, fileInfo.getFileDate());
             listItem->setSizeHint(QSize(500, 90));
             auto itemWidget = new CurseforgeFileItemWidget(this, fileInfo);
             ui->fileListWidget->addItem(listItem);
             ui->fileListWidget->setItemWidget(listItem, itemWidget);
         }
+        ui->fileListWidget->sortItems(Qt::DescendingOrder);
         ui->fileListWidget->setCursor(Qt::ArrowCursor);
     };
 
