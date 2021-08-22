@@ -30,8 +30,8 @@ ModManager::ModManager(QWidget *parent) :
         widget->deleteLater();
     }
 
-    ModDirInfo modDirInfo(QDir("/run/media/kaniol/SanDisk/Minecraft/1.17.1/.minecraft/mods/"), GameVersion("1.17.1"), "Fabric");
-    ModDirInfo modDirInfo2(QDir("/run/media/kaniol/SanDisk/Minecraft/1.16.5/.minecraft/mods/"), GameVersion("1.16.5"), "Fabric");
+    ModDirInfo modDirInfo(QDir("/run/media/kaniol/SanDisk/Minecraft/1.17.1/.minecraft/mods/"), GameVersion("1.17.1"), ModLoaderType::Fabric);
+    ModDirInfo modDirInfo2(QDir("/run/media/kaniol/SanDisk/Minecraft/1.16.5/.minecraft/mods/"), GameVersion("1.16.5"), ModLoaderType::Fabric);
 
     modDirList.append(modDirInfo);
     modDirList.append(modDirInfo2);

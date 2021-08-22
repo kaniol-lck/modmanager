@@ -22,7 +22,7 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
 
     //update curseforge
     auto updateCurseforge = [=]{
-            ui->curseforgeButton->setEnabled(true);
+        ui->curseforgeButton->setEnabled(true);
     };
 
     if(mod->getCurseforgeMod() != nullptr)

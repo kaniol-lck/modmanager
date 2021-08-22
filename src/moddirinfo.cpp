@@ -1,6 +1,6 @@
 #include "moddirinfo.h"
 
-ModDirInfo::ModDirInfo(const QDir &dir, const GameVersion &version, const QString &type) :
+ModDirInfo::ModDirInfo(const QDir &dir, const GameVersion &version, ModLoaderType::Type type) :
     modDir(dir),
     gameVersion(version),
     loaderType(type)
@@ -23,7 +23,7 @@ const GameVersion &ModDirInfo::getGameVersion() const
     return gameVersion;
 }
 
-const QString &ModDirInfo::getLoaderType() const
+ModLoaderType::Type ModDirInfo::getLoaderType() const
 {
     return loaderType;
 }

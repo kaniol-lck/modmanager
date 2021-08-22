@@ -80,7 +80,7 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
     });
 }
 
-void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function<void (int, QList<CurseforgeFileInfo>)> callback)
+void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback)
 {
     QUrl url = BASE_URL + "/api/v2/fingerprint";
 
@@ -104,12 +104,13 @@ void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function
         if(exactMatchList.isEmpty()) return;
 
         int id = value(exactMatchList.at(0), "id").toInt();
+        auto file = CurseforgeFileInfo::fromVariant(value(exactMatchList.at(0), "file"));
         auto latestFileList = value(exactMatchList.at(0), "latestFiles").toList();
         QList<CurseforgeFileInfo> fileList;
         for (const auto &variant : latestFileList)
             fileList << CurseforgeFileInfo::fromVariant(variant);
 
-        callback(id, fileList);
+        callback(id, file, fileList);
         reply->deleteLater();
     });
 }

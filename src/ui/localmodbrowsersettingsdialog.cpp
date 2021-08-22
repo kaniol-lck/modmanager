@@ -19,7 +19,7 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, co
 {
     ui->modsDirText->setText(info.getModDir().absolutePath());
     ui->versionSelect->setCurrentText(info.getGameVersion());
-    ui->loaderSelect->setCurrentText(info.getLoaderType());
+    ui->loaderSelect->setCurrentIndex(info.getLoaderType());
 }
 
 LocalModBrowserSettingsDialog::~LocalModBrowserSettingsDialog()
@@ -70,6 +70,6 @@ void LocalModBrowserSettingsDialog::on_buttonBox_accepted()
     emit settingsUpdated(ModDirInfo(
                              QDir(ui->modsDirText->text()),
                              ui->versionSelect->currentText(),
-                             ui->loaderSelect->currentText()));
+                             ModLoaderType::fromIndex(ui->loaderSelect->currentIndex())));
 }
 

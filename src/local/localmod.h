@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include "localmodinfo.h"
+#include "curseforge/curseforgefileinfo.h"
 
 class CurseforgeMod;
 
@@ -20,12 +21,16 @@ public:
 
     void searchOnCurseforge();
 
+    void findUpdate(const GameVersion &version, ModLoaderType::Type loaderType);
+
 signals:
     void curseforgeReady();
+    void needUpdate(CurseforgeFileInfo fileInfo);
 
 private:
     LocalModInfo localModInfo;
     CurseforgeMod *curseforgeMod = nullptr;
+    CurseforgeFileInfo currentCurseforgeFileInfo;
 
 };
 

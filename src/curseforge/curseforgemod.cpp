@@ -32,7 +32,6 @@ void CurseforgeMod::acquireThumbnail()
     if(curseforgeModInfo.thumbnailUrl.isEmpty() || gettingThumbnail) return;
     gettingThumbnail = true;
     QNetworkRequest request(curseforgeModInfo.thumbnailUrl);
-    qDebug() << curseforgeModInfo.thumbnailUrl;
     auto reply = accessManager()->get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
         gettingThumbnail = false;

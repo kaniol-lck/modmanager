@@ -36,6 +36,9 @@ void LocalModBrowser::updateModList()
         if(!modInfo.isFabricMod()) continue;
         auto localMod = new LocalMod(this, modInfo);
         localMod->searchOnCurseforge();
+        connect(localMod, &LocalMod::curseforgeReady, this, [=]{
+            localMod->findUpdate(modDirInfo.getGameVersion(), modDirInfo.getLoaderType());
+        });
         modList << localMod;
 
         auto *listItem = new QListWidgetItem();
