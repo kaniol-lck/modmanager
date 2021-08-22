@@ -2,6 +2,7 @@
 #define LOCALMOD_H
 
 #include <QObject>
+#include <optional>
 
 #include "localmodinfo.h"
 #include "curseforge/curseforgefileinfo.h"
@@ -23,14 +24,19 @@ public:
 
     void findUpdate(const GameVersion &version, ModLoaderType::Type loaderType);
 
+    std::optional<CurseforgeFileInfo> getCurrentCurseforgeFileInfo() const;
+
+    std::optional<CurseforgeFileInfo> getUpdateFileInfo() const;
+
 signals:
     void curseforgeReady();
-    void needUpdate(CurseforgeFileInfo fileInfo);
+    void needUpdate();
 
 private:
     LocalModInfo localModInfo;
     CurseforgeMod *curseforgeMod = nullptr;
-    CurseforgeFileInfo currentCurseforgeFileInfo;
+    std::optional<CurseforgeFileInfo> currentCurseforgeFileInfo;
+    std::optional<CurseforgeFileInfo> updateFileInfo;
 
 };
 

@@ -34,32 +34,35 @@ void LocalMod::searchOnCurseforge()
         CurseforgeModInfo modInfo(id);
         modInfo.setLatestFiles(fileList);
         curseforgeMod = new CurseforgeMod(this, modInfo);
-        currentCurseforgeFileInfo = file;
+        currentCurseforgeFileInfo.emplace(file);
         emit curseforgeReady();
     });
 }
 
-void LocalMod::findUpdate(const GameVersion &version, ModLoaderType::Type loaderType)
+void LocalMod::findUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType)
 {
     //update file list
     auto updateFileList = [=]{
          auto& list = curseforgeMod->getModInfo().getAllFiles();
          //select mod file for same game versions and mod loader type
-         //TODO: ignore sub version
          QList<CurseforgeFileInfo> list2;
          std::insert_iterator<QList<CurseforgeFileInfo>> iter(list2, list2.begin());
          std::copy_if(list.cbegin(), list.cend(), iter, [=](const auto &file){
-             return file.getGameVersions().contains(version) &&
-                     (file.getModLoaders().isEmpty() || file.getModLoaders().contains(loaderType));
+             auto versionCheck = false;
+             for(const auto & version : file.getGameVersions())
+                 if(version.mainVersion() == mainVersion)
+                     versionCheck = true;
+             return versionCheck && (file.getModLoaders().isEmpty() || file.getModLoaders().contains(loaderType));
          });
          if(list2.isEmpty()) return ;
          auto resultIter = std::max_element(list2.cbegin(), list2.cend(), [=](const auto &file1, const auto &file2){
              return file1.getFileDate() < file2.getFileDate();
          });
-         if(currentCurseforgeFileInfo.getDisplayName() != resultIter->getDisplayName()){
-             qDebug() << localModInfo.getName() << ":" << currentCurseforgeFileInfo.getDisplayName() << "->" << resultIter->getDisplayName();
-             qDebug() << resultIter->getGameVersions();
-             emit needUpdate(*resultIter);
+         //currentCurseforgeFileInfo should already have value before this function called
+         if(currentCurseforgeFileInfo.value().getDisplayName() != resultIter->getDisplayName()){
+             qDebug() << localModInfo.getName() << ":" << currentCurseforgeFileInfo.value().getDisplayName() << "->" << resultIter->getDisplayName();
+             updateFileInfo = *resultIter;
+             emit needUpdate();
          }
     };
 
@@ -69,4 +72,14 @@ void LocalMod::findUpdate(const GameVersion &version, ModLoaderType::Type loader
         curseforgeMod->acquireAllFileList();
         connect(curseforgeMod, &CurseforgeMod::allFileListReady, this, updateFileList);
     }
+}
+
+std::optional<CurseforgeFileInfo> LocalMod::getCurrentCurseforgeFileInfo() const
+{
+    return currentCurseforgeFileInfo;
+}
+
+std::optional<CurseforgeFileInfo> LocalMod::getUpdateFileInfo() const
+{
+    return updateFileInfo;
 }

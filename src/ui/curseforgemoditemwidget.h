@@ -17,7 +17,7 @@ class CurseforgeModItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &fileInfo);
+    explicit CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload);
     ~CurseforgeModItemWidget();
 
 private slots:

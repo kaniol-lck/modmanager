@@ -7,11 +7,11 @@
 #include "util/downloader.h"
 #include "util/funcutil.h"
 
-CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &fileInfo) :
+CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload) :
     QWidget(parent),
     ui(new Ui::CurseforgeModItemWidget),
     curseforgeMod(mod),
-    curseforgeFileInfo(fileInfo)
+    curseforgeFileInfo(defaultDownload)
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
@@ -21,8 +21,8 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     ui->modSummary->setText(mod->getModInfo().getSummary());
     ui->modAuthors->setText(mod->getModInfo().getAuthors().join("</b>, <b>").prepend("by <b>").append("</b>"));
     if(curseforgeFileInfo.has_value()){
-        ui->downloadButton->setToolTip(fileInfo.value().getDisplayName());
-        ui->downloadSpeedText->setText(numberConvert(fileInfo.value().getFileLength(), "B") + "\n"
+        ui->downloadButton->setToolTip(defaultDownload.value().getDisplayName());
+        ui->downloadSpeedText->setText(numberConvert(defaultDownload.value().getFileLength(), "B") + "\n"
                                    + numberConvert(mod->getModInfo().getDownloadCount(), "", 3, 1000) + tr(" Downloads"));
     }
     else

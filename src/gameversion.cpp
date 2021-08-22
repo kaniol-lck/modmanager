@@ -14,10 +14,17 @@ QStringList GameVersion::versionList;
 
 GameVersion GameVersion::ANY = GameVersion("");
 
-GameVersion::GameVersion(const QString string) :
+GameVersion::GameVersion(const QString &string) :
     versionString(string)
 {
 
+}
+
+GameVersion GameVersion::mainVersion() const
+{
+    auto l = versionString.split(".");
+    if(l.size() == 3) l.removeLast();
+    return GameVersion(l.join("."));
 }
 
 const QString &GameVersion::getVersionString() const

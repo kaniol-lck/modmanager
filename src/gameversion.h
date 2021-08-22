@@ -8,7 +8,9 @@ class GameVersion
 {
 public:
     GameVersion() = default;
-    GameVersion(const QString string);
+    GameVersion(const QString &string);
+
+    GameVersion mainVersion() const;
 
     const QString &getVersionString() const;
 

@@ -29,6 +29,7 @@ SOURCES += \
     src/ui/localmoditemwidget.cpp \
     src/main.cpp \
     src/moddirinfo.cpp \
+    src/ui/localmodupdatedialog.cpp \
     src/ui/modmanager.cpp \
     src/util/downloader.cpp \
     src/util/downloaderthread.cpp \
@@ -53,6 +54,7 @@ HEADERS += \
     src/ui/localmodinfodialog.h \
     src/ui/localmoditemwidget.h \
     src/moddirinfo.h \
+    src/ui/localmodupdatedialog.h \
     src/ui/modmanager.h \
     src/util/downloader.h \
     src/util/downloaderthread.h \
@@ -69,6 +71,7 @@ FORMS += \
     src/ui/localmodbrowsersettingsdialog.ui \
     src/ui/localmodinfodialog.ui \
     src/ui/localmoditemwidget.ui \
+    src/ui/localmodupdatedialog.ui \
     src/ui/modmanager.ui
 
 TRANSLATIONS += \

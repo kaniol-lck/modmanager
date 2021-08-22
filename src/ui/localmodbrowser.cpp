@@ -7,6 +7,7 @@
 
 #include "localmoditemwidget.h"
 #include "localmodinfodialog.h"
+#include "localmodupdatedialog.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, QNetworkAccessManager *manager, const ModDirInfo &info) :
     QWidget(parent),
@@ -37,16 +38,18 @@ void LocalModBrowser::updateModList()
         auto localMod = new LocalMod(this, modInfo);
         localMod->searchOnCurseforge();
         connect(localMod, &LocalMod::curseforgeReady, this, [=]{
-            localMod->findUpdate(modDirInfo.getGameVersion(), modDirInfo.getLoaderType());
+            localMod->findUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
         });
         modList << localMod;
 
         auto *listItem = new QListWidgetItem();
         listItem->setSizeHint(QSize(500, 100));
-        auto modEntryWidget = new LocalModItemWidget(ui->modListWidget, accessManager, modInfo);
+        auto modItemWidget = new LocalModItemWidget(ui->modListWidget, localMod);
+
+        connect(localMod, &LocalMod::needUpdate, modItemWidget, &LocalModItemWidget::needUpdate);
 
         ui->modListWidget->addItem(listItem);
-        ui->modListWidget->setItemWidget(listItem, modEntryWidget);
+        ui->modListWidget->setItemWidget(listItem, modItemWidget);
 
     }
 }
@@ -76,6 +79,12 @@ void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
     auto mod = modList.at(index.row());
     auto dialog = new LocalModInfoDialog(this, mod);
+    dialog->show();
+}
+
+void LocalModBrowser::on_updateAllButton_clicked()
+{
+    auto dialog = new LocalModUpdateDialog(this, modList);
     dialog->show();
 }
 

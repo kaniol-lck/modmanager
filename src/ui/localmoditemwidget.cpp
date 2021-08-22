@@ -11,20 +11,19 @@
 #include "curseforgemodinfodialog.h"
 #include "util/tutil.hpp"
 
-LocalModItemWidget::LocalModItemWidget(QWidget *parent, QNetworkAccessManager *manager, const LocalModInfo &modInfo) :
+LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     QWidget(parent),
     ui(new Ui::LocalModItemWidget),
-    localModInfo(modInfo),
-    accessManager(manager)
+    localMod(mod)
 {
     ui->setupUi(this);
-    ui->modName->setText(modInfo.getName());
-    ui->modVersion->setText(modInfo.getVersion());
-    ui->modDescription->setText(modInfo.getDescription());
+    ui->modName->setText(mod->getModInfo().getName());
+    ui->modVersion->setText(mod->getModInfo().getVersion());
+    ui->modDescription->setText(mod->getModInfo().getDescription());
 
-    if(!modInfo.getIconBytes().isEmpty()){
+    if(!mod->getModInfo().getIconBytes().isEmpty()){
         QPixmap pixelmap;
-        pixelmap.loadFromData(modInfo.getIconBytes());
+        pixelmap.loadFromData(mod->getModInfo().getIconBytes());
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     }
 }
@@ -34,7 +33,13 @@ LocalModItemWidget::~LocalModItemWidget()
     delete ui;
 }
 
-CurseforgeMod *LocalModItemWidget::getCurseforgeMod() const
+void LocalModItemWidget::needUpdate()
 {
-    return curseforgeMod;
+    ui->updateButton->setEnabled(true);
 }
+
+void LocalModItemWidget::on_updateButton_clicked()
+{
+    //TODO: update
+}
+

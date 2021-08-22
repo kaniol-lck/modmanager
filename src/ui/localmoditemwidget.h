@@ -3,10 +3,11 @@
 
 #include <QWidget>
 
-#include "local/localmodinfo.h"
+#include "local/localmod.h"
 
 class QNetworkAccessManager;
 class CurseforgeMod;
+class LocalMod;
 
 namespace Ui {
 class LocalModItemWidget;
@@ -17,17 +18,18 @@ class LocalModItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit LocalModItemWidget(QWidget *parent, QNetworkAccessManager *manager,  const LocalModInfo& modInfo);
+    explicit LocalModItemWidget(QWidget *parent, LocalMod *localMod);
     ~LocalModItemWidget();
 
-    CurseforgeMod *getCurseforgeMod() const;
+public slots:
+    void needUpdate();
+
+private slots:
+    void on_updateButton_clicked();
 
 private:
     Ui::LocalModItemWidget *ui;
-    LocalModInfo localModInfo;
-    CurseforgeMod *curseforgeMod;
-
-    QNetworkAccessManager *accessManager;
+    LocalMod *localMod;
 
 };
 
