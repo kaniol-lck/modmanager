@@ -9,6 +9,7 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
+#include "util/funcutil.h"
 
 QStringList GameVersion::versionList;
 

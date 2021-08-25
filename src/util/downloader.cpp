@@ -7,10 +7,10 @@
 #include <algorithm>
 
 #include "downloaderthread.h"
+#include "util/funcutil.h"
 
 Downloader::Downloader(QObject *parent) :
     QObject(parent),
-    accessManager(new QNetworkAccessManager(this)),
     bytesReceived(THREAD_COUNT),
     bytesTotal(THREAD_COUNT)
 {
@@ -91,7 +91,7 @@ void Downloader::handleRedirect()
         request.setSslConfiguration(sslConfig);
         #endif
 
-        auto reply = accessManager->head(request);
+        auto reply = accessManager()->head(request);
         if(!reply) continue;
         QEventLoop loop;
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);

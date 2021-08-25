@@ -3,7 +3,6 @@
 
 #include <QDialog>
 
-class QNetworkAccessManager;
 class CurseforgeMod;
 
 namespace Ui {

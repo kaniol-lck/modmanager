@@ -1,10 +1,6 @@
 #include "localmoditemwidget.h"
 #include "ui_localmoditemwidget.h"
 
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QJsonDocument>
-
 #include "local/localmodinfo.h"
 #include "curseforge/curseforgeapi.h"
 #include "curseforge/curseforgemod.h"

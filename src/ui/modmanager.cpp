@@ -7,7 +7,6 @@
 
 #include <QDebug>
 #include <QDir>
-#include <QNetworkAccessManager>
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 
@@ -19,8 +18,7 @@
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ModManager),
-    updateVersionsWatcher(new QFutureWatcher<void>(this)),
-    accessManager(new QNetworkAccessManager(this))
+    updateVersionsWatcher(new QFutureWatcher<void>(this))
 {
     ui->setupUi(this);
     for(int i = ui->stackedWidget->count(); i >= 0; i--)
@@ -44,7 +42,7 @@ ModManager::ModManager(QWidget *parent) :
     for(const auto &modDirInfo : qAsConst(modDirList)){
         if(modDirInfo.exists()) {
             auto item = new QListWidgetItem(modDirInfo.getGameVersion());
-            auto localModBrowser = new LocalModBrowser(this, accessManager, modDirInfo);
+            auto localModBrowser = new LocalModBrowser(this, modDirInfo);
             dirWidgetItemList.append(item);
             localModBrowserList.append(localModBrowser);
             ui->modDirSelectorWidget->addItem(item);
@@ -74,7 +72,7 @@ void ModManager::on_newLocalBrowserButton_clicked()
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &modDirInfo){
         modDirList.append(modDirInfo);
         auto item = new QListWidgetItem(modDirInfo.getGameVersion());
-        auto localModBrowser = new LocalModBrowser(this, accessManager, modDirInfo);
+        auto localModBrowser = new LocalModBrowser(this, modDirInfo);
         dirWidgetItemList.append(item);
         localModBrowserList.append(localModBrowser);
         ui->modDirSelectorWidget->addItem(item);

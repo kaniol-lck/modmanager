@@ -28,7 +28,6 @@ private:
     static constexpr int THREAD_COUNT = 8;
 
     int finishedThreadCount = 0;
-    QNetworkAccessManager *accessManager;
     QUrl downloadUrl;
     QFile downloadFile;
     qint64 downloadSize;

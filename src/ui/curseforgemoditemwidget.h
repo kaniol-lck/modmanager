@@ -31,6 +31,7 @@ private:
     CurseforgeMod *curseforgeMod;
     QTimer speedTimer;
     qint64 lastDownloadBytes = 0;
+    QList<qint64> downloadBytes;
     std::optional<CurseforgeFileInfo> curseforgeFileInfo;
 };
 

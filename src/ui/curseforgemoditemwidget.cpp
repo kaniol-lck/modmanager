@@ -2,10 +2,13 @@
 #include "ui_curseforgemoditemwidget.h"
 
 #include <QDebug>
+#include <algorithm>
 
 #include "curseforge/curseforgemod.h"
 #include "util/downloader.h"
 #include "util/funcutil.h"
+
+constexpr int TIMER_PER_SEC = 4;
 
 CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload) :
     QWidget(parent),
@@ -29,7 +32,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
         ui->downloadButton->setEnabled(false);
 
     //set timer
-    speedTimer.setInterval(1000 / 4);
+    speedTimer.setInterval(1000 / TIMER_PER_SEC);
     connect(&speedTimer, SIGNAL(timeout()), SLOT(updateDownlaodSpeed()));
 }
 
@@ -47,11 +50,16 @@ void CurseforgeModItemWidget::updateThumbnail()
 
 void CurseforgeModItemWidget::updateDownlaodSpeed()
 {
-    auto downloadBytes = ui->downloadProgress->value();
-    auto bytes = (downloadBytes - lastDownloadBytes) * 4;
-    lastDownloadBytes = downloadBytes;
+    auto currentDownloadBytes = ui->downloadProgress->value();
+    auto bytes = currentDownloadBytes - lastDownloadBytes;
+    lastDownloadBytes = currentDownloadBytes;
 
-    ui->downloadSpeedText->setText(numberConvert(bytes, "B/s"));
+    downloadBytes << bytes;
+    if(downloadBytes.size() > 4) downloadBytes.pop_front();
+
+    auto aver = std::accumulate(downloadBytes.cbegin(), downloadBytes.cend(), 0) / downloadBytes.size();
+
+    ui->downloadSpeedText->setText(numberConvert(aver * TIMER_PER_SEC , "B/s"));
 
 }
 
@@ -78,6 +86,7 @@ void CurseforgeModItemWidget::on_downloadButton_clicked()
         ui->downloadButton->setText(tr("Downloaded"));
         speedTimer.stop();
         lastDownloadBytes = 0;
+        downloadBytes.clear();
     });
 
     speedTimer.start();

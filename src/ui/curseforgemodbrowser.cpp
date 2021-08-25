@@ -19,8 +19,7 @@
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::CurseforgeModBrowser),
-    accessManager(new QNetworkAccessManager(this))
+    ui(new Ui::CurseforgeModBrowser)
 {
     ui->setupUi(this);
 

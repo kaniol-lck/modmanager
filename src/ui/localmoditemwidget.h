@@ -5,10 +5,6 @@
 
 #include "local/localmod.h"
 
-class QNetworkAccessManager;
-class CurseforgeMod;
-class LocalMod;
-
 namespace Ui {
 class LocalModItemWidget;
 }

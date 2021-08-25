@@ -1,10 +1,6 @@
 #include "curseforgemodinfodialog.h"
 #include "ui_curseforgemodinfodialog.h"
 
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-
 #include "curseforge/curseforgemod.h"
 #include "ui/curseforgefileitemwidget.h"
 #include "util/datetimesortitem.h"

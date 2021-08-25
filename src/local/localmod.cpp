@@ -60,7 +60,7 @@ void LocalMod::findUpdate(const GameVersion &mainVersion, ModLoaderType::Type lo
          });
          //currentCurseforgeFileInfo should already have value before this function called
          if(currentCurseforgeFileInfo.value().getDisplayName() != resultIter->getDisplayName()){
-             qDebug() << localModInfo.getName() << ":" << currentCurseforgeFileInfo.value().getDisplayName() << "->" << resultIter->getDisplayName();
+//             qDebug() << localModInfo.getName() << ":" << currentCurseforgeFileInfo.value().getDisplayName() << "->" << resultIter->getDisplayName();
              updateFileInfo = *resultIter;
              emit needUpdate();
          }

@@ -9,11 +9,10 @@
 #include "localmodinfodialog.h"
 #include "localmodupdatedialog.h"
 
-LocalModBrowser::LocalModBrowser(QWidget *parent, QNetworkAccessManager *manager, const ModDirInfo &info) :
+LocalModBrowser::LocalModBrowser(QWidget *parent, const ModDirInfo &info) :
     QWidget(parent),
     ui(new Ui::LocalModBrowser),
-    modDirInfo(info),
-    accessManager(manager)
+    modDirInfo(info)
 {
     ui->setupUi(this);
 
@@ -32,7 +31,8 @@ void LocalModBrowser::updateModList()
 {
     modList.clear();
     ui->modListWidget->clear();
-    for (const QFileInfo& entryInfo : modDirInfo.getModDir().entryInfoList(QDir::Files)) {
+    const auto &list = modDirInfo.getModDir().entryInfoList(QDir::Files);
+    for (const QFileInfo& entryInfo : list) {
         LocalModInfo modInfo(entryInfo.absoluteFilePath());
         if(!modInfo.isFabricMod()) continue;
         auto localMod = new LocalMod(this, modInfo);

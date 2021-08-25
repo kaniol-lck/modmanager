@@ -5,9 +5,10 @@
 #include <QNetworkReply>
 #include <QFile>
 
+#include "util/funcutil.h"
+
 DownloaderThread::DownloaderThread(QObject *parent) :
-    QObject(parent),
-    accessManager(new QNetworkAccessManager(this))
+    QObject(parent)
 {
 
 }
@@ -24,7 +25,7 @@ void DownloaderThread::download(int index, const QUrl &url, QFile *file, qint64 
     QString range = QString("bytes=%0-%1").arg(startPos).arg(endPos);
     request.setRawHeader("Range", range.toUtf8());
 
-    reply = accessManager->get(request);
+    reply = accessManager()->get(request);
     connect(reply, &QNetworkReply::finished, [=]{
         emit threadFinished(index);
     });

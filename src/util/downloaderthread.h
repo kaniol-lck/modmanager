@@ -5,7 +5,6 @@
 #include <QNetworkReply>
 
 class QFile;
-class QNetworkAccessManager;
 
 class DownloaderThread : public QObject
 {
@@ -25,7 +24,6 @@ private slots:
     void writeFile();
 
 private:
-    QNetworkAccessManager *accessManager;
     QNetworkReply *reply;
     QFile *downloadFile;
     qint64 threadStartPos;
