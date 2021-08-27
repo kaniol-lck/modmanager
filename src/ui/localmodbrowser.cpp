@@ -38,7 +38,7 @@ void LocalModBrowser::updateModList()
         auto localMod = new LocalMod(this, modInfo);
         localMod->searchOnCurseforge();
         connect(localMod, &LocalMod::curseforgeReady, this, [=]{
-            localMod->findUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
+            localMod->checkUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
         });
         modList << localMod;
 

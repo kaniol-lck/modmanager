@@ -2,8 +2,7 @@
 #define CURSEFORGEMOD_H
 
 #include <QObject>
-#include <QVariant>
-#include <QUrl>
+#include <QDir>
 
 #include "curseforgemodinfo.h"
 
@@ -20,6 +19,8 @@ public:
     void acquireDescription();
     void acquireAllFileList();
 
+    void download(const CurseforgeFileInfo &fileInfo, const QDir &path = QDir());
+
     const CurseforgeModInfo &getModInfo() const;
 
 signals:
@@ -27,6 +28,9 @@ signals:
     void thumbnailReady();
     void descriptionReady();
     void allFileListReady();
+
+    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void downloadFinished();
 
 private:
     CurseforgeModInfo curseforgeModInfo;

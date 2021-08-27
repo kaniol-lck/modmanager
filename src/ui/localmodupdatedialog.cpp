@@ -1,9 +1,10 @@
 #include "localmodupdatedialog.h"
 #include "ui_localmodupdatedialog.h"
 
-LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod *> &updateList) :
+LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod *> &list) :
     QDialog(parent),
-    ui(new Ui::LocalModUpdateDialog)
+    ui(new Ui::LocalModUpdateDialog),
+    updateList(list)
 {
     ui->setupUi(this);
     ui->updateTableView->setModel(&model);
@@ -37,5 +38,13 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
 LocalModUpdateDialog::~LocalModUpdateDialog()
 {
     delete ui;
+}
+
+
+void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
+{
+    for(int row = 0; row < model.rowCount(); row++)
+        if(model.item(row)->checkState() == Qt::Checked)
+            updateList.at(row)->update();
 }
 

@@ -22,7 +22,9 @@ public:
 
     void searchOnCurseforge();
 
-    void findUpdate(const GameVersion &version, ModLoaderType::Type loaderType);
+    void checkUpdate(const GameVersion &version, ModLoaderType::Type loaderType);
+
+    void update(bool deleteOld = true);
 
     std::optional<CurseforgeFileInfo> getCurrentCurseforgeFileInfo() const;
 
@@ -30,7 +32,12 @@ public:
 
 signals:
     void curseforgeReady();
-    void needUpdate();
+    void needUpdate(bool need);
+
+    void startCheckUpdate();
+    void startUpdate();
+    void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void updateFinished();
 
 private:
     LocalModInfo localModInfo;

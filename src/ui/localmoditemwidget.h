@@ -18,7 +18,7 @@ public:
     ~LocalModItemWidget();
 
 public slots:
-    void needUpdate();
+    void needUpdate(bool need);
 
 private slots:
     void on_updateButton_clicked();

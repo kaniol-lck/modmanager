@@ -17,7 +17,7 @@ Downloader::Downloader(QObject *parent) :
 
 }
 
-bool Downloader::download(const QUrl &url, const QString &filename)
+bool Downloader::download(const QUrl &url, const QDir &path, const QString &filename)
 {
     downloadUrl = url;
 
@@ -25,11 +25,11 @@ bool Downloader::download(const QUrl &url, const QString &filename)
 
     //get name
     if(!filename.isEmpty())
-        downloadFile.setFileName(filename);
+        downloadFile.setFileName(path.absoluteFilePath(filename));
     else if(!downloadUrl.fileName().isEmpty())
-        downloadFile.setFileName(downloadUrl.fileName());
+        downloadFile.setFileName(path.absoluteFilePath(downloadUrl.fileName()));
     else
-        downloadFile.setFileName("index.html");
+        downloadFile.setFileName(path.absoluteFilePath("index.html"));
 
     qDebug() << "file name:" << downloadFile.fileName();
 

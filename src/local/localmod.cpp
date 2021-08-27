@@ -2,6 +2,7 @@
 
 #include "curseforge/curseforgeapi.h"
 #include "curseforge/curseforgemod.h"
+#include "util/downloader.h"
 
 #include <iterator>
 #include <algorithm>
@@ -39,8 +40,10 @@ void LocalMod::searchOnCurseforge()
     });
 }
 
-void LocalMod::findUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType)
+void LocalMod::checkUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType)
 {
+    emit startCheckUpdate();
+
     //update file list
     auto updateFileList = [=]{
          auto& list = curseforgeMod->getModInfo().getAllFiles();
@@ -61,9 +64,10 @@ void LocalMod::findUpdate(const GameVersion &mainVersion, ModLoaderType::Type lo
          //currentCurseforgeFileInfo should already have value before this function called
          if(currentCurseforgeFileInfo.value().getDisplayName() != resultIter->getDisplayName()){
 //             qDebug() << localModInfo.getName() << ":" << currentCurseforgeFileInfo.value().getDisplayName() << "->" << resultIter->getDisplayName();
-             updateFileInfo = *resultIter;
-             emit needUpdate();
-         }
+             updateFileInfo.emplace(*resultIter);
+             emit needUpdate(true);
+         } else
+             emit needUpdate(false);
     };
 
     if(!curseforgeMod->getModInfo().getAllFiles().isEmpty())
@@ -72,6 +76,31 @@ void LocalMod::findUpdate(const GameVersion &mainVersion, ModLoaderType::Type lo
         curseforgeMod->acquireAllFileList();
         connect(curseforgeMod, &CurseforgeMod::allFileListReady, this, updateFileList);
     }
+}
+
+void LocalMod::update(bool deleteOld)
+{
+    if(!updateFileInfo.has_value()){
+        qDebug() << localModInfo.getName() << "no update file.";
+        return;
+    }
+    emit startUpdate();
+
+    QDir path = localModInfo.getModPath();
+    //to dir
+    path.cdUp();
+    curseforgeMod->download(updateFileInfo.value(), path);
+
+    connect(curseforgeMod, &CurseforgeMod::downloadProgress, this, &LocalMod::updateProgress);
+    connect(curseforgeMod, &CurseforgeMod::downloadFinished, this, [=]{
+        //check download
+        if(deleteOld){
+            QFile file(localModInfo.getModPath());
+            file.remove();
+        }
+        emit updateFinished();
+    });
+
 }
 
 std::optional<CurseforgeFileInfo> LocalMod::getCurrentCurseforgeFileInfo() const

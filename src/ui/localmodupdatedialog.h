@@ -17,10 +17,12 @@ class LocalModUpdateDialog : public QDialog
     enum { NameColumn, BeforeColumn, AfterColumn};
 
 public:
-    explicit LocalModUpdateDialog(QWidget *parent, const QList<LocalMod*> &updateList);
+    explicit LocalModUpdateDialog(QWidget *parent, const QList<LocalMod*> &list);
     ~LocalModUpdateDialog();
 
 private slots:
+
+    void on_LocalModUpdateDialog_accepted();
 
 private:
     Ui::LocalModUpdateDialog *ui;

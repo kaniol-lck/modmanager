@@ -65,6 +65,14 @@ void CurseforgeMod::acquireAllFileList()
     });
 }
 
+void CurseforgeMod::download(const CurseforgeFileInfo &fileInfo, const QDir &path)
+{
+    auto downloader = new Downloader(this);
+    downloader->download(fileInfo.getDownloadUrl(), path, fileInfo.getFileName());
+    connect(downloader, &Downloader::downloadProgress, this, &CurseforgeMod::downloadProgress);
+    connect(downloader, &Downloader::finished, this, &CurseforgeMod::downloadFinished);
+}
+
 const CurseforgeModInfo &CurseforgeMod::getModInfo() const
 {
     return curseforgeModInfo;
