@@ -1,5 +1,7 @@
 #include "downloader.h"
 
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -37,30 +39,30 @@ bool Downloader::download(const QUrl &url, const QDir &path, const QString &file
 
     //handle redirect
     //this will update url and size
-    handleRedirect();
+    //and take some times so it is in concurrent
+    QFuture<void> future = QtConcurrent::run([=]{handleRedirect();});
+    auto handleRedirectWatcher = new QFutureWatcher<void>(this);
+    handleRedirectWatcher->setFuture(future);
+    connect(handleRedirectWatcher, &QFutureWatcher<void>::finished, this, [=]{
+        downloadFile.resize(downloadSize);
+        //slice file into threads
+        for(int i=0; i < THREAD_COUNT; i++){
+            qint64 startPos = downloadSize * i / THREAD_COUNT;
+            qint64 endPos = downloadSize * (i+1) / THREAD_COUNT;
 
-    downloadFile.resize(downloadSize);
-
-    qDebug() << "file size:" << downloadSize;
-
-    //slice file into threads
-    for(int i=0; i < THREAD_COUNT; i++){
-        qint64 startPos = downloadSize * i / THREAD_COUNT;
-        qint64 endPos = downloadSize * (i+1) / THREAD_COUNT;
-
-        auto thread = new DownloaderThread(this);
-        connect(thread, &DownloaderThread::threadFinished, this, &Downloader::threadFinished);
-        connect(thread, &DownloaderThread::threadDownloadProgress, this, &Downloader::updateProgress);
-        connect(thread, &DownloaderThread::threadErrorOccurred, [](int index, QNetworkReply::NetworkError code){
-            qDebug() << index << code;
-        });
-        thread->download(i, downloadUrl, &downloadFile, startPos, endPos);
-    }
-
+            auto thread = new DownloaderThread(this);
+            connect(thread, &DownloaderThread::threadFinished, this, &Downloader::threadFinished);
+            connect(thread, &DownloaderThread::threadDownloadProgress, this, &Downloader::updateProgress);
+            connect(thread, &DownloaderThread::threadErrorOccurred, [](int index, QNetworkReply::NetworkError code){
+                qDebug() << index << code;
+            });
+            thread->download(i, downloadUrl, &downloadFile, startPos, endPos);
+        }
+    });
     return true;
 }
 
-void Downloader::threadFinished(int index)
+void Downloader::threadFinished(int /*index*/)
 {
     finishedThreadCount++;
 //    qDebug() << finishedThreadCount << "/" << THREAD_COUNT;

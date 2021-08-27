@@ -51,7 +51,7 @@ void CurseforgeModBrowser::on_searchButton_clicked()
 
 void CurseforgeModBrowser::onSliderChanged(int i)
 {
-    if(i == ui->modListWidget->verticalScrollBar()->maximum()){
+    if(hasMore && i == ui->modListWidget->verticalScrollBar()->maximum()){
         currentIndex += 20;
         getModList(currentName, currentIndex);
     }
@@ -80,6 +80,12 @@ void CurseforgeModBrowser::getModList(QString name, int index)
             for(int i = 0; i < ui->modListWidget->count(); i++)
                 ui->modListWidget->itemWidget(ui->modListWidget->item(i))->deleteLater();
             ui->modListWidget->clear();
+            hasMore = true;
+        }
+
+        if(infoList.isEmpty()){
+            hasMore = false;
+            return ;
         }
 
         //show them

@@ -3,8 +3,7 @@
 
 LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod *> &list) :
     QDialog(parent),
-    ui(new Ui::LocalModUpdateDialog),
-    updateList(list)
+    ui(new Ui::LocalModUpdateDialog)
 {
     ui->setupUi(this);
     ui->updateTableView->setModel(&model);
@@ -14,9 +13,11 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
     model.setHorizontalHeaderItem(BeforeColumn, new QStandardItem(tr("Before")));
     model.setHorizontalHeaderItem(AfterColumn, new QStandardItem(tr("After")));
 
-    for(const auto &mod : updateList){
+    for(const auto &mod : list){
         //skip if no update
         if(!mod->getUpdateFileInfo().has_value()) continue;
+
+        updateList << mod;
 
         auto nameItem = new QStandardItem();
         nameItem->setText(mod->getModInfo().getName() + ":");

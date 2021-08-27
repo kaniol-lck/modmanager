@@ -17,7 +17,7 @@ public:
     static CurseforgeAPI *api();
 
     static void searchMods(const GameVersion &version, int index, const QString &searchFilter, int sort, std::function<void (QList<CurseforgeModInfo>)> callback);
-    static void getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback);
+    static void getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback, std::function<void()> noMatch);
     static void getDescription(int id, std::function<void(QString)> callback);
     static void getChangelog(int id, int FileID, std::function<void(QString)> callback);
     static void getDownloadUrl(int id, int FileID, std::function<void(QString)> callback);

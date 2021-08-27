@@ -26,7 +26,7 @@ private slots:
 
 private:
     Ui::LocalModUpdateDialog *ui;
-    const QList<LocalMod*> updateList;
+    QList<LocalMod*> updateList;
     QStandardItemModel model;
 };
 

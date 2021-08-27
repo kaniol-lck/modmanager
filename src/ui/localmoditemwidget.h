@@ -18,10 +18,17 @@ public:
     ~LocalModItemWidget();
 
 public slots:
-    void needUpdate(bool need);
+    void updateReady(bool need);
 
 private slots:
     void on_updateButton_clicked();
+
+    void startCheckCurseforge();
+    void curseforgeReady();
+    void startCheckUpdate();
+    void startUpdate();
+    void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void finishUpdate();
 
 private:
     Ui::LocalModItemWidget *ui;

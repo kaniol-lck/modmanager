@@ -31,11 +31,12 @@ public:
     std::optional<CurseforgeFileInfo> getUpdateFileInfo() const;
 
 signals:
-    void curseforgeReady();
-    void needUpdate(bool need);
+    void curseforgeReady(bool bl);
+    void updateReady(bool bl);
 
-    void startCheckUpdate();
-    void startUpdate();
+    void checkCurseforgeStarted();
+    void checkUpdateStarted();
+    void updateStarted();
     void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
     void updateFinished();
 

@@ -43,6 +43,7 @@ private:
     QString currentName;
     int currentIndex;
     bool isUiSet = false;
+    bool hasMore = false;
 
     void getModList(QString name, int index = 0);
 

@@ -31,18 +31,21 @@ void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
 
 void LocalMod::searchOnCurseforge()
 {
+    emit checkCurseforgeStarted();
     CurseforgeAPI::getIdByFingerprint(localModInfo.getMurmurhash(), [=](int id, auto file, const auto &fileList){
         CurseforgeModInfo modInfo(id);
         modInfo.setLatestFiles(fileList);
         curseforgeMod = new CurseforgeMod(this, modInfo);
         currentCurseforgeFileInfo.emplace(file);
-        emit curseforgeReady();
+        emit curseforgeReady(true);
+    }, [=]{
+        emit curseforgeReady(false);
     });
 }
 
 void LocalMod::checkUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType)
 {
-    emit startCheckUpdate();
+    emit checkUpdateStarted();
 
     //update file list
     auto updateFileList = [=]{
@@ -65,9 +68,9 @@ void LocalMod::checkUpdate(const GameVersion &mainVersion, ModLoaderType::Type l
          if(currentCurseforgeFileInfo.value().getDisplayName() != resultIter->getDisplayName()){
 //             qDebug() << localModInfo.getName() << ":" << currentCurseforgeFileInfo.value().getDisplayName() << "->" << resultIter->getDisplayName();
              updateFileInfo.emplace(*resultIter);
-             emit needUpdate(true);
+             emit updateReady(true);
          } else
-             emit needUpdate(false);
+             emit updateReady(false);
     };
 
     if(!curseforgeMod->getModInfo().getAllFiles().isEmpty())
@@ -84,7 +87,7 @@ void LocalMod::update(bool deleteOld)
         qDebug() << localModInfo.getName() << "no update file.";
         return;
     }
-    emit startUpdate();
+    emit updateStarted();
 
     QDir path = localModInfo.getModPath();
     //to dir

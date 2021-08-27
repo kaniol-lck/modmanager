@@ -15,6 +15,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui->setupUi(this);
     ui->updateProgress->setVisible(false);
     ui->updateButton->setVisible(false);
+    ui->updateStatus->setVisible(false);
 
     ui->modName->setText(mod->getModInfo().getName());
     ui->modVersion->setText(mod->getModInfo().getVersion());
@@ -26,30 +27,13 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     }
 
-    connect(localMod, &LocalMod::startCheckUpdate, this, [=]{
-        ui->updateButton->setVisible(true);
-    });
-
-    //start update
-    connect(localMod, &LocalMod::startUpdate, this, [=]{
-        ui->updateButton->setText(tr("Updating"));
-        ui->updateButton->setEnabled(false);
-        ui->updateProgress->setMaximum(localMod->getUpdateFileInfo().value().getFileLength());
-        ui->updateProgress->setVisible(true);
-    });
-
-    //update progress
-    connect(localMod, &LocalMod::updateProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
-        ui->updateProgress->setValue(bytesReceived);
-    });
-
-    //finish update
-    connect(localMod, &LocalMod::updateFinished, this, [=]{
-        ui->updateProgress->setVisible(false);
-        ui->updateButton->setText(tr("Updated"));
-
-        //reset speed timer
-    });
+    connect(localMod, &LocalMod::updateReady, this, &LocalModItemWidget::updateReady);
+    connect(localMod, &LocalMod::checkCurseforgeStarted, this, &LocalModItemWidget::startCheckCurseforge);
+    connect(localMod, &LocalMod::curseforgeReady, this, &LocalModItemWidget::curseforgeReady);
+    connect(localMod, &LocalMod::checkUpdateStarted, this, &LocalModItemWidget::startCheckUpdate);
+    connect(localMod, &LocalMod::updateStarted, this, &LocalModItemWidget::startUpdate);
+    connect(localMod, &LocalMod::updateProgress, this, &LocalModItemWidget::updateProgress);
+    connect(localMod, &LocalMod::updateFinished, this, &LocalModItemWidget::finishUpdate);
 }
 
 LocalModItemWidget::~LocalModItemWidget()
@@ -57,18 +41,49 @@ LocalModItemWidget::~LocalModItemWidget()
     delete ui;
 }
 
-void LocalModItemWidget::needUpdate(bool need)
+void LocalModItemWidget::updateReady(bool need)
 {
-    if(need){
-        ui->updateButton->setText(tr("Update"));
-        ui->updateButton->setEnabled(true);
-    }
-    else
-        ui->updateButton->setVisible(false);
+    ui->updateStatus->setVisible(false);
+    ui->updateButton->setVisible(need);
 }
 
 void LocalModItemWidget::on_updateButton_clicked()
 {
     localMod->update(false);
+}
+
+void LocalModItemWidget::startCheckCurseforge()
+{
+    ui->updateStatus->setVisible(true);
+    ui->updateStatus->setText(tr("Checking curseforge..."));
+}
+
+void LocalModItemWidget::curseforgeReady()
+{
+    ui->updateStatus->setVisible(false);
+}
+
+void LocalModItemWidget::startCheckUpdate()
+{
+    ui->updateStatus->setVisible(true);
+    ui->updateStatus->setText(tr("Checking update..."));
+}
+
+void LocalModItemWidget::startUpdate()
+{
+    ui->updateButton->setText(tr("Updating"));
+    ui->updateButton->setEnabled(false);
+    ui->updateProgress->setMaximum(localMod->getUpdateFileInfo().value().getFileLength());
+    ui->updateProgress->setVisible(true);
+}
+
+void LocalModItemWidget::updateProgress(qint64 bytesReceived, qint64 /*bytesTotal*/)
+{
+    ui->updateProgress->setValue(bytesReceived);
+}
+
+void LocalModItemWidget::finishUpdate()
+{
+    ui->updateProgress->setVisible(false);
 }
 

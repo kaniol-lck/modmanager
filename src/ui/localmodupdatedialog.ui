@@ -45,7 +45,7 @@
       <bool>false</bool>
      </property>
      <attribute name="horizontalHeaderVisible">
-      <bool>false</bool>
+      <bool>true</bool>
      </attribute>
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>false</bool>
@@ -69,8 +69,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>254</x>
+     <y>412</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -85,8 +85,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>322</x>
+     <y>412</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

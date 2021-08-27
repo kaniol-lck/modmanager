@@ -74,13 +74,12 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
             auto curseforgeModInfo = CurseforgeModInfo::fromVariant(result);
             modInfoList.append(curseforgeModInfo);
         }
-
         callback(modInfoList);
         reply->deleteLater();
     });
 }
 
-void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback)
+void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback, std::function<void ()> noMatch)
 {
     QUrl url = BASE_URL + "/api/v2/fingerprint";
 
@@ -101,16 +100,18 @@ void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function
             return;
         }
         auto exactMatchList = value(jsonDocument.toVariant(), "exactMatches").toList();
-        if(exactMatchList.isEmpty()) return;
+        if(exactMatchList.isEmpty())
+            noMatch();
+        else {
+            int id = value(exactMatchList.at(0), "id").toInt();
+            auto file = CurseforgeFileInfo::fromVariant(value(exactMatchList.at(0), "file"));
+            auto latestFileList = value(exactMatchList.at(0), "latestFiles").toList();
+            QList<CurseforgeFileInfo> fileList;
+            for (const auto &variant : latestFileList)
+                fileList << CurseforgeFileInfo::fromVariant(variant);
 
-        int id = value(exactMatchList.at(0), "id").toInt();
-        auto file = CurseforgeFileInfo::fromVariant(value(exactMatchList.at(0), "file"));
-        auto latestFileList = value(exactMatchList.at(0), "latestFiles").toList();
-        QList<CurseforgeFileInfo> fileList;
-        for (const auto &variant : latestFileList)
-            fileList << CurseforgeFileInfo::fromVariant(variant);
-
-        callback(id, file, fileList);
+            callback(id, file, fileList);
+        }
         reply->deleteLater();
     });
 }

@@ -36,17 +36,15 @@ void LocalModBrowser::updateModList()
         LocalModInfo modInfo(entryInfo.absoluteFilePath());
         if(!modInfo.isFabricMod()) continue;
         auto localMod = new LocalMod(this, modInfo);
+        auto modItemWidget = new LocalModItemWidget(ui->modListWidget, localMod);
         localMod->searchOnCurseforge();
-        connect(localMod, &LocalMod::curseforgeReady, this, [=]{
-            localMod->checkUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
+        connect(localMod, &LocalMod::curseforgeReady, this, [=](bool bl){
+            if(bl) localMod->checkUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
         });
         modList << localMod;
 
         auto *listItem = new QListWidgetItem();
         listItem->setSizeHint(QSize(500, 100));
-        auto modItemWidget = new LocalModItemWidget(ui->modListWidget, localMod);
-
-        connect(localMod, &LocalMod::needUpdate, modItemWidget, &LocalModItemWidget::needUpdate);
 
         ui->modListWidget->addItem(listItem);
         ui->modListWidget->setItemWidget(listItem, modItemWidget);
