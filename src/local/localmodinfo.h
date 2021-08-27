@@ -3,18 +3,21 @@
 
 #include <QString>
 #include <QFileInfo>
+#include <QDir>
 
 class LocalModInfo
 {
 public:
     LocalModInfo(QString path);
 
+    bool acquireInfo(QString &path);
+
     bool isFabricMod();
 
     QDateTime getFileModificationTime() const;
 
     const QString &getId() const;
-    const QString &getModPath() const;
+    const QDir &getModPath() const;
     const QString &getName() const;
     const QString &getVersion() const;
     const QString &getDescription() const;
@@ -23,7 +26,7 @@ public:
     const QByteArray &getIconBytes() const;
 
 private:
-    QString modPath;
+    QDir modPath;
     QFileInfo modFileInfo;
     QString id;
     QString name;
@@ -35,7 +38,6 @@ private:
 
     bool hasFabricManifest = false;
 
-    bool acquireInfo(QString &path);
 
 };
 

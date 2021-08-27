@@ -20,10 +20,12 @@ public:
 signals:
     void finished();
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void downloadInfoReady();
 
 private slots:
     void threadFinished(int index);
     void updateProgress(int index, qint64 threadBytesReceived, qint64 threadBytesTotal);
+    void startDownload();
 
 private:
     static constexpr int THREAD_COUNT = 8;

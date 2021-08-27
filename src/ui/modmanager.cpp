@@ -29,7 +29,7 @@ ModManager::ModManager(QWidget *parent) :
     }
 
     ModDirInfo modDirInfo(QDir("/run/media/kaniol/SanDisk/Minecraft/1.17.1/.minecraft/mods/"), GameVersion("1.17.1"), ModLoaderType::Fabric);
-    ModDirInfo modDirInfo2(QDir("/run/media/kaniol/SanDisk/Minecraft/1.16.5/.minecraft/mods-test/"), GameVersion("1.16.5"), ModLoaderType::Fabric);
+    ModDirInfo modDirInfo2(QDir("/run/media/kaniol/SanDisk/Minecraft/1.16.4/.minecraft/mods-test/"), GameVersion("1.16.4"), ModLoaderType::Fabric);
 
     modDirList.append(modDirInfo);
     modDirList.append(modDirInfo2);

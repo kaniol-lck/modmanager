@@ -89,7 +89,7 @@ void LocalMod::update(bool deleteOld)
     }
     emit updateStarted();
 
-    QDir path = localModInfo.getModPath();
+    auto path = localModInfo.getModPath();
     //to dir
     path.cdUp();
     curseforgeMod->download(updateFileInfo.value(), path);
@@ -97,9 +97,24 @@ void LocalMod::update(bool deleteOld)
     connect(curseforgeMod, &CurseforgeMod::downloadProgress, this, &LocalMod::updateProgress);
     connect(curseforgeMod, &CurseforgeMod::downloadFinished, this, [=]{
         //check download
+        //...
+
+        auto oldPath = localModInfo.getModPath();
+        QDir dir(oldPath);
+        dir.cdUp();
+        auto newPath = dir.absoluteFilePath(updateFileInfo->getFileName());
+
+        //delete old mod file
         if(deleteOld){
-            QFile file(localModInfo.getModPath());
+            QFile file(oldPath.absolutePath());
             file.remove();
+
+            //update info
+            localModInfo.acquireInfo(newPath);
+
+            //update file info
+            currentCurseforgeFileInfo.emplace(updateFileInfo.value());
+            updateFileInfo.reset();
         }
         emit updateFinished();
     });

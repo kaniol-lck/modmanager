@@ -12,21 +12,16 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui(new Ui::LocalModItemWidget),
     localMod(mod)
 {
+    //init ui
     ui->setupUi(this);
     ui->updateProgress->setVisible(false);
     ui->updateButton->setVisible(false);
     ui->updateStatus->setVisible(false);
 
-    ui->modName->setText(mod->getModInfo().getName());
-    ui->modVersion->setText(mod->getModInfo().getVersion());
-    ui->modDescription->setText(mod->getModInfo().getDescription());
+    //init info
+    updateInfo();
 
-    if(!mod->getModInfo().getIconBytes().isEmpty()){
-        QPixmap pixelmap;
-        pixelmap.loadFromData(mod->getModInfo().getIconBytes());
-        ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
-    }
-
+    //signals / slots
     connect(localMod, &LocalMod::updateReady, this, &LocalModItemWidget::updateReady);
     connect(localMod, &LocalMod::checkCurseforgeStarted, this, &LocalModItemWidget::startCheckCurseforge);
     connect(localMod, &LocalMod::curseforgeReady, this, &LocalModItemWidget::curseforgeReady);
@@ -47,9 +42,22 @@ void LocalModItemWidget::updateReady(bool need)
     ui->updateButton->setVisible(need);
 }
 
+void LocalModItemWidget::updateInfo()
+{
+    ui->modName->setText(localMod->getModInfo().getName());
+    ui->modVersion->setText(localMod->getModInfo().getVersion());
+    ui->modDescription->setText(localMod->getModInfo().getDescription());
+
+    if(!localMod->getModInfo().getIconBytes().isEmpty()){
+        QPixmap pixelmap;
+        pixelmap.loadFromData(localMod->getModInfo().getIconBytes());
+        ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+    }
+}
+
 void LocalModItemWidget::on_updateButton_clicked()
 {
-    localMod->update(false);
+    localMod->update();
 }
 
 void LocalModItemWidget::startCheckCurseforge()
@@ -85,5 +93,9 @@ void LocalModItemWidget::updateProgress(qint64 bytesReceived, qint64 /*bytesTota
 void LocalModItemWidget::finishUpdate()
 {
     ui->updateProgress->setVisible(false);
+    ui->updateButton->setVisible(false);
+
+    //update info
+    updateInfo();
 }
 

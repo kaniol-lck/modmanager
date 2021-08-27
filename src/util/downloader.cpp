@@ -16,14 +16,12 @@ Downloader::Downloader(QObject *parent) :
     bytesReceived(THREAD_COUNT),
     bytesTotal(THREAD_COUNT)
 {
-
+    connect(this, &Downloader::downloadInfoReady, this, &Downloader::startDownload, Qt::QueuedConnection);
 }
 
 bool Downloader::download(const QUrl &url, const QDir &path, const QString &filename)
 {
     downloadUrl = url;
-
-    qDebug() << "url:" << downloadUrl;
 
     //get name
     if(!filename.isEmpty())
@@ -33,32 +31,10 @@ bool Downloader::download(const QUrl &url, const QDir &path, const QString &file
     else
         downloadFile.setFileName(path.absoluteFilePath("index.html"));
 
-    qDebug() << "file name:" << downloadFile.fileName();
-
     if(!downloadFile.open(QIODevice::WriteOnly)) return false;
 
-    //handle redirect
-    //this will update url and size
-    //and take some times so it is in concurrent
-    QFuture<void> future = QtConcurrent::run([=]{handleRedirect();});
-    auto handleRedirectWatcher = new QFutureWatcher<void>(this);
-    handleRedirectWatcher->setFuture(future);
-    connect(handleRedirectWatcher, &QFutureWatcher<void>::finished, this, [=]{
-        downloadFile.resize(downloadSize);
-        //slice file into threads
-        for(int i=0; i < THREAD_COUNT; i++){
-            qint64 startPos = downloadSize * i / THREAD_COUNT;
-            qint64 endPos = downloadSize * (i+1) / THREAD_COUNT;
+    emit downloadInfoReady();
 
-            auto thread = new DownloaderThread(this);
-            connect(thread, &DownloaderThread::threadFinished, this, &Downloader::threadFinished);
-            connect(thread, &DownloaderThread::threadDownloadProgress, this, &Downloader::updateProgress);
-            connect(thread, &DownloaderThread::threadErrorOccurred, [](int index, QNetworkReply::NetworkError code){
-                qDebug() << index << code;
-            });
-            thread->download(i, downloadUrl, &downloadFile, startPos, endPos);
-        }
-    });
     return true;
 }
 
@@ -66,8 +42,10 @@ void Downloader::threadFinished(int /*index*/)
 {
     finishedThreadCount++;
 //    qDebug() << finishedThreadCount << "/" << THREAD_COUNT;
-    if(finishedThreadCount == THREAD_COUNT)
+    if(finishedThreadCount == THREAD_COUNT){
         emit finished();
+        qDebug() << "finish:" << downloadFile.fileName();
+    }
 }
 
 void Downloader::updateProgress(int index, qint64 threadBytesReceived, qint64 threadBytesTotal)
@@ -79,6 +57,28 @@ void Downloader::updateProgress(int index, qint64 threadBytesReceived, qint64 th
     auto bytesTotalSum = std::accumulate(bytesTotal.begin(), bytesTotal.end(), 0);
 
     emit downloadProgress(bytesReceivedSum, bytesTotalSum);
+}
+
+void Downloader::startDownload()
+{
+    //handle redirect
+    //this will update url and size
+    handleRedirect();
+
+    downloadFile.resize(downloadSize);
+    //slice file into threads
+    for(int i=0; i < THREAD_COUNT; i++){
+        qint64 startPos = downloadSize * i / THREAD_COUNT;
+        qint64 endPos = downloadSize * (i+1) / THREAD_COUNT;
+
+        auto thread = new DownloaderThread(this);
+        connect(thread, &DownloaderThread::threadFinished, this, &Downloader::threadFinished);
+        connect(thread, &DownloaderThread::threadDownloadProgress, this, &Downloader::updateProgress);
+        connect(thread, &DownloaderThread::threadErrorOccurred, [](int index, QNetworkReply::NetworkError code){
+            qDebug() << index << code;
+        });
+        thread->download(i, downloadUrl, &downloadFile, startPos, endPos);
+    }
 }
 
 void Downloader::handleRedirect()

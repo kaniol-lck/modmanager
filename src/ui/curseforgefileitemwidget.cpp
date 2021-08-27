@@ -49,6 +49,7 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
     ui->downloadButton->setText(tr("Downloading"));
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
+
     auto downloader = new Downloader(this);
 
     downloader->download(curseforgeFileInfo.getDownloadUrl(), curseforgeFileInfo.getFileName());

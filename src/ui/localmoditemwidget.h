@@ -19,6 +19,7 @@ public:
 
 public slots:
     void updateReady(bool need);
+    void updateInfo();
 
 private slots:
     void on_updateButton_clicked();
