@@ -18,7 +18,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
-    connect(curseforgeMod, &CurseforgeMod::thumbnailReady, this, &CurseforgeModItemWidget::updateThumbnail);
+    connect(curseforgeMod, &CurseforgeMod::iconReady, this, &CurseforgeModItemWidget::updateIcon);
 
     ui->modName->setText(mod->getModInfo().getName());
     ui->modSummary->setText(mod->getModInfo().getSummary());
@@ -41,10 +41,10 @@ CurseforgeModItemWidget::~CurseforgeModItemWidget()
     delete ui;
 }
 
-void CurseforgeModItemWidget::updateThumbnail()
+void CurseforgeModItemWidget::updateIcon()
 {
     QPixmap pixelmap;
-    pixelmap.loadFromData(curseforgeMod->getModInfo().getThumbnailBytes());
+    pixelmap.loadFromData(curseforgeMod->getModInfo().getIconBytes());
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
 }
 

@@ -7,7 +7,7 @@
 
 #include "util/tutil.hpp"
 
-const QString CurseforgeAPI::BASE_URL          = "https://addons-ecs.forgesvc.net";
+const QString CurseforgeAPI::PREFIX = "https://addons-ecs.forgesvc.net";
 
 // SEARCH            = "/api/v2/addon/search";
 // FINGERPRINT       = "/api/v2/fingerprint";
@@ -28,7 +28,7 @@ CurseforgeAPI *CurseforgeAPI::api()
 
 void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QString &searchFilter, int sort, std::function<void (QList<CurseforgeModInfo>)> callback)
 {
-    QUrl url = BASE_URL + "/api/v2/addon/search";
+    QUrl url = PREFIX + "/api/v2/addon/search";
 
     //url query
     QUrlQuery urlQuery;
@@ -42,7 +42,7 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
         urlQuery.addQueryItem("gameVersion", version);
     //index
     urlQuery.addQueryItem("index", QString::number(index));
-    //search page size, 20 by default [Customize it]
+    //search page size, 30 by default [Customize it]
     urlQuery.addQueryItem("pageSize", "30");
     //search by name
     urlQuery.addQueryItem("searchFilter", searchFilter);
@@ -81,7 +81,7 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
 
 void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback, std::function<void ()> noMatch)
 {
-    QUrl url = BASE_URL + "/api/v2/fingerprint";
+    QUrl url = PREFIX + "/api/v2/fingerprint";
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -118,7 +118,7 @@ void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function
 
 void CurseforgeAPI::getDescription(int id, std::function<void (QString)> callback)
 {
-    QUrl url = BASE_URL + "/api/v2/addon/" + QString::number(id) + "/description";
+    QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id) + "/description";
 
     QNetworkRequest request(url);
     auto reply = api()->accessManager.get(request);
@@ -136,7 +136,7 @@ void CurseforgeAPI::getDescription(int id, std::function<void (QString)> callbac
 
 void CurseforgeAPI::getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback)
 {
-    QUrl url = BASE_URL + "/api/v2/addon/" + QString::number(id) + "/files";
+    QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id) + "/files";
 
     QNetworkRequest request(url);
     auto reply = api()->accessManager.get(request);
@@ -168,7 +168,7 @@ void CurseforgeAPI::getFiles(int id, std::function<void (QList<CurseforgeFileInf
 
 void CurseforgeAPI::getInfo(int id, std::function<void (CurseforgeModInfo)> callback)
 {
-    QUrl url = BASE_URL + "/api/v2/addon/" + QString::number(id);
+    QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id);
 
     QNetworkRequest request(url);
     auto reply = api()->accessManager.get(request);

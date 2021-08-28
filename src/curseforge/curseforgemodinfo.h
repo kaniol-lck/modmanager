@@ -33,7 +33,7 @@ public:
 
     const QUrl &getThumbnailUrl() const;
 
-    const QByteArray &getThumbnailBytes() const;
+    const QByteArray &getIconBytes() const;
 
     const QString &getDescription() const;
 
@@ -63,8 +63,8 @@ private:
     QString summary;
     QUrl websiteUrl;
     QStringList authors;
-    QUrl thumbnailUrl;
-    QByteArray thumbnailBytes;
+    QUrl iconUrl;
+    QByteArray iconBytes;
     QString description;
     int downloadCount;
     QList<ModLoaderType::Type> modLoaders;

@@ -12,6 +12,7 @@
 
 #include "localmodbrowser.h"
 #include "curseforgemodbrowser.h"
+#include "modrinthmodbrowser.h"
 #include "localmodbrowsersettingsdialog.h"
 #include "gameversion.h"
 
@@ -34,11 +35,17 @@ ModManager::ModManager(QWidget *parent) :
     modDirList.append(modDirInfo);
     modDirList.append(modDirInfo2);
 
+    //Curseforge
     auto curseforgeModBrowser = new CurseforgeModBrowser(this);
-
     ui->modDirSelectorWidget->addItem("Curseforge");
     ui->stackedWidget->addWidget(curseforgeModBrowser);
 
+    //Modrinth
+    auto modrinthModBrowser = new ModrinthModBrowser(this);
+    ui->modDirSelectorWidget->addItem("Modrinth");
+    ui->stackedWidget->addWidget(modrinthModBrowser);
+
+    //Local
     for(const auto &modDirInfo : qAsConst(modDirList)){
         if(modDirInfo.exists()) {
             auto item = new QListWidgetItem(modDirInfo.getGameVersion());
@@ -50,7 +57,7 @@ ModManager::ModManager(QWidget *parent) :
         }
     }
 
-    //start update
+    //check and update version
     QFuture<void> future = QtConcurrent::run(&GameVersion::initVersionList);
     updateVersionsWatcher->setFuture(future);
     connect(updateVersionsWatcher, &QFutureWatcher<void>::finished, curseforgeModBrowser, &CurseforgeModBrowser::updateVersions);
@@ -87,8 +94,8 @@ void ModManager::on_newLocalBrowserButton_clicked()
 void ModManager::on_modDirSelectorWidget_doubleClicked(const QModelIndex &index)
 {
     auto row = index.row();
-    //exclude curseforge page
-    if(row <= 0) return;
+    //exclude curseforge and modrinth page
+    if(row <= 1) return;
 
     auto modDirInfo = modDirList.at(row - 1);
     auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);

@@ -31,7 +31,7 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     //thumbnail image
     auto attachmentsList = value(variant, "attachments").toList();
     if(!attachmentsList.isEmpty())
-        curseforgeModInfo.thumbnailUrl = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
+        curseforgeModInfo.iconUrl = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
 
     //latest file url
     auto latestFileList = value(variant, "latestFiles").toList();
@@ -68,12 +68,12 @@ const QStringList &CurseforgeModInfo::getAuthors() const
 
 const QUrl &CurseforgeModInfo::getThumbnailUrl() const
 {
-    return thumbnailUrl;
+    return iconUrl;
 }
 
-const QByteArray &CurseforgeModInfo::getThumbnailBytes() const
+const QByteArray &CurseforgeModInfo::getIconBytes() const
 {
-    return thumbnailBytes;
+    return iconBytes;
 }
 
 const QString &CurseforgeModInfo::getDescription() const

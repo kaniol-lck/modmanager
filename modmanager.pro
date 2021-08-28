@@ -17,6 +17,9 @@ SOURCES += \
     src/curseforge/curseforgemodinfo.cpp \
     src/local/localmod.cpp \
     src/modloadertype.cpp \
+    src/modrinth/modrinthapi.cpp \
+    src/modrinth/modrinthmod.cpp \
+    src/modrinth/modrinthmodinfo.cpp \
     src/ui/curseforgefileitemwidget.cpp \
     src/ui/curseforgemodbrowser.cpp \
     src/ui/curseforgemodinfodialog.cpp \
@@ -31,6 +34,8 @@ SOURCES += \
     src/moddirinfo.cpp \
     src/ui/localmodupdatedialog.cpp \
     src/ui/modmanager.cpp \
+    src/ui/modrinthmodbrowser.cpp \
+    src/ui/modrinthmoditemwidget.cpp \
     src/util/downloader.cpp \
     src/util/downloaderthread.cpp \
     src/util/funcutil.cpp \
@@ -43,6 +48,9 @@ HEADERS += \
     src/curseforge/curseforgemodinfo.h \
     src/local/localmod.h \
     src/modloadertype.h \
+    src/modrinth/modrinthapi.h \
+    src/modrinth/modrinthmod.h \
+    src/modrinth/modrinthmodinfo.h \
     src/ui/curseforgefileitemwidget.h \
     src/ui/curseforgemodbrowser.h \
     src/ui/curseforgemodinfodialog.h \
@@ -56,6 +64,8 @@ HEADERS += \
     src/moddirinfo.h \
     src/ui/localmodupdatedialog.h \
     src/ui/modmanager.h \
+    src/ui/modrinthmodbrowser.h \
+    src/ui/modrinthmoditemwidget.h \
     src/util/downloader.h \
     src/util/downloaderthread.h \
     src/util/funcutil.h \
@@ -72,7 +82,9 @@ FORMS += \
     src/ui/localmodinfodialog.ui \
     src/ui/localmoditemwidget.ui \
     src/ui/localmodupdatedialog.ui \
-    src/ui/modmanager.ui
+    src/ui/modmanager.ui \
+    src/ui/modrinthmodbrowser.ui \
+    src/ui/modrinthmoditemwidget.ui
 
 TRANSLATIONS += \
     languages/zh_CN.ts

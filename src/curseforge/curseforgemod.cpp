@@ -27,18 +27,18 @@ void CurseforgeMod::acquireBasicInfo()
     });
 }
 
-void CurseforgeMod::acquireThumbnail()
+void CurseforgeMod::acquireIcon()
 {
-    if(curseforgeModInfo.thumbnailUrl.isEmpty() || gettingThumbnail) return;
-    gettingThumbnail = true;
-    QNetworkRequest request(curseforgeModInfo.thumbnailUrl);
+    if(curseforgeModInfo.iconUrl.isEmpty() || gettingIcon) return;
+    gettingIcon = true;
+    QNetworkRequest request(curseforgeModInfo.iconUrl);
     auto reply = accessManager()->get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
-        gettingThumbnail = false;
+        gettingIcon = false;
         if(reply->error() != QNetworkReply::NoError) return;
-        curseforgeModInfo.thumbnailBytes = reply->readAll();
-        if(!curseforgeModInfo.thumbnailBytes.isEmpty())
-            emit thumbnailReady();
+        curseforgeModInfo.iconBytes = reply->readAll();
+        if(!curseforgeModInfo.iconBytes.isEmpty())
+            emit iconReady();
         reply->deleteLater();
     });
 }

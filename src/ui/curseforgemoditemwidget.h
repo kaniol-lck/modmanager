@@ -21,7 +21,7 @@ public:
     ~CurseforgeModItemWidget();
 
 private slots:
-    void updateThumbnail();
+    void updateIcon();
     void updateDownlaodSpeed();
 
     void on_downloadButton_clicked();

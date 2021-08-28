@@ -58,6 +58,11 @@ const QByteArray &LocalModInfo::getIconBytes() const
     return iconBytes;
 }
 
+const QStringList &LocalModInfo::getAuthors() const
+{
+    return authors;
+}
+
 bool LocalModInfo::acquireInfo(QString &path)
 {
     QFile modFile(path);
@@ -94,6 +99,7 @@ bool LocalModInfo::acquireInfo(QString &path)
     id = value(result, "id").toString();
     version = value(result, "version").toString();
     name = value(result, "name").toString();
+    authors = value(result, "authors").toStringList();
     description = value(result, "description").toString();
     sha1 = QCryptographicHash::hash(fileContent, QCryptographicHash::Sha1).toHex();
 

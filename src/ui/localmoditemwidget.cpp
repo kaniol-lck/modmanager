@@ -47,6 +47,7 @@ void LocalModItemWidget::updateInfo()
     ui->modName->setText(localMod->getModInfo().getName());
     ui->modVersion->setText(localMod->getModInfo().getVersion());
     ui->modDescription->setText(localMod->getModInfo().getDescription());
+    ui->modAuthors->setText(localMod->getModInfo().getAuthors().join("</b>, <b>").prepend("by <b>").append("</b>"));
 
     if(!localMod->getModInfo().getIconBytes().isEmpty()){
         QPixmap pixelmap;

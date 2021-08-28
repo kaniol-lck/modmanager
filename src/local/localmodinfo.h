@@ -25,12 +25,15 @@ public:
     const QString &getMurmurhash() const;
     const QByteArray &getIconBytes() const;
 
+    const QStringList &getAuthors() const;
+
 private:
     QDir modPath;
     QFileInfo modFileInfo;
     QString id;
     QString name;
     QString version;
+    QStringList authors;
     QString description;
     QString sha1;
     QString murmurhash;

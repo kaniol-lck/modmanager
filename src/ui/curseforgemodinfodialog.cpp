@@ -24,17 +24,17 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
         //included by basic info
         auto updateThumbnail = [=]{
             QPixmap pixelmap;
-            pixelmap.loadFromData(curseforgeMod->getModInfo().getThumbnailBytes());
+            pixelmap.loadFromData(curseforgeMod->getModInfo().getIconBytes());
             ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
             ui->modIcon->setCursor(Qt::ArrowCursor);
         };
 
-        if(!curseforgeMod->getModInfo().getThumbnailBytes().isEmpty())
+        if(!curseforgeMod->getModInfo().getIconBytes().isEmpty())
             updateThumbnail();
         else {
-            mod->acquireThumbnail();
+            mod->acquireIcon();
             ui->modIcon->setCursor(Qt::BusyCursor);
-            connect(curseforgeMod, &CurseforgeMod::thumbnailReady, this, updateThumbnail);
+            connect(curseforgeMod, &CurseforgeMod::iconReady, this, updateThumbnail);
         }
     };
 

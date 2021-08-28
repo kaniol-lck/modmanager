@@ -11,7 +11,7 @@
 class CurseforgeAPI : public QObject
 {
     Q_OBJECT
-    static const QString BASE_URL;
+    static const QString PREFIX;
 
 public:
     static CurseforgeAPI *api();

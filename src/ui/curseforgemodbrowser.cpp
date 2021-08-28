@@ -107,7 +107,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
             listItem->setHidden(!isShown);
             if(isShown){
                 shownCount++;
-                curseforgeMod->acquireThumbnail();
+                curseforgeMod->acquireIcon();
             }
         }
         if(shownCount != infoList.count() && shownCount == 0){
@@ -147,8 +147,8 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
         auto selectedLoaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
         auto isShown = selectedLoaderType == ModLoaderType::Any || mod->getModInfo().getModLoaders().contains(selectedLoaderType);
         //hidden -> shown, while not have downloaded thumbnail yet
-        if(isHidden && isShown && mod->getModInfo().getThumbnailBytes().isEmpty())
-            mod->acquireThumbnail();
+        if(isHidden && isShown && mod->getModInfo().getIconBytes().isEmpty())
+            mod->acquireIcon();
     }
 }
 

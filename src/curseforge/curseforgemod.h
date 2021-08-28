@@ -15,7 +15,7 @@ public:
     CurseforgeMod(QObject *parent, const CurseforgeModInfo &info);
 
     void acquireBasicInfo();
-    void acquireThumbnail();
+    void acquireIcon();
     void acquireDescription();
     void acquireAllFileList();
 
@@ -25,7 +25,7 @@ public:
 
 signals:
     void basicInfoReady();
-    void thumbnailReady();
+    void iconReady();
     void descriptionReady();
     void allFileListReady();
 
@@ -36,7 +36,7 @@ private:
     CurseforgeModInfo curseforgeModInfo;
 
     bool gettingBasicInfo = false;
-    bool gettingThumbnail = false;
+    bool gettingIcon = false;
     bool gettingDescription = false;
     bool gettingAllFileList = false;
 
