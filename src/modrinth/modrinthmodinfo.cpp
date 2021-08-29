@@ -2,7 +2,7 @@
 
 #include "util/tutil.hpp"
 
-ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
+ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
 {
     ModrinthModInfo modrinthModInfo;
     modrinthModInfo.basicInfo = true;
@@ -12,6 +12,24 @@ ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
     modrinthModInfo.author = value(variant, "author").toString();
     modrinthModInfo.summary = value(variant, "description").toString();
     modrinthModInfo.versions = value(variant, "versions").toStringList();
+    modrinthModInfo.downloadCount = value(variant, "downloads").toInt();
+    modrinthModInfo.iconUrl = value(variant, "icon_url").toUrl();
+
+    return modrinthModInfo;
+}
+
+ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
+{
+    ModrinthModInfo modrinthModInfo;
+    modrinthModInfo.basicInfo = true;
+    modrinthModInfo.fullInfo = true;
+
+    modrinthModInfo.id = value(variant, "id").toString();
+    modrinthModInfo.name = value(variant, "title").toString();
+    modrinthModInfo.author = value(variant, "author").toString();
+    modrinthModInfo.summary = value(variant, "description").toString();
+    modrinthModInfo.description = value(variant, "body").toString();
+//    modrinthModInfo.versions = value(variant, "versions").toStringList();
     modrinthModInfo.downloadCount = value(variant, "downloads").toInt();
     modrinthModInfo.iconUrl = value(variant, "icon_url").toUrl();
 
@@ -46,11 +64,6 @@ const QStringList &ModrinthModInfo::getVersions() const
 int ModrinthModInfo::getDownloadCount() const
 {
     return downloadCount;
-}
-
-const QUrl &ModrinthModInfo::getWebsite() const
-{
-    return website;
 }
 
 const QUrl &ModrinthModInfo::getIconUrl() const

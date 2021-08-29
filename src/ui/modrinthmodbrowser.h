@@ -22,6 +22,8 @@ private slots:
 
     void onSliderChanged(int i);
 
+    void on_modListWidget_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::ModrinthModBrowser *ui;
     QList<ModrinthMod*> modList;

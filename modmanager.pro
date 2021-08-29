@@ -35,6 +35,7 @@ SOURCES += \
     src/ui/localmodupdatedialog.cpp \
     src/ui/modmanager.cpp \
     src/ui/modrinthmodbrowser.cpp \
+    src/ui/modrinthmodinfodialog.cpp \
     src/ui/modrinthmoditemwidget.cpp \
     src/util/downloader.cpp \
     src/util/downloaderthread.cpp \
@@ -65,6 +66,7 @@ HEADERS += \
     src/ui/localmodupdatedialog.h \
     src/ui/modmanager.h \
     src/ui/modrinthmodbrowser.h \
+    src/ui/modrinthmodinfodialog.h \
     src/ui/modrinthmoditemwidget.h \
     src/util/downloader.h \
     src/util/downloaderthread.h \
@@ -84,6 +86,7 @@ FORMS += \
     src/ui/localmodupdatedialog.ui \
     src/ui/modmanager.ui \
     src/ui/modrinthmodbrowser.ui \
+    src/ui/modrinthmodinfodialog.ui \
     src/ui/modrinthmoditemwidget.ui
 
 TRANSLATIONS += \

@@ -3,6 +3,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
+#include "modrinthapi.h"
 #include "util/funcutil.h"
 
 ModrinthMod::ModrinthMod(QObject *parent, const ModrinthModInfo &info) :
@@ -30,5 +31,13 @@ void ModrinthMod::acquireIcon()
         if(!modInfo.iconBytes.isEmpty())
             emit iconReady();
         reply->deleteLater();
+    });
+}
+
+void ModrinthMod::acquireFullInfo()
+{
+    ModrinthAPI::getInfo(modInfo.id, [=](auto newInfo){
+        modInfo = newInfo;
+        emit fullInfoReady();
     });
 }

@@ -14,14 +14,17 @@ public:
     ModrinthModInfo getModInfo() const;
 
     void acquireIcon();
+    void acquireFullInfo();
 
 signals:
     void iconReady();
+    void fullInfoReady();
 
 private:
     ModrinthModInfo modInfo;
 
     bool gettingIcon = false;
+    bool gettingFullInfo = false;
 
 };
 

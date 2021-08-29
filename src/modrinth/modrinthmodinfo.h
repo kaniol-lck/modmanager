@@ -10,6 +10,7 @@ class ModrinthModInfo
 public:
     ModrinthModInfo() = default;
 
+    static ModrinthModInfo fromSearchVariant(const QVariant &variant);
     static ModrinthModInfo fromVariant(const QVariant &variant);
 
     const QString &getId() const;
@@ -23,8 +24,6 @@ public:
     const QStringList &getVersions() const;
 
     int getDownloadCount() const;
-
-    const QUrl &getWebsite() const;
 
     const QUrl &getIconUrl() const;
 
@@ -40,12 +39,11 @@ private:
     QString description;
     QStringList versions;
     int downloadCount;
-    QUrl website;
     QUrl iconUrl;
     QByteArray iconBytes;
 
     bool basicInfo = false;
-
+    bool fullInfo = false;
 };
 
 #endif // MODRINTHMODINFO_H

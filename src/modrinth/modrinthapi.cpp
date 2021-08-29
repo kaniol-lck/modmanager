@@ -66,12 +66,41 @@ void ModrinthAPI::searchMods(const QString name, int index, /*const GameVersion 
         QList<ModrinthModInfo> modInfoList;
 
         for(const auto &result : qAsConst(resultList)){
-            auto modrinthModInfo = ModrinthModInfo::fromVariant(result);
+            auto modrinthModInfo = ModrinthModInfo::fromSearchVariant(result);
             modInfoList.append(modrinthModInfo);
         }
         callback(modInfoList);
         reply->deleteLater();
     });
+}
+
+void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo)> callback)
+{
+    //id: "local-xxxxx" ???
+    QUrl url = PREFIX + "/api/v1/mod/" + id.right(id.size() - 6);
+    QNetworkRequest request(url);
+    auto reply = api()->accessManager.get(request);
+    connect(reply, &QNetworkReply::finished, api(), [=]{
+        if(reply->error() != QNetworkReply::NoError) {
+            qDebug() << reply->errorString();
+            return;
+        }
+
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return;
+        }
+
+        auto result = jsonDocument.toVariant();
+        auto modrinthModInfo = ModrinthModInfo::fromSearchVariant(result);
+
+        callback(modrinthModInfo);
+        reply->deleteLater();
+    });
+
 }
 
 ModrinthAPI::ModrinthAPI(QObject *parent) :

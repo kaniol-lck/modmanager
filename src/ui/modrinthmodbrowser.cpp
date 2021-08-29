@@ -4,6 +4,7 @@
 #include <QScrollBar>
 
 #include "modrinthmoditemwidget.h"
+#include "modrinthmodinfodialog.h"
 #include "modrinth/modrinthapi.h"
 #include "gameversion.h"
 #include "modloadertype.h"
@@ -83,5 +84,13 @@ void ModrinthModBrowser::getModList(QString name, int index)
             modrinthMod->acquireIcon();
         }
     });
+}
+
+
+void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
+{
+    auto mod = modList.at(index.row());
+    auto dialog = new ModrinthModInfoDialog(this, mod);
+    dialog->show();
 }
 
