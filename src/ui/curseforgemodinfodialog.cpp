@@ -62,7 +62,7 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
     //update file list
     auto updateFileList = [=]{
         ui->fileListWidget->clear();
-        auto files = curseforgeMod->getModInfo().getAllFiles();
+        auto files = curseforgeMod->getModInfo().getAllFileList();
         for(const auto &fileInfo : files){
             auto *listItem = new DateTimeSortItem();
             listItem->setData(DateTimeSortItem::Role, fileInfo.getFileDate());
@@ -75,7 +75,7 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
         ui->fileListWidget->setCursor(Qt::ArrowCursor);
     };
 
-    if(!curseforgeMod->getModInfo().getAllFiles().isEmpty())
+    if(!curseforgeMod->getModInfo().getAllFileList().isEmpty())
         updateFileList();
     else {
         ui->fileListWidget->setCursor(Qt::BusyCursor);

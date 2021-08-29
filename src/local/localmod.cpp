@@ -49,7 +49,7 @@ void LocalMod::checkUpdate(const GameVersion &mainVersion, ModLoaderType::Type l
 
     //update file list
     auto updateFileList = [=]{
-         auto& list = curseforgeMod->getModInfo().getAllFiles();
+         auto& list = curseforgeMod->getModInfo().getAllFileList();
          //select mod file for same game versions and mod loader type
          QList<CurseforgeFileInfo> list2;
          std::insert_iterator<QList<CurseforgeFileInfo>> iter(list2, list2.begin());
@@ -73,7 +73,7 @@ void LocalMod::checkUpdate(const GameVersion &mainVersion, ModLoaderType::Type l
              emit updateReady(false);
     };
 
-    if(!curseforgeMod->getModInfo().getAllFiles().isEmpty())
+    if(!curseforgeMod->getModInfo().getAllFileList().isEmpty())
         updateFileList();
     else {
         curseforgeMod->acquireAllFileList();

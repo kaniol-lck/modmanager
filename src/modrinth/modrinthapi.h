@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "modrinthmodinfo.h"
+#include "modrinthfileinfo.h"
 #include "gameversion.h"
 #include "modloadertype.h"
 
@@ -18,6 +19,7 @@ public:
 
     static void searchMods(const QString name, int index, int sort, std::function<void (QList<ModrinthModInfo>)> callback);
     static void getInfo(const QString &id, std::function<void (ModrinthModInfo)> callback);
+    static void getVersion(const QString &version, std::function<void (ModrinthFileInfo)> callback);
 
 private:
     explicit ModrinthAPI(QObject *parent = nullptr);

@@ -36,7 +36,7 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     //latest file url
     auto latestFileList = value(variant, "latestFiles").toList();
     for(const auto &variant : latestFileList)
-        curseforgeModInfo.latestFiles.append(CurseforgeFileInfo::fromVariant(variant));
+        curseforgeModInfo.latestFileList.append(CurseforgeFileInfo::fromVariant(variant));
 
     return curseforgeModInfo;
 }
@@ -106,15 +106,15 @@ bool CurseforgeModInfo::isRiftMod() const
     return modLoaders.contains(ModLoaderType::Rift);
 }
 
-const QList<CurseforgeFileInfo> &CurseforgeModInfo::getLatestFiles() const
+const QList<CurseforgeFileInfo> &CurseforgeModInfo::getLatestFileList() const
 {
-    return latestFiles;
+    return latestFileList;
 }
 
 std::optional<CurseforgeFileInfo> CurseforgeModInfo::getlatestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const
 {
     //latest last
-    for(auto iter = latestFiles.rbegin(); iter < latestFiles.rend(); iter++){
+    for(auto iter = latestFileList.rbegin(); iter < latestFileList.rend(); iter++){
         if((version == GameVersion::ANY || iter->getGameVersions().contains(version) || iter->getGameVersions().isEmpty()) &&
                 (loaderType == ModLoaderType::Any || iter->getModLoaders().contains(loaderType) || iter->getModLoaders().isEmpty()))
             return {*iter};
@@ -122,14 +122,14 @@ std::optional<CurseforgeFileInfo> CurseforgeModInfo::getlatestFileInfo(const Gam
     return std::nullopt;
 }
 
-const QList<CurseforgeFileInfo> &CurseforgeModInfo::getAllFiles() const
+const QList<CurseforgeFileInfo> &CurseforgeModInfo::getAllFileList() const
 {
-    return allFiles;
+    return allFileList;
 }
 
 void CurseforgeModInfo::setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles)
 {
-    latestFiles = newLatestFiles;
+    latestFileList = newLatestFiles;
 }
 
 bool CurseforgeModInfo::hasBasicInfo() const

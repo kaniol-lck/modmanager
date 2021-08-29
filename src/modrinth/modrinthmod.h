@@ -15,16 +15,19 @@ public:
 
     void acquireIcon();
     void acquireFullInfo();
+    void acquireFileList();
 
 signals:
     void iconReady();
     void fullInfoReady();
+    void fileListReady();
 
 private:
     ModrinthModInfo modInfo;
 
     bool gettingIcon = false;
     bool gettingFullInfo = false;
+    bool gettingFileList = false;
 
 };
 

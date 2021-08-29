@@ -4,6 +4,8 @@
 #include <QVariant>
 #include <QUrl>
 
+#include "modrinthfileinfo.h"
+
 class ModrinthModInfo
 {
     friend class ModrinthMod;
@@ -31,16 +33,28 @@ public:
 
     const QString &getSummary() const;
 
+    const QUrl &getWebsiteUrl() const;
+
+    const QList<ModrinthFileInfo> &getFileList() const;
+
+    const QList<GameVersion> &getGameVersions() const;
+
+    const QStringList &getVersionList() const;
+
 private:
     QString id;
     QString author;
     QString name;
     QString summary;
     QString description;
-    QStringList versions;
+    QList<GameVersion> gameVersions;
     int downloadCount;
+    QUrl websiteUrl;
     QUrl iconUrl;
     QByteArray iconBytes;
+
+    QStringList versionList;
+    QList<ModrinthFileInfo> fileList;
 
     bool basicInfo = false;
     bool fullInfo = false;

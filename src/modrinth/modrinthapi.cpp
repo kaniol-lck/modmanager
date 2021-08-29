@@ -95,11 +95,40 @@ void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo
         }
 
         auto result = jsonDocument.toVariant();
-        auto modrinthModInfo = ModrinthModInfo::fromSearchVariant(result);
+        auto modrinthModInfo = ModrinthModInfo::fromVariant(result);
 
         callback(modrinthModInfo);
         reply->deleteLater();
     });
+
+}
+
+void ModrinthAPI::getVersion(const QString &version, std::function<void (ModrinthFileInfo)> callback)
+{
+    QUrl url = PREFIX + "/api/v1/version/" + version;
+    QNetworkRequest request(url);
+    auto reply = api()->accessManager.get(request);
+    connect(reply, &QNetworkReply::finished, api(), [=]{
+        if(reply->error() != QNetworkReply::NoError) {
+            qDebug() << reply->errorString();
+            return;
+        }
+
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return;
+        }
+
+        auto result = jsonDocument.toVariant();
+        auto modrinthFileInfo = ModrinthFileInfo::fromVariant(result);
+
+        callback(modrinthFileInfo);
+        reply->deleteLater();
+    });
+
 
 }
 

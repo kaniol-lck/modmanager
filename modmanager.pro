@@ -18,6 +18,7 @@ SOURCES += \
     src/local/localmod.cpp \
     src/modloadertype.cpp \
     src/modrinth/modrinthapi.cpp \
+    src/modrinth/modrinthfileinfo.cpp \
     src/modrinth/modrinthmod.cpp \
     src/modrinth/modrinthmodinfo.cpp \
     src/ui/curseforgefileitemwidget.cpp \
@@ -34,6 +35,7 @@ SOURCES += \
     src/moddirinfo.cpp \
     src/ui/localmodupdatedialog.cpp \
     src/ui/modmanager.cpp \
+    src/ui/modrinthfileitemwidget.cpp \
     src/ui/modrinthmodbrowser.cpp \
     src/ui/modrinthmodinfodialog.cpp \
     src/ui/modrinthmoditemwidget.cpp \
@@ -50,6 +52,7 @@ HEADERS += \
     src/local/localmod.h \
     src/modloadertype.h \
     src/modrinth/modrinthapi.h \
+    src/modrinth/modrinthfileinfo.h \
     src/modrinth/modrinthmod.h \
     src/modrinth/modrinthmodinfo.h \
     src/ui/curseforgefileitemwidget.h \
@@ -65,6 +68,7 @@ HEADERS += \
     src/moddirinfo.h \
     src/ui/localmodupdatedialog.h \
     src/ui/modmanager.h \
+    src/ui/modrinthfileitemwidget.h \
     src/ui/modrinthmodbrowser.h \
     src/ui/modrinthmodinfodialog.h \
     src/ui/modrinthmoditemwidget.h \
@@ -85,6 +89,7 @@ FORMS += \
     src/ui/localmoditemwidget.ui \
     src/ui/localmodupdatedialog.ui \
     src/ui/modmanager.ui \
+    src/ui/modrinthfileitemwidget.ui \
     src/ui/modrinthmodbrowser.ui \
     src/ui/modrinthmodinfodialog.ui \
     src/ui/modrinthmoditemwidget.ui

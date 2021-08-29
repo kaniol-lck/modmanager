@@ -60,7 +60,7 @@ void CurseforgeMod::acquireAllFileList()
     gettingAllFileList = true;
     CurseforgeAPI::getFiles(curseforgeModInfo.getId(), [=](const QList<CurseforgeFileInfo> &fileList){
         gettingAllFileList = false;
-        curseforgeModInfo.allFiles = fileList;
+        curseforgeModInfo.allFileList = fileList;
         emit allFileListReady();
     });
 }

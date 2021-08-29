@@ -2,6 +2,7 @@
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <memory>
 
 #include "modrinthapi.h"
 #include "util/funcutil.h"
@@ -36,8 +37,29 @@ void ModrinthMod::acquireIcon()
 
 void ModrinthMod::acquireFullInfo()
 {
-    ModrinthAPI::getInfo(modInfo.id, [=](auto newInfo){
-        modInfo = newInfo;
+    if(gettingFullInfo) return;
+    gettingFullInfo = true;
+    ModrinthAPI::getInfo(modInfo.id, [=](const auto &newInfo){
+        gettingFullInfo = false;
+        modInfo.description = newInfo.description;
+        modInfo.versionList = newInfo.versionList;
         emit fullInfoReady();
     });
+}
+
+void ModrinthMod::acquireFileList()
+{
+    if(gettingFileList) return;
+    gettingFileList = true;
+
+    auto count = std::make_shared<int>(modInfo.versionList.size());
+
+    for(const auto &version : qAsConst(modInfo.versionList)){
+        ModrinthAPI::getVersion(version, [=](const auto &file){
+            modInfo.fileList << file;
+            (*count)--;
+            if(*count == 0)
+                emit fileListReady();
+        });
+    }
 }

@@ -1,7 +1,12 @@
 #include "modrinthmodinfodialog.h"
 #include "ui_modrinthmodinfodialog.h"
 
-#include <modrinth/modrinthmod.h>
+#include <QTextDocument>
+#include <QDebug>
+
+#include "modrinthfileitemwidget.h"
+#include "modrinth/modrinthmod.h"
+#include "util/datetimesortitem.h"
 
 ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) :
     QDialog(parent),
@@ -14,7 +19,7 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
         setWindowTitle(mod->getModInfo().getName() + tr(" - Modrinth"));
         ui->modName->setText(mod->getModInfo().getName());
         ui->modSummary->setText(mod->getModInfo().getSummary());
-        //    ui->modUrl->setText(QString("<a href= \"%1\">%1</a>").arg(mod->getModInfo().getWebsiteUrl().toString()));
+            ui->modUrl->setText(QString("<a href= \"%1\">%1</a>").arg(mod->getModInfo().getWebsiteUrl().toString()));
         ui->modAuthors->setText("by " + mod->getModInfo().getAuthor());
 
         //update icon
@@ -39,9 +44,35 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
 
     //update full info
     auto updateFullInfo = [=]{
-        updateBasicInfo();
-        ui->modDescription->setText(mod->getModInfo().getDescription());
+//        updateBasicInfo();
+        auto text = mod->getModInfo().getDescription();
+        text.replace("<br>", "\n");
+        ui->modDescription->setMarkdown(text);
         ui->modDescription->setCursor(Qt::ArrowCursor);
+
+        //update file list
+        auto updateFileList = [=]{
+            ui->fileListWidget->clear();
+            auto files = mod->getModInfo().getFileList();
+            for(const auto &fileInfo : qAsConst(files)){
+                auto *listItem = new DateTimeSortItem();
+                listItem->setData(DateTimeSortItem::Role, fileInfo.getFileDate());
+                listItem->setSizeHint(QSize(500, 90));
+                auto itemWidget = new ModrinthFileItemWidget(this, fileInfo);
+                ui->fileListWidget->addItem(listItem);
+                ui->fileListWidget->setItemWidget(listItem, itemWidget);
+            }
+            ui->fileListWidget->sortItems(Qt::DescendingOrder);
+            ui->fileListWidget->setCursor(Qt::ArrowCursor);
+        };
+
+        if(!mod->getModInfo().getFileList().isEmpty())
+            updateFileList();
+        else {
+            ui->fileListWidget->setCursor(Qt::BusyCursor);
+            mod->acquireFileList();
+            connect(mod, &ModrinthMod::fileListReady, this, updateFileList);
+        }
     };
 
     if(!mod->getModInfo().getDescription().isEmpty())
@@ -51,6 +82,7 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
         mod->acquireFullInfo();
         connect(mod, &ModrinthMod::fullInfoReady, this, updateFullInfo);
     }
+
 }
 
 ModrinthModInfoDialog::~ModrinthModInfoDialog()
