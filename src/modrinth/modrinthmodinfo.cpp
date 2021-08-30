@@ -4,39 +4,38 @@
 
 ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
 {
-    ModrinthModInfo modrinthModInfo;
-    modrinthModInfo.basicInfo = true;
+    ModrinthModInfo modInfo;
+    modInfo.basicInfo = true;
 
-    modrinthModInfo.id = value(variant, "mod_id").toString();
-    modrinthModInfo.name = value(variant, "title").toString();
-    modrinthModInfo.author = value(variant, "author").toString();
-    modrinthModInfo.summary = value(variant, "description").toString();
-    modrinthModInfo.downloadCount = value(variant, "downloads").toInt();
-    modrinthModInfo.iconUrl = value(variant, "icon_url").toUrl();
-    modrinthModInfo.websiteUrl = value(variant, "page_url").toUrl();
+    modInfo.id = value(variant, "mod_id").toString();
+    modInfo.name = value(variant, "title").toString();
+    modInfo.author = value(variant, "author").toString();
+    modInfo.summary = value(variant, "description").toString();
+    modInfo.downloadCount = value(variant, "downloads").toInt();
+    modInfo.iconUrl = value(variant, "icon_url").toUrl();
+    modInfo.websiteUrl = value(variant, "page_url").toUrl();
 
     for(const auto &v : value(variant, "versions").toList())
-        modrinthModInfo.gameVersions << GameVersion(v.toString());
+        modInfo.gameVersions << GameVersion(v.toString());
 
-    return modrinthModInfo;
+    return modInfo;
 }
 
 ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
 {
-    ModrinthModInfo modrinthModInfo;
-    modrinthModInfo.basicInfo = true;
-    modrinthModInfo.fullInfo = true;
+    ModrinthModInfo modInfo;
+    modInfo.basicInfo = true;
+    modInfo.fullInfo = true;
 
-    modrinthModInfo.id = value(variant, "id").toString();
-    modrinthModInfo.name = value(variant, "title").toString();
-//    modrinthModInfo.author = value(variant, "author").toString();
-    modrinthModInfo.summary = value(variant, "description").toString();
-    modrinthModInfo.description = value(variant, "body").toString();
-    modrinthModInfo.downloadCount = value(variant, "downloads").toInt();
-    modrinthModInfo.iconUrl = value(variant, "icon_url").toUrl();
-    modrinthModInfo.versionList = value(variant, "versions").toStringList();
+    modInfo.id = value(variant, "id").toString();
+    modInfo.name = value(variant, "title").toString();
+    modInfo.summary = value(variant, "description").toString();
+    modInfo.description = value(variant, "body").toString();
+    modInfo.downloadCount = value(variant, "downloads").toInt();
+    modInfo.iconUrl = value(variant, "icon_url").toUrl();
+    modInfo.versionList = value(variant, "versions").toStringList();
 
-    return modrinthModInfo;
+    return modInfo;
 }
 
 const QString &ModrinthModInfo::getId() const

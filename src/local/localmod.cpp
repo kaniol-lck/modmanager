@@ -3,6 +3,7 @@
 #include "curseforge/curseforgeapi.h"
 #include "curseforge/curseforgemod.h"
 #include "util/downloader.h"
+#include "config.h"
 
 #include <iterator>
 #include <algorithm>
@@ -81,7 +82,7 @@ void LocalMod::checkUpdate(const GameVersion &mainVersion, ModLoaderType::Type l
     }
 }
 
-void LocalMod::update(bool deleteOld)
+void LocalMod::update()
 {
     if(!updateFileInfo.has_value()){
         qDebug() << localModInfo.getName() << "no update file.";
@@ -105,7 +106,7 @@ void LocalMod::update(bool deleteOld)
         auto newPath = dir.absoluteFilePath(updateFileInfo->getFileName());
 
         //delete old mod file
-        if(deleteOld){
+        if(Config().getDeleteOld()){
             QFile file(oldPath.absolutePath());
             file.remove();
 

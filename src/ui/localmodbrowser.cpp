@@ -8,6 +8,7 @@
 #include "localmoditemwidget.h"
 #include "localmodinfodialog.h"
 #include "localmodupdatedialog.h"
+#include "config.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, const ModDirInfo &info) :
     QWidget(parent),
@@ -39,7 +40,7 @@ void LocalModBrowser::updateModList()
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, localMod);
         localMod->searchOnCurseforge();
         connect(localMod, &LocalMod::curseforgeReady, this, [=](bool bl){
-            if(bl) localMod->checkUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
+            if(bl && Config().getAutoCheckUpdate()) localMod->checkUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
         });
         modList << localMod;
 

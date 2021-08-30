@@ -6,32 +6,32 @@
 
 CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
 {
-    CurseforgeFileInfo curseforgeFileInfo;
+    CurseforgeFileInfo fileInfo;
 
-    curseforgeFileInfo.id = value(variant, "id").toInt();
-    curseforgeFileInfo.displayName = value(variant, "displayName").toString();
-    curseforgeFileInfo.fileName = value(variant, "fileName").toString();
-    curseforgeFileInfo.downloadUrl = value(variant, "downloadUrl").toUrl();
-    curseforgeFileInfo.fileLength = value(variant, "fileLength").toInt();
-    curseforgeFileInfo.releaseType = value(variant, "releaseType").toInt();
-    curseforgeFileInfo.fileDate = value(variant, "fileDate").toDateTime();
+    fileInfo.id = value(variant, "id").toInt();
+    fileInfo.displayName = value(variant, "displayName").toString();
+    fileInfo.fileName = value(variant, "fileName").toString();
+    fileInfo.downloadUrl = value(variant, "downloadUrl").toUrl();
+    fileInfo.fileLength = value(variant, "fileLength").toInt();
+    fileInfo.releaseType = value(variant, "releaseType").toInt();
+    fileInfo.fileDate = value(variant, "fileDate").toDateTime();
 
     //I don't know why curseforge put game verison and modloader together
     auto versionList = value(variant, "gameVersion").toStringList();
     for(const auto &version : versionList){
         auto v = GameVersion::deduceFromString(version);
         if(v.has_value()){
-            curseforgeFileInfo.gameVersions << v.value();
+            fileInfo.gameVersions << v.value();
             continue;
         }
         auto loaderType = ModLoaderType::fromString(version);
         if(loaderType != ModLoaderType::Any){
-            curseforgeFileInfo.modLoaders << loaderType;
+            fileInfo.modLoaders << loaderType;
             continue;
         }
     }
 
-    return curseforgeFileInfo;
+    return fileInfo;
 }
 
 int CurseforgeFileInfo::getId() const

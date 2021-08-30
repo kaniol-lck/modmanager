@@ -11,6 +11,7 @@ CONFIG += c++17
 INCLUDEPATH += $$PWD/src
 
 SOURCES += \
+    src/config.cpp \
     src/curseforge/curseforgeapi.cpp \
     src/curseforge/curseforgefileinfo.cpp \
     src/curseforge/curseforgemod.cpp \
@@ -39,12 +40,14 @@ SOURCES += \
     src/ui/modrinthmodbrowser.cpp \
     src/ui/modrinthmodinfodialog.cpp \
     src/ui/modrinthmoditemwidget.cpp \
+    src/ui/preferences.cpp \
     src/util/downloader.cpp \
     src/util/downloaderthread.cpp \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp
 
 HEADERS += \
+    src/config.h \
     src/curseforge/curseforgeapi.h \
     src/curseforge/curseforgefileinfo.h \
     src/curseforge/curseforgemod.h \
@@ -72,6 +75,7 @@ HEADERS += \
     src/ui/modrinthmodbrowser.h \
     src/ui/modrinthmodinfodialog.h \
     src/ui/modrinthmoditemwidget.h \
+    src/ui/preferences.h \
     src/util/downloader.h \
     src/util/downloaderthread.h \
     src/util/funcutil.h \
@@ -92,7 +96,8 @@ FORMS += \
     src/ui/modrinthfileitemwidget.ui \
     src/ui/modrinthmodbrowser.ui \
     src/ui/modrinthmodinfodialog.ui \
-    src/ui/modrinthmoditemwidget.ui
+    src/ui/modrinthmoditemwidget.ui \
+    src/ui/preferences.ui
 
 TRANSLATIONS += \
     languages/zh_CN.ts

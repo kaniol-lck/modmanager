@@ -24,7 +24,7 @@ public:
 
     void checkUpdate(const GameVersion &version, ModLoaderType::Type loaderType);
 
-    void update(bool deleteOld = true);
+    void update();
 
     std::optional<CurseforgeFileInfo> getCurrentCurseforgeFileInfo() const;
 

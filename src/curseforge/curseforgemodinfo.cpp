@@ -11,34 +11,34 @@ CurseforgeModInfo::CurseforgeModInfo(int addonId) :
 
 CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
 {
-    CurseforgeModInfo curseforgeModInfo;
+    CurseforgeModInfo modInfo;
 
-    curseforgeModInfo.basicInfo = true;
-    curseforgeModInfo.id = value(variant, "id").toInt();
-    curseforgeModInfo.name = value(variant, "name").toString();
-    curseforgeModInfo.summary = value(variant, "summary").toString();
-    curseforgeModInfo.websiteUrl = value(variant, "websiteUrl").toUrl();
-    curseforgeModInfo.downloadCount = value(variant, "downloadCount").toInt();
+    modInfo.basicInfo = true;
+    modInfo.id = value(variant, "id").toInt();
+    modInfo.name = value(variant, "name").toString();
+    modInfo.summary = value(variant, "summary").toString();
+    modInfo.websiteUrl = value(variant, "websiteUrl").toUrl();
+    modInfo.downloadCount = value(variant, "downloadCount").toInt();
 
     for(const auto &str : value(variant, "modLoaders").toStringList())
-        curseforgeModInfo.modLoaders << ModLoaderType::fromString(str);
+        modInfo.modLoaders << ModLoaderType::fromString(str);
 
     //authors
     auto authorsList = value(variant, "authors").toList();
     for(const auto &author : qAsConst(authorsList))
-        curseforgeModInfo.authors << value(author, "name").toString();
+        modInfo.authors << value(author, "name").toString();
 
     //thumbnail image
     auto attachmentsList = value(variant, "attachments").toList();
     if(!attachmentsList.isEmpty())
-        curseforgeModInfo.iconUrl = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
+        modInfo.iconUrl = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
 
     //latest file url
     auto latestFileList = value(variant, "latestFiles").toList();
     for(const auto &variant : latestFileList)
-        curseforgeModInfo.latestFileList.append(CurseforgeFileInfo::fromVariant(variant));
+        modInfo.latestFileList.append(CurseforgeFileInfo::fromVariant(variant));
 
-    return curseforgeModInfo;
+    return modInfo;
 }
 
 int CurseforgeModInfo::getId() const

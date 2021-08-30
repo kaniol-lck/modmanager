@@ -5,30 +5,30 @@
 ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
 {
 
-    ModrinthFileInfo modrinthFileInfo;
+    ModrinthFileInfo fileInfo;
 
-    modrinthFileInfo.id = value(variant, "id").toString();
-    modrinthFileInfo.modId = value(variant, "mod_id").toString();
-    modrinthFileInfo.displayName = value(variant, "name").toString();
-    modrinthFileInfo.releaseType = value(variant, "version_type").toInt();
-    modrinthFileInfo.fileDate = value(variant, "date_published").toDateTime();
+    fileInfo.id = value(variant, "id").toString();
+    fileInfo.modId = value(variant, "mod_id").toString();
+    fileInfo.displayName = value(variant, "name").toString();
+    fileInfo.releaseType = value(variant, "version_type").toInt();
+    fileInfo.fileDate = value(variant, "date_published").toDateTime();
 
     auto files = value(variant, "files").toList();
 
     if(!files.isEmpty()){
-        modrinthFileInfo.fileName = value(files.at(0), "filename").toString();
-        modrinthFileInfo.downloadUrl = value(files.at(0), "url").toUrl();
+        fileInfo.fileName = value(files.at(0), "filename").toString();
+        fileInfo.downloadUrl = value(files.at(0), "url").toUrl();
     }
 
     auto versionList = value(variant, "game_versions").toStringList();
     for(const auto &version : versionList)
-        modrinthFileInfo.gameVersions << GameVersion(version);
+        fileInfo.gameVersions << GameVersion(version);
 
     auto loaderList = value(variant, "loaders").toStringList();
     for(const auto &loader : loaderList)
-        modrinthFileInfo.modLoaders << ModLoaderType::fromString(loader);
+        fileInfo.modLoaders << ModLoaderType::fromString(loader);
 
-    return modrinthFileInfo;
+    return fileInfo;
 }
 
 const QString &ModrinthFileInfo::getId() const

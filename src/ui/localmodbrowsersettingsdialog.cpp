@@ -70,6 +70,6 @@ void LocalModBrowserSettingsDialog::on_buttonBox_accepted()
     emit settingsUpdated(ModDirInfo(
                              QDir(ui->modsDirText->text()),
                              ui->versionSelect->currentText(),
-                             ModLoaderType::fromIndex(ui->loaderSelect->currentIndex())));
+                             ModLoaderType::fromString(ui->loaderSelect->currentText())));
 }
 

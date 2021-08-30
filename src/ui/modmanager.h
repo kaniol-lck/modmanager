@@ -29,6 +29,8 @@ private slots:
 
     void on_modDirSelectorWidget_doubleClicked(const QModelIndex &index);
 
+    void on_actionPreferences_triggered();
+
 private:
     Ui::ModManager *ui;
     QList<ModDirInfo> modDirList;
