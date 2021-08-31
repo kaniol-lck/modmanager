@@ -22,6 +22,7 @@ SOURCES += \
     src/modrinth/modrinthfileinfo.cpp \
     src/modrinth/modrinthmod.cpp \
     src/modrinth/modrinthmodinfo.cpp \
+    src/ui/browsermanagerdialog.cpp \
     src/ui/curseforgefileitemwidget.cpp \
     src/ui/curseforgemodbrowser.cpp \
     src/ui/curseforgemodinfodialog.cpp \
@@ -58,6 +59,7 @@ HEADERS += \
     src/modrinth/modrinthfileinfo.h \
     src/modrinth/modrinthmod.h \
     src/modrinth/modrinthmodinfo.h \
+    src/ui/browsermanagerdialog.h \
     src/ui/curseforgefileitemwidget.h \
     src/ui/curseforgemodbrowser.h \
     src/ui/curseforgemodinfodialog.h \
@@ -83,6 +85,7 @@ HEADERS += \
     src/util/datetimesortitem.h
 
 FORMS += \
+    src/ui/browsermanagerdialog.ui \
     src/ui/curseforgefileitemwidget.ui \
     src/ui/curseforgemodbrowser.ui \
     src/ui/curseforgemodinfodialog.ui \

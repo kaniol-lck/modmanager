@@ -14,6 +14,7 @@
 #include "curseforgemodbrowser.h"
 #include "modrinthmodbrowser.h"
 #include "preferences.h"
+#include "browsermanagerdialog.h"
 #include "localmodbrowsersettingsdialog.h"
 #include "gameversion.h"
 #include "config.h"
@@ -31,12 +32,10 @@ ModManager::ModManager(QWidget *parent) :
         widget->deleteLater();
     }
 
+    //load mod dirs in config
     Config config;
-    for(const auto &e : config.getDirList()){
-        auto m = e.toMap();
-        ModDirInfo dirInfo(QDir(m.value("dir").toString()), GameVersion(m.value("gameVersion").toString()), ModLoaderType::fromString(m.value("loaderType").toString()));
-        modDirList << dirInfo;
-    }
+    for(const auto &variant : config.getDirList())
+        modDirList << ModDirInfo::fromVariant(variant);
 
     //Curseforge
     auto curseforgeModBrowser = new CurseforgeModBrowser(this);
@@ -51,7 +50,7 @@ ModManager::ModManager(QWidget *parent) :
     //Local
     for(const auto &modDirInfo : qAsConst(modDirList)){
         if(modDirInfo.exists()) {
-            auto item = new QListWidgetItem(modDirInfo.getGameVersion() + " - " + ModLoaderType::toString(modDirInfo.getLoaderType()));
+            auto item = new QListWidgetItem(modDirInfo.showText());
             auto localModBrowser = new LocalModBrowser(this, modDirInfo);
             dirWidgetItemList.append(item);
             localModBrowserList.append(localModBrowser);
@@ -71,6 +70,53 @@ ModManager::~ModManager()
     delete ui;
 }
 
+void ModManager::refreshBrowsers()
+{
+    //load mod dirs in config
+    Config config;
+    auto oldCount = modDirList.size();
+    for(const auto &variant : config.getDirList()){
+        auto modDirInfo = ModDirInfo::fromVariant(variant);
+        if(!modDirInfo.exists()) continue;
+        auto i = modDirList.indexOf(modDirInfo);
+        if(i < 0){
+            //not present, new one
+            modDirList << modDirInfo;
+            auto item = new QListWidgetItem(modDirInfo.showText());
+            auto localModBrowser = new LocalModBrowser(this, modDirInfo);
+            dirWidgetItemList.append(item);
+            localModBrowserList.append(localModBrowser);
+            ui->modDirSelectorWidget->addItem(item);
+            ui->stackedWidget->addWidget(localModBrowser);
+        } else{
+            //present, move position
+            oldCount--;
+            auto j = i + 2;
+            modDirList << modDirList.takeAt(i);
+            dirWidgetItemList << dirWidgetItemList.takeAt(i);
+            localModBrowserList << localModBrowserList.takeAt(i);
+            ui->modDirSelectorWidget->addItem(ui->modDirSelectorWidget->takeItem(j));
+            auto widget = ui->stackedWidget->widget(j);
+            ui->stackedWidget->removeWidget(widget);
+            ui->stackedWidget->addWidget(widget);
+        }
+    }
+    //remove remained mod dir
+    auto i = oldCount;
+    while (i--) {
+        auto j = i + 2;
+        modDirList.removeAt(i);
+        dirWidgetItemList.removeAt(i);
+        localModBrowserList.at(i);
+        delete ui->modDirSelectorWidget->takeItem(j);
+        auto widget = ui->stackedWidget->widget(j);
+        ui->stackedWidget->removeWidget(widget);
+        //TODO: remove it improperly will cause program to crash
+//        widget->deleteLater();
+    }
+
+}
+
 void ModManager::on_modDirSelectorWidget_currentRowChanged(int currentRow)
 {
     ui->stackedWidget->setCurrentIndex(currentRow);
@@ -81,7 +127,7 @@ void ModManager::on_newLocalBrowserButton_clicked()
     auto dialog = new LocalModBrowserSettingsDialog(this);
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &modDirInfo){
         modDirList << modDirInfo;
-        auto item = new QListWidgetItem(modDirInfo.getGameVersion() + " - " + ModLoaderType::toString(modDirInfo.getLoaderType()));
+        auto item = new QListWidgetItem(modDirInfo.showText());
         auto localModBrowser = new LocalModBrowser(this, modDirInfo);
         dirWidgetItemList.append(item);
         localModBrowserList.append(localModBrowser);
@@ -90,14 +136,8 @@ void ModManager::on_newLocalBrowserButton_clicked()
 
         Config config;
         QList<QVariant> list;
-        for(const auto &dirInfo : qAsConst(modDirList)){
-            QMap<QString, QVariant> map;
-            map["dir"] = dirInfo.getModDir().path();
-            map["gameVersion"] = QString(dirInfo.getGameVersion());
-            map["loaderType"] = ModLoaderType::toString(dirInfo.getLoaderType());
-            list << QVariant::fromValue(map);
-        }
-        qDebug() << list;
+        for(const auto &dirInfo : qAsConst(modDirList))
+            list << dirInfo.toVariant();
         config.setDirList(list);
     });
     connect(updateVersionsWatcher, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
@@ -116,7 +156,7 @@ void ModManager::on_modDirSelectorWidget_doubleClicked(const QModelIndex &index)
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
         //exclude curseforge and modrinth page
         modDirList[row - 2] = newInfo;
-        dirWidgetItemList[row - 2]->setText(newInfo.getGameVersion() + " - " + ModLoaderType::toString(modDirInfo.getLoaderType()));
+        dirWidgetItemList[row - 2]->setText(newInfo.showText());
         localModBrowserList[row - 2]->setModDirInfo(newInfo);
     });
     connect(updateVersionsWatcher, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
@@ -128,5 +168,13 @@ void ModManager::on_actionPreferences_triggered()
 {
     auto preferences = new Preferences(this);
     preferences->show();
+}
+
+
+void ModManager::on_actionManage_Browser_triggered()
+{
+    auto dialog = new BrowserManagerDialog(this);
+    connect(dialog, &BrowserManagerDialog::accepted, this, &ModManager::refreshBrowsers);
+    dialog->show();
 }
 

@@ -9,7 +9,16 @@
 class ModDirInfo
 {
 public:
+    ModDirInfo() = default;
     ModDirInfo(const QDir &dir, const GameVersion &version, ModLoaderType::Type type);
+
+    bool operator==(const ModDirInfo &other) const;
+    bool operator!=(const ModDirInfo &other) const;
+
+    static ModDirInfo fromVariant(const QVariant &variant);
+    QVariant toVariant() const;
+
+    QString showText() const;
 
     bool exists() const;
 

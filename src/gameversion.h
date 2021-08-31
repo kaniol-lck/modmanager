@@ -15,8 +15,8 @@ public:
     const QString &getVersionString() const;
 
     operator QString() const;
-    bool operator==(const GameVersion& another) const;
-    bool operator!=(const GameVersion& another) const;
+    bool operator==(const GameVersion &other) const;
+    bool operator!=(const GameVersion &other) const;
 
     static std::optional<GameVersion> deduceFromString(const QString &string);
 

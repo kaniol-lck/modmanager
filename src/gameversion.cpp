@@ -38,9 +38,9 @@ GameVersion::operator QString() const
     return versionString;
 }
 
-bool GameVersion::operator==(const GameVersion &another) const
+bool GameVersion::operator==(const GameVersion &other) const
 {
-    return versionString == another.versionString;
+    return versionString == other.versionString;
 }
 
 bool GameVersion::operator!=(const GameVersion &another) const

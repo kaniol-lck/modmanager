@@ -23,6 +23,8 @@ public:
     ~ModManager();
 
 private slots:
+    void refreshBrowsers();
+
     void on_modDirSelectorWidget_currentRowChanged(int currentRow);
 
     void on_newLocalBrowserButton_clicked();
@@ -30,6 +32,8 @@ private slots:
     void on_modDirSelectorWidget_doubleClicked(const QModelIndex &index);
 
     void on_actionPreferences_triggered();
+
+    void on_actionManage_Browser_triggered();
 
 private:
     Ui::ModManager *ui;

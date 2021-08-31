@@ -56,6 +56,8 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <addaction name="actionManage_Browser"/>
+    <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
    <addaction name="menuTools"/>
@@ -64,6 +66,11 @@
   <action name="actionPreferences">
    <property name="text">
     <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionManage_Browser">
+   <property name="text">
+    <string>Manage Browser</string>
    </property>
   </action>
  </widget>
