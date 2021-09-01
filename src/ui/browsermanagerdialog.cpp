@@ -98,3 +98,18 @@ void BrowserManagerDialog::refreshButton()
     on_browserList_currentRowChanged(ui->browserList->currentRow());
 }
 
+
+void BrowserManagerDialog::on_browserList_doubleClicked(const QModelIndex &index)
+{
+    auto row = index.row();
+    if(row < 0) return;
+
+    auto modDirInfo = modDirList.at(row);
+    auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);
+    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
+        modDirList[row] = newInfo;
+        ui->browserList->item(row)->setText(newInfo.showText());
+    });
+    dialog->exec();
+}
+

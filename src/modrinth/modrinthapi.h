@@ -20,6 +20,7 @@ public:
     static void searchMods(const QString name, int index, int sort, std::function<void (QList<ModrinthModInfo>)> callback);
     static void getInfo(const QString &id, std::function<void (ModrinthModInfo)> callback);
     static void getVersion(const QString &version, std::function<void (ModrinthFileInfo)> callback);
+    static void getVersionFileBySha1(const QString sha1, std::function<void (ModrinthFileInfo)> callback, std::function<void ()> noMatch);
 
 private:
     explicit ModrinthAPI(QObject *parent = nullptr);

@@ -40,8 +40,10 @@ void LocalModBrowser::updateModList()
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, localMod);
         localMod->searchOnCurseforge();
         connect(localMod, &LocalMod::curseforgeReady, this, [=](bool bl){
-            if(bl && Config().getAutoCheckUpdate()) localMod->checkUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
+            if(bl && Config().getAutoCheckUpdate()) localMod->checkCurseforgeUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
         });
+        localMod->searchOnModrinth();
+        //...
         modList << localMod;
 
         auto *listItem = new QListWidgetItem();

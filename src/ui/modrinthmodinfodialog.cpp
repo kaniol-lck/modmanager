@@ -40,11 +40,12 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
         }
     };
 
-    updateBasicInfo();
+    auto bl = mod->getModInfo().hasBasicInfo();
+    if(bl) updateBasicInfo();
 
     //update full info
     auto updateFullInfo = [=]{
-//        updateBasicInfo();
+        if(!bl) updateBasicInfo();
         auto text = mod->getModInfo().getDescription();
         text.replace("<br>", "\n");
         ui->modDescription->setMarkdown(text);

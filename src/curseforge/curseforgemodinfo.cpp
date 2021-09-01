@@ -6,8 +6,7 @@
 
 CurseforgeModInfo::CurseforgeModInfo(int addonId) :
     id(addonId)
-{
-}
+{}
 
 CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
 {

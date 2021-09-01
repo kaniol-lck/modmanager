@@ -77,7 +77,8 @@ void ModrinthAPI::searchMods(const QString name, int index, /*const GameVersion 
 void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo)> callback)
 {
     //id: "local-xxxxx" ???
-    QUrl url = PREFIX + "/api/v1/mod/" + id.right(id.size() - 6);
+    auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
+    QUrl url = PREFIX + "/api/v1/mod/" + modId;
     QNetworkRequest request(url);
     auto reply = api()->accessManager.get(request);
     connect(reply, &QNetworkReply::finished, api(), [=]{
@@ -130,6 +131,43 @@ void ModrinthAPI::getVersion(const QString &version, std::function<void (Modrint
     });
 
 
+}
+
+void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (ModrinthFileInfo)> callback, std::function<void ()> noMatch)
+{
+    QUrl url = PREFIX + "/api/v1/version_file/" + sha1;
+
+    //url query
+    QUrlQuery urlQuery;
+    //set type sha1
+    urlQuery.addQueryItem("algorithm", "sha1");
+
+    url.setQuery(urlQuery);
+    QNetworkRequest request(url);
+    auto reply = api()->accessManager.get(request);
+    connect(reply, &QNetworkReply::finished, api(), [=]{
+        if(reply->error() != QNetworkReply::NoError) {
+            if(reply->error() == QNetworkReply::ContentNotFoundError)
+                noMatch();
+            else
+                qDebug() << reply->errorString();
+            return;
+        }
+
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return;
+        }
+        auto result = jsonDocument.toVariant();
+
+        auto modrinthFileInfo = ModrinthFileInfo::fromVariant(result);
+        qDebug() << modrinthFileInfo.getDisplayName();
+        callback(modrinthFileInfo);
+        reply->deleteLater();
+    });
 }
 
 ModrinthAPI::ModrinthAPI(QObject *parent) :

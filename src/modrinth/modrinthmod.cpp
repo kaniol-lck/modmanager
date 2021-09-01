@@ -39,10 +39,13 @@ void ModrinthMod::acquireFullInfo()
 {
     if(gettingFullInfo) return;
     gettingFullInfo = true;
-    ModrinthAPI::getInfo(modInfo.id, [=](const auto &newInfo){
+    ModrinthAPI::getInfo(modInfo.modId, [=](const auto &newInfo){
         gettingFullInfo = false;
-        modInfo.description = newInfo.description;
-        modInfo.versionList = newInfo.versionList;
+        if(modInfo.basicInfo){
+            modInfo.description = newInfo.description;
+            modInfo.versionList = newInfo.versionList;
+        } else
+            modInfo = newInfo;
         emit fullInfoReady();
     });
 }

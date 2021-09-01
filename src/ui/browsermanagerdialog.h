@@ -30,6 +30,8 @@ private slots:
 
     void on_browserList_currentRowChanged(int currentRow);
 
+    void on_browserList_doubleClicked(const QModelIndex &index);
+
 private:
     void refreshButton();
 

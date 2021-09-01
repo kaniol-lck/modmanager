@@ -2,6 +2,8 @@
 
 #include "curseforge/curseforgeapi.h"
 #include "curseforge/curseforgemod.h"
+#include "modrinth/modrinthapi.h"
+#include "modrinth/modrinthmod.h"
 #include "util/downloader.h"
 #include "config.h"
 
@@ -44,9 +46,22 @@ void LocalMod::searchOnCurseforge()
     });
 }
 
-void LocalMod::checkUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType)
+void LocalMod::searchOnModrinth()
 {
-    emit checkUpdateStarted();
+    emit checkModrinthStarted();
+    ModrinthAPI::getVersionFileBySha1(localModInfo.getSha1(), [=](const auto &fileInfo){
+        ModrinthModInfo modInfo(fileInfo.getModId());
+        modrinthMod = new ModrinthMod(this, modInfo);
+        currentModrinthFileInfo.emplace(fileInfo);
+        emit modrinthReady(true);
+    }, [=]{
+        emit modrinthReady(false);
+    });
+}
+
+void LocalMod::checkCurseforgeUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType)
+{
+    emit checkCurseforgeUpdateStarted();
 
     //update file list
     auto updateFileList = [=]{
@@ -68,10 +83,10 @@ void LocalMod::checkUpdate(const GameVersion &mainVersion, ModLoaderType::Type l
          //currentCurseforgeFileInfo should already have value before this function called
          if(currentCurseforgeFileInfo.value().getDisplayName() != resultIter->getDisplayName()){
 //             qDebug() << localModInfo.getName() << ":" << currentCurseforgeFileInfo.value().getDisplayName() << "->" << resultIter->getDisplayName();
-             updateFileInfo.emplace(*resultIter);
-             emit updateReady(true);
+             updateCurseforgeFileInfo.emplace(*resultIter);
+             emit curseforgeUpdateReady(true);
          } else
-             emit updateReady(false);
+             emit curseforgeUpdateReady(false);
     };
 
     if(!curseforgeMod->getModInfo().getAllFileList().isEmpty())
@@ -84,7 +99,7 @@ void LocalMod::checkUpdate(const GameVersion &mainVersion, ModLoaderType::Type l
 
 void LocalMod::update()
 {
-    if(!updateFileInfo.has_value()){
+    if(!updateCurseforgeFileInfo.has_value()){
         qDebug() << localModInfo.getName() << "no update file.";
         return;
     }
@@ -93,7 +108,7 @@ void LocalMod::update()
     auto path = localModInfo.getModPath();
     //to dir
     path.cdUp();
-    curseforgeMod->download(updateFileInfo.value(), path);
+    curseforgeMod->download(updateCurseforgeFileInfo.value(), path);
 
     connect(curseforgeMod, &CurseforgeMod::downloadProgress, this, &LocalMod::updateProgress);
     connect(curseforgeMod, &CurseforgeMod::downloadFinished, this, [=]{
@@ -103,7 +118,7 @@ void LocalMod::update()
         auto oldPath = localModInfo.getModPath();
         QDir dir(oldPath);
         dir.cdUp();
-        auto newPath = dir.absoluteFilePath(updateFileInfo->getFileName());
+        auto newPath = dir.absoluteFilePath(updateCurseforgeFileInfo->getFileName());
 
         //delete old mod file
         if(Config().getDeleteOld()){
@@ -114,8 +129,8 @@ void LocalMod::update()
             localModInfo.acquireInfo(newPath);
 
             //update file info
-            currentCurseforgeFileInfo.emplace(updateFileInfo.value());
-            updateFileInfo.reset();
+            currentCurseforgeFileInfo.emplace(updateCurseforgeFileInfo.value());
+            updateCurseforgeFileInfo.reset();
         }
         emit updateFinished();
     });
@@ -127,7 +142,27 @@ std::optional<CurseforgeFileInfo> LocalMod::getCurrentCurseforgeFileInfo() const
     return currentCurseforgeFileInfo;
 }
 
-std::optional<CurseforgeFileInfo> LocalMod::getUpdateFileInfo() const
+std::optional<CurseforgeFileInfo> LocalMod::getUpdateCurseforgeFileInfo() const
 {
-    return updateFileInfo;
+    return updateCurseforgeFileInfo;
+}
+
+std::optional<ModrinthFileInfo> LocalMod::getCurrentModrinthFileInfo() const
+{
+    return currentModrinthFileInfo;
+}
+
+std::optional<ModrinthFileInfo> LocalMod::getUpdateModrinthFileInfo() const
+{
+    return updateModrinthFileInfo;
+}
+
+ModrinthMod *LocalMod::getModrinthMod() const
+{
+    return modrinthMod;
+}
+
+void LocalMod::setModrinthMod(ModrinthMod *newModrinthMod)
+{
+    modrinthMod = newModrinthMod;
 }

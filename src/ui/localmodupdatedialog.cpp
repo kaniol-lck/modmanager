@@ -15,7 +15,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
 
     for(const auto &mod : list){
         //skip if no update
-        if(!mod->getUpdateFileInfo().has_value()) continue;
+        if(!mod->getUpdateCurseforgeFileInfo().has_value()) continue;
 
         updateList << mod;
 
@@ -30,7 +30,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
         beforeItem->setForeground(Qt::red);
 
         auto afterItem = new QStandardItem();
-        afterItem->setText(mod->getUpdateFileInfo().value().getDisplayName());
+        afterItem->setText(mod->getUpdateCurseforgeFileInfo().value().getDisplayName());
         model.appendRow({nameItem, beforeItem, afterItem});
         afterItem->setForeground(Qt::green);
     }

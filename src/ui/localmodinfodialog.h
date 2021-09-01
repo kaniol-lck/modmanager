@@ -3,8 +3,6 @@
 
 #include <QDialog>
 
-#include "curseforge/curseforgemod.h"
-
 class LocalMod;
 
 namespace Ui {
@@ -21,6 +19,8 @@ public:
 
 private slots:
     void on_curseforgeButton_clicked();
+
+    void on_modrinthButton_clicked();
 
 private:
     Ui::LocalModInfoDialog *ui;

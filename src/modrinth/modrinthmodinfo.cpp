@@ -2,12 +2,16 @@
 
 #include "util/tutil.hpp"
 
+ModrinthModInfo::ModrinthModInfo(const QString &id) :
+    modId(id)
+{}
+
 ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
 {
     ModrinthModInfo modInfo;
     modInfo.basicInfo = true;
 
-    modInfo.id = value(variant, "mod_id").toString();
+    modInfo.modId = value(variant, "mod_id").toString();
     modInfo.name = value(variant, "title").toString();
     modInfo.author = value(variant, "author").toString();
     modInfo.summary = value(variant, "description").toString();
@@ -24,10 +28,11 @@ ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
 ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
 {
     ModrinthModInfo modInfo;
+    //full, but no author and website url :C
     modInfo.basicInfo = true;
     modInfo.fullInfo = true;
 
-    modInfo.id = value(variant, "id").toString();
+    modInfo.modId = value(variant, "id").toString();
     modInfo.name = value(variant, "title").toString();
     modInfo.summary = value(variant, "description").toString();
     modInfo.description = value(variant, "body").toString();
@@ -40,7 +45,7 @@ ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
 
 const QString &ModrinthModInfo::getId() const
 {
-    return id;
+    return modId;
 }
 
 const QString &ModrinthModInfo::getAuthor() const
@@ -96,4 +101,9 @@ const QList<GameVersion> &ModrinthModInfo::getGameVersions() const
 const QStringList &ModrinthModInfo::getVersionList() const
 {
     return versionList;
+}
+
+bool ModrinthModInfo::hasBasicInfo() const
+{
+    return basicInfo;
 }

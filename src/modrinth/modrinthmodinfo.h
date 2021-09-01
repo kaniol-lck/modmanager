@@ -11,6 +11,7 @@ class ModrinthModInfo
     friend class ModrinthMod;
 public:
     ModrinthModInfo() = default;
+    explicit ModrinthModInfo(const QString &id);
 
     static ModrinthModInfo fromSearchVariant(const QVariant &variant);
     static ModrinthModInfo fromVariant(const QVariant &variant);
@@ -41,8 +42,10 @@ public:
 
     const QStringList &getVersionList() const;
 
+    bool hasBasicInfo() const;
+
 private:
-    QString id;
+    QString modId;
     QString author;
     QString name;
     QString summary;

@@ -118,3 +118,6 @@ include(3rdparty/quazip-0.7.3/quazip.pri)
 
 #murmurhash: https://github.com/aappleby/smhasher
 include(3rdparty/MurmurHash/murmurhash.pri)
+
+RESOURCES += \
+    src/images/image.qrc

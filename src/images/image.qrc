@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>curseforge.svg</file>
+        <file>modrinth.svg</file>
+    </qresource>
+</RCC>

@@ -39,12 +39,14 @@ ModManager::ModManager(QWidget *parent) :
 
     //Curseforge
     auto curseforgeModBrowser = new CurseforgeModBrowser(this);
-    ui->modDirSelectorWidget->addItem("Curseforge");
+    auto curseforgeItem = new QListWidgetItem(QIcon(":/image/curseforge.svg"), "Curseforge");
+    ui->modDirSelectorWidget->addItem(curseforgeItem);
     ui->stackedWidget->addWidget(curseforgeModBrowser);
 
     //Modrinth
     auto modrinthModBrowser = new ModrinthModBrowser(this);
-    ui->modDirSelectorWidget->addItem("Modrinth");
+    auto modrinthItem = new QListWidgetItem(QIcon(":/image/modrinth.svg"), "Modrinth");
+    ui->modDirSelectorWidget->addItem(modrinthItem);
     ui->stackedWidget->addWidget(modrinthModBrowser);
 
     //Local
