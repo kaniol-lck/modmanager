@@ -107,3 +107,8 @@ bool ModrinthModInfo::hasBasicInfo() const
 {
     return basicInfo;
 }
+
+bool ModrinthModInfo::hasFullInfo() const
+{
+    return fullInfo;
+}

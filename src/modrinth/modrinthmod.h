@@ -2,6 +2,7 @@
 #define MODRINTHMOD_H
 
 #include <QObject>
+#include <QDir>
 
 #include "modrinthmodinfo.h"
 
@@ -17,10 +18,15 @@ public:
     void acquireFullInfo();
     void acquireFileList();
 
+    void download(const ModrinthFileInfo &fileInfo, const QDir &path = QDir());
+
 signals:
     void iconReady();
     void fullInfoReady();
     void fileListReady();
+
+    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void downloadFinished();
 
 private:
     ModrinthModInfo modInfo;

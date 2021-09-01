@@ -15,6 +15,8 @@ class LocalMod : public QObject
 {
     Q_OBJECT
 public:
+    enum class ModWebsiteType{ None, Curseforge, Modrinth};
+
     explicit LocalMod(QObject *parent, const LocalModInfo &info);
 
     const LocalModInfo &getModInfo() const;
@@ -29,9 +31,10 @@ public:
     void searchOnModrinth();
 
     void checkCurseforgeUpdate(const GameVersion &version, ModLoaderType::Type loaderType);
-    void checkModrinthUpdate(const GameVersion &version, ModLoaderType::Type loaderType);
+    void checkModrinthUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType);
 
-    void update();
+    ModWebsiteType updateType() const;
+    void update(ModWebsiteType type);
 
     std::optional<CurseforgeFileInfo> getCurrentCurseforgeFileInfo() const;
 

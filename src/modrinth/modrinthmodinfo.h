@@ -44,6 +44,8 @@ public:
 
     bool hasBasicInfo() const;
 
+    bool hasFullInfo() const;
+
 private:
     QString modId;
     QString author;

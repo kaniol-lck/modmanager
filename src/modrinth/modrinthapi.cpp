@@ -164,7 +164,6 @@ void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (M
         auto result = jsonDocument.toVariant();
 
         auto modrinthFileInfo = ModrinthFileInfo::fromVariant(result);
-        qDebug() << modrinthFileInfo.getDisplayName();
         callback(modrinthFileInfo);
         reply->deleteLater();
     });

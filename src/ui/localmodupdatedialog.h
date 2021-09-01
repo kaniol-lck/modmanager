@@ -14,7 +14,7 @@ class LocalModUpdateDialog : public QDialog
 {
     Q_OBJECT
 
-    enum { NameColumn, BeforeColumn, AfterColumn};
+    enum { NameColumn, BeforeColumn, AfterColumn, SourceColumn};
 
 public:
     explicit LocalModUpdateDialog(QWidget *parent, const QList<LocalMod*> &list);

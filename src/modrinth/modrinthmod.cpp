@@ -6,6 +6,7 @@
 
 #include "modrinthapi.h"
 #include "util/funcutil.h"
+#include "util/downloader.h"
 
 ModrinthMod::ModrinthMod(QObject *parent, const ModrinthModInfo &info) :
     QObject(parent),
@@ -61,8 +62,18 @@ void ModrinthMod::acquireFileList()
         ModrinthAPI::getVersion(version, [=](const auto &file){
             modInfo.fileList << file;
             (*count)--;
-            if(*count == 0)
+            if(*count == 0){
+                gettingFileList = false;
                 emit fileListReady();
+            }
         });
     }
+}
+
+void ModrinthMod::download(const ModrinthFileInfo &fileInfo, const QDir &path)
+{
+    auto downloader = new Downloader(this);
+    downloader->download(fileInfo.getDownloadUrl(), path, fileInfo.getFileName());
+    connect(downloader, &Downloader::downloadProgress, this, &ModrinthMod::downloadProgress);
+    connect(downloader, &Downloader::finished, this, &ModrinthMod::downloadFinished);
 }

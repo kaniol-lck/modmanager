@@ -98,7 +98,6 @@ void BrowserManagerDialog::refreshButton()
     on_browserList_currentRowChanged(ui->browserList->currentRow());
 }
 
-
 void BrowserManagerDialog::on_browserList_doubleClicked(const QModelIndex &index)
 {
     auto row = index.row();
