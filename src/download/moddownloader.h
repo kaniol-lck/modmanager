@@ -1,6 +1,7 @@
 #ifndef MODDOWNLOADER_H
 #define MODDOWNLOADER_H
 
+#include <QTimer>
 #include <memory>
 
 #include "downloader.h"
@@ -31,16 +32,18 @@ public:
 signals:
     void statusChanged();
 
-private:
-    //disable
-//    bool download(const QUrl &url, const QDir &path = QDir(), const QString &filename = "");
+    void downloadSpeed(qint64 bytesPerSec);
 
+private:
+    QTimer speedTimer;
+    qint64 currentDownloadBytes = 0;
+    qint64 lastDownloadBytes = 0;
+    QList<qint64> downloadBytes;
     std::shared_ptr<DownloadFileInfo> fileInfo;
     DownloadStatus status = DownloadStatus::Idol;
     DownloadType type;
     QString readySize;
     QString filePath;
-
 };
 
 #endif // MODDOWNLOADER_H

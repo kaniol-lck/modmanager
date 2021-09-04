@@ -50,15 +50,13 @@ void Downloader::threadFinished(int /*index*/)
     }
 }
 
-void Downloader::updateProgress(int index, qint64 threadBytesReceived, qint64 threadBytesTotal)
+void Downloader::updateProgress(int index, qint64 threadBytesReceived)
 {
     bytesReceived[index] = threadBytesReceived;
-    bytesTotal[index] = threadBytesTotal;
 
     auto bytesReceivedSum = std::accumulate(bytesReceived.begin(), bytesReceived.end(), 0);
-    auto bytesTotalSum = std::accumulate(bytesTotal.begin(), bytesTotal.end(), 0);
 
-    emit downloadProgress(bytesReceivedSum, bytesTotalSum);
+    emit downloadProgress(bytesReceivedSum, downloadSize);
 }
 
 void Downloader::startDownload()

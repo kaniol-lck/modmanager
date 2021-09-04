@@ -69,10 +69,3 @@ void ModrinthMod::acquireFileList()
         });
     }
 }
-
-void ModrinthMod::download(const ModrinthFileInfo &fileInfo, const QDir &path)
-{
-    auto downloader = DownloadManager::manager()->addModDownload(std::make_shared<ModrinthFileInfo>(fileInfo), path.absolutePath());
-    connect(downloader, &Downloader::downloadProgress, this, &ModrinthMod::downloadProgress);
-    connect(downloader, &Downloader::finished, this, &ModrinthMod::downloadFinished);
-}

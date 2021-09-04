@@ -22,6 +22,8 @@ private slots:
 
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 
+    void downloadSpeed(qint64 bytesPerSec);
+
 private:
     Ui::DownloaderItemWidget *ui;
     ModDownloader *modDownlaoder;

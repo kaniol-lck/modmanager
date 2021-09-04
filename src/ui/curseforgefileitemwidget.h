@@ -2,7 +2,6 @@
 #define CURSEFORGEFILEITEMWIDGET_H
 
 #include <QWidget>
-#include <QTimer>
 
 #include "curseforge/curseforgefileinfo.h"
 
@@ -21,13 +20,9 @@ public:
 private slots:
     void on_downloadButton_clicked();
 
-    void updateDownlaodSpeed();
-
 private:
     Ui::CurseforgeFileItemWidget *ui;
     CurseforgeFileInfo curseforgeFileInfo;
-    QTimer speedTimer;
-    qint64 lastDownloadBytes = 0;
 };
 
 #endif // CURSEFORGEFILEITEMWIDGET_H

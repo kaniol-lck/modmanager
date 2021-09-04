@@ -169,7 +169,7 @@ void LocalMod::update(ModWebsiteType type)
         auto path = localModInfo.getModPath();
         //to dir
         path.cdUp();
-        DownloadManager::manager()->addModupdate(std::make_shared<std::remove_reference_t<decltype(newFileInfo.value())>>(newFileInfo.value()), path.absolutePath(), [=]{
+        DownloadManager::addModupdate(std::make_shared<std::remove_reference_t<decltype(newFileInfo.value())>>(newFileInfo.value()), path.absolutePath(), [=]{
             //check download
             //...
 

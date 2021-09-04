@@ -24,7 +24,7 @@ signals:
 
 private slots:
     void threadFinished(int index);
-    void updateProgress(int index, qint64 threadBytesReceived, qint64 threadBytesTotal);
+    void updateProgress(int index, qint64 threadBytesReceived);
     void startDownload();
 
 private:

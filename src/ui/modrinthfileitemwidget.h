@@ -17,6 +17,9 @@ public:
     explicit ModrinthFileItemWidget(QWidget *parent, const ModrinthFileInfo &info);
     ~ModrinthFileItemWidget();
 
+private slots:
+    void on_downloadButton_clicked();
+
 private:
     Ui::ModrinthFileItemWidget *ui;
     ModrinthFileInfo modrinthFileInfo;

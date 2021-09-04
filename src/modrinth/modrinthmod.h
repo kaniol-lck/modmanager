@@ -18,8 +18,6 @@ public:
     void acquireFullInfo();
     void acquireFileList();
 
-    void download(const ModrinthFileInfo &fileInfo, const QDir &path = QDir());
-
 signals:
     void iconReady();
     void fullInfoReady();

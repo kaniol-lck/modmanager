@@ -13,12 +13,21 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
 
     auto fileInfo = modDownlaoder->getFileInfo();
     ui->displayNameText->setText(fileInfo->getDisplayName());
-    ui->fileNameText->setText(fileInfo->getFileName());
     ui->downloadSizeText->setText(numberConvert(fileInfo->getSize(), "B"));
+
+    QString linkText = fileInfo->getFileName();
+    linkText = "<a href=%1>" + linkText + "</a>";
+    ui->fileNameText->setText(linkText.arg(fileInfo->getUrl().toString()));
+
     refreshStatus();
 
     connect(modDownlaoder, &ModDownloader::statusChanged, this, &DownloaderItemWidget::refreshStatus);
     connect(modDownlaoder, &ModDownloader::downloadProgress, this, &DownloaderItemWidget::downloadProgress);
+    connect(modDownlaoder, &ModDownloader::downloadSpeed, this, &DownloaderItemWidget::downloadSpeed);
+    connect(modDownlaoder, &ModDownloader::finished, this, [=]{
+        ui->downloadSpeedText->setVisible(false);
+        ui->downloadProgress->setValue(ui->downloadProgress->maximum());
+    });
 }
 
 DownloaderItemWidget::~DownloaderItemWidget()
@@ -51,4 +60,9 @@ void DownloaderItemWidget::downloadProgress(qint64 bytesReceived, qint64 bytesTo
 {
     ui->downloadProgress->setMaximum(bytesTotal);
     ui->downloadProgress->setValue(bytesReceived);
+}
+
+void DownloaderItemWidget::downloadSpeed(qint64 bytesPerSec)
+{
+    ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
 }

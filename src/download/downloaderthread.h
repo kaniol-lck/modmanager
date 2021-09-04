@@ -12,7 +12,7 @@ class DownloaderThread : public QObject
 
 signals:
     void threadFinished(int index);
-    void threadDownloadProgress(int index, qint64 bytesReceived, qint64 bytesTotal);
+    void threadDownloadProgress(int index, qint64 bytesReceived);
     void threadErrorOccurred(int index, QNetworkReply::NetworkError code);
 
 public:

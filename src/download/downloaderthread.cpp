@@ -29,8 +29,8 @@ void DownloaderThread::download(int index, const QUrl &url, QFile *file, qint64 
     connect(reply, &QNetworkReply::finished, [=]{
         emit threadFinished(index);
     });
-    connect(reply, &QNetworkReply::downloadProgress, [=](qint64 bytesReceived, qint64 bytesTotal){
-        emit threadDownloadProgress(index, bytesReceived, bytesTotal);
+    connect(reply, &QNetworkReply::downloadProgress, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+        emit threadDownloadProgress(index, bytesReceived);
     });
     connect(reply, &QNetworkReply::readyRead, this, &DownloaderThread::writeFile);
     connect(reply, &QNetworkReply::errorOccurred, [=](QNetworkReply::NetworkError code){

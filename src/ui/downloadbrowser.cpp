@@ -3,6 +3,7 @@
 
 #include "downloaderitemwidget.h"
 #include "download/downloadmanager.h"
+#include "util/funcutil.h"
 
 DownloadBrowser::DownloadBrowser(QWidget *parent) :
     QWidget(parent),
@@ -12,6 +13,7 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
     ui->setupUi(this);
 
     connect(manager, &DownloadManager::downloaderAdded, this, &DownloadBrowser::addNewDownloaderItem);
+    connect(manager, &DownloadManager::downloadSpeed, this, &DownloadBrowser::downloadSpeed);
 }
 
 DownloadBrowser::~DownloadBrowser()
@@ -26,4 +28,10 @@ void DownloadBrowser::addNewDownloaderItem(ModDownloader *downloader)
     auto widget = new DownloaderItemWidget(this, downloader);
     ui->downloaderListWidget->addItem(listItem);
     ui->downloaderListWidget->setItemWidget(listItem, widget);
+}
+
+void DownloadBrowser::downloadSpeed(qint64 bytesPerSec)
+{
+    auto text = tr("Download Speed: ") + numberConvert(bytesPerSec, "B/s");
+    ui->downloadSpeedText->setText(text);
 }

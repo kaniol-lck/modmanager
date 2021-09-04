@@ -9,8 +9,6 @@
 #include "download/downloader.h"
 #include "util/funcutil.h"
 
-constexpr int TIMER_PER_SEC = 4;
-
 CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload) :
     QWidget(parent),
     ui(new Ui::CurseforgeModItemWidget),
@@ -31,10 +29,6 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     }
     else
         ui->downloadButton->setEnabled(false);
-
-    //set timer
-    speedTimer.setInterval(1000 / TIMER_PER_SEC);
-    connect(&speedTimer, SIGNAL(timeout()), SLOT(updateDownlaodSpeed()));
 }
 
 CurseforgeModItemWidget::~CurseforgeModItemWidget()
@@ -49,21 +43,6 @@ void CurseforgeModItemWidget::updateIcon()
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
 }
 
-void CurseforgeModItemWidget::updateDownlaodSpeed()
-{
-    auto currentDownloadBytes = ui->downloadProgress->value();
-    auto bytes = currentDownloadBytes - lastDownloadBytes;
-    lastDownloadBytes = currentDownloadBytes;
-
-    downloadBytes << bytes;
-    if(downloadBytes.size() > 4) downloadBytes.pop_front();
-
-    auto aver = std::accumulate(downloadBytes.cbegin(), downloadBytes.cend(), 0) / downloadBytes.size();
-
-    ui->downloadSpeedText->setText(numberConvert(aver * TIMER_PER_SEC , "B/s"));
-
-}
-
 void CurseforgeModItemWidget::on_downloadButton_clicked()
 {
     if(!defaultFileInfo.has_value()) return;
@@ -73,23 +52,19 @@ void CurseforgeModItemWidget::on_downloadButton_clicked()
     ui->downloadProgress->setVisible(true);
 
     //TODO: path
-    auto downloader = DownloadManager::manager()->addModDownload(std::make_shared<CurseforgeFileInfo>(defaultFileInfo.value()));
+    auto downloader = DownloadManager::addModDownload(std::make_shared<CurseforgeFileInfo>(defaultFileInfo.value()));
 
     ui->downloadProgress->setMaximum(defaultFileInfo.value().getSize());
 
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });
+    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+        ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
+    });
     connect(downloader, &Downloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
         ui->downloadSpeedText->setText(numberConvert(defaultFileInfo.value().getSize(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
-
-        //reset speed timer
-        speedTimer.stop();
-        lastDownloadBytes = 0;
-        downloadBytes.clear();
     });
-
-    speedTimer.start();
 }

@@ -33,10 +33,6 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, const Cursef
 
     //size
     ui->downloadSpeedText->setText(numberConvert(curseforgeFileInfo.getSize(), "B"));
-
-    //set timer
-    speedTimer.setInterval(1000 / 4);
-    connect(&speedTimer, &QTimer::timeout, this, &CurseforgeFileItemWidget::updateDownlaodSpeed);
 }
 
 CurseforgeFileItemWidget::~CurseforgeFileItemWidget()
@@ -52,28 +48,16 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
 
     ui->downloadProgress->setMaximum(curseforgeFileInfo.getSize());
 
-    auto downloader = DownloadManager::manager()->addModDownload(std::make_shared<CurseforgeFileInfo>(curseforgeFileInfo));
+    auto downloader = DownloadManager::addModDownload(std::make_shared<CurseforgeFileInfo>(curseforgeFileInfo));
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
+    });
+    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+        ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
     });
     connect(downloader, &Downloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
         ui->downloadSpeedText->setText(numberConvert(curseforgeFileInfo.getSize(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
-        speedTimer.stop();
-        lastDownloadBytes = 0;
     });
-
-    speedTimer.start();
 }
-
-void CurseforgeFileItemWidget::updateDownlaodSpeed()
-{
-    auto downloadBytes = ui->downloadProgress->value();
-    auto bytes = (downloadBytes - lastDownloadBytes) * 4;
-    lastDownloadBytes = downloadBytes;
-
-    ui->downloadSpeedText->setText(numberConvert(bytes, "B/s"));
-
-}
-

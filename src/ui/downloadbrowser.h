@@ -20,6 +20,7 @@ public:
 
 public slots:
     void addNewDownloaderItem(ModDownloader *downloader);
+    void downloadSpeed(qint64 bytesPerSec);
 
 private:
     Ui::DownloadBrowser *ui;
