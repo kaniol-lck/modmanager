@@ -111,7 +111,7 @@ void LocalModItemWidget::startUpdate()
 {
     ui->updateButton->setText(tr("Updating"));
     ui->updateButton->setEnabled(false);
-    ui->updateProgress->setMaximum(localMod->getUpdateCurseforgeFileInfo().value().getFileLength());
+    ui->updateProgress->setMaximum(localMod->getUpdateCurseforgeFileInfo().value().getSize());
     ui->updateProgress->setVisible(true);
 }
 

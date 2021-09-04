@@ -28,7 +28,7 @@ private slots:
     void startDownload();
 
 private:
-    static constexpr int THREAD_COUNT = 8;
+    const int THREAD_COUNT;
 
     int finishedThreadCount = 0;
     QUrl downloadUrl;

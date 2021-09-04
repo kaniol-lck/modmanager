@@ -4,7 +4,7 @@
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthapi.h"
 #include "modrinth/modrinthmod.h"
-#include "util/downloader.h"
+#include "download/downloadmanager.h"
 #include "config.h"
 
 #include <iterator>
@@ -169,10 +169,7 @@ void LocalMod::update(ModWebsiteType type)
         auto path = localModInfo.getModPath();
         //to dir
         path.cdUp();
-        mod->download(newFileInfo.value(), path);
-
-        connect(mod, &std::remove_reference_t<decltype(*mod)>::downloadProgress, this, &LocalMod::updateProgress);
-        connect(mod, &std::remove_reference_t<decltype(*mod)>::downloadFinished, this, [=]{
+        DownloadManager::manager()->addModupdate(std::make_shared<std::remove_reference_t<decltype(newFileInfo.value())>>(newFileInfo.value()), path.absolutePath(), [=]{
             //check download
             //...
 

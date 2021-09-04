@@ -12,6 +12,9 @@ Preferences::Preferences(QWidget *parent) :
     Config config;
     ui->autoCheckUpdate->setChecked(config.getAutoCheckUpdate());
     ui->deleteOld->setChecked(config.getDeleteOld());
+
+    ui->threadCount->setValue(config.getThreadCount());
+    ui->downloadCount->setValue(config.getDownloadCount());
 }
 
 Preferences::~Preferences()
@@ -24,5 +27,8 @@ void Preferences::on_Preferences_accepted()
     Config config;
     config.setAutoCheckUpdate(ui->autoCheckUpdate->isChecked());
     config.setDeleteOld(ui->deleteOld->isChecked());
+
+    config.setThreadCount(ui->threadCount->value());
+    config.setDownloadCount(ui->downloadCount->value());
 }
 

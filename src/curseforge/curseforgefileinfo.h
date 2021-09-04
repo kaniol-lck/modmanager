@@ -5,29 +5,24 @@
 #include <QUrl>
 #include <QDateTime>
 
+#include "download/downloadfileinfo.h"
 #include "gameversion.h"
 #include "modloadertype.h"
 
-class CurseforgeFileInfo
+class CurseforgeFileInfo : public DownloadFileInfo
 {
 public:
     CurseforgeFileInfo() = default;
 
     static CurseforgeFileInfo fromVariant(const QVariant &variant);
 
+    SourceType source() const override;
+
     int getId() const;
-
-    const QString &getDisplayName() const;
-
-    const QUrl &getDownloadUrl() const;
 
     const QList<GameVersion> &getGameVersions() const;
 
     const QList<ModLoaderType::Type> &getModLoaders() const;
-
-    int getFileLength() const;
-
-    const QString &getFileName() const;
 
     int getReleaseType() const;
 
@@ -35,12 +30,8 @@ public:
 
 private:
     int id;
-    QString displayName;
-    QString fileName;
-    QUrl downloadUrl;
     QList<GameVersion> gameVersions;
     QList<ModLoaderType::Type> modLoaders;
-    int fileLength;
     int releaseType;
     QDateTime fileDate;
 };

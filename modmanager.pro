@@ -16,6 +16,11 @@ SOURCES += \
     src/curseforge/curseforgefileinfo.cpp \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodinfo.cpp \
+    src/download/downloader.cpp \
+    src/download/downloaderthread.cpp \
+    src/download/downloadfileinfo.cpp \
+    src/download/downloadmanager.cpp \
+    src/download/moddownloader.cpp \
     src/local/localmod.cpp \
     src/modloadertype.cpp \
     src/modrinth/modrinthapi.cpp \
@@ -28,6 +33,8 @@ SOURCES += \
     src/ui/curseforgemodinfodialog.cpp \
     src/ui/curseforgemoditemwidget.cpp \
     src/gameversion.cpp \
+    src/ui/downloadbrowser.cpp \
+    src/ui/downloaderitemwidget.cpp \
     src/ui/localmodbrowser.cpp \
     src/ui/localmodbrowsersettingsdialog.cpp \
     src/local/localmodinfo.cpp \
@@ -42,8 +49,6 @@ SOURCES += \
     src/ui/modrinthmodinfodialog.cpp \
     src/ui/modrinthmoditemwidget.cpp \
     src/ui/preferences.cpp \
-    src/util/downloader.cpp \
-    src/util/downloaderthread.cpp \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp
 
@@ -53,6 +58,11 @@ HEADERS += \
     src/curseforge/curseforgefileinfo.h \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodinfo.h \
+    src/download/downloader.h \
+    src/download/downloaderthread.h \
+    src/download/downloadfileinfo.h \
+    src/download/downloadmanager.h \
+    src/download/moddownloader.h \
     src/local/localmod.h \
     src/modloadertype.h \
     src/modrinth/modrinthapi.h \
@@ -65,6 +75,8 @@ HEADERS += \
     src/ui/curseforgemodinfodialog.h \
     src/ui/curseforgemoditemwidget.h \
     src/gameversion.h \
+    src/ui/downloadbrowser.h \
+    src/ui/downloaderitemwidget.h \
     src/ui/localmodbrowser.h \
     src/ui/localmodbrowsersettingsdialog.h \
     src/local/localmodinfo.h \
@@ -78,8 +90,6 @@ HEADERS += \
     src/ui/modrinthmodinfodialog.h \
     src/ui/modrinthmoditemwidget.h \
     src/ui/preferences.h \
-    src/util/downloader.h \
-    src/util/downloaderthread.h \
     src/util/funcutil.h \
     src/util/tutil.hpp \
     src/util/datetimesortitem.h
@@ -90,6 +100,8 @@ FORMS += \
     src/ui/curseforgemodbrowser.ui \
     src/ui/curseforgemodinfodialog.ui \
     src/ui/curseforgemoditemwidget.ui \
+    src/ui/downloadbrowser.ui \
+    src/ui/downloaderitemwidget.ui \
     src/ui/localmodbrowser.ui \
     src/ui/localmodbrowsersettingsdialog.ui \
     src/ui/localmodinfodialog.ui \

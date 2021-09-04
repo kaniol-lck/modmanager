@@ -6,7 +6,6 @@
 
 #include "curseforge/curseforgeapi.h"
 #include "util/tutil.hpp"
-#include "util/downloader.h"
 #include "util/funcutil.h"
 
 CurseforgeMod::CurseforgeMod(QObject *parent, const CurseforgeModInfo &modInfo) :
@@ -63,14 +62,6 @@ void CurseforgeMod::acquireAllFileList()
         curseforgeModInfo.allFileList = fileList;
         emit allFileListReady();
     });
-}
-
-void CurseforgeMod::download(const CurseforgeFileInfo &fileInfo, const QDir &path)
-{
-    auto downloader = new Downloader(this);
-    downloader->download(fileInfo.getDownloadUrl(), path, fileInfo.getFileName());
-    connect(downloader, &Downloader::downloadProgress, this, &CurseforgeMod::downloadProgress);
-    connect(downloader, &Downloader::finished, this, &CurseforgeMod::downloadFinished);
 }
 
 const CurseforgeModInfo &CurseforgeMod::getModInfo() const

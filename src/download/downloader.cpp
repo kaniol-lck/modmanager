@@ -9,10 +9,12 @@
 #include <algorithm>
 
 #include "downloaderthread.h"
+#include "config.h"
 #include "util/funcutil.h"
 
 Downloader::Downloader(QObject *parent) :
     QObject(parent),
+    THREAD_COUNT(Config().getThreadCount()),
     bytesReceived(THREAD_COUNT),
     bytesTotal(THREAD_COUNT)
 {
@@ -26,8 +28,8 @@ bool Downloader::download(const QUrl &url, const QDir &path, const QString &file
     //get name
     if(!filename.isEmpty())
         downloadFile.setFileName(path.absoluteFilePath(filename));
-    else if(!downloadUrl.fileName().isEmpty())
-        downloadFile.setFileName(path.absoluteFilePath(downloadUrl.fileName()));
+    else if(!url.fileName().isEmpty())
+        downloadFile.setFileName(path.absoluteFilePath(url.fileName()));
     else
         downloadFile.setFileName(path.absoluteFilePath("index.html"));
 

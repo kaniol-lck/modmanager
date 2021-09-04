@@ -13,6 +13,7 @@
 #include "localmodbrowser.h"
 #include "curseforgemodbrowser.h"
 #include "modrinthmodbrowser.h"
+#include "downloadbrowser.h"
 #include "preferences.h"
 #include "browsermanagerdialog.h"
 #include "localmodbrowsersettingsdialog.h"
@@ -25,25 +26,28 @@ ModManager::ModManager(QWidget *parent) :
     updateVersionsWatcher(new QFutureWatcher<void>(this))
 {
     ui->setupUi(this);
-    for(int i = ui->stackedWidget->count(); i >= 0; i--)
-    {
-        QWidget* widget = ui->stackedWidget->widget(i);
-        ui->stackedWidget->removeWidget(widget);
-        widget->deleteLater();
-    }
 
     //load mod dirs in config
     Config config;
     for(const auto &variant : config.getDirList())
         modDirList << ModDirInfo::fromVariant(variant);
 
+    //Downloader
+    specialBrowserCount ++;
+    auto downloadBrowser = new DownloadBrowser(this);
+    auto downloaderItem = new QListWidgetItem("Downloader");
+    ui->modDirSelectorWidget->addItem(downloaderItem);
+    ui->stackedWidget->addWidget(downloadBrowser);
+
     //Curseforge
+    specialBrowserCount ++;
     auto curseforgeModBrowser = new CurseforgeModBrowser(this);
     auto curseforgeItem = new QListWidgetItem(QIcon(":/image/curseforge.svg"), "Curseforge");
     ui->modDirSelectorWidget->addItem(curseforgeItem);
     ui->stackedWidget->addWidget(curseforgeModBrowser);
 
     //Modrinth
+    specialBrowserCount ++;
     auto modrinthModBrowser = new ModrinthModBrowser(this);
     auto modrinthItem = new QListWidgetItem(QIcon(":/image/modrinth.svg"), "Modrinth");
     ui->modDirSelectorWidget->addItem(modrinthItem);
@@ -93,7 +97,7 @@ void ModManager::refreshBrowsers()
         } else{
             //present, move position
             oldCount--;
-            auto j = i + 2;
+            auto j = i + specialBrowserCount;
             modDirList << modDirList.takeAt(i);
             dirWidgetItemList << dirWidgetItemList.takeAt(i);
             localModBrowserList << localModBrowserList.takeAt(i);
@@ -106,7 +110,7 @@ void ModManager::refreshBrowsers()
     //remove remained mod dir
     auto i = oldCount;
     while (i--) {
-        auto j = i + 2;
+        auto j = i + specialBrowserCount;
         modDirList.removeAt(i);
         dirWidgetItemList.removeAt(i);
         localModBrowserList.at(i);
@@ -151,15 +155,15 @@ void ModManager::on_modDirSelectorWidget_doubleClicked(const QModelIndex &index)
 {
     auto row = index.row();
     //exclude curseforge and modrinth page
-    if(row <= 1) return;
+    if(row < specialBrowserCount) return;
 
-    auto modDirInfo = modDirList.at(row - 2);
+    auto modDirInfo = modDirList.at(row - specialBrowserCount);
     auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
         //exclude curseforge and modrinth page
-        modDirList[row - 2] = newInfo;
-        dirWidgetItemList[row - 2]->setText(newInfo.showText());
-        localModBrowserList[row - 2]->setModDirInfo(newInfo);
+        modDirList[row - specialBrowserCount] = newInfo;
+        dirWidgetItemList[row - specialBrowserCount]->setText(newInfo.showText());
+        localModBrowserList[row - specialBrowserCount]->setModDirInfo(newInfo);
     });
     connect(updateVersionsWatcher, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
     dialog->exec();

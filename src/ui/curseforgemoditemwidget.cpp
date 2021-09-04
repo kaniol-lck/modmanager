@@ -5,7 +5,8 @@
 #include <algorithm>
 
 #include "curseforge/curseforgemod.h"
-#include "util/downloader.h"
+#include "download/downloadmanager.h"
+#include "download/downloader.h"
 #include "util/funcutil.h"
 
 constexpr int TIMER_PER_SEC = 4;
@@ -25,7 +26,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     ui->modAuthors->setText(mod->getModInfo().getAuthors().join("</b>, <b>").prepend("by <b>").append("</b>"));
     if(defaultFileInfo.has_value()){
         ui->downloadButton->setToolTip(defaultDownload.value().getDisplayName());
-        ui->downloadSpeedText->setText(numberConvert(defaultDownload.value().getFileLength(), "B") + "\n"
+        ui->downloadSpeedText->setText(numberConvert(defaultDownload.value().getSize(), "B") + "\n"
                                    + numberConvert(mod->getModInfo().getDownloadCount(), "", 3, 1000) + tr(" Downloads"));
     }
     else
@@ -71,16 +72,17 @@ void CurseforgeModItemWidget::on_downloadButton_clicked()
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
 
-    curseforgeMod->download(defaultFileInfo.value());
+    //TODO: path
+    auto downloader = DownloadManager::manager()->addModDownload(std::make_shared<CurseforgeFileInfo>(defaultFileInfo.value()));
 
-    ui->downloadProgress->setMaximum(defaultFileInfo.value().getFileLength());
+    ui->downloadProgress->setMaximum(defaultFileInfo.value().getSize());
 
-    connect(curseforgeMod, &CurseforgeMod::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });
-    connect(curseforgeMod, &CurseforgeMod::downloadFinished, this, [=]{
+    connect(downloader, &Downloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(numberConvert(defaultFileInfo.value().getFileLength(), "B"));
+        ui->downloadSpeedText->setText(numberConvert(defaultFileInfo.value().getSize(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
 
         //reset speed timer

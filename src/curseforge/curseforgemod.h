@@ -19,8 +19,6 @@ public:
     void acquireDescription();
     void acquireAllFileList();
 
-    void download(const CurseforgeFileInfo &fileInfo, const QDir &path = QDir());
-
     const CurseforgeModInfo &getModInfo() const;
 
 signals:
@@ -28,9 +26,6 @@ signals:
     void iconReady();
     void descriptionReady();
     void allFileListReady();
-
-    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void downloadFinished();
 
 private:
     CurseforgeModInfo curseforgeModInfo;

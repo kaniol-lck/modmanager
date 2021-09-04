@@ -5,25 +5,22 @@
 #include <QUrl>
 #include <QDateTime>
 
+#include "download/downloadfileinfo.h"
 #include "gameversion.h"
 #include "modloadertype.h"
 
-class ModrinthFileInfo
+class ModrinthFileInfo : public DownloadFileInfo
 {
 public:
     ModrinthFileInfo() = default;
 
     static ModrinthFileInfo fromVariant(const QVariant &variant);
 
+    SourceType source() const override;
+
     const QString &getId() const;
 
     const QString &getModId() const;
-
-    const QString &getDisplayName() const;
-
-    const QString &getFileName() const;
-
-    const QUrl &getDownloadUrl() const;
 
     const QList<GameVersion> &getGameVersions() const;
 
@@ -38,9 +35,6 @@ public:
 private:
     QString id;
     QString modId;
-    QString displayName;
-    QString fileName;
-    QUrl downloadUrl;
     QList<GameVersion> gameVersions;
     QList<ModLoaderType::Type> modLoaders;
     int fileLength;

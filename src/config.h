@@ -29,6 +29,9 @@ public:
     getterAndSetter(AutoCheckUpdate, Bool, autoCheckUpdate, true)
     getterAndSetter(DeleteOld, Bool, deleteOld, true)
 
+    getterAndSetter(ThreadCount, Int, threadCount, 8)
+    getterAndSetter(DownloadCount, Int, downloadCount, 8)
+
     getterAndSetter(DirList, List, dirList, QVariant())
 
 };

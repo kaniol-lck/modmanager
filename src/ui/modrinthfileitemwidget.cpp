@@ -14,7 +14,7 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, const ModrinthFi
     //file name and link
     QString linkText = info.getFileName();
     linkText = "<a href=%1>" + linkText + "</a>";
-    ui->fileNameText->setText(linkText.arg(info.getDownloadUrl().toString()));
+    ui->fileNameText->setText(linkText.arg(info.getUrl().toString()));
 
     //game version
     QString gameversionText;

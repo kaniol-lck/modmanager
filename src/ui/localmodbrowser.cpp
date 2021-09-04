@@ -48,7 +48,7 @@ void LocalModBrowser::updateModList()
         //modrinth
         localMod->searchOnModrinth();
         connect(localMod, &LocalMod::modrinthReady, this, [=](bool bl){
-            if(bl && Config().getAutoCheckUpdate()) localMod->checkModrinthUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
+//            if(bl && Config().getAutoCheckUpdate()) localMod->checkModrinthUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
         });
         modList << localMod;
 

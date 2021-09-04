@@ -41,5 +41,6 @@ private:
     QList<QListWidgetItem*> dirWidgetItemList;
     QList<LocalModBrowser*> localModBrowserList;
     QFutureWatcher<void> *updateVersionsWatcher;
+    int specialBrowserCount = 0;
 };
 #endif // MODMANAGER_H

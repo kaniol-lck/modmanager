@@ -15,7 +15,7 @@ class LocalMod : public QObject
 {
     Q_OBJECT
 public:
-    enum class ModWebsiteType{ None, Curseforge, Modrinth};
+    enum ModWebsiteType{ None, Curseforge, Modrinth};
 
     explicit LocalMod(QObject *parent, const LocalModInfo &info);
 

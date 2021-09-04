@@ -17,7 +17,7 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
 
     if(!files.isEmpty()){
         fileInfo.fileName = value(files.at(0), "filename").toString();
-        fileInfo.downloadUrl = value(files.at(0), "url").toUrl();
+        fileInfo.url = value(files.at(0), "url").toUrl();
     }
 
     auto versionList = value(variant, "game_versions").toStringList();
@@ -31,6 +31,11 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
     return fileInfo;
 }
 
+DownloadFileInfo::SourceType ModrinthFileInfo::source() const
+{
+    return DownloadFileInfo::Modrinth;
+}
+
 const QString &ModrinthFileInfo::getId() const
 {
     return id;
@@ -39,21 +44,6 @@ const QString &ModrinthFileInfo::getId() const
 const QString &ModrinthFileInfo::getModId() const
 {
     return modId;
-}
-
-const QString &ModrinthFileInfo::getDisplayName() const
-{
-    return displayName;
-}
-
-const QString &ModrinthFileInfo::getFileName() const
-{
-    return fileName;
-}
-
-const QUrl &ModrinthFileInfo::getDownloadUrl() const
-{
-    return downloadUrl;
 }
 
 const QList<GameVersion> &ModrinthFileInfo::getGameVersions() const

@@ -17,32 +17,38 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
     model.setHorizontalHeaderItem(SourceColumn, new QStandardItem(tr("Source")));
 
     for(const auto &mod : list){
-        auto append = [=](const auto &currentFileInfo, const auto &updateFileInfo, const QString &type){
-            auto nameItem = new QStandardItem();
-            nameItem->setText(mod->getModInfo().getName() + ":");
-            nameItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-            nameItem->setCheckable(true);
-            nameItem->setCheckState(Qt::Checked);
+        auto type = mod->updateType();
+        if(type == LocalMod::None) continue;
 
-            auto beforeItem = new QStandardItem();
-            beforeItem->setText(currentFileInfo.getDisplayName());
-            beforeItem->setForeground(Qt::red);
-
-            auto afterItem = new QStandardItem();
-            afterItem->setText(updateFileInfo.getDisplayName());
-            afterItem->setForeground(Qt::green);
-
-            auto sourceItem = new QStandardItem();
-            sourceItem->setText(type);
-
-            model.appendRow({nameItem, beforeItem, afterItem, sourceItem});
+        static auto getDisplayName = [=](const auto &fileInfo){
+            return fileInfo.getDisplayName();
         };
 
-        auto type = mod->updateType();
-        if(type == LocalMod::ModWebsiteType::Curseforge)
-            append(mod->getCurrentCurseforgeFileInfo().value(), mod->getUpdateCurseforgeFileInfo().value(), "Curseforge");
-        else if(type == LocalMod::ModWebsiteType::Modrinth)
-            append(mod->getCurrentModrinthFileInfo().value(), mod->getUpdateModrinthFileInfo().value(), "Modrinth");
+        auto nameItem = new QStandardItem();
+        nameItem->setText(mod->getModInfo().getName() + ":");
+        nameItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        nameItem->setCheckable(true);
+        nameItem->setCheckState(Qt::Checked);
+
+        auto beforeItem = new QStandardItem();
+        if(type == LocalMod::Curseforge)
+            beforeItem->setText(getDisplayName(mod->getCurrentCurseforgeFileInfo().value()));
+        else if(type == LocalMod::Modrinth)
+            beforeItem->setText(getDisplayName(mod->getCurrentModrinthFileInfo().value()));
+        beforeItem->setForeground(Qt::red);
+
+        auto afterItem = new QStandardItem();
+        if(type == LocalMod::Curseforge)
+            afterItem->setText(getDisplayName(mod->getUpdateCurseforgeFileInfo().value()));
+        else if(type == LocalMod::Modrinth)
+            afterItem->setText(getDisplayName(mod->getUpdateModrinthFileInfo().value()));
+        afterItem->setForeground(Qt::green);
+
+        auto sourceItem = new QStandardItem();
+        sourceItem->setText(type == LocalMod::Curseforge? "Curseforge" : "Modrinth");
+
+        model.appendRow({nameItem, beforeItem, afterItem, sourceItem});
+        updateList << mod;
     }
 }
 

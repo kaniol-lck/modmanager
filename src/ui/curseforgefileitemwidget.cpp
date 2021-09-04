@@ -4,7 +4,7 @@
 #include <QDebug>
 
 #include "util/funcutil.h"
-#include "util/downloader.h"
+#include "download/downloadmanager.h"
 
 CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, const CurseforgeFileInfo &info) :
     QWidget(parent),
@@ -17,7 +17,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, const Cursef
     //file name and link
     QString linkText = curseforgeFileInfo.getFileName();
     linkText = "<a href=%1>" + linkText + "</a>";
-    ui->fileNameText->setText(linkText.arg(curseforgeFileInfo.getDownloadUrl().toString()));
+    ui->fileNameText->setText(linkText.arg(curseforgeFileInfo.getUrl().toString()));
 
     //game version
     QString gameversionText;
@@ -32,7 +32,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, const Cursef
     ui->loaderTypeText->setText(loaderTypeText);
 
     //size
-    ui->downloadSpeedText->setText(numberConvert(curseforgeFileInfo.getFileLength(), "B"));
+    ui->downloadSpeedText->setText(numberConvert(curseforgeFileInfo.getSize(), "B"));
 
     //set timer
     speedTimer.setInterval(1000 / 4);
@@ -50,17 +50,15 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
 
-    auto downloader = new Downloader(this);
+    ui->downloadProgress->setMaximum(curseforgeFileInfo.getSize());
 
-    downloader->download(curseforgeFileInfo.getDownloadUrl(), curseforgeFileInfo.getFileName());
-    ui->downloadProgress->setMaximum(curseforgeFileInfo.getFileLength());
-
+    auto downloader = DownloadManager::manager()->addModDownload(std::make_shared<CurseforgeFileInfo>(curseforgeFileInfo));
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });
     connect(downloader, &Downloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(numberConvert(curseforgeFileInfo.getFileLength(), "B"));
+        ui->downloadSpeedText->setText(numberConvert(curseforgeFileInfo.getSize(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
         speedTimer.stop();
         lastDownloadBytes = 0;
