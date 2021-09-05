@@ -36,7 +36,7 @@ private slots:
 private:
     Ui::ModManager *ui;
     QList<ModDirInfo> modDirList_;
-    QList<QTreeWidgetItem*> dirWidgetItemList_;
+    QList<QTreeWidgetItem*> localItemList_;
     QList<LocalModBrowser*> localModBrowserList_;
     QFutureWatcher<void> *updateVersionsWatcher_;
 

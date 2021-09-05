@@ -24,9 +24,9 @@ ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ModManager),
     updateVersionsWatcher_(new QFutureWatcher<void>(this)),
-    downloadItem_(new QTreeWidgetItem({"Download"})),
-    exploreItem_(new QTreeWidgetItem({"Explore"})),
-    localItem_(new QTreeWidgetItem({"Local"}))
+    downloadItem_(new QTreeWidgetItem({tr("Download")})),
+    exploreItem_(new QTreeWidgetItem({tr("Explore")})),
+    localItem_(new QTreeWidgetItem({tr("Local")}))
 {
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0, 1);
@@ -46,21 +46,21 @@ ModManager::ModManager(QWidget *parent) :
 
     //Downloader
     auto downloadBrowser = new DownloadBrowser(this);
-    auto downloaderItem = new QTreeWidgetItem(downloadItem_, {"Downloader"});
+    auto downloaderItem = new QTreeWidgetItem(downloadItem_, {tr("Downloader")});
     downloadItem_->addChild(downloaderItem);
     downloaderItem->setIcon(0, QIcon::fromTheme("download"));
     ui->stackedWidget->addWidget(downloadBrowser);
 
     //Curseforge
     auto curseforgeModBrowser = new CurseforgeModBrowser(this);
-    auto curseforgeItem = new QTreeWidgetItem(exploreItem_, {"Curseforge"});
+    auto curseforgeItem = new QTreeWidgetItem(exploreItem_, {tr("Curseforge")});
     exploreItem_->addChild(curseforgeItem);
     curseforgeItem->setIcon(0, QIcon(":/image/curseforge.svg"));
     ui->stackedWidget->addWidget(curseforgeModBrowser);
 
     //Modrinth
     auto modrinthModBrowser = new ModrinthModBrowser(this);
-    auto modrinthItem = new QTreeWidgetItem(exploreItem_, {"Modrinth"});
+    auto modrinthItem = new QTreeWidgetItem(exploreItem_, {tr("Modrinth")});
     exploreItem_->addChild(modrinthItem);
     modrinthItem->setIcon(0, QIcon(":/image/modrinth.svg"));
     ui->stackedWidget->addWidget(modrinthModBrowser);
@@ -72,7 +72,7 @@ ModManager::ModManager(QWidget *parent) :
             localItem_->addChild(item);
             item->setIcon(0, QIcon::fromTheme("folder"));
             auto localModBrowser = new LocalModBrowser(this, modDirInfo);
-            dirWidgetItemList_.append(item);
+            localItemList_ << item;
             localModBrowserList_.append(localModBrowser);
             ui->stackedWidget->addWidget(localModBrowser);
         }
@@ -107,7 +107,7 @@ void ModManager::refreshBrowsers()
             localItem_->addChild(item);
             item->setIcon(0, QIcon::fromTheme("folder"));
             auto localModBrowser = new LocalModBrowser(this, modDirInfo);
-            dirWidgetItemList_.append(item);
+            localItemList_.append(item);
             localModBrowserList_.append(localModBrowser);
             ui->stackedWidget->addWidget(localModBrowser);
         } else{
@@ -115,7 +115,7 @@ void ModManager::refreshBrowsers()
             oldCount--;
             auto j = i + 3;
             modDirList_ << modDirList_.takeAt(i);
-            dirWidgetItemList_ << dirWidgetItemList_.takeAt(i);
+            localItemList_ << localItemList_.takeAt(i);
             localModBrowserList_ << localModBrowserList_.takeAt(i);
             localItem_->addChild(localItem_->takeChild(i));
             auto widget = ui->stackedWidget->widget(j);
@@ -128,7 +128,7 @@ void ModManager::refreshBrowsers()
     while (i--) {
         auto j = i + 3;
         modDirList_.removeAt(i);
-        dirWidgetItemList_.removeAt(i);
+        localItemList_.removeAt(i);
         localModBrowserList_.at(i);
         delete localItem_->takeChild(i);
         auto widget = ui->stackedWidget->widget(j);
@@ -180,9 +180,8 @@ void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, i
     auto modDirInfo = modDirList_.at(index);
     auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
-        //exclude curseforge and modrinth page
         modDirList_[index] = newInfo;
-        dirWidgetItemList_[index]->setText(0, newInfo.showText());
+        localItemList_[index]->setText(0, newInfo.showText());
         localModBrowserList_[index]->setModDirInfo(newInfo);
     });
     connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
