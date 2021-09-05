@@ -33,10 +33,11 @@ private slots:
 
     void on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int);
 
+    void on_browserTreeWidget_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::ModManager *ui;
     QList<ModDirInfo> modDirList_;
-    QList<QTreeWidgetItem*> localItemList_;
     QList<LocalModBrowser*> localModBrowserList_;
     QFutureWatcher<void> *updateVersionsWatcher_;
 

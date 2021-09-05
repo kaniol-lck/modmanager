@@ -7,6 +7,7 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QMessageBox>
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 
@@ -72,7 +73,6 @@ ModManager::ModManager(QWidget *parent) :
             localItem_->addChild(item);
             item->setIcon(0, QIcon::fromTheme("folder"));
             auto localModBrowser = new LocalModBrowser(this, modDirInfo);
-            localItemList_ << item;
             localModBrowserList_.append(localModBrowser);
             ui->stackedWidget->addWidget(localModBrowser);
         }
@@ -84,6 +84,7 @@ ModManager::ModManager(QWidget *parent) :
     QFuture<void> future = QtConcurrent::run(&GameVersion::initVersionList);
     updateVersionsWatcher_->setFuture(future);
     connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, curseforgeModBrowser, &CurseforgeModBrowser::updateVersions);
+
 }
 
 ModManager::~ModManager()
@@ -107,7 +108,6 @@ void ModManager::refreshBrowsers()
             localItem_->addChild(item);
             item->setIcon(0, QIcon::fromTheme("folder"));
             auto localModBrowser = new LocalModBrowser(this, modDirInfo);
-            localItemList_.append(item);
             localModBrowserList_.append(localModBrowser);
             ui->stackedWidget->addWidget(localModBrowser);
         } else{
@@ -115,7 +115,6 @@ void ModManager::refreshBrowsers()
             oldCount--;
             auto j = i + 3;
             modDirList_ << modDirList_.takeAt(i);
-            localItemList_ << localItemList_.takeAt(i);
             localModBrowserList_ << localModBrowserList_.takeAt(i);
             localItem_->addChild(localItem_->takeChild(i));
             auto widget = ui->stackedWidget->widget(j);
@@ -128,8 +127,7 @@ void ModManager::refreshBrowsers()
     while (i--) {
         auto j = i + 3;
         modDirList_.removeAt(i);
-        localItemList_.removeAt(i);
-        localModBrowserList_.at(i);
+        localModBrowserList_.removeAt(i);
         delete localItem_->takeChild(i);
         auto widget = ui->stackedWidget->widget(j);
         ui->stackedWidget->removeWidget(widget);
@@ -182,7 +180,7 @@ void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, i
     auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
         modDirList_[index] = newInfo;
-        localItemList_[index]->setText(0, newInfo.showText());
+        item->setText(0, newInfo.showText());
         Config config;
         QList<QVariant> list;
         for(const auto &dirInfo : qAsConst(modDirList_))
@@ -193,5 +191,53 @@ void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, i
     });
     connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
     dialog->exec();
+}
+
+
+void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    auto item = ui->browserTreeWidget->itemAt(pos);
+    if(item == nullptr){
+        // in empty area
+        connect(menu->addAction(QIcon::fromTheme("list-add"), tr("New Mod Path")), &QAction::triggered, this, [=]{
+            auto dialog = new LocalModBrowserSettingsDialog(this);
+            dialog->show();
+            connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &modDirInfo){
+                modDirList_ << modDirInfo;
+                auto item = new QTreeWidgetItem(localItem_, {modDirInfo.showText()});
+                localItem_->addChild(item);
+                item->setIcon(0, QIcon::fromTheme("folder"));
+                auto localModBrowser = new LocalModBrowser(this, modDirInfo);
+                localModBrowserList_.append(localModBrowser);
+                ui->stackedWidget->addWidget(localModBrowser);
+
+                //update config
+                Config config;
+                QList<QVariant> list;
+                for(const auto &dirInfo : qAsConst(modDirList_))
+                    list << dirInfo.toVariant();
+            });
+        });
+    } else if(item->parent() == localItem_){
+        // on one of local item
+        connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
+            if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
+            auto index = item->parent()->indexOfChild(item);
+            item->parent()->removeChild(item);
+            modDirList_.removeAt(index);
+            localModBrowserList_.removeAt(index);
+            auto widget = ui->stackedWidget->widget(index + 3);
+            ui->stackedWidget->removeWidget(widget);
+
+            //update config
+            Config config;
+            QList<QVariant> list;
+            for(const auto &dirInfo : qAsConst(modDirList_))
+                list << dirInfo.toVariant();
+        });
+    }
+    if(!menu->actions().isEmpty())
+        menu->exec(ui->browserTreeWidget->mapToGlobal(pos));
 }
 

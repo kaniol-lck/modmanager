@@ -33,6 +33,9 @@
          <height>16777215</height>
         </size>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
        <property name="styleSheet">
         <string notr="true">QTreeView {
 	background-color: transparent;

@@ -12,6 +12,7 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
     ui(new Ui::LocalModBrowserSettingsDialog)
 {
     ui->setupUi(this);
+    ui->modDirButton->setIcon(QIcon::fromTheme("folder"));
     info_.setLoaderType(ModLoaderType::Any);
     updateVersions();
 }
