@@ -11,10 +11,10 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
     ui->updateTableView->setModel(&model_);
     ui->updateTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-    model_.setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Name")));
-    model_.setHorizontalHeaderItem(BeforeColumn, new QStandardItem(tr("Before")));
-    model_.setHorizontalHeaderItem(AfterColumn, new QStandardItem(tr("After")));
-    model_.setHorizontalHeaderItem(SourceColumn, new QStandardItem(tr("Source")));
+    model_.setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Mod Name")));
+    model_.setHorizontalHeaderItem(BeforeColumn, new QStandardItem(tr("Old Version")));
+    model_.setHorizontalHeaderItem(AfterColumn, new QStandardItem(tr("New Version")));
+    model_.setHorizontalHeaderItem(SourceColumn, new QStandardItem(tr("Update Source")));
 
     for(const auto &mod : list){
         auto type = mod->updateType();
@@ -46,6 +46,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
 
         auto sourceItem = new QStandardItem();
         sourceItem->setText(type == LocalMod::Curseforge? "Curseforge" : "Modrinth");
+        sourceItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
         model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
         updateList_ << mod;

@@ -2,7 +2,7 @@
 #define MODMANAGER_H
 
 #include <QMainWindow>
-#include <QList>
+#include <QTreeWidgetItem>
 #include <QFutureWatcher>
 
 #include "moddirinfo.h"
@@ -25,22 +25,23 @@ public:
 private slots:
     void refreshBrowsers();
 
-    void on_modDirSelectorWidget_currentRowChanged(int currentRow);
-
-    void on_newLocalBrowserButton_clicked();
-
-    void on_modDirSelectorWidget_doubleClicked(const QModelIndex &index);
-
     void on_actionPreferences_triggered();
 
     void on_actionManage_Browser_triggered();
 
+    void on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+
+    void on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int);
+
 private:
     Ui::ModManager *ui;
     QList<ModDirInfo> modDirList_;
-    QList<QListWidgetItem*> dirWidgetItemList_;
+    QList<QTreeWidgetItem*> dirWidgetItemList_;
     QList<LocalModBrowser*> localModBrowserList_;
     QFutureWatcher<void> *updateVersionsWatcher_;
-    int specialBrowserCount_ = 0;
+
+    QTreeWidgetItem *downloadItem_;
+    QTreeWidgetItem *exploreItem_;
+    QTreeWidgetItem *localItem_;
 };
 #endif // MODMANAGER_H

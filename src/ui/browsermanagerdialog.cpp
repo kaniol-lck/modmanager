@@ -11,6 +11,11 @@ BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->upButton->setIcon(QIcon::fromTheme("go-up"));
+    ui->downButton->setIcon(QIcon::fromTheme("go-down"));
+    ui->addButton->setIcon(QIcon::fromTheme("list-add"));
+    ui->deleteButton->setIcon(QIcon::fromTheme("list-remove"));
+
     //load mod dirs in config
     Config config;
     for(const auto &variant : config.getDirList()){
