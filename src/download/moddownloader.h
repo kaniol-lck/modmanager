@@ -21,11 +21,11 @@ public:
 
     enum DownloadType { Download, Update, Custom };
 
-    const std::shared_ptr<DownloadFileInfo> &getFileInfo() const;
-    DownloadStatus getStatus() const;
-    DownloadType getType() const;
-    const QString &getReadySize() const;
-    const QString &getFilePath() const;
+    const std::shared_ptr<DownloadFileInfo> &fileInfo() const;
+    DownloadStatus status() const;
+    DownloadType type() const;
+    const QString &readySize() const;
+    const QString &filePath() const;
 
     void setStatus(DownloadStatus newStatus);
 
@@ -35,15 +35,15 @@ signals:
     void downloadSpeed(qint64 bytesPerSec);
 
 private:
-    QTimer speedTimer;
-    qint64 currentDownloadBytes = 0;
-    qint64 lastDownloadBytes = 0;
-    QList<qint64> downloadBytes;
-    std::shared_ptr<DownloadFileInfo> fileInfo;
-    DownloadStatus status = DownloadStatus::Idol;
-    DownloadType type;
-    QString readySize;
-    QString filePath;
+    QTimer speedTimer_;
+    qint64 currentDownloadBytes_ = 0;
+    qint64 lastDownloadBytes_ = 0;
+    QList<qint64> downloadBytes_;
+    std::shared_ptr<DownloadFileInfo> fileInfo_;
+    DownloadStatus status_ = DownloadStatus::Idol;
+    DownloadType type_;
+    QString readySize_;
+    QString filePath_;
 };
 
 #endif // MODDOWNLOADER_H

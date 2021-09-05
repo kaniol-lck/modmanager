@@ -3,24 +3,24 @@
 #include "util/tutil.hpp"
 
 ModrinthModInfo::ModrinthModInfo(const QString &id) :
-    modId(id)
+    modId_(id)
 {}
 
 ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
 {
     ModrinthModInfo modInfo;
-    modInfo.basicInfo = true;
+    modInfo.basicInfo_ = true;
 
-    modInfo.modId = value(variant, "mod_id").toString();
-    modInfo.name = value(variant, "title").toString();
-    modInfo.author = value(variant, "author").toString();
-    modInfo.summary = value(variant, "description").toString();
-    modInfo.downloadCount = value(variant, "downloads").toInt();
-    modInfo.iconUrl = value(variant, "icon_url").toUrl();
-    modInfo.websiteUrl = value(variant, "page_url").toUrl();
+    modInfo.modId_ = value(variant, "mod_id").toString();
+    modInfo.name_ = value(variant, "title").toString();
+    modInfo.author_ = value(variant, "author").toString();
+    modInfo.summary_ = value(variant, "description").toString();
+    modInfo.downloadCount_ = value(variant, "downloads").toInt();
+    modInfo.iconUrl_ = value(variant, "icon_url").toUrl();
+    modInfo.websiteUrl_ = value(variant, "page_url").toUrl();
 
     for(const auto &v : value(variant, "versions").toList())
-        modInfo.gameVersions << GameVersion(v.toString());
+        modInfo.gameVersions_ << GameVersion(v.toString());
 
     return modInfo;
 }
@@ -29,86 +29,86 @@ ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
 {
     ModrinthModInfo modInfo;
     //full, but no author and website url :C
-    modInfo.basicInfo = true;
-    modInfo.fullInfo = true;
+    modInfo.basicInfo_ = true;
+    modInfo.fullInfo_ = true;
 
-    modInfo.modId = value(variant, "id").toString();
-    modInfo.name = value(variant, "title").toString();
-    modInfo.summary = value(variant, "description").toString();
-    modInfo.description = value(variant, "body").toString();
-    modInfo.downloadCount = value(variant, "downloads").toInt();
-    modInfo.iconUrl = value(variant, "icon_url").toUrl();
-    modInfo.versionList = value(variant, "versions").toStringList();
+    modInfo.modId_ = value(variant, "id").toString();
+    modInfo.name_ = value(variant, "title").toString();
+    modInfo.summary_ = value(variant, "description").toString();
+    modInfo.description_ = value(variant, "body").toString();
+    modInfo.downloadCount_ = value(variant, "downloads").toInt();
+    modInfo.iconUrl_ = value(variant, "icon_url").toUrl();
+    modInfo.versionList_ = value(variant, "versions").toStringList();
 
     return modInfo;
 }
 
-const QString &ModrinthModInfo::getId() const
+const QString &ModrinthModInfo::id() const
 {
-    return modId;
+    return modId_;
 }
 
-const QString &ModrinthModInfo::getAuthor() const
+const QString &ModrinthModInfo::author() const
 {
-    return author;
+    return author_;
 }
 
-const QString &ModrinthModInfo::getName() const
+const QString &ModrinthModInfo::name() const
 {
-    return name;
+    return name_;
 }
 
-const QString &ModrinthModInfo::getDescription() const
+const QString &ModrinthModInfo::description() const
 {
-    return description;
+    return description_;
 }
 
-int ModrinthModInfo::getDownloadCount() const
+int ModrinthModInfo::downloadCount() const
 {
-    return downloadCount;
+    return downloadCount_;
 }
 
-const QUrl &ModrinthModInfo::getIconUrl() const
+const QUrl &ModrinthModInfo::iconUrl() const
 {
-    return iconUrl;
+    return iconUrl_;
 }
 
-const QByteArray &ModrinthModInfo::getIconBytes() const
+const QByteArray &ModrinthModInfo::iconBytes() const
 {
-    return iconBytes;
+    return iconBytes_;
 }
 
-const QString &ModrinthModInfo::getSummary() const
+const QString &ModrinthModInfo::summary() const
 {
-    return summary;
+    return summary_;
 }
 
-const QUrl &ModrinthModInfo::getWebsiteUrl() const
+const QUrl &ModrinthModInfo::websiteUrl() const
 {
-    return websiteUrl;
+    return websiteUrl_;
 }
 
-const QList<ModrinthFileInfo> &ModrinthModInfo::getFileList() const
+const QList<ModrinthFileInfo> &ModrinthModInfo::fileList() const
 {
-    return fileList;
+    return fileList_;
 }
 
-const QList<GameVersion> &ModrinthModInfo::getGameVersions() const
+const QList<GameVersion> &ModrinthModInfo::gameVersions() const
 {
-    return gameVersions;
+    return gameVersions_;
 }
 
-const QStringList &ModrinthModInfo::getVersionList() const
+const QStringList &ModrinthModInfo::versionList() const
 {
-    return versionList;
+    return versionList_;
 }
 
 bool ModrinthModInfo::hasBasicInfo() const
 {
-    return basicInfo;
+    return basicInfo_;
 }
 
 bool ModrinthModInfo::hasFullInfo() const
 {
-    return fullInfo;
+    return fullInfo_;
 }

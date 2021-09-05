@@ -22,7 +22,7 @@ private slots:
 
 private:
     Ui::ModrinthFileItemWidget *ui;
-    ModrinthFileInfo modrinthFileInfo;
+    ModrinthFileInfo fileInfo_;
 };
 
 #endif // MODRINTHFILEITEMWIDGET_H

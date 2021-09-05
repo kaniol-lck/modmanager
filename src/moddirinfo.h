@@ -22,15 +22,15 @@ public:
 
     bool exists() const;
 
-    const QDir &getModDir() const;
-    const GameVersion &getGameVersion() const;
+    const QDir &modDir() const;
+    const GameVersion &gameVersion() const;
 
-    ModLoaderType::Type getLoaderType() const;
+    ModLoaderType::Type loaderType() const;
 
 private:
-    QDir modDir;
-    GameVersion gameVersion;
-    ModLoaderType::Type loaderType;
+    QDir modDir_;
+    GameVersion gameVersion_;
+    ModLoaderType::Type loaderType_;
 };
 
 #endif // MODDIRINFO_H

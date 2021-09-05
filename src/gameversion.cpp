@@ -16,36 +16,36 @@ QStringList GameVersion::versionList;
 GameVersion GameVersion::ANY = GameVersion("");
 
 GameVersion::GameVersion(const QString &string) :
-    versionString(string)
+    versionString_(string)
 {
 
 }
 
 GameVersion GameVersion::mainVersion() const
 {
-    auto l = versionString.split(".");
+    auto l = versionString_.split(".");
     if(l.size() == 3) l.removeLast();
     return GameVersion(l.join("."));
 }
 
 const QString &GameVersion::getVersionString() const
 {
-    return versionString;
+    return versionString_;
 }
 
 GameVersion::operator QString() const
 {
-    return versionString;
+    return versionString_;
 }
 
 bool GameVersion::operator==(const GameVersion &other) const
 {
-    return versionString == other.versionString;
+    return versionString_ == other.versionString_;
 }
 
 bool GameVersion::operator!=(const GameVersion &another) const
 {
-    return versionString != another.versionString;
+    return versionString_ != another.versionString_;
 }
 
 std::optional<GameVersion> GameVersion::deduceFromString(const QString &string)

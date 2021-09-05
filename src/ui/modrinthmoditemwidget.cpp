@@ -4,15 +4,15 @@
 ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) :
     QWidget(parent),
     ui(new Ui::ModrinthModItemWidget),
-    modrinthMod(mod)
+    mod_(mod)
 {
     ui->setupUi(this);
 
-    ui->modName->setText(mod->getModInfo().getName());
-    ui->modSummary->setText(mod->getModInfo().getSummary());
-    ui->modAuthors->setText("by <b>" + mod->getModInfo().getAuthor() + "</b>");
+    ui->modName->setText(mod->modInfo().name());
+    ui->modSummary->setText(mod->modInfo().summary());
+    ui->modAuthors->setText("by <b>" + mod->modInfo().author() + "</b>");
 
-    connect(modrinthMod, &ModrinthMod::iconReady, this, &ModrinthModItemWidget::updateIcon);
+    connect(mod, &ModrinthMod::iconReady, this, &ModrinthModItemWidget::updateIcon);
 }
 
 ModrinthModItemWidget::~ModrinthModItemWidget()
@@ -23,6 +23,6 @@ ModrinthModItemWidget::~ModrinthModItemWidget()
 void ModrinthModItemWidget::updateIcon()
 {
     QPixmap pixelmap;
-    pixelmap.loadFromData(modrinthMod->getModInfo().getIconBytes());
+    pixelmap.loadFromData(mod_->modInfo().iconBytes());
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
 }

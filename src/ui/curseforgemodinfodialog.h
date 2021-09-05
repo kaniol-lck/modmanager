@@ -19,7 +19,7 @@ public:
 
 private:
     Ui::CurseforgeModInfoDialog *ui;
-    CurseforgeMod *curseforgeMod;
+    CurseforgeMod *mod_;
 };
 
 #endif // CURSEFORGEMODINFODIALOG_H

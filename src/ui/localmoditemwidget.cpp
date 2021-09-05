@@ -11,7 +11,7 @@
 LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     QWidget(parent),
     ui(new Ui::LocalModItemWidget),
-    localMod(mod)
+    mod_(mod)
 {
     //init ui
     ui->setupUi(this);
@@ -26,19 +26,19 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     updateInfo();
 
     //signals / slots
-    connect(localMod, &LocalMod::curseforgeUpdateReady, this, &LocalModItemWidget::curseforgeUpdateReady);
-    connect(localMod, &LocalMod::checkCurseforgeStarted, this, &LocalModItemWidget::startCheckCurseforge);
-    connect(localMod, &LocalMod::curseforgeReady, this, &LocalModItemWidget::curseforgeReady);
-    connect(localMod, &LocalMod::checkCurseforgeUpdateStarted, this, &LocalModItemWidget::startCheckCurseforgeUpdate);
+    connect(mod_, &LocalMod::curseforgeUpdateReady, this, &LocalModItemWidget::curseforgeUpdateReady);
+    connect(mod_, &LocalMod::checkCurseforgeStarted, this, &LocalModItemWidget::startCheckCurseforge);
+    connect(mod_, &LocalMod::curseforgeReady, this, &LocalModItemWidget::curseforgeReady);
+    connect(mod_, &LocalMod::checkCurseforgeUpdateStarted, this, &LocalModItemWidget::startCheckCurseforgeUpdate);
 
-    connect(localMod, &LocalMod::modrinthUpdateReady, this, &LocalModItemWidget::modrinthUpdateReady);
-    connect(localMod, &LocalMod::checkModrinthStarted, this, &LocalModItemWidget::startCheckModrinth);
-    connect(localMod, &LocalMod::modrinthReady, this, &LocalModItemWidget::modrinthReady);
-    connect(localMod, &LocalMod::checkModrinthUpdateStarted, this, &LocalModItemWidget::startCheckModrinthUpdate);
+    connect(mod_, &LocalMod::modrinthUpdateReady, this, &LocalModItemWidget::modrinthUpdateReady);
+    connect(mod_, &LocalMod::checkModrinthStarted, this, &LocalModItemWidget::startCheckModrinth);
+    connect(mod_, &LocalMod::modrinthReady, this, &LocalModItemWidget::modrinthReady);
+    connect(mod_, &LocalMod::checkModrinthUpdateStarted, this, &LocalModItemWidget::startCheckModrinthUpdate);
 
-    connect(localMod, &LocalMod::updateStarted, this, &LocalModItemWidget::startUpdate);
-    connect(localMod, &LocalMod::updateProgress, this, &LocalModItemWidget::updateProgress);
-    connect(localMod, &LocalMod::updateFinished, this, &LocalModItemWidget::finishUpdate);
+    connect(mod_, &LocalMod::updateStarted, this, &LocalModItemWidget::startUpdate);
+    connect(mod_, &LocalMod::updateProgress, this, &LocalModItemWidget::updateProgress);
+    connect(mod_, &LocalMod::updateFinished, this, &LocalModItemWidget::finishUpdate);
 }
 
 LocalModItemWidget::~LocalModItemWidget()
@@ -48,21 +48,21 @@ LocalModItemWidget::~LocalModItemWidget()
 
 void LocalModItemWidget::updateInfo()
 {
-    ui->modName->setText(localMod->getModInfo().getName());
-    ui->modVersion->setText(localMod->getModInfo().getVersion());
-    ui->modDescription->setText(localMod->getModInfo().getDescription());
-    ui->modAuthors->setText(localMod->getModInfo().getAuthors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    ui->modName->setText(mod_->modInfo().name());
+    ui->modVersion->setText(mod_->modInfo().version());
+    ui->modDescription->setText(mod_->modInfo().description());
+    ui->modAuthors->setText(mod_->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
 
-    if(!localMod->getModInfo().getIconBytes().isEmpty()){
+    if(!mod_->modInfo().iconBytes().isEmpty()){
         QPixmap pixelmap;
-        pixelmap.loadFromData(localMod->getModInfo().getIconBytes());
+        pixelmap.loadFromData(mod_->modInfo().iconBytes());
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     }
 }
 
 void LocalModItemWidget::on_updateButton_clicked()
 {
-    localMod->update(localMod->updateType());
+    mod_->update(mod_->updateType());
 }
 
 void LocalModItemWidget::curseforgeUpdateReady(bool need)
@@ -111,7 +111,7 @@ void LocalModItemWidget::startUpdate()
 {
     ui->updateButton->setText(tr("Updating"));
     ui->updateButton->setEnabled(false);
-    ui->updateProgress->setMaximum(localMod->getUpdateCurseforgeFileInfo().value().getSize());
+    ui->updateProgress->setMaximum(mod_->updateCurseforgeFileInfo().value().size());
     ui->updateProgress->setVisible(true);
 }
 
@@ -132,8 +132,8 @@ void LocalModItemWidget::finishUpdate()
 
 void LocalModItemWidget::on_curseforgeButton_clicked()
 {
-    auto curseforgeMod = localMod->getCurseforgeMod();
-    if(!curseforgeMod->getModInfo().hasBasicInfo())
+    auto curseforgeMod = mod_->curseforgeMod();
+    if(!curseforgeMod->modInfo().hasBasicInfo())
         curseforgeMod->acquireBasicInfo();
     auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod);
     dialog->show();
@@ -142,8 +142,8 @@ void LocalModItemWidget::on_curseforgeButton_clicked()
 
 void LocalModItemWidget::on_modrinthButton_clicked()
 {
-    auto modrinthMod = localMod->getModrinthMod();
-    if(!modrinthMod->getModInfo().hasBasicInfo())
+    auto modrinthMod = mod_->modrinthMod();
+    if(!modrinthMod->modInfo().hasBasicInfo())
         modrinthMod->acquireFullInfo();
     auto dialog = new ModrinthModInfoDialog(this, modrinthMod);
     dialog->show();

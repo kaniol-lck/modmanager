@@ -24,11 +24,11 @@ private slots:
     void writeFile();
 
 private:
-    QNetworkReply *reply;
-    QFile *downloadFile;
-    qint64 threadStartPos;
-    qint64 threadEndPos;
-    qint64 readySize = 0;
+    QNetworkReply *reply_;
+    QFile *file_;
+    qint64 threadStartPos_;
+    qint64 threadEndPos_;
+    qint64 readySize_ = 0;
 };
 
 #endif // DOWNLOADERTHREAD_H

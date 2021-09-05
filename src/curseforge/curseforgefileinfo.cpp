@@ -8,25 +8,25 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
 {
     CurseforgeFileInfo fileInfo;
 
-    fileInfo.id = value(variant, "id").toInt();
-    fileInfo.displayName = value(variant, "displayName").toString();
-    fileInfo.fileName = value(variant, "fileName").toString();
-    fileInfo.url = value(variant, "downloadUrl").toUrl();
-    fileInfo.size = value(variant, "fileLength").toInt();
-    fileInfo.releaseType = value(variant, "releaseType").toInt();
-    fileInfo.fileDate = value(variant, "fileDate").toDateTime();
+    fileInfo.id_ = value(variant, "id").toInt();
+    fileInfo.displayName_ = value(variant, "displayName").toString();
+    fileInfo.fileName_ = value(variant, "fileName").toString();
+    fileInfo.url_ = value(variant, "downloadUrl").toUrl();
+    fileInfo.size_ = value(variant, "fileLength").toInt();
+    fileInfo.releaseType_ = value(variant, "releaseType").toInt();
+    fileInfo.fileDate_ = value(variant, "fileDate").toDateTime();
 
     //I don't know why curseforge put game verison and modloader together
     auto versionList = value(variant, "gameVersion").toStringList();
     for(const auto &version : versionList){
         auto v = GameVersion::deduceFromString(version);
         if(v.has_value()){
-            fileInfo.gameVersions << v.value();
+            fileInfo.gameVersions_ << v.value();
             continue;
         }
         auto loaderType = ModLoaderType::fromString(version);
         if(loaderType != ModLoaderType::Any){
-            fileInfo.modLoaders << loaderType;
+            fileInfo.loaderTypes_ << loaderType;
             continue;
         }
     }
@@ -41,25 +41,25 @@ DownloadFileInfo::SourceType CurseforgeFileInfo::source() const
 
 int CurseforgeFileInfo::getId() const
 {
-    return id;
+    return id_;
 }
 
-const QList<GameVersion> &CurseforgeFileInfo::getGameVersions() const
+const QList<GameVersion> &CurseforgeFileInfo::gameVersions() const
 {
-    return gameVersions;
+    return gameVersions_;
 }
 
-const QList<ModLoaderType::Type> &CurseforgeFileInfo::getModLoaders() const
+const QList<ModLoaderType::Type> &CurseforgeFileInfo::loaderTypes() const
 {
-    return modLoaders;
+    return loaderTypes_;
 }
 
-int CurseforgeFileInfo::getReleaseType() const
+int CurseforgeFileInfo::releaseType() const
 {
-    return releaseType;
+    return releaseType_;
 }
 
-const QDateTime &CurseforgeFileInfo::getFileDate() const
+const QDateTime &CurseforgeFileInfo::fileDate() const
 {
-    return fileDate;
+    return fileDate_;
 }

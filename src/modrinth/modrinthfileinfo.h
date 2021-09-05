@@ -18,28 +18,28 @@ public:
 
     SourceType source() const override;
 
-    const QString &getId() const;
+    const QString &id() const;
 
-    const QString &getModId() const;
+    const QString &modId() const;
 
-    const QList<GameVersion> &getGameVersions() const;
+    const QList<GameVersion> &gameVersions() const;
 
-    const QList<ModLoaderType::Type> &getModLoaders() const;
+    const QList<ModLoaderType::Type> &loaderTypes() const;
 
-    int getFileLength() const;
+    int size() const;
 
-    int getReleaseType() const;
+    int releaseType() const;
 
-    const QDateTime &getFileDate() const;
+    const QDateTime &fileDate() const;
 
 private:
-    QString id;
-    QString modId;
-    QList<GameVersion> gameVersions;
-    QList<ModLoaderType::Type> modLoaders;
-    int fileLength;
-    int releaseType;
-    QDateTime fileDate;
+    QString id_;
+    QString modId_;
+    QList<GameVersion> gameVersions_;
+    QList<ModLoaderType::Type> loaderTypes_;
+    int size_;
+    int releaseType_;
+    QDateTime fileDate_;
 };
 
 #endif // MODRINTHFILEINFO_H

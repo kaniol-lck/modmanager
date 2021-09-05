@@ -19,12 +19,12 @@ public:
 
     explicit LocalMod(QObject *parent, const LocalModInfo &info);
 
-    const LocalModInfo &getModInfo() const;
+    const LocalModInfo &modInfo() const;
 
-    CurseforgeMod *getCurseforgeMod() const;
+    CurseforgeMod *curseforgeMod() const;
     void setCurseforgeMod(CurseforgeMod *newCurseforgeMod);
 
-    ModrinthMod *getModrinthMod() const;
+    ModrinthMod *modrinthMod() const;
     void setModrinthMod(ModrinthMod *newModrinthMod);
 
     void searchOnCurseforge();
@@ -36,13 +36,13 @@ public:
     ModWebsiteType updateType() const;
     void update(ModWebsiteType type);
 
-    std::optional<CurseforgeFileInfo> getCurrentCurseforgeFileInfo() const;
+    std::optional<CurseforgeFileInfo> currentCurseforgeFileInfo() const;
 
-    std::optional<CurseforgeFileInfo> getUpdateCurseforgeFileInfo() const;
+    std::optional<CurseforgeFileInfo> updateCurseforgeFileInfo() const;
 
-    std::optional<ModrinthFileInfo> getCurrentModrinthFileInfo() const;
+    std::optional<ModrinthFileInfo> currentModrinthFileInfo() const;
 
-    std::optional<ModrinthFileInfo> getUpdateModrinthFileInfo() const;
+    std::optional<ModrinthFileInfo> updateModrinthFileInfo() const;
 
 signals:
     void curseforgeReady(bool bl);
@@ -60,15 +60,15 @@ signals:
     void updateFinished();
 
 private:
-    LocalModInfo localModInfo;
+    LocalModInfo modInfo_;
 
-    CurseforgeMod *curseforgeMod = nullptr;
-    std::optional<CurseforgeFileInfo> currentCurseforgeFileInfo;
-    std::optional<CurseforgeFileInfo> updateCurseforgeFileInfo;
+    CurseforgeMod *curseforgeMod_ = nullptr;
+    std::optional<CurseforgeFileInfo> currentCurseforgeFileInfo_;
+    std::optional<CurseforgeFileInfo> updateCurseforgeFileInfo_;
 
-    ModrinthMod *modrinthMod = nullptr;
-    std::optional<ModrinthFileInfo> currentModrinthFileInfo;
-    std::optional<ModrinthFileInfo> updateModrinthFileInfo;
+    ModrinthMod *modrinthMod_ = nullptr;
+    std::optional<ModrinthFileInfo> currentModrinthFileInfo_;
+    std::optional<ModrinthFileInfo> updateModrinthFileInfo_;
 };
 
 #endif // LOCALMOD_H

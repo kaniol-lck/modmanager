@@ -24,7 +24,7 @@ public slots:
 
 private:
     Ui::DownloadBrowser *ui;
-    DownloadManager *manager;
+    DownloadManager *manager_;
 };
 
 #endif // DOWNLOADBROWSER_H

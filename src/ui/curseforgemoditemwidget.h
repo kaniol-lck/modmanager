@@ -26,8 +26,8 @@ private slots:
 
 private:
     Ui::CurseforgeModItemWidget *ui;
-    CurseforgeMod *curseforgeMod;
-    std::optional<CurseforgeFileInfo> defaultFileInfo;
+    CurseforgeMod *mod_;
+    std::optional<CurseforgeFileInfo> defaultFileInfo_;
 };
 
 #endif // CURSEFORGEMODITEMWIDGET_H

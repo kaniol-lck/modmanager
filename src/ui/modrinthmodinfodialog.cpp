@@ -11,27 +11,27 @@
 ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) :
     QDialog(parent),
     ui(new Ui::ModrinthModInfoDialog),
-    modrinthMod(mod)
+    mod_(mod)
 {
     ui->setupUi(this);
 
     auto updateBasicInfo = [=]{
-        setWindowTitle(mod->getModInfo().getName() + tr(" - Modrinth"));
-        ui->modName->setText(mod->getModInfo().getName());
-        ui->modSummary->setText(mod->getModInfo().getSummary());
-            ui->modUrl->setText(QString("<a href= \"%1\">%1</a>").arg(mod->getModInfo().getWebsiteUrl().toString()));
-        ui->modAuthors->setText("by " + mod->getModInfo().getAuthor());
+        setWindowTitle(mod->modInfo().name() + tr(" - Modrinth"));
+        ui->modName->setText(mod->modInfo().name());
+        ui->modSummary->setText(mod->modInfo().summary());
+            ui->modUrl->setText(QString("<a href= \"%1\">%1</a>").arg(mod->modInfo().websiteUrl().toString()));
+        ui->modAuthors->setText("by " + mod->modInfo().author());
 
         //update icon
         //included by basic info
         auto updateIcon= [=]{
             QPixmap pixelmap;
-            pixelmap.loadFromData(mod->getModInfo().getIconBytes());
+            pixelmap.loadFromData(mod->modInfo().iconBytes());
             ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
             ui->modIcon->setCursor(Qt::ArrowCursor);
         };
 
-        if(!mod->getModInfo().getIconBytes().isEmpty())
+        if(!mod->modInfo().iconBytes().isEmpty())
             updateIcon();
         else {
             mod->acquireIcon();
@@ -40,13 +40,13 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
         }
     };
 
-    auto bl = mod->getModInfo().hasBasicInfo();
+    auto bl = mod->modInfo().hasBasicInfo();
     if(bl) updateBasicInfo();
 
     //update full info
     auto updateFullInfo = [=]{
         if(!bl) updateBasicInfo();
-        auto text = mod->getModInfo().getDescription();
+        auto text = mod->modInfo().description();
         text.replace("<br>", "\n");
         ui->modDescription->setMarkdown(text);
         ui->modDescription->setCursor(Qt::ArrowCursor);
@@ -54,10 +54,10 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
         //update file list
         auto updateFileList = [=]{
             ui->fileListWidget->clear();
-            auto files = mod->getModInfo().getFileList();
+            auto files = mod->modInfo().fileList();
             for(const auto &fileInfo : qAsConst(files)){
                 auto *listItem = new DateTimeSortItem();
-                listItem->setData(DateTimeSortItem::Role, fileInfo.getFileDate());
+                listItem->setData(DateTimeSortItem::Role, fileInfo.fileDate());
                 listItem->setSizeHint(QSize(500, 90));
                 auto itemWidget = new ModrinthFileItemWidget(this, fileInfo);
                 ui->fileListWidget->addItem(listItem);
@@ -67,7 +67,7 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
             ui->fileListWidget->setCursor(Qt::ArrowCursor);
         };
 
-        if(!mod->getModInfo().getFileList().isEmpty())
+        if(!mod->modInfo().fileList().isEmpty())
             updateFileList();
         else {
             ui->fileListWidget->setCursor(Qt::BusyCursor);
@@ -76,7 +76,7 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
         }
     };
 
-    if(!mod->getModInfo().getDescription().isEmpty())
+    if(!mod->modInfo().description().isEmpty())
         updateFullInfo();
     else{
         ui->modDescription->setCursor(Qt::BusyCursor);

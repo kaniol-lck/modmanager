@@ -18,7 +18,7 @@ public:
     static ModDownloader *addModDownload(std::shared_ptr<DownloadFileInfo> info, QString path = "");
     static ModDownloader *addModupdate(std::shared_ptr<DownloadFileInfo> info, QString path, std::function<void()> finishCallback);
 
-    const QList<ModDownloader *> &getDownloadList() const;
+    const QList<ModDownloader *> &downloadList() const;
 
 signals:
     void downloaderAdded(ModDownloader *downloader);
@@ -31,11 +31,11 @@ public slots:
 private:
     void addDownloader(ModDownloader *downloader);
 
-    QTimer speedTimer;
+    QTimer speedTimer_;
 
     const int DOWNLOAD_COUNT;
-    QList<ModDownloader*> downloadList;
-    QList<qint64> speedList;
+    QList<ModDownloader*> downloadList_;
+    QList<qint64> speedList_;
 
 };
 

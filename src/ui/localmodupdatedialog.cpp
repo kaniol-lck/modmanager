@@ -8,47 +8,47 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
     ui(new Ui::LocalModUpdateDialog)
 {
     ui->setupUi(this);
-    ui->updateTableView->setModel(&model);
+    ui->updateTableView->setModel(&model_);
     ui->updateTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
-    model.setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Name")));
-    model.setHorizontalHeaderItem(BeforeColumn, new QStandardItem(tr("Before")));
-    model.setHorizontalHeaderItem(AfterColumn, new QStandardItem(tr("After")));
-    model.setHorizontalHeaderItem(SourceColumn, new QStandardItem(tr("Source")));
+    model_.setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Name")));
+    model_.setHorizontalHeaderItem(BeforeColumn, new QStandardItem(tr("Before")));
+    model_.setHorizontalHeaderItem(AfterColumn, new QStandardItem(tr("After")));
+    model_.setHorizontalHeaderItem(SourceColumn, new QStandardItem(tr("Source")));
 
     for(const auto &mod : list){
         auto type = mod->updateType();
         if(type == LocalMod::None) continue;
 
         static auto getDisplayName = [=](const auto &fileInfo){
-            return fileInfo.getDisplayName();
+            return fileInfo.displayName();
         };
 
         auto nameItem = new QStandardItem();
-        nameItem->setText(mod->getModInfo().getName() + ":");
+        nameItem->setText(mod->modInfo().name() + ":");
         nameItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
         nameItem->setCheckable(true);
         nameItem->setCheckState(Qt::Checked);
 
         auto beforeItem = new QStandardItem();
         if(type == LocalMod::Curseforge)
-            beforeItem->setText(getDisplayName(mod->getCurrentCurseforgeFileInfo().value()));
+            beforeItem->setText(getDisplayName(mod->currentCurseforgeFileInfo().value()));
         else if(type == LocalMod::Modrinth)
-            beforeItem->setText(getDisplayName(mod->getCurrentModrinthFileInfo().value()));
+            beforeItem->setText(getDisplayName(mod->currentModrinthFileInfo().value()));
         beforeItem->setForeground(Qt::red);
 
         auto afterItem = new QStandardItem();
         if(type == LocalMod::Curseforge)
-            afterItem->setText(getDisplayName(mod->getUpdateCurseforgeFileInfo().value()));
+            afterItem->setText(getDisplayName(mod->updateCurseforgeFileInfo().value()));
         else if(type == LocalMod::Modrinth)
-            afterItem->setText(getDisplayName(mod->getUpdateModrinthFileInfo().value()));
+            afterItem->setText(getDisplayName(mod->updateModrinthFileInfo().value()));
         afterItem->setForeground(Qt::green);
 
         auto sourceItem = new QStandardItem();
         sourceItem->setText(type == LocalMod::Curseforge? "Curseforge" : "Modrinth");
 
-        model.appendRow({nameItem, beforeItem, afterItem, sourceItem});
-        updateList << mod;
+        model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
+        updateList_ << mod;
     }
 }
 
@@ -60,8 +60,8 @@ LocalModUpdateDialog::~LocalModUpdateDialog()
 
 void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
 {
-    for(int row = 0; row < model.rowCount(); row++)
-        if(model.item(row)->checkState() == Qt::Checked)
-            updateList.at(row)->update(updateList.at(row)->updateType());
+    for(int row = 0; row < model_.rowCount(); row++)
+        if(model_.item(row)->checkState() == Qt::Checked)
+            updateList_.at(row)->update(updateList_.at(row)->updateType());
 }
 

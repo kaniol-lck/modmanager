@@ -16,30 +16,30 @@ public:
 
     QDateTime getFileModificationTime() const;
 
-    const QString &getId() const;
-    const QDir &getModPath() const;
-    const QString &getName() const;
-    const QString &getVersion() const;
-    const QString &getDescription() const;
-    const QString &getSha1() const;
-    const QString &getMurmurhash() const;
-    const QByteArray &getIconBytes() const;
+    const QString &id() const;
+    const QDir &path() const;
+    const QString &name() const;
+    const QString &version() const;
+    const QString &description() const;
+    const QString &sha1() const;
+    const QString &murmurhash() const;
+    const QByteArray &iconBytes() const;
 
-    const QStringList &getAuthors() const;
+    const QStringList &authors() const;
 
 private:
-    QDir modPath;
-    QFileInfo modFileInfo;
-    QString id;
-    QString name;
-    QString version;
-    QStringList authors;
-    QString description;
-    QString sha1;
-    QString murmurhash;
-    QByteArray iconBytes;
+    QDir path_;
+    QFileInfo fileInfo_;
+    QString id_;
+    QString name_;
+    QString version_;
+    QStringList authors_;
+    QString description_;
+    QString sha1_;
+    QString murmurhash_;
+    QByteArray iconBytes_;
 
-    bool hasFabricManifest = false;
+    bool hasFabricManifest_ = false;
 
 
 };

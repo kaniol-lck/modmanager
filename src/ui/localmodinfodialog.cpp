@@ -10,19 +10,19 @@
 LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
     QDialog(parent),
     ui(new Ui::LocalModInfoDialog),
-    localMod(mod)
+    mod_(mod)
 {
     ui->setupUi(this);
-    setWindowTitle(localMod->getModInfo().getName() + tr(" - Local"));
+    setWindowTitle(mod_->modInfo().name() + tr(" - Local"));
     ui->curseforgeButton->setIcon(QIcon(":/image/curseforge.svg"));
     ui->modrinthButton->setIcon(QIcon(":/image/modrinth.svg"));
 
-    ui->modName->setText(localMod->getModInfo().getName());
-    ui->modVersion->setText(localMod->getModInfo().getVersion());
-    ui->modDescription->setText(localMod->getModInfo().getDescription());
+    ui->modName->setText(mod_->modInfo().name());
+    ui->modVersion->setText(mod_->modInfo().version());
+    ui->modDescription->setText(mod_->modInfo().description());
 
     QPixmap pixelmap;
-    pixelmap.loadFromData(localMod->getModInfo().getIconBytes());
+    pixelmap.loadFromData(mod_->modInfo().iconBytes());
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 
@@ -31,10 +31,10 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
         ui->curseforgeButton->setEnabled(bl);
     };
 
-    if(mod->getCurseforgeMod() != nullptr)
+    if(mod->curseforgeMod() != nullptr)
         updateCurseforge(true);
     else{
-        connect(localMod, &LocalMod::curseforgeReady, this, updateCurseforge);
+        connect(mod_, &LocalMod::curseforgeReady, this, updateCurseforge);
     }
 
     //update modrinth
@@ -42,10 +42,10 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
         ui->modrinthButton->setEnabled(bl);
     };
 
-    if(mod->getModrinthMod() != nullptr)
+    if(mod->modrinthMod() != nullptr)
         updateModrinth(true);
     else{
-        connect(localMod, &LocalMod::modrinthReady, this, updateModrinth);
+        connect(mod_, &LocalMod::modrinthReady, this, updateModrinth);
     }
 }
 
@@ -56,8 +56,8 @@ LocalModInfoDialog::~LocalModInfoDialog()
 
 void LocalModInfoDialog::on_curseforgeButton_clicked()
 {
-    auto curseforgeMod = localMod->getCurseforgeMod();
-    if(!curseforgeMod->getModInfo().hasBasicInfo())
+    auto curseforgeMod = mod_->curseforgeMod();
+    if(!curseforgeMod->modInfo().hasBasicInfo())
         curseforgeMod->acquireBasicInfo();
     auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod);
     dialog->show();
@@ -66,8 +66,8 @@ void LocalModInfoDialog::on_curseforgeButton_clicked()
 
 void LocalModInfoDialog::on_modrinthButton_clicked()
 {
-    auto modrinthMod = localMod->getModrinthMod();
-    if(!modrinthMod->getModInfo().hasBasicInfo())
+    auto modrinthMod = mod_->modrinthMod();
+    if(!modrinthMod->modInfo().hasBasicInfo())
         modrinthMod->acquireFullInfo();
     auto dialog = new ModrinthModInfoDialog(this, modrinthMod);
     dialog->show();

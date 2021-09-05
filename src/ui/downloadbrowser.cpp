@@ -8,12 +8,12 @@
 DownloadBrowser::DownloadBrowser(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DownloadBrowser),
-    manager(DownloadManager::manager())
+    manager_(DownloadManager::manager())
 {
     ui->setupUi(this);
 
-    connect(manager, &DownloadManager::downloaderAdded, this, &DownloadBrowser::addNewDownloaderItem);
-    connect(manager, &DownloadManager::downloadSpeed, this, &DownloadBrowser::downloadSpeed);
+    connect(manager_, &DownloadManager::downloaderAdded, this, &DownloadBrowser::addNewDownloaderItem);
+    connect(manager_, &DownloadManager::downloadSpeed, this, &DownloadBrowser::downloadSpeed);
 }
 
 DownloadBrowser::~DownloadBrowser()

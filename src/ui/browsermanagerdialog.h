@@ -37,7 +37,7 @@ private:
 
     Ui::BrowserManagerDialog *ui;
 
-    QList<ModDirInfo> modDirList;
+    QList<ModDirInfo> modDirList_;
 };
 
 #endif // BROWSERMANAGERDIALOG_H

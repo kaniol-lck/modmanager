@@ -24,7 +24,7 @@ private slots:
 
 private:
     Ui::LocalModInfoDialog *ui;
-    LocalMod *localMod;
+    LocalMod *mod_;
 };
 
 #endif // LOCALMODINFODIALOG_H

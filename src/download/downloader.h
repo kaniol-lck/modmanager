@@ -30,12 +30,12 @@ private slots:
 private:
     const int THREAD_COUNT;
 
-    int finishedThreadCount = 0;
-    QUrl downloadUrl;
-    QFile downloadFile;
-    qint64 downloadSize;
-    QVector<qint64> bytesReceived;
-    QVector<qint64> bytesTotal;
+    int finishedThreadCount_ = 0;
+    QUrl url_;
+    QFile file_;
+    qint64 size_;
+    QVector<qint64> bytesReceived_;
+    QVector<qint64> bytesTotal_;
 
     void handleRedirect();
 

@@ -15,9 +15,9 @@ DownloaderThread::DownloaderThread(QObject *parent) :
 
 void DownloaderThread::download(int index, const QUrl &url, QFile *file, qint64 startPos, qint64 endPos)
 {
-    downloadFile = file;
-    threadStartPos = startPos;
-    threadEndPos = startPos;
+    file_ = file;
+    threadStartPos_ = startPos;
+    threadEndPos_ = startPos;
 
     //download range
     QNetworkRequest request;
@@ -25,15 +25,15 @@ void DownloaderThread::download(int index, const QUrl &url, QFile *file, qint64 
     QString range = QString("bytes=%0-%1").arg(startPos).arg(endPos);
     request.setRawHeader("Range", range.toUtf8());
 
-    reply = accessManager()->get(request);
-    connect(reply, &QNetworkReply::finished, [=]{
+    reply_ = accessManager()->get(request);
+    connect(reply_, &QNetworkReply::finished, [=]{
         emit threadFinished(index);
     });
-    connect(reply, &QNetworkReply::downloadProgress, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(reply_, &QNetworkReply::downloadProgress, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         emit threadDownloadProgress(index, bytesReceived);
     });
-    connect(reply, &QNetworkReply::readyRead, this, &DownloaderThread::writeFile);
-    connect(reply, &QNetworkReply::errorOccurred, [=](QNetworkReply::NetworkError code){
+    connect(reply_, &QNetworkReply::readyRead, this, &DownloaderThread::writeFile);
+    connect(reply_, &QNetworkReply::errorOccurred, [=](QNetworkReply::NetworkError code){
         emit threadErrorOccurred(index, code);
     });
 
@@ -41,8 +41,8 @@ void DownloaderThread::download(int index, const QUrl &url, QFile *file, qint64 
 
 void DownloaderThread::writeFile()
 {
-    const QByteArray &buffer = reply->readAll();
-    downloadFile->seek(threadStartPos + readySize);
-    downloadFile->write(buffer);
-    readySize += buffer.size();
+    const QByteArray &buffer = reply_->readAll();
+    file_->seek(threadStartPos_ + readySize_);
+    file_->write(buffer);
+    readySize_ += buffer.size();
 }

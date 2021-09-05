@@ -22,7 +22,7 @@ private slots:
 
 private:
     Ui::ModrinthModItemWidget *ui;
-    ModrinthMod *modrinthMod;
+    ModrinthMod *mod_;
 };
 
 #endif // MODRINTHMODITEMWIDGET_H

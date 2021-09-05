@@ -22,7 +22,7 @@ private slots:
 
 private:
     Ui::CurseforgeFileItemWidget *ui;
-    CurseforgeFileInfo curseforgeFileInfo;
+    CurseforgeFileInfo fileInfo_;
 };
 
 #endif // CURSEFORGEFILEITEMWIDGET_H

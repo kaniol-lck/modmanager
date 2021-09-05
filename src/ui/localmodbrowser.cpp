@@ -13,7 +13,7 @@
 LocalModBrowser::LocalModBrowser(QWidget *parent, const ModDirInfo &info) :
     QWidget(parent),
     ui(new Ui::LocalModBrowser),
-    modDirInfo(info)
+    modDirInfo_(info)
 {
     ui->setupUi(this);
 
@@ -30,9 +30,9 @@ LocalModBrowser::~LocalModBrowser()
 
 void LocalModBrowser::updateModList()
 {
-    modList.clear();
+    modList_.clear();
     ui->modListWidget->clear();
-    const auto &list = modDirInfo.getModDir().entryInfoList(QDir::Files);
+    const auto &list = modDirInfo_.modDir().entryInfoList(QDir::Files);
     for (const QFileInfo& entryInfo : list) {
         LocalModInfo modInfo(entryInfo.absoluteFilePath());
         if(!modInfo.isFabricMod()) continue;
@@ -42,7 +42,7 @@ void LocalModBrowser::updateModList()
         //curseforge
         localMod->searchOnCurseforge();
         connect(localMod, &LocalMod::curseforgeReady, this, [=](bool bl){
-            if(bl && Config().getAutoCheckUpdate()) localMod->checkCurseforgeUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
+            if(bl && Config().getAutoCheckUpdate()) localMod->checkCurseforgeUpdate(modDirInfo_.gameVersion().mainVersion(), modDirInfo_.loaderType());
         });
 
         //modrinth
@@ -50,7 +50,7 @@ void LocalModBrowser::updateModList()
         connect(localMod, &LocalMod::modrinthReady, this, [=](bool bl){
 //            if(bl && Config().getAutoCheckUpdate()) localMod->checkModrinthUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
         });
-        modList << localMod;
+        modList_ << localMod;
 
         auto *listItem = new QListWidgetItem();
         listItem->setSizeHint(QSize(500, 100));
@@ -77,21 +77,21 @@ void LocalModBrowser::on_modListWidget_currentRowChanged(int currentRow)
 
 void LocalModBrowser::setModDirInfo(const ModDirInfo &newModDirInfo)
 {
-    modDirInfo = newModDirInfo;
+    modDirInfo_ = newModDirInfo;
     emit modsDirUpdated();
 }
 
 
 void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
-    auto mod = modList.at(index.row());
+    auto mod = modList_.at(index.row());
     auto dialog = new LocalModInfoDialog(this, mod);
     dialog->show();
 }
 
 void LocalModBrowser::on_updateAllButton_clicked()
 {
-    auto dialog = new LocalModUpdateDialog(this, modList);
+    auto dialog = new LocalModUpdateDialog(this, modList_);
     dialog->show();
 }
 

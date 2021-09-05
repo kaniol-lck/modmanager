@@ -5,133 +5,133 @@
 #include "util/tutil.hpp"
 
 CurseforgeModInfo::CurseforgeModInfo(int addonId) :
-    id(addonId)
+    id_(addonId)
 {}
 
 CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
 {
     CurseforgeModInfo modInfo;
 
-    modInfo.basicInfo = true;
-    modInfo.id = value(variant, "id").toInt();
-    modInfo.name = value(variant, "name").toString();
-    modInfo.summary = value(variant, "summary").toString();
-    modInfo.websiteUrl = value(variant, "websiteUrl").toUrl();
-    modInfo.downloadCount = value(variant, "downloadCount").toInt();
+    modInfo.basicInfo_ = true;
+    modInfo.id_ = value(variant, "id").toInt();
+    modInfo.name_ = value(variant, "name").toString();
+    modInfo.summary_ = value(variant, "summary").toString();
+    modInfo.websiteUrl_ = value(variant, "websiteUrl").toUrl();
+    modInfo.downloadCount_ = value(variant, "downloadCount").toInt();
 
     for(const auto &str : value(variant, "modLoaders").toStringList())
-        modInfo.modLoaders << ModLoaderType::fromString(str);
+        modInfo.loaderTypes_ << ModLoaderType::fromString(str);
 
     //authors
     auto authorsList = value(variant, "authors").toList();
     for(const auto &author : qAsConst(authorsList))
-        modInfo.authors << value(author, "name").toString();
+        modInfo.authors_ << value(author, "name").toString();
 
     //thumbnail image
     auto attachmentsList = value(variant, "attachments").toList();
     if(!attachmentsList.isEmpty())
-        modInfo.iconUrl = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
+        modInfo.iconUrl_ = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
 
     //latest file url
     auto latestFileList = value(variant, "latestFiles").toList();
     for(const auto &variant : latestFileList)
-        modInfo.latestFileList.append(CurseforgeFileInfo::fromVariant(variant));
+        modInfo.latestFileList_.append(CurseforgeFileInfo::fromVariant(variant));
 
     return modInfo;
 }
 
-int CurseforgeModInfo::getId() const
+int CurseforgeModInfo::id() const
 {
-    return id;
+    return id_;
 }
 
-const QString &CurseforgeModInfo::getName() const
+const QString &CurseforgeModInfo::name() const
 {
-    return name;
+    return name_;
 }
 
-const QString &CurseforgeModInfo::getSummary() const
+const QString &CurseforgeModInfo::summary() const
 {
-    return summary;
+    return summary_;
 }
 
-const QUrl &CurseforgeModInfo::getWebsiteUrl() const
+const QUrl &CurseforgeModInfo::websiteUrl() const
 {
-    return websiteUrl;
+    return websiteUrl_;
 }
 
-const QStringList &CurseforgeModInfo::getAuthors() const
+const QStringList &CurseforgeModInfo::authors() const
 {
-    return authors;
+    return authors_;
 }
 
-const QUrl &CurseforgeModInfo::getThumbnailUrl() const
+const QUrl &CurseforgeModInfo::iconUrl() const
 {
-    return iconUrl;
+    return iconUrl_;
 }
 
-const QByteArray &CurseforgeModInfo::getIconBytes() const
+const QByteArray &CurseforgeModInfo::iconBytes() const
 {
-    return iconBytes;
+    return iconBytes_;
 }
 
-const QString &CurseforgeModInfo::getDescription() const
+const QString &CurseforgeModInfo::description() const
 {
-    return description;
+    return description_;
 }
 
-int CurseforgeModInfo::getDownloadCount() const
+int CurseforgeModInfo::downloadCount() const
 {
-    return downloadCount;
+    return downloadCount_;
 }
 
-const QList<ModLoaderType::Type> &CurseforgeModInfo::getModLoaders() const
+const QList<ModLoaderType::Type> &CurseforgeModInfo::loaderTypes() const
 {
-    return modLoaders;
+    return loaderTypes_;
 }
 
 bool CurseforgeModInfo::isFabricMod() const
 {
-    return modLoaders.contains(ModLoaderType::Fabric);
+    return loaderTypes_.contains(ModLoaderType::Fabric);
 }
 
 bool CurseforgeModInfo::isForgeMod() const
 {
-    return modLoaders.contains(ModLoaderType::Forge);
+    return loaderTypes_.contains(ModLoaderType::Forge);
 }
 
 bool CurseforgeModInfo::isRiftMod() const
 {
-    return modLoaders.contains(ModLoaderType::Rift);
+    return loaderTypes_.contains(ModLoaderType::Rift);
 }
 
-const QList<CurseforgeFileInfo> &CurseforgeModInfo::getLatestFileList() const
+const QList<CurseforgeFileInfo> &CurseforgeModInfo::latestFileList() const
 {
-    return latestFileList;
+    return latestFileList_;
 }
 
-std::optional<CurseforgeFileInfo> CurseforgeModInfo::getlatestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const
+std::optional<CurseforgeFileInfo> CurseforgeModInfo::latestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const
 {
     //latest last
-    for(auto iter = latestFileList.rbegin(); iter < latestFileList.rend(); iter++){
-        if((version == GameVersion::ANY || iter->getGameVersions().contains(version) || iter->getGameVersions().isEmpty()) &&
-                (loaderType == ModLoaderType::Any || iter->getModLoaders().contains(loaderType) || iter->getModLoaders().isEmpty()))
+    for(auto iter = latestFileList_.rbegin(); iter < latestFileList_.rend(); iter++){
+        if((version == GameVersion::ANY || iter->gameVersions().contains(version)/* || iter->gameVersions().isEmpty()*/) &&
+                (loaderType == ModLoaderType::Any || iter->loaderTypes().contains(loaderType)/* || iter->loaderTypes().isEmpty()*/))
             return {*iter};
     }
     return std::nullopt;
 }
 
-const QList<CurseforgeFileInfo> &CurseforgeModInfo::getAllFileList() const
+const QList<CurseforgeFileInfo> &CurseforgeModInfo::allFileList() const
 {
-    return allFileList;
+    return allFileList_;
 }
 
 void CurseforgeModInfo::setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles)
 {
-    latestFileList = newLatestFiles;
+    latestFileList_ = newLatestFiles;
 }
 
 bool CurseforgeModInfo::hasBasicInfo() const
 {
-    return basicInfo;
+    return basicInfo_;
 }

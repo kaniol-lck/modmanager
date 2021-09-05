@@ -12,55 +12,55 @@
 #include "util/tutil.hpp"
 
 LocalModInfo::LocalModInfo(QString path) :
-    modPath(path),
-    modFileInfo(path)
+    path_(path),
+    fileInfo_(path)
 {
     acquireInfo(path);
 }
 
-const QString &LocalModInfo::getId() const
+const QString &LocalModInfo::id() const
 {
-    return id;
+    return id_;
 }
 
-const QDir &LocalModInfo::getModPath() const
+const QDir &LocalModInfo::path() const
 {
-    return modPath;
+    return path_;
 }
 
-const QString &LocalModInfo::getName() const
+const QString &LocalModInfo::name() const
 {
-    return name;
+    return name_;
 }
 
-const QString &LocalModInfo::getVersion() const
+const QString &LocalModInfo::version() const
 {
-    return version;
+    return version_;
 }
 
-const QString &LocalModInfo::getDescription() const
+const QString &LocalModInfo::description() const
 {
-    return description;
+    return description_;
 }
 
-const QString &LocalModInfo::getSha1() const
+const QString &LocalModInfo::sha1() const
 {
-    return sha1;
+    return sha1_;
 }
 
-const QString &LocalModInfo::getMurmurhash() const
+const QString &LocalModInfo::murmurhash() const
 {
-    return murmurhash;
+    return murmurhash_;
 }
 
-const QByteArray &LocalModInfo::getIconBytes() const
+const QByteArray &LocalModInfo::iconBytes() const
 {
-    return iconBytes;
+    return iconBytes_;
 }
 
-const QStringList &LocalModInfo::getAuthors() const
+const QStringList &LocalModInfo::authors() const
 {
-    return authors;
+    return authors_;
 }
 
 bool LocalModInfo::acquireInfo(QString &path)
@@ -92,23 +92,23 @@ bool LocalModInfo::acquireInfo(QString &path)
     if(!jsonDocument.isObject()) return false;
 
     //all pass
-    hasFabricManifest = true;
+    hasFabricManifest_ = true;
 
     //collect info
     QVariant result = jsonDocument.toVariant();
-    id = value(result, "id").toString();
-    version = value(result, "version").toString();
-    name = value(result, "name").toString();
-    authors = value(result, "authors").toStringList();
-    description = value(result, "description").toString();
-    sha1 = QCryptographicHash::hash(fileContent, QCryptographicHash::Sha1).toHex();
+    id_ = value(result, "id").toString();
+    version_ = value(result, "version").toString();
+    name_ = value(result, "name").toString();
+    authors_ = value(result, "authors").toStringList();
+    description_ = value(result, "description").toString();
+    sha1_ = QCryptographicHash::hash(fileContent, QCryptographicHash::Sha1).toHex();
 
     //icon
     auto iconFilePath = value(result, "icon").toString();
     if(!iconFilePath.isEmpty()){
         modJar.setCurrentFile(iconFilePath);
         if(modJarFile.open(QIODevice::ReadOnly)){
-            iconBytes = modJarFile.readAll();
+            iconBytes_ = modJarFile.readAll();
             modJarFile.close();
         }
     }
@@ -120,17 +120,17 @@ bool LocalModInfo::acquireInfo(QString &path)
         if (b == 0x9 || b == 0xa || b == 0xd || b == 0x20) continue;
         filteredFileContent.append(b);
     }
-    murmurhash = QByteArray::number(MurmurHash2(filteredFileContent.constData(), filteredFileContent.length(), 1));
+    murmurhash_ = QByteArray::number(MurmurHash2(filteredFileContent.constData(), filteredFileContent.length(), 1));
 
     return true;
 }
 
 bool LocalModInfo::isFabricMod()
 {
-    return hasFabricManifest;
+    return hasFabricManifest_;
 }
 
 QDateTime LocalModInfo::getFileModificationTime() const
 {
-    return modFileInfo.fileTime(QFile::FileModificationTime);
+    return fileInfo_.fileTime(QFile::FileModificationTime);
 }

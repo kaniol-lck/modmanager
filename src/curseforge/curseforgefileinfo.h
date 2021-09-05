@@ -20,20 +20,20 @@ public:
 
     int getId() const;
 
-    const QList<GameVersion> &getGameVersions() const;
+    const QList<GameVersion> &gameVersions() const;
 
-    const QList<ModLoaderType::Type> &getModLoaders() const;
+    const QList<ModLoaderType::Type> &loaderTypes() const;
 
-    int getReleaseType() const;
+    int releaseType() const;
 
-    const QDateTime &getFileDate() const;
+    const QDateTime &fileDate() const;
 
 private:
-    int id;
-    QList<GameVersion> gameVersions;
-    QList<ModLoaderType::Type> modLoaders;
-    int releaseType;
-    QDateTime fileDate;
+    int id_;
+    QList<GameVersion> gameVersions_;
+    QList<ModLoaderType::Type> loaderTypes_;
+    int releaseType_;
+    QDateTime fileDate_;
 };
 
 #endif // CURSEFORGEMODFILEINFO_H

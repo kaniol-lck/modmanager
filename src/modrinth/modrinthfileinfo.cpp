@@ -7,26 +7,26 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
 
     ModrinthFileInfo fileInfo;
 
-    fileInfo.id = value(variant, "id").toString();
-    fileInfo.modId = value(variant, "mod_id").toString();
-    fileInfo.displayName = value(variant, "name").toString();
-    fileInfo.releaseType = value(variant, "version_type").toInt();
-    fileInfo.fileDate = value(variant, "date_published").toDateTime();
+    fileInfo.id_ = value(variant, "id").toString();
+    fileInfo.modId_ = value(variant, "mod_id").toString();
+    fileInfo.displayName_ = value(variant, "name").toString();
+    fileInfo.releaseType_ = value(variant, "version_type").toInt();
+    fileInfo.fileDate_ = value(variant, "date_published").toDateTime();
 
     auto files = value(variant, "files").toList();
 
     if(!files.isEmpty()){
-        fileInfo.fileName = value(files.at(0), "filename").toString();
-        fileInfo.url = value(files.at(0), "url").toUrl();
+        fileInfo.fileName_ = value(files.at(0), "filename").toString();
+        fileInfo.url_ = value(files.at(0), "url").toUrl();
     }
 
     auto versionList = value(variant, "game_versions").toStringList();
     for(const auto &version : versionList)
-        fileInfo.gameVersions << GameVersion(version);
+        fileInfo.gameVersions_ << GameVersion(version);
 
     auto loaderList = value(variant, "loaders").toStringList();
     for(const auto &loader : loaderList)
-        fileInfo.modLoaders << ModLoaderType::fromString(loader);
+        fileInfo.loaderTypes_ << ModLoaderType::fromString(loader);
 
     return fileInfo;
 }
@@ -36,37 +36,37 @@ DownloadFileInfo::SourceType ModrinthFileInfo::source() const
     return DownloadFileInfo::Modrinth;
 }
 
-const QString &ModrinthFileInfo::getId() const
+const QString &ModrinthFileInfo::id() const
 {
-    return id;
+    return id_;
 }
 
-const QString &ModrinthFileInfo::getModId() const
+const QString &ModrinthFileInfo::modId() const
 {
-    return modId;
+    return modId_;
 }
 
-const QList<GameVersion> &ModrinthFileInfo::getGameVersions() const
+const QList<GameVersion> &ModrinthFileInfo::gameVersions() const
 {
-    return gameVersions;
+    return gameVersions_;
 }
 
-const QList<ModLoaderType::Type> &ModrinthFileInfo::getModLoaders() const
+const QList<ModLoaderType::Type> &ModrinthFileInfo::loaderTypes() const
 {
-    return modLoaders;
+    return loaderTypes_;
 }
 
-int ModrinthFileInfo::getFileLength() const
+int ModrinthFileInfo::size() const
 {
-    return fileLength;
+    return size_;
 }
 
-int ModrinthFileInfo::getReleaseType() const
+int ModrinthFileInfo::releaseType() const
 {
-    return releaseType;
+    return releaseType_;
 }
 
-const QDateTime &ModrinthFileInfo::getFileDate() const
+const QDateTime &ModrinthFileInfo::fileDate() const
 {
-    return fileDate;
+    return fileDate_;
 }

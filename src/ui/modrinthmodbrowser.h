@@ -26,11 +26,11 @@ private slots:
 
 private:
     Ui::ModrinthModBrowser *ui;
-    QList<ModrinthMod*> modList;
-    QString currentName;
-    int currentIndex;
-    bool isUiSet = false;
-    bool hasMore = false;
+    QList<ModrinthMod*> modList_;
+    QString currentName_;
+    int currentIndex_;
+    bool isUiSet_ = false;
+    bool hasMore_ = false;
 
     void getModList(QString name, int index = 0);
 };

@@ -12,7 +12,7 @@ class ModrinthMod : public QObject
 public:
     ModrinthMod(QObject *parent, const ModrinthModInfo &info);
 
-    ModrinthModInfo getModInfo() const;
+    ModrinthModInfo modInfo() const;
 
     void acquireIcon();
     void acquireFullInfo();
@@ -27,11 +27,11 @@ signals:
     void downloadFinished();
 
 private:
-    ModrinthModInfo modInfo;
+    ModrinthModInfo modInfo_;
 
-    bool gettingIcon = false;
-    bool gettingFullInfo = false;
-    bool gettingFileList = false;
+    bool gettingIcon_ = false;
+    bool gettingFullInfo_ = false;
+    bool gettingFileList_ = false;
 
 };
 

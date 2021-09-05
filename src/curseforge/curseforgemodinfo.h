@@ -21,25 +21,25 @@ public:
 
     static CurseforgeModInfo fromVariant(const QVariant &variant);
 
-    int getId() const;
+    int id() const;
 
-    const QString &getName() const;
+    const QString &name() const;
 
-    const QString &getSummary() const;
+    const QString &summary() const;
 
-    const QUrl &getWebsiteUrl() const;
+    const QUrl &websiteUrl() const;
 
-    const QStringList &getAuthors() const;
+    const QStringList &authors() const;
 
-    const QUrl &getThumbnailUrl() const;
+    const QUrl &iconUrl() const;
 
-    const QByteArray &getIconBytes() const;
+    const QByteArray &iconBytes() const;
 
-    const QString &getDescription() const;
+    const QString &description() const;
 
-    int getDownloadCount() const;
+    int downloadCount() const;
 
-    const QList<ModLoaderType::Type> &getModLoaders() const;
+    const QList<ModLoaderType::Type> &loaderTypes() const;
 
     bool isFabricMod() const;
 
@@ -47,31 +47,31 @@ public:
 
     bool isRiftMod() const;
 
-    const QList<CurseforgeFileInfo> &getLatestFileList() const;
+    const QList<CurseforgeFileInfo> &latestFileList() const;
 
-    std::optional<CurseforgeFileInfo> getlatestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
+    std::optional<CurseforgeFileInfo> latestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
 
-    const QList<CurseforgeFileInfo> &getAllFileList() const;
+    const QList<CurseforgeFileInfo> &allFileList() const;
 
     void setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles);
 
     bool hasBasicInfo() const;
 
 private:
-    int id;
-    QString name;
-    QString summary;
-    QUrl websiteUrl;
-    QStringList authors;
-    QUrl iconUrl;
-    QByteArray iconBytes;
-    QString description;
-    int downloadCount;
-    QList<ModLoaderType::Type> modLoaders;
-    QList<CurseforgeFileInfo> latestFileList;
-    QList<CurseforgeFileInfo> allFileList;
+    int id_;
+    QString name_;
+    QString summary_;
+    QUrl websiteUrl_;
+    QStringList authors_;
+    QUrl iconUrl_;
+    QByteArray iconBytes_;
+    QString description_;
+    int downloadCount_;
+    QList<ModLoaderType::Type> loaderTypes_;
+    QList<CurseforgeFileInfo> latestFileList_;
+    QList<CurseforgeFileInfo> allFileList_;
 
-    bool basicInfo = false;
+    bool basicInfo_ = false;
 };
 
 #endif // CURSEFORGEMODINFO_H

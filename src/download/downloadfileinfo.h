@@ -14,16 +14,16 @@ public:
 
     virtual SourceType source() const = 0;
 
-    const QString &getDisplayName() const;
-    const QString &getFileName() const;
-    const QUrl &getUrl() const;
-    qint64 getSize() const;
+    const QString &displayName() const;
+    const QString &fileName() const;
+    const QUrl &url() const;
+    qint64 size() const;
 
 protected:
-    QString displayName;
-    QString fileName;
-    QUrl url;
-    qint64 size;
+    QString displayName_;
+    QString fileName_;
+    QUrl url_;
+    qint64 size_;
 };
 
 #endif // DOWNLOADFILEINFO_H

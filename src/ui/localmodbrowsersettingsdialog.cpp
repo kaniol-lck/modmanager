@@ -17,9 +17,9 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
 LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, const ModDirInfo &info) :
     LocalModBrowserSettingsDialog(parent)
 {
-    ui->modsDirText->setText(info.getModDir().absolutePath());
-    ui->versionSelect->setCurrentText(info.getGameVersion());
-    ui->loaderSelect->setCurrentIndex(info.getLoaderType());
+    ui->modsDirText->setText(info.modDir().absolutePath());
+    ui->versionSelect->setCurrentText(info.gameVersion());
+    ui->loaderSelect->setCurrentIndex(info.loaderType());
 }
 
 LocalModBrowserSettingsDialog::~LocalModBrowserSettingsDialog()

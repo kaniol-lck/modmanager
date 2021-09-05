@@ -43,7 +43,7 @@ private slots:
 
 private:
     Ui::LocalModItemWidget *ui;
-    LocalMod *localMod;
+    LocalMod *mod_;
 
 };
 

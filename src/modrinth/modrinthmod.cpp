@@ -10,27 +10,27 @@
 
 ModrinthMod::ModrinthMod(QObject *parent, const ModrinthModInfo &info) :
     QObject(parent),
-    modInfo(info)
+    modInfo_(info)
 {
 
 }
 
-ModrinthModInfo ModrinthMod::getModInfo() const
+ModrinthModInfo ModrinthMod::modInfo() const
 {
-    return modInfo;
+    return modInfo_;
 }
 
 void ModrinthMod::acquireIcon()
 {
-    if(modInfo.iconUrl.isEmpty() || gettingIcon) return;
-    gettingIcon = true;
-    QNetworkRequest request(modInfo.iconUrl);
+    if(modInfo_.iconUrl_.isEmpty() || gettingIcon_) return;
+    gettingIcon_ = true;
+    QNetworkRequest request(modInfo_.iconUrl_);
     auto reply = accessManager()->get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
-        gettingIcon = false;
+        gettingIcon_ = false;
         if(reply->error() != QNetworkReply::NoError) return;
-        modInfo.iconBytes = reply->readAll();
-        if(!modInfo.iconBytes.isEmpty())
+        modInfo_.iconBytes_ = reply->readAll();
+        if(!modInfo_.iconBytes_.isEmpty())
             emit iconReady();
         reply->deleteLater();
     });
@@ -38,32 +38,32 @@ void ModrinthMod::acquireIcon()
 
 void ModrinthMod::acquireFullInfo()
 {
-    if(gettingFullInfo) return;
-    gettingFullInfo = true;
-    ModrinthAPI::getInfo(modInfo.modId, [=](const auto &newInfo){
-        gettingFullInfo = false;
-        if(modInfo.basicInfo){
-            modInfo.description = newInfo.description;
-            modInfo.versionList = newInfo.versionList;
+    if(gettingFullInfo_) return;
+    gettingFullInfo_ = true;
+    ModrinthAPI::getInfo(modInfo_.modId_, [=](const auto &newInfo){
+        gettingFullInfo_ = false;
+        if(modInfo_.basicInfo_){
+            modInfo_.description_ = newInfo.description_;
+            modInfo_.versionList_ = newInfo.versionList_;
         } else
-            modInfo = newInfo;
+            modInfo_ = newInfo;
         emit fullInfoReady();
     });
 }
 
 void ModrinthMod::acquireFileList()
 {
-    if(gettingFileList) return;
-    gettingFileList = true;
+    if(gettingFileList_) return;
+    gettingFileList_ = true;
 
-    auto count = std::make_shared<int>(modInfo.versionList.size());
+    auto count = std::make_shared<int>(modInfo_.versionList_.size());
 
-    for(const auto &version : qAsConst(modInfo.versionList)){
+    for(const auto &version : qAsConst(modInfo_.versionList_)){
         ModrinthAPI::getVersion(version, [=](const auto &file){
-            modInfo.fileList << file;
+            modInfo_.fileList_ << file;
             (*count)--;
             if(*count == 0){
-                gettingFileList = false;
+                gettingFileList_ = false;
                 emit fileListReady();
             }
         });

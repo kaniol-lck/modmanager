@@ -3,16 +3,16 @@
 #include "util/tutil.hpp"
 
 ModDirInfo::ModDirInfo(const QDir &dir, const GameVersion &version, ModLoaderType::Type type) :
-    modDir(dir),
-    gameVersion(version),
-    loaderType(type)
+    modDir_(dir),
+    gameVersion_(version),
+    loaderType_(type)
 {
 
 }
 
 bool ModDirInfo::operator==(const ModDirInfo &other) const
 {
-    if(modDir == other.modDir && gameVersion == other.gameVersion && loaderType == other.loaderType)
+    if(modDir_ == other.modDir_ && gameVersion_ == other.gameVersion_ && loaderType_ == other.loaderType_)
         return true;
     else
         return false;
@@ -26,9 +26,9 @@ bool ModDirInfo::operator!=(const ModDirInfo &other) const
 ModDirInfo ModDirInfo::fromVariant(const QVariant &variant)
 {
     ModDirInfo info;
-    info.modDir.setPath(value(variant, "dir").toString());
-    info.gameVersion = value(variant, "gameVersion").toString();
-    info.loaderType = ModLoaderType::fromString(value(variant, "loaderType").toString());
+    info.modDir_.setPath(value(variant, "dir").toString());
+    info.gameVersion_ = value(variant, "gameVersion").toString();
+    info.loaderType_ = ModLoaderType::fromString(value(variant, "loaderType").toString());
 
     return info;
 }
@@ -36,34 +36,34 @@ ModDirInfo ModDirInfo::fromVariant(const QVariant &variant)
 QVariant ModDirInfo::toVariant() const
 {
     QMap<QString, QVariant> map;
-    map["dir"] = modDir.path();
-    map["gameVersion"] = QString(gameVersion);
-    map["loaderType"] = ModLoaderType::toString(loaderType);
+    map["dir"] = modDir_.path();
+    map["gameVersion"] = QString(gameVersion_);
+    map["loaderType"] = ModLoaderType::toString(loaderType_);
 
     return QVariant::fromValue(map);
 }
 
 QString ModDirInfo::showText() const
 {
-    return gameVersion + " - " + ModLoaderType::toString(loaderType);
+    return gameVersion_ + " - " + ModLoaderType::toString(loaderType_);
 }
 
 bool ModDirInfo::exists() const
 {
-    return modDir.exists();
+    return modDir_.exists();
 }
 
-const QDir &ModDirInfo::getModDir() const
+const QDir &ModDirInfo::modDir() const
 {
-    return modDir;
+    return modDir_;
 }
 
-const GameVersion &ModDirInfo::getGameVersion() const
+const GameVersion &ModDirInfo::gameVersion() const
 {
-    return gameVersion;
+    return gameVersion_;
 }
 
-ModLoaderType::Type ModDirInfo::getLoaderType() const
+ModLoaderType::Type ModDirInfo::loaderType() const
 {
-    return loaderType;
+    return loaderType_;
 }

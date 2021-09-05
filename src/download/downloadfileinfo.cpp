@@ -5,22 +5,22 @@ DownloadFileInfo::DownloadFileInfo()
 
 }
 
-const QString &DownloadFileInfo::getDisplayName() const
+const QString &DownloadFileInfo::displayName() const
 {
-    return displayName;
+    return displayName_;
 }
 
-const QString &DownloadFileInfo::getFileName() const
+const QString &DownloadFileInfo::fileName() const
 {
-    return fileName;
+    return fileName_;
 }
 
-const QUrl &DownloadFileInfo::getUrl() const
+const QUrl &DownloadFileInfo::url() const
 {
-    return url;
+    return url_;
 }
 
-qint64 DownloadFileInfo::getSize() const
+qint64 DownloadFileInfo::size() const
 {
-    return size;
+    return size_;
 }

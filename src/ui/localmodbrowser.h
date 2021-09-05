@@ -36,8 +36,8 @@ private slots:
 
 private:
     Ui::LocalModBrowser *ui;
-    ModDirInfo modDirInfo;
-    QList<LocalMod*> modList;
+    ModDirInfo modDirInfo_;
+    QList<LocalMod*> modList_;
 };
 
 #endif // LOCALMODBROWSER_H

@@ -12,10 +12,10 @@ DownloadManager::DownloadManager(QObject *parent) :
     DOWNLOAD_COUNT(Config().getDownloadCount())
 {
     //set timer
-    speedTimer.setInterval(1000 / TIMER_PER_SEC);
-    speedTimer.start();
-    connect(&speedTimer, &QTimer::timeout, this, [=]{
-        auto bytes = std::accumulate(speedList.cbegin(), speedList.cend(), 0);
+    speedTimer_.setInterval(1000 / TIMER_PER_SEC);
+    speedTimer_.start();
+    connect(&speedTimer_, &QTimer::timeout, this, [=]{
+        auto bytes = std::accumulate(speedList_.cbegin(), speedList_.cend(), 0);
         emit downloadSpeed(bytes);
     });
 }
@@ -29,12 +29,12 @@ DownloadManager *DownloadManager::manager()
 void DownloadManager::tryDownload()
 {
     int count = 0;
-    for(auto downloader : qAsConst(downloadList)){
-        if(downloader->getStatus() == ModDownloader::Downloading)
+    for(auto downloader : qAsConst(downloadList_)){
+        if(downloader->status() == ModDownloader::Downloading)
             count ++;
         //max download
         if(count >= DOWNLOAD_COUNT) return;
-        if(downloader->getStatus() == ModDownloader::Queue){
+        if(downloader->status() == ModDownloader::Queue){
             downloader->startDownload();
             count ++;
         }
@@ -64,20 +64,20 @@ ModDownloader *DownloadManager::addModupdate(std::shared_ptr<DownloadFileInfo> i
 
 void DownloadManager::addDownloader(ModDownloader *downloader)
 {
-    auto index = downloadList.size();
-    downloadList << downloader;
-    speedList.append(0);
+    auto index = downloadList_.size();
+    downloadList_ << downloader;
+    speedList_.append(0);
     connect(downloader, &ModDownloader::finished, this, &DownloadManager::tryDownload);
     connect(downloader, &ModDownloader::finished, this, [=]{
-        speedList[index] = 0;
+        speedList_[index] = 0;
     });
     connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
-        speedList[index] = bytesPerSec;
+        speedList_[index] = bytesPerSec;
     });
     emit downloaderAdded(downloader);
 }
 
-const QList<ModDownloader *> &DownloadManager::getDownloadList() const
+const QList<ModDownloader *> &DownloadManager::downloadList() const
 {
-    return downloadList;
+    return downloadList_;
 }

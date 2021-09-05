@@ -19,7 +19,7 @@ public:
     void acquireDescription();
     void acquireAllFileList();
 
-    const CurseforgeModInfo &getModInfo() const;
+    const CurseforgeModInfo &modInfo() const;
 
 signals:
     void basicInfoReady();
@@ -28,12 +28,12 @@ signals:
     void allFileListReady();
 
 private:
-    CurseforgeModInfo curseforgeModInfo;
+    CurseforgeModInfo modInfo_;
 
-    bool gettingBasicInfo = false;
-    bool gettingIcon = false;
-    bool gettingDescription = false;
-    bool gettingAllFileList = false;
+    bool gettingBasicInfo_ = false;
+    bool gettingIcon_ = false;
+    bool gettingDescription_ = false;
+    bool gettingAllFileList_ = false;
 
 };
 

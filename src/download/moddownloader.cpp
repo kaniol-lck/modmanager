@@ -8,23 +8,23 @@ ModDownloader::ModDownloader(QObject *parent) : Downloader(parent)
 {
     connect(this, &Downloader::finished, this, [=]{
         setStatus(DownloadStatus::Finished);
-        speedTimer.stop();
+        speedTimer_.stop();
     });
 
     connect(this, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
-        currentDownloadBytes = bytesReceived;
+        currentDownloadBytes_ = bytesReceived;
     });
 
     //set timer
-    speedTimer.setInterval(1000 / TIMER_PER_SEC);
-    connect(&speedTimer, &QTimer::timeout, this, [=]{
-        auto bytes = currentDownloadBytes - lastDownloadBytes;
-        lastDownloadBytes = currentDownloadBytes;
+    speedTimer_.setInterval(1000 / TIMER_PER_SEC);
+    connect(&speedTimer_, &QTimer::timeout, this, [=]{
+        auto bytes = currentDownloadBytes_ - lastDownloadBytes_;
+        lastDownloadBytes_ = currentDownloadBytes_;
 
-        downloadBytes << bytes;
-        if(downloadBytes.size() > 4) downloadBytes.pop_front();
+        downloadBytes_ << bytes;
+        if(downloadBytes_.size() > 4) downloadBytes_.pop_front();
 
-        auto aver = std::accumulate(downloadBytes.cbegin(), downloadBytes.cend(), 0) / downloadBytes.size();
+        auto aver = std::accumulate(downloadBytes_.cbegin(), downloadBytes_.cend(), 0) / downloadBytes_.size();
 
         emit downloadSpeed(aver * TIMER_PER_SEC);
     });
@@ -32,56 +32,56 @@ ModDownloader::ModDownloader(QObject *parent) : Downloader(parent)
 
 void ModDownloader::downloadMod(std::shared_ptr<DownloadFileInfo> info, QString path)
 {
-    fileInfo = info;
-    filePath = path;
+    fileInfo_ = info;
+    filePath_ = path;
     setStatus(DownloadStatus::Queue);
-    type = DownloadType::Download;
+    type_ = DownloadType::Download;
 }
 
 void ModDownloader::updateMod(std::shared_ptr<DownloadFileInfo> info, QString path)
 {
-    fileInfo = info;
-    filePath = path;
+    fileInfo_ = info;
+    filePath_ = path;
     setStatus(DownloadStatus::Queue);
-    type = DownloadType::Update;
+    type_ = DownloadType::Update;
 }
 
 void ModDownloader::startDownload()
 {
     setStatus(DownloadStatus::Downloading);
-    speedTimer.start();
-    download(fileInfo->getUrl(), filePath, fileInfo->getFileName());
+    speedTimer_.start();
+    download(fileInfo_->url(), filePath_, fileInfo_->fileName());
 }
 
-const std::shared_ptr<DownloadFileInfo> &ModDownloader::getFileInfo() const
+const std::shared_ptr<DownloadFileInfo> &ModDownloader::fileInfo() const
 {
-    return fileInfo;
+    return fileInfo_;
 }
 
-ModDownloader::DownloadStatus ModDownloader::getStatus() const
+ModDownloader::DownloadStatus ModDownloader::status() const
 {
-    return status;
+    return status_;
 }
 
-ModDownloader::DownloadType ModDownloader::getType() const
+ModDownloader::DownloadType ModDownloader::type() const
 {
-    return type;
+    return type_;
 }
 
-const QString &ModDownloader::getReadySize() const
+const QString &ModDownloader::readySize() const
 {
-    return readySize;
+    return readySize_;
 }
 
-const QString &ModDownloader::getFilePath() const
+const QString &ModDownloader::filePath() const
 {
-    return filePath;
+    return filePath_;
 }
 
 void ModDownloader::setStatus(DownloadStatus newStatus)
 {
-    if (status == newStatus)
+    if (status_ == newStatus)
         return;
-    status = newStatus;
+    status_ = newStatus;
     emit statusChanged();
 }

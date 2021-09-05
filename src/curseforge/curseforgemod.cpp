@@ -10,33 +10,33 @@
 
 CurseforgeMod::CurseforgeMod(QObject *parent, const CurseforgeModInfo &modInfo) :
     QObject(parent),
-    curseforgeModInfo(modInfo)
+    modInfo_(modInfo)
 {
 }
 
 void CurseforgeMod::acquireBasicInfo()
 {
-    if(gettingBasicInfo) return;
-    gettingBasicInfo = true;
-    CurseforgeAPI::getInfo(curseforgeModInfo.id, [=](const auto &info){
-        gettingBasicInfo = false;
-        curseforgeModInfo = info;
+    if(gettingBasicInfo_) return;
+    gettingBasicInfo_ = true;
+    CurseforgeAPI::getInfo(modInfo_.id_, [=](const auto &info){
+        gettingBasicInfo_ = false;
+        modInfo_ = info;
         emit basicInfoReady();
-        curseforgeModInfo.basicInfo = true;
+        modInfo_.basicInfo_ = true;
     });
 }
 
 void CurseforgeMod::acquireIcon()
 {
-    if(curseforgeModInfo.iconUrl.isEmpty() || gettingIcon) return;
-    gettingIcon = true;
-    QNetworkRequest request(curseforgeModInfo.iconUrl);
+    if(modInfo_.iconUrl_.isEmpty() || gettingIcon_) return;
+    gettingIcon_ = true;
+    QNetworkRequest request(modInfo_.iconUrl_);
     auto reply = accessManager()->get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
-        gettingIcon = false;
+        gettingIcon_ = false;
         if(reply->error() != QNetworkReply::NoError) return;
-        curseforgeModInfo.iconBytes = reply->readAll();
-        if(!curseforgeModInfo.iconBytes.isEmpty())
+        modInfo_.iconBytes_ = reply->readAll();
+        if(!modInfo_.iconBytes_.isEmpty())
             emit iconReady();
         reply->deleteLater();
     });
@@ -44,27 +44,27 @@ void CurseforgeMod::acquireIcon()
 
 void CurseforgeMod::acquireDescription()
 {
-    if(gettingDescription) return;
-    gettingDescription = true;
-    CurseforgeAPI::getDescription(curseforgeModInfo.getId(), [=](const QString &description){
-        gettingDescription = false;
-        curseforgeModInfo.description = description;
+    if(gettingDescription_) return;
+    gettingDescription_ = true;
+    CurseforgeAPI::getDescription(modInfo_.id(), [=](const QString &description){
+        gettingDescription_ = false;
+        modInfo_.description_ = description;
         emit descriptionReady();
     });
 }
 
 void CurseforgeMod::acquireAllFileList()
 {
-    if(gettingAllFileList) return;
-    gettingAllFileList = true;
-    CurseforgeAPI::getFiles(curseforgeModInfo.getId(), [=](const QList<CurseforgeFileInfo> &fileList){
-        gettingAllFileList = false;
-        curseforgeModInfo.allFileList = fileList;
+    if(gettingAllFileList_) return;
+    gettingAllFileList_ = true;
+    CurseforgeAPI::getFiles(modInfo_.id(), [=](const QList<CurseforgeFileInfo> &fileList){
+        gettingAllFileList_ = false;
+        modInfo_.allFileList_ = fileList;
         emit allFileListReady();
     });
 }
 
-const CurseforgeModInfo &CurseforgeMod::getModInfo() const
+const CurseforgeModInfo &CurseforgeMod::modInfo() const
 {
-    return curseforgeModInfo;
+    return modInfo_;
 }

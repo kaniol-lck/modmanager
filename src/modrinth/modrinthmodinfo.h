@@ -16,53 +16,53 @@ public:
     static ModrinthModInfo fromSearchVariant(const QVariant &variant);
     static ModrinthModInfo fromVariant(const QVariant &variant);
 
-    const QString &getId() const;
+    const QString &id() const;
 
-    const QString &getAuthor() const;
+    const QString &author() const;
 
-    const QString &getName() const;
+    const QString &name() const;
 
-    const QString &getDescription() const;
+    const QString &description() const;
 
-    const QStringList &getVersions() const;
+    const QStringList &versions() const;
 
-    int getDownloadCount() const;
+    int downloadCount() const;
 
-    const QUrl &getIconUrl() const;
+    const QUrl &iconUrl() const;
 
-    const QByteArray &getIconBytes() const;
+    const QByteArray &iconBytes() const;
 
-    const QString &getSummary() const;
+    const QString &summary() const;
 
-    const QUrl &getWebsiteUrl() const;
+    const QUrl &websiteUrl() const;
 
-    const QList<ModrinthFileInfo> &getFileList() const;
+    const QList<ModrinthFileInfo> &fileList() const;
 
-    const QList<GameVersion> &getGameVersions() const;
+    const QList<GameVersion> &gameVersions() const;
 
-    const QStringList &getVersionList() const;
+    const QStringList &versionList() const;
 
     bool hasBasicInfo() const;
 
     bool hasFullInfo() const;
 
 private:
-    QString modId;
-    QString author;
-    QString name;
-    QString summary;
-    QString description;
-    QList<GameVersion> gameVersions;
-    int downloadCount;
-    QUrl websiteUrl;
-    QUrl iconUrl;
-    QByteArray iconBytes;
+    QString modId_;
+    QString author_;
+    QString name_;
+    QString summary_;
+    QString description_;
+    QList<GameVersion> gameVersions_;
+    int downloadCount_;
+    QUrl websiteUrl_;
+    QUrl iconUrl_;
+    QByteArray iconBytes_;
 
-    QStringList versionList;
-    QList<ModrinthFileInfo> fileList;
+    QStringList versionList_;
+    QList<ModrinthFileInfo> fileList_;
 
-    bool basicInfo = false;
-    bool fullInfo = false;
+    bool basicInfo_ = false;
+    bool fullInfo_ = false;
 };
 
 #endif // MODRINTHMODINFO_H

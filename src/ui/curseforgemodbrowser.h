@@ -39,11 +39,11 @@ private slots:
 
 private:
     Ui::CurseforgeModBrowser *ui;
-    QList<CurseforgeMod*> modList;
-    QString currentName;
-    int currentIndex;
-    bool isUiSet = false;
-    bool hasMore = false;
+    QList<CurseforgeMod*> modList_;
+    QString currentName_;
+    int currentIndex_;
+    bool isUiSet_ = false;
+    bool hasMore_ = false;
 
     void getModList(QString name, int index = 0);
 

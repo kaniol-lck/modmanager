@@ -26,7 +26,7 @@ private slots:
 
 private:
     Ui::DownloaderItemWidget *ui;
-    ModDownloader *modDownlaoder;
+    ModDownloader *modDownlaoder_;
 };
 
 #endif // DOWNLOADERITEMWIDGET_H

@@ -7,24 +7,24 @@
 DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downloader) :
     QWidget(parent),
     ui(new Ui::DownloaderItemWidget),
-    modDownlaoder(downloader)
+    modDownlaoder_(downloader)
 {
     ui->setupUi(this);
 
-    auto fileInfo = modDownlaoder->getFileInfo();
-    ui->displayNameText->setText(fileInfo->getDisplayName());
-    ui->downloadSizeText->setText(numberConvert(fileInfo->getSize(), "B"));
+    auto fileInfo = modDownlaoder_->fileInfo();
+    ui->displayNameText->setText(fileInfo->displayName());
+    ui->downloadSizeText->setText(numberConvert(fileInfo->size(), "B"));
 
-    QString linkText = fileInfo->getFileName();
+    QString linkText = fileInfo->fileName();
     linkText = "<a href=%1>" + linkText + "</a>";
-    ui->fileNameText->setText(linkText.arg(fileInfo->getUrl().toString()));
+    ui->fileNameText->setText(linkText.arg(fileInfo->url().toString()));
 
     refreshStatus();
 
-    connect(modDownlaoder, &ModDownloader::statusChanged, this, &DownloaderItemWidget::refreshStatus);
-    connect(modDownlaoder, &ModDownloader::downloadProgress, this, &DownloaderItemWidget::downloadProgress);
-    connect(modDownlaoder, &ModDownloader::downloadSpeed, this, &DownloaderItemWidget::downloadSpeed);
-    connect(modDownlaoder, &ModDownloader::finished, this, [=]{
+    connect(modDownlaoder_, &ModDownloader::statusChanged, this, &DownloaderItemWidget::refreshStatus);
+    connect(modDownlaoder_, &ModDownloader::downloadProgress, this, &DownloaderItemWidget::downloadProgress);
+    connect(modDownlaoder_, &ModDownloader::downloadSpeed, this, &DownloaderItemWidget::downloadSpeed);
+    connect(modDownlaoder_, &ModDownloader::finished, this, [=]{
         ui->downloadSpeedText->setVisible(false);
         ui->downloadProgress->setValue(ui->downloadProgress->maximum());
     });
@@ -37,7 +37,7 @@ DownloaderItemWidget::~DownloaderItemWidget()
 
 void DownloaderItemWidget::refreshStatus()
 {
-    switch (modDownlaoder->getStatus()) {
+    switch (modDownlaoder_->status()) {
     case ModDownloader::Idol:
         ui->downloaStatus->setText(tr("Idol"));
         break;

@@ -37,10 +37,10 @@ private slots:
 
 private:
     Ui::ModManager *ui;
-    QList<ModDirInfo> modDirList;
-    QList<QListWidgetItem*> dirWidgetItemList;
-    QList<LocalModBrowser*> localModBrowserList;
-    QFutureWatcher<void> *updateVersionsWatcher;
-    int specialBrowserCount = 0;
+    QList<ModDirInfo> modDirList_;
+    QList<QListWidgetItem*> dirWidgetItemList_;
+    QList<LocalModBrowser*> localModBrowserList_;
+    QFutureWatcher<void> *updateVersionsWatcher_;
+    int specialBrowserCount_ = 0;
 };
 #endif // MODMANAGER_H

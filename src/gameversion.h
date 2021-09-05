@@ -27,7 +27,7 @@ public:
     static GameVersion ANY;
 
 private:
-    QString versionString;
+    QString versionString_;
 };
 
 #endif // GAMEVERSION_H

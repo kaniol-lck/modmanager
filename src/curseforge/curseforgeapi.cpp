@@ -71,8 +71,8 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
         QList<CurseforgeModInfo> modInfoList;
 
         for(const auto &result : qAsConst(resultList)){
-            auto curseforgeModInfo = CurseforgeModInfo::fromVariant(result);
-            modInfoList.append(curseforgeModInfo);
+            auto modInfo = CurseforgeModInfo::fromVariant(result);
+            modInfoList.append(modInfo);
         }
         callback(modInfoList);
         reply->deleteLater();
@@ -157,8 +157,8 @@ void CurseforgeAPI::getFiles(int id, std::function<void (QList<CurseforgeFileInf
         QList<CurseforgeFileInfo> fileInfoList;
 
         for(const auto &result : qAsConst(resultList)){
-            auto curseforgeModInfo = CurseforgeFileInfo::fromVariant(result);
-            fileInfoList.append(curseforgeModInfo);
+            auto modInfo = CurseforgeFileInfo::fromVariant(result);
+            fileInfoList.append(modInfo);
         }
 
         callback(fileInfoList);
@@ -187,9 +187,9 @@ void CurseforgeAPI::getInfo(int id, std::function<void (CurseforgeModInfo)> call
         }
         auto result = jsonDocument.toVariant();
 
-        auto curseforgeModInfo = CurseforgeModInfo::fromVariant(result);
+        auto modInfo = CurseforgeModInfo::fromVariant(result);
 
-        callback(curseforgeModInfo);
+        callback(modInfo);
         reply->deleteLater();
     });
 }

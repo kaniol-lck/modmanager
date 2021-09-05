@@ -19,7 +19,7 @@ public:
 
 private:
     Ui::ModrinthModInfoDialog *ui;
-    ModrinthMod *modrinthMod;
+    ModrinthMod *mod_;
 };
 
 #endif // MODRINTHMODINFODIALOG_H

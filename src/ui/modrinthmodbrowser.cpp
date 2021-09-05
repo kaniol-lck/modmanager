@@ -17,7 +17,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
 
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
 
-    getModList(currentName);
+    getModList(currentName_);
 }
 
 ModrinthModBrowser::~ModrinthModBrowser()
@@ -27,21 +27,21 @@ ModrinthModBrowser::~ModrinthModBrowser()
 
 void ModrinthModBrowser::on_searchButton_clicked()
 {
-    currentName = ui->searchText->text();
-    getModList(currentName);
+    currentName_ = ui->searchText->text();
+    getModList(currentName_);
 }
 
 void ModrinthModBrowser::onSliderChanged(int i)
 {
-    if(hasMore && i == ui->modListWidget->verticalScrollBar()->maximum()){
-        currentIndex += 20;
-        getModList(currentName, currentIndex);
+    if(hasMore_ && i == ui->modListWidget->verticalScrollBar()->maximum()){
+        currentIndex_ += 20;
+        getModList(currentName_, currentIndex_);
     }
 }
 
 void ModrinthModBrowser::getModList(QString name, int index)
 {
-    if(!index) currentIndex = 0;
+    if(!index) currentIndex_ = 0;
     ui->searchButton->setText(tr("Searching..."));
     ui->searchButton->setEnabled(false);
     setCursor(Qt::BusyCursor);
@@ -49,31 +49,31 @@ void ModrinthModBrowser::getModList(QString name, int index)
     GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::ANY;
     auto sort = ui->sortSelect->currentIndex();
 
-    ModrinthAPI::searchMods(name, currentIndex, sort, [=](const QList<ModrinthModInfo> &infoList){
+    ModrinthAPI::searchMods(name, currentIndex_, sort, [=](const QList<ModrinthModInfo> &infoList){
         ui->searchButton->setText(tr("&Search"));
         ui->searchButton->setEnabled(true);
         setCursor(Qt::ArrowCursor);
 
         //new search
-        if(currentIndex == 0){
-            for(auto mod : qAsConst(modList))
+        if(currentIndex_ == 0){
+            for(auto mod : qAsConst(modList_))
                 mod->deleteLater();
-            modList.clear();
+            modList_.clear();
             for(int i = 0; i < ui->modListWidget->count(); i++)
                 ui->modListWidget->itemWidget(ui->modListWidget->item(i))->deleteLater();
             ui->modListWidget->clear();
-            hasMore = true;
+            hasMore_ = true;
         }
 
         if(infoList.isEmpty()){
-            hasMore = false;
+            hasMore_ = false;
             return ;
         }
 
         //show them
         for(const auto &info : qAsConst(infoList)){
             auto modrinthMod = new ModrinthMod(this, info);
-            modList.append(modrinthMod);
+            modList_.append(modrinthMod);
 
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 100));
@@ -89,7 +89,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
 
 void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
-    auto mod = modList.at(index.row());
+    auto mod = modList_.at(index.row());
     auto dialog = new ModrinthModInfoDialog(this, mod);
     dialog->show();
 }
