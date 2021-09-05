@@ -156,6 +156,7 @@ void ModManager::on_actionManage_Browser_triggered()
 
 void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
+    if(current == nullptr) return;
     auto parent = current->parent();
     if(parent == nullptr){
         if(previous != nullptr)
@@ -182,7 +183,13 @@ void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, i
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
         modDirList_[index] = newInfo;
         localItemList_[index]->setText(0, newInfo.showText());
-        localModBrowserList_[index]->setModDirInfo(newInfo);
+        Config config;
+        QList<QVariant> list;
+        for(const auto &dirInfo : qAsConst(modDirList_))
+            list << dirInfo.toVariant();
+        config.setDirList(list);
+        if(modDirInfo != newInfo)
+            localModBrowserList_[index]->setModDirInfo(newInfo);
     });
     connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
     dialog->exec();

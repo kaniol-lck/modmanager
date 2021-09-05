@@ -29,6 +29,12 @@
    </item>
    <item row="0" column="0">
     <widget class="QTableView" name="updateTableView">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
      <property name="sizeAdjustPolicy">
       <enum>QAbstractScrollArea::AdjustToContents</enum>
      </property>

@@ -20,6 +20,7 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, co
     LocalModBrowserSettingsDialog(parent)
 {
     info_ = info;
+    customName = info.showText();
     ui->nameText->setText(info.name());
     ui->modsDirText->setText(info.modDir().absolutePath());
     ui->versionSelect->setCurrentText(info.gameVersion());

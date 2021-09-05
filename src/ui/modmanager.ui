@@ -114,7 +114,7 @@ QTreeView::branch {
   </action>
   <action name="actionManage_Browser">
    <property name="text">
-    <string>Manage Browser</string>
+    <string>Manage Local Mod Browser</string>
    </property>
   </action>
  </widget>

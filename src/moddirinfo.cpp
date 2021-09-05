@@ -23,6 +23,7 @@ ModDirInfo::ModDirInfo(const QString &name, const QDir &dir, const GameVersion &
 
 bool ModDirInfo::operator==(const ModDirInfo &other) const
 {
+    //no name
     if(modDir_ == other.modDir_ && gameVersion_ == other.gameVersion_ && loaderType_ == other.loaderType_)
         return true;
     else

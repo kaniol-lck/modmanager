@@ -25,6 +25,16 @@ ModrinthModBrowser::~ModrinthModBrowser()
     delete ui;
 }
 
+void ModrinthModBrowser::updateVersions()
+{
+    isUiSet_ = false;
+    ui->versionSelect->clear();
+    ui->versionSelect->addItem(tr("Any"));
+    for(const auto &version : qAsConst(GameVersion::versionList))
+        ui->versionSelect->addItem(version);
+    isUiSet_ = true;
+}
+
 void ModrinthModBrowser::on_searchButton_clicked()
 {
     currentName_ = ui->searchText->text();
@@ -92,5 +102,11 @@ void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index
     auto mod = modList_.at(index.row());
     auto dialog = new ModrinthModInfoDialog(this, mod);
     dialog->show();
+}
+
+
+void ModrinthModBrowser::on_sortSelect_currentIndexChanged(int)
+{
+    if(isUiSet_) getModList(currentName_);
 }
 

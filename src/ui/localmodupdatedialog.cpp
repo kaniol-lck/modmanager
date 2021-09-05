@@ -16,6 +16,9 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
     model_.setHorizontalHeaderItem(AfterColumn, new QStandardItem(tr("New Version")));
     model_.setHorizontalHeaderItem(SourceColumn, new QStandardItem(tr("Update Source")));
 
+    ui->updateTableView->horizontalHeader()->setSectionResizeMode(SourceColumn, QHeaderView::Fixed);
+    ui->updateTableView->setColumnWidth(SourceColumn, 120);
+
     for(const auto &mod : list){
         auto type = mod->updateType();
         if(type == LocalMod::None) continue;
@@ -26,9 +29,9 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
 
         auto nameItem = new QStandardItem();
         nameItem->setText(mod->modInfo().name() + ":");
-        nameItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
         nameItem->setCheckable(true);
         nameItem->setCheckState(Qt::Checked);
+        nameItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
         auto beforeItem = new QStandardItem();
         if(type == LocalMod::Curseforge)
@@ -36,6 +39,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
         else if(type == LocalMod::Modrinth)
             beforeItem->setText(getDisplayName(mod->currentModrinthFileInfo().value()));
         beforeItem->setForeground(Qt::red);
+        beforeItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
         auto afterItem = new QStandardItem();
         if(type == LocalMod::Curseforge)
@@ -43,10 +47,12 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
         else if(type == LocalMod::Modrinth)
             afterItem->setText(getDisplayName(mod->updateModrinthFileInfo().value()));
         afterItem->setForeground(Qt::green);
+        afterItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
         auto sourceItem = new QStandardItem();
         sourceItem->setText(type == LocalMod::Curseforge? "Curseforge" : "Modrinth");
-        sourceItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        sourceItem->setIcon(QIcon(":/image/curseforge.svg"));
+        sourceItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 
         model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
         updateList_ << mod;

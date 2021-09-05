@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Browser Manager</string>
+   <string>Local Mod Browser Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">

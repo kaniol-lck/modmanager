@@ -42,7 +42,7 @@ private:
     QList<CurseforgeMod*> modList_;
     QString currentName_;
     int currentIndex_;
-    bool isUiSet_ = false;
+    bool isUiSet_ = true;
     bool hasMore_ = false;
 
     void getModList(QString name, int index = 0);
