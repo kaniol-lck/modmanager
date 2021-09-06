@@ -23,6 +23,12 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    for(const auto &version : qAsConst(GameVersion::cachedVersionList))
+        ui->versionSelect->addItem(version);
+
+    for(const auto &type : ModLoaderType::curseforge)
+        ui->loaderSelect->addItem(ModLoaderType::toString(type));
+
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
 
     getModList(currentName_);
@@ -38,7 +44,7 @@ void CurseforgeModBrowser::updateVersions()
     isUiSet_ = false;
     ui->versionSelect->clear();
     ui->versionSelect->addItem(tr("Any"));
-    for(const auto &version : qAsConst(GameVersion::versionList))
+    for(const auto &version : qAsConst(GameVersion::curseforgeVersionList))
         ui->versionSelect->addItem(version);
     isUiSet_ = true;
 }
@@ -64,7 +70,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
     ui->searchButton->setEnabled(false);
     setCursor(Qt::BusyCursor);
 
-    GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::ANY;
+    GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
     auto sort = ui->sortSelect->currentIndex();
 
     CurseforgeAPI::searchMods(gameVersion, index, name, sort, [=](const QList<CurseforgeModInfo> &infoList){
@@ -96,14 +102,13 @@ void CurseforgeModBrowser::getModList(QString name, int index)
 
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 100));
-            auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::ANY;
-            auto loaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
+            auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
+            auto loaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
             auto fileInfo = mod->modInfo().latestFileInfo(version, loaderType);
             auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
-            auto selectedLoaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
-            auto isShown = selectedLoaderType == ModLoaderType::Any || info.loaderTypes().contains(selectedLoaderType);
+            auto isShown = loaderType == ModLoaderType::Any || info.loaderTypes().contains(loaderType);
             listItem->setHidden(!isShown);
             if(isShown){
                 shownCount++;
@@ -144,7 +149,7 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
         auto item = ui->modListWidget->item(i);
         auto isHidden = item->isHidden();
         auto mod = modList_.at(i);
-        auto selectedLoaderType = ModLoaderType::fromIndex(ui->loaderSelect->currentIndex());
+        auto selectedLoaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
         auto isShown = selectedLoaderType == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(selectedLoaderType);
         //hidden -> shown, while not have downloaded thumbnail yet
         if(isHidden && isShown && mod->modInfo().iconBytes().isEmpty())

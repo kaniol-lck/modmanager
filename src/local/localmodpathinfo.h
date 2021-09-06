@@ -1,5 +1,5 @@
-#ifndef MODDIRINFO_H
-#define MODDIRINFO_H
+#ifndef LOCALMODPATHINFO_H
+#define LOCALMODPATHINFO_H
 
 #include <QVariant>
 
@@ -45,4 +45,4 @@ private:
     ModLoaderType::Type loaderType_;
 };
 
-#endif // MODDIRINFO_H
+#endif // LOCALMODPATHINFO_H

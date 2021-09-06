@@ -29,6 +29,10 @@ private slots:
 
     void on_sortSelect_currentIndexChanged(int);
 
+    void on_versionSelect_currentIndexChanged(int);
+
+    void on_loaderSelect_currentIndexChanged(int);
+
 private:
     Ui::ModrinthModBrowser *ui;
     QList<ModrinthMod*> modList_;

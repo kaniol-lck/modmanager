@@ -11,10 +11,15 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
     mod_(mod)
 {
     ui->setupUi(this);
+    ui->downloadProgress->setVisible(false);
+
+    //TODO
+    ui->downloadButton->setVisible(false);
 
     ui->modName->setText(mod->modInfo().name());
     ui->modSummary->setText(mod->modInfo().summary());
     ui->modAuthors->setText("by <b>" + mod->modInfo().author() + "</b>");
+    ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
 
 //    mod->acquireFullInfo();
 //    connect(mod, &ModrinthMod::fullInfoReady, mod, &ModrinthMod::acquireFileList);

@@ -38,7 +38,8 @@ LocalModBrowserSettingsDialog::~LocalModBrowserSettingsDialog()
 void LocalModBrowserSettingsDialog::updateVersions()
 {
     ui->versionSelect->clear();
-    for(const auto &version : qAsConst(GameVersion::versionList))
+    //TODO
+    for(const auto &version : qAsConst(GameVersion::cachedVersionList))
         ui->versionSelect->addItem(version);
 }
 

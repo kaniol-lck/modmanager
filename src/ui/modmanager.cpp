@@ -144,7 +144,6 @@ void ModManager::on_actionManage_Browser_triggered()
     dialog->show();
 }
 
-
 void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
     if(current == nullptr) return;
@@ -188,7 +187,7 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
     } else if(item->parent() == localItem_){
-        // on one of local item
+        // on one of local items
         auto index = item->parent()->indexOfChild(item);
 
         connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{

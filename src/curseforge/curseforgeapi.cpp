@@ -38,7 +38,7 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
     //minecraft
     urlQuery.addQueryItem("gameId", "432");
     //game version
-    if(version != GameVersion::ANY)
+    if(version != GameVersion::Any)
         urlQuery.addQueryItem("gameVersion", version);
     //index
     urlQuery.addQueryItem("index", QString::number(index));

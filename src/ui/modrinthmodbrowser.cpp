@@ -15,6 +15,12 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    for(const auto &version : qAsConst(GameVersion::cachedVersionList))
+        ui->versionSelect->addItem(version);
+
+    for(const auto &type : ModLoaderType::modrinth)
+        ui->loaderSelect->addItem(ModLoaderType::toString(type));
+
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
 
     getModList(currentName_);
@@ -27,12 +33,12 @@ ModrinthModBrowser::~ModrinthModBrowser()
 
 void ModrinthModBrowser::updateVersions()
 {
-    isUiSet_ = false;
-    ui->versionSelect->clear();
-    ui->versionSelect->addItem(tr("Any"));
-    for(const auto &version : qAsConst(GameVersion::versionList))
-        ui->versionSelect->addItem(version);
-    isUiSet_ = true;
+//    isUiSet_ = false;
+//    ui->versionSelect->clear();
+//    ui->versionSelect->addItem(tr("Any"));
+//    for(const auto &version : qAsConst(GameVersion::versionList))
+//        ui->versionSelect->addItem(version);
+//    isUiSet_ = true;
 }
 
 void ModrinthModBrowser::on_searchButton_clicked()
@@ -56,10 +62,12 @@ void ModrinthModBrowser::getModList(QString name, int index)
     ui->searchButton->setEnabled(false);
     setCursor(Qt::BusyCursor);
 
-    GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::ANY;
+    GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
     auto sort = ui->sortSelect->currentIndex();
+    GameVersion version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
+    auto type = ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex());
 
-    ModrinthAPI::searchMods(name, currentIndex_, sort, [=](const QList<ModrinthModInfo> &infoList){
+    ModrinthAPI::searchMods(name, currentIndex_, version, type, sort, [=](const QList<ModrinthModInfo> &infoList){
         ui->searchButton->setText(tr("&Search"));
         ui->searchButton->setEnabled(true);
         setCursor(Qt::ArrowCursor);
@@ -87,7 +95,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
 
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 100));
-            auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::ANY;
+            auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
             auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, modrinthMod);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
@@ -106,6 +114,18 @@ void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index
 
 
 void ModrinthModBrowser::on_sortSelect_currentIndexChanged(int)
+{
+    if(isUiSet_) getModList(currentName_);
+}
+
+
+void ModrinthModBrowser::on_versionSelect_currentIndexChanged(int)
+{
+    if(isUiSet_) getModList(currentName_);
+}
+
+
+void ModrinthModBrowser::on_loaderSelect_currentIndexChanged(int)
 {
     if(isUiSet_) getModList(currentName_);
 }

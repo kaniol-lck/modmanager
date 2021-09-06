@@ -15,7 +15,7 @@ ModrinthAPI *ModrinthAPI::api()
     return &api;
 }
 
-void ModrinthAPI::searchMods(const QString name, int index, /*const GameVersion &version, ModLoaderType::Type type, */int sort, std::function<void (QList<ModrinthModInfo>)> callback)
+void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &version, ModLoaderType::Type type, int sort, std::function<void (QList<ModrinthModInfo>)> callback)
 {
     QUrl url = PREFIX + "/api/v1/mod";
 
@@ -45,6 +45,18 @@ void ModrinthAPI::searchMods(const QString name, int index, /*const GameVersion 
     urlQuery.addQueryItem("offset", QString::number(index));
     //search page size, 30 by default [Customize it]
     urlQuery.addQueryItem("limit", "30");
+
+    QStringList facets;
+    //game version
+    if(version != GameVersion::Any)
+        facets << "\"versions:" + version + "\"";
+
+    //loader type
+    if(type != ModLoaderType::Any)
+        facets << "\"categories:" + ModLoaderType::toString(type) + "\"";
+
+    if(!facets.isEmpty())
+        urlQuery.addQueryItem("facets", "[[" + facets.join(",") + "]]");
 
     url.setQuery(urlQuery);
     QNetworkRequest request(url);

@@ -21,7 +21,7 @@ BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
 
     pathList_ = LocalModPathManager::pathList();
 
-    for(const auto &path : pathList_)
+    for(const auto &path : qAsConst(pathList_))
         ui->browserList->addItem(path->info().showText());
 
     refreshButton();

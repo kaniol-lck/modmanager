@@ -20,17 +20,12 @@ QString ModLoaderType::toString(Type loaderType)
     case Type::Any:
         return QObject::tr("Any");
     case Type::Fabric:
-        return QObject::tr("Fabric");
+        return "Fabric";
     case Type::Forge:
-        return QObject::tr("Forge");
+        return "Forge";
     case Type::Rift:
-        return QObject::tr("Rift");
+        return "Rift";
     default:
         return "";
     }
-}
-
-ModLoaderType::Type ModLoaderType::fromIndex(int index)
-{
-    return static_cast<ModLoaderType::Type>(index);
 }

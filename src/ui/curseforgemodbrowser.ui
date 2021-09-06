@@ -132,28 +132,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="loaderSelect">
-       <item>
-        <property name="text">
-         <string>Any</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Fabric</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Forge</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Rift</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="loaderSelect"/>
      </item>
     </layout>
    </item>

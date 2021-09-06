@@ -114,7 +114,7 @@ std::optional<CurseforgeFileInfo> CurseforgeModInfo::latestFileInfo(const GameVe
 {
     //latest last
     for(auto iter = latestFileList_.rbegin(); iter < latestFileList_.rend(); iter++){
-        if((version == GameVersion::ANY || iter->gameVersions().contains(version)/* || iter->gameVersions().isEmpty()*/) &&
+        if((version == GameVersion::Any || iter->gameVersions().contains(version)/* || iter->gameVersions().isEmpty()*/) &&
                 (loaderType == ModLoaderType::Any || iter->loaderTypes().contains(loaderType)/* || iter->loaderTypes().isEmpty()*/))
             return {*iter};
     }

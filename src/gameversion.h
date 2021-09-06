@@ -22,9 +22,10 @@ public:
 
     static void initVersionList();
 
-    static QStringList versionList;
+    static QStringList cachedVersionList;
+    static QStringList curseforgeVersionList;
 
-    static GameVersion ANY;
+    static GameVersion Any;
 
 private:
     QString versionString_;
