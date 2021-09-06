@@ -18,6 +18,8 @@ public:
 private slots:
     void on_Preferences_accepted();
 
+    void on_commonPathButton_clicked();
+
 private:
     Ui::Preferences *ui;
 };

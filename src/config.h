@@ -26,12 +26,16 @@ class Config : private QSettings
 public:
     explicit Config();
 
+    //General
+    getterAndSetter(CommonPath, String, commonPath, "");
     getterAndSetter(AutoCheckUpdate, Bool, autoCheckUpdate, true)
     getterAndSetter(DeleteOld, Bool, deleteOld, true)
 
+    //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)
     getterAndSetter(DownloadCount, Int, downloadCount, 8)
 
+    //Path List
     getterAndSetter(LocalPathList, List, localPathList, QVariant())
 
 };

@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "gameversion.h"
+#include "config.h"
 
 LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
     QDialog(parent),
@@ -45,18 +46,20 @@ void LocalModBrowserSettingsDialog::updateVersions()
 
 void LocalModBrowserSettingsDialog::on_modDirButton_clicked()
 {
-    auto str = QFileDialog::getExistingDirectory(this, tr("Select your mod directory..."), ui->modsDirText->text());
-    if(str.isEmpty()) return;
+    auto str = ui->modsDirText->text();
+    if(str.isEmpty()) str = Config().getCommonPath();
+    auto resultStr = QFileDialog::getExistingDirectory(this, tr("Select your mod directory..."), str);
+    if(resultStr.isEmpty()) return;
 
     //version
-    auto v = GameVersion::deduceFromString(str);
+    auto v = GameVersion::deduceFromString(resultStr);
     if(v.has_value())
         ui->versionSelect->setCurrentText(v.value());
     info_.setGameVersion(ui->versionSelect->currentText());
 
     //path
     do{
-        QDir dir(str);
+        QDir dir(resultStr);
         QString path;
         if(dir.dirName() == "mods")
             path = dir.absolutePath();
@@ -73,7 +76,7 @@ void LocalModBrowserSettingsDialog::on_modDirButton_clicked()
         updateAutoName();
         return;
     } while(false);
-    ui->modsDirText->setText(str);
+    ui->modsDirText->setText(resultStr);
 }
 
 

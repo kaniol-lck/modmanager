@@ -48,7 +48,7 @@ void ModrinthModItemWidget::updateFileList()
     for(const auto &fileInfo : mod_->modInfo().featuredFileList()){
         auto name = fileInfo.displayName() + " ("+ numberConvert(fileInfo.size(), "B") + ")";
         connect(menu->addAction(name), &QAction::triggered, this, [=]{
-//            downloadFile(fileInfo);
+//            downloadFile(fileInfo);l
         });
     }
 

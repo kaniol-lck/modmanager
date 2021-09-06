@@ -1,6 +1,8 @@
 #include "preferences.h"
 #include "ui_preferences.h"
 
+#include <QFileDialog>
+
 #include "config.h"
 
 Preferences::Preferences(QWidget *parent) :
@@ -10,6 +12,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->setupUi(this);
 
     Config config;
+    ui->commonPathText->setText(config.getCommonPath());
     ui->autoCheckUpdate->setChecked(config.getAutoCheckUpdate());
     ui->deleteOld->setChecked(config.getDeleteOld());
 
@@ -25,10 +28,19 @@ Preferences::~Preferences()
 void Preferences::on_Preferences_accepted()
 {
     Config config;
+    config.setCommonPath(ui->commonPathText->text());
     config.setAutoCheckUpdate(ui->autoCheckUpdate->isChecked());
     config.setDeleteOld(ui->deleteOld->isChecked());
 
     config.setThreadCount(ui->threadCount->value());
     config.setDownloadCount(ui->downloadCount->value());
+}
+
+
+void Preferences::on_commonPathButton_clicked()
+{
+    auto str = QFileDialog::getExistingDirectory(this, tr("Select your mod directory..."), ui->commonPathText->text());
+    if(str.isEmpty()) return;
+    ui->commonPathText->setText(str);
 }
 
