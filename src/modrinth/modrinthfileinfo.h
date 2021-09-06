@@ -32,6 +32,8 @@ public:
 
     const QDateTime &fileDate() const;
 
+    bool isFeatured() const;
+
 private:
     QString id_;
     QString modId_;
@@ -40,6 +42,7 @@ private:
     int size_;
     int releaseType_;
     QDateTime fileDate_;
+    bool isFeatured_;
 };
 
 #endif // MODRINTHFILEINFO_H

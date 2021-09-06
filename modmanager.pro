@@ -118,7 +118,6 @@ TRANSLATIONS += \
     languages/zh_CN.ts
 CONFIG += lrelease
 CONFIG += embed_translations
-CONFIG += console
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -36,6 +36,9 @@
          <height>16777215</height>
         </size>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
        <property name="text">
         <string>Download</string>
        </property>

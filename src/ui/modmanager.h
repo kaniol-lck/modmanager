@@ -25,6 +25,8 @@ public:
 private slots:
     void refreshBrowsers();
 
+    void editLocalPath(int index);
+
     void on_actionPreferences_triggered();
 
     void on_actionManage_Browser_triggered();

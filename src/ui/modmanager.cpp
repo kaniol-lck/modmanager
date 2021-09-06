@@ -137,6 +137,25 @@ void ModManager::refreshBrowsers()
 
 }
 
+void ModManager::editLocalPath(int index)
+{
+    auto modDirInfo = modDirList_.at(index);
+    auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);
+    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
+        modDirList_[index] = newInfo;
+        localItem_->child(index)->setText(0, newInfo.showText());
+        Config config;
+        QList<QVariant> list;
+        for(const auto &dirInfo : qAsConst(modDirList_))
+            list << dirInfo.toVariant();
+        config.setDirList(list);
+        if(modDirInfo != newInfo)
+            localModBrowserList_[index]->setModDirInfo(newInfo);
+    });
+    connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
+    dialog->exec();
+}
+
 void ModManager::on_actionPreferences_triggered()
 {
     auto preferences = new Preferences(this);
@@ -176,21 +195,7 @@ void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, i
 {
     if(item->parent() != localItem_) return;
     auto index = localItem_->indexOfChild(item);
-    auto modDirInfo = modDirList_.at(index);
-    auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);
-    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
-        modDirList_[index] = newInfo;
-        item->setText(0, newInfo.showText());
-        Config config;
-        QList<QVariant> list;
-        for(const auto &dirInfo : qAsConst(modDirList_))
-            list << dirInfo.toVariant();
-        config.setDirList(list);
-        if(modDirInfo != newInfo)
-            localModBrowserList_[index]->setModDirInfo(newInfo);
-    });
-    connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
-    dialog->exec();
+    editLocalPath(index);
 }
 
 
@@ -219,11 +224,17 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
                     list << dirInfo.toVariant();
             });
         });
+        menu->addSeparator();
+        menu->addAction(ui->actionManage_Browser);
     } else if(item->parent() == localItem_){
         // on one of local item
+        auto index = item->parent()->indexOfChild(item);
+
+        connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
+            editLocalPath(index);
+        });
         connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
             if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
-            auto index = item->parent()->indexOfChild(item);
             item->parent()->removeChild(item);
             modDirList_.removeAt(index);
             localModBrowserList_.removeAt(index);
@@ -236,6 +247,8 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
             for(const auto &dirInfo : qAsConst(modDirList_))
                 list << dirInfo.toVariant();
         });
+        menu->addSeparator();
+        menu->addAction(ui->actionManage_Browser);
     }
     if(!menu->actions().isEmpty())
         menu->exec(ui->browserTreeWidget->mapToGlobal(pos));

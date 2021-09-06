@@ -17,6 +17,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui->setupUi(this);
     ui->curseforgeButton->setIcon(QIcon(":/image/curseforge.svg"));
     ui->modrinthButton->setIcon(QIcon(":/image/modrinth.svg"));
+    ui->updateButton->setIcon(QIcon::fromTheme("update-none"));
     ui->updateProgress->setVisible(false);
     ui->updateButton->setVisible(false);
     ui->curseforgeButton->setEnabled(false);

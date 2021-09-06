@@ -2,6 +2,7 @@
 #include "ui_curseforgemoditemwidget.h"
 
 #include <QDebug>
+#include <QMenu>
 #include <algorithm>
 
 #include "curseforge/curseforgemod.h"
@@ -20,16 +21,35 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     ui->downloadButton->setIcon(QIcon::fromTheme("download"));
     connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModItemWidget::updateIcon);
 
+    auto menu = new QMenu(this);
+
+    if(defaultFileInfo_.has_value()){
+        auto name = defaultFileInfo_.value().displayName() + " ("+ numberConvert(defaultFileInfo_.value().size(), "B") + ")";
+        connect(menu->addAction(QIcon::fromTheme("starred-symbolic"), name), &QAction::triggered, this, [=]{
+            downloadFile(defaultFileInfo_.value());
+        });
+
+        if(!mod->modInfo().latestFileList().isEmpty())
+            menu->addSeparator();
+    }
+
+    for(const auto &fileInfo : mod->modInfo().latestFileList()){
+        auto name = fileInfo.displayName() + " ("+ numberConvert(fileInfo.size(), "B") + ")";
+        connect(menu->addAction(name), &QAction::triggered, this, [=]{
+            downloadFile(fileInfo);
+        });
+    }
+
+    ui->downloadButton->setMenu(menu);
+
     ui->modName->setText(mod->modInfo().name());
     ui->modSummary->setText(mod->modInfo().summary());
     ui->modAuthors->setText(mod->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
-    if(defaultFileInfo_.has_value()){
-        ui->downloadButton->setToolTip(defaultDownload.value().displayName());
+    if(defaultFileInfo_.has_value())
         ui->downloadSpeedText->setText(numberConvert(defaultDownload.value().size(), "B") + "\n"
-                                   + numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
-    }
+                                       + numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
     else
-        ui->downloadButton->setEnabled(false);
+        ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
 }
 
 CurseforgeModItemWidget::~CurseforgeModItemWidget()
@@ -44,18 +64,15 @@ void CurseforgeModItemWidget::updateIcon()
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
 }
 
-void CurseforgeModItemWidget::on_downloadButton_clicked()
+void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
 {
-    if(!defaultFileInfo_.has_value()) return;
-
     ui->downloadButton->setText(tr("Downloading"));
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
 
-    //TODO: path
-    auto downloader = DownloadManager::addModDownload(std::make_shared<CurseforgeFileInfo>(defaultFileInfo_.value()));
+    auto downloader = DownloadManager::addModDownload(std::make_shared<CurseforgeFileInfo>(fileInfo));
 
-    ui->downloadProgress->setMaximum(defaultFileInfo_.value().size());
+    ui->downloadProgress->setMaximum(fileInfo.size());
 
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
@@ -65,7 +82,7 @@ void CurseforgeModItemWidget::on_downloadButton_clicked()
     });
     connect(downloader, &Downloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(numberConvert(defaultFileInfo_.value().size(), "B"));
+        ui->downloadSpeedText->setText(numberConvert(fileInfo.size(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
     });
 }

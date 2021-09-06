@@ -111,11 +111,17 @@ QTreeView::branch {
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionPreferences">
+   <property name="icon">
+    <iconset theme="preferences"/>
+   </property>
    <property name="text">
     <string>Preferences</string>
    </property>
   </action>
   <action name="actionManage_Browser">
+   <property name="icon">
+    <iconset theme="settings-configure"/>
+   </property>
    <property name="text">
     <string>Manage Local Mod Browser</string>
    </property>

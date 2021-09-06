@@ -19,6 +19,7 @@ public:
 
 private slots:
     void updateIcon();
+    void updateFileList();
 
 private:
     Ui::ModrinthModItemWidget *ui;

@@ -93,6 +93,16 @@ const QList<ModrinthFileInfo> &ModrinthModInfo::fileList() const
     return fileList_;
 }
 
+QList<ModrinthFileInfo> ModrinthModInfo::featuredFileList() const
+{
+    QList<ModrinthFileInfo> list;
+    auto it = std::inserter(list, list.begin());
+    std::copy_if(fileList_.cbegin(), fileList_.cend(), it, [=](const auto &info){
+        return info.isFeatured();
+    });
+    return list;
+}
+
 const QList<GameVersion> &ModrinthModInfo::gameVersions() const
 {
     return gameVersions_;

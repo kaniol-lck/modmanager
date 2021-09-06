@@ -37,6 +37,7 @@ public:
     const QUrl &websiteUrl() const;
 
     const QList<ModrinthFileInfo> &fileList() const;
+    QList<ModrinthFileInfo> featuredFileList() const;
 
     const QList<GameVersion> &gameVersions() const;
 

@@ -22,7 +22,7 @@ public:
 private slots:
     void updateIcon();
 
-    void on_downloadButton_clicked();
+    void downloadFile(const CurseforgeFileInfo &fileInfo);
 
 private:
     Ui::CurseforgeModItemWidget *ui;

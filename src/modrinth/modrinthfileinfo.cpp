@@ -12,6 +12,7 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
     fileInfo.displayName_ = value(variant, "name").toString();
     fileInfo.releaseType_ = value(variant, "version_type").toInt();
     fileInfo.fileDate_ = value(variant, "date_published").toDateTime();
+    fileInfo.isFeatured_ = value(variant, "featured").toBool();
 
     auto files = value(variant, "files").toList();
 
@@ -69,4 +70,9 @@ int ModrinthFileInfo::releaseType() const
 const QDateTime &ModrinthFileInfo::fileDate() const
 {
     return fileDate_;
+}
+
+bool ModrinthFileInfo::isFeatured() const
+{
+    return isFeatured_;
 }
