@@ -6,11 +6,12 @@
 #include "MurmurHash2.h"
 
 #include <QDebug>
-#include <QDir>
 #include <QMessageBox>
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 
+#include "local/localmodpathmanager.h"
+#include "local/localmodpath.h"
 #include "localmodbrowser.h"
 #include "curseforgemodbrowser.h"
 #include "modrinthmodbrowser.h"
@@ -33,17 +34,12 @@ ModManager::ModManager(QWidget *parent) :
     ui->splitter->setStretchFactor(0, 1);
     ui->splitter->setStretchFactor(1, 2);
 
-    //set tree widget
+    //setup tree widget
     for (const auto &item : {downloadItem_, exploreItem_, localItem_}){
         item->setForeground(0, Qt::gray);
         ui->browserTreeWidget->addTopLevelItem(item);
     }
     ui->browserTreeWidget->expandAll();
-
-    //load mod dirs in config
-    Config config;
-    for(const auto &variant : config.getDirList())
-        modDirList_ << ModDirInfo::fromVariant(variant);
 
     //Downloader
     auto downloadBrowser = new DownloadBrowser(this);
@@ -67,24 +63,16 @@ ModManager::ModManager(QWidget *parent) :
     ui->stackedWidget->addWidget(modrinthModBrowser);
 
     //Local
-    for(const auto &modDirInfo : qAsConst(modDirList_)){
-        if(modDirInfo.exists()) {
-            auto item = new QTreeWidgetItem(localItem_, {modDirInfo.showText()});
-            localItem_->addChild(item);
-            item->setIcon(0, QIcon::fromTheme("folder"));
-            auto localModBrowser = new LocalModBrowser(this, modDirInfo);
-            localModBrowserList_.append(localModBrowser);
-            ui->stackedWidget->addWidget(localModBrowser);
-        }
-    }
+    syncPathList();
+    connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModManager::syncPathList);
 
+    //default browser
     ui->browserTreeWidget->setCurrentItem(curseforgeItem);
 
     //check and update version
     QFuture<void> future = QtConcurrent::run(&GameVersion::initVersionList);
     updateVersionsWatcher_->setFuture(future);
     connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, curseforgeModBrowser, &CurseforgeModBrowser::updateVersions);
-
 }
 
 ModManager::~ModManager()
@@ -92,42 +80,34 @@ ModManager::~ModManager()
     delete ui;
 }
 
-void ModManager::refreshBrowsers()
+void ModManager::syncPathList()
 {
-    //load mod dirs in config
-    Config config;
-    auto oldCount = modDirList_.size();
-    for(const auto &variant : config.getDirList()){
-        auto modDirInfo = ModDirInfo::fromVariant(variant);
-        if(!modDirInfo.exists()) continue;
-        auto i = modDirList_.indexOf(modDirInfo);
+    auto oldCount = pathList_.size();
+    for(const auto &path : LocalModPathManager::pathList()){
+        auto i = pathList_.indexOf(path);
         if(i < 0){
             //not present, new one
-            modDirList_ << modDirInfo;
-            auto item = new QTreeWidgetItem(localItem_, {modDirInfo.showText()});
+            pathList_ << path;
+            auto item = new QTreeWidgetItem(localItem_, {path->info().showText()});
             localItem_->addChild(item);
             item->setIcon(0, QIcon::fromTheme("folder"));
-            auto localModBrowser = new LocalModBrowser(this, modDirInfo);
-            localModBrowserList_.append(localModBrowser);
+            auto localModBrowser = new LocalModBrowser(this, path);
             ui->stackedWidget->addWidget(localModBrowser);
         } else{
             //present, move position
             oldCount--;
-            auto j = i + 3;
-            modDirList_ << modDirList_.takeAt(i);
-            localModBrowserList_ << localModBrowserList_.takeAt(i);
+            pathList_ << pathList_.takeAt(i);
             localItem_->addChild(localItem_->takeChild(i));
-            auto widget = ui->stackedWidget->widget(j);
+            auto widget = ui->stackedWidget->widget(i + 3);
             ui->stackedWidget->removeWidget(widget);
             ui->stackedWidget->addWidget(widget);
         }
     }
-    //remove remained mod dir
+    //remove remained mod path
     auto i = oldCount;
     while (i--) {
         auto j = i + 3;
-        modDirList_.removeAt(i);
-        localModBrowserList_.removeAt(i);
+        pathList_.removeAt(i);
         delete localItem_->takeChild(i);
         auto widget = ui->stackedWidget->widget(j);
         ui->stackedWidget->removeWidget(widget);
@@ -135,22 +115,17 @@ void ModManager::refreshBrowsers()
 //        widget->deleteLater();
     }
 
+    //they should be same after sync
+    assert(pathList_ == LocalModPathManager::pathList());
 }
 
 void ModManager::editLocalPath(int index)
 {
-    auto modDirInfo = modDirList_.at(index);
-    auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);
-    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
-        modDirList_[index] = newInfo;
+    auto pathInfo = LocalModPathManager::pathList().at(index)->info();
+    auto dialog = new LocalModBrowserSettingsDialog(this, pathInfo);
+    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
+        LocalModPathManager::pathList().at(index)->setInfo(newInfo);
         localItem_->child(index)->setText(0, newInfo.showText());
-        Config config;
-        QList<QVariant> list;
-        for(const auto &dirInfo : qAsConst(modDirList_))
-            list << dirInfo.toVariant();
-        config.setDirList(list);
-        if(modDirInfo != newInfo)
-            localModBrowserList_[index]->setModDirInfo(newInfo);
     });
     connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
     dialog->exec();
@@ -162,11 +137,10 @@ void ModManager::on_actionPreferences_triggered()
     preferences->show();
 }
 
-
 void ModManager::on_actionManage_Browser_triggered()
 {
     auto dialog = new BrowserManagerDialog(this);
-    connect(dialog, &BrowserManagerDialog::accepted, this, &ModManager::refreshBrowsers);
+    connect(dialog, &BrowserManagerDialog::accepted, this, &ModManager::syncPathList);
     dialog->show();
 }
 
@@ -190,14 +164,12 @@ void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *curren
     }
 }
 
-
 void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
 {
     if(item->parent() != localItem_) return;
     auto index = localItem_->indexOfChild(item);
     editLocalPath(index);
 }
-
 
 void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &pos)
 {
@@ -208,20 +180,9 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
         connect(menu->addAction(QIcon::fromTheme("list-add"), tr("New Mod Path")), &QAction::triggered, this, [=]{
             auto dialog = new LocalModBrowserSettingsDialog(this);
             dialog->show();
-            connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &modDirInfo){
-                modDirList_ << modDirInfo;
-                auto item = new QTreeWidgetItem(localItem_, {modDirInfo.showText()});
-                localItem_->addChild(item);
-                item->setIcon(0, QIcon::fromTheme("folder"));
-                auto localModBrowser = new LocalModBrowser(this, modDirInfo);
-                localModBrowserList_.append(localModBrowser);
-                ui->stackedWidget->addWidget(localModBrowser);
-
-                //update config
-                Config config;
-                QList<QVariant> list;
-                for(const auto &dirInfo : qAsConst(modDirList_))
-                    list << dirInfo.toVariant();
+            connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
+                auto path = new LocalModPath(this, pathInfo);
+                LocalModPathManager::addPath(path);
             });
         });
         menu->addSeparator();
@@ -235,17 +196,7 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
         });
         connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
             if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
-            item->parent()->removeChild(item);
-            modDirList_.removeAt(index);
-            localModBrowserList_.removeAt(index);
-            auto widget = ui->stackedWidget->widget(index + 3);
-            ui->stackedWidget->removeWidget(widget);
-
-            //update config
-            Config config;
-            QList<QVariant> list;
-            for(const auto &dirInfo : qAsConst(modDirList_))
-                list << dirInfo.toVariant();
+            LocalModPathManager::removePathAt(index);
         });
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
@@ -253,4 +204,3 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
     if(!menu->actions().isEmpty())
         menu->exec(ui->browserTreeWidget->mapToGlobal(pos));
 }
-

@@ -4,11 +4,12 @@
 #include <QDialog>
 #include <QStandardItemModel>
 
-#include "local/localmod.h"
-
 namespace Ui {
 class LocalModUpdateDialog;
 }
+
+class LocalModPath;
+class LocalMod;
 
 class LocalModUpdateDialog : public QDialog
 {
@@ -17,7 +18,7 @@ class LocalModUpdateDialog : public QDialog
     enum { NameColumn, BeforeColumn, AfterColumn, SourceColumn};
 
 public:
-    explicit LocalModUpdateDialog(QWidget *parent, const QList<LocalMod*> &list);
+    explicit LocalModUpdateDialog(QWidget *parent, LocalModPath *modPath);
     ~LocalModUpdateDialog();
 
 private slots:
@@ -26,6 +27,7 @@ private slots:
 
 private:
     Ui::LocalModUpdateDialog *ui;
+    LocalModPath *modPath_;
     QList<LocalMod*> updateList_;
     QStandardItemModel model_;
 };

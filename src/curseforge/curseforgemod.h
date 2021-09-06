@@ -2,7 +2,6 @@
 #define CURSEFORGEMOD_H
 
 #include <QObject>
-#include <QDir>
 
 #include "curseforgemodinfo.h"
 

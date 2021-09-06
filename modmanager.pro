@@ -22,6 +22,9 @@ SOURCES += \
     src/download/downloadmanager.cpp \
     src/download/moddownloader.cpp \
     src/local/localmod.cpp \
+    src/local/localmodpath.cpp \
+    src/local/localmodpathinfo.cpp \
+    src/local/localmodpathmanager.cpp \
     src/modloadertype.cpp \
     src/modrinth/modrinthapi.cpp \
     src/modrinth/modrinthfileinfo.cpp \
@@ -41,7 +44,6 @@ SOURCES += \
     src/ui/localmodinfodialog.cpp \
     src/ui/localmoditemwidget.cpp \
     src/main.cpp \
-    src/moddirinfo.cpp \
     src/ui/localmodupdatedialog.cpp \
     src/ui/modmanager.cpp \
     src/ui/modrinthfileitemwidget.cpp \
@@ -64,6 +66,9 @@ HEADERS += \
     src/download/downloadmanager.h \
     src/download/moddownloader.h \
     src/local/localmod.h \
+    src/local/localmodpath.h \
+    src/local/localmodpathinfo.h \
+    src/local/localmodpathmanager.h \
     src/modloadertype.h \
     src/modrinth/modrinthapi.h \
     src/modrinth/modrinthfileinfo.h \
@@ -82,7 +87,6 @@ HEADERS += \
     src/local/localmodinfo.h \
     src/ui/localmodinfodialog.h \
     src/ui/localmoditemwidget.h \
-    src/moddirinfo.h \
     src/ui/localmodupdatedialog.h \
     src/ui/modmanager.h \
     src/ui/modrinthfileitemwidget.h \

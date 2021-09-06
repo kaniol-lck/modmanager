@@ -21,17 +21,19 @@ Downloader::Downloader(QObject *parent) :
     connect(this, &Downloader::downloadInfoReady, this, &Downloader::startDownload, Qt::QueuedConnection);
 }
 
-bool Downloader::download(const QUrl &url, const QDir &path, const QString &filename)
+bool Downloader::download(const QUrl &url, const QString &path, const QString &filename)
 {
     url_ = url;
 
+    QDir dir(path);
+
     //get name
     if(!filename.isEmpty())
-        file_.setFileName(path.absoluteFilePath(filename));
+        file_.setFileName(dir.absoluteFilePath(filename));
     else if(!url.fileName().isEmpty())
-        file_.setFileName(path.absoluteFilePath(url.fileName()));
+        file_.setFileName(dir.absoluteFilePath(url.fileName()));
     else
-        file_.setFileName(path.absoluteFilePath("index.html"));
+        file_.setFileName(dir.absoluteFilePath("index.html"));
 
     if(!file_.open(QIODevice::WriteOnly)) return false;
 

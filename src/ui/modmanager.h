@@ -5,10 +5,9 @@
 #include <QTreeWidgetItem>
 #include <QFutureWatcher>
 
-#include "moddirinfo.h"
-
 class QListWidgetItem;
 class LocalModBrowser;
+class LocalModPath;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ModManager; }
@@ -23,7 +22,7 @@ public:
     ~ModManager();
 
 private slots:
-    void refreshBrowsers();
+    void syncPathList();
 
     void editLocalPath(int index);
 
@@ -39,8 +38,8 @@ private slots:
 
 private:
     Ui::ModManager *ui;
-    QList<ModDirInfo> modDirList_;
-    QList<LocalModBrowser*> localModBrowserList_;
+
+    QList<LocalModPath*> pathList_;
     QFutureWatcher<void> *updateVersionsWatcher_;
 
     QTreeWidgetItem *downloadItem_;

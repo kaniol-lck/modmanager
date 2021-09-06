@@ -3,7 +3,6 @@
 
 #include <QString>
 #include <QFileInfo>
-#include <QDir>
 
 class LocalModInfo
 {
@@ -17,7 +16,7 @@ public:
     QDateTime getFileModificationTime() const;
 
     const QString &id() const;
-    const QDir &path() const;
+    const QString &path() const;
     const QString &name() const;
     const QString &version() const;
     const QString &description() const;
@@ -28,7 +27,7 @@ public:
     const QStringList &authors() const;
 
 private:
-    QDir path_;
+    QString path_;
     QFileInfo fileInfo_;
     QString id_;
     QString name_;

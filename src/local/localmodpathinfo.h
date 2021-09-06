@@ -1,30 +1,27 @@
 #ifndef MODDIRINFO_H
 #define MODDIRINFO_H
 
-#include <QDir>
+#include <QVariant>
 
 #include "gameversion.h"
 #include "modloadertype.h"
 
-class ModDirInfo
+class LocalModPathInfo
 {
 public:
-    ModDirInfo() = default;
-    ModDirInfo(const QDir &dir, const GameVersion &version, ModLoaderType::Type type);
-    ModDirInfo(const QString &name, const QDir &dir, const GameVersion &version, ModLoaderType::Type type);
+    LocalModPathInfo() = default;
+    LocalModPathInfo(const QString &dir, const GameVersion &version, ModLoaderType::Type type);
+    LocalModPathInfo(const QString &name, const QString &dir, const GameVersion &version, ModLoaderType::Type type);
 
-    bool operator==(const ModDirInfo &other) const;
-    bool operator!=(const ModDirInfo &other) const;
+    bool operator==(const LocalModPathInfo &other) const;
+    bool operator!=(const LocalModPathInfo &other) const;
 
-    static ModDirInfo fromVariant(const QVariant &variant);
+    static LocalModPathInfo fromVariant(const QVariant &variant);
     QVariant toVariant() const;
 
     QString showText() const;
 
     bool exists() const;
-
-    void setModDir(const QDir &newModDir);
-    const QDir &modDir() const;
 
     void setGameVersion(const GameVersion &newGameVersion);
     const GameVersion &gameVersion() const;
@@ -38,9 +35,12 @@ public:
     bool isAutoName() const;
     QString autoName() const;
 
+    const QString &path() const;
+    void setPath(const QString &newPath);
+
 private:
     QString name_;
-    QDir modDir_;
+    QString path_;
     GameVersion gameVersion_;
     ModLoaderType::Type loaderType_;
 };

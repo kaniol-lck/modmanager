@@ -2,9 +2,8 @@
 #define LOCALMODBROWSERSETTINGSDIALOG_H
 
 #include <QDialog>
-#include <QDir>
 
-#include "moddirinfo.h"
+#include "local/localmodpathinfo.h"
 
 namespace Ui {
 class LocalModBrowserSettingsDialog;
@@ -15,11 +14,11 @@ class LocalModBrowserSettingsDialog : public QDialog
     Q_OBJECT
 
 signals:
-    void settingsUpdated(ModDirInfo info);
+    void settingsUpdated(LocalModPathInfo info);
 
 public:
     explicit LocalModBrowserSettingsDialog(QWidget *parent = nullptr);
-    LocalModBrowserSettingsDialog(QWidget *parent, const ModDirInfo &info);
+    LocalModBrowserSettingsDialog(QWidget *parent, const LocalModPathInfo &info);
 
     ~LocalModBrowserSettingsDialog();
 
@@ -41,7 +40,7 @@ private slots:
 
 private:
     Ui::LocalModBrowserSettingsDialog *ui;
-    ModDirInfo info_;
+    LocalModPathInfo info_;
     QString customName;
 
     void updateAutoName();

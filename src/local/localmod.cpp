@@ -7,6 +7,7 @@
 #include "download/downloadmanager.h"
 #include "config.h"
 
+#include <QDir>
 #include <iterator>
 #include <algorithm>
 
@@ -166,10 +167,10 @@ void LocalMod::update(ModWebsiteType type)
 {
     emit updateStarted();
     auto updateFunc = [=](auto mod, auto &oldFileInfo, auto &newFileInfo){
-        auto path = modInfo_.path();
+        QDir dir = modInfo_.path();
         //to dir
-        path.cdUp();
-        DownloadManager::addModupdate(std::make_shared<std::remove_reference_t<decltype(newFileInfo.value())>>(newFileInfo.value()), path.absolutePath(), [=]{
+        dir.cdUp();
+        DownloadManager::addModupdate(std::make_shared<std::remove_reference_t<decltype(newFileInfo.value())>>(newFileInfo.value()), dir.absolutePath(), [=]{
             //check download
             //...
 
@@ -180,7 +181,7 @@ void LocalMod::update(ModWebsiteType type)
 
             //delete old mod file
             if(Config().getDeleteOld()){
-                QFile file(oldPath.absolutePath());
+                QFile file(oldPath);
                 file.remove();
 
                 //update info

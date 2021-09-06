@@ -2,7 +2,6 @@
 #define MODRINTHMOD_H
 
 #include <QObject>
-#include <QDir>
 
 #include "modrinthmodinfo.h"
 

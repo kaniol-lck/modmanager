@@ -2,7 +2,10 @@
 #include "ui_browsermanagerdialog.h"
 
 #include <QListWidgetItem>
+
 #include "localmodbrowsersettingsdialog.h"
+#include "local/localmodpathmanager.h"
+#include "local/localmodpath.h"
 #include "config.h"
 
 BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
@@ -16,14 +19,10 @@ BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
     ui->addButton->setIcon(QIcon::fromTheme("list-add"));
     ui->deleteButton->setIcon(QIcon::fromTheme("list-remove"));
 
-    //load mod dirs in config
-    Config config;
-    for(const auto &variant : config.getDirList()){
-        auto modDirInfo = ModDirInfo::fromVariant(variant);
-        modDirList_ << modDirInfo;
+    pathList_ = LocalModPathManager::pathList();
 
-        ui->browserList->addItem(modDirInfo.showText());
-    }
+    for(const auto &path : pathList_)
+        ui->browserList->addItem(path->info().showText());
 
     refreshButton();
 }
@@ -38,7 +37,7 @@ void BrowserManagerDialog::on_upButton_clicked()
     auto row = ui->browserList->currentRow();
     if(row < 0 || row == 0) return;
 
-    modDirList_.swapItemsAt(row, row - 1);
+    pathList_.swapItemsAt(row, row - 1);
     ui->browserList->insertItem(row - 1, ui->browserList->takeItem(row));
 
     ui->browserList->setCurrentRow(row - 1);
@@ -49,9 +48,9 @@ void BrowserManagerDialog::on_upButton_clicked()
 void BrowserManagerDialog::on_downButton_clicked()
 {
     auto row = ui->browserList->currentRow();
-    if(row < 0 || row == modDirList_.size() - 1) return;
+    if(row < 0 || row == pathList_.size() - 1) return;
 
-    modDirList_.swapItemsAt(row, row + 1);
+    pathList_.swapItemsAt(row, row + 1);
     ui->browserList->insertItem(row, ui->browserList->takeItem(row + 1));
 
     ui->browserList->setCurrentRow(row + 1);
@@ -63,9 +62,10 @@ void BrowserManagerDialog::on_addButton_clicked()
 {
     auto dialog = new LocalModBrowserSettingsDialog(this);
     dialog->show();
-    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &modDirInfo){
-        modDirList_ << modDirInfo;
-        ui->browserList->addItem(modDirInfo.showText());
+    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
+        auto path = new LocalModPath(this, pathInfo);
+        pathList_ << path;
+        ui->browserList->addItem(pathInfo.showText());
         refreshButton();
     });
 }
@@ -76,7 +76,7 @@ void BrowserManagerDialog::on_deleteButton_clicked()
     auto row = ui->browserList->currentRow();
     if(row < 0) return;
 
-    modDirList_.removeAt(row);
+    pathList_.removeAt(row);
     delete ui->browserList->takeItem(row);
     refreshButton();
 }
@@ -84,17 +84,13 @@ void BrowserManagerDialog::on_deleteButton_clicked()
 
 void BrowserManagerDialog::on_BrowserManagerDialog_accepted()
 {
-    Config config;
-    QList<QVariant> list;
-    for(const auto &dirInfo : qAsConst(modDirList_))
-        list << dirInfo.toVariant();
-    config.setDirList(list);
+    LocalModPathManager::setPathList(pathList_);
 }
 
 void BrowserManagerDialog::on_browserList_currentRowChanged(int currentRow)
 {
     ui->upButton->setEnabled(currentRow >= 0 && currentRow != 0);
-    ui->downButton->setEnabled(currentRow >= 0 && currentRow != modDirList_.size() - 1);
+    ui->downButton->setEnabled(currentRow >= 0 && currentRow != pathList_.size() - 1);
     ui->deleteButton->setEnabled(currentRow >= 0);
 }
 
@@ -108,10 +104,10 @@ void BrowserManagerDialog::on_browserList_doubleClicked(const QModelIndex &index
     auto row = index.row();
     if(row < 0) return;
 
-    auto modDirInfo = modDirList_.at(row);
-    auto dialog = new LocalModBrowserSettingsDialog(this, modDirInfo);
-    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const ModDirInfo &newInfo){
-        modDirList_[row] = newInfo;
+    auto path = pathList_.at(row);
+    auto dialog = new LocalModBrowserSettingsDialog(this, path->info());
+    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
+        pathList_[row]->setInfo(newInfo);
         ui->browserList->item(row)->setText(newInfo.showText());
     });
     dialog->exec();

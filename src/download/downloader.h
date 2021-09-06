@@ -5,7 +5,6 @@
 #include <QFile>
 #include <QUrl>
 #include <QVector>
-#include <QDir>
 
 class QNetworkAccessManager;
 
@@ -15,7 +14,7 @@ class Downloader : public QObject
 public:
     explicit Downloader(QObject *parent = nullptr);
 
-    bool download(const QUrl &url, const QDir &path = QDir(), const QString &filename = "");
+    bool download(const QUrl &url, const QString &path = "", const QString &filename = "");
 
 signals:
     void finished();

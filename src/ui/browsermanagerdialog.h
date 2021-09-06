@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "moddirinfo.h"
+class LocalModPath;
 
 namespace Ui {
 class BrowserManagerDialog;
@@ -37,7 +37,7 @@ private:
 
     Ui::BrowserManagerDialog *ui;
 
-    QList<ModDirInfo> modDirList_;
+    QList<LocalModPath *> pathList_;
 };
 
 #endif // BROWSERMANAGERDIALOG_H

@@ -23,7 +23,7 @@ const QString &LocalModInfo::id() const
     return id_;
 }
 
-const QDir &LocalModInfo::path() const
+const QString &LocalModInfo::path() const
 {
     return path_;
 }

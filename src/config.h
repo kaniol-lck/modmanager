@@ -32,7 +32,7 @@ public:
     getterAndSetter(ThreadCount, Int, threadCount, 8)
     getterAndSetter(DownloadCount, Int, downloadCount, 8)
 
-    getterAndSetter(DirList, List, dirList, QVariant())
+    getterAndSetter(LocalPathList, List, localPathList, QVariant())
 
 };
 

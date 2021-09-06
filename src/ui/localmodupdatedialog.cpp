@@ -3,9 +3,13 @@
 
 #include <tuple>
 
-LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod *> &list) :
+#include "local/localmodpath.h"
+#include "local/localmod.h"
+
+LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPath) :
     QDialog(parent),
-    ui(new Ui::LocalModUpdateDialog)
+    ui(new Ui::LocalModUpdateDialog),
+    modPath_(modPath)
 {
     ui->setupUi(this);
     ui->updateTableView->setModel(&model_);
@@ -19,7 +23,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, const QList<LocalMod
     ui->updateTableView->horizontalHeader()->setSectionResizeMode(SourceColumn, QHeaderView::Fixed);
     ui->updateTableView->setColumnWidth(SourceColumn, 120);
 
-    for(const auto &mod : list){
+    for(const auto &mod : modPath_->modList()){
         auto type = mod->updateType();
         if(type == LocalMod::None) continue;
 

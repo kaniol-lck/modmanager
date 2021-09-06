@@ -17,13 +17,13 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
     updateVersions();
 }
 
-LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, const ModDirInfo &info) :
+LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, const LocalModPathInfo &info) :
     LocalModBrowserSettingsDialog(parent)
 {
     info_ = info;
     customName = info.showText();
     ui->nameText->setText(info.name());
-    ui->modsDirText->setText(info.modDir().absolutePath());
+    ui->modsDirText->setText(info.path());
     ui->versionSelect->setCurrentText(info.gameVersion());
     ui->loaderSelect->setCurrentIndex(info.loaderType());
 
@@ -68,7 +68,7 @@ void LocalModBrowserSettingsDialog::on_modDirButton_clicked()
             path = dir.absolutePath();
         }
         ui->modsDirText->setText(path);
-        info_.setModDir(path);
+        info_.setPath(path);
         updateAutoName();
         return;
     } while(false);
