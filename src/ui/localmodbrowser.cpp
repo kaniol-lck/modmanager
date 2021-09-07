@@ -38,13 +38,13 @@ void LocalModBrowser::updateModList()
         //curseforge
         mod->searchOnCurseforge();
         connect(mod, &LocalMod::curseforgeReady, this, [=](bool bl){
-            if(bl && Config().getAutoCheckUpdate()) mod->checkCurseforgeUpdate(modPath_->info().gameVersion().mainVersion(), modPath_->info().loaderType());
+            if(bl && Config().getAutoCheckUpdate()) mod->checkCurseforgeUpdate(modPath_->info().gameVersion(), modPath_->info().loaderType());
         });
 
         //modrinth
         mod->searchOnModrinth();
         connect(mod, &LocalMod::modrinthReady, this, [=](bool bl){
-//            if(bl && Config().getAutoCheckUpdate()) localMod->checkModrinthUpdate(modDirInfo.getGameVersion().mainVersion(), modDirInfo.getLoaderType());
+//            if(bl && Config().getAutoCheckUpdate()) localMod->checkModrinthUpdate(modDirInfo.getGameVersion(), modDirInfo.getLoaderType());
         });
 
         auto *listItem = new QListWidgetItem();

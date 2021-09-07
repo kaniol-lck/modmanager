@@ -16,6 +16,9 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
     ui->modDirButton->setIcon(QIcon::fromTheme("folder"));
     info_.setLoaderType(ModLoaderType::Any);
 
+    for(const auto &type : ModLoaderType::local)
+        ui->loaderSelect->addItem(ModLoaderType::toString(type));
+
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::mojangVersionListUpdated, this, &LocalModBrowserSettingsDialog::updateVersionList);
 }
@@ -28,7 +31,7 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, co
     ui->nameText->setText(info.name());
     ui->modsDirText->setText(info.path());
     ui->versionSelect->setCurrentText(info.gameVersion());
-    ui->loaderSelect->setCurrentIndex(info.loaderType());
+    ui->loaderSelect->setCurrentIndex(ModLoaderType::local.indexOf(info.loaderType()));
 
     ui->useAutoName->setChecked(info.isAutoName());
 }

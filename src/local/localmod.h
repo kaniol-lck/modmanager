@@ -30,8 +30,8 @@ public:
     void searchOnCurseforge();
     void searchOnModrinth();
 
-    void checkCurseforgeUpdate(const GameVersion &version, ModLoaderType::Type loaderType);
-    void checkModrinthUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType);
+    void checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
+    void checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
 
     ModWebsiteType updateType() const;
     void update(ModWebsiteType type);
@@ -60,6 +60,9 @@ signals:
     void updateFinished();
 
 private:
+    template<typename T>
+    static std::optional<T> findUpdate(QList<T> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType);
+
     LocalModInfo modInfo_;
 
     CurseforgeMod *curseforgeMod_ = nullptr;

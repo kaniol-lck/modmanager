@@ -13,6 +13,7 @@ Preferences::Preferences(QWidget *parent) :
 
     Config config;
     ui->commonPathText->setText(config.getCommonPath());
+    ui->versionMatchSelect->setCurrentIndex(config.getVersionMatch());
     ui->autoCheckUpdate->setChecked(config.getAutoCheckUpdate());
     ui->deleteOld->setChecked(config.getDeleteOld());
 
@@ -29,6 +30,7 @@ void Preferences::on_Preferences_accepted()
 {
     Config config;
     config.setCommonPath(ui->commonPathText->text());
+    config.setVersionMatch(ui->versionMatchSelect->currentIndex());
     config.setAutoCheckUpdate(ui->autoCheckUpdate->isChecked());
     config.setDeleteOld(ui->deleteOld->isChecked());
 
@@ -43,4 +45,3 @@ void Preferences::on_commonPathButton_clicked()
     if(str.isEmpty()) return;
     ui->commonPathText->setText(str);
 }
-

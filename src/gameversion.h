@@ -11,8 +11,9 @@ class GameVersion
 public:
     GameVersion() = default;
     GameVersion(const QString &string);
+    GameVersion(int mainVersion, int majorVersion, int minorVersion = 0);
 
-    GameVersion mainVersion() const;
+    GameVersion majorVersion() const;
 
     const QString &getVersionString() const;
 
@@ -30,6 +31,11 @@ public:
 
 private:
     QString versionString_;
+
+    int mainVersionNumber_;
+    int majorVersionNumber_;
+    int minorVersionNumber_;
+
     static QList<GameVersion> cachedVersionList_;
     static QList<GameVersion> mojangVersionList_;
     static QList<GameVersion> curseforgeVersionList_;

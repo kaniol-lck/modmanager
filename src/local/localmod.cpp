@@ -60,31 +60,54 @@ void LocalMod::searchOnModrinth()
     });
 }
 
-void LocalMod::checkCurseforgeUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType)
+template<typename T>
+std::optional<T> LocalMod::findUpdate(QList<T> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
+{
+    //select mod file for matched game versions and mod loader type
+    QList<T> list;
+    std::insert_iterator<QList<T>> iter(list, list.begin());
+    std::copy_if(fileList.cbegin(), fileList.cend(), iter, [=](const auto &file){
+        auto versionCheck = false;
+        for(const auto & version : file.gameVersions()){
+            switch (Config().getVersionMatch()) {
+            case Config::MinorVersion:
+                if(version == targetVersion)
+                    versionCheck = true;
+                break;
+            case Config::MajorVersion:
+                if(version.majorVersion() == targetVersion.majorVersion())
+                    versionCheck = true;
+                break;
+            }
+        }
+        return versionCheck && (file.loaderTypes().isEmpty() || file.loaderTypes().contains(targetType));
+    });
+
+    //non match
+    if(list.isEmpty()) return std::nullopt;
+
+    //find latesest file
+    auto resultIter = std::max_element(list.cbegin(), list.cend(), [=](const auto &file1, const auto &file2){
+        return file1.fileDate() < file2.fileDate();
+    });
+    return {*resultIter};
+}
+
+void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
     emit checkCurseforgeUpdateStarted();
 
     //update file list
     auto updateFileList = [=]{
-         auto& list = curseforgeMod_->modInfo().allFileList();
-         //select mod file for same game versions and mod loader type
-         QList<CurseforgeFileInfo> list2;
-         std::insert_iterator<QList<CurseforgeFileInfo>> iter(list2, list2.begin());
-         std::copy_if(list.cbegin(), list.cend(), iter, [=](const auto &file){
-             auto versionCheck = false;
-             for(const auto & version : file.gameVersions())
-                 if(version.mainVersion() == mainVersion)
-                     versionCheck = true;
-             return versionCheck && (file.loaderTypes().isEmpty() || file.loaderTypes().contains(loaderType));
-         });
-         if(list2.isEmpty()) return ;
-         auto resultIter = std::max_element(list2.cbegin(), list2.cend(), [=](const auto &file1, const auto &file2){
-             return file1.fileDate() < file2.fileDate();
-         });
+         auto result = findUpdate(curseforgeMod_->modInfo().allFileList(), targetVersion, targetType);
+         if(!result.has_value()){
+             emit curseforgeUpdateReady(false);
+             return ;
+         }
          //currentCurseforgeFileInfo should already have value before this function called
-         if(currentCurseforgeFileInfo_.value().displayName() != resultIter->displayName()){
-//             qDebug() << localModInfo.getName() << ":" << currentCurseforgeFileInfo.value().getDisplayName() << "->" << resultIter->getDisplayName();
-             updateCurseforgeFileInfo_.emplace(*resultIter);
+         if(currentCurseforgeFileInfo_.value().displayName() != result.value().displayName()){
+//             qDebug() << modInfo_.name() << ":" << currentCurseforgeFileInfo_.value().displayName() << "->" << result.value().displayName();
+             updateCurseforgeFileInfo_.emplace(result.value());
              emit curseforgeUpdateReady(true);
          } else
              emit curseforgeUpdateReady(false);
@@ -98,31 +121,21 @@ void LocalMod::checkCurseforgeUpdate(const GameVersion &mainVersion, ModLoaderTy
     }
 }
 
-void LocalMod::checkModrinthUpdate(const GameVersion &mainVersion, ModLoaderType::Type loaderType)
+void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
     emit checkModrinthUpdateStarted();
 
     //update file list
     auto updateFileList = [=]{
-         auto& list = modrinthMod_->modInfo().fileList();
-         //select mod file for same game versions and mod loader type
-         QList<ModrinthFileInfo> list2;
-         std::insert_iterator<QList<ModrinthFileInfo>> iter(list2, list2.begin());
-         std::copy_if(list.cbegin(), list.cend(), iter, [=](const auto &file){
-             auto versionCheck = false;
-             for(const auto & version : file.gameVersions())
-                 if(version.mainVersion() == mainVersion)
-                     versionCheck = true;
-             return versionCheck && (file.loaderTypes().isEmpty() || file.loaderTypes().contains(loaderType));
-         });
-         if(list2.isEmpty()) return ;
-         auto resultIter = std::max_element(list2.cbegin(), list2.cend(), [=](const auto &file1, const auto &file2){
-             return file1.fileDate() < file2.fileDate();
-         });
+         auto result = findUpdate(modrinthMod_->modInfo().fileList(), targetVersion, targetType);
+         if(!result.has_value()){
+             emit modrinthUpdateReady(false);
+             return ;
+         }
          //currentModrinthFileInfo should already have value before this function called
-         if(currentModrinthFileInfo_.value().displayName() != resultIter->displayName()){
-             qDebug() << modInfo_.name() << ":" << currentModrinthFileInfo_.value().displayName() << "->" << resultIter->displayName();
-             updateModrinthFileInfo_.emplace(*resultIter);
+         if(currentModrinthFileInfo_.value().displayName() != result.value().displayName()){
+//             qDebug() << modInfo_.name() << ":" << currentModrinthFileInfo_.value().displayName() << "->" << result.value().displayName();
+             updateModrinthFileInfo_.emplace(result.value());
              emit modrinthUpdateReady(true);
          } else
              emit modrinthUpdateReady(false);
