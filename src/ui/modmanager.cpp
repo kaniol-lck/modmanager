@@ -7,8 +7,6 @@
 
 #include <QDebug>
 #include <QMessageBox>
-#include <QFuture>
-#include <QtConcurrent/QtConcurrent>
 
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
@@ -25,7 +23,6 @@
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ModManager),
-    updateVersionsWatcher_(new QFutureWatcher<void>(this)),
     downloadItem_(new QTreeWidgetItem({tr("Download")})),
     exploreItem_(new QTreeWidgetItem({tr("Explore")})),
     localItem_(new QTreeWidgetItem({tr("Local")}))
@@ -69,10 +66,8 @@ ModManager::ModManager(QWidget *parent) :
     //default browser
     ui->browserTreeWidget->setCurrentItem(curseforgeItem);
 
-    //check and update version
-    QFuture<void> future = QtConcurrent::run(&GameVersion::initVersionList);
-    updateVersionsWatcher_->setFuture(future);
-    connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, curseforgeModBrowser, &CurseforgeModBrowser::updateVersions);
+    //init versions
+    VersionManager::initVersionLists();
 }
 
 ModManager::~ModManager()
@@ -127,7 +122,6 @@ void ModManager::editLocalPath(int index)
         LocalModPathManager::pathList().at(index)->setInfo(newInfo);
         localItem_->child(index)->setText(0, newInfo.showText());
     });
-    connect(updateVersionsWatcher_, &QFutureWatcher<void>::finished, dialog, &LocalModBrowserSettingsDialog::updateVersions);
     dialog->exec();
 }
 

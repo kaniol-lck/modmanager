@@ -15,7 +15,9 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->modDirButton->setIcon(QIcon::fromTheme("folder"));
     info_.setLoaderType(ModLoaderType::Any);
-    updateVersions();
+
+    updateVersionList();
+    connect(VersionManager::manager(), &VersionManager::mojangVersionListUpdated, this, &LocalModBrowserSettingsDialog::updateVersionList);
 }
 
 LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, const LocalModPathInfo &info) :
@@ -36,11 +38,10 @@ LocalModBrowserSettingsDialog::~LocalModBrowserSettingsDialog()
     delete ui;
 }
 
-void LocalModBrowserSettingsDialog::updateVersions()
+void LocalModBrowserSettingsDialog::updateVersionList()
 {
     ui->versionSelect->clear();
-    //TODO
-    for(const auto &version : qAsConst(GameVersion::cachedVersionList))
+    for(const auto &version : GameVersion::mojangVersionList())
         ui->versionSelect->addItem(version);
 }
 

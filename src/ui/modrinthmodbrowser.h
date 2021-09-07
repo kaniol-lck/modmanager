@@ -17,10 +17,9 @@ public:
     explicit ModrinthModBrowser(QWidget *parent = nullptr);
     ~ModrinthModBrowser();
 
-public slots:
-    void updateVersions();
-
 private slots:
+    void updateVersionList();
+
     void on_searchButton_clicked();
 
     void onSliderChanged(int i);
@@ -38,7 +37,7 @@ private:
     QList<ModrinthMod*> modList_;
     QString currentName_;
     int currentIndex_;
-    bool isUiSet_ = true;
+    bool isUiSet_ = false;
     bool hasMore_ = false;
 
     void getModList(QString name, int index = 0);

@@ -15,15 +15,16 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    for(const auto &version : qAsConst(GameVersion::cachedVersionList))
-        ui->versionSelect->addItem(version);
-
     for(const auto &type : ModLoaderType::modrinth)
         ui->loaderSelect->addItem(ModLoaderType::toString(type));
 
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
 
+    updateVersionList();
+    connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
+
     getModList(currentName_);
+    isUiSet_ = true;
 }
 
 ModrinthModBrowser::~ModrinthModBrowser()
@@ -31,14 +32,14 @@ ModrinthModBrowser::~ModrinthModBrowser()
     delete ui;
 }
 
-void ModrinthModBrowser::updateVersions()
+void ModrinthModBrowser::updateVersionList()
 {
-//    isUiSet_ = false;
-//    ui->versionSelect->clear();
-//    ui->versionSelect->addItem(tr("Any"));
-//    for(const auto &version : qAsConst(GameVersion::versionList))
-//        ui->versionSelect->addItem(version);
-//    isUiSet_ = true;
+    isUiSet_ = false;
+    ui->versionSelect->clear();
+    ui->versionSelect->addItem(tr("Any"));
+    for(const auto &version : GameVersion::modrinthVersionList())
+        ui->versionSelect->addItem(version);
+    isUiSet_ = true;
 }
 
 void ModrinthModBrowser::on_searchButton_clicked()

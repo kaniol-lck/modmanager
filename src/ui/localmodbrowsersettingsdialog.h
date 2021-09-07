@@ -22,10 +22,9 @@ public:
 
     ~LocalModBrowserSettingsDialog();
 
-public slots:
-    void updateVersions();
-
 private slots:
+    void updateVersionList();
+
     void on_modDirButton_clicked();
 
     void on_buttonBox_accepted();

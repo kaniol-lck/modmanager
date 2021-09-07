@@ -23,15 +23,16 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    for(const auto &version : qAsConst(GameVersion::cachedVersionList))
-        ui->versionSelect->addItem(version);
-
     for(const auto &type : ModLoaderType::curseforge)
         ui->loaderSelect->addItem(ModLoaderType::toString(type));
 
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
 
+    updateVersionList();
+    connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
+
     getModList(currentName_);
+    isUiSet_ = true;
 }
 
 CurseforgeModBrowser::~CurseforgeModBrowser()
@@ -39,12 +40,12 @@ CurseforgeModBrowser::~CurseforgeModBrowser()
     delete ui;
 }
 
-void CurseforgeModBrowser::updateVersions()
+void CurseforgeModBrowser::updateVersionList()
 {
     isUiSet_ = false;
     ui->versionSelect->clear();
     ui->versionSelect->addItem(tr("Any"));
-    for(const auto &version : qAsConst(GameVersion::curseforgeVersionList))
+    for(const auto &version : GameVersion::curseforgeVersionList())
         ui->versionSelect->addItem(version);
     isUiSet_ = true;
 }

@@ -40,7 +40,6 @@ private:
     Ui::ModManager *ui;
 
     QList<LocalModPath*> pathList_;
-    QFutureWatcher<void> *updateVersionsWatcher_;
 
     QTreeWidgetItem *downloadItem_;
     QTreeWidgetItem *exploreItem_;

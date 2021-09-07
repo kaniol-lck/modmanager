@@ -1,11 +1,13 @@
 #ifndef GAMEVERSION_H
 #define GAMEVERSION_H
 
+#include <QObject>
 #include <QString>
 #include <optional>
 
 class GameVersion
 {
+    friend class VersionManager;
 public:
     GameVersion() = default;
     GameVersion(const QString &string);
@@ -20,15 +22,36 @@ public:
 
     static std::optional<GameVersion> deduceFromString(const QString &string);
 
-    static void initVersionList();
-
-    static QStringList cachedVersionList;
-    static QStringList curseforgeVersionList;
-
     static GameVersion Any;
+
+    static QList<GameVersion> mojangVersionList();
+    static QList<GameVersion> curseforgeVersionList();
+    static QList<GameVersion> modrinthVersionList();
 
 private:
     QString versionString_;
+    static QList<GameVersion> cachedVersionList_;
+    static QList<GameVersion> mojangVersionList_;
+    static QList<GameVersion> curseforgeVersionList_;
 };
 
+class VersionManager : public QObject
+{
+    Q_OBJECT
+public:
+    VersionManager() = default;
+    ~VersionManager() = default;
+    static VersionManager *manager();
+
+    static void initVersionLists();
+
+signals:
+    void mojangVersionListUpdated();
+    void modrinthVersionListUpdated();
+    void curseforgeVersionListUpdated();
+
+private:
+    void initMojangVersionList();
+    void initCurseforgeVersionList();
+};
 #endif // GAMEVERSION_H

@@ -194,6 +194,35 @@ void CurseforgeAPI::getInfo(int id, std::function<void (CurseforgeModInfo)> call
     });
 }
 
+void CurseforgeAPI::getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback)
+{
+    QUrl url = PREFIX + "/api/v2/minecraft/version";
+
+    QNetworkRequest request(url);
+    auto reply = api()->accessManager.get(request);
+    connect(reply, &QNetworkReply::finished, api(), [=]{
+        if(reply->error() != QNetworkReply::NoError) {
+            qDebug() << reply->errorString();
+            return;
+        }
+
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return;
+        }
+        auto list = jsonDocument.toVariant().toList();
+        QList<GameVersion> versionList;
+        for(const auto &entry : qAsConst(list))
+            versionList << value(entry, "versionString").toString();
+
+        callback(versionList);
+        reply->deleteLater();
+    });
+}
+
 CurseforgeAPI::CurseforgeAPI(QObject *parent) : QObject(parent)
 {
 
