@@ -125,7 +125,7 @@ bool LocalModInfo::acquireInfo(QString &path)
     return true;
 }
 
-bool LocalModInfo::isFabricMod()
+bool LocalModInfo::isFabricMod() const
 {
     return hasFabricManifest_;
 }

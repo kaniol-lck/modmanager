@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>ModManager</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
@@ -112,7 +115,8 @@ QTreeView::branch {
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionPreferences">
    <property name="icon">
-    <iconset theme="preferences"/>
+    <iconset theme="preferences">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Preferences</string>
@@ -120,7 +124,8 @@ QTreeView::branch {
   </action>
   <action name="actionManage_Browser">
    <property name="icon">
-    <iconset theme="settings-configure"/>
+    <iconset theme="settings-configure">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Manage Local Mod Browser</string>

@@ -18,10 +18,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 {
     ui->setupUi(this);
 
-    //async load
-    connect(this, &LocalModBrowser::modsDirUpdated, this, &LocalModBrowser::updateModList, Qt::QueuedConnection);
-
-    emit modsDirUpdated();
+    updateModList();
+    connect(modPath_, &LocalModPath::modListUpdated, this, &LocalModBrowser::updateModList);
 }
 
 LocalModBrowser::~LocalModBrowser()

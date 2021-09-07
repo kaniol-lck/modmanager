@@ -7,11 +7,11 @@
 class LocalModInfo
 {
 public:
-    LocalModInfo(QString path);
+    explicit LocalModInfo(QString path);
 
     bool acquireInfo(QString &path);
 
-    bool isFabricMod();
+    bool isFabricMod() const;
 
     QDateTime getFileModificationTime() const;
 

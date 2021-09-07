@@ -106,8 +106,7 @@ void ModManager::syncPathList()
         delete localItem_->takeChild(i);
         auto widget = ui->stackedWidget->widget(j);
         ui->stackedWidget->removeWidget(widget);
-        //TODO: remove it improperly will cause program to crash
-//        widget->deleteLater();
+        widget->deleteLater();
     }
 
     //they should be same after sync

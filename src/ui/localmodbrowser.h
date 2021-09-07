@@ -20,7 +20,6 @@ public:
     ~LocalModBrowser();
 
 signals:
-    void modsDirUpdated();
 
 public slots:
     void updateModList();

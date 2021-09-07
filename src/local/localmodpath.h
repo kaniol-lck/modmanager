@@ -20,6 +20,7 @@ public:
     const QList<LocalMod*> &modList() const;
 
 signals:
+    void modListUpdated();
 
 private:
     LocalModPathInfo info_;
