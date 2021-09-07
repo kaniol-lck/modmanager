@@ -29,6 +29,10 @@ private slots:
 
     void on_updateAllButton_clicked();
 
+    void on_searchText_textEdited(const QString &arg1);
+
+    void on_comboBox_currentIndexChanged(int index);
+
 private:
     Ui::LocalModBrowser *ui;
     LocalModPath *modPath_;

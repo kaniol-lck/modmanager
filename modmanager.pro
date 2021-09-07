@@ -52,7 +52,8 @@ SOURCES += \
     src/ui/modrinthmoditemwidget.cpp \
     src/ui/preferences.cpp \
     src/util/funcutil.cpp \
-    src/util/datetimesortitem.cpp
+    src/util/datetimesortitem.cpp \
+    src/util/localmodsortitem.cpp
 
 HEADERS += \
     src/config.h \
@@ -95,6 +96,7 @@ HEADERS += \
     src/ui/modrinthmoditemwidget.h \
     src/ui/preferences.h \
     src/util/funcutil.h \
+    src/util/localmodsortitem.h \
     src/util/tutil.hpp \
     src/util/datetimesortitem.h
 

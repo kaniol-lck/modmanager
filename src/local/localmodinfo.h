@@ -13,8 +13,6 @@ public:
 
     bool isFabricMod() const;
 
-    QDateTime getFileModificationTime() const;
-
     const QString &id() const;
     const QString &path() const;
     const QString &name() const;
@@ -25,6 +23,8 @@ public:
     const QByteArray &iconBytes() const;
 
     const QStringList &authors() const;
+
+    const QFileInfo &fileInfo() const;
 
 private:
     QString path_;

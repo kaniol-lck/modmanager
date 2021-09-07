@@ -15,13 +15,53 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLineEdit" name="searchText">
+       <property name="placeholderText">
+        <string>Search mod in local folder...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Sort:</string>
+       </property>
+       <property name="buddy">
+        <cstring>comboBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox">
+       <item>
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Date</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Size</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
     <widget class="QPushButton" name="updateAllButton">
      <property name="text">
       <string>Update &amp;All</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QListWidget" name="modListWidget">
      <property name="verticalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>

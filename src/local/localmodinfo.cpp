@@ -63,6 +63,11 @@ const QStringList &LocalModInfo::authors() const
     return authors_;
 }
 
+const QFileInfo &LocalModInfo::fileInfo() const
+{
+    return fileInfo_;
+}
+
 bool LocalModInfo::acquireInfo(QString &path)
 {
     QFile modFile(path);
@@ -128,9 +133,4 @@ bool LocalModInfo::acquireInfo(QString &path)
 bool LocalModInfo::isFabricMod() const
 {
     return hasFabricManifest_;
-}
-
-QDateTime LocalModInfo::getFileModificationTime() const
-{
-    return fileInfo_.fileTime(QFile::FileModificationTime);
 }
