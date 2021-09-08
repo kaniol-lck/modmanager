@@ -31,18 +31,6 @@ void LocalModBrowser::updateModList()
     for (const auto &mod: modPath_->modList()) {
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
 
-        //curseforge
-        mod->searchOnCurseforge();
-        connect(mod, &LocalMod::curseforgeReady, this, [=](bool bl){
-            if(bl && Config().getAutoCheckUpdate()) mod->checkCurseforgeUpdate(modPath_->info().gameVersion(), modPath_->info().loaderType());
-        });
-
-        //modrinth
-        mod->searchOnModrinth();
-        connect(mod, &LocalMod::modrinthReady, this, [=](bool bl){
-//            if(bl && Config().getAutoCheckUpdate()) localMod->checkModrinthUpdate(modDirInfo.getGameVersion(), modDirInfo.getLoaderType());
-        });
-
         auto *item = new LocalModSortItem(mod);
         item->setSizeHint(QSize(500, 100));
 

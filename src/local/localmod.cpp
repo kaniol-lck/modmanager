@@ -33,6 +33,22 @@ void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
     curseforgeMod_ = newCurseforgeMod;
 }
 
+void LocalMod::searchOnWebsite()
+{
+    auto count = std::make_shared<int>(2);
+    auto hasWeb = std::make_shared<bool>(false);
+    auto foo = [=](bool bl){
+        if(bl) *hasWeb = true;
+        if(--(*count) == 0) emit websiteReady(*hasWeb);
+    };
+
+    emit checkWebsiteStarted();
+    connect(this, &LocalMod::curseforgeReady, foo);
+    searchOnCurseforge();
+    connect(this, &LocalMod::modrinthReady, foo);
+    searchOnModrinth();
+}
+
 void LocalMod::searchOnCurseforge()
 {
     emit checkCurseforgeStarted();
@@ -58,6 +74,22 @@ void LocalMod::searchOnModrinth()
     }, [=]{
         emit modrinthReady(false);
     });
+}
+
+void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType)
+{
+    auto count = std::make_shared<int>(2);
+    auto needUpdate = std::make_shared<bool>(false);
+    auto foo = [=](bool bl){
+        if(bl) *needUpdate = true;
+        if(--(*count) == 0) emit updateReady(*needUpdate);
+    };
+
+    emit checkUpdatesStarted();
+    connect(this, &LocalMod::curseforgeUpdateReady, foo);
+    checkCurseforgeUpdate(targetVersion, targetType);
+    connect(this, &LocalMod::modrinthUpdateReady, foo);
+    checkModrinthUpdate(targetVersion, targetType);
 }
 
 template<typename T>
@@ -95,6 +127,8 @@ std::optional<T> LocalMod::findUpdate(QList<T> fileList, const GameVersion &targ
 
 void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
+    if(!currentCurseforgeFileInfo_.has_value()) return;
+
     emit checkCurseforgeUpdateStarted();
 
     //update file list
@@ -104,7 +138,6 @@ void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoader
              emit curseforgeUpdateReady(false);
              return ;
          }
-         //currentCurseforgeFileInfo should already have value before this function called
          if(currentCurseforgeFileInfo_.value().displayName() != result.value().displayName()){
 //             qDebug() << modInfo_.name() << ":" << currentCurseforgeFileInfo_.value().displayName() << "->" << result.value().displayName();
              updateCurseforgeFileInfo_.emplace(result.value());
@@ -123,6 +156,8 @@ void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoader
 
 void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
+    if(!currentModrinthFileInfo_.has_value()) return;
+
     emit checkModrinthUpdateStarted();
 
     //update file list
@@ -132,7 +167,6 @@ void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderTy
              emit modrinthUpdateReady(false);
              return ;
          }
-         //currentModrinthFileInfo should already have value before this function called
          if(currentModrinthFileInfo_.value().displayName() != result.value().displayName()){
 //             qDebug() << modInfo_.name() << ":" << currentModrinthFileInfo_.value().displayName() << "->" << result.value().displayName();
              updateModrinthFileInfo_.emplace(result.value());

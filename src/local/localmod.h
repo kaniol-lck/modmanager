@@ -27,9 +27,11 @@ public:
     ModrinthMod *modrinthMod() const;
     void setModrinthMod(ModrinthMod *newModrinthMod);
 
+    void searchOnWebsite();
     void searchOnCurseforge();
     void searchOnModrinth();
 
+    void checkUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType);
     void checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
     void checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
 
@@ -45,6 +47,11 @@ public:
     std::optional<ModrinthFileInfo> updateModrinthFileInfo() const;
 
 signals:
+    void checkWebsiteStarted();
+    void websiteReady(bool bl);
+    void checkUpdatesStarted();
+    void updateReady(bool bl);
+
     void curseforgeReady(bool bl);
     void curseforgeUpdateReady(bool bl);
     void modrinthReady(bool bl);

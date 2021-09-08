@@ -5,6 +5,7 @@
 #include <QtConcurrent/QtConcurrent>
 
 #include "localmod.h"
+#include "config.h"
 
 LocalModPath::LocalModPath(QObject *parent) : QObject(parent)
 {}
@@ -13,6 +14,30 @@ LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
     QObject(parent)
 {
     setInfo(info);
+}
+
+void LocalModPath::searchOnWebsites()
+{
+    emit checkWebsitesStarted();
+    auto count = std::make_shared<int>(modList_.size());
+    for(const auto &mod : qAsConst(modList_)){
+        connect(mod, &LocalMod::websiteReady, this, [=]{
+            if(--(*count) == 0) emit websitesReady();
+        });
+        mod->searchOnWebsite();
+    }
+}
+
+void LocalModPath::checkModUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType)
+{
+    emit checkUpdatesStarted();
+    auto count = std::make_shared<int>(modList_.size());
+    for(const auto &mod : qAsConst(modList_)){
+        connect(mod, &LocalMod::updateReady, this, [=]{
+            if(--(*count) == 0) emit updatesReady();
+        });
+        mod->checkUpdates(targetVersion, targetType);
+    }
 }
 
 const LocalModPathInfo &LocalModPath::info() const
@@ -40,7 +65,16 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
                 modList_ << mod;
             }
         }
+
         emit modListUpdated();
+
+        auto autoCheckUpdate = Config().getAutoCheckUpdate();
+        connect(this, &LocalModPath::websitesReady, this, [=]{
+            if(autoCheckUpdate)
+                checkModUpdates(info_.gameVersion(), info_.loaderType());
+        });
+
+        searchOnWebsites();
     });
 }
 
