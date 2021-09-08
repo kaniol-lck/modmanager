@@ -71,8 +71,11 @@ LocalModUpdateDialog::~LocalModUpdateDialog()
 
 void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
 {
+    //TODO: Select update source
+    QList<QPair<LocalMod *, LocalMod::ModWebsiteType>> modUpdateList;
     for(int row = 0; row < model_.rowCount(); row++)
         if(model_.item(row)->checkState() == Qt::Checked)
-            updateList_.at(row)->update(updateList_.at(row)->updateType());
+            modUpdateList << QPair(updateList_.at(row), updateList_.at(row)->updateType());
+    modPath_->updateMods(modUpdateList);
 }
 

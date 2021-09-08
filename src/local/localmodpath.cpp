@@ -4,7 +4,6 @@
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 
-#include "localmod.h"
 #include "config.h"
 
 LocalModPath::LocalModPath(QObject *parent) : QObject(parent)
@@ -46,6 +45,35 @@ void LocalModPath::checkModUpdates()
     }
 }
 
+void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList)
+{
+    emit updatesStarted();
+    auto count = std::make_shared<int>(0);
+    auto bytesReceivedList = std::make_shared<QVector<qint64>>(modUpdateList.size());
+
+    qint64 totalSize = 0;
+    for(const auto &pair : modUpdateList)
+        totalSize += pair.first->updateSize(pair.second);
+
+    for(int i = 0; i < modUpdateList.size(); i++){
+        auto mod = modUpdateList.at(i).first;
+        auto updateSource = modUpdateList.at(i).second;
+
+        mod->update(updateSource);
+
+        connect(mod, &LocalMod::updateProgress, this, [=](qint64 bytesReceived, qint64){
+            (*bytesReceivedList)[i] = bytesReceived;
+            auto sumReceived = std::accumulate(bytesReceivedList->cbegin(), bytesReceivedList->cend(), 0);
+            emit updatesProgress(sumReceived, totalSize);
+        });
+        connect(mod, &LocalMod::updateFinished, this, [=]{
+            (*count)++;
+            emit updatesDoneCountUpdated(*count, modUpdateList.size());
+            if(*count == modUpdateList.size()) emit updatesDone();
+        });
+    }
+}
+
 const LocalModPathInfo &LocalModPath::info() const
 {
     return info_;
@@ -74,13 +102,20 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
 
         emit modListUpdated();
 
-        auto autoCheckUpdate = Config().getAutoCheckUpdate();
-        connect(this, &LocalModPath::websitesReady, this, [=]{
-            if(autoCheckUpdate)
-                checkModUpdates();
-        });
+        Config config;
+        auto autoSearchOnWebsites = config.getAutoSearchOnWebsites();
+        auto autoCheckUpdate = config.getAutoCheckUpdate();
 
-        searchOnWebsites();
+        if(autoSearchOnWebsites)
+            searchOnWebsites();
+
+        if(autoCheckUpdate){
+            connect(this, &LocalModPath::websitesReady, [=]{
+                checkModUpdates();
+                disconnect(SIGNAL(websitesReady()));
+            });
+        }
+
     });
 }
 

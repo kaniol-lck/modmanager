@@ -38,6 +38,8 @@ public:
     ModWebsiteType updateType() const;
     void update(ModWebsiteType type);
 
+    qint64 updateSize(ModWebsiteType type) const;
+
     std::optional<CurseforgeFileInfo> currentCurseforgeFileInfo() const;
 
     std::optional<CurseforgeFileInfo> updateCurseforgeFileInfo() const;

@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+#include "localmod.h"
 #include "localmodpathinfo.h"
 
 class LocalMod;
@@ -16,6 +17,7 @@ public:
 
     void searchOnWebsites();
     void checkModUpdates();
+    void updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList);
 
     const LocalModPathInfo &info() const;
     void setInfo(const LocalModPathInfo &newInfo);
@@ -28,9 +30,15 @@ signals:
     void checkWebsitesStarted();
     void websiteCheckedCountUpdated(int checkedCount);
     void websitesReady();
+
     void checkUpdatesStarted();
     void updateCheckedCountUpdated(int updateCount, int checkedCount);
     void updatesReady(int updateCount);
+
+    void updatesStarted();
+    void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void updatesDoneCountUpdated(int doneCount, int totalCount);
+    void updatesDone();
 
 private:
     LocalModPathInfo info_;

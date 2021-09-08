@@ -116,7 +116,7 @@ void LocalModItemWidget::startUpdate()
     ui->updateProgress->setVisible(true);
 }
 
-void LocalModItemWidget::updateProgress(qint64 bytesReceived, qint64 /*bytesTotal*/)
+void LocalModItemWidget::updateProgress(qint64 bytesReceived)
 {
     ui->updateProgress->setValue(bytesReceived);
 }

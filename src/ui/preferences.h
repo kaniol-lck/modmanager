@@ -20,6 +20,8 @@ private slots:
 
     void on_commonPathButton_clicked();
 
+    void on_autoSearchOnWebsites_stateChanged(int arg1);
+
 private:
     Ui::Preferences *ui;
 };

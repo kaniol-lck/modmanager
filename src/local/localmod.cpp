@@ -223,7 +223,7 @@ void LocalMod::update(ModWebsiteType type)
         QDir dir = modInfo_.path();
         //to dir
         dir.cdUp();
-        DownloadManager::addModupdate(std::make_shared<std::remove_reference_t<decltype(newFileInfo.value())>>(newFileInfo.value()), dir.absolutePath(), [=]{
+        auto downloader = DownloadManager::addModupdate(std::make_shared<std::remove_reference_t<decltype(newFileInfo.value())>>(newFileInfo.value()), dir.absolutePath(), [=]{
             //check download
             //...
 
@@ -244,27 +244,43 @@ void LocalMod::update(ModWebsiteType type)
             }
             emit updateFinished();
         });
+        connect(downloader, &Downloader::downloadProgress, this, &LocalMod::updateProgress);
+        return downloader;
     };
 
+    auto deleteOld = Config().getDeleteOld();
     if(type == ModWebsiteType::Curseforge){
-        updateFunc(curseforgeMod_, currentCurseforgeFileInfo_, updateCurseforgeFileInfo_);
-        if(Config().getDeleteOld()){
-        //update file info
-            currentCurseforgeFileInfo_.emplace(updateCurseforgeFileInfo_.value());
-            updateCurseforgeFileInfo_.reset();
-        }
-    }
-    else if(type == ModWebsiteType::Modrinth){
-        updateFunc(modrinthMod_, currentModrinthFileInfo_, updateModrinthFileInfo_);
-        if(Config().getDeleteOld()){
-            //update file info
-            currentModrinthFileInfo_.emplace(updateModrinthFileInfo_.value());
-            updateModrinthFileInfo_.reset();
-        }
+        auto downloader = updateFunc(curseforgeMod_, currentCurseforgeFileInfo_, updateCurseforgeFileInfo_);
+        if(deleteOld)
+            connect(downloader, &ModDownloader::finished, this, [=]{
+                //update file info
+                currentCurseforgeFileInfo_.emplace(updateCurseforgeFileInfo_.value());
+                updateCurseforgeFileInfo_.reset();
+            });
+    } else if(type == ModWebsiteType::Modrinth){
+        auto downloader = updateFunc(modrinthMod_, currentModrinthFileInfo_, updateModrinthFileInfo_);
+        if(deleteOld)
+            connect(downloader, &ModDownloader::finished, this, [=]{
+                //update file info
+                currentModrinthFileInfo_.emplace(updateModrinthFileInfo_.value());
+                updateModrinthFileInfo_.reset();
+            });
     }
     else
         qDebug() << "Nothing to update";
 
+}
+
+qint64 LocalMod::updateSize(ModWebsiteType type) const
+{
+    switch (type) {
+    case Curseforge:
+        return updateCurseforgeFileInfo_->size();
+    case Modrinth:
+        return updateModrinthFileInfo_->size();
+    case None:
+        return 0;
+    }
 }
 
 std::optional<CurseforgeFileInfo> LocalMod::currentCurseforgeFileInfo() const

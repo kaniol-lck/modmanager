@@ -14,7 +14,14 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0" colspan="2">
+   <item row="1" column="0" colspan="2">
+    <widget class="QPushButton" name="checkUpdatesButton">
+     <property name="text">
+      <string>Search on mod websites</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
     <widget class="QListWidget" name="modListWidget">
      <property name="verticalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>
@@ -61,10 +68,10 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QPushButton" name="checkUpdatesButton">
-     <property name="text">
-      <string>Check Updates</string>
+   <item row="2" column="0">
+    <widget class="QProgressBar" name="checkUpdatesProgress">
+     <property name="value">
+      <number>0</number>
      </property>
     </widget>
    </item>

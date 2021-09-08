@@ -30,6 +30,7 @@ public:
     getterAndSetter(CommonPath, String, commonPath, "");
     enum VersionMatchType{ MinorVersion, MajorVersion };
     getterAndSetter(VersionMatch, Int, versionMatch, MinorVersion);
+    getterAndSetter(AutoSearchOnWebsites, Bool, autoSearchWebOnSites, true);
     getterAndSetter(AutoCheckUpdate, Bool, autoCheckUpdate, true)
     getterAndSetter(DeleteOld, Bool, deleteOld, true)
 

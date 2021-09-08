@@ -83,54 +83,57 @@
          <property name="title">
           <string>Update</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
+         <layout class="QFormLayout" name="formLayout_2">
           <item row="0" column="0">
-           <layout class="QFormLayout" name="formLayout_2">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Game version match:</string>
-              </property>
-              <property name="buddy">
-               <cstring>versionMatchSelect</cstring>
-              </property>
-             </widget>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Game version match:</string>
+            </property>
+            <property name="buddy">
+             <cstring>versionMatchSelect</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="versionMatchSelect">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <item>
+             <property name="text">
+              <string>Minor Version</string>
+             </property>
             </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="versionMatchSelect">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <item>
-               <property name="text">
-                <string>Minor Version</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Major Version</string>
-               </property>
-              </item>
-             </widget>
+            <item>
+             <property name="text">
+              <string>Major Version</string>
+             </property>
             </item>
-            <item row="1" column="0" colspan="2">
-             <widget class="QCheckBox" name="autoCheckUpdate">
-              <property name="text">
-               <string>Check update in startup</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0" colspan="2">
-             <widget class="QCheckBox" name="deleteOld">
-              <property name="text">
-               <string>Delete old mod file automatically</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="autoSearchOnWebsites">
+            <property name="text">
+             <string>Search on mod websites in startup</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="autoCheckUpdate">
+            <property name="text">
+             <string>Check update in startup</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="deleteOld">
+            <property name="text">
+             <string>Delete old mod file automatically</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

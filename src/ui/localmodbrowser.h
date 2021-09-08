@@ -28,9 +28,15 @@ private slots:
     void startCheckWebsites();
     void websiteCheckedCountUpdated(int checkedCount);
     void websitesReady();
+
     void startCheckUpdates();
     void updateCheckedCountUpdated(int updateCount, int checkedCount);
     void updatesReady(int updateCount);
+
+    void startUpdates();
+    void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void updatesDoneCountUpdated(int doneCount, int totalCount);
+    void updatesDone();
 
     void on_modListWidget_doubleClicked(const QModelIndex &index);
 
@@ -47,7 +53,8 @@ private:
     enum CheckUpdateStatus{
         SearchOnWebsites,
         CheckUpdates,
-        ReadyUpdate
+        ReadyUpdate,
+        UpdateDone
     } status_ = SearchOnWebsites;
 
 };

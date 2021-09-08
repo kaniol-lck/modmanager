@@ -34,7 +34,7 @@ private slots:
     void startCheckModrinthUpdate();
 
     void startUpdate();
-    void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void updateProgress(qint64 bytesReceived);
     void finishUpdate();
 
     void on_curseforgeButton_clicked();
