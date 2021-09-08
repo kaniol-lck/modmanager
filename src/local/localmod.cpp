@@ -78,7 +78,7 @@ void LocalMod::searchOnModrinth()
 
 void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
-    auto count = std::make_shared<int>(2);
+    auto count = std::make_shared<int>(1);//2);
     auto needUpdate = std::make_shared<bool>(false);
     auto foo = [=](bool bl){
         if(bl) *needUpdate = true;
@@ -88,8 +88,8 @@ void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Typ
     emit checkUpdatesStarted();
     connect(this, &LocalMod::curseforgeUpdateReady, foo);
     checkCurseforgeUpdate(targetVersion, targetType);
-    connect(this, &LocalMod::modrinthUpdateReady, foo);
-    checkModrinthUpdate(targetVersion, targetType);
+//    connect(this, &LocalMod::modrinthUpdateReady, foo);
+//    checkModrinthUpdate(targetVersion, targetType);
 }
 
 template<typename T>
@@ -127,7 +127,10 @@ std::optional<T> LocalMod::findUpdate(QList<T> fileList, const GameVersion &targ
 
 void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
-    if(!currentCurseforgeFileInfo_.has_value()) return;
+    if(!currentCurseforgeFileInfo_.has_value()){
+        emit curseforgeUpdateReady(false);
+        return;
+    }
 
     emit checkCurseforgeUpdateStarted();
 
@@ -156,7 +159,10 @@ void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoader
 
 void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
-    if(!currentModrinthFileInfo_.has_value()) return;
+    if(!currentModrinthFileInfo_.has_value()){
+        emit modrinthUpdateReady(false);
+        return;
+    }
 
     emit checkModrinthUpdateStarted();
 

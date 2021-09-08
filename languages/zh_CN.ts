@@ -358,34 +358,73 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.ui" line="22"/>
+        <location filename="../src/ui/localmodbrowser.ui" line="29"/>
         <source>Search mod in local folder...</source>
         <translation>在本地文件夹中搜索Mod...</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.ui" line="29"/>
+        <location filename="../src/ui/localmodbrowser.ui" line="36"/>
         <source>Sort:</source>
         <translation>排序：</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.ui" line="40"/>
+        <location filename="../src/ui/localmodbrowser.ui" line="47"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.ui" line="45"/>
+        <location filename="../src/ui/localmodbrowser.ui" line="52"/>
         <source>Date</source>
         <translation>日期</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.ui" line="50"/>
+        <location filename="../src/ui/localmodbrowser.ui" line="57"/>
         <source>Size</source>
         <translation>大小</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.ui" line="60"/>
+        <location filename="../src/ui/localmodbrowser.ui" line="67"/>
+        <source>Check Updates</source>
+        <translation>检查更新</translation>
+    </message>
+    <message>
         <source>Update &amp;All</source>
-        <translation>全部更新</translation>
+        <translation type="vanished">全部更新</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodbrowser.cpp" line="53"/>
+        <source>Search on mod websites...</source>
+        <translation>在Mod网站上搜索...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodbrowser.cpp" line="58"/>
+        <source>Search on mod websites... ( %1/%2 )</source>
+        <translation>在Mod网站上搜索...（%1/%2）</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodbrowser.cpp" line="65"/>
+        <source>Check updates</source>
+        <translation>检查更新</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodbrowser.cpp" line="71"/>
+        <source>Checking updates...</source>
+        <translation>检查更新中...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodbrowser.cpp" line="76"/>
+        <source>%1 mods need update. (Checking %2/%3 ...)</source>
+        <translation>%1个Mod需要更新（检查中 %2/%3 ...）</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodbrowser.cpp" line="84"/>
+        <source>Update %1 mods</source>
+        <translation>更新%1个Mod</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodbrowser.cpp" line="86"/>
+        <source>Good! All mods are up-to-date.</source>
+        <translation>太棒了！所有的Mod都是最新版。</translation>
     </message>
 </context>
 <context>

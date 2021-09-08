@@ -19,24 +19,30 @@ LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
 void LocalModPath::searchOnWebsites()
 {
     emit checkWebsitesStarted();
-    auto count = std::make_shared<int>(modList_.size());
+    auto count = std::make_shared<int>(0);
     for(const auto &mod : qAsConst(modList_)){
         connect(mod, &LocalMod::websiteReady, this, [=]{
-            if(--(*count) == 0) emit websitesReady();
+            (*count)++;
+            emit websiteCheckedCountUpdated(*count);
+            if(*count == modList_.size()) emit websitesReady();
         });
         mod->searchOnWebsite();
     }
 }
 
-void LocalModPath::checkModUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType)
+void LocalModPath::checkModUpdates()
 {
     emit checkUpdatesStarted();
-    auto count = std::make_shared<int>(modList_.size());
+    auto count = std::make_shared<int>(0);
+    auto updateCount = std::make_shared<int>(0);
     for(const auto &mod : qAsConst(modList_)){
-        connect(mod, &LocalMod::updateReady, this, [=]{
-            if(--(*count) == 0) emit updatesReady();
+        connect(mod, &LocalMod::updateReady, this, [=](bool bl){
+            (*count)++;
+            if(bl) (*updateCount)++;
+            emit updateCheckedCountUpdated(*updateCount, *count);
+            if(*count == modList_.size()) emit updatesReady(*updateCount);
         });
-        mod->checkUpdates(targetVersion, targetType);
+        mod->checkUpdates(info_.gameVersion(), info_.loaderType());
     }
 }
 
@@ -71,7 +77,7 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
         auto autoCheckUpdate = Config().getAutoCheckUpdate();
         connect(this, &LocalModPath::websitesReady, this, [=]{
             if(autoCheckUpdate)
-                checkModUpdates(info_.gameVersion(), info_.loaderType());
+                checkModUpdates();
         });
 
         searchOnWebsites();

@@ -15,7 +15,7 @@ public:
     explicit LocalModPath(QObject *parent, const LocalModPathInfo &info);
 
     void searchOnWebsites();
-    void checkModUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType);
+    void checkModUpdates();
 
     const LocalModPathInfo &info() const;
     void setInfo(const LocalModPathInfo &newInfo);
@@ -26,9 +26,11 @@ signals:
     void modListUpdated();
 
     void checkWebsitesStarted();
+    void websiteCheckedCountUpdated(int checkedCount);
     void websitesReady();
     void checkUpdatesStarted();
-    void updatesReady();
+    void updateCheckedCountUpdated(int updateCount, int checkedCount);
+    void updatesReady(int updateCount);
 
 private:
     LocalModPathInfo info_;
