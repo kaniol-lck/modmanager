@@ -1,5 +1,6 @@
 #include "localmod.h"
 
+#include "local/localmodpath.h"
 #include "curseforge/curseforgeapi.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthapi.h"
@@ -13,6 +14,17 @@
 
 LocalMod::LocalMod(QObject *parent, const LocalModInfo &info) :
     QObject(parent),
+    curseforgeAPI_(CurseforgeAPI::api()),
+    modrinthAPI_(ModrinthAPI::api()),
+    modInfo_(info)
+{
+
+}
+
+LocalMod::LocalMod(LocalModPath *parent, const LocalModInfo &info) :
+    QObject(parent),
+    curseforgeAPI_(parent->curseforgeAPI()),
+    modrinthAPI_(parent->modrinthAPI()),
     modInfo_(info)
 {
 
@@ -52,7 +64,7 @@ void LocalMod::searchOnWebsite()
 void LocalMod::searchOnCurseforge()
 {
     emit checkCurseforgeStarted();
-    CurseforgeAPI::getIdByFingerprint(modInfo_.murmurhash(), [=](int id, auto file, const auto &fileList){
+    curseforgeAPI_->getIdByFingerprint(modInfo_.murmurhash(), [=](int id, auto file, const auto &fileList){
         CurseforgeModInfo modInfo(id);
         modInfo.setLatestFiles(fileList);
         curseforgeMod_ = new CurseforgeMod(this, modInfo);
@@ -66,7 +78,7 @@ void LocalMod::searchOnCurseforge()
 void LocalMod::searchOnModrinth()
 {
     emit checkModrinthStarted();
-    ModrinthAPI::getVersionFileBySha1(modInfo_.sha1(), [=](const auto &fileInfo){
+    modrinthAPI_->getVersionFileBySha1(modInfo_.sha1(), [=](const auto &fileInfo){
         ModrinthModInfo modInfo(fileInfo.modId());
         modrinthMod_ = new ModrinthMod(this, modInfo);
         currentModrinthFileInfo_.emplace(fileInfo);
@@ -219,8 +231,6 @@ LocalMod::ModWebsiteType LocalMod::updateType() const
 
 QList<LocalMod::ModWebsiteType> LocalMod::updateTypes() const
 {
-    QList<LocalMod::ModWebsiteType> typeList;
-
     auto bl1 = updateCurseforgeFileInfo_.has_value();
     auto bl2 = updateModrinthFileInfo_.has_value();
 
@@ -323,6 +333,16 @@ std::optional<ModrinthFileInfo> LocalMod::currentModrinthFileInfo() const
 std::optional<ModrinthFileInfo> LocalMod::updateModrinthFileInfo() const
 {
     return updateModrinthFileInfo_;
+}
+
+CurseforgeAPI *LocalMod::curseforgeAPI() const
+{
+    return curseforgeAPI_;
+}
+
+ModrinthAPI *LocalMod::modrinthAPI() const
+{
+    return modrinthAPI_;
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

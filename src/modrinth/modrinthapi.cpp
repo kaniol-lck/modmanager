@@ -60,8 +60,8 @@ void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &v
 
     url.setQuery(urlQuery);
     QNetworkRequest request(url);
-    auto reply = api()->accessManager.get(request);
-    connect(reply, &QNetworkReply::finished, api(), [=]{
+    auto reply = accessManager_.get(request);
+    connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             return;
@@ -92,8 +92,8 @@ void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
     QUrl url = PREFIX + "/api/v1/mod/" + modId;
     QNetworkRequest request(url);
-    auto reply = api()->accessManager.get(request);
-    connect(reply, &QNetworkReply::finished, api(), [=]{
+    auto reply = accessManager_.get(request);
+    connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             return;
@@ -122,8 +122,8 @@ void ModrinthAPI::getVersions(const QString &id, std::function<void (QList<Modri
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
     QUrl url = PREFIX + "/api/v1/mod/" + modId + "/version";
     QNetworkRequest request(url);
-    auto reply = api()->accessManager.get(request);
-    connect(reply, &QNetworkReply::finished, api(), [=]{
+    auto reply = accessManager_.get(request);
+    connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             return;
@@ -155,8 +155,8 @@ void ModrinthAPI::getVersion(const QString &version, std::function<void (Modrint
 {
     QUrl url = PREFIX + "/api/v1/version/" + version;
     QNetworkRequest request(url);
-    auto reply = api()->accessManager.get(request);
-    connect(reply, &QNetworkReply::finished, api(), [=]{
+    auto reply = accessManager_.get(request);
+    connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             return;
@@ -191,8 +191,8 @@ void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (M
 
     url.setQuery(urlQuery);
     QNetworkRequest request(url);
-    auto reply = api()->accessManager.get(request);
-    connect(reply, &QNetworkReply::finished, api(), [=]{
+    auto reply = accessManager_.get(request);
+    connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             if(reply->error() == QNetworkReply::ContentNotFoundError)
                 noMatch();

@@ -5,11 +5,15 @@
 
 #include "modrinthmodinfo.h"
 
+class ModrinthAPI;
+class LocalMod;
+
 class ModrinthMod : public QObject
 {
     Q_OBJECT
 public:
     ModrinthMod(QObject *parent, const ModrinthModInfo &info);
+    ModrinthMod(LocalMod *parent, const ModrinthModInfo &info);
 
     ModrinthModInfo modInfo() const;
 
@@ -26,6 +30,7 @@ signals:
     void downloadFinished();
 
 private:
+    ModrinthAPI *api_;
     ModrinthModInfo modInfo_;
 
     bool gettingIcon_ = false;

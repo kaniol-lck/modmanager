@@ -22,7 +22,8 @@
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::CurseforgeModBrowser)
+    ui(new Ui::CurseforgeModBrowser),
+    api_(new CurseforgeAPI(this))
 {
     ui->setupUi(this);
 
@@ -102,7 +103,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
     GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
     auto sort = ui->sortSelect->currentIndex();
 
-    CurseforgeAPI::searchMods(gameVersion, index, name, sort, [=](const QList<CurseforgeModInfo> &infoList){
+    api_->searchMods(gameVersion, index, name, sort, [=](const QList<CurseforgeModInfo> &infoList){
         ui->searchButton->setText(tr("&Search"));
         ui->searchButton->setEnabled(true);
         setCursor(Qt::ArrowCursor);

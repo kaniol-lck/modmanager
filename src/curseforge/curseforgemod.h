@@ -5,13 +5,15 @@
 
 #include "curseforgemodinfo.h"
 
-class QNetworkAccessManager;
+class LocalMod;
+class CurseforgeAPI;
 
 class CurseforgeMod : public QObject
 {
     Q_OBJECT
 public:
     CurseforgeMod(QObject *parent, const CurseforgeModInfo &info);
+    CurseforgeMod(LocalMod *parent, const CurseforgeModInfo &info);
 
     void acquireBasicInfo();
     void acquireIcon();
@@ -27,6 +29,7 @@ signals:
     void allFileListReady();
 
 private:
+    CurseforgeAPI *api_;
     CurseforgeModInfo modInfo_;
 
     bool gettingBasicInfo_ = false;

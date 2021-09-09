@@ -7,12 +7,13 @@
 #include "localmodpathinfo.h"
 
 class LocalMod;
+class CurseforgeAPI;
+class ModrinthAPI;
 
 class LocalModPath : public QObject
 {
     Q_OBJECT
 public:
-    explicit LocalModPath(QObject *parent = nullptr);
     explicit LocalModPath(QObject *parent, const LocalModPathInfo &info);
 
     void searchOnWebsites();
@@ -23,6 +24,10 @@ public:
     void setInfo(const LocalModPathInfo &newInfo);
 
     const QList<LocalMod*> &modList() const;
+
+    CurseforgeAPI *curseforgeAPI() const;
+
+    ModrinthAPI *modrinthAPI() const;
 
 signals:
     void modListUpdated();
@@ -43,6 +48,8 @@ signals:
 private:
     LocalModPathInfo info_;
     QList<LocalMod*> modList_;
+    CurseforgeAPI *curseforgeAPI_;
+    ModrinthAPI *modrinthAPI_;
 };
 
 #endif // LOCALMODPATH_H

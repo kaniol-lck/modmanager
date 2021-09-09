@@ -15,7 +15,8 @@
 
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ModrinthModBrowser)
+    ui(new Ui::ModrinthModBrowser),
+    api_(new ModrinthAPI(this))
 {
     ui->setupUi(this);
 
@@ -97,7 +98,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
     GameVersion version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
     auto type = ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex());
 
-    ModrinthAPI::searchMods(name, currentIndex_, version, type, sort, [=](const QList<ModrinthModInfo> &infoList){
+    api_->searchMods(name, currentIndex_, version, type, sort, [=](const QList<ModrinthModInfo> &infoList){
         ui->searchButton->setText(tr("&Search"));
         ui->searchButton->setEnabled(true);
         setCursor(Qt::ArrowCursor);

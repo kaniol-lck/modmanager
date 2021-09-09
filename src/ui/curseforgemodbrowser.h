@@ -5,7 +5,7 @@
 
 #include "local/localmodpathinfo.h"
 
-class QNetworkAccessManager;
+class CurseforgeAPI;
 class QNetworkReply;
 class CurseforgeMod;
 class QListWidgetItem;
@@ -49,6 +49,7 @@ private slots:
 
 private:
     Ui::CurseforgeModBrowser *ui;
+    CurseforgeAPI *api_;
     QStringList downloadPathList_;
     QList<CurseforgeMod*> modList_;
     QString currentName_;

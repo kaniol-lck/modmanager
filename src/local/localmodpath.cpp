@@ -4,13 +4,14 @@
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 
+#include "curseforge/curseforgeapi.h"
+#include "modrinth/modrinthapi.h"
 #include "config.h"
 
-LocalModPath::LocalModPath(QObject *parent) : QObject(parent)
-{}
-
 LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
-    QObject(parent)
+    QObject(parent),
+    curseforgeAPI_(new CurseforgeAPI(this)),
+    modrinthAPI_(new ModrinthAPI(this))
 {
     setInfo(info);
 }
@@ -123,4 +124,14 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
 const QList<LocalMod*> &LocalModPath::modList() const
 {
     return modList_;
+}
+
+CurseforgeAPI *LocalModPath::curseforgeAPI() const
+{
+    return curseforgeAPI_;
+}
+
+ModrinthAPI *LocalModPath::modrinthAPI() const
+{
+    return modrinthAPI_;
 }

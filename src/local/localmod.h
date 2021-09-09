@@ -8,8 +8,11 @@
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
 
+class LocalModPath;
 class CurseforgeMod;
 class ModrinthMod;
+class CurseforgeAPI;
+class ModrinthAPI;
 
 class LocalMod : public QObject
 {
@@ -18,6 +21,8 @@ public:
     enum ModWebsiteType{ None, Curseforge, Modrinth};
 
     explicit LocalMod(QObject *parent, const LocalModInfo &info);
+
+    explicit LocalMod(LocalModPath *parent, const LocalModInfo &info);
 
     const LocalModInfo &modInfo() const;
 
@@ -49,6 +54,10 @@ public:
 
     std::optional<ModrinthFileInfo> updateModrinthFileInfo() const;
 
+    CurseforgeAPI *curseforgeAPI() const;
+
+    ModrinthAPI *modrinthAPI() const;
+
 signals:
     void checkWebsiteStarted();
     void websiteReady(bool bl);
@@ -73,6 +82,8 @@ private:
     template<typename T>
     static std::optional<T> findUpdate(QList<T> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType);
 
+    CurseforgeAPI *curseforgeAPI_;
+    ModrinthAPI *modrinthAPI_;
     LocalModInfo modInfo_;
 
     CurseforgeMod *curseforgeMod_ = nullptr;

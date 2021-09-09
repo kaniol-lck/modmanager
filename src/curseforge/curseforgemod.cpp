@@ -4,21 +4,31 @@
 #include <QNetworkReply>
 #include <QDebug>
 
+#include "local/localmod.h"
 #include "curseforge/curseforgeapi.h"
 #include "util/tutil.hpp"
 #include "util/funcutil.h"
 
-CurseforgeMod::CurseforgeMod(QObject *parent, const CurseforgeModInfo &modInfo) :
+CurseforgeMod::CurseforgeMod(QObject *parent, const CurseforgeModInfo &info) :
     QObject(parent),
-    modInfo_(modInfo)
+    api_(CurseforgeAPI::api()),
+    modInfo_(info)
 {
+}
+
+CurseforgeMod::CurseforgeMod(LocalMod *parent, const CurseforgeModInfo &info) :
+    QObject(parent),
+    api_(parent->curseforgeAPI()),
+    modInfo_(info)
+{
+
 }
 
 void CurseforgeMod::acquireBasicInfo()
 {
     if(gettingBasicInfo_) return;
     gettingBasicInfo_ = true;
-    CurseforgeAPI::getInfo(modInfo_.id_, [=](const auto &info){
+    api_->getInfo(modInfo_.id_, [=](const auto &info){
         gettingBasicInfo_ = false;
         modInfo_ = info;
         emit basicInfoReady();
@@ -46,7 +56,7 @@ void CurseforgeMod::acquireDescription()
 {
     if(gettingDescription_) return;
     gettingDescription_ = true;
-    CurseforgeAPI::getDescription(modInfo_.id(), [=](const QString &description){
+    api_->getDescription(modInfo_.id(), [=](const QString &description){
         gettingDescription_ = false;
         modInfo_.description_ = description;
         emit descriptionReady();
@@ -57,7 +67,7 @@ void CurseforgeMod::acquireAllFileList()
 {
     if(gettingAllFileList_) return;
     gettingAllFileList_ = true;
-    CurseforgeAPI::getFiles(modInfo_.id(), [=](const QList<CurseforgeFileInfo> &fileList){
+    api_->getFiles(modInfo_.id(), [=](const QList<CurseforgeFileInfo> &fileList){
         gettingAllFileList_ = false;
         modInfo_.allFileList_ = fileList;
         emit allFileListReady();

@@ -34,6 +34,7 @@ ModManager::ModManager(QWidget *parent) :
     //setup tree widget
     for (const auto &item : {downloadItem_, exploreItem_, localItem_}){
         item->setForeground(0, Qt::gray);
+        item->setFlags(item->flags().setFlag(Qt::ItemIsSelectable, false));
         ui->browserTreeWidget->addTopLevelItem(item);
     }
     ui->browserTreeWidget->expandAll();
@@ -151,11 +152,8 @@ void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *curren
 {
     if(current == nullptr) return;
     auto parent = current->parent();
-    if(parent == nullptr){
-        if(previous != nullptr)
-            ui->browserTreeWidget->setCurrentItem(previous);
-        return;
-    } else if(parent == downloadItem_){
+
+    if(parent == downloadItem_){
         ui->stackedWidget->setCurrentIndex(0);
     } else if(parent == exploreItem_){
         auto index = parent->indexOfChild(current);

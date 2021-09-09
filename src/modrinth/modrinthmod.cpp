@@ -5,11 +5,21 @@
 #include <memory>
 
 #include "modrinthapi.h"
+#include "local/localmod.h"
 #include "util/funcutil.h"
 #include "download/downloadmanager.h"
 
 ModrinthMod::ModrinthMod(QObject *parent, const ModrinthModInfo &info) :
     QObject(parent),
+    api_(ModrinthAPI::api()),
+    modInfo_(info)
+{
+
+}
+
+ModrinthMod::ModrinthMod(LocalMod *parent, const ModrinthModInfo &info) :
+    QObject(parent),
+    api_(parent->modrinthAPI()),
     modInfo_(info)
 {
 
@@ -40,7 +50,7 @@ void ModrinthMod::acquireFullInfo()
 {
     if(gettingFullInfo_) return;
     gettingFullInfo_ = true;
-    ModrinthAPI::getInfo(modInfo_.modId_, [=](const auto &newInfo){
+    api_->getInfo(modInfo_.modId_, [=](const auto &newInfo){
         gettingFullInfo_ = false;
         if(modInfo_.basicInfo_){
             modInfo_.description_ = newInfo.description_;
@@ -56,7 +66,7 @@ void ModrinthMod::acquireFileList()
     if(gettingFileList_) return;
     gettingFileList_ = true;
 
-    ModrinthAPI::getVersions(modInfo_.modId_, [=](const auto &files){
+    api_->getVersions(modInfo_.modId_, [=](const auto &files){
         modInfo_.fileList_ << files;
         gettingFileList_ = false;
         emit fileListReady();
