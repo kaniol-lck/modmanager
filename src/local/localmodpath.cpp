@@ -69,7 +69,7 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> 
         connect(mod, &LocalMod::updateFinished, this, [=]{
             (*count)++;
             emit updatesDoneCountUpdated(*count, modUpdateList.size());
-            if(*count == modUpdateList.size()) emit updatesDone();
+            if(*count == modUpdateList.size()) emit updatesDone(*count);
         });
     }
 }
@@ -85,7 +85,8 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
     modList_.clear();
     auto future = QtConcurrent::run([&]{
         QList<LocalModInfo> infoList;
-        for(const auto &fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
+        //only load available mod files
+        for(const auto &fileInfo : QDir(info_.path()).entryInfoList({ "*.jar" }, QDir::Files))
             infoList << LocalModInfo(fileInfo.absoluteFilePath());
         return infoList;
     });

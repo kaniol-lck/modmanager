@@ -253,15 +253,16 @@ void LocalMod::update(ModWebsiteType type)
             dir.cdUp();
             auto newPath = dir.absoluteFilePath(newFileInfo->fileName());
 
-            //delete old mod file
-            if(Config().getDeleteOld()){
-                QFile file(oldPath);
+            //deal with old mod file
+            auto postUpdate = Config().getPostUpdate();
+            QFile file(oldPath);
+            if(postUpdate == Config::Delete){
                 file.remove();
 
                 //update info
                 modInfo_.acquireInfo(newPath);
-
-                //TODO
+            } else if(postUpdate == Config::Keep){
+                file.rename(file.fileName() + ".old");
             }
             emit updateFinished();
         });
@@ -269,10 +270,10 @@ void LocalMod::update(ModWebsiteType type)
         return downloader;
     };
 
-    auto deleteOld = Config().getDeleteOld();
+    auto isUpdateInfo = Config().getPostUpdate() != Config::DoNothing;
     if(type == ModWebsiteType::Curseforge){
         auto downloader = updateFunc(curseforgeMod_, currentCurseforgeFileInfo_, updateCurseforgeFileInfo_);
-        if(deleteOld)
+        if(isUpdateInfo)
             connect(downloader, &ModDownloader::finished, this, [=]{
                 //update file info
                 currentCurseforgeFileInfo_.emplace(updateCurseforgeFileInfo_.value());
@@ -280,7 +281,7 @@ void LocalMod::update(ModWebsiteType type)
             });
     } else if(type == ModWebsiteType::Modrinth){
         auto downloader = updateFunc(modrinthMod_, currentModrinthFileInfo_, updateModrinthFileInfo_);
-        if(deleteOld)
+        if(isUpdateInfo)
             connect(downloader, &ModDownloader::finished, this, [=]{
                 //update file info
                 currentModrinthFileInfo_.emplace(updateModrinthFileInfo_.value());

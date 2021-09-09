@@ -1,6 +1,7 @@
 #include "localmodbrowser.h"
 #include "ui_localmodbrowser.h"
 
+#include <QMessageBox>
 #include <QDebug>
 
 #include "local/localmodpath.h"
@@ -127,11 +128,15 @@ void LocalModBrowser::updatesDoneCountUpdated(int doneCount, int totalCount)
     ui->checkUpdatesButton->setText(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
 }
 
-void LocalModBrowser::updatesDone()
+void LocalModBrowser::updatesDone(int updateCount)
 {
     status_ = UpdateDone;
     ui->checkUpdatesProgress->setVisible(false);
     ui->checkUpdatesButton->setText(tr("Good! All mods are up-to-date."));
+    auto str = tr("%1 mods has been updated. Enjoy it!").arg(updateCount);
+    if(Config().getPostUpdate() == Config::Keep)
+        str.append("\n").append(tr("You can revert update if find any incompatibility."));
+    QMessageBox::information(this, tr("Update Finished"), str);
 }
 
 void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)

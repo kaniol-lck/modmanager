@@ -16,9 +16,9 @@ Preferences::Preferences(QWidget *parent) :
     ui->versionMatchSelect->setCurrentIndex(config.getVersionMatch());
     ui->autoSearchOnWebsites->setChecked(config.getAutoSearchOnWebsites());
     ui->autoCheckUpdate->setChecked(config.getAutoCheckUpdate());
-    ui->deleteOld->setChecked(config.getDeleteOld());
     ui->useCurseforgeUpdate->setChecked(config.getUseCurseforgeUpdate());
     ui->useModrinthUpdate->setChecked(config.getUseModrinthUpdate());
+    ui->postUpdate->setCurrentIndex(config.getPostUpdate());
 
     ui->threadCount->setValue(config.getThreadCount());
     ui->downloadCount->setValue(config.getDownloadCount());
@@ -36,9 +36,9 @@ void Preferences::on_Preferences_accepted()
     config.setVersionMatch(ui->versionMatchSelect->currentIndex());
     config.setAutoSearchOnWebsites(ui->autoSearchOnWebsites->isChecked());
     config.setAutoCheckUpdate(ui->autoCheckUpdate->isChecked());
-    config.setDeleteOld(ui->deleteOld->isChecked());
     config.setUseCurseforgeUpdate(ui->useCurseforgeUpdate->isChecked());
     config.setUseModrinthUpdate(ui->useModrinthUpdate->isChecked());
+    config.setPostUpdate(ui->postUpdate->currentIndex());
 
     config.setThreadCount(ui->threadCount->value());
     config.setDownloadCount(ui->downloadCount->value());

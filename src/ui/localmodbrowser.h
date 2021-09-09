@@ -36,7 +36,7 @@ private slots:
     void startUpdates();
     void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);
     void updatesDoneCountUpdated(int doneCount, int totalCount);
-    void updatesDone();
+    void updatesDone(int updateCount);
 
     void on_modListWidget_doubleClicked(const QModelIndex &index);
 

@@ -38,7 +38,7 @@ signals:
     void updatesStarted();
     void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);
     void updatesDoneCountUpdated(int doneCount, int totalCount);
-    void updatesDone();
+    void updatesDone(int count);
 
 private:
     LocalModPathInfo info_;
