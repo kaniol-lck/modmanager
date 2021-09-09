@@ -53,7 +53,8 @@ SOURCES += \
     src/ui/preferences.cpp \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
-    src/util/localmodsortitem.cpp
+    src/util/localmodsortitem.cpp \
+    src/util/updatesourcedelegate.cpp
 
 HEADERS += \
     src/config.h \
@@ -98,7 +99,8 @@ HEADERS += \
     src/util/funcutil.h \
     src/util/localmodsortitem.h \
     src/util/tutil.hpp \
-    src/util/datetimesortitem.h
+    src/util/datetimesortitem.h \
+    src/util/updatesourcedelegate.h
 
 FORMS += \
     src/ui/browsermanagerdialog.ui \

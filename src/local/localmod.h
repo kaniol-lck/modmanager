@@ -36,6 +36,7 @@ public:
     void checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
 
     ModWebsiteType updateType() const;
+    QList<ModWebsiteType> updateTypes() const;
     void update(ModWebsiteType type);
 
     qint64 updateSize(ModWebsiteType type) const;

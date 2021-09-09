@@ -175,7 +175,7 @@ void LocalModBrowser::on_checkUpdatesButton_clicked()
         break;
     case ReadyUpdate:
         dialog = new LocalModUpdateDialog(this, modPath_);
-        dialog->show();
+        dialog->exec();
         break;
     case UpdateDone:
         //do nothing

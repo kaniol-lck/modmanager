@@ -213,20 +213,28 @@ void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderTy
 
 LocalMod::ModWebsiteType LocalMod::updateType() const
 {
+    auto list = updateTypes();
+    return list.isEmpty()? ModWebsiteType::None : list.first();
+}
+
+QList<LocalMod::ModWebsiteType> LocalMod::updateTypes() const
+{
+    QList<LocalMod::ModWebsiteType> typeList;
+
     auto bl1 = updateCurseforgeFileInfo_.has_value();
     auto bl2 = updateModrinthFileInfo_.has_value();
 
     if(bl1 && !bl2)
-        return ModWebsiteType::Curseforge;
+        return { ModWebsiteType::Curseforge };
     else if(!bl1 && bl2)
-        return ModWebsiteType::Modrinth;
+        return { ModWebsiteType::Modrinth };
     else if(bl1 && bl2){
         if(updateCurseforgeFileInfo_.value().fileDate() > updateModrinthFileInfo_.value().fileDate())
-            return ModWebsiteType::Curseforge;
+            return { ModWebsiteType::Curseforge, ModWebsiteType::Modrinth };
         else
-            return ModWebsiteType::Modrinth;
+            return { ModWebsiteType::Modrinth, ModWebsiteType::Curseforge};
     } else
-        return ModWebsiteType::None;
+        return {};
 }
 
 void LocalMod::update(ModWebsiteType type)

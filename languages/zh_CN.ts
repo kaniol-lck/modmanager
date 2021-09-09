@@ -10,7 +10,7 @@
     <message>
         <location filename="../src/ui/browsermanagerdialog.ui" line="14"/>
         <source>Local Mod Browser Settings</source>
-        <translation>本地Mod浏览器设置</translation>
+        <translation>本地mod浏览器设置</translation>
     </message>
     <message>
         <location filename="../src/ui/browsermanagerdialog.ui" line="31"/>
@@ -152,7 +152,7 @@
     <message>
         <location filename="../src/ui/curseforgemodbrowser.ui" line="127"/>
         <source>Mod Loader:</source>
-        <translation>Mod加载器：</translation>
+        <translation>mod加载器：</translation>
     </message>
     <message>
         <source>Fabric</source>
@@ -361,12 +361,12 @@
         <location filename="../src/ui/localmodbrowser.ui" line="20"/>
         <location filename="../src/ui/localmodbrowser.cpp" line="45"/>
         <source>Search on mod websites</source>
-        <translation>在Mod网站上搜索</translation>
+        <translation>在mod网站上搜索</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodbrowser.ui" line="36"/>
         <source>Search mod in local folder...</source>
-        <translation>在本地文件夹中搜索Mod...</translation>
+        <translation>在本地文件夹中搜索mod...</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodbrowser.ui" line="43"/>
@@ -407,12 +407,12 @@
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="65"/>
         <source>Searching on mod websites...</source>
-        <translation>在Mod网站上搜索中...</translation>
+        <translation>在mod网站上搜索中...</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="71"/>
         <source>Searching on mod websites... ( %1/%2 )</source>
-        <translation>在Mod网站上搜索中...（%1/%2）</translation>
+        <translation>在mod网站上搜索中...（%1/%2）</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="80"/>
@@ -427,12 +427,12 @@
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="94"/>
         <source>%1 mods need update... (Checked %2/%3 mods)</source>
-        <translation>%1个Mod需要更新（已检查%2/%3个Mod...）</translation>
+        <translation>%1个mod需要更新（已检查%2/%3个mod...）</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="127"/>
         <source>Updating... (Updated %1/%2 mods)</source>
-        <translation>更新中...（已更新%1/%2个Mod）</translation>
+        <translation>更新中...（已更新%1/%2个mod）</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="116"/>
@@ -446,13 +446,13 @@
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="104"/>
         <source>Update %1 mods</source>
-        <translation>更新%1个Mod</translation>
+        <translation>更新%1个mod</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="107"/>
         <location filename="../src/ui/localmodbrowser.cpp" line="134"/>
         <source>Good! All mods are up-to-date.</source>
-        <translation>太棒了！所有的Mod都是最新版。</translation>
+        <translation>太棒了！所有的mod都是最新版。</translation>
     </message>
 </context>
 <context>
@@ -516,7 +516,7 @@
     <message>
         <location filename="../src/ui/localmodbrowsersettingsdialog.cpp" line="55"/>
         <source>Select your mod directory...</source>
-        <translation>选择你的Mod路径...</translation>
+        <translation>选择你的mod路径...</translation>
     </message>
 </context>
 <context>
@@ -629,7 +629,7 @@
     <message>
         <location filename="../src/ui/localmodupdatedialog.cpp" line="18"/>
         <source>Mod Name</source>
-        <translation>Mod名称</translation>
+        <translation>mod名称</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodupdatedialog.cpp" line="19"/>
@@ -710,7 +710,7 @@
     <message>
         <location filename="../src/ui/modmanager.cpp" line="172"/>
         <source>New Mod Path</source>
-        <translation>新建Mod路径</translation>
+        <translation>新建mod路径</translation>
     </message>
     <message>
         <location filename="../src/ui/modmanager.cpp" line="186"/>
@@ -726,7 +726,7 @@
     <message>
         <location filename="../src/ui/modmanager.cpp" line="190"/>
         <source>Delete this mod path?</source>
-        <translation>删除该Mod路径？</translation>
+        <translation>删除该mod路径？</translation>
     </message>
 </context>
 <context>
@@ -834,7 +834,7 @@
     <message>
         <location filename="../src/ui/modrinthmodbrowser.ui" line="117"/>
         <source>Mod Loader:</source>
-        <translation>Mod加载器：</translation>
+        <translation>mod加载器：</translation>
     </message>
     <message>
         <source>Fabric</source>
@@ -965,7 +965,7 @@
     <message>
         <location filename="../src/ui/preferences.ui" line="63"/>
         <source>Your common mods folder...</source>
-        <translation>你常用的Mod文件夹</translation>
+        <translation>你常用的mod文件夹</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="73"/>
@@ -995,7 +995,7 @@
     <message>
         <location filename="../src/ui/preferences.ui" line="120"/>
         <source>Search on mod websites in startup</source>
-        <translation>启动时在Mod网站上搜索</translation>
+        <translation>启动时在mod网站上搜索</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="127"/>
@@ -1005,7 +1005,7 @@
     <message>
         <location filename="../src/ui/preferences.ui" line="134"/>
         <source>Delete old mod file automatically</source>
-        <translation>自动删除旧版Mod文件</translation>
+        <translation>自动删除旧版mod文件</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="141"/>
@@ -1056,7 +1056,7 @@
     <message>
         <location filename="../src/ui/preferences.cpp" line="50"/>
         <source>Select your mod directory...</source>
-        <translation>选择你的Mod路径...</translation>
+        <translation>选择你的mod路径...</translation>
     </message>
 </context>
 <context>

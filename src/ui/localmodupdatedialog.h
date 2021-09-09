@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QStandardItemModel>
 
+#include "local/localmod.h"
+
 namespace Ui {
 class LocalModUpdateDialog;
 }
@@ -22,13 +24,14 @@ public:
     ~LocalModUpdateDialog();
 
 private slots:
+    void onUpdateSourceChanged(int row, LocalMod::ModWebsiteType type);
 
     void on_LocalModUpdateDialog_accepted();
 
 private:
     Ui::LocalModUpdateDialog *ui;
     LocalModPath *modPath_;
-    QList<LocalMod*> updateList_;
+    QList<QPair<LocalMod*, LocalMod::ModWebsiteType>> modUpdateList_;
     QStandardItemModel model_;
 };
 

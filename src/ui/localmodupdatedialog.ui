@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
-    <height>419</height>
+    <width>1035</width>
+    <height>677</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,7 +39,7 @@
       <enum>QAbstractScrollArea::AdjustToContents</enum>
      </property>
      <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
+      <set>QAbstractItemView::AllEditTriggers</set>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
