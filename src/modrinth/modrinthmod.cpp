@@ -56,16 +56,9 @@ void ModrinthMod::acquireFileList()
     if(gettingFileList_) return;
     gettingFileList_ = true;
 
-    auto count = std::make_shared<int>(modInfo_.versionList_.size());
-
-    for(const auto &version : qAsConst(modInfo_.versionList_)){
-        ModrinthAPI::getVersion(version, [=](const auto &file){
-            modInfo_.fileList_ << file;
-            (*count)--;
-            if(*count == 0){
-                gettingFileList_ = false;
-                emit fileListReady();
-            }
-        });
-    }
+    ModrinthAPI::getVersions(modInfo_.modId_, [=](const auto &files){
+        modInfo_.fileList_ << files;
+        gettingFileList_ = false;
+        emit fileListReady();
+    });
 }

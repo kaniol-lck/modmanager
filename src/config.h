@@ -34,7 +34,7 @@ public:
     getterAndSetter(AutoSearchOnWebsites, Bool, autoSearchWebOnSites, true);
     getterAndSetter(AutoCheckUpdate, Bool, autoCheckUpdate, true)
     getterAndSetter(UseCurseforgeUpdate, Bool, useCurseforgeUpdate, true)
-    getterAndSetter(UseModrinthUpdate, Bool, useModrinthUpdate, false) //modrinth not default
+    getterAndSetter(UseModrinthUpdate, Bool, useModrinthUpdate, true)
     enum PostUpdateType{ Delete, Keep, DoNothing };
     getterAndSetter(PostUpdate, Int, postUpdate, Keep);
 

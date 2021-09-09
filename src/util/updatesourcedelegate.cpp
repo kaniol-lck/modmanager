@@ -38,7 +38,6 @@ void UpdateSourceDelegate::setModelData(QWidget *editor, QAbstractItemModel *mod
     QComboBox *comboBox = qobject_cast<QComboBox*>(editor);
     if(comboBox->currentIndex() == -1) return;
     auto item = sourceItems.at(typeList_.at(comboBox->currentIndex()));
-    qDebug() << item.first;
     model->setData(index, item.first, Qt::DisplayRole);
     model->setData(index, QIcon(item.second), Qt::DecorationRole);
     emit updateSourceChanged(index.row(), typeList_.at(comboBox->currentIndex()));

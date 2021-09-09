@@ -116,6 +116,41 @@ void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo
 
 }
 
+void ModrinthAPI::getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback)
+{
+    //id: "local-xxxxx" ???
+    auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
+    QUrl url = PREFIX + "/api/v1/mod/" + modId + "/version";
+    QNetworkRequest request(url);
+    auto reply = api()->accessManager.get(request);
+    connect(reply, &QNetworkReply::finished, api(), [=]{
+        if(reply->error() != QNetworkReply::NoError) {
+            qDebug() << reply->errorString();
+            return;
+        }
+
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return;
+        }
+
+        auto resultList = jsonDocument.toVariant().toList();
+
+        QList<ModrinthFileInfo> fileInfoList;
+
+        for(const auto &result : qAsConst(resultList)){
+            auto fileInfo = ModrinthFileInfo::fromVariant(result);
+            fileInfoList << fileInfo;
+        }
+
+        callback(fileInfoList);
+        reply->deleteLater();
+    });
+}
+
 void ModrinthAPI::getVersion(const QString &version, std::function<void (ModrinthFileInfo)> callback)
 {
     QUrl url = PREFIX + "/api/v1/version/" + version;
