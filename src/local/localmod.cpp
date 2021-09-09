@@ -78,18 +78,31 @@ void LocalMod::searchOnModrinth()
 
 void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
-    auto count = std::make_shared<int>(1);//2);
+    emit checkUpdatesStarted();
+
+    int sourceCount = 0;
+    Config config;
+    if(config.getUseCurseforgeUpdate()) sourceCount++;
+    if(config.getUseModrinthUpdate()) sourceCount++;
+    if(sourceCount == 0){
+        emit updateReady(false);
+        return;
+    }
+    auto count = std::make_shared<int>(sourceCount);
     auto needUpdate = std::make_shared<bool>(false);
     auto foo = [=](bool bl){
         if(bl) *needUpdate = true;
         if(--(*count) == 0) emit updateReady(*needUpdate);
     };
 
-    emit checkUpdatesStarted();
-    connect(this, &LocalMod::curseforgeUpdateReady, foo);
-    checkCurseforgeUpdate(targetVersion, targetType);
-//    connect(this, &LocalMod::modrinthUpdateReady, foo);
-//    checkModrinthUpdate(targetVersion, targetType);
+    if(config.getUseCurseforgeUpdate()){
+        connect(this, &LocalMod::curseforgeUpdateReady, foo);
+        checkCurseforgeUpdate(targetVersion, targetType);
+    }
+    if(config.getUseModrinthUpdate()){
+        connect(this, &LocalMod::modrinthUpdateReady, foo);
+        checkModrinthUpdate(targetVersion, targetType);
+    }
 }
 
 template<typename T>

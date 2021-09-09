@@ -1008,38 +1008,53 @@
         <translation>自动删除旧版Mod文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="158"/>
+        <location filename="../src/ui/preferences.ui" line="141"/>
+        <source>Update Source</source>
+        <translation>更新来源</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="147"/>
+        <source>Curseforge</source>
+        <translation>Curseforge</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="154"/>
+        <source>Modrinth</source>
+        <translation>Modrinth</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="181"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="164"/>
+        <location filename="../src/ui/preferences.ui" line="187"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="172"/>
+        <location filename="../src/ui/preferences.ui" line="195"/>
         <source>Download Count:</source>
         <translation>下载数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="185"/>
+        <location filename="../src/ui/preferences.ui" line="208"/>
         <source>Thread Count:</source>
         <translation>线程数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="203"/>
+        <location filename="../src/ui/preferences.ui" line="226"/>
         <source>Proxy</source>
         <translation>代理</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="211"/>
-        <location filename="../src/ui/preferences.ui" line="224"/>
+        <location filename="../src/ui/preferences.ui" line="234"/>
+        <location filename="../src/ui/preferences.ui" line="247"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.cpp" line="46"/>
+        <location filename="../src/ui/preferences.cpp" line="50"/>
         <source>Select your mod directory...</source>
         <translation>选择你的Mod路径...</translation>
     </message>

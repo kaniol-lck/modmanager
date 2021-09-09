@@ -33,6 +33,9 @@ public:
     getterAndSetter(AutoSearchOnWebsites, Bool, autoSearchWebOnSites, true);
     getterAndSetter(AutoCheckUpdate, Bool, autoCheckUpdate, true)
     getterAndSetter(DeleteOld, Bool, deleteOld, true)
+    getterAndSetter(UseCurseforgeUpdate, Bool, useCurseforgeUpdate, true)
+    //modrinth not default
+    getterAndSetter(UseModrinthUpdate, Bool, useModrinthUpdate, false)
 
     //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)
