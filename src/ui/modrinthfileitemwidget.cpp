@@ -12,7 +12,6 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, const ModrinthFi
     ui->setupUi(this);
     ui->displayNameText->setText(info.displayName());
     ui->downloadProgress->setVisible(false);
-    ui->downloadButton->setIcon(QIcon::fromTheme("download"));
 
     //file name and link
     QString linkText = info.fileName();

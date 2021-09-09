@@ -42,6 +42,9 @@
        <property name="text">
         <string>Download</string>
        </property>
+       <property name="icon">
+        <iconset theme="download"/>
+       </property>
       </widget>
      </item>
      <item>

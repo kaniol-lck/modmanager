@@ -14,11 +14,6 @@ BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->upButton->setIcon(QIcon::fromTheme("go-up"));
-    ui->downButton->setIcon(QIcon::fromTheme("go-down"));
-    ui->addButton->setIcon(QIcon::fromTheme("list-add"));
-    ui->deleteButton->setIcon(QIcon::fromTheme("list-remove"));
-
     pathList_ = LocalModPathManager::pathList();
 
     for(const auto &path : qAsConst(pathList_))

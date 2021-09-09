@@ -69,6 +69,10 @@
        <property name="text">
         <string>Curseforge</string>
        </property>
+       <property name="icon">
+        <iconset resource="../images/image.qrc">
+         <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+       </property>
       </widget>
      </item>
      <item>
@@ -78,6 +82,10 @@
        </property>
        <property name="text">
         <string>Modrinth</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../images/image.qrc">
+         <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
        </property>
       </widget>
      </item>
@@ -129,6 +137,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../images/image.qrc"/>
+ </resources>
  <connections/>
 </ui>

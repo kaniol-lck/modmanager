@@ -14,7 +14,6 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, const Cursef
     ui->setupUi(this);
     ui->displayNameText->setText(fileInfo_.displayName());
     ui->downloadProgress->setVisible(false);
-    ui->downloadButton->setIcon(QIcon::fromTheme("download"));
 
     //file name and link
     QString linkText = fileInfo_.fileName();

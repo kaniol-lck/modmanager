@@ -14,8 +14,6 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
 {
     ui->setupUi(this);
     setWindowTitle(mod_->modInfo().name() + tr(" - Local"));
-    ui->curseforgeButton->setIcon(QIcon(":/image/curseforge.svg"));
-    ui->modrinthButton->setIcon(QIcon(":/image/modrinth.svg"));
 
     ui->modName->setText(mod_->modInfo().name());
     ui->modVersion->setText(mod_->modInfo().version());

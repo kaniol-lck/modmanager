@@ -136,10 +136,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             auto fileInfo = mod->modInfo().latestFileInfo(version, loaderType);
             auto downloadPath = downloadPathList_.at(ui->downloadPathSelect->currentIndex());
             auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo, downloadPath);
-            connect(ui->downloadPathSelect, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int i){
-                if(i < 0 || i >= downloadPathList_.size()) return;
-                modItemWidget->setDownloadPath(downloadPathList_.at(i));
-            });
+            connect(this, &CurseforgeModBrowser::downloadPathChanged, modItemWidget, &CurseforgeModItemWidget::setDownloadPath);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
             auto isShown = loaderType == ModLoaderType::Any || info.loaderTypes().contains(loaderType);
@@ -189,5 +186,12 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
         if(isHidden && isShown && mod->modInfo().iconBytes().isEmpty())
             mod->acquireIcon();
     }
+}
+
+
+void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
+{
+    if(!isUiSet_ || index < 0 || index >= downloadPathList_.size()) return;
+    emit downloadPathChanged(downloadPathList_.at(index));
 }
 

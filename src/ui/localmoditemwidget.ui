@@ -111,6 +111,10 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="icon">
+        <iconset resource="../images/image.qrc">
+         <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+       </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
@@ -127,6 +131,10 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="icon">
+        <iconset resource="../images/image.qrc">
+         <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
+       </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
@@ -139,6 +147,9 @@
        </property>
        <property name="text">
         <string>Update</string>
+       </property>
+       <property name="icon">
+        <iconset theme="update-none"/>
        </property>
       </widget>
      </item>
@@ -228,6 +239,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../images/image.qrc"/>
+ </resources>
  <connections/>
 </ui>

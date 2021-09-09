@@ -22,6 +22,9 @@ public:
     explicit CurseforgeModBrowser(QWidget *parent = nullptr);
     ~CurseforgeModBrowser();
 
+signals:
+    void downloadPathChanged(QString path);
+
 public slots:
     void searchModByPathInfo(const LocalModPathInfo &info);
 
@@ -41,6 +44,8 @@ private slots:
     void on_sortSelect_currentIndexChanged(int);
 
     void on_loaderSelect_currentIndexChanged(int);
+
+    void on_downloadPathSelect_currentIndexChanged(int index);
 
 private:
     Ui::CurseforgeModBrowser *ui;
