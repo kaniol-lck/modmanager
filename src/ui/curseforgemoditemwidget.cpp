@@ -10,11 +10,12 @@
 #include "download/downloader.h"
 #include "util/funcutil.h"
 
-CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload) :
+CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload, const QString &path) :
     QWidget(parent),
     ui(new Ui::CurseforgeModItemWidget),
     mod_(mod),
-    defaultFileInfo_(defaultDownload)
+    defaultFileInfo_(defaultDownload),
+    downloadPath_(path)
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
@@ -70,7 +71,7 @@ void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
 
-    auto downloader = DownloadManager::addModDownload(std::make_shared<CurseforgeFileInfo>(fileInfo));
+    auto downloader = DownloadManager::addModDownload(std::make_shared<CurseforgeFileInfo>(fileInfo), downloadPath_);
 
     ui->downloadProgress->setMaximum(fileInfo.size());
 
@@ -85,4 +86,9 @@ void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
         ui->downloadSpeedText->setText(numberConvert(fileInfo.size(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
     });
+}
+
+void CurseforgeModItemWidget::setDownloadPath(const QString &newDownloadPath)
+{
+    downloadPath_ = newDownloadPath;
 }

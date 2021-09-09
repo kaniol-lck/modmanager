@@ -5,9 +5,13 @@
 
 #include "modrinthmoditemwidget.h"
 #include "modrinthmodinfodialog.h"
+#include "local/localmodpathmanager.h"
+#include "local/localmodpath.h"
+#include "modrinth/modrinthmod.h"
 #include "modrinth/modrinthapi.h"
 #include "gameversion.h"
 #include "modloadertype.h"
+#include "config.h"
 
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -23,6 +27,9 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
 
+    updateLocalPathList();
+    connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModrinthModBrowser::updateLocalPathList);
+
     getModList(currentName_);
     isUiSet_ = true;
 }
@@ -30,6 +37,16 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
 ModrinthModBrowser::~ModrinthModBrowser()
 {
     delete ui;
+}
+
+void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
+{
+    isUiSet_ = false;
+    ui->versionSelect->setCurrentText(info.gameVersion());
+    ui->loaderSelect->setCurrentIndex(ModLoaderType::modrinth.indexOf(info.loaderType()));
+    ui->downloadPathSelect->setCurrentText(info.showText());
+    isUiSet_ = true;
+    getModList(currentName_);
 }
 
 void ModrinthModBrowser::updateVersionList()
@@ -40,6 +57,18 @@ void ModrinthModBrowser::updateVersionList()
     for(const auto &version : GameVersion::modrinthVersionList())
         ui->versionSelect->addItem(version);
     isUiSet_ = true;
+}
+
+void ModrinthModBrowser::updateLocalPathList()
+{
+    ui->downloadPathSelect->clear();
+    downloadPathList_.clear();
+    ui->downloadPathSelect->addItem(QIcon::fromTheme("folder"), tr("Custom"));
+    downloadPathList_ << Config().getDownloadPath();
+    for(const auto &path : LocalModPathManager::pathList()){
+        ui->downloadPathSelect->addItem(QIcon::fromTheme("folder"), path->info().showText());
+        downloadPathList_ << path->info().path();
+    }
 }
 
 void ModrinthModBrowser::on_searchButton_clicked()
@@ -97,7 +126,12 @@ void ModrinthModBrowser::getModList(QString name, int index)
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 100));
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
-            auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, modrinthMod);
+            auto downloadPath = downloadPathList_.at(ui->downloadPathSelect->currentIndex());
+            auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, modrinthMod, downloadPath);
+            connect(ui->downloadPathSelect, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int i){
+                if(i < 0 || i >= downloadPathList_.size()) return;
+                modItemWidget->setDownloadPath(downloadPathList_.at(i));
+            });
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
             modrinthMod->acquireIcon();

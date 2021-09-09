@@ -27,6 +27,7 @@ public:
     explicit Config();
 
     //General
+    getterAndSetter(DownloadPath, String, downloadPath, "");
     getterAndSetter(CommonPath, String, commonPath, "");
     enum VersionMatchType{ MinorVersion, MajorVersion };
     getterAndSetter(VersionMatch, Int, versionMatch, MinorVersion);

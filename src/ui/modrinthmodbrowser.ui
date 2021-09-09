@@ -127,6 +127,19 @@
      <item>
       <widget class="QComboBox" name="loaderSelect"/>
      </item>
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Save To:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="downloadPathSelect"/>
+     </item>
     </layout>
    </item>
    <item row="2" column="0">

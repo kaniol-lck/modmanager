@@ -2,8 +2,8 @@
 #define CURSEFORGEMODBROWSER_H
 
 #include <QWidget>
-#include <QList>
-#include "curseforge/curseforgemodinfo.h"
+
+#include "local/localmodpathinfo.h"
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -23,9 +23,12 @@ public:
     ~CurseforgeModBrowser();
 
 public slots:
+    void searchModByPathInfo(const LocalModPathInfo &info);
 
 private slots:
     void updateVersionList();
+
+    void updateLocalPathList();
 
     void on_searchButton_clicked();
 
@@ -41,13 +44,14 @@ private slots:
 
 private:
     Ui::CurseforgeModBrowser *ui;
+    QStringList downloadPathList_;
     QList<CurseforgeMod*> modList_;
     QString currentName_;
     int currentIndex_;
     bool isUiSet_ = false;
     bool hasMore_ = false;
 
-    void getModList(QString name, int index = 0);
+    void getModList(QString name, int index = 0, int needMore = 20);
 
 };
 

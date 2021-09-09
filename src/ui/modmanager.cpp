@@ -28,8 +28,8 @@ ModManager::ModManager(QWidget *parent) :
     localItem_(new QTreeWidgetItem({tr("Local")}))
 {
     ui->setupUi(this);
-    ui->splitter->setStretchFactor(0, 1);
-    ui->splitter->setStretchFactor(1, 2);
+    ui->splitter->setStretchFactor(0, 2);
+    ui->splitter->setStretchFactor(1, 3);
 
     //setup tree widget
     for (const auto &item : {downloadItem_, exploreItem_, localItem_}){
@@ -46,18 +46,18 @@ ModManager::ModManager(QWidget *parent) :
     ui->stackedWidget->addWidget(downloadBrowser);
 
     //Curseforge
-    auto curseforgeModBrowser = new CurseforgeModBrowser(this);
+    curseforgeModBrowser_ = new CurseforgeModBrowser(this);
     auto curseforgeItem = new QTreeWidgetItem(exploreItem_, {tr("Curseforge")});
     exploreItem_->addChild(curseforgeItem);
     curseforgeItem->setIcon(0, QIcon(":/image/curseforge.svg"));
-    ui->stackedWidget->addWidget(curseforgeModBrowser);
+    ui->stackedWidget->addWidget(curseforgeModBrowser_);
 
     //Modrinth
-    auto modrinthModBrowser = new ModrinthModBrowser(this);
+    modrinthModBrowser_ = new ModrinthModBrowser(this);
     auto modrinthItem = new QTreeWidgetItem(exploreItem_, {tr("Modrinth")});
     exploreItem_->addChild(modrinthItem);
     modrinthItem->setIcon(0, QIcon(":/image/modrinth.svg"));
-    ui->stackedWidget->addWidget(modrinthModBrowser);
+    ui->stackedWidget->addWidget(modrinthModBrowser_);
 
     //Local
     syncPathList();
@@ -88,6 +88,16 @@ void ModManager::syncPathList()
             item->setIcon(0, QIcon::fromTheme("folder"));
             auto localModBrowser = new LocalModBrowser(this, path);
             ui->stackedWidget->addWidget(localModBrowser);
+
+            connect(localModBrowser, &LocalModBrowser::findNewOnCurseforge, curseforgeModBrowser_, &CurseforgeModBrowser::searchModByPathInfo);
+            connect(localModBrowser, &LocalModBrowser::findNewOnCurseforge, this, [=]{
+                ui->browserTreeWidget->setCurrentItem(exploreItem_->child(0));
+            });
+
+            connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, modrinthModBrowser_, &ModrinthModBrowser::searchModByPathInfo);
+            connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, this, [=]{
+                ui->browserTreeWidget->setCurrentItem(exploreItem_->child(1));
+            });
         } else{
             //present, move position
             oldCount--;

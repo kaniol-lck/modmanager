@@ -10,12 +10,15 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
+#include "local/localmodpathmanager.h"
+#include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
 #include "curseforge/curseforgeapi.h"
 #include "curseforgemoditemwidget.h"
 #include "curseforgemodinfodialog.h"
 #include "gameversion.h"
 #include "modloadertype.h"
+#include "config.h"
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -31,6 +34,9 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
 
+    updateLocalPathList();
+    connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &CurseforgeModBrowser::updateLocalPathList);
+
     getModList(currentName_);
     isUiSet_ = true;
 }
@@ -38,6 +44,16 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
 CurseforgeModBrowser::~CurseforgeModBrowser()
 {
     delete ui;
+}
+
+void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
+{
+    isUiSet_ = false;
+    ui->versionSelect->setCurrentText(info.gameVersion());
+    ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
+    ui->downloadPathSelect->setCurrentText(info.showText());
+    isUiSet_ = true;
+    getModList(currentName_);
 }
 
 void CurseforgeModBrowser::updateVersionList()
@@ -48,6 +64,18 @@ void CurseforgeModBrowser::updateVersionList()
     for(const auto &version : GameVersion::curseforgeVersionList())
         ui->versionSelect->addItem(version);
     isUiSet_ = true;
+}
+
+void CurseforgeModBrowser::updateLocalPathList()
+{
+    ui->downloadPathSelect->clear();
+    downloadPathList_.clear();
+    ui->downloadPathSelect->addItem(QIcon::fromTheme("folder"), tr("Custom"));
+    downloadPathList_ << Config().getDownloadPath();
+    for(const auto &path : LocalModPathManager::pathList()){
+        ui->downloadPathSelect->addItem(QIcon::fromTheme("folder"), path->info().showText());
+        downloadPathList_ << path->info().path();
+    }
 }
 
 void CurseforgeModBrowser::on_searchButton_clicked()
@@ -64,7 +92,7 @@ void CurseforgeModBrowser::onSliderChanged(int i)
     }
 }
 
-void CurseforgeModBrowser::getModList(QString name, int index)
+void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 {
     if(!index) currentIndex_ = 0;
     ui->searchButton->setText(tr("Searching..."));
@@ -106,7 +134,12 @@ void CurseforgeModBrowser::getModList(QString name, int index)
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
             auto loaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
             auto fileInfo = mod->modInfo().latestFileInfo(version, loaderType);
-            auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo);
+            auto downloadPath = downloadPathList_.at(ui->downloadPathSelect->currentIndex());
+            auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo, downloadPath);
+            connect(ui->downloadPathSelect, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int i){
+                if(i < 0 || i >= downloadPathList_.size()) return;
+                modItemWidget->setDownloadPath(downloadPathList_.at(i));
+            });
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
             auto isShown = loaderType == ModLoaderType::Any || info.loaderTypes().contains(loaderType);
@@ -116,9 +149,9 @@ void CurseforgeModBrowser::getModList(QString name, int index)
                 mod->acquireIcon();
             }
         }
-        if(shownCount != infoList.count() && shownCount == 0){
+        if(shownCount != infoList.count() && shownCount < needMore){
             currentIndex_ += 20;
-            getModList(currentName_, currentIndex_);
+            getModList(currentName_, currentIndex_, needMore - shownCount);
         }
 
     });

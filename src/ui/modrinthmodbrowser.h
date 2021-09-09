@@ -3,7 +3,9 @@
 
 #include <QWidget>
 
-#include "modrinth/modrinthmod.h"
+#include "local/localmodpathinfo.h"
+
+class ModrinthMod;
 
 namespace Ui {
 class ModrinthModBrowser;
@@ -17,8 +19,13 @@ public:
     explicit ModrinthModBrowser(QWidget *parent = nullptr);
     ~ModrinthModBrowser();
 
+public slots:
+    void searchModByPathInfo(const LocalModPathInfo &info);
+
 private slots:
     void updateVersionList();
+
+    void updateLocalPathList();
 
     void on_searchButton_clicked();
 
@@ -35,6 +42,7 @@ private slots:
 private:
     Ui::ModrinthModBrowser *ui;
     QList<ModrinthMod*> modList_;
+    QStringList downloadPathList_;
     QString currentName_;
     int currentIndex_;
     bool isUiSet_ = false;

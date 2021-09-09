@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "local/localmod.h"
+#include "local/localmodpathinfo.h"
 
 namespace Ui {
 class LocalModBrowser;
@@ -20,6 +20,8 @@ public:
     ~LocalModBrowser();
 
 signals:
+    void findNewOnCurseforge(LocalModPathInfo info);
+    void findNewOnModrinth(LocalModPathInfo info);
 
 public slots:
     void updateModList();

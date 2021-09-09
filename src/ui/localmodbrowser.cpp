@@ -1,6 +1,7 @@
 #include "localmodbrowser.h"
 #include "ui_localmodbrowser.h"
 
+#include <QMenu>
 #include <QMessageBox>
 #include <QDebug>
 
@@ -18,6 +19,15 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 {
     ui->setupUi(this);
     ui->checkUpdatesProgress->setVisible(false);
+
+    auto menu = new QMenu(this);
+    connect(menu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
+        emit findNewOnCurseforge(modPath_->info());
+    });
+    connect(menu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth"), &QAction::triggered, this, [=]{
+        emit findNewOnModrinth(modPath_->info());
+    });
+    ui->findnewButton->setMenu(menu);
 
     updateModList();
 

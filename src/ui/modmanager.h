@@ -3,11 +3,13 @@
 
 #include <QMainWindow>
 #include <QTreeWidgetItem>
-#include <QFutureWatcher>
+
+#include "local/localmodpathinfo.h"
 
 class QListWidgetItem;
-class LocalModBrowser;
 class LocalModPath;
+class CurseforgeModBrowser;
+class ModrinthModBrowser;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ModManager; }
@@ -38,6 +40,8 @@ private slots:
 
 private:
     Ui::ModManager *ui;
+    CurseforgeModBrowser *curseforgeModBrowser_;
+    ModrinthModBrowser *modrinthModBrowser_;
 
     QList<LocalModPath*> pathList_;
 

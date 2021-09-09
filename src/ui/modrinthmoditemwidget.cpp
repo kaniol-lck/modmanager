@@ -3,18 +3,18 @@
 
 #include <QMenu>
 
+#include "modrinth/modrinthmod.h"
+#include "download/downloadmanager.h"
 #include "util/funcutil.h"
 
-ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) :
+ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod, const QString &path) :
     QWidget(parent),
     ui(new Ui::ModrinthModItemWidget),
-    mod_(mod)
+    mod_(mod),
+    downloadPath_(path)
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
-
-    //TODO
-    ui->downloadButton->setVisible(false);
 
     ui->modName->setText(mod->modInfo().name());
     ui->modSummary->setText(mod->modInfo().summary());
@@ -53,4 +53,32 @@ void ModrinthModItemWidget::updateFileList()
     }
 
     ui->downloadButton->setMenu(menu);
+}
+
+void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
+{
+    ui->downloadButton->setText(tr("Downloading"));
+    ui->downloadButton->setEnabled(false);
+    ui->downloadProgress->setVisible(true);
+
+    auto downloader = DownloadManager::addModDownload(std::make_shared<ModrinthFileInfo>(fileInfo), downloadPath_);
+
+    ui->downloadProgress->setMaximum(fileInfo.size());
+
+    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+        ui->downloadProgress->setValue(bytesReceived);
+    });
+    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+        ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
+    });
+    connect(downloader, &Downloader::finished, this, [=]{
+        ui->downloadProgress->setVisible(false);
+        ui->downloadSpeedText->setText(numberConvert(fileInfo.size(), "B"));
+        ui->downloadButton->setText(tr("Downloaded"));
+    });
+}
+
+void ModrinthModItemWidget::setDownloadPath(const QString &newDownloadPath)
+{
+    downloadPath_ = newDownloadPath;
 }

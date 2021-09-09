@@ -31,10 +31,10 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
         if(type == LocalMod::None) continue;
 
         auto nameItem = new QStandardItem();
-        nameItem->setText(mod->modInfo().name() + ":");
+        nameItem->setText(mod->modInfo().name());
         nameItem->setCheckable(true);
         nameItem->setCheckState(Qt::Checked);
-        nameItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        nameItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         nameItem->setEditable(false);
 
         auto beforeItem = new QStandardItem();

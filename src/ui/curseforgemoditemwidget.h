@@ -16,8 +16,10 @@ class CurseforgeModItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload);
+    explicit CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload, const QString &path);
     ~CurseforgeModItemWidget();
+
+    void setDownloadPath(const QString &newDownloadPath);
 
 private slots:
     void updateIcon();
@@ -28,6 +30,7 @@ private:
     Ui::CurseforgeModItemWidget *ui;
     CurseforgeMod *mod_;
     std::optional<CurseforgeFileInfo> defaultFileInfo_;
+    QString downloadPath_;
 };
 
 #endif // CURSEFORGEMODITEMWIDGET_H
