@@ -62,7 +62,7 @@ jobs:
           mkdir deploy && mv release/${{github.event.repository.name}}.exe deploy
           cp LICENSE* deploy/
           cp *md deploy/
-          xcopy lib/ deploy/
+          cp lib/* deploy/
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe
       - uses: actions/upload-artifact@v2
         with:

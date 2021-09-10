@@ -35,7 +35,7 @@
       </size>
      </property>
      <property name="text">
-      <string>ICON</string>
+      <string/>
      </property>
     </widget>
    </item>
@@ -149,7 +149,8 @@
         <string>Update</string>
        </property>
        <property name="icon">
-        <iconset theme="update-none"/>
+        <iconset theme="update-none">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>

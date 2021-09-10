@@ -149,8 +149,6 @@ std::optional<T> LocalMod::findUpdate(QList<T> fileList, const GameVersion &targ
     //non match
     if(list.isEmpty()) return std::nullopt;
 
-    //TODO: update file's datetime cannot be older than current's
-
     //find latesest file
     auto resultIter = std::max_element(list.cbegin(), list.cend(), [=](const auto &file1, const auto &file2){
         return file1.fileDate() < file2.fileDate();
@@ -170,7 +168,7 @@ void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoader
     //update file list
     auto updateFileList = [=]{
          auto result = findUpdate(curseforgeMod_->modInfo().allFileList(), targetVersion, targetType);
-         if(!result.has_value()){
+         if(!result.has_value() || result.value().fileDate() < currentCurseforgeFileInfo_.value().fileDate()){
              emit curseforgeUpdateReady(false);
              return ;
          }
@@ -202,7 +200,7 @@ void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderTy
     //update file list
     auto updateFileList = [=]{
          auto result = findUpdate(modrinthMod_->modInfo().fileList(), targetVersion, targetType);
-         if(!result.has_value()){
+         if(!result.has_value() || result.value().fileDate() < currentModrinthFileInfo_.value().fileDate()){
              emit modrinthUpdateReady(false);
              return ;
          }
@@ -258,18 +256,19 @@ QList<LocalMod::ModWebsiteType> LocalMod::updateTypes() const
 void LocalMod::update(ModWebsiteType type)
 {
     emit updateStarted();
-    auto updateFunc = [=](auto mod, auto &oldFileInfo, auto &newFileInfo){
+
+    auto updateFunc = [=](auto *oldFileInfo, auto *newFileInfo){
         QDir dir = modInfo_.path();
         //to dir
         dir.cdUp();
-        auto downloader = DownloadManager::addModupdate(std::make_shared<std::remove_reference_t<decltype(newFileInfo.value())>>(newFileInfo.value()), dir.absolutePath(), [=]{
+        DownloadManager::addModupdate(std::make_shared<std::remove_reference_t<decltype(newFileInfo->value())>>(newFileInfo->value()), dir.absolutePath(), [=]{
             //check download
             //...
 
             auto oldPath = modInfo_.path();
             QDir dir(oldPath);
             dir.cdUp();
-            auto newPath = dir.absoluteFilePath(newFileInfo->fileName());
+            auto newPath = dir.absoluteFilePath(newFileInfo->value().fileName());
 
             //deal with old mod file
             auto postUpdate = Config().getPostUpdate();
@@ -279,35 +278,23 @@ void LocalMod::update(ModWebsiteType type)
 
                 //update info
                 setModInfo(LocalModInfo(newPath));
+                oldFileInfo->emplace(newFileInfo->value());
+                newFileInfo->reset();
             } else if(postUpdate == Config::Keep){
                 file.rename(file.fileName() + ".old");
                 //update info
                 setModInfo(LocalModInfo(newPath));
+                oldFileInfo->emplace(newFileInfo->value());
+                newFileInfo->reset();
             }
             emit updateFinished();
         });
-        connect(downloader, &Downloader::downloadProgress, this, &LocalMod::updateProgress);
-        return downloader;
     };
 
-    auto isUpdateInfo = Config().getPostUpdate() != Config::DoNothing;
-    if(type == ModWebsiteType::Curseforge){
-        auto downloader = updateFunc(curseforgeMod_, currentCurseforgeFileInfo_, updateCurseforgeFileInfo_);
-        if(isUpdateInfo)
-            connect(downloader, &ModDownloader::finished, this, [=]{
-                //update file info
-                currentCurseforgeFileInfo_.emplace(updateCurseforgeFileInfo_.value());
-                updateCurseforgeFileInfo_.reset();
-            });
-    } else if(type == ModWebsiteType::Modrinth){
-        auto downloader = updateFunc(modrinthMod_, currentModrinthFileInfo_, updateModrinthFileInfo_);
-        if(isUpdateInfo)
-            connect(downloader, &ModDownloader::finished, this, [=]{
-                //update file info
-                currentModrinthFileInfo_.emplace(updateModrinthFileInfo_.value());
-                updateModrinthFileInfo_.reset();
-            });
-    }
+    if(type == ModWebsiteType::Curseforge)
+        updateFunc(&currentCurseforgeFileInfo_, &updateCurseforgeFileInfo_);
+    else if(type == ModWebsiteType::Modrinth)
+        updateFunc(&currentModrinthFileInfo_, &updateModrinthFileInfo_);
     else
         qDebug() << "Nothing to update";
 
