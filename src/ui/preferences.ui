@@ -45,7 +45,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Common Path:</string>
+            <string>Common path:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -85,7 +85,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Download Path:</string>
+            <string>Download path:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -251,7 +251,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Download Count:</string>
+               <string>Max parallel download count:</string>
               </property>
               <property name="buddy">
                <cstring>downloadCount</cstring>
@@ -264,7 +264,7 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>Thread Count:</string>
+               <string>Download thread count:</string>
               </property>
               <property name="buddy">
                <cstring>threadCount</cstring>
@@ -280,7 +280,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="proxyBox">
          <property name="title">
           <string>Proxy</string>
          </property>

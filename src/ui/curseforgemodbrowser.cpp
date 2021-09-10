@@ -2,11 +2,8 @@
 #include "ui_curseforgemodbrowser.h"
 
 #include <QScrollBar>
-#include <QUrlQuery>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QJsonDocument>
+#include <QDir>
+#include <QDesktopServices>
 #include <QDebug>
 
 #include "util/tutil.hpp"
@@ -71,10 +68,10 @@ void CurseforgeModBrowser::updateLocalPathList()
 {
     ui->downloadPathSelect->clear();
     downloadPathList_.clear();
-    ui->downloadPathSelect->addItem(QIcon::fromTheme("folder"), tr("Custom"));
+    ui->downloadPathSelect->addItem(tr("Custom"));
     downloadPathList_ << Config().getDownloadPath();
     for(const auto &path : LocalModPathManager::pathList()){
-        ui->downloadPathSelect->addItem(QIcon::fromTheme("folder"), path->info().showText());
+        ui->downloadPathSelect->addItem(path->info().showText());
         downloadPathList_ << path->info().path();
     }
 }
@@ -194,5 +191,14 @@ void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
     if(!isUiSet_ || index < 0 || index >= downloadPathList_.size()) return;
     emit downloadPathChanged(downloadPathList_.at(index));
+}
+
+
+void CurseforgeModBrowser::on_openFolderButton_clicked()
+{
+    QDir dir(downloadPathList_.at(ui->downloadPathSelect->currentIndex()));
+    QUrl url(dir.absolutePath());
+    url.setScheme("file");
+    QDesktopServices::openUrl(url);
 }
 

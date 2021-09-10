@@ -57,12 +57,23 @@
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
+      <widget class="QPushButton" name="openFolderButton">
+       <property name="text">
+        <string>Open Folder</string>
+       </property>
+       <property name="icon">
+        <iconset theme="folder"/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="findnewButton">
        <property name="text">
         <string>Find new mods</string>
        </property>
        <property name="icon">
-        <iconset theme="search"/>
+        <iconset theme="search">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -70,6 +81,9 @@
       <widget class="QPushButton" name="checkUpdatesButton">
        <property name="text">
         <string>Search on mod websites</string>
+       </property>
+       <property name="icon">
+        <iconset theme="update-none"/>
        </property>
       </widget>
      </item>

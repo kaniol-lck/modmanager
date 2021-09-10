@@ -40,6 +40,8 @@ private slots:
 
     void on_loaderSelect_currentIndexChanged(int);
 
+    void on_openFolderButton_clicked();
+
 private:
     Ui::ModrinthModBrowser *ui;
     ModrinthAPI *api_;

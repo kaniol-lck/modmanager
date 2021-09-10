@@ -47,6 +47,8 @@ private slots:
 
     void on_downloadPathSelect_currentIndexChanged(int index);
 
+    void on_openFolderButton_clicked();
+
 private:
     Ui::CurseforgeModBrowser *ui;
     CurseforgeAPI *api_;

@@ -3,6 +3,7 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QDesktopServices>
 #include <QDebug>
 
 #include "local/localmodpath.h"
@@ -196,5 +197,13 @@ void LocalModBrowser::on_checkUpdatesButton_clicked()
         //do nothing
         break;
     }
+}
+
+
+void LocalModBrowser::on_openFolderButton_clicked()
+{
+    QUrl url = modPath_->info().path();
+    url.setScheme("file");
+    QDesktopServices::openUrl(url);
 }
 

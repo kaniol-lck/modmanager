@@ -48,6 +48,8 @@ private slots:
 
     void on_checkUpdatesButton_clicked();
 
+    void on_openFolderButton_clicked();
+
 private:
     Ui::LocalModBrowser *ui;
     LocalModPath *modPath_;

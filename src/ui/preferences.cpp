@@ -10,6 +10,7 @@ Preferences::Preferences(QWidget *parent) :
     ui(new Ui::Preferences)
 {
     ui->setupUi(this);
+    ui->proxyBox->setVisible(false);
 
     Config config;
     ui->commonPathText->setText(config.getCommonPath());

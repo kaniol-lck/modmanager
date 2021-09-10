@@ -15,6 +15,7 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod, 
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
+    ui->downloadButton->setEnabled(false);
 
     ui->modName->setText(mod->modInfo().name());
     ui->modSummary->setText(mod->modInfo().summary());
@@ -66,7 +67,10 @@ void ModrinthModItemWidget::updateFileList()
         }
     }
 
-    ui->downloadButton->setMenu(menu);
+    if(!menu->actions().isEmpty()){
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setMenu(menu);
+    }
 }
 
 void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)

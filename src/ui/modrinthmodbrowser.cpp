@@ -2,6 +2,8 @@
 #include "ui_modrinthmodbrowser.h"
 
 #include <QScrollBar>
+#include <QDir>
+#include <QDesktopServices>
 
 #include "modrinthmoditemwidget.h"
 #include "modrinthmodinfodialog.h"
@@ -64,10 +66,10 @@ void ModrinthModBrowser::updateLocalPathList()
 {
     ui->downloadPathSelect->clear();
     downloadPathList_.clear();
-    ui->downloadPathSelect->addItem(QIcon::fromTheme("folder"), tr("Custom"));
+    ui->downloadPathSelect->addItem(tr("Custom"));
     downloadPathList_ << Config().getDownloadPath();
     for(const auto &path : LocalModPathManager::pathList()){
-        ui->downloadPathSelect->addItem(QIcon::fromTheme("folder"), path->info().showText());
+        ui->downloadPathSelect->addItem(path->info().showText());
         downloadPathList_ << path->info().path();
     }
 }
@@ -164,5 +166,14 @@ void ModrinthModBrowser::on_versionSelect_currentIndexChanged(int)
 void ModrinthModBrowser::on_loaderSelect_currentIndexChanged(int)
 {
     if(isUiSet_) getModList(currentName_);
+}
+
+
+void ModrinthModBrowser::on_openFolderButton_clicked()
+{
+    QDir dir(downloadPathList_.at(ui->downloadPathSelect->currentIndex()));
+    QUrl url(dir.absolutePath());
+    url.setScheme("file");
+    QDesktopServices::openUrl(url);
 }
 
