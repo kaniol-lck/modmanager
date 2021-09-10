@@ -21,8 +21,10 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod, 
     ui->modAuthors->setText("by <b>" + mod->modInfo().author() + "</b>");
     ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
 
-//    mod->acquireFullInfo();
-//    connect(mod, &ModrinthMod::fullInfoReady, mod, &ModrinthMod::acquireFileList);
+    mod->acquireFullInfo();
+    connect(mod, &ModrinthMod::fullInfoReady, this, [=]{
+        mod->acquireFileList();
+    });
 
     connect(mod, &ModrinthMod::iconReady, this, &ModrinthModItemWidget::updateIcon);
     connect(mod, &ModrinthMod::fileListReady, this, &ModrinthModItemWidget::updateFileList);
@@ -44,12 +46,24 @@ void ModrinthModItemWidget::updateIcon()
 void ModrinthModItemWidget::updateFileList()
 {
     auto menu = new QMenu(this);
-
-    for(const auto &fileInfo : mod_->modInfo().featuredFileList()){
-        auto name = fileInfo.displayName() + " ("+ numberConvert(fileInfo.size(), "B") + ")";
+    auto addInfo = [=](const auto &fileInfo){
+        auto name = fileInfo.displayName()/* + " ("+ numberConvert(fileInfo.size(), "B") + ")"*/;
         connect(menu->addAction(name), &QAction::triggered, this, [=]{
-//            downloadFile(fileInfo);l
+            downloadFile(fileInfo);
         });
+    };
+
+    auto featuredFileList = mod_->modInfo().featuredFileList();
+    if(!featuredFileList.isEmpty()){
+        for(const auto &fileInfo : featuredFileList)
+            addInfo(fileInfo);
+    } else {
+        auto fileList = mod_->modInfo().fileList();
+        auto count = 0;
+        for(const auto &fileInfo : qAsConst(fileList)){
+            addInfo(fileInfo);
+            if(++count == 2) break;
+        }
     }
 
     ui->downloadButton->setMenu(menu);

@@ -19,6 +19,7 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
     if(!files.isEmpty()){
         fileInfo.fileName_ = value(files.at(0), "filename").toString();
         fileInfo.url_ = value(files.at(0), "url").toUrl();
+        fileInfo.isPrimary_ = value(files.at(0), "primary").toBool();
     }
 
     auto versionList = value(variant, "game_versions").toStringList();
@@ -57,11 +58,6 @@ const QList<ModLoaderType::Type> &ModrinthFileInfo::loaderTypes() const
     return loaderTypes_;
 }
 
-int ModrinthFileInfo::size() const
-{
-    return size_;
-}
-
 int ModrinthFileInfo::releaseType() const
 {
     return releaseType_;
@@ -75,4 +71,9 @@ const QDateTime &ModrinthFileInfo::fileDate() const
 bool ModrinthFileInfo::isFeatured() const
 {
     return isFeatured_;
+}
+
+bool ModrinthFileInfo::isPrimary() const
+{
+    return isPrimary_;
 }

@@ -35,6 +35,12 @@ const LocalModInfo &LocalMod::modInfo() const
     return modInfo_;
 }
 
+void LocalMod::setModInfo(const LocalModInfo &newModInfo)
+{
+    modInfo_ = newModInfo;
+    emit modInfoUpdated();
+}
+
 CurseforgeMod *LocalMod::curseforgeMod() const
 {
     return curseforgeMod_;
@@ -142,6 +148,8 @@ std::optional<T> LocalMod::findUpdate(QList<T> fileList, const GameVersion &targ
 
     //non match
     if(list.isEmpty()) return std::nullopt;
+
+    //TODO: update file's datetime cannot be older than current's
 
     //find latesest file
     auto resultIter = std::max_element(list.cbegin(), list.cend(), [=](const auto &file1, const auto &file2){
@@ -270,9 +278,11 @@ void LocalMod::update(ModWebsiteType type)
                 file.remove();
 
                 //update info
-                modInfo_.acquireInfo(newPath);
+                setModInfo(LocalModInfo(newPath));
             } else if(postUpdate == Config::Keep){
                 file.rename(file.fileName() + ".old");
+                //update info
+                setModInfo(LocalModInfo(newPath));
             }
             emit updateFinished();
         });

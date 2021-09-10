@@ -121,6 +121,7 @@ void ModrinthAPI::getVersions(const QString &id, std::function<void (QList<Modri
     //id: "local-xxxxx" ???
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
     QUrl url = PREFIX + "/api/v1/mod/" + modId + "/version";
+
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this,  [=]{

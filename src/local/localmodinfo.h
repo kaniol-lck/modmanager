@@ -9,8 +9,6 @@ class LocalModInfo
 public:
     explicit LocalModInfo(QString path);
 
-    bool acquireInfo(QString &path);
-
     bool isFabricMod() const;
 
     const QString &id() const;
@@ -38,6 +36,7 @@ private:
     QString murmurhash_;
     QByteArray iconBytes_;
 
+    bool isMod_ = false;
     bool hasFabricManifest_ = false;
 
 

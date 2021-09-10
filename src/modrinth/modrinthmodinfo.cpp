@@ -1,5 +1,7 @@
 #include "modrinthmodinfo.h"
 
+#include <QDebug>
+
 #include "util/tutil.hpp"
 
 ModrinthModInfo::ModrinthModInfo(const QString &id) :
@@ -96,10 +98,8 @@ const QList<ModrinthFileInfo> &ModrinthModInfo::fileList() const
 QList<ModrinthFileInfo> ModrinthModInfo::featuredFileList() const
 {
     QList<ModrinthFileInfo> list;
-    auto it = std::inserter(list, list.begin());
-    std::copy_if(fileList_.cbegin(), fileList_.cend(), it, [=](const auto &info){
-        return info.isFeatured();
-    });
+    for(const auto &info : fileList_)
+        if(info.isPrimary()) list << info;
     return list;
 }
 

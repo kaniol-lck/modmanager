@@ -24,6 +24,8 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     updateInfo();
 
     //signals / slots
+    connect(mod_, &LocalMod::modInfoUpdated, this, &LocalModItemWidget::updateInfo);
+
     connect(mod_, &LocalMod::curseforgeUpdateReady, this, &LocalModItemWidget::curseforgeUpdateReady);
     connect(mod_, &LocalMod::checkCurseforgeStarted, this, &LocalModItemWidget::startCheckCurseforge);
     connect(mod_, &LocalMod::curseforgeReady, this, &LocalModItemWidget::curseforgeReady);
@@ -122,9 +124,6 @@ void LocalModItemWidget::finishUpdate()
 {
     ui->updateProgress->setVisible(false);
     ui->updateButton->setVisible(false);
-
-    //update info
-    updateInfo();
 }
 
 

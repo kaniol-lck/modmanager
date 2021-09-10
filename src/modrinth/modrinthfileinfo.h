@@ -26,23 +26,23 @@ public:
 
     const QList<ModLoaderType::Type> &loaderTypes() const;
 
-    int size() const;
-
     int releaseType() const;
 
     const QDateTime &fileDate() const;
 
     bool isFeatured() const;
 
+    bool isPrimary() const;
+
 private:
     QString id_;
     QString modId_;
     QList<GameVersion> gameVersions_;
     QList<ModLoaderType::Type> loaderTypes_;
-    int size_;
     int releaseType_;
     QDateTime fileDate_;
     bool isFeatured_;
+    bool isPrimary_;
 };
 
 #endif // MODRINTHFILEINFO_H

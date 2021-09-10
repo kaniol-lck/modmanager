@@ -25,6 +25,7 @@ public:
     explicit LocalMod(LocalModPath *parent, const LocalModInfo &info);
 
     const LocalModInfo &modInfo() const;
+    void setModInfo(const LocalModInfo &newModInfo);
 
     CurseforgeMod *curseforgeMod() const;
     void setCurseforgeMod(CurseforgeMod *newCurseforgeMod);
@@ -59,6 +60,8 @@ public:
     ModrinthAPI *modrinthAPI() const;
 
 signals:
+    void modInfoUpdated();
+
     void checkWebsiteStarted();
     void websiteReady(bool bl);
     void checkUpdatesStarted();

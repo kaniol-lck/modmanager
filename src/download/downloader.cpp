@@ -47,6 +47,7 @@ void Downloader::threadFinished(int /*index*/)
     finishedThreadCount_++;
 //    qDebug() << finishedThreadCount << "/" << THREAD_COUNT;
     if(finishedThreadCount_ == THREAD_COUNT){
+        file_.close();
         emit finished();
         qDebug() << "finish:" << file_.fileName();
     }
