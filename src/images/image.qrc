@@ -2,5 +2,6 @@
     <qresource prefix="/image">
         <file>curseforge.svg</file>
         <file>modrinth.svg</file>
+        <file>github.svg</file>
     </qresource>
 </RCC>

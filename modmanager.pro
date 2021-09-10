@@ -30,6 +30,7 @@ SOURCES += \
     src/modrinth/modrinthfileinfo.cpp \
     src/modrinth/modrinthmod.cpp \
     src/modrinth/modrinthmodinfo.cpp \
+    src/ui/aboutdialog.cpp \
     src/ui/browsermanagerdialog.cpp \
     src/ui/curseforgefileitemwidget.cpp \
     src/ui/curseforgemodbrowser.cpp \
@@ -76,6 +77,7 @@ HEADERS += \
     src/modrinth/modrinthfileinfo.h \
     src/modrinth/modrinthmod.h \
     src/modrinth/modrinthmodinfo.h \
+    src/ui/aboutdialog.h \
     src/ui/browsermanagerdialog.h \
     src/ui/curseforgefileitemwidget.h \
     src/ui/curseforgemodbrowser.h \
@@ -103,6 +105,7 @@ HEADERS += \
     src/util/updatesourcedelegate.h
 
 FORMS += \
+    src/ui/aboutdialog.ui \
     src/ui/browsermanagerdialog.ui \
     src/ui/curseforgefileitemwidget.ui \
     src/ui/curseforgemodbrowser.ui \

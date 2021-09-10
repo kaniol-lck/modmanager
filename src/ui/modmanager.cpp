@@ -6,8 +6,11 @@
 #include "MurmurHash2.h"
 
 #include <QDebug>
+#include <QUrl>
+#include <QDesktopServices>
 #include <QMessageBox>
 
+#include "aboutdialog.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
 #include "localmodbrowser.h"
@@ -204,3 +207,24 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
     if(!menu->actions().isEmpty())
         menu->exec(ui->browserTreeWidget->mapToGlobal(pos));
 }
+
+void ModManager::on_action_About_Mod_Manager_triggered()
+{
+    auto dialog = new AboutDialog(this);
+    dialog->exec();
+}
+
+
+void ModManager::on_actionView_Curseforge_triggered()
+{
+    QUrl url("https://www.curseforge.com/minecraft/mc-mods");
+    QDesktopServices::openUrl(url);
+}
+
+
+void ModManager::on_actionVisit_Modrinth_triggered()
+{
+    QUrl url("https://modrinth.com/mods");
+    QDesktopServices::openUrl(url);
+}
+

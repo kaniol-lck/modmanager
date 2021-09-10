@@ -38,6 +38,12 @@ private slots:
 
     void on_browserTreeWidget_customContextMenuRequested(const QPoint &pos);
 
+    void on_action_About_Mod_Manager_triggered();
+
+    void on_actionView_Curseforge_triggered();
+
+    void on_actionVisit_Modrinth_triggered();
+
 private:
     Ui::ModManager *ui;
     CurseforgeModBrowser *curseforgeModBrowser_;

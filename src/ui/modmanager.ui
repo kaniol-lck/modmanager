@@ -104,13 +104,23 @@ QTreeView::branch {
    </property>
    <widget class="QMenu" name="menuTools">
     <property name="title">
-     <string>Tools</string>
+     <string>&amp;Tools</string>
     </property>
     <addaction name="actionManage_Browser"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionView_Curseforge"/>
+    <addaction name="actionVisit_Modrinth"/>
+    <addaction name="separator"/>
+    <addaction name="action_About_Mod_Manager"/>
+   </widget>
    <addaction name="menuTools"/>
+   <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionPreferences">
@@ -129,6 +139,24 @@ QTreeView::branch {
    </property>
    <property name="text">
     <string>Manage Local Mod Browser</string>
+   </property>
+  </action>
+  <action name="action_About_Mod_Manager">
+   <property name="icon">
+    <iconset theme="help-about"/>
+   </property>
+   <property name="text">
+    <string>&amp;About Mod Manager</string>
+   </property>
+  </action>
+  <action name="actionView_Curseforge">
+   <property name="text">
+    <string>Visit Curseforge</string>
+   </property>
+  </action>
+  <action name="actionVisit_Modrinth">
+   <property name="text">
+    <string>Visit Modrinth</string>
    </property>
   </action>
  </widget>
