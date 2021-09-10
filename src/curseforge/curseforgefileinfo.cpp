@@ -19,15 +19,15 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
     //I don't know why curseforge put game verison and modloader together
     auto versionList = value(variant, "gameVersion").toStringList();
     for(const auto &version : versionList){
-        auto v = GameVersion::deduceFromString(version);
-        if(v.has_value()){
-            fileInfo.gameVersions_ << v.value();
-            continue;
-        }
         auto loaderType = ModLoaderType::fromString(version);
-        if(loaderType != ModLoaderType::Any){
+        if(loaderType != ModLoaderType::Any)
             fileInfo.loaderTypes_ << loaderType;
-            continue;
+        else {
+            auto v = GameVersion::deduceFromString(version);
+            if(v.has_value())
+                fileInfo.gameVersions_ << v.value();
+            else
+                fileInfo.gameVersions_ << version;
         }
     }
 

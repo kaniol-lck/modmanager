@@ -111,12 +111,12 @@ void LocalModItemWidget::startUpdate()
 {
     ui->updateButton->setText(tr("Updating"));
     ui->updateButton->setEnabled(false);
-    ui->updateProgress->setMaximum(mod_->updateCurseforgeFileInfo().value().size());
     ui->updateProgress->setVisible(true);
 }
 
-void LocalModItemWidget::updateProgress(qint64 bytesReceived)
+void LocalModItemWidget::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
+    ui->updateProgress->setMaximum(bytesTotal);
     ui->updateProgress->setValue(bytesReceived);
 }
 

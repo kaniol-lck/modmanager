@@ -22,10 +22,7 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod, 
     ui->modAuthors->setText("by <b>" + mod->modInfo().author() + "</b>");
     ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
 
-    mod->acquireFullInfo();
-    connect(mod, &ModrinthMod::fullInfoReady, this, [=]{
-        mod->acquireFileList();
-    });
+    mod->acquireFileList();
 
     connect(mod, &ModrinthMod::iconReady, this, &ModrinthModItemWidget::updateIcon);
     connect(mod, &ModrinthMod::fileListReady, this, &ModrinthModItemWidget::updateFileList);

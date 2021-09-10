@@ -68,8 +68,8 @@ void ModrinthMod::acquireFileList()
     gettingFileList_ = true;
 
     api_->getVersions(modInfo_.modId_, [=](const auto &files){
-        modInfo_.fileList_ << files;
         gettingFileList_ = false;
+        modInfo_.fileList_ = files;
         emit fileListReady();
     });
 }

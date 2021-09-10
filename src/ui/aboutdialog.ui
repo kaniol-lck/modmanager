@@ -35,7 +35,7 @@
         </font>
        </property>
        <property name="text">
-        <string>v1.0.0 alpha1</string>
+        <string notr="true">v1.0.0 alpha2</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>

@@ -107,8 +107,6 @@ void ModrinthModBrowser::getModList(QString name, int index)
 
         //new search
         if(currentIndex_ == 0){
-            for(auto mod : qAsConst(modList_))
-                mod->deleteLater();
             modList_.clear();
             for(int i = 0; i < ui->modListWidget->count(); i++)
                 ui->modListWidget->itemWidget(ui->modListWidget->item(i))->deleteLater();
