@@ -27,8 +27,9 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
     ui->updateTableView->setColumnWidth(SourceColumn, 140);
 
     for(const auto &mod : modPath_->modList()){
-        auto type = mod->updateType();
+        auto type = mod->defaultUpdateType();
         if(type == LocalMod::None) continue;
+        auto names = mod->updateNames(type);
 
         auto nameItem = new QStandardItem();
         nameItem->setText(mod->modInfo().name());
@@ -38,19 +39,13 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
         nameItem->setEditable(false);
 
         auto beforeItem = new QStandardItem();
-        if(type == LocalMod::Curseforge)
-            beforeItem->setText(getDisplayName(mod->currentCurseforgeFileInfo().value()));
-        else if(type == LocalMod::Modrinth)
-            beforeItem->setText(getDisplayName(mod->currentModrinthFileInfo().value()));
+        beforeItem->setText(names.first);
         beforeItem->setForeground(Qt::red);
         beforeItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         beforeItem->setEditable(false);
 
         auto afterItem = new QStandardItem();
-        if(type == LocalMod::Curseforge)
-            afterItem->setText(getDisplayName(mod->updateCurseforgeFileInfo().value()));
-        else if(type == LocalMod::Modrinth)
-            afterItem->setText(getDisplayName(mod->updateModrinthFileInfo().value()));
+        afterItem->setText(names.second);
         afterItem->setForeground(Qt::green);
         afterItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         afterItem->setEditable(false);
@@ -62,7 +57,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
         sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
         model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
-        modUpdateList_ << QPair(mod, mod->updateType());
+        modUpdateList_ << QPair(mod, mod->defaultUpdateType());
 
         auto updateSourceDelegate = new UpdateSourceDelegate(mod->updateTypes());
         ui->updateTableView->setItemDelegateForRow(model_.rowCount() - 1, updateSourceDelegate);
@@ -79,17 +74,12 @@ void LocalModUpdateDialog::onUpdateSourceChanged(int row, LocalMod::ModWebsiteTy
 {
     modUpdateList_[row].second = type;
     auto mod = modUpdateList_[row].first;
+    auto names = mod->updateNames(type);
 
     auto beforeItem = model_.item(row, BeforeColumn);
     auto afterItem = model_.item(row, AfterColumn);
-    if(type == LocalMod::Curseforge){
-        beforeItem->setText(getDisplayName(mod->currentCurseforgeFileInfo().value()));
-        afterItem->setText(getDisplayName(mod->updateCurseforgeFileInfo().value()));
-    }
-    else if(type == LocalMod::Modrinth){
-        beforeItem->setText(getDisplayName(mod->currentModrinthFileInfo().value()));
-        afterItem->setText(getDisplayName(mod->updateModrinthFileInfo().value()));
-    }
+    beforeItem->setText(names.first);
+    afterItem->setText(names.second);
 }
 
 

@@ -62,7 +62,7 @@ void LocalModItemWidget::updateInfo()
 
 void LocalModItemWidget::on_updateButton_clicked()
 {
-    mod_->update(mod_->updateType());
+    mod_->update(mod_->defaultUpdateType());
 }
 
 void LocalModItemWidget::curseforgeUpdateReady(bool need)

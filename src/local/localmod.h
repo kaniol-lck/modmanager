@@ -4,6 +4,7 @@
 #include <QObject>
 #include <optional>
 
+#include "updatable.hpp"
 #include "localmodinfo.h"
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
@@ -41,19 +42,12 @@ public:
     void checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
     void checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
 
-    ModWebsiteType updateType() const;
+    ModWebsiteType defaultUpdateType() const;
     QList<ModWebsiteType> updateTypes() const;
+    QPair<QString, QString> updateNames(ModWebsiteType type) const;
     void update(ModWebsiteType type);
 
     qint64 updateSize(ModWebsiteType type) const;
-
-    std::optional<CurseforgeFileInfo> currentCurseforgeFileInfo() const;
-
-    std::optional<CurseforgeFileInfo> updateCurseforgeFileInfo() const;
-
-    std::optional<ModrinthFileInfo> currentModrinthFileInfo() const;
-
-    std::optional<ModrinthFileInfo> updateModrinthFileInfo() const;
 
     CurseforgeAPI *curseforgeAPI() const;
 
@@ -82,20 +76,15 @@ signals:
     void updateFinished();
 
 private:
-    template<typename T>
-    static std::optional<T> findUpdate(QList<T> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType);
-
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     LocalModInfo modInfo_;
 
     CurseforgeMod *curseforgeMod_ = nullptr;
-    std::optional<CurseforgeFileInfo> currentCurseforgeFileInfo_;
-    std::optional<CurseforgeFileInfo> updateCurseforgeFileInfo_;
+    Updatable<CurseforgeFileInfo> curseforgeUpdate_;
 
     ModrinthMod *modrinthMod_ = nullptr;
-    std::optional<ModrinthFileInfo> currentModrinthFileInfo_;
-    std::optional<ModrinthFileInfo> updateModrinthFileInfo_;
+    Updatable<ModrinthFileInfo> modrinthUpdate_;
 };
 
 #endif // LOCALMOD_H
