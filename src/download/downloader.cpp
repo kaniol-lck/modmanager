@@ -95,7 +95,8 @@ void Downloader::handleRedirect()
         request.setSslConfiguration(sslConfig);
         #endif
 
-        auto reply = accessManager()->head(request);
+        static QNetworkAccessManager accessManager;
+        auto reply = accessManager.head(request);
         if(!reply) continue;
         QEventLoop loop;
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);

@@ -12,9 +12,3 @@ QString numberConvert(int size, const QString &suffix, int prec, int limit){
     else
         return QString::number(size / 1000000., 'g', prec) + "G" + suffix;
 }
-
-QNetworkAccessManager *accessManager()
-{
-    static QNetworkAccessManager manager;
-    return &manager;
-}

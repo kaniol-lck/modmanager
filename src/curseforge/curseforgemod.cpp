@@ -41,7 +41,8 @@ void CurseforgeMod::acquireIcon()
     if(modInfo_.iconUrl_.isEmpty() || gettingIcon_) return;
     gettingIcon_ = true;
     QNetworkRequest request(modInfo_.iconUrl_);
-    auto reply = accessManager()->get(request);
+    static QNetworkAccessManager accessManager;
+    auto reply = accessManager.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
         gettingIcon_ = false;
         if(reply->error() != QNetworkReply::NoError) return;

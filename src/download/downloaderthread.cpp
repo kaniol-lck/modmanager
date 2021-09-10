@@ -8,10 +8,9 @@
 #include "util/funcutil.h"
 
 DownloaderThread::DownloaderThread(QObject *parent) :
-    QObject(parent)
-{
-
-}
+    QObject(parent),
+    accessManager_(new QNetworkAccessManager(this))
+{}
 
 void DownloaderThread::download(int index, const QUrl &url, QFile *file, qint64 startPos, qint64 endPos)
 {
@@ -25,15 +24,15 @@ void DownloaderThread::download(int index, const QUrl &url, QFile *file, qint64 
     QString range = QString("bytes=%0-%1").arg(startPos).arg(endPos);
     request.setRawHeader("Range", range.toUtf8());
 
-    reply_ = accessManager()->get(request);
-    connect(reply_, &QNetworkReply::finished, [=]{
+    reply_ = accessManager_->get(request);
+    connect(reply_, &QNetworkReply::finished, this, [=]{
         emit threadFinished(index);
     });
-    connect(reply_, &QNetworkReply::downloadProgress, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(reply_, &QNetworkReply::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         emit threadDownloadProgress(index, bytesReceived);
     });
     connect(reply_, &QNetworkReply::readyRead, this, &DownloaderThread::writeFile);
-    connect(reply_, &QNetworkReply::errorOccurred, [=](QNetworkReply::NetworkError code){
+    connect(reply_, &QNetworkReply::errorOccurred, this, [=](QNetworkReply::NetworkError code){
         emit threadErrorOccurred(index, code);
     });
 
