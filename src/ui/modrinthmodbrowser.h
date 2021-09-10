@@ -20,6 +20,9 @@ public:
     explicit ModrinthModBrowser(QWidget *parent = nullptr);
     ~ModrinthModBrowser();
 
+signals:
+    void downloadPathChanged(QString path);
+
 public slots:
     void searchModByPathInfo(const LocalModPathInfo &info);
 
@@ -41,6 +44,8 @@ private slots:
     void on_loaderSelect_currentIndexChanged(int);
 
     void on_openFolderButton_clicked();
+
+    void on_downloadPathSelect_currentIndexChanged(int index);
 
 private:
     Ui::ModrinthModBrowser *ui;

@@ -1,0 +1,36 @@
+name: macOS
+on:
+  push:
+    paths:
+      - '*.pro'
+      - 'src/**'
+      - '.github/workflows/macos.yml'
+  pull_request:
+    paths:
+      - '*.pro'
+      - 'src/**'
+      - '.github/workflows/macos.yml'
+jobs:
+  build:
+    name: Build
+    runs-on: macos-latest
+    steps:
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2.13.0
+        with:
+          version: 5.15.2
+          cached: 'false'
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: build macos
+        run: |
+          qmake
+          make
+      - name: package
+        run: |
+          macdeployqt bin/release/${targetName}.app -qmldir=. -verbose=1 -dmg
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{github.event.repository.name}}-Qt5.15.2.zip
+          path: bin/release/${{ env.targetName }}.app

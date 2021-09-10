@@ -19,6 +19,7 @@ public:
     explicit ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod, const QString &path);
     ~ModrinthModItemWidget();
 
+public slots:
     void setDownloadPath(const QString &newDownloadPath);
 
 private slots:

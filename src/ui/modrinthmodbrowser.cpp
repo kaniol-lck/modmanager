@@ -129,10 +129,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
             auto downloadPath = downloadPathList_.at(ui->downloadPathSelect->currentIndex());
             auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, modrinthMod, downloadPath);
-            connect(ui->downloadPathSelect, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, [=](int i){
-                if(i < 0 || i >= downloadPathList_.size()) return;
-                modItemWidget->setDownloadPath(downloadPathList_.at(i));
-            });
+            connect(this, &ModrinthModBrowser::downloadPathChanged, modItemWidget, &ModrinthModItemWidget::setDownloadPath);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
             modrinthMod->acquireIcon();
@@ -173,5 +170,12 @@ void ModrinthModBrowser::on_openFolderButton_clicked()
     QUrl url(dir.absolutePath());
     url.setScheme("file");
     QDesktopServices::openUrl(url);
+}
+
+
+void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
+{
+    if(!isUiSet_ || index < 0 || index >= downloadPathList_.size()) return;
+    emit downloadPathChanged(downloadPathList_.at(index));
 }
 

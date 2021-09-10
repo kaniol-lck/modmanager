@@ -143,3 +143,9 @@ include(3rdparty/MurmurHash/murmurhash.pri)
 
 RESOURCES += \
     src/images/image.qrc
+
+TARGET = modmanager
+
+TEMPLATE = app
+
+QMAKE_LFLAGS += -no-pie
