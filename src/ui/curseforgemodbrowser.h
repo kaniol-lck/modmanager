@@ -52,8 +52,8 @@ private slots:
 private:
     Ui::CurseforgeModBrowser *ui;
     CurseforgeAPI *api_;
+    QList<int> idList_;
     QStringList downloadPathList_;
-    QList<CurseforgeMod*> modList_;
     QString currentName_;
     int currentIndex_;
     bool isUiSet_ = false;

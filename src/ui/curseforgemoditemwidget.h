@@ -19,6 +19,8 @@ public:
     explicit CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload, const QString &path);
     ~CurseforgeModItemWidget();
 
+    CurseforgeMod *mod() const;
+
 public slots:
     void setDownloadPath(const QString &newDownloadPath);
 

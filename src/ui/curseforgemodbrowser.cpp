@@ -122,7 +122,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 
         //new search
         if(currentIndex_ == 0){
-            modList_.clear();
+            idList_.clear();
             for(int i = 0; i < ui->modListWidget->count(); i++)
                 ui->modListWidget->itemWidget(ui->modListWidget->item(i))->deleteLater();
             ui->modListWidget->clear();
@@ -137,9 +137,12 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
         //show them
         int shownCount = 0;
         for(const auto &info : qAsConst(infoList)){
-            auto mod = new CurseforgeMod(this, info);
-            modList_.append(mod);
+            //do not load duplicate mod
+            if(idList_.contains(info.id()))
+                continue;
+            idList_ << info.id();
 
+            auto mod = new CurseforgeMod(this, info);
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 100));
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
@@ -167,7 +170,8 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 
 void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
-    auto mod = modList_.at(index.row());
+    auto widget = ui->modListWidget->itemWidget(ui->modListWidget->item(index.row()));
+    auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
     auto dialog = new CurseforgeModInfoDialog(this, mod);
     dialog->show();
 }
@@ -190,9 +194,11 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
     for(int i = 0; i < ui->modListWidget->count(); i++){
         auto item = ui->modListWidget->item(i);
         auto isHidden = item->isHidden();
-        auto mod = modList_.at(i);
+        auto widget = ui->modListWidget->itemWidget(item);
+        auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
         auto selectedLoaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
         auto isShown = selectedLoaderType == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(selectedLoaderType);
+        item->setHidden(!isShown);
         //hidden -> shown, while not have downloaded thumbnail yet
         if(isHidden && isShown && mod->modInfo().iconBytes().isEmpty())
             mod->acquireIcon();

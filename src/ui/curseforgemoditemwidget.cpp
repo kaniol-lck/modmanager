@@ -87,6 +87,11 @@ void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
     });
 }
 
+CurseforgeMod *CurseforgeModItemWidget::mod() const
+{
+    return mod_;
+}
+
 void CurseforgeModItemWidget::setDownloadPath(const QString &newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
