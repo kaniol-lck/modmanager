@@ -50,6 +50,8 @@ private slots:
 
     void on_openFolderButton_clicked();
 
+    void on_deleteOldButton_clicked();
+
 private:
     Ui::LocalModBrowser *ui;
     LocalModPath *modPath_;

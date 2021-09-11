@@ -9,7 +9,12 @@ class LocalModInfo
 public:
     explicit LocalModInfo(QString path);
 
+    bool operator==(const LocalModInfo &other) const;
+
     bool isFabricMod() const;
+
+    void addOld();
+    void removeOld();
 
     const QString &id() const;
     const QString &path() const;
@@ -19,9 +24,7 @@ public:
     const QString &sha1() const;
     const QString &murmurhash() const;
     const QByteArray &iconBytes() const;
-
     const QStringList &authors() const;
-
     const QFileInfo &fileInfo() const;
 
 private:

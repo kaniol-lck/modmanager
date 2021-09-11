@@ -429,12 +429,17 @@
         <translation>打开文件夹</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.ui" line="72"/>
+        <location filename="../src/ui/localmodbrowser.ui" line="73"/>
+        <source>Delete Old</source>
+        <translation>删除旧版</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodbrowser.ui" line="83"/>
         <source>Find new mods</source>
         <translation>寻找新的mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.ui" line="83"/>
+        <location filename="../src/ui/localmodbrowser.ui" line="94"/>
         <location filename="../src/ui/localmodbrowser.cpp" line="57"/>
         <source>Search on mod websites</source>
         <translation>在mod网站上搜索</translation>
@@ -671,33 +676,38 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="58"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="54"/>
         <source>Name</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="78"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="104"/>
+        <source>Rollback</source>
+        <translation>回退</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmoditemwidget.ui" line="248"/>
         <source>Version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="112"/>
-        <location filename="../src/ui/localmoditemwidget.ui" line="132"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="122"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="195"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="149"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="93"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="210"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="31"/>
         <source>by xxx</source>
         <translation>by xxx</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="231"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="222"/>
         <source>Description: balabalabalabalabalabalabalabalabala</source>
         <translation></translation>
     </message>
@@ -706,12 +716,12 @@
         <translation type="vanished">Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.cpp" line="112"/>
+        <location filename="../src/ui/localmoditemwidget.cpp" line="126"/>
         <source>Updating</source>
         <translation>更新中</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.cpp" line="129"/>
+        <location filename="../src/ui/localmoditemwidget.cpp" line="143"/>
         <source>Retry Update</source>
         <translation>重试更新</translation>
     </message>

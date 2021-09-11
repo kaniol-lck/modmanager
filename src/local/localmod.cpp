@@ -239,6 +239,8 @@ void LocalMod::update(ModWebsiteType type)
             file.rename(file.fileName() + ".old");
 
             //update info
+            modInfo_.addOld();
+            addOldInfo(modInfo_);
             setModInfo(newModInfo);
         }
         emit updateFinished(true);
@@ -275,6 +277,46 @@ CurseforgeAPI *LocalMod::curseforgeAPI() const
 ModrinthAPI *LocalMod::modrinthAPI() const
 {
     return modrinthAPI_;
+}
+
+void LocalMod::addOldInfo(const LocalModInfo &oldInfo)
+{
+    oldInfos_ << oldInfo;
+}
+
+const QList<LocalModInfo> &LocalMod::oldInfos() const
+{
+    return oldInfos_;
+}
+
+const QList<LocalModInfo> &LocalMod::newInfos() const
+{
+    return newInfos_;
+}
+
+void LocalMod::rollback(LocalModInfo info)
+{
+    QFile file(modInfo_.path());
+    QFile oldFile(info.path());
+
+    //keep current info as old
+    file.rename(file.fileName().append(".old"));
+    modInfo_.addOld();
+    oldInfos_ << modInfo_;
+
+    //retrieve info
+    oldFile.rename(oldFile.fileName().remove(".old"));
+    oldInfos_.removeAll(info);
+    info.removeOld();
+    setModInfo(info);
+}
+
+void LocalMod::deleteAllOld()
+{
+    for(const auto &oldInfo : qAsConst(oldInfos_))
+        QFile(oldInfo.path()).remove();
+    oldInfos_.clear();
+    emit modInfoUpdated();
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

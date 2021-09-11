@@ -16,7 +16,7 @@ class LocalModPath : public QObject
 public:
     explicit LocalModPath(QObject *parent, const LocalModPathInfo &info);
 
-    void reload();
+    void loadMods();
 
     void searchOnWebsites();
     void checkModUpdates();
@@ -25,13 +25,16 @@ public:
     const LocalModPathInfo &info() const;
     void setInfo(const LocalModPathInfo &newInfo);
 
-    const QList<LocalMod*> &modList() const;
-
     CurseforgeAPI *curseforgeAPI() const;
 
     ModrinthAPI *modrinthAPI() const;
 
     int updatableCount() const;
+
+    const QMap<QString, LocalMod *> &modMap() const;
+
+    void duplicationCheck() const;
+    void deleteAllOld() const;
 
 signals:
     void modListUpdated();
@@ -51,7 +54,7 @@ signals:
 
 private:
     LocalModPathInfo info_;
-    QList<LocalMod*> modList_;
+    QMultiMap<QString, LocalMod*> modMap_;
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     int updatableCount_;

@@ -57,7 +57,7 @@ void LocalModBrowser::updateModList()
     ui->checkUpdatesButton->setText(tr("Search on mod websites"));
 
     ui->modListWidget->clear();
-    for (const auto &mod: modPath_->modList()) {
+    for (const auto &mod: modPath_->modMap()) {
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
 
         auto *item = new LocalModSortItem(mod);
@@ -75,12 +75,12 @@ void LocalModBrowser::startCheckWebsites()
     ui->checkUpdatesProgress->setValue(0);
     ui->checkUpdatesProgress->setVisible(true);
     ui->checkUpdatesButton->setText(tr("Searching on mod websites..."));
-    ui->checkUpdatesProgress->setMaximum(modPath_->modList().size());
+    ui->checkUpdatesProgress->setMaximum(modPath_->modMap().size());
 }
 
 void LocalModBrowser::websiteCheckedCountUpdated(int checkedCount)
 {
-    ui->checkUpdatesButton->setText(tr("Searching on mod websites... ( %1/%2 )").arg(checkedCount).arg(modPath_->modList().size()));
+    ui->checkUpdatesButton->setText(tr("Searching on mod websites... ( %1/%2 )").arg(checkedCount).arg(modPath_->modMap().size()));
     ui->checkUpdatesProgress->setValue(checkedCount);
 }
 
@@ -98,12 +98,12 @@ void LocalModBrowser::startCheckUpdates()
     ui->checkUpdatesProgress->setValue(0);
     ui->checkUpdatesProgress->setVisible(true);
     ui->checkUpdatesButton->setText(tr("Checking updates..."));
-    ui->checkUpdatesProgress->setMaximum(modPath_->modList().size());
+    ui->checkUpdatesProgress->setMaximum(modPath_->modMap().size());
 }
 
 void LocalModBrowser::updateCheckedCountUpdated(int updateCount, int checkedCount)
 {
-    ui->checkUpdatesButton->setText(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(modPath_->modList().size()));
+    ui->checkUpdatesButton->setText(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(modPath_->modMap().size()));
     ui->checkUpdatesProgress->setValue(checkedCount);
 }
 
@@ -218,5 +218,11 @@ void LocalModBrowser::on_openFolderButton_clicked()
     QUrl url = modPath_->info().path();
     url.setScheme("file");
     QDesktopServices::openUrl(url);
+}
+
+
+void LocalModBrowser::on_deleteOldButton_clicked()
+{
+    modPath_->deleteAllOld();
 }
 

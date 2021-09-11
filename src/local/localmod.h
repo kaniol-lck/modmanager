@@ -53,6 +53,14 @@ public:
 
     ModrinthAPI *modrinthAPI() const;
 
+    void addOldInfo(const LocalModInfo &oldInfo);
+    const QList<LocalModInfo> &oldInfos() const;
+
+    const QList<LocalModInfo> &newInfos() const;
+
+    void rollback(LocalModInfo info);
+    void deleteAllOld();
+
 signals:
     void modInfoUpdated();
 
@@ -79,6 +87,8 @@ private:
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     LocalModInfo modInfo_;
+    QList<LocalModInfo> newInfos_;
+    QList<LocalModInfo> oldInfos_;
 
     CurseforgeMod *curseforgeMod_ = nullptr;
     Updatable<CurseforgeFileInfo> curseforgeUpdate_;

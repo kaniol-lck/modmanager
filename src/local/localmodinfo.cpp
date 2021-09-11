@@ -74,6 +74,12 @@ LocalModInfo::LocalModInfo(QString path) :
     murmurhash_ = QByteArray::number(MurmurHash2(filteredFileContent.constData(), filteredFileContent.length(), 1));
 }
 
+bool LocalModInfo::operator==(const LocalModInfo &other) const
+{
+    //same path
+    return path_ == other.path_;
+}
+
 const QString &LocalModInfo::id() const
 {
     return id_;
@@ -127,4 +133,14 @@ const QFileInfo &LocalModInfo::fileInfo() const
 bool LocalModInfo::isFabricMod() const
 {
     return hasFabricManifest_;
+}
+
+void LocalModInfo::addOld()
+{
+    path_.append(".old");
+}
+
+void LocalModInfo::removeOld()
+{
+    path_.remove(".old");
 }

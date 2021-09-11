@@ -62,7 +62,18 @@
         <string>Open Folder</string>
        </property>
        <property name="icon">
-        <iconset theme="folder"/>
+        <iconset theme="folder">
+         <normaloff>.</normaloff>.</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="deleteOldButton">
+       <property name="text">
+        <string>Delete Old</string>
+       </property>
+       <property name="icon">
+        <iconset theme="delete"/>
        </property>
       </widget>
      </item>
@@ -83,7 +94,8 @@
         <string>Search on mod websites</string>
        </property>
        <property name="icon">
-        <iconset theme="update-none"/>
+        <iconset theme="update-none">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>

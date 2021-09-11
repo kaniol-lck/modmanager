@@ -16,20 +16,27 @@ LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
     setInfo(info);
 }
 
-void LocalModPath::reload()
+void LocalModPath::loadMods()
 {
     auto future = QtConcurrent::run([&]{
         QList<LocalModInfo> infoList;
         //only load available mod files
         for(const auto &fileInfo : QDir(info_.path()).entryInfoList({ "*.jar" }, QDir::Files))
             infoList << LocalModInfo(fileInfo.absoluteFilePath());
-        return infoList;
+
+        QList<LocalModInfo> oldInfoList;
+        //only load old mod files
+        for(const auto &fileInfo : QDir(info_.path()).entryInfoList({ "*.jar.old" }, QDir::Files))
+            oldInfoList << LocalModInfo(fileInfo.absoluteFilePath());
+        return std::tuple{ infoList, oldInfoList };
     });
-    auto watcher = new QFutureWatcher<QList<LocalModInfo>>(this);
+    auto watcher = new QFutureWatcher<std::tuple<QList<LocalModInfo>, QList<LocalModInfo>>>(this);
     watcher->setFuture(future);
-    connect(watcher, &QFutureWatcher<QList<LocalModInfo>>::finished, this, [=]{
-        modList_.clear();
-        for(const auto &modInfo : watcher->result()){
+    connect(watcher, &QFutureWatcher<std::tuple<QList<LocalModInfo>, QList<LocalModInfo>>>::finished, this, [=]{
+        modMap_.clear();
+        auto [info, oldInfo] = watcher->result();
+        //load mods
+        for(const auto &modInfo : qAsConst(info)){
             //TODO: other loader types
             if(modInfo.isFabricMod()){
                 auto mod = new LocalMod(this, modInfo);
@@ -38,8 +45,14 @@ void LocalModPath::reload()
                     emit updatesReady();
                 });
 
-                modList_ << mod;
+                modMap_.insert(modInfo.id(), mod);
             }
+        }
+        //load old mods
+        for(const auto &oldModInfo : qAsConst(oldInfo)){
+            //TODO: other loader types
+            if(oldModInfo.isFabricMod() && modMap_.contains(oldModInfo.id()))
+                modMap_.value(oldModInfo.id())->addOldInfo(oldModInfo);
         }
 
         emit modListUpdated();
@@ -58,6 +71,8 @@ void LocalModPath::reload()
             });
         }
 
+        duplicationCheck();
+
     });
 }
 
@@ -65,11 +80,11 @@ void LocalModPath::searchOnWebsites()
 {
     emit checkWebsitesStarted();
     auto count = std::make_shared<int>(0);
-    for(const auto &mod : qAsConst(modList_)){
+    for(const auto &mod : qAsConst(modMap_)){
         connect(mod, &LocalMod::websiteReady, this, [=]{
             (*count)++;
             emit websiteCheckedCountUpdated(*count);
-            if(*count == modList_.size()) emit websitesReady();
+            if(*count == modMap_.size()) emit websitesReady();
         });
         mod->searchOnWebsite();
     }
@@ -80,13 +95,13 @@ void LocalModPath::checkModUpdates()
     emit checkUpdatesStarted();
     auto count = std::make_shared<int>(0);
     auto updateCount = std::make_shared<int>(0);
-    for(const auto &mod : qAsConst(modList_)){
+    for(const auto &mod : qAsConst(modMap_)){
         connect(mod, &LocalMod::updateReady, this, [=](bool bl){
             (*count)++;
             if(bl) (*updateCount)++;
             emit updateCheckedCountUpdated(*updateCount, *count);
             //done
-            if(*count == modList_.size()){
+            if(*count == modMap_.size()){
                 updatableCount_ = *updateCount;
                 emit updatesReady();
             }
@@ -139,12 +154,7 @@ const LocalModPathInfo &LocalModPath::info() const
 void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
 {
     info_ = newInfo;
-    reload();
-}
-
-const QList<LocalMod*> &LocalModPath::modList() const
-{
-    return modList_;
+    loadMods();
 }
 
 CurseforgeAPI *LocalModPath::curseforgeAPI() const
@@ -160,4 +170,24 @@ ModrinthAPI *LocalModPath::modrinthAPI() const
 int LocalModPath::updatableCount() const
 {
     return updatableCount_;
+}
+
+const QMap<QString, LocalMod *> &LocalModPath::modMap() const
+{
+    return modMap_;
+}
+
+void LocalModPath::duplicationCheck() const
+{
+    for(const auto &id : modMap_.uniqueKeys()){
+        if(modMap_.values(id).size() > 1)
+            qDebug() << "duplicate: " << id;
+    }
+}
+
+void LocalModPath::deleteAllOld() const
+{
+    for(auto mod : modMap_)
+        mod->deleteAllOld();
+    //TODO: inform finished
 }

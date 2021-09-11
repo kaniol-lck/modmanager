@@ -1,6 +1,8 @@
 #include "localmoditemwidget.h"
 #include "ui_localmoditemwidget.h"
 
+#include <QMenu>
+
 #include "local/localmodinfo.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
@@ -57,6 +59,21 @@ void LocalModItemWidget::updateInfo()
         QPixmap pixelmap;
         pixelmap.loadFromData(mod_->modInfo().iconBytes());
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+    }
+
+    //rollback
+    if(mod_->oldInfos().isEmpty())
+        ui->rollbackButton->setVisible(false);
+    else{
+        ui->rollbackButton->setVisible(true);
+        ui->rollbackButton->setEnabled(true);
+        auto menu = new QMenu(this);
+        for(const auto &info : mod_->oldInfos())
+            connect(menu->addAction(info.version()), &QAction::triggered, this, [=]{
+                mod_->rollback(info);
+//                ui->rollbackButton->setEnabled(false);
+            });
+        ui->rollbackButton->setMenu(menu);
     }
 }
 

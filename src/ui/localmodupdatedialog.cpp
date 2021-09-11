@@ -26,7 +26,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
     ui->updateTableView->horizontalHeader()->setSectionResizeMode(SourceColumn, QHeaderView::Fixed);
     ui->updateTableView->setColumnWidth(SourceColumn, 140);
 
-    for(const auto &mod : modPath_->modList()){
+    for(const auto &mod : modPath_->modMap()){
         auto type = mod->defaultUpdateType();
         if(type == LocalMod::None) continue;
         auto names = mod->updateNames(type);

@@ -27,14 +27,17 @@ bool Downloader::download(const QUrl &url, const QString &path, const QString &f
 
     QDir dir(path);
 
+    QString fileName;
+
     //get name
     if(!filename.isEmpty())
-        file_.setFileName(dir.absoluteFilePath(filename));
+        fileName = dir.absoluteFilePath(filename);
     else if(!url.fileName().isEmpty())
-        file_.setFileName(dir.absoluteFilePath(url.fileName()));
+        fileName = dir.absoluteFilePath(url.fileName());
     else
-        file_.setFileName(dir.absoluteFilePath("index.html"));
+        fileName = dir.absoluteFilePath("index.html");
 
+    file_.setFileName(fileName + ".downloading");
     if(!file_.open(QIODevice::WriteOnly)) return false;
 
     emit downloadInfoReady();
@@ -48,6 +51,7 @@ void Downloader::threadFinished(int /*index*/)
 //    qDebug() << finishedThreadCount << "/" << THREAD_COUNT;
     if(finishedThreadCount_ == THREAD_COUNT){
         file_.close();
+        file_.rename(file_.fileName().remove(".downloading"));
         emit finished();
         qDebug() << "finish:" << file_.fileName();
     }

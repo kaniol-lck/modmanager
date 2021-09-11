@@ -199,7 +199,7 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
             editLocalPath(index);
         });
         connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
-            LocalModPathManager::pathList().at(index)->reload();
+            LocalModPathManager::pathList().at(index)->loadMods();
         });
         connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
             if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
