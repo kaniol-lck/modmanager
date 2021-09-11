@@ -87,7 +87,7 @@ void ModManager::syncPathList()
         if(i < 0){
             //not present, new one
             pathList_ << path;
-            auto item = new QTreeWidgetItem(localItem_, {path->info().showText()});
+            auto item = new QTreeWidgetItem(localItem_, {path->info().displayName()});
             localItem_->addChild(item);
             item->setIcon(0, QIcon::fromTheme("folder"));
             auto localModBrowser = new LocalModBrowser(this, path);
@@ -132,8 +132,9 @@ void ModManager::editLocalPath(int index)
     auto pathInfo = LocalModPathManager::pathList().at(index)->info();
     auto dialog = new LocalModBrowserSettingsDialog(this, pathInfo);
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
-        LocalModPathManager::pathList().at(index)->setInfo(newInfo);
-        localItem_->child(index)->setText(0, newInfo.showText());
+        if(newInfo != LocalModPathManager::pathList().at(index)->info())
+            LocalModPathManager::pathList().at(index)->setInfo(newInfo);
+        localItem_->child(index)->setText(0, newInfo.displayName());
     });
     dialog->exec();
 }
@@ -196,6 +197,9 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
 
         connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
             editLocalPath(index);
+        });
+        connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
+            LocalModPathManager::pathList().at(index)->reload();
         });
         connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
             if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;

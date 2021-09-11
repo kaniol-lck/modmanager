@@ -16,6 +16,8 @@ class LocalModPath : public QObject
 public:
     explicit LocalModPath(QObject *parent, const LocalModPathInfo &info);
 
+    void reload();
+
     void searchOnWebsites();
     void checkModUpdates();
     void updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList);

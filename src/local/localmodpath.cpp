@@ -16,6 +16,46 @@ LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
     setInfo(info);
 }
 
+void LocalModPath::reload()
+{
+    auto future = QtConcurrent::run([&]{
+        QList<LocalModInfo> infoList;
+        //only load available mod files
+        for(const auto &fileInfo : QDir(info_.path()).entryInfoList({ "*.jar" }, QDir::Files))
+            infoList << LocalModInfo(fileInfo.absoluteFilePath());
+        return infoList;
+    });
+    auto watcher = new QFutureWatcher<QList<LocalModInfo>>(this);
+    watcher->setFuture(future);
+    connect(watcher, &QFutureWatcher<QList<LocalModInfo>>::finished, this, [=]{
+        modList_.clear();
+        for(const auto &modInfo : watcher->result()){
+            //TODO: other loader types
+            if(modInfo.isFabricMod()){
+                auto mod = new LocalMod(this, modInfo);
+                modList_ << mod;
+            }
+        }
+
+        emit modListUpdated();
+
+        Config config;
+        auto autoSearchOnWebsites = config.getAutoSearchOnWebsites();
+        auto autoCheckUpdate = config.getAutoCheckUpdate();
+
+        if(autoSearchOnWebsites)
+            searchOnWebsites();
+
+        if(autoCheckUpdate){
+            connect(this, &LocalModPath::websitesReady, [=]{
+                checkModUpdates();
+                disconnect(SIGNAL(websitesReady()));
+            });
+        }
+
+    });
+}
+
 void LocalModPath::searchOnWebsites()
 {
     emit checkWebsitesStarted();
@@ -83,42 +123,7 @@ const LocalModPathInfo &LocalModPath::info() const
 void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
 {
     info_ = newInfo;
-    modList_.clear();
-    auto future = QtConcurrent::run([&]{
-        QList<LocalModInfo> infoList;
-        //only load available mod files
-        for(const auto &fileInfo : QDir(info_.path()).entryInfoList({ "*.jar" }, QDir::Files))
-            infoList << LocalModInfo(fileInfo.absoluteFilePath());
-        return infoList;
-    });
-    auto watcher = new QFutureWatcher<QList<LocalModInfo>>(this);
-    watcher->setFuture(future);
-    connect(watcher, &QFutureWatcher<QList<LocalModInfo>>::finished, this, [=]{
-        for(const auto &modInfo : watcher->result()){
-            //TODO: other loader types
-            if(modInfo.isFabricMod()){
-                auto mod = new LocalMod(this, modInfo);
-                modList_ << mod;
-            }
-        }
-
-        emit modListUpdated();
-
-        Config config;
-        auto autoSearchOnWebsites = config.getAutoSearchOnWebsites();
-        auto autoCheckUpdate = config.getAutoCheckUpdate();
-
-        if(autoSearchOnWebsites)
-            searchOnWebsites();
-
-        if(autoCheckUpdate){
-            connect(this, &LocalModPath::websitesReady, [=]{
-                checkModUpdates();
-                disconnect(SIGNAL(websitesReady()));
-            });
-        }
-
-    });
+    reload();
 }
 
 const QList<LocalMod*> &LocalModPath::modList() const

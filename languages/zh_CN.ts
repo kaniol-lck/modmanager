@@ -14,9 +14,8 @@
         <translation># Mod管理器</translation>
     </message>
     <message>
-        <location filename="../src/ui/aboutdialog.ui" line="38"/>
         <source>v1.0.0 alpha1</source>
-        <translation>v1.0.0 alpha1</translation>
+        <translation type="vanished">v1.0.0 alpha1</translation>
     </message>
     <message>
         <location filename="../src/ui/aboutdialog.ui" line="48"/>
@@ -29,27 +28,32 @@
         <translation>问题</translation>
     </message>
     <message>
-        <location filename="../src/ui/aboutdialog.ui" line="96"/>
+        <location filename="../src/ui/aboutdialog.ui" line="91"/>
+        <source>Infomation</source>
+        <translation>信息</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/aboutdialog.ui" line="102"/>
         <source>Author:</source>
         <translation>作者：</translation>
     </message>
     <message>
-        <location filename="../src/ui/aboutdialog.ui" line="110"/>
+        <location filename="../src/ui/aboutdialog.ui" line="116"/>
         <source>License:</source>
         <translation>许可证：</translation>
     </message>
     <message>
-        <location filename="../src/ui/aboutdialog.ui" line="124"/>
+        <location filename="../src/ui/aboutdialog.ui" line="130"/>
         <source>Credit:</source>
         <translation>致谢：</translation>
     </message>
     <message>
-        <location filename="../src/ui/aboutdialog.ui" line="141"/>
+        <location filename="../src/ui/aboutdialog.ui" line="150"/>
         <source>Description</source>
         <translation>描述</translation>
     </message>
     <message>
-        <location filename="../src/ui/aboutdialog.ui" line="153"/>
+        <location filename="../src/ui/aboutdialog.ui" line="162"/>
         <source>    Mod Manager is a multi-functional application for managing minecraft mods. You can easily download mods from Curseforge or Modrinth to local or update local mods through this application.
     Hope you can enjoy the convenience brought by this application. If possible, please star it on GitHub and share to friends.</source>
         <translation>  Mod管理器是一个多功能的用于管理mod的应用。通过该应用，你可以轻松地从Curseforge或Modrinth上下载mod或者更新本地的mod。
@@ -508,8 +512,12 @@
     </message>
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="147"/>
+        <source>%1 mods in %2 has been updated. Enjoy it!</source>
+        <translation>%2中的%1个mod已更新。去游戏里体验一下更新吧！</translation>
+    </message>
+    <message>
         <source>%1 mods has been updated. Enjoy it!</source>
-        <translation>已更新%1个mod。去游戏里体验一下更新吧！</translation>
+        <translation type="vanished">已更新%1个mod。去游戏里体验一下更新吧！</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodbrowser.cpp" line="149"/>
@@ -601,7 +609,7 @@
         <translation>加载器：</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowsersettingsdialog.cpp" line="54"/>
+        <location filename="../src/ui/localmodbrowsersettingsdialog.cpp" line="55"/>
         <source>Select your mod directory...</source>
         <translation>选择你的mod路径...</translation>
     </message>
@@ -657,11 +665,6 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="38"/>
-        <source>ICON</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/ui/localmoditemwidget.ui" line="58"/>
         <source>Name</source>
         <translation></translation>
@@ -683,12 +686,12 @@
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="209"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="210"/>
         <source>by xxx</source>
         <translation>by xxx</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="230"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="231"/>
         <source>Description: balabalabalabalabalabalabalabalabala</source>
         <translation></translation>
     </message>
@@ -789,53 +792,58 @@
         <translation type="vanished">+</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="27"/>
+        <location filename="../src/ui/modmanager.cpp" line="29"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="28"/>
+        <location filename="../src/ui/modmanager.cpp" line="30"/>
         <source>Explore</source>
         <translation>探索</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="29"/>
+        <location filename="../src/ui/modmanager.cpp" line="31"/>
         <source>Local</source>
         <translation>本地</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="45"/>
+        <location filename="../src/ui/modmanager.cpp" line="47"/>
         <source>Downloader</source>
         <translation>下载器</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="52"/>
+        <location filename="../src/ui/modmanager.cpp" line="54"/>
         <source>Curseforge</source>
         <translation>Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="59"/>
+        <location filename="../src/ui/modmanager.cpp" line="61"/>
         <source>Modrinth</source>
         <translation>Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="181"/>
+        <location filename="../src/ui/modmanager.cpp" line="184"/>
         <source>New Mod Path</source>
         <translation>新建mod路径</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="195"/>
+        <location filename="../src/ui/modmanager.cpp" line="198"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="198"/>
-        <location filename="../src/ui/modmanager.cpp" line="199"/>
+        <location filename="../src/ui/modmanager.cpp" line="201"/>
+        <source>Refresh</source>
+        <translation>刷新</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/modmanager.cpp" line="204"/>
+        <location filename="../src/ui/modmanager.cpp" line="205"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="199"/>
+        <location filename="../src/ui/modmanager.cpp" line="205"/>
         <source>Delete this mod path?</source>
         <translation>删除该mod路径？</translation>
     </message>
@@ -1070,12 +1078,12 @@
         <translation> 次下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="78"/>
+        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="75"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="95"/>
+        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="92"/>
         <source>Downloaded</source>
         <translation>已下载</translation>
     </message>

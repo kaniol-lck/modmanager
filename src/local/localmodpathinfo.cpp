@@ -8,19 +8,17 @@
 LocalModPathInfo::LocalModPathInfo(const QString &dir, const GameVersion &version, ModLoaderType::Type type) :
     path_(dir),
     gameVersion_(version),
-    loaderType_(type)
-{
-    name_ = showText();
-}
+    loaderType_(type),
+    isAutoName_(true)
+{}
 
 LocalModPathInfo::LocalModPathInfo(const QString &name, const QString &dir, const GameVersion &version, ModLoaderType::Type type) :
     name_(name),
     path_(dir),
     gameVersion_(version),
-    loaderType_(type)
-{
-
-}
+    loaderType_(type),
+    isAutoName_(false)
+{}
 
 bool LocalModPathInfo::operator==(const LocalModPathInfo &other) const
 {
@@ -40,6 +38,7 @@ bool LocalModPathInfo::operator!=(const LocalModPathInfo &other) const
 LocalModPathInfo LocalModPathInfo::fromVariant(const QVariant &variant)
 {
     LocalModPathInfo info;
+    info.isAutoName_ = value(variant, "isAutoName").toBool();
     info.name_ = value(variant, "name").toString();
     info.path_ = value(variant, "dir").toString();
     info.gameVersion_ = value(variant, "gameVersion").toString();
@@ -51,6 +50,7 @@ LocalModPathInfo LocalModPathInfo::fromVariant(const QVariant &variant)
 QVariant LocalModPathInfo::toVariant() const
 {
     QMap<QString, QVariant> map;
+    map["isAutoName"] = isAutoName_;
     map["name"] = name_;
     map["dir"] = path_;
     map["gameVersion"] = QString(gameVersion_);
@@ -59,9 +59,9 @@ QVariant LocalModPathInfo::toVariant() const
     return QVariant::fromValue(map);
 }
 
-QString LocalModPathInfo::showText() const
+QString LocalModPathInfo::displayName() const
 {
-    return isAutoName()? autoName() : name_;
+    return isAutoName_? autoName() : name_;
 }
 
 bool LocalModPathInfo::exists() const
@@ -91,7 +91,7 @@ void LocalModPathInfo::setName(const QString &newName)
 
 bool LocalModPathInfo::isAutoName() const
 {
-    return name_ == autoName();
+    return isAutoName_;
 }
 
 QString LocalModPathInfo::autoName() const
@@ -107,6 +107,11 @@ const QString &LocalModPathInfo::path() const
 void LocalModPathInfo::setPath(const QString &newPath)
 {
     path_ = newPath;
+}
+
+void LocalModPathInfo::setIsAutoName(bool newIsAutoName)
+{
+    isAutoName_ = newIsAutoName;
 }
 
 void LocalModPathInfo::setGameVersion(const GameVersion &newGameVersion)

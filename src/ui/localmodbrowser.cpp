@@ -144,7 +144,7 @@ void LocalModBrowser::updatesDone(int updateCount)
     status_ = UpdateDone;
     ui->checkUpdatesProgress->setVisible(false);
     ui->checkUpdatesButton->setText(tr("Good! All mods are up-to-date."));
-    auto str = tr("%1 mods has been updated. Enjoy it!").arg(updateCount);
+    auto str = tr("%1 mods in %2 has been updated. Enjoy it!").arg(updateCount).arg(modPath_->info().displayName());
     if(Config().getPostUpdate() == Config::Keep)
         str.append("\n").append(tr("You can revert update if find any incompatibility."));
     QMessageBox::information(this, tr("Update Finished"), str);

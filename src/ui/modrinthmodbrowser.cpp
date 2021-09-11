@@ -47,7 +47,7 @@ void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
     isUiSet_ = false;
     ui->versionSelect->setCurrentText(info.gameVersion());
     ui->loaderSelect->setCurrentIndex(ModLoaderType::modrinth.indexOf(info.loaderType()));
-    ui->downloadPathSelect->setCurrentText(info.showText());
+    ui->downloadPathSelect->setCurrentText(info.displayName());
     isUiSet_ = true;
     getModList(currentName_);
 }
@@ -69,7 +69,7 @@ void ModrinthModBrowser::updateLocalPathList()
     ui->downloadPathSelect->addItem(tr("Custom"));
     downloadPathList_ << Config().getDownloadPath();
     for(const auto &path : LocalModPathManager::pathList()){
-        ui->downloadPathSelect->addItem(path->info().showText());
+        ui->downloadPathSelect->addItem(path->info().displayName());
         downloadPathList_ << path->info().path();
     }
 }

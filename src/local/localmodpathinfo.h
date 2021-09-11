@@ -19,7 +19,7 @@ public:
     static LocalModPathInfo fromVariant(const QVariant &variant);
     QVariant toVariant() const;
 
-    QString showText() const;
+    QString displayName() const;
 
     bool exists() const;
 
@@ -33,6 +33,7 @@ public:
     void setName(const QString &newName);
 
     bool isAutoName() const;
+    void setIsAutoName(bool newIsAutoName);
     QString autoName() const;
 
     const QString &path() const;
@@ -43,6 +44,7 @@ private:
     QString path_;
     GameVersion gameVersion_;
     ModLoaderType::Type loaderType_;
+    bool isAutoName_;
 };
 
 #endif // LOCALMODPATHINFO_H

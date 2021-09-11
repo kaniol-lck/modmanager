@@ -37,6 +37,8 @@ private slots:
 
     void on_nameText_textEdited(const QString &arg1);
 
+    void on_useAutoName_toggled(bool checked);
+
 private:
     Ui::LocalModBrowserSettingsDialog *ui;
     LocalModPathInfo info_;

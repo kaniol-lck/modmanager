@@ -17,7 +17,7 @@ BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
     pathList_ = LocalModPathManager::pathList();
 
     for(const auto &path : qAsConst(pathList_))
-        ui->browserList->addItem(path->info().showText());
+        ui->browserList->addItem(path->info().displayName());
 
     refreshButton();
 }
@@ -60,7 +60,7 @@ void BrowserManagerDialog::on_addButton_clicked()
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
         auto path = new LocalModPath(this, pathInfo);
         pathList_ << path;
-        ui->browserList->addItem(pathInfo.showText());
+        ui->browserList->addItem(pathInfo.displayName());
         refreshButton();
     });
 }
@@ -103,7 +103,7 @@ void BrowserManagerDialog::on_browserList_doubleClicked(const QModelIndex &index
     auto dialog = new LocalModBrowserSettingsDialog(this, path->info());
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
         pathList_[row]->setInfo(newInfo);
-        ui->browserList->item(row)->setText(newInfo.showText());
+        ui->browserList->item(row)->setText(newInfo.displayName());
     });
     dialog->exec();
 }

@@ -213,15 +213,10 @@ void LocalMod::update(ModWebsiteType type)
     if(type == None) return;
     emit updateStarted();
 
-    QDir dir = modInfo_.path();
-    //to dir
-    dir.cdUp();
-    auto path = dir.absolutePath();
+    auto path = QFileInfo(modInfo_.path()).absolutePath();
     auto callback = [=](const auto &newInfo){
         auto oldPath = modInfo_.path();
-        QDir dir(oldPath);
-        dir.cdUp();
-        auto newPath = dir.absoluteFilePath(newInfo.fileName());
+        auto newPath = QDir(path).absoluteFilePath(newInfo.fileName());
 
         //deal with old mod file
         auto postUpdate = Config().getPostUpdate();

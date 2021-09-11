@@ -26,13 +26,14 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, co
     LocalModBrowserSettingsDialog(parent)
 {
     info_ = info;
-    customName = info.showText();
-    ui->nameText->setText(info.name());
+    customName = info.name();
+    ui->nameText->setText(info.displayName());
     ui->modsDirText->setText(info.path());
     ui->versionSelect->setCurrentText(info.gameVersion());
     ui->loaderSelect->setCurrentIndex(ModLoaderType::local.indexOf(info.loaderType()));
 
     ui->useAutoName->setChecked(info.isAutoName());
+    on_useAutoName_toggled(info.isAutoName());
 }
 
 LocalModBrowserSettingsDialog::~LocalModBrowserSettingsDialog()
@@ -91,14 +92,6 @@ void LocalModBrowserSettingsDialog::on_buttonBox_accepted()
 
 void LocalModBrowserSettingsDialog::on_useAutoName_stateChanged(int arg1)
 {
-    if(arg1 == Qt::Checked){
-        ui->nameText->setEnabled(false);
-        updateAutoName();
-    }
-    else if(arg1 == Qt::Unchecked){
-        ui->nameText->setEnabled(true);
-        ui->nameText->setText(customName);
-    }
 }
 
 void LocalModBrowserSettingsDialog::on_loaderSelect_currentIndexChanged(const QString &arg1)
@@ -124,5 +117,16 @@ void LocalModBrowserSettingsDialog::on_nameText_textEdited(const QString &arg1)
 {
     customName = arg1;
     info_.setName(arg1);
+}
+
+
+void LocalModBrowserSettingsDialog::on_useAutoName_toggled(bool checked)
+{
+    info_.setIsAutoName(checked);
+    ui->nameText->setEnabled(!checked);
+    if(checked)
+        updateAutoName();
+    else
+        ui->nameText->setText(customName);
 }
 
