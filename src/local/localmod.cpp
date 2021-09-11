@@ -218,6 +218,13 @@ void LocalMod::update(ModWebsiteType type)
         auto oldPath = modInfo_.path();
         auto newPath = QDir(path).absoluteFilePath(newInfo.fileName());
 
+        auto newModInfo = LocalModInfo(newPath);
+        //TODO other mod loader
+        if(!newModInfo.isFabricMod()){
+            emit updateFinished(false);
+            return false;
+        }
+
         //deal with old mod file
         auto postUpdate = Config().getPostUpdate();
         QFile file(oldPath);
@@ -232,9 +239,10 @@ void LocalMod::update(ModWebsiteType type)
             file.rename(file.fileName() + ".old");
 
             //update info
-            setModInfo(LocalModInfo(newPath));
+            setModInfo(newModInfo);
         }
-        emit updateFinished();
+        emit updateFinished(true);
+        return true;
     };
 
     ModDownloader *downloader;

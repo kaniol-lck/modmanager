@@ -76,13 +76,14 @@ public:
         return true;
     }
 
-    ModDownloader *update(const QString &path, std::function<void(FileInfoT)> callback)
+    ModDownloader *update(const QString &path, std::function<bool (FileInfoT)> callback)
     {
         assert(updateFileInfo_.has_value());
-        return DownloadManager::addModupdate(std::make_shared<FileInfoT>(*updateFileInfo_), path, [=]{
-            currentFileInfo_.emplace(*updateFileInfo_);
-            updateFileInfo_.reset();
-            callback(*currentFileInfo_);
+        return DownloadManager::addModUpdate(std::make_shared<FileInfoT>(*updateFileInfo_), path, [=]{
+            if(callback(*updateFileInfo_)){
+                currentFileInfo_.emplace(*updateFileInfo_);
+                updateFileInfo_.reset();
+            }
         });
     }
 

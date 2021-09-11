@@ -10,6 +10,8 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
     modDownlaoder_(downloader)
 {
     ui->setupUi(this);
+    ui->downloadSpeedText->setVisible(false);
+    ui->downloadProgress->setVisible(false);
 
     auto fileInfo = modDownlaoder_->fileInfo();
     ui->displayNameText->setText(fileInfo->displayName());
@@ -25,7 +27,6 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
     connect(modDownlaoder_, &ModDownloader::downloadProgress, this, &DownloaderItemWidget::downloadProgress);
     connect(modDownlaoder_, &ModDownloader::downloadSpeed, this, &DownloaderItemWidget::downloadSpeed);
     connect(modDownlaoder_, &ModDownloader::finished, this, [=]{
-        ui->downloadSpeedText->setVisible(false);
         ui->downloadProgress->setValue(ui->downloadProgress->maximum());
     });
 }
@@ -46,12 +47,16 @@ void DownloaderItemWidget::refreshStatus()
         break;
     case ModDownloader::Downloading:
         ui->downloaStatus->setText(tr("Downloading"));
+        ui->downloadSpeedText->setVisible(true);
+        ui->downloadProgress->setVisible(true);
         break;
     case ModDownloader::Paused:
         ui->downloaStatus->setText(tr("Paused"));
         break;
     case ModDownloader::Finished:
         ui->downloaStatus->setText(tr("Finished"));
+        ui->downloadSpeedText->setVisible(false);
+        ui->downloadProgress->setVisible(false);
         break;
     }
 }

@@ -33,12 +33,12 @@ private slots:
 
     void startCheckUpdates();
     void updateCheckedCountUpdated(int updateCount, int checkedCount);
-    void updatesReady(int updateCount);
+    void updatesReady();
 
     void startUpdates();
     void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);
     void updatesDoneCountUpdated(int doneCount, int totalCount);
-    void updatesDone(int updateCount);
+    void updatesDone(int successCount, int failCount);
 
     void on_modListWidget_doubleClicked(const QModelIndex &index);
 
@@ -58,6 +58,7 @@ private:
         SearchOnWebsites,
         CheckUpdates,
         ReadyUpdate,
+        Updating,
         UpdateDone
     } status_ = SearchOnWebsites;
 

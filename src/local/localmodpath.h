@@ -31,6 +31,8 @@ public:
 
     ModrinthAPI *modrinthAPI() const;
 
+    int updatableCount() const;
+
 signals:
     void modListUpdated();
 
@@ -40,18 +42,19 @@ signals:
 
     void checkUpdatesStarted();
     void updateCheckedCountUpdated(int updateCount, int checkedCount);
-    void updatesReady(int updateCount);
+    void updatesReady();
 
     void updatesStarted();
     void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);
     void updatesDoneCountUpdated(int doneCount, int totalCount);
-    void updatesDone(int count);
+    void updatesDone(int successCount, int failCount);
 
 private:
     LocalModPathInfo info_;
     QList<LocalMod*> modList_;
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
+    int updatableCount_;
 };
 
 #endif // LOCALMODPATH_H

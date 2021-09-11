@@ -120,10 +120,15 @@ void LocalModItemWidget::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
     ui->updateProgress->setValue(bytesReceived);
 }
 
-void LocalModItemWidget::finishUpdate()
+void LocalModItemWidget::finishUpdate(bool success)
 {
     ui->updateProgress->setVisible(false);
-    ui->updateButton->setVisible(false);
+    if(success)
+        ui->updateButton->setVisible(false);
+    else{
+        ui->updateButton->setText(tr("Retry Update"));
+        ui->updateButton->setEnabled(true);
+    }
 }
 
 

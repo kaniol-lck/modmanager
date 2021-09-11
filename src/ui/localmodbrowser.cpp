@@ -107,21 +107,24 @@ void LocalModBrowser::updateCheckedCountUpdated(int updateCount, int checkedCoun
     ui->checkUpdatesProgress->setValue(checkedCount);
 }
 
-void LocalModBrowser::updatesReady(int updateCount)
+void LocalModBrowser::updatesReady()
 {
+    if(status_ == Updating) return;
     ui->checkUpdatesProgress->setVisible(false);
-    if(updateCount){
+    if(modPath_->updatableCount()){
         status_ = ReadyUpdate;
         ui->checkUpdatesButton->setEnabled(true);
-        ui->checkUpdatesButton->setText(tr("Update %1 mods").arg(updateCount));
+        ui->checkUpdatesButton->setText(tr("Update %1 mods").arg(modPath_->updatableCount()));
     } else {
         status_ = UpdateDone;
+        ui->checkUpdatesButton->setEnabled(false);
         ui->checkUpdatesButton->setText(tr("Good! All mods are up-to-date."));
     }
 }
 
 void LocalModBrowser::startUpdates()
 {
+    status_ = Updating;
     ui->checkUpdatesButton->setEnabled(false);
     ui->checkUpdatesProgress->setValue(0);
     ui->checkUpdatesProgress->setVisible(true);
@@ -139,15 +142,25 @@ void LocalModBrowser::updatesDoneCountUpdated(int doneCount, int totalCount)
     ui->checkUpdatesButton->setText(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
 }
 
-void LocalModBrowser::updatesDone(int updateCount)
+void LocalModBrowser::updatesDone(int successCount, int failCount)
 {
-    status_ = UpdateDone;
     ui->checkUpdatesProgress->setVisible(false);
-    ui->checkUpdatesButton->setText(tr("Good! All mods are up-to-date."));
-    auto str = tr("%1 mods in %2 has been updated. Enjoy it!").arg(updateCount).arg(modPath_->info().displayName());
+    auto str = tr("%1 mods in %2 has been updated. Enjoy it!").arg(successCount).arg(modPath_->info().displayName());
+    if(failCount)
+        str.append("\n").append(tr("Sadly, %1 mods failed to update.").arg(failCount));
     if(Config().getPostUpdate() == Config::Keep)
         str.append("\n").append(tr("You can revert update if find any incompatibility."));
     QMessageBox::information(this, tr("Update Finished"), str);
+
+    if(modPath_->updatableCount() == 0){
+        status_ = UpdateDone;
+        ui->checkUpdatesButton->setEnabled(false);
+        ui->checkUpdatesButton->setText(tr("Good! All mods are up-to-date."));
+    } else {
+        status_ = ReadyUpdate;
+        ui->checkUpdatesButton->setEnabled(true);
+        ui->checkUpdatesButton->setText(tr("Update %1 mods").arg(modPath_->updatableCount()));
+    }
 }
 
 void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)

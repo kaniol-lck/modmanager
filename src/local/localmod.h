@@ -73,7 +73,7 @@ signals:
 
     void updateStarted();
     void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void updateFinished();
+    void updateFinished(bool success);
 
 private:
     CurseforgeAPI *curseforgeAPI_;

@@ -33,6 +33,11 @@ void LocalModPath::reload()
             //TODO: other loader types
             if(modInfo.isFabricMod()){
                 auto mod = new LocalMod(this, modInfo);
+                connect(mod, &LocalMod::updateFinished, this, [=](bool success){
+                    if(success) updatableCount_--;
+                    emit updatesReady();
+                });
+
                 modList_ << mod;
             }
         }
@@ -80,7 +85,11 @@ void LocalModPath::checkModUpdates()
             (*count)++;
             if(bl) (*updateCount)++;
             emit updateCheckedCountUpdated(*updateCount, *count);
-            if(*count == modList_.size()) emit updatesReady(*updateCount);
+            //done
+            if(*count == modList_.size()){
+                updatableCount_ = *updateCount;
+                emit updatesReady();
+            }
         });
         mod->checkUpdates(info_.gameVersion(), info_.loaderType());
     }
@@ -90,6 +99,8 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> 
 {
     emit updatesStarted();
     auto count = std::make_shared<int>(0);
+    auto successCount = std::make_shared<int>(0);
+    auto failCount = std::make_shared<int>(0);
     auto bytesReceivedList = std::make_shared<QVector<qint64>>(modUpdateList.size());
 
     qint64 totalSize = 0;
@@ -107,10 +118,15 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> 
             auto sumReceived = std::accumulate(bytesReceivedList->cbegin(), bytesReceivedList->cend(), 0);
             emit updatesProgress(sumReceived, totalSize);
         });
-        connect(mod, &LocalMod::updateFinished, this, [=]{
+        connect(mod, &LocalMod::updateFinished, this, [=](bool success){
             (*count)++;
+            if(success)
+                (*successCount)++;
+            else
+                (*failCount)++;
             emit updatesDoneCountUpdated(*count, modUpdateList.size());
-            if(*count == modUpdateList.size()) emit updatesDone(*count);
+            if(*count == modUpdateList.size())
+                emit updatesDone(*successCount, *failCount);
         });
     }
 }
@@ -139,4 +155,9 @@ CurseforgeAPI *LocalModPath::curseforgeAPI() const
 ModrinthAPI *LocalModPath::modrinthAPI() const
 {
     return modrinthAPI_;
+}
+
+int LocalModPath::updatableCount() const
+{
+    return updatableCount_;
 }

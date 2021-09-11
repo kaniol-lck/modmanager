@@ -35,7 +35,7 @@ private slots:
 
     void startUpdate();
     void updateProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void finishUpdate();
+    void finishUpdate(bool success);
 
     void on_curseforgeButton_clicked();
 

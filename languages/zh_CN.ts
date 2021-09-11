@@ -391,27 +391,27 @@
         <translation>233 KB/s</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="42"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="43"/>
         <source>Idol</source>
         <translation>Idol</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="45"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="46"/>
         <source>Queue</source>
         <translation>队列中</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="48"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="49"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="51"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="54"/>
         <source>Paused</source>
         <translation>已暂停</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="54"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="57"/>
         <source>Finished</source>
         <translation>已完成</translation>
     </message>
@@ -506,31 +506,36 @@
         <translation>%1个mod需要更新（已检查%2/%3个mod...）</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="139"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="142"/>
         <source>Updating... (Updated %1/%2 mods)</source>
         <translation>更新中...（已更新%1/%2个mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="147"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="148"/>
         <source>%1 mods in %2 has been updated. Enjoy it!</source>
         <translation>%2中的%1个mod已更新。去游戏里体验一下更新吧！</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodbrowser.cpp" line="150"/>
+        <source>Sadly, %1 mods failed to update.</source>
+        <translation>很遗憾，%1个mod更新失败了。</translation>
     </message>
     <message>
         <source>%1 mods has been updated. Enjoy it!</source>
         <translation type="vanished">已更新%1个mod。去游戏里体验一下更新吧！</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="149"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="152"/>
         <source>You can revert update if find any incompatibility.</source>
         <translation>如果发现有mod不兼容可以及时回退更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="150"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="153"/>
         <source>Update Finished</source>
         <translation>更新完成</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="128"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="131"/>
         <source>Updating...</source>
         <translation>更新中...</translation>
     </message>
@@ -539,13 +544,14 @@
         <translation type="vanished">%1个Mod需要更新（检查中 %2/%3 ...）</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="116"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="117"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="162"/>
         <source>Update %1 mods</source>
         <translation>更新%1个mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="119"/>
-        <location filename="../src/ui/localmodbrowser.cpp" line="146"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="121"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="158"/>
         <source>Good! All mods are up-to-date.</source>
         <translation>太棒了！所有的mod都是最新版。</translation>
     </message>
@@ -703,6 +709,11 @@
         <location filename="../src/ui/localmoditemwidget.cpp" line="112"/>
         <source>Updating</source>
         <translation>更新中</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmoditemwidget.cpp" line="129"/>
+        <source>Retry Update</source>
+        <translation>重试更新</translation>
     </message>
 </context>
 <context>
