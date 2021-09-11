@@ -81,6 +81,14 @@ ModManager::~ModManager()
 
 void ModManager::syncPathList()
 {
+    //remember selected path
+    LocalModPath *selectedPath = nullptr;
+    auto currentItem = ui->browserTreeWidget->currentItem();
+    if(currentItem != nullptr && currentItem->parent() == localItem_){
+        auto index = currentItem->parent()->indexOfChild(currentItem);
+        selectedPath = pathList_.at(index);
+    }
+
     auto oldCount = pathList_.size();
     for(const auto &path : LocalModPathManager::pathList()){
         auto i = pathList_.indexOf(path);
@@ -125,6 +133,13 @@ void ModManager::syncPathList()
 
     //they should be same after sync
     assert(pathList_ == LocalModPathManager::pathList());
+
+    //reset selected path
+    if(selectedPath != nullptr){
+        auto index = pathList_.indexOf(selectedPath);
+        if(index >= 0)
+            ui->browserTreeWidget->setCurrentItem(localItem_->child(index));
+    }
 }
 
 void ModManager::editLocalPath(int index)
@@ -132,8 +147,7 @@ void ModManager::editLocalPath(int index)
     auto pathInfo = LocalModPathManager::pathList().at(index)->info();
     auto dialog = new LocalModBrowserSettingsDialog(this, pathInfo);
     connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
-        if(newInfo != LocalModPathManager::pathList().at(index)->info())
-            LocalModPathManager::pathList().at(index)->setInfo(newInfo);
+        LocalModPathManager::pathList().at(index)->setInfo(newInfo);
         localItem_->child(index)->setText(0, newInfo.displayName());
     });
     dialog->exec();

@@ -22,12 +22,11 @@ LocalModPathInfo::LocalModPathInfo(const QString &name, const QString &dir, cons
 
 bool LocalModPathInfo::operator==(const LocalModPathInfo &other) const
 {
-    //same path, game version, and loader type
-    //no name
-    if(path_ == other.path_ && gameVersion_ == other.gameVersion_ && loaderType_ == other.loaderType_)
-        return true;
-    else
-        return false;
+    return name_ == other.name_ &&
+           isAutoName_ == other.isAutoName_ &&
+           path_ == other.path_ &&
+           gameVersion_ == other.gameVersion_ &&
+           loaderType_ == other.loaderType_;
 }
 
 bool LocalModPathInfo::operator!=(const LocalModPathInfo &other) const

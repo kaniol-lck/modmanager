@@ -206,6 +206,9 @@ void LocalModBrowser::on_checkUpdatesButton_clicked()
         dialog = new LocalModUpdateDialog(this, modPath_);
         dialog->exec();
         break;
+    case Updating:
+        //do nothing
+        //button should be disabled here
     case UpdateDone:
         //do nothing
         break;

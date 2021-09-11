@@ -54,6 +54,18 @@ LocalModInfo::LocalModInfo(QString path) :
     description_ = value(result, "description").toString();
     sha1_ = QCryptographicHash::hash(fileContent, QCryptographicHash::Sha1).toHex();
 
+    auto dependsMap = value(result, "depends").toMap();
+    for(auto it = dependsMap.cbegin(); it != dependsMap.cend(); it++)
+        depends_[it.key()] = it.value().toString();
+
+    auto conflictsMap = value(result, "conflicts").toMap();
+    for(auto it = conflictsMap.cbegin(); it != conflictsMap.cend(); it++)
+        conflicts_[it.key()] = it.value().toString();
+
+    auto breaksMap = value(result, "breaks").toMap();
+    for(auto it = breaksMap.cbegin(); it != breaksMap.cend(); it++)
+        breaks_[it.key()] = it.value().toString();
+
     //icon
     auto iconFilePath = value(result, "icon").toString();
     if(!iconFilePath.isEmpty()){
@@ -128,6 +140,21 @@ const QStringList &LocalModInfo::authors() const
 const QFileInfo &LocalModInfo::fileInfo() const
 {
     return fileInfo_;
+}
+
+const QMap<QString, QString> &LocalModInfo::depends() const
+{
+    return depends_;
+}
+
+const QMap<QString, QString> &LocalModInfo::conflicts() const
+{
+    return conflicts_;
+}
+
+const QMap<QString, QString> &LocalModInfo::breaks() const
+{
+    return breaks_;
 }
 
 bool LocalModInfo::isFabricMod() const

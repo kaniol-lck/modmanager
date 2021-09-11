@@ -33,10 +33,12 @@ public:
 
     const QMap<QString, LocalMod *> &modMap() const;
 
-    void duplicationCheck() const;
+    QMap<QString, QList<LocalMod *> > duplicationCheck() const;
+
     void deleteAllOld() const;
 
 signals:
+    void infoUpdated();
     void modListUpdated();
 
     void checkWebsitesStarted();

@@ -22,11 +22,10 @@ public:
     static void insertPath(int i, LocalModPath *path);
     static void setPath(int i, LocalModPath *path);
 
+    static void saveToConfig();
+
 signals:
     void pathListUpdated();
-
-private slots:
-    static void saveToConfig();
 
 private:
     void updateList();

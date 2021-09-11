@@ -4,6 +4,7 @@
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 
+#include "cpp-semver.hpp"
 #include "curseforge/curseforgeapi.h"
 #include "modrinth/modrinthapi.h"
 #include "config.h"
@@ -11,9 +12,10 @@
 LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
     QObject(parent),
     curseforgeAPI_(new CurseforgeAPI(this)),
-    modrinthAPI_(new ModrinthAPI(this))
+    modrinthAPI_(new ModrinthAPI(this)),
+    info_(info)
 {
-    setInfo(info);
+    loadMods();
 }
 
 void LocalModPath::loadMods()
@@ -71,7 +73,55 @@ void LocalModPath::loadMods()
             });
         }
 
-        duplicationCheck();
+        for(auto mod : modMap_){
+            //check depends
+            for(auto it = mod->modInfo().depends().cbegin(); it != mod->modInfo().depends().cend(); it++){
+                auto modid = it.key();
+                if(!modMap_.contains(modid)) {
+                    if(modid == "minecraft"){
+                        //TODO
+                    } else if(modid == "java"){
+                        //TODO
+                    } else if(modid == "fabricloader"){
+                        //TODO
+                    } else if(modid.startsWith("fabric-")){
+                        //TODO :fabric API
+                        //embedded jar
+                    } else{
+                        qDebug() << mod->modInfo().name() << "depends" << modid;
+                    }
+                    continue;
+                }
+                //current mod version
+                auto version_str = modMap_.value(modid)->modInfo().version();
+                if(!semver::valid(version_str.toStdString())){
+                    qDebug() << mod->modInfo().name() << "does not respect semver:" << version_str;
+                    continue;
+                }
+                auto range_str = it.value();
+                if(!semver::valid(range_str.toStdString())){
+                    qDebug() << mod->modInfo().name() << "does not respect semver:" << range_str;
+                    continue;
+                }
+                if (semver::satisfies(version_str.toStdString(), range_str.toStdString())) {
+                    //pass
+                } else {
+                    qDebug() << mod->modInfo().name() << "failed" << modid;
+                    qDebug() << "current:" << version_str;
+                    qDebug() << "depends:" << it.value();
+                }
+
+
+            }
+            //check conflicts
+            for(auto str : mod->modInfo().conflicts()){
+
+            }
+            //check breaks
+            for(auto str : mod->modInfo().breaks()){
+
+            }
+        }
 
     });
 }
@@ -153,8 +203,14 @@ const LocalModPathInfo &LocalModPath::info() const
 
 void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
 {
+    if(info_ == newInfo) return;
+
     info_ = newInfo;
-    loadMods();
+    emit infoUpdated();
+
+    //path, game version or loader type change will trigger mod reload
+    if(info_.path() != newInfo.path() || info_.gameVersion() != newInfo.gameVersion() || info_.loaderType() != newInfo.loaderType())
+        loadMods();
 }
 
 CurseforgeAPI *LocalModPath::curseforgeAPI() const
@@ -177,12 +233,14 @@ const QMap<QString, LocalMod *> &LocalModPath::modMap() const
     return modMap_;
 }
 
-void LocalModPath::duplicationCheck() const
+QMap<QString, QList<LocalMod*>> LocalModPath::duplicationCheck() const
 {
+    QMap<QString, QList<LocalMod*>> map;
     for(const auto &id : modMap_.uniqueKeys()){
         if(modMap_.values(id).size() > 1)
-            qDebug() << "duplicate: " << id;
+            map[id] = modMap_.values(id);
     }
+    return map;
 }
 
 void LocalModPath::deleteAllOld() const

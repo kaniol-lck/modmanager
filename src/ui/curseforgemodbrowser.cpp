@@ -66,6 +66,12 @@ void CurseforgeModBrowser::updateVersionList()
 
 void CurseforgeModBrowser::updateLocalPathList()
 {
+    //remember selected path
+    LocalModPath *selectedPath = nullptr;
+    auto index = ui->downloadPathSelect->currentIndex();
+    if(index >= 0 && index < LocalModPathManager::pathList().size())
+        selectedPath = LocalModPathManager::pathList().at(ui->downloadPathSelect->currentIndex());
+
     ui->downloadPathSelect->clear();
     downloadPathList_.clear();
     ui->downloadPathSelect->addItem(tr("Custom"));
@@ -73,6 +79,15 @@ void CurseforgeModBrowser::updateLocalPathList()
     for(const auto &path : LocalModPathManager::pathList()){
         ui->downloadPathSelect->addItem(path->info().displayName());
         downloadPathList_ << path->info().path();
+    }
+
+    //reset selected path
+    if(selectedPath != nullptr){
+        auto index = LocalModPathManager::pathList().indexOf(selectedPath);
+        if(index >= 0){
+            ui->downloadPathSelect->setCurrentIndex(index);
+            searchModByPathInfo(selectedPath->info());
+        }
     }
 }
 

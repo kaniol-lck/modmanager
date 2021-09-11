@@ -2,6 +2,7 @@
 #define LOCALMODINFO_H
 
 #include <QString>
+#include <QMap>
 #include <QFileInfo>
 
 class LocalModInfo
@@ -27,6 +28,10 @@ public:
     const QStringList &authors() const;
     const QFileInfo &fileInfo() const;
 
+    const QMap<QString, QString> &depends() const;
+    const QMap<QString, QString> &conflicts() const;
+    const QMap<QString, QString> &breaks() const;
+
 private:
     QString path_;
     QFileInfo fileInfo_;
@@ -38,6 +43,9 @@ private:
     QString sha1_;
     QString murmurhash_;
     QByteArray iconBytes_;
+    QMap<QString, QString> depends_;
+    QMap<QString, QString> conflicts_;
+    QMap<QString, QString> breaks_;
 
     bool isMod_ = false;
     bool hasFabricManifest_ = false;
