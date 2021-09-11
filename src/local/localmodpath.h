@@ -57,6 +57,8 @@ signals:
 private:
     LocalModPathInfo info_;
     QMultiMap<QString, LocalMod*> modMap_;
+    QMultiMap<QString, FabricModInfo> fabricModMap_;
+    QStringList provideList_;
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     int updatableCount_;

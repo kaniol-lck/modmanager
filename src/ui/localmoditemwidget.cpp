@@ -50,14 +50,14 @@ LocalModItemWidget::~LocalModItemWidget()
 
 void LocalModItemWidget::updateInfo()
 {
-    ui->modName->setText(mod_->modInfo().name());
-    ui->modVersion->setText(mod_->modInfo().version());
-    ui->modDescription->setText(mod_->modInfo().description());
-    ui->modAuthors->setText(mod_->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    ui->modName->setText(mod_->modInfo().fabric().name());
+    ui->modVersion->setText(mod_->modInfo().fabric().version());
+    ui->modDescription->setText(mod_->modInfo().fabric().description());
+    ui->modAuthors->setText(mod_->modInfo().fabric().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
 
-    if(!mod_->modInfo().iconBytes().isEmpty()){
+    if(!mod_->modInfo().fabric().iconBytes().isEmpty()){
         QPixmap pixelmap;
-        pixelmap.loadFromData(mod_->modInfo().iconBytes());
+        pixelmap.loadFromData(mod_->modInfo().fabric().iconBytes());
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     }
 
@@ -69,7 +69,7 @@ void LocalModItemWidget::updateInfo()
         ui->rollbackButton->setEnabled(true);
         auto menu = new QMenu(this);
         for(const auto &info : mod_->oldInfos())
-            connect(menu->addAction(info.version()), &QAction::triggered, this, [=]{
+            connect(menu->addAction(info.fabric().version()), &QAction::triggered, this, [=]{
                 mod_->rollback(info);
 //                ui->rollbackButton->setEnabled(false);
             });

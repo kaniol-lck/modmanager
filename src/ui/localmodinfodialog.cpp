@@ -13,14 +13,14 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
     mod_(mod)
 {
     ui->setupUi(this);
-    setWindowTitle(mod_->modInfo().name() + tr(" - Local"));
+    setWindowTitle(mod_->modInfo().fabric().name() + tr(" - Local"));
 
-    ui->modName->setText(mod_->modInfo().name());
-    ui->modVersion->setText(mod_->modInfo().version());
-    ui->modDescription->setText(mod_->modInfo().description());
+    ui->modName->setText(mod_->modInfo().fabric().name());
+    ui->modVersion->setText(mod_->modInfo().fabric().version());
+    ui->modDescription->setText(mod_->modInfo().fabric().description());
 
     QPixmap pixelmap;
-    pixelmap.loadFromData(mod_->modInfo().iconBytes());
+    pixelmap.loadFromData(mod_->modInfo().fabric().iconBytes());
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 

@@ -21,6 +21,7 @@ SOURCES += \
     src/download/downloadfileinfo.cpp \
     src/download/downloadmanager.cpp \
     src/download/moddownloader.cpp \
+    src/local/fabricmodinfo.cpp \
     src/local/localmod.cpp \
     src/local/localmodpath.cpp \
     src/local/localmodpathinfo.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     src/download/downloadfileinfo.h \
     src/download/downloadmanager.h \
     src/download/moddownloader.h \
+    src/local/fabricmodinfo.h \
     src/local/localmod.h \
     src/local/localmodpath.h \
     src/local/localmodpathinfo.h \

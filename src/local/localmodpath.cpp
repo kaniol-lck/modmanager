@@ -36,25 +36,31 @@ void LocalModPath::loadMods()
     watcher->setFuture(future);
     connect(watcher, &QFutureWatcher<std::tuple<QList<LocalModInfo>, QList<LocalModInfo>>>::finished, this, [=]{
         modMap_.clear();
+        fabricModMap_.clear();
+        provideList_.clear();
         auto [info, oldInfo] = watcher->result();
         //load mods
         for(const auto &modInfo : qAsConst(info)){
             //TODO: other loader types
-            if(modInfo.isFabricMod()){
+            if(modInfo.loaderType() == info_.loaderType()){
                 auto mod = new LocalMod(this, modInfo);
                 connect(mod, &LocalMod::updateFinished, this, [=](bool success){
                     if(success) updatableCount_--;
                     emit updatesReady();
                 });
 
-                modMap_.insert(modInfo.id(), mod);
+                modMap_.insert(modInfo.fabric().id(), mod);
+                for(const auto &fabircModInfo : modInfo.fabricModInfoList()){
+                    fabricModMap_.insert(fabircModInfo.id(), fabircModInfo);
+                    provideList_ << fabircModInfo.provides();
+                }
             }
         }
         //load old mods
         for(const auto &oldModInfo : qAsConst(oldInfo)){
             //TODO: other loader types
-            if(oldModInfo.isFabricMod() && modMap_.contains(oldModInfo.id()))
-                modMap_.value(oldModInfo.id())->addOldInfo(oldModInfo);
+            if(oldModInfo.loaderType() == info_.loaderType() && modMap_.contains(oldModInfo.fabric().id()))
+                modMap_.value(oldModInfo.fabric().id())->addOldInfo(oldModInfo);
         }
 
         emit modListUpdated();
@@ -73,40 +79,44 @@ void LocalModPath::loadMods()
             });
         }
 
-        for(auto mod : modMap_){
+        //fabric
+        for(auto fabricMod : fabricModMap_){
             //check depends
-            for(auto it = mod->modInfo().depends().cbegin(); it != mod->modInfo().depends().cend(); it++){
+            if(fabricMod.isEmbedded()) continue;
+            for(auto it = fabricMod.depends().cbegin(); it != fabricMod.depends().cend(); it++){
                 auto modid = it.key();
-                if(!modMap_.contains(modid)) {
+                if(!fabricModMap_.contains(modid) && !provideList_.contains(modid)) {
                     if(modid == "minecraft"){
                         //TODO
                     } else if(modid == "java"){
                         //TODO
                     } else if(modid == "fabricloader"){
                         //TODO
-                    } else if(modid.startsWith("fabric-")){
+//                    } else if(modid.startsWith("fabric-")){
                         //TODO :fabric API
                         //embedded jar
                     } else{
-                        qDebug() << mod->modInfo().name() << "depends" << modid;
+                        qDebug() << fabricMod.name() << fabricMod.id() << "depends" << modid;
                     }
                     continue;
                 }
                 //current mod version
-                auto version_str = modMap_.value(modid)->modInfo().version();
+                auto version_str = fabricModMap_.value(modid).version();
+                //remove build etc
+                version_str.remove(QRegExp(R"(\+.*$)")).remove(R"(\-.*$)");
                 if(!semver::valid(version_str.toStdString())){
-                    qDebug() << mod->modInfo().name() << "does not respect semver:" << version_str;
+                    qDebug() << fabricMod.name() << "does not respect semver:" << version_str;
                     continue;
                 }
                 auto range_str = it.value();
                 if(!semver::valid(range_str.toStdString())){
-                    qDebug() << mod->modInfo().name() << "does not respect semver:" << range_str;
+                    qDebug() << fabricMod.name() << "does not respect semver:" << range_str;
                     continue;
                 }
-                if (semver::satisfies(version_str.toStdString(), range_str.toStdString())) {
+                if (range_str == "*" || semver::satisfies(version_str.toStdString(), range_str.toStdString())) {
                     //pass
                 } else {
-                    qDebug() << mod->modInfo().name() << "failed" << modid;
+                    qDebug() << fabricMod.name() << "failed" << modid;
                     qDebug() << "current:" << version_str;
                     qDebug() << "depends:" << it.value();
                 }
@@ -114,11 +124,11 @@ void LocalModPath::loadMods()
 
             }
             //check conflicts
-            for(auto str : mod->modInfo().conflicts()){
+            for(auto it = fabricMod.conflicts().cbegin(); it != fabricMod.conflicts().cend(); it++){
 
             }
             //check breaks
-            for(auto str : mod->modInfo().breaks()){
+            for(auto it = fabricMod.breaks().cbegin(); it != fabricMod.breaks().cend(); it++){
 
             }
         }

@@ -8,6 +8,7 @@
 #include "MurmurHash2.h"
 #include <QDebug>
 #include <QImage>
+#include <QBuffer>
 
 #include "util/tutil.hpp"
 
@@ -16,66 +17,15 @@ LocalModInfo::LocalModInfo(QString path) :
     fileInfo_(path)
 {
     QFile modFile(path);
-    QuaZip modJar(path);
-    QuaZipFile modJarFile(&modJar);
+    QuaZip zip(path);
 
     //file open error
     if(!modFile.open(QIODevice::ReadOnly)) return;
     QByteArray fileContent = modFile.readAll();
     modFile.close();
 
-    //file handles
-    if(!modJar.open(QuaZip::mdUnzip)) return;
-    modJar.setCurrentFile("fabric.mod.json");
-    if(!modJarFile.open(QIODevice::ReadOnly)) return;
-    QByteArray json = modJarFile.readAll();
-    modJarFile.close();
-
-    //parse json
-    QJsonParseError error;
-    QJsonDocument jsonDocument = QJsonDocument::fromJson(json, &error);
-    if (error.error != QJsonParseError::NoError) {
-        qDebug("%s", error.errorString().toUtf8().constData());
-        return;
-    }
-
-    if(!jsonDocument.isObject()) return;
-
-    //all pass
-    isMod_ = true;
-    hasFabricManifest_ = true;
-
-    //collect info
-    QVariant result = jsonDocument.toVariant();
-    id_ = value(result, "id").toString();
-    version_ = value(result, "version").toString();
-    name_ = value(result, "name").toString();
-    authors_ = value(result, "authors").toStringList();
-    description_ = value(result, "description").toString();
+    //sha1
     sha1_ = QCryptographicHash::hash(fileContent, QCryptographicHash::Sha1).toHex();
-
-    auto dependsMap = value(result, "depends").toMap();
-    for(auto it = dependsMap.cbegin(); it != dependsMap.cend(); it++)
-        depends_[it.key()] = it.value().toString();
-
-    auto conflictsMap = value(result, "conflicts").toMap();
-    for(auto it = conflictsMap.cbegin(); it != conflictsMap.cend(); it++)
-        conflicts_[it.key()] = it.value().toString();
-
-    auto breaksMap = value(result, "breaks").toMap();
-    for(auto it = breaksMap.cbegin(); it != breaksMap.cend(); it++)
-        breaks_[it.key()] = it.value().toString();
-
-    //icon
-    auto iconFilePath = value(result, "icon").toString();
-    if(!iconFilePath.isEmpty()){
-        modJar.setCurrentFile(iconFilePath);
-        if(modJarFile.open(QIODevice::ReadOnly)){
-            iconBytes_ = modJarFile.readAll();
-            modJarFile.close();
-        }
-    }
-    modJar.close();
 
     //exclude some bytes for murmurhash
     QByteArray filteredFileContent;
@@ -84,6 +34,13 @@ LocalModInfo::LocalModInfo(QString path) :
         filteredFileContent.append(b);
     }
     murmurhash_ = QByteArray::number(MurmurHash2(filteredFileContent.constData(), filteredFileContent.length(), 1));
+
+    //load fabric mod
+    fabricModInfoList_ = FabricModInfo::fromZip(&zip);
+    if(!fabricModInfoList_.isEmpty()){
+        loaderType_ = ModLoaderType::Fabric;
+        fabricModInfoList_.first().setIsEmbedded(true);
+    }
 }
 
 bool LocalModInfo::operator==(const LocalModInfo &other) const
@@ -92,9 +49,14 @@ bool LocalModInfo::operator==(const LocalModInfo &other) const
     return path_ == other.path_;
 }
 
-const QString &LocalModInfo::id() const
+void LocalModInfo::addOld()
 {
-    return id_;
+    path_.append(".old");
+}
+
+void LocalModInfo::removeOld()
+{
+    path_.remove(".old");
 }
 
 const QString &LocalModInfo::path() const
@@ -102,19 +64,9 @@ const QString &LocalModInfo::path() const
     return path_;
 }
 
-const QString &LocalModInfo::name() const
+const QFileInfo &LocalModInfo::fileInfo() const
 {
-    return name_;
-}
-
-const QString &LocalModInfo::version() const
-{
-    return version_;
-}
-
-const QString &LocalModInfo::description() const
-{
-    return description_;
+    return fileInfo_;
 }
 
 const QString &LocalModInfo::sha1() const
@@ -127,47 +79,17 @@ const QString &LocalModInfo::murmurhash() const
     return murmurhash_;
 }
 
-const QByteArray &LocalModInfo::iconBytes() const
+ModLoaderType::Type LocalModInfo::loaderType() const
 {
-    return iconBytes_;
+    return loaderType_;
 }
 
-const QStringList &LocalModInfo::authors() const
+FabricModInfo LocalModInfo::fabric() const
 {
-    return authors_;
+    return fabricModInfoList_.first();
 }
 
-const QFileInfo &LocalModInfo::fileInfo() const
+const QList<FabricModInfo> &LocalModInfo::fabricModInfoList() const
 {
-    return fileInfo_;
-}
-
-const QMap<QString, QString> &LocalModInfo::depends() const
-{
-    return depends_;
-}
-
-const QMap<QString, QString> &LocalModInfo::conflicts() const
-{
-    return conflicts_;
-}
-
-const QMap<QString, QString> &LocalModInfo::breaks() const
-{
-    return breaks_;
-}
-
-bool LocalModInfo::isFabricMod() const
-{
-    return hasFabricManifest_;
-}
-
-void LocalModInfo::addOld()
-{
-    path_.append(".old");
-}
-
-void LocalModInfo::removeOld()
-{
-    path_.remove(".old");
+    return fabricModInfoList_;
 }

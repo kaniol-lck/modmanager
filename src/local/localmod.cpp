@@ -219,8 +219,8 @@ void LocalMod::update(ModWebsiteType type)
         auto newPath = QDir(path).absoluteFilePath(newInfo.fileName());
 
         auto newModInfo = LocalModInfo(newPath);
-        //TODO other mod loader
-        if(!newModInfo.isFabricMod()){
+        //loader type mismatch
+        if(newModInfo.loaderType() != modInfo_.loaderType()){
             emit updateFinished(false);
             return false;
         }

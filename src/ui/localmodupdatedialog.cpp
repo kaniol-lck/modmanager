@@ -32,7 +32,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
         auto names = mod->updateNames(type);
 
         auto nameItem = new QStandardItem();
-        nameItem->setText(mod->modInfo().name());
+        nameItem->setText(mod->modInfo().fabric().name());
         nameItem->setCheckable(true);
         nameItem->setCheckState(Qt::Checked);
         nameItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
