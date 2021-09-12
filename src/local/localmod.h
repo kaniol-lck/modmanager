@@ -56,10 +56,24 @@ public:
     void addOldInfo(const LocalModInfo &oldInfo);
     const QList<LocalModInfo> &oldInfos() const;
 
+    void addDuplicateInfo(const LocalModInfo &duplicateInfo);
+    const QList<LocalModInfo> &duplicateInfos() const;
+
+    void duplicateToOld();
+
     const QList<LocalModInfo> &newInfos() const;
 
     void rollback(LocalModInfo info);
     void deleteAllOld();
+
+    void addDepend(std::tuple<QString, QString, std::optional<FabricModInfo>> modDepend);
+    void addConflict(std::tuple<QString, QString, FabricModInfo> modConflict);
+    void addBreak(std::tuple<QString, QString, FabricModInfo> modBreak);
+
+    const QList<std::tuple<QString, QString, std::optional<FabricModInfo>>> &depends() const;
+    const QList<std::tuple<QString, QString, FabricModInfo>> &conflicts() const;
+    const QList<std::tuple<QString, QString, FabricModInfo>> &breaks() const;
+
 
 signals:
     void modInfoUpdated();
@@ -67,7 +81,7 @@ signals:
     void checkWebsiteStarted();
     void websiteReady(bool bl);
     void checkUpdatesStarted();
-    void updateReady(bool bl);
+    void updateReady(ModWebsiteType type);
 
     void curseforgeReady(bool bl);
     void curseforgeUpdateReady(bool bl);
@@ -89,12 +103,17 @@ private:
     LocalModInfo modInfo_;
     QList<LocalModInfo> newInfos_;
     QList<LocalModInfo> oldInfos_;
+    QList<LocalModInfo> duplicateInfos_;
 
     CurseforgeMod *curseforgeMod_ = nullptr;
     Updatable<CurseforgeFileInfo> curseforgeUpdate_;
 
     ModrinthMod *modrinthMod_ = nullptr;
     Updatable<ModrinthFileInfo> modrinthUpdate_;
+
+    QList<std::tuple<QString, QString, std::optional<FabricModInfo>>> depends_;
+    QList<std::tuple<QString, QString, FabricModInfo>> conflicts_;
+    QList<std::tuple<QString, QString, FabricModInfo>> breaks_;
 };
 
 #endif // LOCALMOD_H

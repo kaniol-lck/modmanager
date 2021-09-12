@@ -23,12 +23,12 @@ public slots:
 private slots:
     void on_updateButton_clicked();
 
-    void curseforgeUpdateReady(bool need);
+    void updateReady(LocalMod::ModWebsiteType type);
+
     void startCheckCurseforge();
     void curseforgeReady(bool bl);
     void startCheckCurseforgeUpdate();
 
-    void modrinthUpdateReady(bool need);
     void startCheckModrinth();
     void modrinthReady(bool bl);
     void startCheckModrinthUpdate();
@@ -40,6 +40,8 @@ private slots:
     void on_curseforgeButton_clicked();
 
     void on_modrinthButton_clicked();
+
+    void on_warningButton_clicked();
 
 private:
     Ui::LocalModItemWidget *ui;

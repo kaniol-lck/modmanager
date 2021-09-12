@@ -99,14 +99,12 @@ void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Typ
     if(config.getUseCurseforgeUpdate()) sourceCount++;
     if(config.getUseModrinthUpdate()) sourceCount++;
     if(sourceCount == 0){
-        emit updateReady(false);
+        emit updateReady(ModWebsiteType::None);
         return;
     }
     auto count = std::make_shared<int>(sourceCount);
-    auto needUpdate = std::make_shared<bool>(false);
     auto foo = [=](bool bl){
-        if(bl) *needUpdate = true;
-        if(--(*count) == 0) emit updateReady(*needUpdate);
+        if(--(*count) == 0) emit updateReady(defaultUpdateType());
     };
 
     if(config.getUseCurseforgeUpdate()){
@@ -134,12 +132,13 @@ void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoader
          emit curseforgeUpdateReady(bl);
     };
 
-    if(!curseforgeMod_->modInfo().allFileList().isEmpty())
-        updateFileList();
-    else {
+    //always acquire
+//    if(!curseforgeMod_->modInfo().allFileList().isEmpty())
+//        updateFileList();
+//    else {
         curseforgeMod_->acquireAllFileList();
         connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, updateFileList);
-    }
+//    }
 }
 
 void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
@@ -166,12 +165,13 @@ void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderTy
         }
     };
 
-    if(modrinthMod_->modInfo().hasFullInfo())
-        updateFullInfo();
-    else {
+    //always acquire
+//    if(modrinthMod_->modInfo().hasFullInfo())
+//        updateFullInfo();
+//    else {
         modrinthMod_->acquireFullInfo();
         connect(modrinthMod_, &ModrinthMod::fullInfoReady, this, updateFullInfo);
-    }
+//    }
 }
 
 LocalMod::ModWebsiteType LocalMod::defaultUpdateType() const
@@ -236,7 +236,8 @@ void LocalMod::update(ModWebsiteType type)
             setModInfo(LocalModInfo(newPath));
         } else if(postUpdate == Config::Keep){
             //rename old file
-            file.rename(file.fileName() + ".old");
+            if(file.rename(file.fileName() + ".old"))
+                file.remove();
 
             //update info
             modInfo_.addOld();
@@ -289,6 +290,29 @@ const QList<LocalModInfo> &LocalMod::oldInfos() const
     return oldInfos_;
 }
 
+void LocalMod::addDuplicateInfo(const LocalModInfo &duplicateInfo)
+{
+    duplicateInfos_ << duplicateInfo;
+}
+
+const QList<LocalModInfo> &LocalMod::duplicateInfos() const
+{
+    return duplicateInfos_;
+}
+
+void LocalMod::duplicateToOld()
+{
+    for(auto info : qAsConst(duplicateInfos_)){
+        QFile file(info.path());
+        file.rename(file.fileName().append(".old"));
+        info.addOld();
+        oldInfos_.append(info);
+    }
+
+    duplicateInfos_.clear();
+    emit modInfoUpdated();
+}
+
 const QList<LocalModInfo> &LocalMod::newInfos() const
 {
     return newInfos_;
@@ -317,6 +341,36 @@ void LocalMod::deleteAllOld()
         QFile(oldInfo.path()).remove();
     oldInfos_.clear();
     emit modInfoUpdated();
+}
+
+void LocalMod::addDepend(std::tuple<QString, QString, std::optional<FabricModInfo> > modDepend)
+{
+    depends_ << modDepend;
+}
+
+void LocalMod::addConflict(std::tuple<QString, QString, FabricModInfo> modConflict)
+{
+    conflicts_ << modConflict;
+}
+
+void LocalMod::addBreak(std::tuple<QString, QString, FabricModInfo> modBreak)
+{
+    breaks_ << modBreak;
+}
+
+const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &LocalMod::depends() const
+{
+    return depends_;
+}
+
+const QList<std::tuple<QString, QString, FabricModInfo> > &LocalMod::conflicts() const
+{
+    return conflicts_;
+}
+
+const QList<std::tuple<QString, QString, FabricModInfo> > &LocalMod::breaks() const
+{
+    return breaks_;
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

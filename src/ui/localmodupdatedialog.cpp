@@ -5,10 +5,6 @@
 #include "local/localmod.h"
 #include "util/updatesourcedelegate.h"
 
-static auto getDisplayName = [](const auto &fileInfo){
-    return fileInfo.displayName();
-};
-
 LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPath) :
     QDialog(parent),
     ui(new Ui::LocalModUpdateDialog),

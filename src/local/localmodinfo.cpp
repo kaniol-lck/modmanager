@@ -17,7 +17,6 @@ LocalModInfo::LocalModInfo(QString path) :
     fileInfo_(path)
 {
     QFile modFile(path);
-    QuaZip zip(path);
 
     //file open error
     if(!modFile.open(QIODevice::ReadOnly)) return;
@@ -36,7 +35,7 @@ LocalModInfo::LocalModInfo(QString path) :
     murmurhash_ = QByteArray::number(MurmurHash2(filteredFileContent.constData(), filteredFileContent.length(), 1));
 
     //load fabric mod
-    fabricModInfoList_ = FabricModInfo::fromZip(&zip);
+    fabricModInfoList_ = FabricModInfo::fromZip(path);
     if(!fabricModInfoList_.isEmpty()){
         loaderType_ = ModLoaderType::Fabric;
         fabricModInfoList_.first().setIsEmbedded(false);

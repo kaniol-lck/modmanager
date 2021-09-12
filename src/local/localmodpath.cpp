@@ -43,13 +43,20 @@ void LocalModPath::loadMods()
         for(const auto &modInfo : qAsConst(info)){
             //only load loader type matched mods
             if(modInfo.loaderType() == info_.loaderType()){
-                auto mod = new LocalMod(this, modInfo);
-                connect(mod, &LocalMod::updateFinished, this, [=](bool success){
-                    if(success) updatableCount_--;
-                    emit updatesReady();
-                });
-
-                modMap_.insert(modInfo.fabric().id(), mod);
+                //set duplicate mod info
+                if(modMap_.contains(modInfo.fabric().id())){
+                    modMap_[modInfo.fabric().id()]->addDuplicateInfo(modInfo);
+                    continue;
+                }
+                else {
+                    auto mod = new LocalMod(this, modInfo);
+                    connect(mod, &LocalMod::updateFinished, this, [=](bool success){
+                        if(success) updatableCount_--;
+                        emit updatesReady();
+                    });
+                    modMap_.insert(modInfo.fabric().id(), mod);
+                }
+                //insert fabric mod
                 for(const auto &fabircModInfo : modInfo.fabricModInfoList()){
                     fabricModMap_.insert(fabircModInfo.id(), fabircModInfo);
                     provideList_ << fabircModInfo.provides();
@@ -79,12 +86,27 @@ void LocalModPath::loadMods()
                 disconnect(SIGNAL(websitesReady()));
             });
         }
-
-        //fabric
-        checkFabricDepends();
-        checkFabricConflicts();
-        checkFabricBreaks();
+        duplicationCheck();
     });
+}
+
+void LocalModPath::checkFabric()
+{
+
+    //fabric
+    if(info_.loaderType() == ModLoaderType::Fabric){
+        //depends
+        for(const auto &[fabricMod, modid, version, missingMod] : checkFabricDepends()){
+            QString str;
+            if(missingMod.has_value())
+                str += "Missing:\n" + modid + " " + version;
+            else
+                str += "MisMatch:\n" + modid + " " + version;
+
+            auto localMod = modMap_.value(fabricMod.mainId());
+//            localMod->addDepend()
+        }
+    }
 }
 
 std::tuple<LocalModPath::FindResultType, std::optional<FabricModInfo> > LocalModPath::findFabricMod(const QString &modid, const QString &range_str) const
@@ -225,6 +247,11 @@ QList<std::tuple<FabricModInfo, QString, QString, FabricModInfo> > LocalModPath:
         }
     }
     return list;
+}
+
+LocalMod *LocalModPath::findLocalMod(const QString &id)
+{
+    return modMap_.contains(id)? modMap_.value(id) : nullptr;
 }
 
 void LocalModPath::searchOnWebsites()

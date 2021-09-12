@@ -2,6 +2,7 @@
 #include "ui_localmoditemwidget.h"
 
 #include <QMenu>
+#include <QMessageBox>
 
 #include "local/localmodinfo.h"
 #include "curseforge/curseforgemod.h"
@@ -28,12 +29,12 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     //signals / slots
     connect(mod_, &LocalMod::modInfoUpdated, this, &LocalModItemWidget::updateInfo);
 
-    connect(mod_, &LocalMod::curseforgeUpdateReady, this, &LocalModItemWidget::curseforgeUpdateReady);
+    connect(mod_, &LocalMod::updateReady, this, &LocalModItemWidget::updateReady);
+
     connect(mod_, &LocalMod::checkCurseforgeStarted, this, &LocalModItemWidget::startCheckCurseforge);
     connect(mod_, &LocalMod::curseforgeReady, this, &LocalModItemWidget::curseforgeReady);
     connect(mod_, &LocalMod::checkCurseforgeUpdateStarted, this, &LocalModItemWidget::startCheckCurseforgeUpdate);
 
-    connect(mod_, &LocalMod::modrinthUpdateReady, this, &LocalModItemWidget::modrinthUpdateReady);
     connect(mod_, &LocalMod::checkModrinthStarted, this, &LocalModItemWidget::startCheckModrinth);
     connect(mod_, &LocalMod::modrinthReady, this, &LocalModItemWidget::modrinthReady);
     connect(mod_, &LocalMod::checkModrinthUpdateStarted, this, &LocalModItemWidget::startCheckModrinthUpdate);
@@ -52,7 +53,11 @@ void LocalModItemWidget::updateInfo()
 {
     ui->modName->setText(mod_->modInfo().fabric().name());
     ui->modVersion->setText(mod_->modInfo().fabric().version());
-    ui->modDescription->setText(mod_->modInfo().fabric().description());
+    auto description = mod_->modInfo().fabric().description();
+    auto index = description.indexOf(".");
+    if(index > 0)
+        description = description.left(index + 1);
+    ui->modDescription->setText(description);
     ui->modAuthors->setText(mod_->modInfo().fabric().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
 
     if(!mod_->modInfo().fabric().iconBytes().isEmpty()){
@@ -75,6 +80,13 @@ void LocalModItemWidget::updateInfo()
             });
         ui->rollbackButton->setMenu(menu);
     }
+
+    //warning
+    if(!mod_->duplicateInfos().isEmpty()){
+        ui->warningButton->setToolTip(tr("Duplicate mod!"));
+    } else {
+        ui->warningButton->setVisible(false);
+}
 }
 
 void LocalModItemWidget::on_updateButton_clicked()
@@ -82,10 +94,31 @@ void LocalModItemWidget::on_updateButton_clicked()
     mod_->update(mod_->defaultUpdateType());
 }
 
-void LocalModItemWidget::curseforgeUpdateReady(bool need)
+void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType type)
 {
-    if(need)
-        ui->updateButton->setVisible(true);
+    if(type == LocalMod::None) return;
+    ui->updateButton->setVisible(true);
+    if(type == LocalMod::Curseforge)
+        ui->updateButton->setIcon(QIcon(":/image/curseforge.svg"));
+    else if (type == LocalMod::Modrinth)
+        ui->updateButton->setIcon(QIcon(":/image/modrinth.svg"));
+
+    if(mod_->updateTypes().size() == 1) return;
+    auto menu = new QMenu(this);
+    for(auto type2 : mod_->updateTypes()){
+        if(type == type2) continue;
+        if(type2 == LocalMod::Curseforge)
+            connect(menu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
+                ui->updateButton->setIcon(QIcon(":/image/curseforge.svg"));
+                mod_->update(LocalMod::Curseforge);
+            });
+        else if(type2 == LocalMod::Modrinth)
+            connect(menu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth"), &QAction::triggered, this, [=]{
+                ui->updateButton->setIcon(QIcon(":/image/modrinth.svg"));
+                mod_->update(LocalMod::Modrinth);
+            });
+    }
+    ui->updateButton->setMenu(menu);
 }
 
 void LocalModItemWidget::startCheckCurseforge()
@@ -101,12 +134,6 @@ void LocalModItemWidget::curseforgeReady(bool bl)
 void LocalModItemWidget::startCheckCurseforgeUpdate()
 {
     //TODO
-}
-
-void LocalModItemWidget::modrinthUpdateReady(bool need)
-{
-    if(need)
-        ui->updateButton->setVisible(true);
 }
 
 void LocalModItemWidget::startCheckModrinth()
@@ -148,7 +175,6 @@ void LocalModItemWidget::finishUpdate(bool success)
     }
 }
 
-
 void LocalModItemWidget::on_curseforgeButton_clicked()
 {
     auto curseforgeMod = mod_->curseforgeMod();
@@ -158,7 +184,6 @@ void LocalModItemWidget::on_curseforgeButton_clicked()
     dialog->show();
 }
 
-
 void LocalModItemWidget::on_modrinthButton_clicked()
 {
     auto modrinthMod = mod_->modrinthMod();
@@ -166,5 +191,17 @@ void LocalModItemWidget::on_modrinthButton_clicked()
         modrinthMod->acquireFullInfo();
     auto dialog = new ModrinthModInfoDialog(this, modrinthMod);
     dialog->show();
+}
+
+void LocalModItemWidget::on_warningButton_clicked()
+{
+    QString str = tr("Duplicate version of <b>%1</b> was found:").arg(mod_->modInfo().fabric().name());
+    QStringList list(mod_->modInfo().fabric().version());
+    for(const auto &info : mod_->duplicateInfos())
+        list << info.fabric().version();
+    str += "<ul><li>" + list.join("</li><li>") + "</li></ul>";
+    str += tr("Keep one of them and set the others as old mods?");
+    if(QMessageBox::Ok == QMessageBox::warning(this, tr("Incompatibility"), str))
+        mod_->duplicateToOld();
 }
 

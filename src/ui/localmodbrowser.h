@@ -54,18 +54,12 @@ private slots:
 
     void on_checkButton_clicked();
 
+    void on_updateAllButton_clicked();
+
 private:
     Ui::LocalModBrowser *ui;
     LocalModPath *modPath_;
-
-    enum CheckUpdateStatus{
-        SearchOnWebsites,
-        CheckUpdates,
-        ReadyUpdate,
-        Updating,
-        UpdateDone
-    } status_ = SearchOnWebsites;
-
+    bool isUpdating_ = false;
 };
 
 #endif // LOCALMODBROWSER_H

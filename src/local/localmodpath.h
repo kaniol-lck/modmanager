@@ -18,12 +18,16 @@ public:
 
     void loadMods();
 
+    void checkFabric();
+
     //list of <mod, modid, required version, current mod if present>
     QList<std::tuple<FabricModInfo, QString, QString, std::optional<FabricModInfo>>> checkFabricDepends() const;
     //list of <mod, conflict modid, conflict version, current mod>
     QList<std::tuple<FabricModInfo, QString, QString, FabricModInfo>> checkFabricConflicts() const;
     //list of <mod, break modid, break version, current mod>
     QList<std::tuple<FabricModInfo, QString, QString, FabricModInfo>> checkFabricBreaks() const;
+
+    LocalMod *findLocalMod(const QString &id);
 
     void searchOnWebsites();
     void checkModUpdates();
@@ -68,7 +72,7 @@ private:
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     LocalModPathInfo info_;
-    QMultiMap<QString, LocalMod*> modMap_;
+    QMap<QString, LocalMod*> modMap_;
     QMultiMap<QString, FabricModInfo> fabricModMap_;
     QStringList provideList_;
     int updatableCount_;

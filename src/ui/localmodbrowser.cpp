@@ -10,6 +10,7 @@
 #include "localmoditemwidget.h"
 #include "localmodinfodialog.h"
 #include "localmodupdatedialog.h"
+#include "localmodcheckdialog.h"
 #include "config.h"
 #include "util/localmodsortitem.h"
 
@@ -20,6 +21,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 {
     ui->setupUi(this);
     ui->checkUpdatesProgress->setVisible(false);
+    ui->updateAllButton->setVisible(false);
+
+    ui->checkButton->setVisible(false);
 
     auto menu = new QMenu(this);
     connect(menu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
@@ -52,10 +56,6 @@ LocalModBrowser::~LocalModBrowser()
 
 void LocalModBrowser::updateModList()
 {
-    status_ = SearchOnWebsites;
-    ui->checkUpdatesButton->setEnabled(true);
-    ui->checkUpdatesButton->setText(tr("Search on mod websites"));
-
     ui->modListWidget->clear();
     for (const auto &mod: modPath_->modMap()) {
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
@@ -67,12 +67,13 @@ void LocalModBrowser::updateModList()
         ui->modListWidget->setItemWidget(item, modItemWidget);
     }
     ui->modListWidget->sortItems();
+    ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()));
 }
 
 void LocalModBrowser::startCheckWebsites()
 {
     ui->checkUpdatesButton->setEnabled(false);
-    ui->checkUpdatesProgress->setValue(0);
+    websiteCheckedCountUpdated(0);
     ui->checkUpdatesProgress->setVisible(true);
     ui->checkUpdatesButton->setText(tr("Searching on mod websites..."));
     ui->checkUpdatesProgress->setMaximum(modPath_->modMap().size());
@@ -80,13 +81,12 @@ void LocalModBrowser::startCheckWebsites()
 
 void LocalModBrowser::websiteCheckedCountUpdated(int checkedCount)
 {
-    ui->checkUpdatesButton->setText(tr("Searching on mod websites... ( %1/%2 )").arg(checkedCount).arg(modPath_->modMap().size()));
+    ui->statusText->setText(tr("Searching on mod websites... (Searched %1/%2 mods)").arg(checkedCount).arg(modPath_->modMap().size()));
     ui->checkUpdatesProgress->setValue(checkedCount);
 }
 
 void LocalModBrowser::websitesReady()
 {
-    status_ = CheckUpdates;
     ui->checkUpdatesButton->setEnabled(true);
     ui->checkUpdatesProgress->setVisible(false);
     ui->checkUpdatesButton->setText(tr("Check updates"));
@@ -95,7 +95,8 @@ void LocalModBrowser::websitesReady()
 void LocalModBrowser::startCheckUpdates()
 {
     ui->checkUpdatesButton->setEnabled(false);
-    ui->checkUpdatesProgress->setValue(0);
+    ui->updateAllButton->setVisible(false);
+    updateCheckedCountUpdated(0, 0);
     ui->checkUpdatesProgress->setVisible(true);
     ui->checkUpdatesButton->setText(tr("Checking updates..."));
     ui->checkUpdatesProgress->setMaximum(modPath_->modMap().size());
@@ -103,32 +104,32 @@ void LocalModBrowser::startCheckUpdates()
 
 void LocalModBrowser::updateCheckedCountUpdated(int updateCount, int checkedCount)
 {
-    ui->checkUpdatesButton->setText(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(modPath_->modMap().size()));
+    ui->statusText->setText(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(modPath_->modMap().size()));
     ui->checkUpdatesProgress->setValue(checkedCount);
 }
 
 void LocalModBrowser::updatesReady()
 {
-    if(status_ == Updating) return;
+    if(isUpdating_) return;
+    ui->checkUpdatesButton->setEnabled(true);
+    ui->checkUpdatesButton->setText(tr("Check updates"));
     ui->checkUpdatesProgress->setVisible(false);
     if(modPath_->updatableCount()){
-        status_ = ReadyUpdate;
-        ui->checkUpdatesButton->setEnabled(true);
-        ui->checkUpdatesButton->setText(tr("Update %1 mods").arg(modPath_->updatableCount()));
+        ui->updateAllButton->setVisible(true);
+        ui->statusText->setText(tr("%1 mods need update.").arg(modPath_->updatableCount()));
     } else {
-        status_ = UpdateDone;
-        ui->checkUpdatesButton->setEnabled(false);
-        ui->checkUpdatesButton->setText(tr("Good! All mods are up-to-date."));
+        ui->updateAllButton->setVisible(false);
+        ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()) + " " + tr("Good! All mods are up-to-date."));
     }
 }
 
 void LocalModBrowser::startUpdates()
 {
-    status_ = Updating;
-    ui->checkUpdatesButton->setEnabled(false);
-    ui->checkUpdatesProgress->setValue(0);
+    isUpdating_ = true;
+    ui->updateAllButton->setEnabled(false);
+    updatesProgress(0, 0);
     ui->checkUpdatesProgress->setVisible(true);
-    ui->checkUpdatesButton->setText(tr("Updating..."));
+    ui->updateAllButton->setText(tr("Updating..."));
 }
 
 void LocalModBrowser::updatesProgress(qint64 bytesReceived, qint64 bytesTotal)
@@ -139,12 +140,12 @@ void LocalModBrowser::updatesProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 void LocalModBrowser::updatesDoneCountUpdated(int doneCount, int totalCount)
 {
-    ui->checkUpdatesButton->setText(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
+    ui->statusText->setText(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
 }
 
 void LocalModBrowser::updatesDone(int successCount, int failCount)
 {
-    ui->checkUpdatesProgress->setVisible(false);
+    isUpdating_ = false;
     auto str = tr("%1 mods in %2 has been updated. Enjoy it!").arg(successCount).arg(modPath_->info().displayName());
     if(failCount)
         str.append("\n").append(tr("Sadly, %1 mods failed to update.").arg(failCount));
@@ -152,15 +153,7 @@ void LocalModBrowser::updatesDone(int successCount, int failCount)
         str.append("\n").append(tr("You can revert update if find any incompatibility."));
     QMessageBox::information(this, tr("Update Finished"), str);
 
-    if(modPath_->updatableCount() == 0){
-        status_ = UpdateDone;
-        ui->checkUpdatesButton->setEnabled(false);
-        ui->checkUpdatesButton->setText(tr("Good! All mods are up-to-date."));
-    } else {
-        status_ = ReadyUpdate;
-        ui->checkUpdatesButton->setEnabled(true);
-        ui->checkUpdatesButton->setText(tr("Update %1 mods").arg(modPath_->updatableCount()));
-    }
+    updatesReady();
 }
 
 void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
@@ -194,27 +187,8 @@ void LocalModBrowser::on_comboBox_currentIndexChanged(int index)
 
 void LocalModBrowser::on_checkUpdatesButton_clicked()
 {
-    LocalModUpdateDialog *dialog;
-    switch (status_) {
-    case SearchOnWebsites:
-        modPath_->searchOnWebsites();
-        break;
-    case CheckUpdates:
-        modPath_->checkModUpdates();
-        break;
-    case ReadyUpdate:
-        dialog = new LocalModUpdateDialog(this, modPath_);
-        dialog->exec();
-        break;
-    case Updating:
-        //do nothing
-        //button should be disabled here
-    case UpdateDone:
-        //do nothing
-        break;
-    }
+    modPath_->checkModUpdates();
 }
-
 
 void LocalModBrowser::on_openFolderButton_clicked()
 {
@@ -223,19 +197,20 @@ void LocalModBrowser::on_openFolderButton_clicked()
     QDesktopServices::openUrl(url);
 }
 
-
 void LocalModBrowser::on_deleteOldButton_clicked()
 {
     modPath_->deleteAllOld();
 }
 
-
 void LocalModBrowser::on_checkButton_clicked()
 {
-    if(modPath_->info().loaderType() == ModLoaderType::Fabric){
-        modPath_->checkFabricDepends();
-        modPath_->checkFabricConflicts();
-        modPath_->checkFabricBreaks();
-    }
+    auto dialog = new LocalModCheckDialog(this, modPath_);
+    dialog->exec();
+}
+
+void LocalModBrowser::on_updateAllButton_clicked()
+{
+    auto dialog = new LocalModUpdateDialog(this, modPath_);
+    dialog->exec();
 }
 

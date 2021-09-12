@@ -6,9 +6,21 @@
 #include "quazip.h"
 #include "quazipfile.h"
 
+
 #include "util/tutil.hpp"
 
-QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip)
+const QString &FabricModInfo::mainId() const
+{
+    return mainId_;
+}
+
+QList<FabricModInfo> FabricModInfo::fromZip(const QString &path)
+{
+    QuaZip zip(path);
+    return fromZip(&zip);
+}
+
+QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
 {
     QList<FabricModInfo> list;
     QuaZipFile zipFile(zip);
@@ -40,6 +52,8 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip)
     info.name_ = value(result, "name").toString();
     info.authors_ = value(result, "authors").toStringList();
     info.description_ = value(result, "description").toString();
+
+    info.mainId_ = mainId.isEmpty()? info.id_ : mainId;
 
     //provides
     info.provides_ = value(result, "provides").toStringList();
@@ -84,7 +98,7 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip)
             QuaZip embeddedZip(&buffer);
 
             //append embedded info
-            list << fromZip(&embeddedZip);
+            list << fromZip(&embeddedZip, info.mainId_);
         }
     }
     zip->close();

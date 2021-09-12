@@ -43,6 +43,7 @@ SOURCES += \
     src/ui/localmodbrowser.cpp \
     src/ui/localmodbrowsersettingsdialog.cpp \
     src/local/localmodinfo.cpp \
+    src/ui/localmodcheckdialog.cpp \
     src/ui/localmodinfodialog.cpp \
     src/ui/localmoditemwidget.cpp \
     src/main.cpp \
@@ -92,6 +93,7 @@ HEADERS += \
     src/ui/localmodbrowser.h \
     src/ui/localmodbrowsersettingsdialog.h \
     src/local/localmodinfo.h \
+    src/ui/localmodcheckdialog.h \
     src/ui/localmodinfodialog.h \
     src/ui/localmoditemwidget.h \
     src/ui/localmodupdatedialog.h \
@@ -118,6 +120,7 @@ FORMS += \
     src/ui/downloaderitemwidget.ui \
     src/ui/localmodbrowser.ui \
     src/ui/localmodbrowsersettingsdialog.ui \
+    src/ui/localmodcheckdialog.ui \
     src/ui/localmodinfodialog.ui \
     src/ui/localmoditemwidget.ui \
     src/ui/localmodupdatedialog.ui \
