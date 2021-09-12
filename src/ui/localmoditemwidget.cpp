@@ -75,8 +75,8 @@ void LocalModItemWidget::updateInfo()
         auto menu = new QMenu(this);
         for(const auto &info : mod_->oldInfos())
             connect(menu->addAction(info.fabric().version()), &QAction::triggered, this, [=]{
+                ui->rollbackButton->setEnabled(false);
                 mod_->rollback(info);
-//                ui->rollbackButton->setEnabled(false);
             });
         ui->rollbackButton->setMenu(menu);
     }

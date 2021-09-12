@@ -11,6 +11,7 @@ Preferences::Preferences(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->proxyBox->setVisible(false);
+    ui->autoSearchOnWebsites->setVisible(false);
 
     Config config;
     ui->commonPathText->setText(config.getCommonPath());

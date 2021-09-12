@@ -67,19 +67,6 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QToolButton" name="warningButton">
-         <property name="text">
-          <string>!</string>
-         </property>
-         <property name="icon">
-          <iconset theme="emblem-warning"/>
-         </property>
-         <property name="autoRaise">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QToolButton" name="updateButton">
          <property name="enabled">
           <bool>true</bool>
@@ -104,6 +91,19 @@
          <property name="icon">
           <iconset theme="backup">
            <normaloff>.</normaloff>.</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="warningButton">
+         <property name="text">
+          <string>!</string>
+         </property>
+         <property name="icon">
+          <iconset theme="emblem-warning"/>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
