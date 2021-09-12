@@ -39,7 +39,7 @@ LocalModInfo::LocalModInfo(QString path) :
     fabricModInfoList_ = FabricModInfo::fromZip(&zip);
     if(!fabricModInfoList_.isEmpty()){
         loaderType_ = ModLoaderType::Fabric;
-        fabricModInfoList_.first().setIsEmbedded(true);
+        fabricModInfoList_.first().setIsEmbedded(false);
     }
 }
 

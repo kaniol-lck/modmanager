@@ -73,7 +73,18 @@
         <string>Delete Old</string>
        </property>
        <property name="icon">
-        <iconset theme="delete"/>
+        <iconset theme="delete">
+         <normaloff>.</normaloff>.</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="checkButton">
+       <property name="text">
+        <string>Check</string>
+       </property>
+       <property name="icon">
+        <iconset theme="checkmark"/>
        </property>
       </widget>
      </item>

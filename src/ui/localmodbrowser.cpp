@@ -229,3 +229,13 @@ void LocalModBrowser::on_deleteOldButton_clicked()
     modPath_->deleteAllOld();
 }
 
+
+void LocalModBrowser::on_checkButton_clicked()
+{
+    if(modPath_->info().loaderType() == ModLoaderType::Fabric){
+        modPath_->checkFabricDepends();
+        modPath_->checkFabricConflicts();
+        modPath_->checkFabricBreaks();
+    }
+}
+

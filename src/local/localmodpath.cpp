@@ -41,7 +41,7 @@ void LocalModPath::loadMods()
         auto [info, oldInfo] = watcher->result();
         //load mods
         for(const auto &modInfo : qAsConst(info)){
-            //TODO: other loader types
+            //only load loader type matched mods
             if(modInfo.loaderType() == info_.loaderType()){
                 auto mod = new LocalMod(this, modInfo);
                 connect(mod, &LocalMod::updateFinished, this, [=](bool success){
@@ -59,6 +59,7 @@ void LocalModPath::loadMods()
         //load old mods
         for(const auto &oldModInfo : qAsConst(oldInfo)){
             //TODO: other loader types
+            //same loader type and same identifier
             if(oldModInfo.loaderType() == info_.loaderType() && modMap_.contains(oldModInfo.fabric().id()))
                 modMap_.value(oldModInfo.fabric().id())->addOldInfo(oldModInfo);
         }
@@ -80,60 +81,150 @@ void LocalModPath::loadMods()
         }
 
         //fabric
-        for(auto fabricMod : fabricModMap_){
-            //check depends
-            if(fabricMod.isEmbedded()) continue;
-            for(auto it = fabricMod.depends().cbegin(); it != fabricMod.depends().cend(); it++){
-                auto modid = it.key();
-                if(!fabricModMap_.contains(modid) && !provideList_.contains(modid)) {
-                    if(modid == "minecraft"){
-                        //TODO
-                    } else if(modid == "java"){
-                        //TODO
-                    } else if(modid == "fabricloader"){
-                        //TODO
-//                    } else if(modid.startsWith("fabric-")){
-                        //TODO :fabric API
-                        //embedded jar
-                    } else{
-                        qDebug() << fabricMod.name() << fabricMod.id() << "depends" << modid;
-                    }
-                    continue;
-                }
-                //current mod version
-                auto version_str = fabricModMap_.value(modid).version();
-                //remove build etc
-                version_str.remove(QRegExp(R"(\+.*$)")).remove(R"(\-.*$)");
-                if(!semver::valid(version_str.toStdString())){
-                    qDebug() << fabricMod.name() << "does not respect semver:" << version_str;
-                    continue;
-                }
-                auto range_str = it.value();
-                if(!semver::valid(range_str.toStdString())){
-                    qDebug() << fabricMod.name() << "does not respect semver:" << range_str;
-                    continue;
-                }
-                if (range_str == "*" || semver::satisfies(version_str.toStdString(), range_str.toStdString())) {
-                    //pass
-                } else {
-                    qDebug() << fabricMod.name() << "failed" << modid;
-                    qDebug() << "current:" << version_str;
-                    qDebug() << "depends:" << it.value();
-                }
+        checkFabricDepends();
+        checkFabricConflicts();
+        checkFabricBreaks();
+    });
+}
 
+std::tuple<LocalModPath::FindResultType, std::optional<FabricModInfo> > LocalModPath::findFabricMod(const QString &modid, const QString &range_str) const
+{
+    //check contains
+    if(!fabricModMap_.contains(modid) && !provideList_.contains(modid)) {
+        //environment
+        if(modid == "minecraft" || modid == "java" || modid == "fabricloader")
+            return { Environmant, std::nullopt };
+        else
+            return { Missing, std::nullopt };
+    }
 
-            }
-            //check conflicts
-            for(auto it = fabricMod.conflicts().cbegin(); it != fabricMod.conflicts().cend(); it++){
+    //current mod version
+    auto modInfo = fabricModMap_.value(modid);
+    auto version_str = modInfo.version();
+    //remove build etc
+    version_str = version_str.left(version_str.indexOf('+'));
+    version_str = version_str.left(version_str.indexOf('-'));
+    if(!semver::valid(version_str.toStdString())){
+        return { VersionSemverError, {modInfo} };
+    }
+    if(!semver::valid(range_str.toStdString())){
+        return { RangeSemverError, std::nullopt };
+    }
+    if (range_str == "*" || semver::satisfies(version_str.toStdString(), range_str.toStdString())) {
+        return { Match, {modInfo} };
+    } else {
+        return { Mismatch, {modInfo} };
+    }
 
-            }
-            //check breaks
-            for(auto it = fabricMod.breaks().cbegin(); it != fabricMod.breaks().cend(); it++){
+}
 
+QList<std::tuple<FabricModInfo, QString, QString, std::optional<FabricModInfo>>> LocalModPath::checkFabricDepends() const
+{
+    QList<std::tuple<FabricModInfo, QString, QString, std::optional<FabricModInfo>>> list;
+    for(const auto &fabricMod : qAsConst(fabricModMap_)){
+        //check depends
+        if(fabricMod.isEmbedded()) continue;
+        for(auto it = fabricMod.depends().cbegin(); it != fabricMod.depends().cend(); it++){
+            auto [result, info] = findFabricMod(it.key(), it.value());
+            auto modid = it.key();
+            auto range_str = it.value();
+            switch (result) {
+            case Environmant:
+                //nothing to do
+                break;
+            case Missing:
+                list.append({ fabricMod, modid, "", std::nullopt});
+                qDebug() << fabricMod.name() << fabricMod.id() << "depends" << modid << "which is missing";
+                break;
+            case Mismatch:
+                list.append({ fabricMod, modid, range_str, info});
+                qDebug() << fabricMod.name() << fabricMod.id() << "depends" << modid << "which is mismatch";
+                break;
+            case Match:
+                //nothing to do
+                break;
+            case RangeSemverError:
+                qDebug() << "range does not respect semver:" << modid << range_str << "provided by" << fabricMod.name();
+                //nothing to do
+                break;
+            case VersionSemverError:
+                qDebug() << "version does not respect semver:" << modid << info->version() << "provided by" << info->name();
+                //nothing to do
+                break;
             }
         }
+    }
+    return list;
+}
 
-    });
+QList<std::tuple<FabricModInfo, QString, QString, FabricModInfo> > LocalModPath::checkFabricConflicts() const
+{
+    QList<std::tuple<FabricModInfo, QString, QString, FabricModInfo>> list;
+    for(const auto &fabricMod : qAsConst(fabricModMap_)){
+        //check depends
+        if(fabricMod.isEmbedded()) continue;
+        for(auto it = fabricMod.conflicts().cbegin(); it != fabricMod.conflicts().cend(); it++){
+            auto [result, info] = findFabricMod(it.key(), it.value());
+            auto modid = it.key();
+            auto range_str = it.value();
+            switch (result) {
+            case Environmant:
+                //nothing to do
+                break;
+            case Missing:
+                //nothing to do
+            case Mismatch:
+                //nothing to do
+                break;
+            case Match:
+                list.append({ fabricMod, modid, range_str, *info});
+                qDebug() << fabricMod.name() << fabricMod.id() << "conflicts" << modid << "which is present";
+                break;
+            case RangeSemverError:
+                //nothing to do
+                break;
+            case VersionSemverError:
+                //nothing to do
+                break;
+            }
+        }
+    }
+    return list;
+}
+
+QList<std::tuple<FabricModInfo, QString, QString, FabricModInfo> > LocalModPath::checkFabricBreaks() const
+{
+    QList<std::tuple<FabricModInfo, QString, QString, FabricModInfo>> list;
+    for(const auto &fabricMod : qAsConst(fabricModMap_)){
+        //check depends
+        if(fabricMod.isEmbedded()) continue;
+        for(auto it = fabricMod.breaks().cbegin(); it != fabricMod.breaks().cend(); it++){
+            auto [result, info] = findFabricMod(it.key(), it.value());
+            auto modid = it.key();
+            auto range_str = it.value();
+            switch (result) {
+            case Environmant:
+                //nothing to do
+                break;
+            case Missing:
+                //nothing to do
+            case Mismatch:
+                //nothing to do
+                break;
+            case Match:
+                list.append({ fabricMod, modid, range_str, *info});
+                qDebug() << fabricMod.name() << fabricMod.id() << "breaks" << modid << "which is present";
+                break;
+            case RangeSemverError:
+                //nothing to do
+                break;
+            case VersionSemverError:
+                //nothing to do
+                break;
+            }
+        }
+    }
+    return list;
 }
 
 void LocalModPath::searchOnWebsites()
