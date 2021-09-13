@@ -152,7 +152,7 @@
     </message>
     <message>
         <location filename="../src/ui/curseforgemodbrowser.ui" line="47"/>
-        <location filename="../src/ui/curseforgemodbrowser.cpp" line="119"/>
+        <location filename="../src/ui/curseforgemodbrowser.cpp" line="120"/>
         <source>&amp;Search</source>
         <translation>搜索</translation>
     </message>
@@ -238,7 +238,7 @@
         <translation type="vanished">Rift</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforgemodbrowser.cpp" line="111"/>
+        <location filename="../src/ui/curseforgemodbrowser.cpp" line="112"/>
         <source>Searching...</source>
         <translation>搜索中...</translation>
     </message>
@@ -396,27 +396,27 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="55"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="56"/>
         <source>Idol</source>
         <translation>Idol</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="58"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="59"/>
         <source>Queue</source>
         <translation>队列中</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="61"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="62"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="66"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="67"/>
         <source>Paused</source>
         <translation>已暂停</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="69"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="70"/>
         <source>Finished</source>
         <translation>已完成</translation>
     </message>
@@ -500,7 +500,7 @@
         <translation type="vanished">在Mod网站上搜索...（%1/%2）</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="78"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="79"/>
         <source>Searching on mod websites...</source>
         <translation>在mod网站上搜索中...</translation>
     </message>
@@ -509,49 +509,49 @@
         <translation type="vanished">在mod网站上搜索中...（%1/%2）</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="70"/>
-        <location filename="../src/ui/localmodbrowser.cpp" line="122"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="71"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="123"/>
         <source>%1 mods in total.</source>
         <translation>共计%1个mod。</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="84"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="85"/>
         <source>Searching on mod websites... (Searched %1/%2 mods)</source>
         <translation>在mod网站上搜索中...（已搜索%1/%2个mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="92"/>
-        <location filename="../src/ui/localmodbrowser.cpp" line="115"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="93"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="116"/>
         <source>Check updates</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="101"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="102"/>
         <source>Checking updates...</source>
         <translation>检查更新中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="107"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="108"/>
         <source>%1 mods need update... (Checked %2/%3 mods)</source>
         <translation>%1个mod需要更新（已检查%2/%3个mod...）</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="119"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="120"/>
         <source>%1 mods need update.</source>
         <translation>%1个mod需要更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="143"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="144"/>
         <source>Updating... (Updated %1/%2 mods)</source>
         <translation>更新中...（已更新%1/%2个mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="149"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="150"/>
         <source>%1 mods in %2 has been updated. Enjoy it!</source>
         <translation>%2中的%1个mod已更新。去游戏里体验一下更新吧！</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="151"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="152"/>
         <source>Sadly, %1 mods failed to update.</source>
         <translation>很遗憾，%1个mod更新失败了。</translation>
     </message>
@@ -560,17 +560,17 @@
         <translation type="vanished">已更新%1个mod。去游戏里体验一下更新吧！</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="153"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="154"/>
         <source>You can revert update if find any incompatibility.</source>
         <translation>如果发现有mod不兼容可以及时回退更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="154"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="155"/>
         <source>Update Finished</source>
         <translation>更新完成</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="132"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="133"/>
         <source>Updating...</source>
         <translation>更新中...</translation>
     </message>
@@ -583,7 +583,7 @@
         <translation type="vanished">更新%1个mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodbrowser.cpp" line="122"/>
+        <location filename="../src/ui/localmodbrowser.cpp" line="123"/>
         <source>Good! All mods are up-to-date.</source>
         <translation>太棒了！所有的mod都是最新版。</translation>
     </message>
@@ -1006,7 +1006,7 @@
     </message>
     <message>
         <location filename="../src/ui/modrinthmodbrowser.ui" line="47"/>
-        <location filename="../src/ui/modrinthmodbrowser.cpp" line="104"/>
+        <location filename="../src/ui/modrinthmodbrowser.cpp" line="121"/>
         <source>&amp;Search</source>
         <translation>搜索</translation>
     </message>
@@ -1017,7 +1017,7 @@
     </message>
     <message>
         <location filename="../src/ui/modrinthmodbrowser.ui" line="72"/>
-        <location filename="../src/ui/modrinthmodbrowser.cpp" line="59"/>
+        <location filename="../src/ui/modrinthmodbrowser.cpp" line="60"/>
         <source>Any</source>
         <translation>任意</translation>
     </message>
@@ -1074,12 +1074,12 @@
         <translation type="vanished">Rift</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinthmodbrowser.cpp" line="69"/>
+        <location filename="../src/ui/modrinthmodbrowser.cpp" line="76"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinthmodbrowser.cpp" line="94"/>
+        <location filename="../src/ui/modrinthmodbrowser.cpp" line="111"/>
         <source>Searching...</source>
         <translation>搜索中...</translation>
     </message>
@@ -1170,6 +1170,7 @@
     </message>
     <message>
         <location filename="../src/ui/modrinthmoditemwidget.cpp" line="23"/>
+        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="95"/>
         <source> Downloads</source>
         <translation> 次下载</translation>
     </message>

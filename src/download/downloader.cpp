@@ -76,6 +76,7 @@ void Downloader::startDownload()
     //handle redirect
     //this will update url and size
     handleRedirect();
+    emit sizeUpdated(size_);
 
     file_.resize(size_);
     //slice file into threads

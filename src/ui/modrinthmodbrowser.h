@@ -50,7 +50,6 @@ private slots:
 private:
     Ui::ModrinthModBrowser *ui;
     ModrinthAPI *api_;
-    QList<ModrinthMod*> modList_;
     QStringList downloadPathList_;
     QString downloadPath_;
     QString currentName_;

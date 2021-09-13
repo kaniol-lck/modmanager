@@ -23,6 +23,8 @@ signals:
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadInfoReady();
 
+    void sizeUpdated(qint64 size);
+
 private slots:
     void threadFinished(int index);
     void updateProgress(int index, qint64 threadBytesReceived);

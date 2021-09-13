@@ -24,6 +24,8 @@ private slots:
 
     void downloadSpeed(qint64 bytesPerSec);
 
+    void updateSize(qint64 size);
+
     void on_openFolderButton_clicked();
 
 private:

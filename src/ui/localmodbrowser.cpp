@@ -12,6 +12,7 @@
 #include "localmodupdatedialog.h"
 #include "localmodcheckdialog.h"
 #include "config.h"
+#include "util/funcutil.h"
 #include "util/localmodsortitem.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
@@ -192,9 +193,7 @@ void LocalModBrowser::on_checkUpdatesButton_clicked()
 
 void LocalModBrowser::on_openFolderButton_clicked()
 {
-    QUrl url = modPath_->info().path();
-    url.setScheme("file");
-    QDesktopServices::openUrl(url);
+    openFileInFolder(modPath_->info().path());
 }
 
 void LocalModBrowser::on_deleteOldButton_clicked()

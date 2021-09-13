@@ -6,7 +6,6 @@
 #include <QDesktopServices>
 #include <QDebug>
 
-#include "util/tutil.hpp"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
@@ -16,6 +15,7 @@
 #include "gameversion.h"
 #include "modloadertype.h"
 #include "config.h"
+#include "util/funcutil.h"
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -49,8 +49,8 @@ void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
     isUiSet_ = false;
     ui->versionSelect->setCurrentText(info.gameVersion());
     ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
-    ui->downloadPathSelect->setCurrentText(info.displayName());
     isUiSet_ = true;
+    ui->downloadPathSelect->setCurrentText(info.displayName());
     getModList(currentName_);
 }
 
@@ -76,6 +76,7 @@ void CurseforgeModBrowser::updateLocalPathList()
     downloadPathList_.clear();
     ui->downloadPathSelect->addItem(tr("Custom"));
     downloadPathList_ << Config().getDownloadPath();
+    if(downloadPath_.isEmpty()) downloadPath_ = downloadPathList_.first();
     for(const auto &path : LocalModPathManager::pathList()){
         ui->downloadPathSelect->addItem(path->info().displayName());
         downloadPathList_ << path->info().path();
@@ -216,9 +217,6 @@ void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 
 void CurseforgeModBrowser::on_openFolderButton_clicked()
 {
-    QDir dir(downloadPathList_.at(ui->downloadPathSelect->currentIndex()));
-    QUrl url(dir.absolutePath());
-    url.setScheme("file");
-    QDesktopServices::openUrl(url);
+    openFileInFolder(downloadPath_);
 }
 

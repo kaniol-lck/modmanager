@@ -35,6 +35,7 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
 
     refreshStatus();
 
+    connect(modDownlaoder_, &ModDownloader::sizeUpdated, this, &DownloaderItemWidget::updateSize);
     connect(modDownlaoder_, &ModDownloader::statusChanged, this, &DownloaderItemWidget::refreshStatus);
     connect(modDownlaoder_, &ModDownloader::downloadProgress, this, &DownloaderItemWidget::downloadProgress);
     connect(modDownlaoder_, &ModDownloader::downloadSpeed, this, &DownloaderItemWidget::downloadSpeed);
@@ -85,12 +86,12 @@ void DownloaderItemWidget::downloadSpeed(qint64 bytesPerSec)
     ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
 }
 
-void DownloaderItemWidget::on_openFolderButton_clicked()
+void DownloaderItemWidget::updateSize(qint64 size)
 {
-    QDir dir(modDownlaoder_->fileInfo().path());
-    QUrl url(dir.absolutePath());
-    url.setScheme("file");
-    QDesktopServices::openUrl(url);
-
+    ui->downloadSizeText->setText(numberConvert(size, "B"));
 }
 
+void DownloaderItemWidget::on_openFolderButton_clicked()
+{
+    openFileInFolder(modDownlaoder_->filePath());
+}

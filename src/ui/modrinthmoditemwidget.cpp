@@ -92,9 +92,14 @@ void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
     });
     connect(downloader, &Downloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(numberConvert(fileInfo.size(), "B"));
+        ui->downloadSpeedText->setText(numberConvert(mod_->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
         ui->downloadButton->setText(tr("Downloaded"));
     });
+}
+
+ModrinthMod *ModrinthModItemWidget::mod() const
+{
+    return mod_;
 }
 
 void ModrinthModItemWidget::setDownloadPath(const QString &newDownloadPath)

@@ -1,6 +1,10 @@
 #include "funcutil.h"
 
-#include <QNetworkAccessManager>
+#include <QFileInfo>
+#include <QUrl>
+#include <QDesktopServices>
+#include <QDebug>
+#include <QDir>
 
 QString numberConvert(int size, const QString &suffix, int prec, int limit){
     if(size < limit)
@@ -11,4 +15,34 @@ QString numberConvert(int size, const QString &suffix, int prec, int limit){
         return QString::number(size / 1000000., 'g', prec) + "M" + suffix;
     else
         return QString::number(size / 1000000., 'g', prec) + "G" + suffix;
+}
+
+void openFileInFolder(const QString &filePath)
+{
+    QFileInfo info(filePath);
+    QString path = QDir(filePath).absolutePath();
+#if defined(Q_OS_WIN)
+    QStringList args;
+    if (!info.isFile())
+        args << "/select,";
+    args << QDir::toNativeSeparators(path);
+    if (QProcess::startDetached("explorer", args))
+        return;
+#elif defined(Q_OS_MAC)
+    QStringList args;
+    args << "-e";
+    args << "tell application \"Finder\"";
+    args << "-e";
+    args << "activate";
+    args << "-e";
+    args << "select POSIX file \"" + path + "\"";
+    args << "-e";
+    args << "end tell";
+    args << "-e";
+    args << "return";
+    if (!QProcess::execute("/usr/bin/osascript", args))
+        return;
+#endif
+    qDebug() << info.isFile();
+    QDesktopServices::openUrl(QUrl::fromLocalFile(path));
 }

@@ -14,6 +14,7 @@
 #include "gameversion.h"
 #include "modloadertype.h"
 #include "config.h"
+#include "util/funcutil.h"
 
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -47,8 +48,8 @@ void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
     isUiSet_ = false;
     ui->versionSelect->setCurrentText(info.gameVersion());
     ui->loaderSelect->setCurrentIndex(ModLoaderType::modrinth.indexOf(info.loaderType()));
-    ui->downloadPathSelect->setCurrentText(info.displayName());
     isUiSet_ = true;
+    ui->downloadPathSelect->setCurrentText(info.displayName());
     getModList(currentName_);
 }
 
@@ -64,13 +65,29 @@ void ModrinthModBrowser::updateVersionList()
 
 void ModrinthModBrowser::updateLocalPathList()
 {
+    //remember selected path
+    LocalModPath *selectedPath = nullptr;
+    auto index = ui->downloadPathSelect->currentIndex();
+    if(index >= 0 && index < LocalModPathManager::pathList().size())
+        selectedPath = LocalModPathManager::pathList().at(ui->downloadPathSelect->currentIndex());
+
     ui->downloadPathSelect->clear();
     downloadPathList_.clear();
     ui->downloadPathSelect->addItem(tr("Custom"));
     downloadPathList_ << Config().getDownloadPath();
+    if(downloadPath_.isEmpty()) downloadPath_ = downloadPathList_.first();
     for(const auto &path : LocalModPathManager::pathList()){
         ui->downloadPathSelect->addItem(path->info().displayName());
         downloadPathList_ << path->info().path();
+    }
+
+    //reset selected path
+    if(selectedPath != nullptr){
+        auto index = LocalModPathManager::pathList().indexOf(selectedPath);
+        if(index >= 0){
+            ui->downloadPathSelect->setCurrentIndex(index);
+            searchModByPathInfo(selectedPath->info());
+        }
     }
 }
 
@@ -107,7 +124,6 @@ void ModrinthModBrowser::getModList(QString name, int index)
 
         //new search
         if(currentIndex_ == 0){
-            modList_.clear();
             for(int i = 0; i < ui->modListWidget->count(); i++)
                 ui->modListWidget->itemWidget(ui->modListWidget->item(i))->deleteLater();
             ui->modListWidget->clear();
@@ -122,7 +138,6 @@ void ModrinthModBrowser::getModList(QString name, int index)
         //show them
         for(const auto &info : qAsConst(infoList)){
             auto modrinthMod = new ModrinthMod(this, info);
-            modList_.append(modrinthMod);
 
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 100));
@@ -139,7 +154,8 @@ void ModrinthModBrowser::getModList(QString name, int index)
 
 void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
-    auto mod = modList_.at(index.row());
+    auto widget = ui->modListWidget->itemWidget(ui->modListWidget->item(index.row()));
+    auto mod = dynamic_cast<ModrinthModItemWidget*>(widget)->mod();
     auto dialog = new ModrinthModInfoDialog(this, mod, downloadPath_);
     dialog->show();
 }
@@ -162,15 +178,10 @@ void ModrinthModBrowser::on_loaderSelect_currentIndexChanged(int)
     if(isUiSet_) getModList(currentName_);
 }
 
-
 void ModrinthModBrowser::on_openFolderButton_clicked()
 {
-    QDir dir(downloadPathList_.at(ui->downloadPathSelect->currentIndex()));
-    QUrl url(dir.absolutePath());
-    url.setScheme("file");
-    QDesktopServices::openUrl(url);
+    openFileInFolder(downloadPath_);
 }
-
 
 void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
