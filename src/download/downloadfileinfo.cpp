@@ -57,3 +57,23 @@ qint64 DownloadFileInfo::size() const
 {
     return size_;
 }
+
+const QString &DownloadFileInfo::path() const
+{
+    return path_;
+}
+
+void DownloadFileInfo::setPath(const QString &newPath)
+{
+    path_ = newPath;
+}
+
+const QByteArray &DownloadFileInfo::iconBytes() const
+{
+    return iconBytes_;
+}
+
+void DownloadFileInfo::setIconBytes(const QByteArray &newIconBytes)
+{
+    iconBytes_ = newIconBytes;
+}

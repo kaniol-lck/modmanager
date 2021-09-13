@@ -70,7 +70,11 @@ void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
 
-    auto downloader = DownloadManager::addModDownload(fileInfo, downloadPath_);
+    DownloadFileInfo info(fileInfo);
+    info.setPath(downloadPath_);
+    info.setIconBytes(mod_->modInfo().iconBytes());
+
+    auto downloader = DownloadManager::addModDownload(info);
 
     ui->downloadProgress->setMaximum(fileInfo.size());
 

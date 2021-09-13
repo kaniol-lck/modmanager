@@ -27,11 +27,20 @@ public:
     const QUrl &url() const;
     qint64 size() const;
 
+    const QString &path() const;
+    void setPath(const QString &newPath);
+
+    const QByteArray &iconBytes() const;
+    void setIconBytes(const QByteArray &newIconBytes);
+
+
 protected:
     QString displayName_;
     QString fileName_;
     QUrl url_;
     qint64 size_ = 0;
+    QString path_;
+    QByteArray iconBytes_;
 };
 
 #endif // DOWNLOADFILEINFO_H

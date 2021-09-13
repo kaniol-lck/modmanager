@@ -76,9 +76,12 @@ public:
         return true;
     }
 
-    ModDownloader *update(const QString &path, std::function<bool (FileInfoT)> callback)
+    ModDownloader *update(const QString &path, const QByteArray &iconBytes, std::function<bool (FileInfoT)> callback)
     {
-        return DownloadManager::addModUpdate(*updateFileInfo_, path, [=]{
+        DownloadFileInfo info(*updateFileInfo_);
+        info.setPath(path);
+        info.setIconBytes(iconBytes);
+        return DownloadManager::addModUpdate(info, [=]{
             if(callback(*updateFileInfo_)){
                 currentFileInfo_.emplace(*updateFileInfo_);
                 updateFileInfo_.reset();

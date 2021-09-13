@@ -30,18 +30,16 @@ ModDownloader::ModDownloader(QObject *parent) : Downloader(parent)
     });
 }
 
-void ModDownloader::downloadMod(const DownloadFileInfo &info, const QString &path)
+void ModDownloader::downloadMod(const DownloadFileInfo &info)
 {
     fileInfo_ = info;
-    filePath_ = path;
     setStatus(DownloadStatus::Queue);
     type_ = DownloadType::Download;
 }
 
-void ModDownloader::updateMod(const DownloadFileInfo &info, const  QString &path)
+void ModDownloader::updateMod(const DownloadFileInfo &info)
 {
     fileInfo_ = info;
-    filePath_ = path;
     setStatus(DownloadStatus::Queue);
     type_ = DownloadType::Update;
 }
@@ -50,7 +48,7 @@ void ModDownloader::startDownload()
 {
     setStatus(DownloadStatus::Downloading);
     speedTimer_.start();
-    download(fileInfo_.url(), filePath_, fileInfo_.fileName());
+    download(fileInfo_.url(), fileInfo_.path(), fileInfo_.fileName());
 }
 
 const DownloadFileInfo &ModDownloader::fileInfo() const
@@ -71,11 +69,6 @@ ModDownloader::DownloadType ModDownloader::type() const
 const QString &ModDownloader::readySize() const
 {
     return readySize_;
-}
-
-const QString &ModDownloader::filePath() const
-{
-    return filePath_;
 }
 
 void ModDownloader::setStatus(DownloadStatus newStatus)

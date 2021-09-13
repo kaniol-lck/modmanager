@@ -251,9 +251,9 @@ void LocalMod::update(ModWebsiteType type)
     ModDownloader *downloader;
 
     if(type == ModWebsiteType::Curseforge)
-        downloader = curseforgeUpdate_.update(path, callback);
+        downloader = curseforgeUpdate_.update(path, modInfo_.iconBytes(), callback);
     else if(type == ModWebsiteType::Modrinth)
-        downloader = modrinthUpdate_.update(path, callback);
+        downloader = modrinthUpdate_.update(path, modInfo_.iconBytes(), callback);
 
     connect(downloader, &ModDownloader::downloadProgress, this, &LocalMod::updateProgress);
 }

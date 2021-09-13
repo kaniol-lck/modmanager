@@ -24,6 +24,8 @@ private slots:
 
     void downloadSpeed(qint64 bytesPerSec);
 
+    void on_openFolderButton_clicked();
+
 private:
     Ui::DownloaderItemWidget *ui;
     ModDownloader *modDownlaoder_;

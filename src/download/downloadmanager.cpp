@@ -41,21 +41,21 @@ void DownloadManager::tryDownload()
     }
 }
 
-ModDownloader *DownloadManager::addModDownload(const DownloadFileInfo &info, const QString &path)
+ModDownloader *DownloadManager::addModDownload(const DownloadFileInfo &info)
 {
     auto manager = DownloadManager::manager();
     auto downloader = new ModDownloader(manager);
-    downloader->downloadMod(info, path);
+    downloader->downloadMod(info);
     manager->addDownloader(downloader);
     manager->tryDownload();
     return downloader;
 }
 
-ModDownloader *DownloadManager::addModUpdate(const DownloadFileInfo &info, const QString &path, std::function<void ()> finishCallback)
+ModDownloader *DownloadManager::addModUpdate(const DownloadFileInfo &info, std::function<void ()> finishCallback)
 {
     auto manager = DownloadManager::manager();
     auto downloader = new ModDownloader(manager);
-    downloader->updateMod(info, path);
+    downloader->updateMod(info);
     connect(downloader, &Downloader::finished, manager, finishCallback);
     manager->addDownloader(downloader);
     manager->tryDownload();

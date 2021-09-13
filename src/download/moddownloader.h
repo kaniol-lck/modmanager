@@ -13,8 +13,8 @@ class ModDownloader : public Downloader
 public:
     explicit ModDownloader(QObject *parent = nullptr);
 
-    void downloadMod(const DownloadFileInfo &info, const QString &path);
-    void updateMod(const DownloadFileInfo &info, const QString &path);
+    void downloadMod(const DownloadFileInfo &info);
+    void updateMod(const DownloadFileInfo &info);
     void startDownload();
 
     enum DownloadStatus { Idol, Queue, Downloading, Paused, Finished };
@@ -43,7 +43,6 @@ private:
     DownloadStatus status_ = DownloadStatus::Idol;
     DownloadType type_;
     QString readySize_;
-    QString filePath_;
 };
 
 #endif // MODDOWNLOADER_H

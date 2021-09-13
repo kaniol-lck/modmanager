@@ -76,7 +76,11 @@ void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
 
-    auto downloader = DownloadManager::addModDownload(fileInfo, downloadPath_);
+    DownloadFileInfo info(fileInfo);
+    info.setIconBytes(mod_->modInfo().iconBytes());
+    info.setPath(downloadPath_);
+
+    auto downloader = DownloadManager::addModDownload(info);
 
     ui->downloadProgress->setMaximum(fileInfo.size());
 

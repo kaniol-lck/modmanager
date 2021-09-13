@@ -1,6 +1,9 @@
 #include "downloaderitemwidget.h"
 #include "ui_downloaderitemwidget.h"
 
+#include <QDir>
+#include <QDesktopServices>
+
 #include "download/moddownloader.h"
 #include "util/funcutil.h"
 
@@ -12,6 +15,7 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
     ui->setupUi(this);
     ui->downloadSpeedText->setVisible(false);
     ui->downloadProgress->setVisible(false);
+    ui->openFolderButton->setVisible(false);
 
     auto fileInfo = modDownlaoder_->fileInfo();
     ui->displayNameText->setText(fileInfo.displayName());
@@ -20,6 +24,14 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
     QString linkText = fileInfo.fileName();
     linkText = "<a href=%1>" + linkText + "</a>";
     ui->fileNameText->setText(linkText.arg(fileInfo.url().toString()));
+
+    if(fileInfo.iconBytes().isEmpty())
+        ;//ui->downloadIcon->setVisible(false);
+    else{
+        QPixmap pixmap;
+        pixmap.loadFromData(fileInfo.iconBytes());
+        ui->downloadIcon->setPixmap(pixmap.scaled(80, 80));
+    }
 
     refreshStatus();
 
@@ -57,6 +69,7 @@ void DownloaderItemWidget::refreshStatus()
         ui->downloaStatus->setText(tr("Finished"));
         ui->downloadSpeedText->setVisible(false);
         ui->downloadProgress->setVisible(false);
+        ui->openFolderButton->setVisible(true);
         break;
     }
 }
@@ -71,3 +84,13 @@ void DownloaderItemWidget::downloadSpeed(qint64 bytesPerSec)
 {
     ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
 }
+
+void DownloaderItemWidget::on_openFolderButton_clicked()
+{
+    QDir dir(modDownlaoder_->fileInfo().path());
+    QUrl url(dir.absolutePath());
+    url.setScheme("file");
+    QDesktopServices::openUrl(url);
+
+}
+
