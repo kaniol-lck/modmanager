@@ -34,14 +34,29 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
     return fileInfo;
 }
 
-DownloadFileInfo::SourceType CurseforgeFileInfo::source() const
-{
-    return Curseforge;
-}
-
-int CurseforgeFileInfo::getId() const
+int CurseforgeFileInfo::id() const
 {
     return id_;
+}
+
+const QString &CurseforgeFileInfo::displayName() const
+{
+    return displayName_;
+}
+
+const QString &CurseforgeFileInfo::fileName() const
+{
+    return fileName_;
+}
+
+const QUrl &CurseforgeFileInfo::url() const
+{
+    return url_;
+}
+
+qint64 CurseforgeFileInfo::size() const
+{
+    return size_;
 }
 
 const QList<GameVersion> &CurseforgeFileInfo::gameVersions() const

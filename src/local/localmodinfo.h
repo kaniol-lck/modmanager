@@ -19,12 +19,21 @@ public:
     void addOld();
     void removeOld();
 
+    QString id() const;
+    QString name() const;
+    QString version() const;
+    QString description() const;
+    QByteArray iconBytes() const;
+    QStringList authors() const;
+
+    //file related
     const QString &path() const;
     const QFileInfo &fileInfo() const;
     const QString &sha1() const;
     const QString &murmurhash() const;
 
     ModLoaderType::Type loaderType() const;
+
     FabricModInfo fabric() const;
 
     const QList<FabricModInfo> &fabricModInfoList() const;

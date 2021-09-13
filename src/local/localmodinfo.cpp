@@ -58,6 +58,55 @@ void LocalModInfo::removeOld()
     path_.remove(".old");
 }
 
+QString LocalModInfo::id() const
+{
+    if(loaderType_ == ModLoaderType::Fabric)
+        return fabric().id();
+    else
+        ;//todo
+}
+
+QString LocalModInfo::name() const
+{
+    if(loaderType_ == ModLoaderType::Fabric)
+        return fabric().name();
+    else
+        ;//todo
+}
+
+QString LocalModInfo::version() const
+{
+    if(loaderType_ == ModLoaderType::Fabric)
+        return fabric().version();
+    else
+        ;//todo
+}
+
+QString LocalModInfo::description() const
+{
+
+    if(loaderType_ == ModLoaderType::Fabric)
+        return fabric().description();
+    else
+        ;//todo
+}
+
+QByteArray LocalModInfo::iconBytes() const
+{
+    if(loaderType_ == ModLoaderType::Fabric)
+        return fabric().iconBytes();
+    else
+        ;//todo
+}
+
+QStringList LocalModInfo::authors() const
+{
+    if(loaderType_ == ModLoaderType::Fabric)
+        return fabric().authors();
+    else
+        ;//todo
+}
+
 const QString &LocalModInfo::path() const
 {
     return path_;

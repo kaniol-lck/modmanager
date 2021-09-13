@@ -15,8 +15,8 @@ public:
 
     static DownloadManager *manager();
 
-    static ModDownloader *addModDownload(std::shared_ptr<DownloadFileInfo> info, QString path = "");
-    static ModDownloader *addModUpdate(std::shared_ptr<DownloadFileInfo> info, QString path, std::function<void()> finishCallback);
+    static ModDownloader *addModDownload(const DownloadFileInfo &info, const QString &path = "");
+    static ModDownloader *addModUpdate(const DownloadFileInfo &info, const QString &path, std::function<void()> finishCallback);
 
     const QList<ModDownloader *> &downloadList() const;
 

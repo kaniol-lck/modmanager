@@ -168,8 +168,8 @@ void LocalModBrowser::on_searchText_textEdited(const QString &arg1)
     for(int i = 0; i < ui->modListWidget->count(); i++){
         auto mod = dynamic_cast<const LocalModSortItem*>(ui->modListWidget->item(i))->mod();
         auto str = arg1.toLower();
-        if(mod->modInfo().fabric().name().toLower().contains(str) ||
-                mod->modInfo().fabric().description().toLower().contains(str))
+        if(mod->modInfo().name().toLower().contains(str) ||
+                mod->modInfo().description().toLower().contains(str))
             ui->modListWidget->item(i)->setHidden(false);
         else
             ui->modListWidget->item(i)->setHidden(true);

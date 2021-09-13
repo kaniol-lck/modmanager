@@ -41,7 +41,7 @@ void DownloadManager::tryDownload()
     }
 }
 
-ModDownloader *DownloadManager::addModDownload(std::shared_ptr<DownloadFileInfo> info, QString path)
+ModDownloader *DownloadManager::addModDownload(const DownloadFileInfo &info, const QString &path)
 {
     auto manager = DownloadManager::manager();
     auto downloader = new ModDownloader(manager);
@@ -51,7 +51,7 @@ ModDownloader *DownloadManager::addModDownload(std::shared_ptr<DownloadFileInfo>
     return downloader;
 }
 
-ModDownloader *DownloadManager::addModUpdate(std::shared_ptr<DownloadFileInfo> info, QString path, std::function<void ()> finishCallback)
+ModDownloader *DownloadManager::addModUpdate(const DownloadFileInfo &info, const QString &path, std::function<void ()> finishCallback)
 {
     auto manager = DownloadManager::manager();
     auto downloader = new ModDownloader(manager);

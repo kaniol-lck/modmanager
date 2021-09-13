@@ -78,8 +78,7 @@ public:
 
     ModDownloader *update(const QString &path, std::function<bool (FileInfoT)> callback)
     {
-        assert(updateFileInfo_.has_value());
-        return DownloadManager::addModUpdate(std::make_shared<FileInfoT>(*updateFileInfo_), path, [=]{
+        return DownloadManager::addModUpdate(*updateFileInfo_, path, [=]{
             if(callback(*updateFileInfo_)){
                 currentFileInfo_.emplace(*updateFileInfo_);
                 updateFileInfo_.reset();

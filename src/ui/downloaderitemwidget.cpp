@@ -14,12 +14,12 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
     ui->downloadProgress->setVisible(false);
 
     auto fileInfo = modDownlaoder_->fileInfo();
-    ui->displayNameText->setText(fileInfo->displayName());
-    ui->downloadSizeText->setText(numberConvert(fileInfo->size(), "B"));
+    ui->displayNameText->setText(fileInfo.displayName());
+    ui->downloadSizeText->setText(numberConvert(fileInfo.size(), "B"));
 
-    QString linkText = fileInfo->fileName();
+    QString linkText = fileInfo.fileName();
     linkText = "<a href=%1>" + linkText + "</a>";
-    ui->fileNameText->setText(linkText.arg(fileInfo->url().toString()));
+    ui->fileNameText->setText(linkText.arg(fileInfo.url().toString()));
 
     refreshStatus();
 

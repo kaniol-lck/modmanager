@@ -1,8 +1,41 @@
 #include "downloadfileinfo.h"
 
-DownloadFileInfo::DownloadFileInfo()
-{
+DownloadFileInfo::DownloadFileInfo(const QUrl &url) :
+    url_(url)
+{}
 
+DownloadFileInfo::DownloadFileInfo(const CurseforgeFileInfo &info) :
+    DownloadFileInfo(info.url())
+{
+    displayName_ = info.displayName();
+    fileName_ = info.fileName();
+    size_ = info.size();
+}
+
+DownloadFileInfo::DownloadFileInfo(const ModrinthFileInfo &info) :
+    DownloadFileInfo(info.url())
+{
+    displayName_ = info.displayName();
+    fileName_ = info.fileName();
+    //modrinth does not provide size info
+}
+
+DownloadFileInfo DownloadFileInfo::fromCurseforge(const CurseforgeFileInfo &info)
+{
+    DownloadFileInfo downloadInfo(info.url());
+    downloadInfo.displayName_ = info.displayName();
+    downloadInfo.fileName_ = info.fileName();
+    downloadInfo.size_ = info.size();
+    return downloadInfo;
+}
+
+DownloadFileInfo DownloadFileInfo::fromModrinth(const ModrinthFileInfo &info)
+{
+    DownloadFileInfo downloadInfo(info.url());
+    downloadInfo.displayName_ = info.displayName();
+    downloadInfo.fileName_ = info.fileName();
+    //modrinth does not provide size info
+    return downloadInfo;
 }
 
 const QString &DownloadFileInfo::displayName() const

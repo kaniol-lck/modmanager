@@ -51,18 +51,18 @@ LocalModItemWidget::~LocalModItemWidget()
 
 void LocalModItemWidget::updateInfo()
 {
-    ui->modName->setText(mod_->modInfo().fabric().name());
-    ui->modVersion->setText(mod_->modInfo().fabric().version());
-    auto description = mod_->modInfo().fabric().description();
+    ui->modName->setText(mod_->modInfo().name());
+    ui->modVersion->setText(mod_->modInfo().version());
+    auto description = mod_->modInfo().description();
     auto index = description.indexOf(".");
     if(index > 0)
         description = description.left(index + 1);
     ui->modDescription->setText(description);
-    ui->modAuthors->setText(mod_->modInfo().fabric().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    ui->modAuthors->setText(mod_->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
 
-    if(!mod_->modInfo().fabric().iconBytes().isEmpty()){
+    if(!mod_->modInfo().iconBytes().isEmpty()){
         QPixmap pixelmap;
-        pixelmap.loadFromData(mod_->modInfo().fabric().iconBytes());
+        pixelmap.loadFromData(mod_->modInfo().iconBytes());
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     }
 
@@ -74,7 +74,7 @@ void LocalModItemWidget::updateInfo()
         ui->rollbackButton->setEnabled(true);
         auto menu = new QMenu(this);
         for(const auto &info : mod_->oldInfos())
-            connect(menu->addAction(info.fabric().version()), &QAction::triggered, this, [=]{
+            connect(menu->addAction(info.version()), &QAction::triggered, this, [=]{
                 ui->rollbackButton->setEnabled(false);
                 mod_->rollback(info);
             });
@@ -195,13 +195,13 @@ void LocalModItemWidget::on_modrinthButton_clicked()
 
 void LocalModItemWidget::on_warningButton_clicked()
 {
-    QString str = tr("Duplicate version of <b>%1</b> was found:").arg(mod_->modInfo().fabric().name());
-    QStringList list(mod_->modInfo().fabric().version());
+    QString str = tr("Duplicate version of <b>%1</b> was found:").arg(mod_->modInfo().name());
+    QStringList list(mod_->modInfo().version());
     for(const auto &info : mod_->duplicateInfos())
-        list << info.fabric().version();
+        list << info.version();
     str += "<ul><li>" + list.join("</li><li>") + "</li></ul>";
     str += tr("Keep one of them and set the others as old mods?");
-    if(QMessageBox::Ok == QMessageBox::warning(this, tr("Incompatibility"), str))
+    if(QMessageBox::Yes == QMessageBox::question(this, tr("Incompatibility"), str))
         mod_->duplicateToOld();
 }
 

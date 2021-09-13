@@ -49,7 +49,7 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
 
     ui->downloadProgress->setMaximum(fileInfo_.size());
 
-    auto downloader = DownloadManager::addModDownload(std::make_shared<CurseforgeFileInfo>(fileInfo_));
+    auto downloader = DownloadManager::addModDownload(fileInfo_);
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });

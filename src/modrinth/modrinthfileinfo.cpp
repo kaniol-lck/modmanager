@@ -33,11 +33,6 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
     return fileInfo;
 }
 
-DownloadFileInfo::SourceType ModrinthFileInfo::source() const
-{
-    return DownloadFileInfo::Modrinth;
-}
-
 const QString &ModrinthFileInfo::id() const
 {
     return id_;
@@ -46,6 +41,26 @@ const QString &ModrinthFileInfo::id() const
 const QString &ModrinthFileInfo::modId() const
 {
     return modId_;
+}
+
+const QString &ModrinthFileInfo::displayName() const
+{
+    return displayName_;
+}
+
+const QString &ModrinthFileInfo::fileName() const
+{
+    return fileName_;
+}
+
+const QUrl &ModrinthFileInfo::url() const
+{
+    return url_;
+}
+
+qint64 ModrinthFileInfo::size() const
+{
+    return size_;
 }
 
 const QList<GameVersion> &ModrinthFileInfo::gameVersions() const
