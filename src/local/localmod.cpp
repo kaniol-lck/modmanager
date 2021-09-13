@@ -236,12 +236,13 @@ void LocalMod::update(ModWebsiteType type)
             setModInfo(LocalModInfo(newPath));
         } else if(postUpdate == Config::Keep){
             //rename old file
-            if(file.rename(file.fileName() + ".old"))
+            if(!file.rename(file.fileName() + ".old")){
                 file.remove();
-
+                return true;
+            }
             //update info
             modInfo_.addOld();
-            addOldInfo(modInfo_);
+            oldInfos_ << modInfo_;
             setModInfo(newModInfo);
         }
         emit updateFinished(true);
@@ -283,6 +284,7 @@ ModrinthAPI *LocalMod::modrinthAPI() const
 void LocalMod::addOldInfo(const LocalModInfo &oldInfo)
 {
     oldInfos_ << oldInfo;
+    emit modInfoUpdated();
 }
 
 const QList<LocalModInfo> &LocalMod::oldInfos() const
@@ -304,7 +306,10 @@ void LocalMod::duplicateToOld()
 {
     for(auto info : qAsConst(duplicateInfos_)){
         QFile file(info.path());
-        file.rename(file.fileName().append(".old"));
+        if(!file.rename(file.fileName().append(".old"))){
+            file.remove();
+            return;
+        }
         info.addOld();
         oldInfos_.append(info);
     }
@@ -324,7 +329,10 @@ void LocalMod::rollback(LocalModInfo info)
     QFile oldFile(info.path());
 
     //keep current info as old
-    file.rename(file.fileName().append(".old"));
+    if(!file.rename(file.fileName().append(".old"))){
+        file.remove();
+        return;
+    }
     modInfo_.addOld();
     oldInfos_ << modInfo_;
 

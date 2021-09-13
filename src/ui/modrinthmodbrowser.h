@@ -52,6 +52,7 @@ private:
     ModrinthAPI *api_;
     QList<ModrinthMod*> modList_;
     QStringList downloadPathList_;
+    QString downloadPath_;
     QString currentName_;
     int currentIndex_;
     bool isUiSet_ = false;

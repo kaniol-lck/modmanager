@@ -25,7 +25,6 @@ public:
     DownloadStatus status() const;
     DownloadType type() const;
     const QString &readySize() const;
-    const QString &filePath() const;
 
     void setStatus(DownloadStatus newStatus);
 

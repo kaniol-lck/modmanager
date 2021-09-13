@@ -54,6 +54,7 @@ private:
     CurseforgeAPI *api_;
     QList<int> idList_;
     QStringList downloadPathList_;
+    QString downloadPath_;
     QString currentName_;
     int currentIndex_;
     bool isUiSet_ = false;

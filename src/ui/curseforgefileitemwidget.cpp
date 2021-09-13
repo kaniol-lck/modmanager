@@ -3,13 +3,18 @@
 
 #include <QDebug>
 
+#include "local/localmod.h"
+#include "curseforge/curseforgemod.h"
 #include "util/funcutil.h"
 #include "download/downloadmanager.h"
 
-CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, const CurseforgeFileInfo &info) :
+CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMod *mod, const CurseforgeFileInfo &info, const QString &path, LocalMod *localMod) :
     QWidget(parent),
     ui(new Ui::CurseforgeFileItemWidget),
-    fileInfo_(info)
+    mod_(mod),
+    localMod_(localMod),
+    fileInfo_(info),
+    downloadPath_(path)
 {
     ui->setupUi(this);
     ui->displayNameText->setText(fileInfo_.displayName());
@@ -49,7 +54,14 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
 
     ui->downloadProgress->setMaximum(fileInfo_.size());
 
-    auto downloader = DownloadManager::addModDownload(fileInfo_);
+    DownloadFileInfo info(fileInfo_);
+    if(localMod_)
+        info.setIconBytes(localMod_->modInfo().iconBytes());
+    else
+        info.setIconBytes(mod_->modInfo().iconBytes());
+    info.setPath(downloadPath_);
+
+    auto downloader = DownloadManager::addModDownload(info);
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });
@@ -60,5 +72,20 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
         ui->downloadProgress->setVisible(false);
         ui->downloadSpeedText->setText(numberConvert(fileInfo_.size(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
+        if(localMod_){
+            LocalModInfo info(downloader->filePath());
+            QFile file(downloader->filePath());
+            info.addOld();
+            if(!file.rename(file.fileName() + ".old")){
+                file.remove();
+                return;
+            }
+            localMod_->addOldInfo(info);
+        }
     });
+}
+
+void CurseforgeFileItemWidget::setDownloadPath(const QString &newDownloadPath)
+{
+    downloadPath_ = newDownloadPath;
 }

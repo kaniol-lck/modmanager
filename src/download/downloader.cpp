@@ -45,6 +45,11 @@ bool Downloader::download(const QUrl &url, const QString &path, const QString &f
     return true;
 }
 
+QString Downloader::filePath() const
+{
+    return file_.fileName();
+}
+
 void Downloader::threadFinished(int /*index*/)
 {
     finishedThreadCount_++;

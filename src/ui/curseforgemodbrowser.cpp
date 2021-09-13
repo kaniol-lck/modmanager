@@ -148,8 +148,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
             auto loaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
             auto fileInfo = mod->modInfo().latestFileInfo(version, loaderType);
-            auto downloadPath = downloadPathList_.at(ui->downloadPathSelect->currentIndex());
-            auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo, downloadPath);
+            auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo, downloadPath_);
             connect(this, &CurseforgeModBrowser::downloadPathChanged, modItemWidget, &CurseforgeModItemWidget::setDownloadPath);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
@@ -172,7 +171,8 @@ void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &ind
 {
     auto widget = ui->modListWidget->itemWidget(ui->modListWidget->item(index.row()));
     auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
-    auto dialog = new CurseforgeModInfoDialog(this, mod);
+    auto dialog = new CurseforgeModInfoDialog(this, mod, downloadPath_);
+    connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModInfoDialog::setDownloadPath);
     dialog->show();
 }
 
@@ -209,7 +209,8 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
 void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
     if(!isUiSet_ || index < 0 || index >= downloadPathList_.size()) return;
-    emit downloadPathChanged(downloadPathList_.at(index));
+    downloadPath_ = downloadPathList_.at(index);
+    emit downloadPathChanged(downloadPath_);
 }
 
 

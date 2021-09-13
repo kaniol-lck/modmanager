@@ -16,6 +16,8 @@ public:
 
     bool download(const QUrl &url, const QString &path = "", const QString &filename = "");
 
+    QString filePath() const;
+
 signals:
     void finished();
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);

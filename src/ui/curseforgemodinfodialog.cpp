@@ -5,10 +5,12 @@
 #include "ui/curseforgefileitemwidget.h"
 #include "util/datetimesortitem.h"
 
-CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod *mod) :
+CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod *mod, const QString &path, LocalMod *localMod) :
     QDialog(parent),
     ui(new Ui::CurseforgeModInfoDialog),
-    mod_(mod)
+    mod_(mod),
+    localMod_(localMod),
+    downloadPath_(path)
 {
     ui->setupUi(this);
 
@@ -67,7 +69,8 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
             auto *listItem = new DateTimeSortItem();
             listItem->setData(DateTimeSortItem::Role, fileInfo.fileDate());
             listItem->setSizeHint(QSize(500, 90));
-            auto itemWidget = new CurseforgeFileItemWidget(this, fileInfo);
+            auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo, downloadPath_, localMod_);
+            connect(this, &CurseforgeModInfoDialog::downloadPathChanged, itemWidget, &CurseforgeFileItemWidget::setDownloadPath);
             ui->fileListWidget->addItem(listItem);
             ui->fileListWidget->setItemWidget(listItem, itemWidget);
         }
@@ -87,4 +90,10 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
 CurseforgeModInfoDialog::~CurseforgeModInfoDialog()
 {
     delete ui;
+}
+
+void CurseforgeModInfoDialog::setDownloadPath(const QString &newDownloadPath)
+{
+    downloadPath_ = newDownloadPath;
+    emit downloadPathChanged(newDownloadPath);
 }

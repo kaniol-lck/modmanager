@@ -8,10 +8,12 @@
 #include "modrinth/modrinthmod.h"
 #include "util/datetimesortitem.h"
 
-ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) :
+ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod, const QString &path, LocalMod *localMod) :
     QDialog(parent),
     ui(new Ui::ModrinthModInfoDialog),
-    mod_(mod)
+    mod_(mod),
+    localMod_(localMod),
+    downloadPath_(path)
 {
     ui->setupUi(this);
 
@@ -59,7 +61,8 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
                 auto *listItem = new DateTimeSortItem();
                 listItem->setData(DateTimeSortItem::Role, fileInfo.fileDate());
                 listItem->setSizeHint(QSize(500, 90));
-                auto itemWidget = new ModrinthFileItemWidget(this, fileInfo);
+                auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo, downloadPath_, localMod_);
+                connect(this, &ModrinthModInfoDialog::downloadPathChanged, itemWidget, &ModrinthFileItemWidget::setDownloadPath);
                 ui->fileListWidget->addItem(listItem);
                 ui->fileListWidget->setItemWidget(listItem, itemWidget);
             }
@@ -89,4 +92,10 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod) 
 ModrinthModInfoDialog::~ModrinthModInfoDialog()
 {
     delete ui;
+}
+
+void ModrinthModInfoDialog::setDownloadPath(const QString &newDownloadPath)
+{
+    downloadPath_ = newDownloadPath;
+    emit downloadPathChanged(newDownloadPath);
 }

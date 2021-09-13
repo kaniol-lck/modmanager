@@ -127,8 +127,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(500, 100));
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
-            auto downloadPath = downloadPathList_.at(ui->downloadPathSelect->currentIndex());
-            auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, modrinthMod, downloadPath);
+            auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, modrinthMod, downloadPath_);
             connect(this, &ModrinthModBrowser::downloadPathChanged, modItemWidget, &ModrinthModItemWidget::setDownloadPath);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
@@ -141,7 +140,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
 void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
     auto mod = modList_.at(index.row());
-    auto dialog = new ModrinthModInfoDialog(this, mod);
+    auto dialog = new ModrinthModInfoDialog(this, mod, downloadPath_);
     dialog->show();
 }
 
@@ -176,6 +175,7 @@ void ModrinthModBrowser::on_openFolderButton_clicked()
 void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
     if(!isUiSet_ || index < 0 || index >= downloadPathList_.size()) return;
-    emit downloadPathChanged(downloadPathList_.at(index));
+    downloadPath_ = downloadPathList_.at(index);
+    emit downloadPathChanged(downloadPath_);
 }
 
