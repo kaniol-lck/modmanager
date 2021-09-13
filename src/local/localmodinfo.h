@@ -19,12 +19,16 @@ public:
     void addOld();
     void removeOld();
 
+    //common info
     QString id() const;
     QString name() const;
     QString version() const;
     QString description() const;
     QByteArray iconBytes() const;
     QStringList authors() const;
+    QUrl website() const;
+    QUrl sources() const;
+    QUrl issues() const;
 
     //file related
     const QString &path() const;

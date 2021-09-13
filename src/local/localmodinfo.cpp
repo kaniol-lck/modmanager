@@ -107,6 +107,30 @@ QStringList LocalModInfo::authors() const
         ;//todo
 }
 
+QUrl LocalModInfo::website() const
+{
+    if(loaderType_ == ModLoaderType::Fabric)
+        return fabric().homepage();
+    else
+        ;//todo
+}
+
+QUrl LocalModInfo::sources() const
+{
+    if(loaderType_ == ModLoaderType::Fabric)
+        return fabric().sources();
+    else
+        ;//todo
+}
+
+QUrl LocalModInfo::issues() const
+{
+    if(loaderType_ == ModLoaderType::Fabric)
+        return fabric().issues();
+    else
+        ;//todo
+}
+
 const QString &LocalModInfo::path() const
 {
     return path_;

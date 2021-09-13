@@ -45,5 +45,5 @@ void openFileInFolder(const QString &filePath)
         return;
 #endif
     qDebug() << info.isFile();
-    QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(info.isFile()?info.absolutePath() : path));
 }

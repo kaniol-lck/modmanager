@@ -55,6 +55,12 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
 
     info.mainId_ = mainId.isEmpty()? info.id_ : mainId;
 
+    if(result.toMap().contains("contact")){
+        info.homepage_ = value(result, "contact", "homepage").toString();
+        info.sources_ = value(result, "contact", "sources").toString();
+        info.issues_ = value(result, "contact", "issues").toString();
+    }
+
     //provides
     info.provides_ = value(result, "provides").toStringList();
 
@@ -134,6 +140,21 @@ const QString &FabricModInfo::description() const
 const QByteArray &FabricModInfo::iconBytes() const
 {
     return iconBytes_;
+}
+
+const QUrl &FabricModInfo::homepage() const
+{
+    return homepage_;
+}
+
+const QUrl &FabricModInfo::sources() const
+{
+    return sources_;
+}
+
+const QUrl &FabricModInfo::issues() const
+{
+    return issues_;
 }
 
 const QStringList &FabricModInfo::provides() const

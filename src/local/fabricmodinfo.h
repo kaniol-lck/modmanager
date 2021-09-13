@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QMap>
+#include <QUrl>
 
 class QuaZip;
 class LocalMod;
@@ -20,6 +21,9 @@ public:
     const QStringList &authors() const;
     const QString &description() const;
     const QByteArray &iconBytes() const;
+    const QUrl &homepage() const;
+    const QUrl &sources() const;
+    const QUrl &issues() const;
     const QStringList &provides() const;
     const QMap<QString, QString> &depends() const;
     const QMap<QString, QString> &conflicts() const;
@@ -42,6 +46,11 @@ private:
     QStringList authors_;
     QString description_;
     QByteArray iconBytes_;
+
+    QUrl homepage_;
+    QUrl sources_;
+    QUrl issues_;
+
     QStringList provides_;
     QMap<QString, QString> depends_;
     QMap<QString, QString> conflicts_;
