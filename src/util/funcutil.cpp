@@ -5,6 +5,7 @@
 #include <QDesktopServices>
 #include <QDebug>
 #include <QDir>
+#include <QProcess>
 
 QString numberConvert(int size, const QString &suffix, int prec, int limit){
     if(size < limit)
