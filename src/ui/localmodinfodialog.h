@@ -31,6 +31,10 @@ private slots:
 
     void on_issueButton_clicked();
 
+    void on_editFileNameButton_clicked();
+
+    void on_fileBaseNameText_editingFinished();
+
 private:
     Ui::LocalModInfoDialog *ui;
     LocalMod *mod_;

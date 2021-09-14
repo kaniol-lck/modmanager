@@ -26,7 +26,7 @@ LocalMod::LocalMod(LocalModPath *parent, const LocalModInfo &info) :
     modInfo_(info)
 {}
 
-const LocalModInfo &LocalMod::modInfo() const
+LocalModInfo &LocalMod::modInfo()
 {
     return modInfo_;
 }

@@ -1,6 +1,8 @@
 #include "localmodinfo.h"
 
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include "quazip.h"
 #include "quazipfile.h"
 #include <QJsonDocument>
@@ -48,14 +50,28 @@ bool LocalModInfo::operator==(const LocalModInfo &other) const
     return path_ == other.path_;
 }
 
+bool LocalModInfo::rename(const QString &newBaseName)
+{
+    QFile file(path_);
+    auto newFileName = newBaseName + "." + fileInfo().suffix();
+    if(file.rename(newFileName)){
+        path_ = QDir(fileInfo_.absolutePath()).absoluteFilePath(newFileName);
+        fileInfo_.setFile(path_);
+        return true;
+    } else
+        return false;
+}
+
 void LocalModInfo::addOld()
 {
     path_.append(".old");
+    fileInfo_.setFile(path_);
 }
 
 void LocalModInfo::removeOld()
 {
     path_.remove(".old");
+    fileInfo_.setFile(path_);
 }
 
 QString LocalModInfo::id() const

@@ -40,6 +40,7 @@ SOURCES += \
     src/gameversion.cpp \
     src/ui/downloadbrowser.cpp \
     src/ui/downloaderitemwidget.cpp \
+    src/ui/localfileitemwidget.cpp \
     src/ui/localmodbrowser.cpp \
     src/ui/localmodbrowsersettingsdialog.cpp \
     src/local/localmodinfo.cpp \
@@ -90,6 +91,7 @@ HEADERS += \
     src/gameversion.h \
     src/ui/downloadbrowser.h \
     src/ui/downloaderitemwidget.h \
+    src/ui/localfileitemwidget.h \
     src/ui/localmodbrowser.h \
     src/ui/localmodbrowsersettingsdialog.h \
     src/local/localmodinfo.h \
@@ -118,6 +120,7 @@ FORMS += \
     src/ui/curseforgemoditemwidget.ui \
     src/ui/downloadbrowser.ui \
     src/ui/downloaderitemwidget.ui \
+    src/ui/localfileitemwidget.ui \
     src/ui/localmodbrowser.ui \
     src/ui/localmodbrowsersettingsdialog.ui \
     src/ui/localmodcheckdialog.ui \

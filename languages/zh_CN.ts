@@ -422,6 +422,44 @@
     </message>
 </context>
 <context>
+    <name>LocalFileItemWidget</name>
+    <message>
+        <location filename="../src/ui/localfileitemwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localfileitemwidget.ui" line="60"/>
+        <source>Name</source>
+        <translation>名称</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localfileitemwidget.ui" line="67"/>
+        <source>version</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localfileitemwidget.ui" line="85"/>
+        <source>RollBack</source>
+        <translation>回退</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localfileitemwidget.ui" line="106"/>
+        <source>xxx.jar</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localfileitemwidget.ui" line="119"/>
+        <source>2.33MB</source>
+        <translation>2.3MB {2.33M?}</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localfileitemwidget.ui" line="129"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+<context>
     <name>LocalModBrowser</name>
     <message>
         <location filename="../src/ui/localmodbrowser.ui" line="14"/>
@@ -657,7 +695,7 @@
     <message>
         <location filename="../src/ui/localmodcheckdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialog</translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodcheckdialog.ui" line="35"/>
@@ -688,37 +726,104 @@
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="38"/>
         <source>ICON</source>
-        <translation>ICON</translation>
+        <translation type="vanished">ICON</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="58"/>
         <source>Name</source>
-        <translation>名称</translation>
+        <translation type="vanished">名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="70"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="65"/>
         <source>Curseforge</source>
         <translation>Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="84"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="79"/>
         <source>Modrinth</source>
         <translation>Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="103"/>
-        <source>Version</source>
-        <translation>版本</translation>
+        <location filename="../src/ui/localmodinfodialog.ui" line="94"/>
+        <source>Version:</source>
+        <translation>版本：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="121"/>
+        <source>Website</source>
+        <translation>网站</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodinfodialog.ui" line="128"/>
-        <source>Description: balabalabalabalabalabalabalabalabala</source>
-        <translation>Description: balabalabalabalabalabalabalabalabala</translation>
+        <source>Sources</source>
+        <translation>源码</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.cpp" line="16"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="135"/>
+        <source>Issues</source>
+        <translation>问题</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="180"/>
+        <source>Description</source>
+        <translation>描述</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="194"/>
+        <source>File</source>
+        <translation>文件</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="205"/>
+        <source>File Name:</source>
+        <translation>文件名称：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="234"/>
+        <source>Edit</source>
+        <translation>编辑</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="246"/>
+        <source>File Size:</source>
+        <translation>文件大小：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="253"/>
+        <source>2.33 MB</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="260"/>
+        <source>Created Time:</source>
+        <translation>创建时间：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="267"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="281"/>
+        <source>TextLabel</source>
+        <translation>TextLabel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="274"/>
+        <source>Modified Time:</source>
+        <translation>修改时间：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.ui" line="291"/>
+        <source>Old</source>
+        <translation>旧版</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="vanished">版本</translation>
+    </message>
+    <message>
+        <source>Description: balabalabalabalabalabalabalabalabala</source>
+        <translation type="vanished">Description: balabalabalabalabalabalabalabalabala</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.cpp" line="58"/>
         <source> - Local</source>
         <translation> - 本地</translation>
     </message>

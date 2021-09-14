@@ -2,12 +2,15 @@
 #include "ui_localmodinfodialog.h"
 
 #include <QDesktopServices>
+#include <QMessageBox>
 
+#include "localfileitemwidget.h"
 #include "local/localmod.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
 #include "curseforgemodinfodialog.h"
 #include "modrinthmodinfodialog.h"
+#include "util/funcutil.h"
 
 LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
     QDialog(parent),
@@ -86,9 +89,28 @@ void LocalModInfoDialog::updateInfo()
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 
-    //TODO: file info
+    //file info
+    auto fileInfo = mod_->modInfo().fileInfo();
+    ui->fileBaseNameText->setText(fileInfo.completeBaseName());
+    ui->fileSuffixText->setText("." + fileInfo.suffix());
+    ui->sizeText->setText(numberConvert(fileInfo.size(), "B"));
+    ui->createdTimeText->setText(fileInfo.fileTime(QFile::FileBirthTime).toString());
+    ui->modifiedTimeText->setText(fileInfo.fileTime(QFile::FileModificationTime).toString());
 
-    //TODO: old mod info list
+    //old mod info list
+    if(mod_->oldInfos().isEmpty())
+        ui->tabWidget->setTabEnabled(2, false);
+    else{
+        ui->tabWidget->setTabEnabled(2, true);
+        ui->oldModListWidget->clear();
+        for(const auto &fileInfo : mod_->oldInfos()){
+            auto *listItem = new QListWidgetItem();
+            listItem->setSizeHint(QSize(500, 90));
+            auto itemWidget = new LocalFileItemWidget(this, mod_, fileInfo);
+            ui->oldModListWidget->addItem(listItem);
+            ui->oldModListWidget->setItemWidget(listItem, itemWidget);
+        }
+    }
 
 }
 
@@ -126,5 +148,20 @@ void LocalModInfoDialog::on_sourceButton_clicked()
 void LocalModInfoDialog::on_issueButton_clicked()
 {
     QDesktopServices::openUrl(mod_->modInfo().issues());
+}
+
+void LocalModInfoDialog::on_editFileNameButton_clicked()
+{
+    ui->fileBaseNameText->setEnabled(true);
+}
+
+
+void LocalModInfoDialog::on_fileBaseNameText_editingFinished()
+{
+    ui->fileBaseNameText->setEnabled(false);
+//    if(!mod_->modInfo().rename(ui->fileBaseNameText->text())) {
+//        ui->fileBaseNameText->setText(mod_->modInfo().fileInfo().completeBaseName());
+//        QMessageBox::information(this, tr("Rename Failed"), tr("Rename failed!"));
+//    }
 }
 

@@ -16,6 +16,8 @@ public:
 
     bool operator==(const LocalModInfo &other) const;
 
+    bool rename(const QString &newBaseName);
+
     void addOld();
     void removeOld();
 

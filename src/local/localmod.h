@@ -25,7 +25,7 @@ public:
 
     explicit LocalMod(LocalModPath *parent, const LocalModInfo &info);
 
-    const LocalModInfo &modInfo() const;
+    LocalModInfo &modInfo();
     void setModInfo(const LocalModInfo &newModInfo);
 
     CurseforgeMod *curseforgeMod() const;
