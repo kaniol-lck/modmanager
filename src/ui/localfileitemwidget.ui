@@ -63,6 +63,13 @@
      </item>
      <item>
       <widget class="QLabel" name="versionText">
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="text">
         <string>version</string>
        </property>
@@ -85,7 +92,8 @@
       <string>RollBack</string>
      </property>
      <property name="icon">
-      <iconset theme="backup"/>
+      <iconset theme="backup">
+       <normaloff>.</normaloff>.</iconset>
      </property>
      <property name="toolButtonStyle">
       <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -129,7 +137,8 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset theme="folder"/>
+        <iconset theme="folder">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>

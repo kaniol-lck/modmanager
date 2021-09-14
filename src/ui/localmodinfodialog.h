@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "local/localmodinfo.h"
+
 class LocalMod;
 
 namespace Ui {
@@ -14,7 +16,7 @@ class LocalModInfoDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit LocalModInfoDialog(QWidget *parent, LocalMod *mod);
+    explicit LocalModInfoDialog(QWidget *parent, const LocalModInfo &modInfo, LocalMod *mod = nullptr);
     ~LocalModInfoDialog();
 
 public slots:
@@ -35,8 +37,11 @@ private slots:
 
     void on_fileBaseNameText_editingFinished();
 
+    void on_oldModListWidget_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::LocalModInfoDialog *ui;
+    LocalModInfo modInfo_;
     LocalMod *mod_;
 };
 

@@ -234,7 +234,8 @@
               <string>Edit</string>
              </property>
              <property name="icon">
-              <iconset theme="entry-edit"/>
+              <iconset theme="entry-edit">
+               <normaloff>.</normaloff>.</iconset>
              </property>
             </widget>
            </item>

@@ -37,6 +37,7 @@ public:
     const QFileInfo &fileInfo() const;
     const QString &sha1() const;
     const QString &murmurhash() const;
+    std::tuple<QString, QString> baseNameFullSuffix() const;
 
     ModLoaderType::Type loaderType() const;
 

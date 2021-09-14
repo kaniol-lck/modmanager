@@ -52,10 +52,11 @@ bool LocalModInfo::operator==(const LocalModInfo &other) const
 
 bool LocalModInfo::rename(const QString &newBaseName)
 {
+    auto [ baseName, suffix ] = baseNameFullSuffix();
     QFile file(path_);
-    auto newFileName = newBaseName + "." + fileInfo().suffix();
-    if(file.rename(newFileName)){
-        path_ = QDir(fileInfo_.absolutePath()).absoluteFilePath(newFileName);
+    auto newPath = QDir(fileInfo_.absolutePath()).absoluteFilePath(newBaseName + suffix);
+    if(file.rename(newPath)){
+        path_ = newPath;
         fileInfo_.setFile(path_);
         return true;
     } else
@@ -165,6 +166,22 @@ const QString &LocalModInfo::sha1() const
 const QString &LocalModInfo::murmurhash() const
 {
     return murmurhash_;
+}
+
+std::tuple<QString, QString> LocalModInfo::baseNameFullSuffix() const
+{
+    auto fileName = fileInfo_.fileName();
+    QFileInfo fileInfo(fileName);
+    QString fullSuffix;
+    while(true){
+        fileInfo.setFile(fileName);
+        auto suffix = fileInfo.suffix();
+        if(suffix != "jar" && suffix != "old")
+            break;
+        fileName = fileInfo.completeBaseName();
+        fullSuffix += "." + suffix;
+    }
+    return { fileName, fullSuffix };
 }
 
 ModLoaderType::Type LocalModInfo::loaderType() const
