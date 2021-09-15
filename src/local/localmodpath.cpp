@@ -5,6 +5,7 @@
 #include <QtConcurrent/QtConcurrent>
 
 #include "cpp-semver.hpp"
+#include "localmodfile.h"
 #include "curseforge/curseforgeapi.h"
 #include "modrinth/modrinthapi.h"
 #include "config.h"
@@ -20,8 +21,12 @@ LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
 
 void LocalModPath::loadMods()
 {
+    for(const auto &fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
+        modFileList_ << new LocalModFile(this, fileInfo.absolutePath());
+
     auto future = QtConcurrent::run([&]{
         QList<LocalModInfo> infoList;
+
         //only load available mod files
         for(const auto &fileInfo : QDir(info_.path()).entryInfoList({ "*.jar" }, QDir::Files))
             infoList << LocalModInfo(fileInfo.absoluteFilePath());

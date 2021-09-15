@@ -29,8 +29,6 @@ private slots:
 
     void on_buttonBox_accepted();
 
-    void on_useAutoName_stateChanged(int arg1);
-
     void on_loaderSelect_currentIndexChanged(const QString &arg1);
 
     void on_versionSelect_currentIndexChanged(const QString &arg1);

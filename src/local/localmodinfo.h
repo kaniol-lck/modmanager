@@ -8,15 +8,16 @@
 #include "fabricmodinfo.h"
 #include "modloadertype.h"
 
+class LocalMod;
+
 class LocalModInfo
 {
+    friend class LocalMod;
 public:
     LocalModInfo() = default;
     explicit LocalModInfo(QString path);
 
     bool operator==(const LocalModInfo &other) const;
-
-    bool rename(const QString &newBaseName);
 
     void addOld();
     void removeOld();

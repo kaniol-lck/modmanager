@@ -16,7 +16,8 @@ class LocalModInfoDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit LocalModInfoDialog(QWidget *parent, const LocalModInfo &modInfo, LocalMod *mod = nullptr);
+    explicit LocalModInfoDialog(QWidget *parent, LocalMod *mod, const LocalModInfo &modInfo, bool isMain = false);
+    explicit LocalModInfoDialog(QWidget *parent, LocalMod *mod);
     ~LocalModInfoDialog();
 
 public slots:
@@ -43,6 +44,10 @@ private:
     Ui::LocalModInfoDialog *ui;
     LocalModInfo modInfo_;
     LocalMod *mod_;
+
+    bool isMain_ = false;
+
+    bool isRenaming = false;
 };
 
 #endif // LOCALMODINFODIALOG_H

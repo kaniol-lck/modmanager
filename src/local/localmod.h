@@ -66,6 +66,8 @@ public:
     void rollback(LocalModInfo info);
     void deleteAllOld();
 
+    bool rename(const QString &oldBaseName, const QString &newBaseName);
+
     void addDepend(std::tuple<QString, QString, std::optional<FabricModInfo>> modDepend);
     void addConflict(std::tuple<QString, QString, FabricModInfo> modConflict);
     void addBreak(std::tuple<QString, QString, FabricModInfo> modBreak);

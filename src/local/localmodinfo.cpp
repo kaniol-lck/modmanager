@@ -50,19 +50,6 @@ bool LocalModInfo::operator==(const LocalModInfo &other) const
     return path_ == other.path_;
 }
 
-bool LocalModInfo::rename(const QString &newBaseName)
-{
-    auto [ baseName, suffix ] = baseNameFullSuffix();
-    QFile file(path_);
-    auto newPath = QDir(fileInfo_.absolutePath()).absoluteFilePath(newBaseName + suffix);
-    if(file.rename(newPath)){
-        path_ = newPath;
-        fileInfo_.setFile(path_);
-        return true;
-    } else
-        return false;
-}
-
 void LocalModInfo::addOld()
 {
     path_.append(".old");

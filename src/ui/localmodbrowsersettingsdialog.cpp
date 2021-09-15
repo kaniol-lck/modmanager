@@ -89,11 +89,6 @@ void LocalModBrowserSettingsDialog::on_buttonBox_accepted()
     emit settingsUpdated(info_);
 }
 
-
-void LocalModBrowserSettingsDialog::on_useAutoName_stateChanged(int arg1)
-{
-}
-
 void LocalModBrowserSettingsDialog::on_loaderSelect_currentIndexChanged(const QString &arg1)
 {
     info_.setLoaderType(ModLoaderType::fromString(arg1));

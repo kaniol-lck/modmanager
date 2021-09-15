@@ -11,6 +11,7 @@
 #include <QDir>
 #include <iterator>
 #include <algorithm>
+#include <tuple>
 
 LocalMod::LocalMod(QObject *parent, const LocalModInfo &info) :
     QObject(parent),
@@ -349,6 +350,28 @@ void LocalMod::deleteAllOld()
         QFile(oldInfo.path()).remove();
     oldInfos_.clear();
     emit modInfoUpdated();
+}
+
+bool LocalMod::rename(const QString &oldBaseName, const QString &newBaseName)
+{
+    auto renameFunc = [=](auto &info){
+        auto [ baseName, suffix ] = info.baseNameFullSuffix();
+        QFile file(info.path_);
+        auto newPath = QDir(info.fileInfo_.absolutePath()).absoluteFilePath(newBaseName + suffix);
+        if(file.rename(newPath)){
+            info.path_ = newPath;
+            info.fileInfo_.setFile(info.path_);
+            emit modInfoUpdated();
+            return true;
+        } else
+            return false;
+    };
+
+    if(oldBaseName == std::get<0>(modInfo_.baseNameFullSuffix()))
+         return renameFunc(modInfo_);
+        for(auto &info : oldInfos_)
+            if(oldBaseName == std::get<0>(info.baseNameFullSuffix()))
+                return renameFunc(info);
 }
 
 void LocalMod::addDepend(std::tuple<QString, QString, std::optional<FabricModInfo> > modDepend)

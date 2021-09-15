@@ -6,6 +6,7 @@
 #include "localmod.h"
 #include "localmodpathinfo.h"
 
+class LocalModFile;
 class LocalMod;
 class CurseforgeAPI;
 class ModrinthAPI;
@@ -72,6 +73,7 @@ private:
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     LocalModPathInfo info_;
+    QList<LocalModFile*> modFileList_;
     QMap<QString, LocalMod*> modMap_;
     QMultiMap<QString, FabricModInfo> fabricModMap_;
     QStringList provideList_;

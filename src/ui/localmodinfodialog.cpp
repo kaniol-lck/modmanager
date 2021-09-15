@@ -13,18 +13,19 @@
 #include "modrinthmodinfodialog.h"
 #include "util/funcutil.h"
 
-LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, const LocalModInfo &modInfo, LocalMod *mod) :
+LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod, const LocalModInfo &modInfo, bool isMain) :
     QDialog(parent),
     ui(new Ui::LocalModInfoDialog),
     modInfo_(modInfo),
-    mod_(mod)
+    mod_(mod),
+    isMain_(isMain)
 {
     ui->setupUi(this);
 
     //init info
     updateInfo();
 
-    if(mod_){
+    if(isMain_){
         //signals / slots
         connect(mod_, &LocalMod::modInfoUpdated, this, &LocalModInfoDialog::updateInfo);
 
@@ -57,6 +58,10 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, const LocalModInfo &modI
     }
 }
 
+LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
+    LocalModInfoDialog(parent, mod, mod->modInfo(), true)
+{ }
+
 LocalModInfoDialog::~LocalModInfoDialog()
 {
     delete ui;
@@ -64,7 +69,7 @@ LocalModInfoDialog::~LocalModInfoDialog()
 
 void LocalModInfoDialog::updateInfo()
 {
-    if(mod_) modInfo_ = mod_->modInfo();
+    if(isMain_) modInfo_ = mod_->modInfo();
 
     setWindowTitle(modInfo_.name() + tr(" - Local"));
 
@@ -109,7 +114,7 @@ void LocalModInfoDialog::updateInfo()
     ui->createdTimeText->setText(fileInfo.fileTime(QFile::FileBirthTime).toString());
     ui->modifiedTimeText->setText(fileInfo.fileTime(QFile::FileModificationTime).toString());
 
-    if(mod_){
+    if(isMain_){
         //old mod info list
         if(mod_->oldInfos().isEmpty())
             ui->tabWidget->setTabEnabled(2, false);
@@ -167,27 +172,29 @@ void LocalModInfoDialog::on_issueButton_clicked()
 void LocalModInfoDialog::on_editFileNameButton_clicked()
 {
     ui->fileBaseNameText->setEnabled(true);
+    ui->fileBaseNameText->setFocus();
 }
-
 
 void LocalModInfoDialog::on_fileBaseNameText_editingFinished()
 {
-    auto [ baseName, suffix ] = modInfo_.baseNameFullSuffix();
+    QString baseName;
+    if(isRenaming) return;
     ui->fileBaseNameText->setEnabled(false);
+    baseName = std::get<0>(modInfo_.baseNameFullSuffix());
     if(ui->fileBaseNameText->text() == baseName)
         return;
-    qDebug() << ui->fileBaseNameText->text();
-    if(!modInfo_.rename(ui->fileBaseNameText->text())) {
+    isRenaming = true;
+    if(!mod_->rename(baseName, ui->fileBaseNameText->text())) {
         ui->fileBaseNameText->setText(baseName);
         QMessageBox::information(this, tr("Rename Failed"), tr("Rename failed!"));
     }
+    isRenaming = false;
 }
-
 
 void LocalModInfoDialog::on_oldModListWidget_doubleClicked(const QModelIndex &index)
 {
     auto modInfo = mod_->oldInfos().at(index.row());
-    auto dialog = new LocalModInfoDialog(this, modInfo);
+    auto dialog = new LocalModInfoDialog(this, mod_, modInfo);
     dialog->show();
 }
 
