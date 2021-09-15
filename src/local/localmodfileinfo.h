@@ -1,5 +1,5 @@
-#ifndef LOCALMODINFO_H
-#define LOCALMODINFO_H
+#ifndef LOCALMODFILEINFO_H
+#define LOCALMODFILEINFO_H
 
 #include <QString>
 #include <QMap>
@@ -8,16 +8,15 @@
 #include "fabricmodinfo.h"
 #include "modloadertype.h"
 
-class LocalMod;
+class LocalModFile;
 
-class LocalModInfo
+class LocalModFileInfo
 {
-    friend class LocalMod;
+    friend class LocalModFile;
 public:
-    LocalModInfo() = default;
-    explicit LocalModInfo(QString path);
+    LocalModFileInfo() = default;
 
-    bool operator==(const LocalModInfo &other) const;
+    bool operator==(const LocalModFileInfo &other) const;
 
     void addOld();
     void removeOld();
@@ -33,13 +32,6 @@ public:
     QUrl sources() const;
     QUrl issues() const;
 
-    //file related
-    const QString &path() const;
-    const QFileInfo &fileInfo() const;
-    const QString &sha1() const;
-    const QString &murmurhash() const;
-    std::tuple<QString, QString> baseNameFullSuffix() const;
-
     ModLoaderType::Type loaderType() const;
 
     FabricModInfo fabric() const;
@@ -47,15 +39,10 @@ public:
     const QList<FabricModInfo> &fabricModInfoList() const;
 
 private:
-    QString path_;
-    QFileInfo fileInfo_;
     ModLoaderType::Type loaderType_ = ModLoaderType::Any;
 
     QList<FabricModInfo> fabricModInfoList_;
 
-    QString sha1_;
-    QString murmurhash_;
-
 };
 
-#endif // LOCALMODINFO_H
+#endif // LOCALMODFILEINFO_H

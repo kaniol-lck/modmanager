@@ -15,10 +15,10 @@ bool LocalModSortItem::operator<(const QListWidgetItem &other) const
     case Name:
         return mod_->modInfo().name().toLower() < otherMod->modInfo().name().toLower();
     case Date:
-        return mod_->modInfo().fileInfo().birthTime() < otherMod->modInfo().fileInfo().birthTime();
+        return mod_->modFile()->fileInfo().birthTime() < otherMod->modFile()->fileInfo().birthTime();
     case Size:
         // >
-        return mod_->modInfo().fileInfo().size() > otherMod->modInfo().fileInfo().size();
+        return mod_->modFile()->fileInfo().size() > otherMod->modFile()->fileInfo().size();
     default:
         return true;
     }

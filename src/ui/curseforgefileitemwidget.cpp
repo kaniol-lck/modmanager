@@ -73,14 +73,9 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
         ui->downloadSpeedText->setText(numberConvert(fileInfo_.size(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
         if(localMod_){
-            LocalModInfo info(downloader->filePath());
-            QFile file(downloader->filePath());
-            info.addOld();
-            if(!file.rename(file.fileName() + ".old")){
-                file.remove();
-                return;
-            }
-            localMod_->addOldInfo(info);
+            auto file = new LocalModFile(this, downloader->filePath());
+            file->addOld();
+            localMod_->addOldFile(file);
         }
     });
 }

@@ -3,8 +3,9 @@
 
 #include <QWidget>
 
-#include "local/localmodinfo.h"
+#include "local/localmodfileinfo.h"
 
+class LocalModFile;
 class LocalMod;
 
 namespace Ui {
@@ -16,10 +17,12 @@ class LocalFileItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit LocalFileItemWidget(QWidget *parent, LocalMod *mod, const LocalModInfo &info);
+    explicit LocalFileItemWidget(QWidget *parent, LocalMod *mod, LocalModFile *file);
     ~LocalFileItemWidget();
 
 private slots:
+    void updateFileInfo();
+
     void on_rollbackButton_clicked();
 
     void on_openFolderButton_clicked();
@@ -27,7 +30,7 @@ private slots:
 private:
     Ui::LocalFileItemWidget *ui;
     LocalMod *mod_;
-    LocalModInfo info_;
+    LocalModFile *file_;
 };
 
 #endif // LOCALFILEITEMWIDGET_H

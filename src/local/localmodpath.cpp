@@ -21,59 +21,59 @@ LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
 
 void LocalModPath::loadMods()
 {
+    modFileList_.clear();
     for(const auto &fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
-        modFileList_ << new LocalModFile(this, fileInfo.absolutePath());
+        if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
+            modFileList_ << new LocalModFile(this, fileInfo.absoluteFilePath());
 
     auto future = QtConcurrent::run([&]{
-        QList<LocalModInfo> infoList;
-
-        //only load available mod files
-        for(const auto &fileInfo : QDir(info_.path()).entryInfoList({ "*.jar" }, QDir::Files))
-            infoList << LocalModInfo(fileInfo.absoluteFilePath());
-
-        QList<LocalModInfo> oldInfoList;
-        //only load old mod files
-        for(const auto &fileInfo : QDir(info_.path()).entryInfoList({ "*.jar.old" }, QDir::Files))
-            oldInfoList << LocalModInfo(fileInfo.absoluteFilePath());
-        return std::tuple{ infoList, oldInfoList };
+        for(auto &file : modFileList_)
+            file->loadInfo();
     });
-    auto watcher = new QFutureWatcher<std::tuple<QList<LocalModInfo>, QList<LocalModInfo>>>(this);
+
+    auto watcher = new QFutureWatcher<void>(this);
     watcher->setFuture(future);
-    connect(watcher, &QFutureWatcher<std::tuple<QList<LocalModInfo>, QList<LocalModInfo>>>::finished, this, [=]{
+    connect(watcher, &QFutureWatcher<void>::finished, this, [=]{
         modMap_.clear();
         fabricModMap_.clear();
         provideList_.clear();
-        auto [info, oldInfo] = watcher->result();
-        //load mods
-        for(const auto &modInfo : qAsConst(info)){
-            //only load loader type matched mods
-            if(modInfo.loaderType() == info_.loaderType()){
-                //set duplicate mod info
-                if(modMap_.contains(modInfo.fabric().id())){
-                    modMap_[modInfo.fabric().id()]->addDuplicateInfo(modInfo);
-                    continue;
-                }
-                else {
-                    auto mod = new LocalMod(this, modInfo);
-                    connect(mod, &LocalMod::updateFinished, this, [=](bool success){
-                        if(success) updatableCount_--;
-                        emit updatesReady();
-                    });
-                    modMap_.insert(modInfo.fabric().id(), mod);
-                }
-                //insert fabric mod
-                for(const auto &fabircModInfo : modInfo.fabricModInfoList()){
-                    fabricModMap_.insert(fabircModInfo.id(), fabircModInfo);
-                    provideList_ << fabircModInfo.provides();
-                }
+
+        //TODO: loader type
+
+        //load normal mods (include duplicate)
+        for(const auto &file : qAsConst(modFileList_)){
+            if(file->type() != LocalModFile::Normal) continue;
+            if(file->modInfo().loaderType() != info_.loaderType()) continue;
+            auto id = file->modInfo().id();
+            //duplicate
+            if(modMap_.contains(id)){
+                modMap_[id]->addDuplicateFile(file);
+                continue;
+            }
+            else {
+                //new mod
+                auto mod = new LocalMod(this, file);
+                //connect update signal
+                connect(mod, &LocalMod::updateFinished, this, [=](bool success){
+                    if(success) updatableCount_--;
+                    emit updatesReady();
+                });
+                modMap_[id] = mod;
             }
         }
+
         //load old mods
-        for(const auto &oldModInfo : qAsConst(oldInfo)){
-            //TODO: other loader types
-            //same loader type and same identifier
-            if(oldModInfo.loaderType() == info_.loaderType() && modMap_.contains(oldModInfo.fabric().id()))
-                modMap_.value(oldModInfo.fabric().id())->addOldInfo(oldModInfo);
+        for(const auto &file : qAsConst(modFileList_)){
+            if(file->type() != LocalModFile::Old) continue;
+            if(file->modInfo().loaderType() != info_.loaderType()) continue;
+            auto id = file->modInfo().id();
+            //old
+            if(modMap_.contains(id)){
+                modMap_[id]->addOldFile(file);
+                continue;
+            }
+            else
+                ;//TODO: deal with homeless old mods
         }
 
         emit modListUpdated();

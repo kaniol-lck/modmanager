@@ -4,7 +4,7 @@
 #include <QMenu>
 #include <QMessageBox>
 
-#include "local/localmodinfo.h"
+#include "local/localmodfileinfo.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
 #include "curseforgemodinfodialog.h"
@@ -27,7 +27,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     updateInfo();
 
     //signals / slots
-    connect(mod_, &LocalMod::modInfoUpdated, this, &LocalModItemWidget::updateInfo);
+    connect(mod_, &LocalMod::modFileUpdated, this, &LocalModItemWidget::updateInfo);
 
     connect(mod_, &LocalMod::updateReady, this, &LocalModItemWidget::updateReady);
 
@@ -67,22 +67,22 @@ void LocalModItemWidget::updateInfo()
     }
 
     //rollback
-    if(mod_->oldInfos().isEmpty())
+    if(mod_->oldFiles().isEmpty())
         ui->rollbackButton->setVisible(false);
     else{
         ui->rollbackButton->setVisible(true);
         ui->rollbackButton->setEnabled(true);
         auto menu = new QMenu(this);
-        for(const auto &info : mod_->oldInfos())
-            connect(menu->addAction(info.version()), &QAction::triggered, this, [=]{
+        for(const auto &file : mod_->oldFiles())
+            connect(menu->addAction(file->modInfo().version()), &QAction::triggered, this, [=]{
                 ui->rollbackButton->setEnabled(false);
-                mod_->rollback(info);
+                mod_->rollback(file);
             });
         ui->rollbackButton->setMenu(menu);
     }
 
     //warning
-    if(!mod_->duplicateInfos().isEmpty()){
+    if(!mod_->duplicateFiles().isEmpty()){
         ui->warningButton->setToolTip(tr("Duplicate mod!"));
     } else {
         ui->warningButton->setVisible(false);
@@ -180,7 +180,7 @@ void LocalModItemWidget::on_curseforgeButton_clicked()
     auto curseforgeMod = mod_->curseforgeMod();
     if(!curseforgeMod->modInfo().hasBasicInfo())
         curseforgeMod->acquireBasicInfo();
-    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, mod_->modInfo().fileInfo().path(), mod_);
+    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, mod_->modFile()->fileInfo().absolutePath(), mod_);
     dialog->show();
 }
 
@@ -189,7 +189,7 @@ void LocalModItemWidget::on_modrinthButton_clicked()
     auto modrinthMod = mod_->modrinthMod();
     if(!modrinthMod->modInfo().hasBasicInfo())
         modrinthMod->acquireFullInfo();
-    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, mod_->modInfo().fileInfo().path(), mod_);
+    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, mod_->modFile()->fileInfo().absolutePath(), mod_);
     dialog->show();
 }
 
@@ -197,8 +197,8 @@ void LocalModItemWidget::on_warningButton_clicked()
 {
     QString str = tr("Duplicate version of <b>%1</b> was found:").arg(mod_->modInfo().name());
     QStringList list(mod_->modInfo().version());
-    for(const auto &info : mod_->duplicateInfos())
-        list << info.version();
+    for(const auto &file : mod_->duplicateFiles())
+        list << file->modInfo().version();
     str += "<ul><li>" + list.join("</li><li>") + "</li></ul>";
     str += tr("Keep one of them and set the others as old mods?");
     if(QMessageBox::Yes == QMessageBox::question(this, tr("Incompatibility"), str))

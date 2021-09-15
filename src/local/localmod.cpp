@@ -13,29 +13,23 @@
 #include <algorithm>
 #include <tuple>
 
-LocalMod::LocalMod(QObject *parent, const LocalModInfo &info) :
+LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
     QObject(parent),
     curseforgeAPI_(CurseforgeAPI::api()),
     modrinthAPI_(ModrinthAPI::api()),
-    modInfo_(info)
+    modFile_(file)
 {}
 
-LocalMod::LocalMod(LocalModPath *parent, const LocalModInfo &info) :
+LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     QObject(parent),
     curseforgeAPI_(parent->curseforgeAPI()),
     modrinthAPI_(parent->modrinthAPI()),
-    modInfo_(info)
+    modFile_(file)
 {}
 
-LocalModInfo &LocalMod::modInfo()
+LocalModFileInfo LocalMod::modInfo() const
 {
-    return modInfo_;
-}
-
-void LocalMod::setModInfo(const LocalModInfo &newModInfo)
-{
-    modInfo_ = newModInfo;
-    emit modInfoUpdated();
+    return modFile_->modInfo();
 }
 
 CurseforgeMod *LocalMod::curseforgeMod() const
@@ -67,7 +61,7 @@ void LocalMod::searchOnWebsite()
 void LocalMod::searchOnCurseforge()
 {
     emit checkCurseforgeStarted();
-    curseforgeAPI_->getIdByFingerprint(modInfo_.murmurhash(), [=](int id, auto fileInfo, const auto &fileList){
+    curseforgeAPI_->getIdByFingerprint(modFile_->murmurhash(), [=](int id, auto fileInfo, const auto &fileList){
         CurseforgeModInfo modInfo(id);
         modInfo.setLatestFiles(fileList);
         curseforgeMod_ = new CurseforgeMod(this, modInfo);
@@ -81,7 +75,7 @@ void LocalMod::searchOnCurseforge()
 void LocalMod::searchOnModrinth()
 {
     emit checkModrinthStarted();
-    modrinthAPI_->getVersionFileBySha1(modInfo_.sha1(), [=](const auto &fileInfo){
+    modrinthAPI_->getVersionFileBySha1(modFile_->sha1(), [=](const auto &fileInfo){
         ModrinthModInfo modInfo(fileInfo.modId());
         modrinthMod_ = new ModrinthMod(this, modInfo);
         modrinthUpdate_.setCurrentFileInfo(fileInfo);
@@ -214,48 +208,42 @@ void LocalMod::update(ModWebsiteType type)
     if(type == None) return;
     emit updateStarted();
 
-    auto path = QFileInfo(modInfo_.path()).absolutePath();
+    auto path = QFileInfo(modFile_->path()).absolutePath();
     auto callback = [=](const auto &newInfo){
-        auto oldPath = modInfo_.path();
         auto newPath = QDir(path).absoluteFilePath(newInfo.fileName());
 
-        auto newModInfo = LocalModInfo(newPath);
+        auto file = new LocalModFile(this, newPath);
+        file->loadInfo();
         //loader type mismatch
-        if(newModInfo.loaderType() != modInfo_.loaderType()){
+        if(file->modInfo().loaderType() != modFile_->modInfo().loaderType()){
             emit updateFinished(false);
             return false;
         }
 
         //deal with old mod file
         auto postUpdate = Config().getPostUpdate();
-        QFile file(oldPath);
         if(postUpdate == Config::Delete){
             //remove old file
-            file.remove();
-
-            //update info
-            setModInfo(LocalModInfo(newPath));
+            modFile_->remove();
+            modFile_->deleteLater();
         } else if(postUpdate == Config::Keep){
-            //rename old file
-            if(!file.rename(file.fileName() + ".old")){
-                file.remove();
-                return true;
-            }
-            //update info
-            modInfo_.addOld();
-            oldInfos_ << modInfo_;
-            setModInfo(newModInfo);
+            modFile_->addOld();
+            oldFiles_ << modFile_;
         }
+
+        modFile_ = file;
+        emit modFileUpdated();
         emit updateFinished(true);
+
         return true;
     };
 
     ModDownloader *downloader;
 
     if(type == ModWebsiteType::Curseforge)
-        downloader = curseforgeUpdate_.update(path, modInfo_.iconBytes(), callback);
+        downloader = curseforgeUpdate_.update(path, modFile_->modInfo().iconBytes(), callback);
     else if(type == ModWebsiteType::Modrinth)
-        downloader = modrinthUpdate_.update(path, modInfo_.iconBytes(), callback);
+        downloader = modrinthUpdate_.update(path, modFile_->modInfo().iconBytes(), callback);
 
     connect(downloader, &ModDownloader::downloadProgress, this, &LocalMod::updateProgress);
 }
@@ -282,96 +270,41 @@ ModrinthAPI *LocalMod::modrinthAPI() const
     return modrinthAPI_;
 }
 
-void LocalMod::addOldInfo(const LocalModInfo &oldInfo)
+void LocalMod::addOldFile(LocalModFile *oldFile)
 {
-    oldInfos_ << oldInfo;
-    emit modInfoUpdated();
+    oldFiles_ << oldFile;
+    emit modFileUpdated();
 }
 
-const QList<LocalModInfo> &LocalMod::oldInfos() const
+void LocalMod::addDuplicateFile(LocalModFile *duplicateFile)
 {
-    return oldInfos_;
-}
-
-void LocalMod::addDuplicateInfo(const LocalModInfo &duplicateInfo)
-{
-    duplicateInfos_ << duplicateInfo;
-}
-
-const QList<LocalModInfo> &LocalMod::duplicateInfos() const
-{
-    return duplicateInfos_;
+    duplicateFiles_ << duplicateFile;
 }
 
 void LocalMod::duplicateToOld()
 {
-    for(auto info : qAsConst(duplicateInfos_)){
-        QFile file(info.path());
-        if(!file.rename(file.fileName().append(".old"))){
-            file.remove();
-            return;
-        }
-        info.addOld();
-        oldInfos_.append(info);
+    for(auto &file : qAsConst(duplicateFiles_)){
+        file->addOld();
+        oldFiles_ << file;
     }
 
-    duplicateInfos_.clear();
-    emit modInfoUpdated();
+    duplicateFiles_.clear();
+    emit modFileUpdated();
 }
 
-const QList<LocalModInfo> &LocalMod::newInfos() const
+void LocalMod::rollback(LocalModFile *file)
 {
-    return newInfos_;
-}
-
-void LocalMod::rollback(LocalModInfo info)
-{
-    QFile file(modInfo_.path());
-    QFile oldFile(info.path());
-
-    //keep current info as old
-    if(!file.rename(file.fileName().append(".old"))){
-        file.remove();
-        return;
-    }
-    modInfo_.addOld();
-    oldInfos_ << modInfo_;
-
-    //retrieve info
-    oldFile.rename(oldFile.fileName().remove(".old"));
-    oldInfos_.removeAll(info);
-    info.removeOld();
-    setModInfo(info);
+    file->removeOld();
+    modFile_->addOld();
+    modFile_ = file;
+    emit modFileUpdated();
 }
 
 void LocalMod::deleteAllOld()
 {
-    for(const auto &oldInfo : qAsConst(oldInfos_))
-        QFile(oldInfo.path()).remove();
-    oldInfos_.clear();
-    emit modInfoUpdated();
-}
-
-bool LocalMod::rename(const QString &oldBaseName, const QString &newBaseName)
-{
-    auto renameFunc = [=](auto &info){
-        auto [ baseName, suffix ] = info.baseNameFullSuffix();
-        QFile file(info.path_);
-        auto newPath = QDir(info.fileInfo_.absolutePath()).absoluteFilePath(newBaseName + suffix);
-        if(file.rename(newPath)){
-            info.path_ = newPath;
-            info.fileInfo_.setFile(info.path_);
-            emit modInfoUpdated();
-            return true;
-        } else
-            return false;
-    };
-
-    if(oldBaseName == std::get<0>(modInfo_.baseNameFullSuffix()))
-         return renameFunc(modInfo_);
-        for(auto &info : oldInfos_)
-            if(oldBaseName == std::get<0>(info.baseNameFullSuffix()))
-                return renameFunc(info);
+    for(auto &oldFile : qAsConst(oldFiles_))
+        oldFile->remove();
+    oldFiles_.clear();
 }
 
 void LocalMod::addDepend(std::tuple<QString, QString, std::optional<FabricModInfo> > modDepend)
@@ -387,6 +320,31 @@ void LocalMod::addConflict(std::tuple<QString, QString, FabricModInfo> modConfli
 void LocalMod::addBreak(std::tuple<QString, QString, FabricModInfo> modBreak)
 {
     breaks_ << modBreak;
+}
+
+LocalModFile *LocalMod::modFile() const
+{
+    return modFile_;
+}
+
+const QList<LocalModFile *> &LocalMod::oldFiles() const
+{
+    return oldFiles_;
+}
+
+const QList<LocalModFile *> &LocalMod::duplicateFiles() const
+{
+    return duplicateFiles_;
+}
+
+const Updatable<CurseforgeFileInfo> &LocalMod::curseforgeUpdate() const
+{
+    return curseforgeUpdate_;
+}
+
+const Updatable<ModrinthFileInfo> &LocalMod::modrinthUpdate() const
+{
+    return modrinthUpdate_;
 }
 
 const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &LocalMod::depends() const
@@ -407,9 +365,4 @@ const QList<std::tuple<QString, QString, FabricModInfo> > &LocalMod::breaks() co
 ModrinthMod *LocalMod::modrinthMod() const
 {
     return modrinthMod_;
-}
-
-void LocalMod::setModrinthMod(ModrinthMod *newModrinthMod)
-{
-    modrinthMod_ = newModrinthMod;
 }

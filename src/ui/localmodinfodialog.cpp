@@ -13,21 +13,20 @@
 #include "modrinthmodinfodialog.h"
 #include "util/funcutil.h"
 
-LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod, const LocalModInfo &modInfo, bool isMain) :
+LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, LocalMod *mod) :
     QDialog(parent),
     ui(new Ui::LocalModInfoDialog),
-    modInfo_(modInfo),
-    mod_(mod),
-    isMain_(isMain)
+    file_(file),
+    mod_(mod)
 {
     ui->setupUi(this);
 
     //init info
     updateInfo();
 
-    if(isMain_){
+    if(mod_){
         //signals / slots
-        connect(mod_, &LocalMod::modInfoUpdated, this, &LocalModInfoDialog::updateInfo);
+        connect(mod_, &LocalMod::modFileUpdated, this, &LocalModInfoDialog::updateInfo);
 
         //update curseforge
         auto updateCurseforge = [=](bool bl){
@@ -58,10 +57,6 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod, const Loc
     }
 }
 
-LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
-    LocalModInfoDialog(parent, mod, mod->modInfo(), true)
-{ }
-
 LocalModInfoDialog::~LocalModInfoDialog()
 {
     delete ui;
@@ -69,62 +64,64 @@ LocalModInfoDialog::~LocalModInfoDialog()
 
 void LocalModInfoDialog::updateInfo()
 {
-    if(isMain_) modInfo_ = mod_->modInfo();
+    if(mod_) file_ = mod_->modFile();
 
-    setWindowTitle(modInfo_.name() + tr(" - Local"));
+    auto modInfo = file_->modInfo();
 
-    ui->modName->setText(modInfo_.name());
-    ui->modVersion->setText(modInfo_.version());
-    ui->modAuthors->setText(modInfo_.authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
-    ui->modDescription->setText(modInfo_.description());
+    setWindowTitle(modInfo.name() + tr(" - Local"));
+
+    ui->modName->setText(modInfo.name());
+    ui->modVersion->setText(modInfo.version());
+    ui->modAuthors->setText(modInfo.authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    ui->modDescription->setText(modInfo.description());
 
     ui->websiteButton->setEnabled(true);
     ui->sourceButton->setEnabled(true);
     ui->issueButton->setEnabled(true);
 
     //TODO: generic icon setter
-    if(modInfo_.website().isEmpty())
+    if(modInfo.website().isEmpty())
         ui->websiteButton->setEnabled(false);
-    else if(modInfo_.website().toString().contains("curseforge.com"))
+    else if(modInfo.website().toString().contains("curseforge.com"))
         ui->websiteButton->setIcon(QIcon(":/image/curseforge.svg"));
-    else if(modInfo_.website().toString().contains("modrinth.com"))
+    else if(modInfo.website().toString().contains("modrinth.com"))
         ui->websiteButton->setIcon(QIcon(":/image/modrinth.svg"));
 
-    if(modInfo_.sources().isEmpty())
+    if(modInfo.sources().isEmpty())
         ui->sourceButton->setEnabled(false);
-    else if(modInfo_.sources().toString().contains("github.com"))
+    else if(modInfo.sources().toString().contains("github.com"))
         ui->sourceButton->setIcon(QIcon(":/image/github.svg"));
 
-    if(modInfo_.issues().isEmpty())
+    if(modInfo.issues().isEmpty())
         ui->issueButton->setEnabled(false);
-    else if(modInfo_.issues().toString().contains("github.com"))
+    else if(modInfo.issues().toString().contains("github.com"))
         ui->issueButton->setIcon(QIcon(":/image/github.svg"));
 
     QPixmap pixelmap;
-    pixelmap.loadFromData(modInfo_.iconBytes());
+    pixelmap.loadFromData(modInfo.iconBytes());
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 
     //file info
-    auto fileInfo = modInfo_.fileInfo();
-    auto [ baseName, suffix ] = modInfo_.baseNameFullSuffix();
+    auto fileInfo = file_->fileInfo();
+    auto [ baseName, suffix ] = file_->baseNameFullSuffix();
     ui->fileBaseNameText->setText(baseName);
     ui->fileSuffixText->setText(suffix);
     ui->sizeText->setText(numberConvert(fileInfo.size(), "B"));
     ui->createdTimeText->setText(fileInfo.fileTime(QFile::FileBirthTime).toString());
     ui->modifiedTimeText->setText(fileInfo.fileTime(QFile::FileModificationTime).toString());
 
-    if(isMain_){
+    if(mod_){
         //old mod info list
-        if(mod_->oldInfos().isEmpty())
+        if(mod_->oldFiles().isEmpty())
             ui->tabWidget->setTabEnabled(2, false);
         else{
             ui->tabWidget->setTabEnabled(2, true);
             ui->oldModListWidget->clear();
-            for(const auto &fileInfo : mod_->oldInfos()){
+            for(const auto &file : mod_->oldFiles()){
                 auto *listItem = new QListWidgetItem();
                 listItem->setSizeHint(QSize(500, 90));
-                auto itemWidget = new LocalFileItemWidget(this, mod_, fileInfo);
+                auto itemWidget = new LocalFileItemWidget(this, mod_, file);
                 ui->oldModListWidget->addItem(listItem);
                 ui->oldModListWidget->setItemWidget(listItem, itemWidget);
             }
@@ -138,7 +135,7 @@ void LocalModInfoDialog::on_curseforgeButton_clicked()
     auto curseforgeMod = mod_->curseforgeMod();
     if(!curseforgeMod->modInfo().hasBasicInfo())
         curseforgeMod->acquireBasicInfo();
-    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, modInfo_.fileInfo().path(), mod_);
+    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, file_->fileInfo().path(), mod_);
     dialog->show();
 }
 
@@ -147,26 +144,26 @@ void LocalModInfoDialog::on_modrinthButton_clicked()
     auto modrinthMod = mod_->modrinthMod();
     if(!modrinthMod->modInfo().hasBasicInfo())
         modrinthMod->acquireFullInfo();
-    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, modInfo_.fileInfo().path(), mod_);
+    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, file_->fileInfo().path(), mod_);
     dialog->show();
 }
 
 
 void LocalModInfoDialog::on_websiteButton_clicked()
 {
-    QDesktopServices::openUrl(modInfo_.website());
+    QDesktopServices::openUrl(file_->modInfo().website());
 }
 
 
 void LocalModInfoDialog::on_sourceButton_clicked()
 {
-    QDesktopServices::openUrl(modInfo_.sources());
+    QDesktopServices::openUrl(file_->modInfo().sources());
 }
 
 
 void LocalModInfoDialog::on_issueButton_clicked()
 {
-    QDesktopServices::openUrl(modInfo_.issues());
+    QDesktopServices::openUrl(file_->modInfo().issues());
 }
 
 void LocalModInfoDialog::on_editFileNameButton_clicked()
@@ -180,11 +177,11 @@ void LocalModInfoDialog::on_fileBaseNameText_editingFinished()
     QString baseName;
     if(isRenaming) return;
     ui->fileBaseNameText->setEnabled(false);
-    baseName = std::get<0>(modInfo_.baseNameFullSuffix());
+    baseName = std::get<0>(file_->baseNameFullSuffix());
     if(ui->fileBaseNameText->text() == baseName)
         return;
     isRenaming = true;
-    if(!mod_->rename(baseName, ui->fileBaseNameText->text())) {
+    if(!file_->rename(ui->fileBaseNameText->text())) {
         ui->fileBaseNameText->setText(baseName);
         QMessageBox::information(this, tr("Rename Failed"), tr("Rename failed!"));
     }
@@ -193,8 +190,8 @@ void LocalModInfoDialog::on_fileBaseNameText_editingFinished()
 
 void LocalModInfoDialog::on_oldModListWidget_doubleClicked(const QModelIndex &index)
 {
-    auto modInfo = mod_->oldInfos().at(index.row());
-    auto dialog = new LocalModInfoDialog(this, mod_, modInfo);
+    auto file = mod_->oldFiles().at(index.row());
+    auto dialog = new LocalModInfoDialog(this, file);
     dialog->show();
 }
 

@@ -4,8 +4,9 @@
 #include <QObject>
 #include <optional>
 
+#include "localmodfile.h"
 #include "updatable.hpp"
-#include "localmodinfo.h"
+#include "localmodfileinfo.h"
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
 
@@ -21,17 +22,15 @@ class LocalMod : public QObject
 public:
     enum ModWebsiteType{ None, Curseforge, Modrinth};
 
-    explicit LocalMod(QObject *parent, const LocalModInfo &info);
+    explicit LocalMod(QObject *parent, LocalModFile *file);
 
-    explicit LocalMod(LocalModPath *parent, const LocalModInfo &info);
+    explicit LocalMod(LocalModPath *parent, LocalModFile *file);
 
-    LocalModInfo &modInfo();
-    void setModInfo(const LocalModInfo &newModInfo);
+    LocalModFileInfo modInfo() const;
 
     CurseforgeMod *curseforgeMod() const;
     void setCurseforgeMod(CurseforgeMod *newCurseforgeMod);
 
-    ModrinthMod *modrinthMod() const;
     void setModrinthMod(ModrinthMod *newModrinthMod);
 
     void searchOnWebsite();
@@ -53,17 +52,13 @@ public:
 
     ModrinthAPI *modrinthAPI() const;
 
-    void addOldInfo(const LocalModInfo &oldInfo);
-    const QList<LocalModInfo> &oldInfos() const;
+    void addOldFile(LocalModFile *oldFile);
 
-    void addDuplicateInfo(const LocalModInfo &duplicateInfo);
-    const QList<LocalModInfo> &duplicateInfos() const;
+    void addDuplicateFile(LocalModFile *duplicateFile);
 
     void duplicateToOld();
 
-    const QList<LocalModInfo> &newInfos() const;
-
-    void rollback(LocalModInfo info);
+    void rollback(LocalModFile *file);
     void deleteAllOld();
 
     bool rename(const QString &oldBaseName, const QString &newBaseName);
@@ -72,13 +67,19 @@ public:
     void addConflict(std::tuple<QString, QString, FabricModInfo> modConflict);
     void addBreak(std::tuple<QString, QString, FabricModInfo> modBreak);
 
-    const QList<std::tuple<QString, QString, std::optional<FabricModInfo>>> &depends() const;
-    const QList<std::tuple<QString, QString, FabricModInfo>> &conflicts() const;
-    const QList<std::tuple<QString, QString, FabricModInfo>> &breaks() const;
+    LocalModFile *modFile() const;
+    const QList<LocalModFile *> &oldFiles() const;
+    const QList<LocalModFile *> &duplicateFiles() const;
+    const Updatable<CurseforgeFileInfo> &curseforgeUpdate() const;
+    const Updatable<ModrinthFileInfo> &modrinthUpdate() const;
+    const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &depends() const;
+    const QList<std::tuple<QString, QString, FabricModInfo> > &conflicts() const;
+    const QList<std::tuple<QString, QString, FabricModInfo> > &breaks() const;
 
+    ModrinthMod *modrinthMod() const;
 
 signals:
-    void modInfoUpdated();
+    void modFileUpdated();
 
     void checkWebsiteStarted();
     void websiteReady(bool bl);
@@ -100,19 +101,23 @@ signals:
     void updateFinished(bool success);
 
 private:
+    //api for update
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
-    LocalModInfo modInfo_;
-    QList<LocalModInfo> newInfos_;
-    QList<LocalModInfo> oldInfos_;
-    QList<LocalModInfo> duplicateInfos_;
 
+    //files
+    LocalModFile *modFile_;
+    QList<LocalModFile*> oldFiles_;
+    QList<LocalModFile*> duplicateFiles_;
+
+    //related on websites
     CurseforgeMod *curseforgeMod_ = nullptr;
     Updatable<CurseforgeFileInfo> curseforgeUpdate_;
 
     ModrinthMod *modrinthMod_ = nullptr;
     Updatable<ModrinthFileInfo> modrinthUpdate_;
 
+    //dependencies
     QList<std::tuple<QString, QString, std::optional<FabricModInfo>>> depends_;
     QList<std::tuple<QString, QString, FabricModInfo>> conflicts_;
     QList<std::tuple<QString, QString, FabricModInfo>> breaks_;

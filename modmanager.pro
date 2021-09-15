@@ -24,6 +24,7 @@ SOURCES += \
     src/local/fabricmodinfo.cpp \
     src/local/localmod.cpp \
     src/local/localmodfile.cpp \
+    src/local/localmodfileinfo.cpp \
     src/local/localmodpath.cpp \
     src/local/localmodpathinfo.cpp \
     src/local/localmodpathmanager.cpp \
@@ -44,7 +45,6 @@ SOURCES += \
     src/ui/localfileitemwidget.cpp \
     src/ui/localmodbrowser.cpp \
     src/ui/localmodbrowsersettingsdialog.cpp \
-    src/local/localmodinfo.cpp \
     src/ui/localmodcheckdialog.cpp \
     src/ui/localmodinfodialog.cpp \
     src/ui/localmoditemwidget.cpp \
@@ -75,6 +75,7 @@ HEADERS += \
     src/local/fabricmodinfo.h \
     src/local/localmod.h \
     src/local/localmodfile.h \
+    src/local/localmodfileinfo.h \
     src/local/localmodpath.h \
     src/local/localmodpathinfo.h \
     src/local/localmodpathmanager.h \
@@ -96,7 +97,6 @@ HEADERS += \
     src/ui/localfileitemwidget.h \
     src/ui/localmodbrowser.h \
     src/ui/localmodbrowsersettingsdialog.h \
-    src/local/localmodinfo.h \
     src/ui/localmodcheckdialog.h \
     src/ui/localmodinfodialog.h \
     src/ui/localmoditemwidget.h \
