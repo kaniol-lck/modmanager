@@ -57,7 +57,10 @@ void LocalModItemWidget::updateInfo()
     if(index > 0)
         description = description.left(index + 1);
     ui->modDescription->setText(description);
-    ui->modAuthors->setText(mod_->commonInfo()->authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    if(!mod_->commonInfo()->authors().isEmpty())
+        ui->modAuthors->setText(mod_->commonInfo()->authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    else
+        ui->modAuthors->setText("");
 
     if(!mod_->commonInfo()->iconBytes().isEmpty()){
         QPixmap pixelmap;

@@ -46,6 +46,8 @@ bool LocalModFile::loadInfo()
         return true;
     }
 
+    //no available mod info
+    return false;
 }
 
 bool LocalModFile::remove()

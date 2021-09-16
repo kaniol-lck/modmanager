@@ -100,7 +100,8 @@
           <string>!</string>
          </property>
          <property name="icon">
-          <iconset theme="emblem-warning"/>
+          <iconset theme="emblem-warning">
+           <normaloff>.</normaloff>.</iconset>
          </property>
          <property name="autoRaise">
           <bool>true</bool>

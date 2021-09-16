@@ -59,7 +59,6 @@ void LocalModBrowser::updateModList()
 {
     ui->modListWidget->clear();
     for (const auto &mod: modPath_->modMap()) {
-        qDebug() << mod->modFile()->forgeModInfoList().first().name();
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
 
         auto *item = new LocalModSortItem(mod);

@@ -26,11 +26,11 @@ protected:
     QStringList authors_;
     QString description_;
     QByteArray iconBytes_;
+
     //links
     QUrl homepage_;
     QUrl sources_;
     QUrl issues_;
-
 };
 
 #endif // COMMONMODINFO_H

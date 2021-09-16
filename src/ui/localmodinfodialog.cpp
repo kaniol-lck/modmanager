@@ -68,7 +68,10 @@ void LocalModInfoDialog::updateInfo()
 
     auto modInfo = file_->commonInfo();
 
-    setWindowTitle(modInfo->name() + tr(" - Local"));
+    if(mod_)
+        setWindowTitle(modInfo->name() + tr(" - Local"));
+    else
+        setWindowTitle(modInfo->name() + tr(" - Local Old"));
 
     ui->modName->setText(modInfo->name());
     ui->modVersion->setText(modInfo->version());
