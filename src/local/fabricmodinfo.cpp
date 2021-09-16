@@ -9,11 +9,6 @@
 
 #include "util/tutil.hpp"
 
-const QString &FabricModInfo::mainId() const
-{
-    return mainId_;
-}
-
 QList<FabricModInfo> FabricModInfo::fromZip(const QString &path)
 {
     QuaZip zip(path);
@@ -44,6 +39,7 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
 
     //all pass
     FabricModInfo info;
+    info.mainId_ = mainId;
 
     //collect info
     QVariant result = jsonDocument.toVariant();
@@ -52,8 +48,6 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
     info.name_ = value(result, "name").toString();
     info.authors_ = value(result, "authors").toStringList();
     info.description_ = value(result, "description").toString();
-
-    info.mainId_ = mainId.isEmpty()? info.id_ : mainId;
 
     if(result.toMap().contains("contact")){
         info.homepage_ = value(result, "contact", "homepage").toString();
@@ -80,13 +74,18 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
         info.breaks_[it.key()] = it.value().toString();
 
     //icon
-    auto iconFilePath = value(result, "icon").toString();
-    if(!iconFilePath.isEmpty()){
+    if(auto iconFilePath = value(result, "icon").toString(); !iconFilePath.isEmpty()){
         zip->setCurrentFile(iconFilePath);
         if(zipFile.open(QIODevice::ReadOnly)){
             info.iconBytes_ = zipFile.readAll();
             zipFile.close();
         }
+    }
+
+    //is main?
+    if(mainId.isEmpty()){
+        info.mainId_ = info.id_;
+        info.isEmbedded_ = false;
     }
 
     //append info
@@ -112,51 +111,6 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
     return list;
 }
 
-const QString &FabricModInfo::id() const
-{
-    return id_;
-}
-
-const QString &FabricModInfo::name() const
-{
-    return name_;
-}
-
-const QString &FabricModInfo::version() const
-{
-    return version_;
-}
-
-const QStringList &FabricModInfo::authors() const
-{
-    return authors_;
-}
-
-const QString &FabricModInfo::description() const
-{
-    return description_;
-}
-
-const QByteArray &FabricModInfo::iconBytes() const
-{
-    return iconBytes_;
-}
-
-const QUrl &FabricModInfo::homepage() const
-{
-    return homepage_;
-}
-
-const QUrl &FabricModInfo::sources() const
-{
-    return sources_;
-}
-
-const QUrl &FabricModInfo::issues() const
-{
-    return issues_;
-}
-
 const QStringList &FabricModInfo::provides() const
 {
     return provides_;
@@ -175,6 +129,11 @@ const QMap<QString, QString> &FabricModInfo::conflicts() const
 const QMap<QString, QString> &FabricModInfo::breaks() const
 {
     return breaks_;
+}
+
+const QString &FabricModInfo::mainId() const
+{
+    return mainId_;
 }
 
 bool FabricModInfo::isEmbedded() const

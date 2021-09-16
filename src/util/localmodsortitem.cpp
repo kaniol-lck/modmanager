@@ -11,7 +11,7 @@ bool LocalModSortItem::operator<(const QListWidgetItem &other) const
     auto otherMod = dynamic_cast<const LocalModSortItem&>(other).mod_;
     switch (sortRule_) {
     case Name:
-        return mod_->modInfo().name().toLower() < otherMod->modInfo().name().toLower();
+        return mod_->commonInfo()->name().toLower() < otherMod->commonInfo()->name().toLower();
     case Date:
         return mod_->modFile()->fileInfo().birthTime() < otherMod->modFile()->fileInfo().birthTime();
     case Size:

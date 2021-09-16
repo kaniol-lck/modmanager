@@ -54,7 +54,7 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
 
     DownloadFileInfo info(fileInfo_);
     if(localMod_)
-        info.setIconBytes(localMod_->modInfo().iconBytes());
+        info.setIconBytes(localMod_->commonInfo()->iconBytes());
     else
         info.setIconBytes(mod_->modInfo().iconBytes());
     info.setPath(downloadPath_);

@@ -35,12 +35,17 @@ bool LocalModFile::loadInfo()
     murmurhash_ = QByteArray::number(MurmurHash2(filteredFileContent.constData(), filteredFileContent.length(), 1));
 
     //load fabric mod
-    modInfo_.fabricModInfoList_ = FabricModInfo::fromZip(path_);
-    if(!modInfo_.fabricModInfoList_.isEmpty()){
-        modInfo_.loaderType_ = ModLoaderType::Fabric;
-        modInfo_.fabricModInfoList_.first().setIsEmbedded(false);
+    if(fabricModInfoList_ = FabricModInfo::fromZip(path_); !fabricModInfoList_.isEmpty()){
+        loaderType_ = ModLoaderType::Fabric;
+        return true;
     }
-    return true;
+
+    //load forge mod
+    if(forgeModInfoList_ = ForgeModInfo::fromZip(path_); !forgeModInfoList_.isEmpty()){
+        loaderType_ = ModLoaderType::Forge;
+        return true;
+    }
+
 }
 
 bool LocalModFile::remove()
@@ -143,8 +148,39 @@ const QFileInfo &LocalModFile::fileInfo() const
     return fileInfo_;
 }
 
-const LocalModFileInfo &LocalModFile::modInfo() const
+const CommonModInfo *LocalModFile::commonInfo() const
 {
-    return modInfo_;
+    if(loaderType_ == ModLoaderType::Fabric)
+        return &fabricModInfoList_.first();
+    else if(loaderType_ == ModLoaderType::Forge)
+        return &forgeModInfoList_.first();
+    else
+        assert(false);//should't be here
 }
 
+FabricModInfo LocalModFile::fabric() const
+{
+    assert(loaderType_ == ModLoaderType::Fabric);
+    return fabricModInfoList_.first();
+}
+
+ForgeModInfo LocalModFile::forge() const
+{
+    assert(loaderType_ == ModLoaderType::Forge);
+    return forgeModInfoList_.first();
+}
+
+ModLoaderType::Type LocalModFile::loaderType() const
+{
+    return loaderType_;
+}
+
+const QList<FabricModInfo> &LocalModFile::fabricModInfoList() const
+{
+    return fabricModInfoList_;
+}
+
+const QList<ForgeModInfo> &LocalModFile::forgeModInfoList() const
+{
+    return forgeModInfoList_;
+}

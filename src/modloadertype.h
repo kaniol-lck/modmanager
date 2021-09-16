@@ -16,7 +16,7 @@ enum Type{
 Type fromString(const QString &str);
 QString toString(Type loaderType);
 
-const QList<Type> local{ Fabric };
+const QList<Type> local{ Fabric, Forge };
 const QList<Type> curseforge{ Any, Fabric, Forge/*, Rift*/ };
 const QList<Type> modrinth{ Any, Fabric, Forge };
 

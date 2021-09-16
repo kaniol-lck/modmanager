@@ -21,10 +21,11 @@ SOURCES += \
     src/download/downloadfileinfo.cpp \
     src/download/downloadmanager.cpp \
     src/download/moddownloader.cpp \
+    src/local/commonmodinfo.cpp \
     src/local/fabricmodinfo.cpp \
+    src/local/forgemodinfo.cpp \
     src/local/localmod.cpp \
     src/local/localmodfile.cpp \
-    src/local/localmodfileinfo.cpp \
     src/local/localmodpath.cpp \
     src/local/localmodpathinfo.cpp \
     src/local/localmodpathmanager.cpp \
@@ -72,10 +73,11 @@ HEADERS += \
     src/download/downloadfileinfo.h \
     src/download/downloadmanager.h \
     src/download/moddownloader.h \
+    src/local/commonmodinfo.h \
     src/local/fabricmodinfo.h \
+    src/local/forgemodinfo.h \
     src/local/localmod.h \
     src/local/localmodfile.h \
-    src/local/localmodfileinfo.h \
     src/local/localmodpath.h \
     src/local/localmodpathinfo.h \
     src/local/localmodpathmanager.h \
@@ -154,6 +156,9 @@ include(3rdparty/MurmurHash/murmurhash.pri)
 
 #cpp-semver: https://github.com/easz/cpp-semver
 include(3rdparty/cpp-semver/cpp-semver.pri)
+
+#tomlplusplus: https://github.com/marzer/tomlplusplus
+include(3rdparty/tomlplusplus/tomlplusplus.pri)
 
 RESOURCES += \
     src/images/image.qrc

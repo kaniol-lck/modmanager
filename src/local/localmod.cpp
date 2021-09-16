@@ -27,11 +27,6 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     modFile_(file)
 {}
 
-LocalModFileInfo LocalMod::modInfo() const
-{
-    return modFile_->modInfo();
-}
-
 CurseforgeMod *LocalMod::curseforgeMod() const
 {
     return curseforgeMod_;
@@ -215,7 +210,7 @@ void LocalMod::update(ModWebsiteType type)
         auto file = new LocalModFile(this, newPath);
         file->loadInfo();
         //loader type mismatch
-        if(file->modInfo().loaderType() != modFile_->modInfo().loaderType()){
+        if(file->loaderType() != modFile_->loaderType()){
             emit updateFinished(false);
             return false;
         }
@@ -241,9 +236,9 @@ void LocalMod::update(ModWebsiteType type)
     ModDownloader *downloader;
 
     if(type == ModWebsiteType::Curseforge)
-        downloader = curseforgeUpdate_.update(path, modFile_->modInfo().iconBytes(), callback);
+        downloader = curseforgeUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback);
     else if(type == ModWebsiteType::Modrinth)
-        downloader = modrinthUpdate_.update(path, modFile_->modInfo().iconBytes(), callback);
+        downloader = modrinthUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback);
 
     connect(downloader, &ModDownloader::downloadProgress, this, &LocalMod::updateProgress);
 }
@@ -325,6 +320,11 @@ void LocalMod::addBreak(std::tuple<QString, QString, FabricModInfo> modBreak)
 LocalModFile *LocalMod::modFile() const
 {
     return modFile_;
+}
+
+const CommonModInfo *LocalMod::commonInfo() const
+{
+    return modFile_->commonInfo();
 }
 
 const QList<LocalModFile *> &LocalMod::oldFiles() const

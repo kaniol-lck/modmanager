@@ -3,8 +3,6 @@
 
 #include <QDialog>
 
-#include "local/localmodfileinfo.h"
-
 class LocalMod;
 class LocalModFile;
 

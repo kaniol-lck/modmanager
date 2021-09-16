@@ -66,39 +66,39 @@ void LocalModInfoDialog::updateInfo()
 {
     if(mod_) file_ = mod_->modFile();
 
-    auto modInfo = file_->modInfo();
+    auto modInfo = file_->commonInfo();
 
-    setWindowTitle(modInfo.name() + tr(" - Local"));
+    setWindowTitle(modInfo->name() + tr(" - Local"));
 
-    ui->modName->setText(modInfo.name());
-    ui->modVersion->setText(modInfo.version());
-    ui->modAuthors->setText(modInfo.authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
-    ui->modDescription->setText(modInfo.description());
+    ui->modName->setText(modInfo->name());
+    ui->modVersion->setText(modInfo->version());
+    ui->modAuthors->setText(modInfo->authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    ui->modDescription->setText(modInfo->description());
 
     ui->websiteButton->setEnabled(true);
     ui->sourceButton->setEnabled(true);
     ui->issueButton->setEnabled(true);
 
     //TODO: generic icon setter
-    if(modInfo.website().isEmpty())
+    if(modInfo->homepage().isEmpty())
         ui->websiteButton->setEnabled(false);
-    else if(modInfo.website().toString().contains("curseforge.com"))
+    else if(modInfo->homepage().toString().contains("curseforge.com"))
         ui->websiteButton->setIcon(QIcon(":/image/curseforge.svg"));
-    else if(modInfo.website().toString().contains("modrinth.com"))
+    else if(modInfo->homepage().toString().contains("modrinth.com"))
         ui->websiteButton->setIcon(QIcon(":/image/modrinth.svg"));
 
-    if(modInfo.sources().isEmpty())
+    if(modInfo->sources().isEmpty())
         ui->sourceButton->setEnabled(false);
-    else if(modInfo.sources().toString().contains("github.com"))
+    else if(modInfo->sources().toString().contains("github.com"))
         ui->sourceButton->setIcon(QIcon(":/image/github.svg"));
 
-    if(modInfo.issues().isEmpty())
+    if(modInfo->issues().isEmpty())
         ui->issueButton->setEnabled(false);
-    else if(modInfo.issues().toString().contains("github.com"))
+    else if(modInfo->issues().toString().contains("github.com"))
         ui->issueButton->setIcon(QIcon(":/image/github.svg"));
 
     QPixmap pixelmap;
-    pixelmap.loadFromData(modInfo.iconBytes());
+    pixelmap.loadFromData(modInfo->iconBytes());
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 
@@ -149,19 +149,19 @@ void LocalModInfoDialog::on_modrinthButton_clicked()
 
 void LocalModInfoDialog::on_websiteButton_clicked()
 {
-    QDesktopServices::openUrl(file_->modInfo().website());
+    QDesktopServices::openUrl(file_->commonInfo()->homepage());
 }
 
 
 void LocalModInfoDialog::on_sourceButton_clicked()
 {
-    QDesktopServices::openUrl(file_->modInfo().sources());
+    QDesktopServices::openUrl(file_->commonInfo()->sources());
 }
 
 
 void LocalModInfoDialog::on_issueButton_clicked()
 {
-    QDesktopServices::openUrl(file_->modInfo().issues());
+    QDesktopServices::openUrl(file_->commonInfo()->issues());
 }
 
 void LocalModInfoDialog::on_editFileNameButton_clicked()

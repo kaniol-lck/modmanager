@@ -59,6 +59,7 @@ void LocalModBrowser::updateModList()
 {
     ui->modListWidget->clear();
     for (const auto &mod: modPath_->modMap()) {
+        qDebug() << mod->modFile()->forgeModInfoList().first().name();
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
 
         auto *item = new LocalModSortItem(mod);
@@ -169,8 +170,8 @@ void LocalModBrowser::on_searchText_textEdited(const QString &arg1)
     for(int i = 0; i < ui->modListWidget->count(); i++){
         auto mod = dynamic_cast<const LocalModSortItem*>(ui->modListWidget->item(i))->mod();
         auto str = arg1.toLower();
-        if(mod->modInfo().name().toLower().contains(str) ||
-                mod->modInfo().description().toLower().contains(str))
+        if(mod->commonInfo()->name().toLower().contains(str) ||
+                mod->commonInfo()->description().toLower().contains(str))
             ui->modListWidget->item(i)->setHidden(false);
         else
             ui->modListWidget->item(i)->setHidden(true);

@@ -3,8 +3,6 @@
 
 #include <QWidget>
 
-#include "local/localmodfileinfo.h"
-
 class LocalModFile;
 class LocalMod;
 

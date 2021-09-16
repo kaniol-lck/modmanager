@@ -80,9 +80,9 @@ void LocalModBrowserSettingsDialog::on_modDirButton_clicked()
         updateAutoName();
         return;
     } while(false);
+    info_.setPath(resultStr);
     ui->modsDirText->setText(resultStr);
 }
-
 
 void LocalModBrowserSettingsDialog::on_buttonBox_accepted()
 {

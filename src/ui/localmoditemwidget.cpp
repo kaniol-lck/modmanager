@@ -4,7 +4,6 @@
 #include <QMenu>
 #include <QMessageBox>
 
-#include "local/localmodfileinfo.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
 #include "curseforgemodinfodialog.h"
@@ -51,18 +50,18 @@ LocalModItemWidget::~LocalModItemWidget()
 
 void LocalModItemWidget::updateInfo()
 {
-    ui->modName->setText(mod_->modInfo().name());
-    ui->modVersion->setText(mod_->modInfo().version());
-    auto description = mod_->modInfo().description();
+    ui->modName->setText(mod_->modFile()->commonInfo()->name());
+    ui->modVersion->setText(mod_->commonInfo()->version());
+    auto description = mod_->commonInfo()->description();
     auto index = description.indexOf(".");
     if(index > 0)
         description = description.left(index + 1);
     ui->modDescription->setText(description);
-    ui->modAuthors->setText(mod_->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    ui->modAuthors->setText(mod_->commonInfo()->authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
 
-    if(!mod_->modInfo().iconBytes().isEmpty()){
+    if(!mod_->commonInfo()->iconBytes().isEmpty()){
         QPixmap pixelmap;
-        pixelmap.loadFromData(mod_->modInfo().iconBytes());
+        pixelmap.loadFromData(mod_->commonInfo()->iconBytes());
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
     }
 
@@ -74,7 +73,7 @@ void LocalModItemWidget::updateInfo()
         ui->rollbackButton->setEnabled(true);
         auto menu = new QMenu(this);
         for(const auto &file : mod_->oldFiles())
-            connect(menu->addAction(file->modInfo().version()), &QAction::triggered, this, [=]{
+            connect(menu->addAction(file->commonInfo()->version()), &QAction::triggered, this, [=]{
                 ui->rollbackButton->setEnabled(false);
                 mod_->rollback(file);
             });
@@ -195,10 +194,10 @@ void LocalModItemWidget::on_modrinthButton_clicked()
 
 void LocalModItemWidget::on_warningButton_clicked()
 {
-    QString str = tr("Duplicate version of <b>%1</b> was found:").arg(mod_->modInfo().name());
-    QStringList list(mod_->modInfo().version());
+    QString str = tr("Duplicate version of <b>%1</b> was found:").arg(mod_->commonInfo()->name());
+    QStringList list(mod_->commonInfo()->version());
     for(const auto &file : mod_->duplicateFiles())
-        list << file->modInfo().version();
+        list << file->commonInfo()->version();
     str += "<ul><li>" + list.join("</li><li>") + "</li></ul>";
     str += tr("Keep one of them and set the others as old mods?");
     if(QMessageBox::Yes == QMessageBox::question(this, tr("Incompatibility"), str))

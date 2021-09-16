@@ -2,8 +2,11 @@
 #define LOCALMODFILE_H
 
 #include <QObject>
+#include <QFileInfo>
 
-#include "localmodfileinfo.h"
+#include "fabricmodinfo.h"
+#include "forgemodinfo.h"
+#include "modloadertype.h"
 
 class LocalModFile : public QObject
 {
@@ -37,18 +40,30 @@ public:
 
     const QString &path() const;
     const QFileInfo &fileInfo() const;
-    const LocalModFileInfo &modInfo() const;
+
+    const CommonModInfo *commonInfo() const;
+
+    FabricModInfo fabric() const;
+    ForgeModInfo forge() const;
+
+    ModLoaderType::Type loaderType() const;
+    const QList<FabricModInfo> &fabricModInfoList() const;
+    const QList<ForgeModInfo> &forgeModInfoList() const;
 
 signals:
     void fileChanged();
 
 private:
+    //file
     QString path_;
     QFileInfo fileInfo_;
-    LocalModFileInfo modInfo_;
-
     QString sha1_;
     QString murmurhash_;
+
+    //mod
+    ModLoaderType::Type loaderType_ = ModLoaderType::Any;
+    QList<FabricModInfo> fabricModInfoList_;
+    QList<ForgeModInfo> forgeModInfoList_;
 };
 
 #endif // LOCALMODFILE_H

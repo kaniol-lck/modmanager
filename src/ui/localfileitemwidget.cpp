@@ -24,12 +24,12 @@ LocalFileItemWidget::~LocalFileItemWidget()
 
 void LocalFileItemWidget::updateFileInfo()
 {
-    auto info = file_->modInfo();
+    auto info = file_->commonInfo();
     QPixmap pixmap;
-    pixmap.loadFromData(info.iconBytes());
+    pixmap.loadFromData(info->iconBytes());
     ui->modIcon->setPixmap(pixmap.scaled(80, 80));
-    ui->displayNameText->setText(info.name());
-    ui->versionText->setText(info.version());
+    ui->displayNameText->setText(info->name());
+    ui->versionText->setText(info->version());
     ui->modFileNameText->setText(file_->fileInfo().fileName());
     ui->sizeText->setText(numberConvert(file_->fileInfo().size(), "B"));
 }

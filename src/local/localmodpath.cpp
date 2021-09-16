@@ -26,7 +26,7 @@ void LocalModPath::loadMods()
         if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
             modFileList_ << new LocalModFile(this, fileInfo.absoluteFilePath());
 
-    auto future = QtConcurrent::run([&]{
+    auto future = QtConcurrent::run([=]{
         for(auto &file : modFileList_)
             file->loadInfo();
     });
@@ -38,13 +38,11 @@ void LocalModPath::loadMods()
         fabricModMap_.clear();
         provideList_.clear();
 
-        //TODO: loader type
-
         //load normal mods (include duplicate)
         for(const auto &file : qAsConst(modFileList_)){
             if(file->type() != LocalModFile::Normal) continue;
-            if(file->modInfo().loaderType() != info_.loaderType()) continue;
-            auto id = file->modInfo().id();
+            if(file->loaderType() != info_.loaderType()) continue;
+            auto id = file->commonInfo()->id();
             //duplicate
             if(modMap_.contains(id)){
                 modMap_[id]->addDuplicateFile(file);
@@ -65,8 +63,8 @@ void LocalModPath::loadMods()
         //load old mods
         for(const auto &file : qAsConst(modFileList_)){
             if(file->type() != LocalModFile::Old) continue;
-            if(file->modInfo().loaderType() != info_.loaderType()) continue;
-            auto id = file->modInfo().id();
+            if(file->loaderType() != info_.loaderType()) continue;
+            auto id = file->commonInfo()->id();
             //old
             if(modMap_.contains(id)){
                 modMap_[id]->addOldFile(file);
@@ -82,7 +80,7 @@ void LocalModPath::loadMods()
         auto autoSearchOnWebsites = config.getAutoSearchOnWebsites();
         auto autoCheckUpdate = config.getAutoCheckUpdate();
 
-        if(autoSearchOnWebsites)
+        if(autoSearchOnWebsites && !modMap_.isEmpty())
             searchOnWebsites();
 
         if(autoCheckUpdate){
@@ -259,6 +257,7 @@ LocalMod *LocalModPath::findLocalMod(const QString &id)
 
 void LocalModPath::searchOnWebsites()
 {
+    if(modMap_.isEmpty()) return;
     emit checkWebsitesStarted();
     auto count = std::make_shared<int>(0);
     for(const auto &mod : qAsConst(modMap_)){
@@ -273,6 +272,7 @@ void LocalModPath::searchOnWebsites()
 
 void LocalModPath::checkModUpdates()
 {
+    if(modMap_.isEmpty()) return;
     emit checkUpdatesStarted();
     auto count = std::make_shared<int>(0);
     auto updateCount = std::make_shared<int>(0);
