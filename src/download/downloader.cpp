@@ -21,23 +21,23 @@ Downloader::Downloader(QObject *parent) :
     connect(this, &Downloader::downloadInfoReady, this, &Downloader::startDownload, Qt::QueuedConnection);
 }
 
-bool Downloader::download(const QUrl &url, const QString &path, const QString &filename)
+bool Downloader::download(const QUrl &url, const QString &path, const QString &fileName)
 {
     url_ = url;
 
     QDir dir(path);
 
-    QString fileName;
+    QString filePath;
 
     //get name
-    if(!filename.isEmpty())
-        fileName = dir.absoluteFilePath(filename);
+    if(!fileName.isEmpty())
+        filePath = dir.absoluteFilePath(fileName);
     else if(!url.fileName().isEmpty())
-        fileName = dir.absoluteFilePath(url.fileName());
+        filePath = dir.absoluteFilePath(url.fileName());
     else
-        fileName = dir.absoluteFilePath("index.html");
+        filePath = dir.absoluteFilePath("index.html");
 
-    file_.setFileName(fileName + ".downloading");
+    file_.setFileName(filePath + ".downloading");
     if(!file_.open(QIODevice::WriteOnly)) return false;
 
     emit downloadInfoReady();
@@ -117,8 +117,7 @@ void Downloader::handleRedirect()
 
         //update size
         size_ = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
-        QVariant redirection = reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
-        if(!redirection.isNull()){
+        if(auto redirection = reply->attribute(QNetworkRequest::RedirectionTargetAttribute); !redirection.isNull()){
             //update url
             url_ = redirection.toString();
             handleRedirect();

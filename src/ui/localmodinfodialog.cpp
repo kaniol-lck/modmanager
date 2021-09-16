@@ -127,7 +127,6 @@ void LocalModInfoDialog::updateInfo()
             }
         }
     }
-
 }
 
 void LocalModInfoDialog::on_curseforgeButton_clicked()
@@ -147,7 +146,6 @@ void LocalModInfoDialog::on_modrinthButton_clicked()
     auto dialog = new ModrinthModInfoDialog(this, modrinthMod, file_->fileInfo().path(), mod_);
     dialog->show();
 }
-
 
 void LocalModInfoDialog::on_websiteButton_clicked()
 {

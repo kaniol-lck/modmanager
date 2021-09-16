@@ -9,16 +9,9 @@
 
 const QString CurseforgeAPI::PREFIX = "https://addons-ecs.forgesvc.net";
 
-// SEARCH            = "/api/v2/addon/search";
-// FINGERPRINT       = "/api/v2/fingerprint";
-// DESCRIPTION       = "/api/v2/addon/{addonID}/description";
-// CHANGELOG         = "/api/v2/addon/{addonID}/file/{fileID}/changelog";
-// DOWNLOAD_URL      = "/api/v2/addon/{addonID}/file/{fileID}/download-url";
-// FILE_INFO         = "/api/v2/addon/{addonID}/file/{fileID}";
-// FILES             = "/api/v2/addon/{addonID}/files";
-// INFO              = "/api/v2/addon/{addonID}";
-// TIMESTAMP         = "/api/v2/addon/timestamp";
-// MINECRAFT_VERSION = "/api/v2/minecraft/version";
+CurseforgeAPI::CurseforgeAPI(QObject *parent) :
+    QObject(parent)
+{}
 
 CurseforgeAPI *CurseforgeAPI::api()
 {
@@ -70,10 +63,9 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
         auto resultList = jsonDocument.toVariant().toList();
         QList<CurseforgeModInfo> modInfoList;
 
-        for(const auto &result : qAsConst(resultList)){
-            auto modInfo = CurseforgeModInfo::fromVariant(result);
-            modInfoList.append(modInfo);
-        }
+        for(const auto &result : qAsConst(resultList))
+            modInfoList << CurseforgeModInfo::fromVariant(result);
+
         callback(modInfoList);
         reply->deleteLater();
     });
@@ -106,6 +98,7 @@ void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function
             int id = value(exactMatchList.at(0), "id").toInt();
             auto file = CurseforgeFileInfo::fromVariant(value(exactMatchList.at(0), "file"));
             auto latestFileList = value(exactMatchList.at(0), "latestFiles").toList();
+
             QList<CurseforgeFileInfo> fileList;
             for (const auto &variant : latestFileList)
                 fileList << CurseforgeFileInfo::fromVariant(variant);
@@ -154,12 +147,10 @@ void CurseforgeAPI::getFiles(int id, std::function<void (QList<CurseforgeFileInf
             return;
         }
         auto resultList = jsonDocument.toVariant().toList();
-        QList<CurseforgeFileInfo> fileInfoList;
 
-        for(const auto &result : qAsConst(resultList)){
-            auto modInfo = CurseforgeFileInfo::fromVariant(result);
-            fileInfoList.append(modInfo);
-        }
+        QList<CurseforgeFileInfo> fileInfoList;
+        for(const auto &result : qAsConst(resultList))
+            fileInfoList << CurseforgeFileInfo::fromVariant(result);
 
         callback(fileInfoList);
         reply->deleteLater();
@@ -221,9 +212,4 @@ void CurseforgeAPI::getMinecraftVersionList(std::function<void (QList<GameVersio
         callback(versionList);
         reply->deleteLater();
     });
-}
-
-CurseforgeAPI::CurseforgeAPI(QObject *parent) : QObject(parent)
-{
-
 }

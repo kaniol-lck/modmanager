@@ -26,7 +26,6 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod, 
 
     connect(mod, &ModrinthMod::iconReady, this, &ModrinthModItemWidget::updateIcon);
     connect(mod, &ModrinthMod::fileListReady, this, &ModrinthModItemWidget::updateFileList);
-
 }
 
 ModrinthModItemWidget::~ModrinthModItemWidget()

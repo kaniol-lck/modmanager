@@ -4,7 +4,6 @@
 
 ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
 {
-
     ModrinthFileInfo fileInfo;
 
     fileInfo.id_ = value(variant, "id").toString();

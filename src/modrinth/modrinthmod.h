@@ -36,7 +36,6 @@ private:
     bool gettingIcon_ = false;
     bool gettingFullInfo_ = false;
     bool gettingFileList_ = false;
-
 };
 
 #endif // MODRINTHMOD_H

@@ -40,7 +40,6 @@ QString LocalModFileInfo::version() const
 
 QString LocalModFileInfo::description() const
 {
-
     if(loaderType_ == ModLoaderType::Fabric)
         return fabric().description();
     else

@@ -44,7 +44,6 @@ public:
 
     //Path List
     getterAndSetter(LocalPathList, List, localPathList, QVariant())
-
 };
 
 #endif // CONFIG_H

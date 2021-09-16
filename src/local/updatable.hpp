@@ -19,6 +19,7 @@ public:
     {
         return updateFileInfo_->size();
     }
+
     QDateTime fileDate() const
     {
         return updateFileInfo_->fileDate();
@@ -28,6 +29,7 @@ public:
     {
         return currentFileInfo_.has_value();
     }
+
     bool isUpdateAvailable() const
     {
         return updateFileInfo_.has_value();
@@ -101,7 +103,6 @@ public:
 private:
     std::optional<FileInfoT> currentFileInfo_;
     std::optional<FileInfoT> updateFileInfo_;
-
 };
 
 #endif // UPDATABLE_HPP

@@ -22,10 +22,8 @@ void AboutDialog::on_toolButton_clicked()
     QDesktopServices::openUrl(url);
 }
 
-
 void AboutDialog::on_toolButton_2_clicked()
 {
     QUrl url("https://github.com/kaniol-lck/modmanager/issues");
     QDesktopServices::openUrl(url);
 }
-

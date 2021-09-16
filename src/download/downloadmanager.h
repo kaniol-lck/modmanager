@@ -36,7 +36,6 @@ private:
     const int DOWNLOAD_COUNT;
     QList<ModDownloader*> downloadList_;
     QList<qint64> speedList_;
-
 };
 
 #endif // DOWNLOADMANAGER_H

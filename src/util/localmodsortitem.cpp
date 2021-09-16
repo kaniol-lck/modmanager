@@ -4,9 +4,7 @@
 
 LocalModSortItem::LocalModSortItem(LocalMod *mod) :
     mod_(mod)
-{
-
-}
+{}
 
 bool LocalModSortItem::operator<(const QListWidgetItem &other) const
 {

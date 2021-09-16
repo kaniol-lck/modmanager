@@ -3,9 +3,7 @@
 #include <QDateTime>
 
 DateTimeSortItem::DateTimeSortItem()
-{
-
-}
+{}
 
 bool DateTimeSortItem::operator<(const QListWidgetItem &other) const
 {

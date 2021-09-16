@@ -30,7 +30,6 @@ public:
 
 private:
     QNetworkAccessManager accessManager_;
-
 };
 
 #endif // CURSEFORGEAPI_H

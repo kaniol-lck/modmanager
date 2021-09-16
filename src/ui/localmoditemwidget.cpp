@@ -86,7 +86,7 @@ void LocalModItemWidget::updateInfo()
         ui->warningButton->setToolTip(tr("Duplicate mod!"));
     } else {
         ui->warningButton->setVisible(false);
-}
+    }
 }
 
 void LocalModItemWidget::on_updateButton_clicked()

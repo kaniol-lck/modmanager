@@ -13,17 +13,13 @@ ModrinthMod::ModrinthMod(QObject *parent, const ModrinthModInfo &info) :
     QObject(parent),
     api_(ModrinthAPI::api()),
     modInfo_(info)
-{
-
-}
+{}
 
 ModrinthMod::ModrinthMod(LocalMod *parent, const ModrinthModInfo &info) :
     QObject(parent),
     api_(parent->modrinthAPI()),
     modInfo_(info)
-{
-
-}
+{}
 
 ModrinthModInfo ModrinthMod::modInfo() const
 {

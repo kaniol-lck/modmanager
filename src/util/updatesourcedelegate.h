@@ -24,7 +24,6 @@ signals:
 
 private:
     QList<LocalMod::ModWebsiteType> typeList_;
-
 };
 
 #endif // COMBODELEGATE_H

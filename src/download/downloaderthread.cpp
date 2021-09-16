@@ -35,7 +35,6 @@ void DownloaderThread::download(int index, const QUrl &url, QFile *file, qint64 
     connect(reply_, &QNetworkReply::errorOccurred, this, [=](QNetworkReply::NetworkError code){
         emit threadErrorOccurred(index, code);
     });
-
 }
 
 void DownloaderThread::writeFile()

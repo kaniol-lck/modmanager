@@ -13,16 +13,13 @@ CurseforgeMod::CurseforgeMod(QObject *parent, const CurseforgeModInfo &info) :
     QObject(parent),
     api_(CurseforgeAPI::api()),
     modInfo_(info)
-{
-}
+{}
 
 CurseforgeMod::CurseforgeMod(LocalMod *parent, const CurseforgeModInfo &info) :
     QObject(parent),
     api_(parent->curseforgeAPI()),
     modInfo_(info)
-{
-
-}
+{}
 
 void CurseforgeMod::acquireBasicInfo()
 {

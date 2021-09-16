@@ -49,7 +49,6 @@ private:
 
     QString sha1_;
     QString murmurhash_;
-
 };
 
 #endif // LOCALMODFILE_H

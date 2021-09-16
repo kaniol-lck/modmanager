@@ -86,7 +86,6 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod, 
         mod->acquireFullInfo();
         connect(mod, &ModrinthMod::fullInfoReady, this, updateFullInfo);
     }
-
 }
 
 ModrinthModInfoDialog::~ModrinthModInfoDialog()

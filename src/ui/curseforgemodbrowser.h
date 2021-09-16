@@ -61,7 +61,6 @@ private:
     bool hasMore_ = false;
 
     void getModList(QString name, int index = 0, int needMore = 20);
-
 };
 
 #endif // CURSEFORGEMODBROWSER_H

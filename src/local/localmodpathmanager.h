@@ -30,7 +30,6 @@ signals:
 private:
     void updateList();
     QList<LocalModPath*> pathList_;
-
 };
 
 #endif // LOCALMODPATHMANAGER_H

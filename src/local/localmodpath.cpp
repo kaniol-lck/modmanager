@@ -97,7 +97,6 @@ void LocalModPath::loadMods()
 
 void LocalModPath::checkFabric()
 {
-
     //fabric
     if(info_.loaderType() == ModLoaderType::Fabric){
         //depends
@@ -142,7 +141,6 @@ std::tuple<LocalModPath::FindResultType, std::optional<FabricModInfo> > LocalMod
     } else {
         return { Mismatch, {modInfo} };
     }
-
 }
 
 QList<std::tuple<FabricModInfo, QString, QString, std::optional<FabricModInfo>>> LocalModPath::checkFabricDepends() const

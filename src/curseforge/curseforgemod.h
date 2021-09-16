@@ -36,7 +36,6 @@ private:
     bool gettingIcon_ = false;
     bool gettingDescription_ = false;
     bool gettingAllFileList_ = false;
-
 };
 
 #endif // CURSEFORGEMOD_H

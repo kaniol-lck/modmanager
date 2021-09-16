@@ -24,7 +24,6 @@ private:
     QTreeWidgetItem *dependsItem_;
     QTreeWidgetItem *conflictsItem_;
     QTreeWidgetItem *breaksItem_;
-
 };
 
 #endif // LOCALMODCHECKDIALOG_H

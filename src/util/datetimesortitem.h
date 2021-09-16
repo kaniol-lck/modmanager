@@ -11,7 +11,6 @@ public:
     static constexpr int Role = 777;
 
     virtual bool operator<(const QListWidgetItem &other) const;
-
 };
 
 #endif // CURSEFORGEFILELISTWIDGETITEM_H

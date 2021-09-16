@@ -42,7 +42,6 @@ private:
     ModLoaderType::Type loaderType_ = ModLoaderType::Any;
 
     QList<FabricModInfo> fabricModInfoList_;
-
 };
 
 #endif // LOCALMODFILEINFO_H

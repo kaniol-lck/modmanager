@@ -9,6 +9,10 @@
 
 const QString ModrinthAPI::PREFIX = "https://api.modrinth.com";
 
+ModrinthAPI::ModrinthAPI(QObject *parent) :
+    QObject(parent)
+{}
+
 ModrinthAPI *ModrinthAPI::api()
 {
     static ModrinthAPI api;
@@ -74,13 +78,13 @@ void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &v
             qDebug("%s", error.errorString().toUtf8().constData());
             return;
         }
-        auto resultList = value(jsonDocument.toVariant(), "hits").toList();
-        QList<ModrinthModInfo> modInfoList;
 
-        for(const auto &result : qAsConst(resultList)){
-            auto modrinthModInfo = ModrinthModInfo::fromSearchVariant(result);
-            modInfoList.append(modrinthModInfo);
-        }
+        auto resultList = value(jsonDocument.toVariant(), "hits").toList();
+
+        QList<ModrinthModInfo> modInfoList;
+        for(const auto &result : qAsConst(resultList))
+            modInfoList << ModrinthModInfo::fromSearchVariant(result);
+
         callback(modInfoList);
         reply->deleteLater();
     });
@@ -113,7 +117,6 @@ void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo
         callback(modrinthModInfo);
         reply->deleteLater();
     });
-
 }
 
 void ModrinthAPI::getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback)
@@ -141,11 +144,8 @@ void ModrinthAPI::getVersions(const QString &id, std::function<void (QList<Modri
         auto resultList = jsonDocument.toVariant().toList();
 
         QList<ModrinthFileInfo> fileInfoList;
-
-        for(const auto &result : qAsConst(resultList)){
-            auto fileInfo = ModrinthFileInfo::fromVariant(result);
-            fileInfoList << fileInfo;
-        }
+        for(const auto &result : qAsConst(resultList))
+            fileInfoList << ModrinthFileInfo::fromVariant(result);
 
         callback(fileInfoList);
         reply->deleteLater();
@@ -177,8 +177,6 @@ void ModrinthAPI::getVersion(const QString &version, std::function<void (Modrint
         callback(modrinthFileInfo);
         reply->deleteLater();
     });
-
-
 }
 
 void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (ModrinthFileInfo)> callback, std::function<void ()> noMatch)
@@ -215,10 +213,4 @@ void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (M
         callback(modrinthFileInfo);
         reply->deleteLater();
     });
-}
-
-ModrinthAPI::ModrinthAPI(QObject *parent) :
-    QObject(parent)
-{
-
 }
