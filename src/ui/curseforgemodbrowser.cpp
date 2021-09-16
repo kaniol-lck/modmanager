@@ -164,7 +164,6 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             currentIndex_ += 20;
             getModList(currentName_, currentIndex_, needMore - shownCount);
         }
-
     });
 }
 

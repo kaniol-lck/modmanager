@@ -1,5 +1,5 @@
 name: Windows MinGW
-on: 
+on:
   push:
     paths:
       - '*.pro'
@@ -9,7 +9,7 @@ on:
     paths:
       - '*.pro'
       - 'src/**'
-      - '.github/workflows/windows-mingw.yml' 
+      - '.github/workflows/windows-mingw.yml'
 jobs:
   build:
     name: Build

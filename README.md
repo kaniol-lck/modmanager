@@ -1,6 +1,6 @@
 # Mod Manager
 
-![GitHub top language](https://img.shields.io/github/languages/top/kaniol-lck/modmanager)![](https://img.shields.io/badge/Qt-5.15.2-%2341CD52)![GitHub](https://img.shields.io/github/license/kaniol-lck/modmanager)[![CodeFactor](https://www.codefactor.io/repository/github/kaniol-lck/modmanager/badge)](https://www.codefactor.io/repository/github/kaniol-lck/modmanager)
+![GitHub top language](https://img.shields.io/github/languages/top/kaniol-lck/modmanager) ![Qt 5.15.2](https://img.shields.io/badge/Qt-5.15.2-%2341CD52) ![GitHub](https://img.shields.io/github/license/kaniol-lck/modmanager) [![CodeFactor](https://www.codefactor.io/repository/github/kaniol-lck/modmanager/badge)](https://www.codefactor.io/repository/github/kaniol-lck/modmanager)
 
 **English** | [中文](README_zh.md)
 
