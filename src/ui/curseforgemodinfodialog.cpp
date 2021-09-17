@@ -49,7 +49,8 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
 
     //update description
     auto updateDescription = [=]{
-        ui->modDescription->setText(mod_->modInfo().description());
+        ui->modDescription->setFont(qApp->font());
+        ui->modDescription->setHtml(mod_->modInfo().description());
         ui->modDescription->setCursor(Qt::ArrowCursor);
     };
 

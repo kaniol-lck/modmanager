@@ -12,6 +12,7 @@
 #include "curseforgemodinfodialog.h"
 #include "modrinthmodinfodialog.h"
 #include "util/funcutil.h"
+#include "util/websiteicon.h"
 
 LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, LocalMod *mod) :
     QDialog(parent),
@@ -78,27 +79,36 @@ void LocalModInfoDialog::updateInfo()
     ui->modAuthors->setText(modInfo->authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
     ui->modDescription->setText(modInfo->description());
 
-    ui->websiteButton->setEnabled(true);
-    ui->sourceButton->setEnabled(true);
-    ui->issueButton->setEnabled(true);
+    ui->websiteButton->setEnabled(false);
+    ui->sourceButton->setEnabled(false);
+    ui->issueButton->setEnabled(false);
 
-    //TODO: generic icon setter
-    if(modInfo->homepage().isEmpty())
-        ui->websiteButton->setEnabled(false);
-    else if(modInfo->homepage().toString().contains("curseforge.com"))
-        ui->websiteButton->setIcon(QIcon(":/image/curseforge.svg"));
-    else if(modInfo->homepage().toString().contains("modrinth.com"))
-        ui->websiteButton->setIcon(QIcon(":/image/modrinth.svg"));
+    if(!modInfo->homepage().isEmpty()){
+        ui->websiteButton->setEnabled(true);
+        auto homepageIcon = new WebsiteIcon(this);
+        homepageIcon->get(modInfo->homepage());
+        connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
+            ui->websiteButton->setIcon(icon);
+        });
+    }
 
-    if(modInfo->sources().isEmpty())
-        ui->sourceButton->setEnabled(false);
-    else if(modInfo->sources().toString().contains("github.com"))
-        ui->sourceButton->setIcon(QIcon(":/image/github.svg"));
+    if(!modInfo->sources().isEmpty()){
+        ui->sourceButton->setEnabled(true);
+        auto homepageIcon = new WebsiteIcon(this);
+        homepageIcon->get(modInfo->sources());
+        connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
+            ui->sourceButton->setIcon(icon);
+        });
+    }
 
-    if(modInfo->issues().isEmpty())
-        ui->issueButton->setEnabled(false);
-    else if(modInfo->issues().toString().contains("github.com"))
-        ui->issueButton->setIcon(QIcon(":/image/github.svg"));
+    if(!modInfo->issues().isEmpty()){
+        ui->issueButton->setEnabled(true);
+        auto homepageIcon = new WebsiteIcon(this);
+        homepageIcon->get(modInfo->issues());
+        connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
+            ui->issueButton->setIcon(icon);
+        });
+    }
 
     QPixmap pixelmap;
     pixelmap.loadFromData(modInfo->iconBytes());
@@ -137,7 +147,7 @@ void LocalModInfoDialog::on_curseforgeButton_clicked()
     auto curseforgeMod = mod_->curseforgeMod();
     if(!curseforgeMod->modInfo().hasBasicInfo())
         curseforgeMod->acquireBasicInfo();
-    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, file_->fileInfo().path(), mod_);
+    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, mod_->modFile()->fileInfo().absolutePath(), mod_);
     dialog->show();
 }
 
@@ -146,7 +156,7 @@ void LocalModInfoDialog::on_modrinthButton_clicked()
     auto modrinthMod = mod_->modrinthMod();
     if(!modrinthMod->modInfo().hasBasicInfo())
         modrinthMod->acquireFullInfo();
-    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, file_->fileInfo().path(), mod_);
+    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, mod_->modFile()->fileInfo().absolutePath(), mod_);
     dialog->show();
 }
 
@@ -154,7 +164,6 @@ void LocalModInfoDialog::on_websiteButton_clicked()
 {
     QDesktopServices::openUrl(file_->commonInfo()->homepage());
 }
-
 
 void LocalModInfoDialog::on_sourceButton_clicked()
 {

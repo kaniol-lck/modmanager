@@ -1,4 +1,4 @@
-QT       += core gui network
+QT       += core gui network webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -60,7 +60,8 @@ SOURCES += \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
     src/util/localmodsortitem.cpp \
-    src/util/updatesourcedelegate.cpp
+    src/util/updatesourcedelegate.cpp \
+    src/util/websiteicon.cpp
 
 HEADERS += \
     src/config.h \
@@ -113,7 +114,8 @@ HEADERS += \
     src/util/localmodsortitem.h \
     src/util/tutil.hpp \
     src/util/datetimesortitem.h \
-    src/util/updatesourcedelegate.h
+    src/util/updatesourcedelegate.h \
+    src/util/websiteicon.h
 
 FORMS += \
     src/ui/aboutdialog.ui \

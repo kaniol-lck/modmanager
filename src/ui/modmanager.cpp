@@ -97,7 +97,12 @@ void ModManager::syncPathList()
             pathList_ << path;
             auto item = new QTreeWidgetItem(localItem_, {path->info().displayName()});
             localItem_->addChild(item);
-            item->setIcon(0, QIcon::fromTheme("folder"));
+            if(path->info().loaderType() == ModLoaderType::Fabric)
+                item->setIcon(0, QIcon(":/image/fabric.png"));
+            else if(path->info().loaderType() == ModLoaderType::Forge)
+                item->setIcon(0, QIcon(":/image/forge.svg"));
+            else
+                item->setIcon(0, QIcon::fromTheme("folder"));
             auto localModBrowser = new LocalModBrowser(this, path);
             ui->stackedWidget->addWidget(localModBrowser);
 

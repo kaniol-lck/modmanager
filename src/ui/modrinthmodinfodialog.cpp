@@ -50,7 +50,10 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod, 
         if(!bl) updateBasicInfo();
         auto text = mod->modInfo().description();
         text.replace("<br>", "\n");
-        ui->modDescription->setMarkdown(text);
+        QTextDocument doc;
+        doc.setMarkdown(text);
+        ui->modDescription->setFont(qApp->font());
+        ui->modDescription->setHtml(doc.toHtml());
         ui->modDescription->setCursor(Qt::ArrowCursor);
 
         //update file list

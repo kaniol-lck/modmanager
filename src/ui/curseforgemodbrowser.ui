@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>908</width>
+    <width>954</width>
     <height>554</height>
    </rect>
   </property>
@@ -20,6 +20,9 @@
       <widget class="QLineEdit" name="searchText">
        <property name="placeholderText">
         <string>Search mod on Curseforge...</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -147,7 +150,8 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset theme="folder"/>
+        <iconset theme="folder">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>

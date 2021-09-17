@@ -3,5 +3,7 @@
         <file>curseforge.svg</file>
         <file>modrinth.svg</file>
         <file>github.svg</file>
+        <file>forge.svg</file>
+        <file>fabric.png</file>
     </qresource>
 </RCC>
