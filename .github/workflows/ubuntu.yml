@@ -20,6 +20,7 @@ jobs:
         with:
           version: 5.15.2
           cached: 'false'
+          modules: qtwebengine
       - name: ubuntu install GL library
         run: sudo apt-get install -y libglew-dev libglfw3-dev
       - uses: actions/checkout@v2
