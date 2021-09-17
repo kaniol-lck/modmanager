@@ -61,7 +61,7 @@ void CurseforgeModItemWidget::updateIcon()
 {
     QPixmap pixelmap;
     pixelmap.loadFromData(mod_->modInfo().iconBytes());
-    ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
 }
 
 void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)

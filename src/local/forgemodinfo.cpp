@@ -3,7 +3,10 @@
 #include <QDebug>
 #include <quazip.h>
 #include <quazipfile.h>
+#include <QJsonDocument>
 #include <toml.hpp>
+
+#include "util/tutil.hpp"
 
 QList<ForgeModInfo> ForgeModInfo::fromZip(const QString &path)
 {
@@ -30,59 +33,108 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
     if(auto i = re.indexIn(manifest); i)
         jarVersion = re.cap(1);
 
-    //TODO: 1.12-1.13 uses mcmod.info
+    //modern forge
     zip->setCurrentFile("META-INF/mods.toml");
-    if(!zipFile.open(QIODevice::ReadOnly)) return {};
-    QByteArray bytes = zipFile.readAll();
-    zipFile.close();
+    if(zipFile.open(QIODevice::ReadOnly)){
+        QByteArray bytes = zipFile.readAll();
+        zipFile.close();
 
-    toml::parse_result config;
-    try {
-        config = toml::parse(bytes.data());
-    }  catch (...) {
-        qDebug() << zip->getZipName() << "has invalid toml file.";
-        return {};
-    }
+        toml::parse_result config;
+        try {
+            config = toml::parse(bytes.data());
+        }  catch (...) {
+            qDebug() << zip->getZipName() << "has invalid toml file.";
+            return {};
+        }
 
-    //icon
-    QByteArray iconBytes;
-    if(QString iconFilePath = config["logoFile"].value_or(""); !iconFilePath.isEmpty()){
-        zip->setCurrentFile(iconFilePath);
-        if(zipFile.open(QIODevice::ReadOnly)){
-            iconBytes = zipFile.readAll();
-            zipFile.close();
+        //icon
+        auto icon = [&](const auto &variant){
+            if(QString iconFilePath = variant["logoFile"].value_or(""); !iconFilePath.isEmpty()){
+                zip->setCurrentFile(iconFilePath);
+                if(zipFile.open(QIODevice::ReadOnly)){
+                    auto iconBytes = zipFile.readAll();
+                    zipFile.close();
+                    return iconBytes;
+                }
+            }
+            return QByteArray();
+        };
+
+        QUrl issue(config["issueTrackerURL"].value_or(""));
+
+        auto split = [=](QString str){
+            if(str.isEmpty())
+                return QStringList{};
+            else
+                return str.split(", ");
+        };
+
+        QStringList authors = split(config["authors"].value_or(""));
+
+        for(auto &i : *config["mods"].as_array()){
+            auto modTable = *i.as_table();
+
+            ForgeModInfo info;
+            info.id_ = modTable["modId"].value_or("");
+            info.name_ = modTable["displayName"].value_or("");
+            info.version_ = modTable["version"].value_or("");
+            info.authors_ << authors << split(modTable["authors"].value_or(""));
+            info.description_ = modTable["description"].value_or("");
+            info.iconBytes_ = icon(modTable);
+            if(info.iconBytes_.isEmpty())
+                info.iconBytes_ = icon(config);
+            info.credits_ = modTable["credits"].value_or("");
+            info.updateUrl_ = modTable["updateJSONURL"].value_or("");
+
+            info.issues_ = issue;
+            info.homepage_ = modTable["displayURL"].value_or("");
+
+            if(info.version_ == "${file.jarVersion}")
+                info.version_ = jarVersion;
+
+            list << info;
         }
     }
 
-    QUrl issue(config["issueTrackerURL"].value_or(""));
+    //legacy forge
+    zip->setCurrentFile("mcmod.info");
+    if(zipFile.open(QIODevice::ReadOnly)){
+        QByteArray bytes = zipFile.readAll();
+        zipFile.close();
 
-    auto split = [=](QString str){
-        if(str.isEmpty())
-            return QStringList{};
-        else
-            return str.split(", ");
-    };
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(bytes, &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return {};
+        }
 
-    QStringList authors = split(config["authors"].value_or(""));
+        if(!jsonDocument.isArray()) return {};
 
-    for(auto &i : *config["mods"].as_array()){
-        auto t = *i.as_table();
+        for(const auto &result : jsonDocument.toVariant().toList()){
+            ForgeModInfo info;
+            info.id_ = value(result, "modid").toString();
+            info.name_ = value(result, "name").toString();
+            info.version_ = value(result, "version").toString();
+            info.authors_ = value(result, "authors").toStringList();
+            info.description_ = value(result, "description").toString();
+            info.homepage_ = value(result, "url").toUrl();
+            info.credits_ = value(result, "credits").toString();
+            info.updateUrl_ = value(result, "updateUrl").toUrl();
 
-        ForgeModInfo info;
-        info.id_ = t["modId"].value_or("");
-        info.name_ = t["displayName"].value_or("");
-        info.version_ = t["version"].value_or("");
-        info.authors_ << authors << split(t["authors"].value_or(""));
-        info.description_ = t["description"].value_or("");
-        info.iconBytes_ = iconBytes;
+            //icon
+            if(auto iconFilePath = value(result, "logoFile").toString(); !iconFilePath.isEmpty()){
+                zip->setCurrentFile(iconFilePath);
+                if(zipFile.open(QIODevice::ReadOnly)){
+                    info.iconBytes_ = zipFile.readAll();
+                    zipFile.close();
+                }
+            }
 
-        info.issues_ = issue;
-        info.homepage_ = t["displayURL"].value_or("");
-
-        if(info.version_ == "${file.jarVersion}")
-            info.version_ = jarVersion;
-
-        list << info;
+            list << info;
+        }
     }
+
     return list;
 }

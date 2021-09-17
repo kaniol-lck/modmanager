@@ -434,27 +434,27 @@
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/localfileitemwidget.ui" line="67"/>
+        <location filename="../src/ui/localfileitemwidget.ui" line="74"/>
         <source>version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localfileitemwidget.ui" line="85"/>
+        <location filename="../src/ui/localfileitemwidget.ui" line="92"/>
         <source>RollBack</source>
         <translation>回退</translation>
     </message>
     <message>
-        <location filename="../src/ui/localfileitemwidget.ui" line="106"/>
+        <location filename="../src/ui/localfileitemwidget.ui" line="114"/>
         <source>xxx.jar</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localfileitemwidget.ui" line="119"/>
+        <location filename="../src/ui/localfileitemwidget.ui" line="127"/>
         <source>2.33MB</source>
         <translation>2.3MB {2.33M?}</translation>
     </message>
     <message>
-        <location filename="../src/ui/localfileitemwidget.ui" line="129"/>
+        <location filename="../src/ui/localfileitemwidget.ui" line="137"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -700,7 +700,7 @@
     <message>
         <location filename="../src/ui/localmodcheckdialog.ui" line="35"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/ui/localmodcheckdialog.cpp" line="14"/>
@@ -784,33 +784,33 @@
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="246"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="247"/>
         <source>File Size:</source>
         <translation>文件大小：</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="253"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="254"/>
         <source>2.33 MB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="260"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="261"/>
         <source>Created Time:</source>
         <translation>创建时间：</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="267"/>
-        <location filename="../src/ui/localmodinfodialog.ui" line="281"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="268"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="282"/>
         <source>TextLabel</source>
         <translation>TextLabel</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="274"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="275"/>
         <source>Modified Time:</source>
         <translation>修改时间：</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.ui" line="291"/>
+        <location filename="../src/ui/localmodinfodialog.ui" line="292"/>
         <source>Old</source>
         <translation>旧版</translation>
     </message>
@@ -823,9 +823,24 @@
         <translation type="vanished">Description: balabalabalabalabalabalabalabalabala</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmodinfodialog.cpp" line="58"/>
+        <location filename="../src/ui/localmodinfodialog.cpp" line="72"/>
         <source> - Local</source>
         <translation> - 本地</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.cpp" line="74"/>
+        <source> - Local Old</source>
+        <translation>本地旧版</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.cpp" line="187"/>
+        <source>Rename Failed</source>
+        <translation>重命名失败</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/localmodinfodialog.cpp" line="187"/>
+        <source>Rename failed!</source>
+        <translation>重命名失败了！</translation>
     </message>
 </context>
 <context>
@@ -851,13 +866,13 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="210"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="211"/>
         <source>Version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.ui" line="226"/>
-        <location filename="../src/ui/localmoditemwidget.ui" line="246"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="227"/>
+        <location filename="../src/ui/localmoditemwidget.ui" line="247"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -876,32 +891,32 @@
         <translation type="vanished">Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.cpp" line="86"/>
+        <location filename="../src/ui/localmoditemwidget.cpp" line="88"/>
         <source>Duplicate mod!</source>
         <translation>mod重复！</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.cpp" line="156"/>
+        <location filename="../src/ui/localmoditemwidget.cpp" line="158"/>
         <source>Updating</source>
         <translation>更新中</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.cpp" line="173"/>
+        <location filename="../src/ui/localmoditemwidget.cpp" line="175"/>
         <source>Retry Update</source>
         <translation>重试更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.cpp" line="198"/>
+        <location filename="../src/ui/localmoditemwidget.cpp" line="200"/>
         <source>Duplicate version of &lt;b&gt;%1&lt;/b&gt; was found:</source>
         <translation>&lt;b&gt;%1&lt;/b&gt;存在这些重复版本：</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.cpp" line="203"/>
+        <location filename="../src/ui/localmoditemwidget.cpp" line="205"/>
         <source>Keep one of them and set the others as old mods?</source>
         <translation>保存其中的一项并将其他的作为旧版mod？</translation>
     </message>
     <message>
-        <location filename="../src/ui/localmoditemwidget.cpp" line="204"/>
+        <location filename="../src/ui/localmoditemwidget.cpp" line="206"/>
         <source>Incompatibility</source>
         <translation>不兼容性</translation>
     </message>
@@ -1275,17 +1290,17 @@
     </message>
     <message>
         <location filename="../src/ui/modrinthmoditemwidget.cpp" line="23"/>
-        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="95"/>
+        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="94"/>
         <source> Downloads</source>
         <translation> 次下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="75"/>
+        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="74"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="96"/>
+        <location filename="../src/ui/modrinthmoditemwidget.cpp" line="95"/>
         <source>Downloaded</source>
         <translation>已下载</translation>
     </message>

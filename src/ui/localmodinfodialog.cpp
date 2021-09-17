@@ -102,7 +102,7 @@ void LocalModInfoDialog::updateInfo()
 
     QPixmap pixelmap;
     pixelmap.loadFromData(modInfo->iconBytes());
-    ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 
     //file info

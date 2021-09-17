@@ -29,7 +29,7 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod, 
         auto updateIcon= [=]{
             QPixmap pixelmap;
             pixelmap.loadFromData(mod->modInfo().iconBytes());
-            ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+            ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
             ui->modIcon->setCursor(Qt::ArrowCursor);
         };
 

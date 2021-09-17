@@ -65,7 +65,7 @@ void LocalModItemWidget::updateInfo()
     if(!mod_->commonInfo()->iconBytes().isEmpty()){
         QPixmap pixelmap;
         pixelmap.loadFromData(mod_->commonInfo()->iconBytes());
-        ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+        ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
     }
 
     //rollback

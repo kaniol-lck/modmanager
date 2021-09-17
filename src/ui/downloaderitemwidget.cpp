@@ -30,7 +30,7 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
     else{
         QPixmap pixmap;
         pixmap.loadFromData(fileInfo.iconBytes());
-        ui->downloadIcon->setPixmap(pixmap.scaled(80, 80));
+        ui->downloadIcon->setPixmap(pixmap.scaled(80, 80, Qt::KeepAspectRatio));
     }
 
     refreshStatus();

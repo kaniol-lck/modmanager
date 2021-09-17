@@ -13,6 +13,8 @@ public:
     static QList<ForgeModInfo> fromZip(QuaZip *zip);
 
 private:
+    QString credits_;
+    QUrl updateUrl_;
 };
 
 #endif // FORGEMODINFO_H

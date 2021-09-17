@@ -27,7 +27,7 @@ CurseforgeModInfoDialog::CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod 
         auto updateThumbnail = [=]{
             QPixmap pixelmap;
             pixelmap.loadFromData(mod_->modInfo().iconBytes());
-            ui->modIcon->setPixmap(pixelmap.scaled(80, 80));
+            ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
             ui->modIcon->setCursor(Qt::ArrowCursor);
         };
 
