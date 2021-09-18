@@ -367,9 +367,9 @@ const QMap<QString, LocalMod *> &LocalModPath::modMap() const
 QMap<QString, QList<LocalMod*>> LocalModPath::duplicationCheck() const
 {
     QMap<QString, QList<LocalMod*>> map;
-    for(const auto &id : modMap_.uniqueKeys()){
-        if(modMap_.values(id).size() > 1)
-            map[id] = modMap_.values(id);
+    for(const auto &id : modMap_.keys()){
+        if(modMap_.value(id).size() > 1)
+            map[id] = modMap_.value(id);
     }
     return map;
 }

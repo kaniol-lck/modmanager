@@ -45,8 +45,6 @@ public:
 
     const QMap<QString, LocalMod *> &modMap() const;
 
-    QMap<QString, QList<LocalMod *> > duplicationCheck() const;
-
     void deleteAllOld() const;
 
 signals:
