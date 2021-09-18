@@ -170,13 +170,3 @@ TARGET = modmanager
 TEMPLATE = app
 
 QMAKE_LFLAGS += -no-pie
-
-win32 {
-    INCLUDEPATH += $$quote(C:/Program Files (x86)/zlib/include)
-    LIBS += -L$$quote(C:/Program Files (x86)/zlib/lib)
-}
-
-win64 {
-    INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
-    LIBS += -L$$quote(C:/Program Files/zlib/lib)
-}
