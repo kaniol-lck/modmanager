@@ -105,7 +105,7 @@ void LocalModPath::checkFabric()
             else
                 str += "MisMatch:\n" + modid + " " + version;
 
-            auto localMod = modMap_.value(fabricMod.mainId());
+//            auto localMod = modMap_.value(fabricMod.mainId());
 //            localMod->addDepend()
         }
     }

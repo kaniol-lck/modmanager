@@ -93,7 +93,7 @@ void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Typ
         return;
     }
     auto count = std::make_shared<int>(sourceCount);
-    auto foo = [=](bool bl){
+    auto foo = [=](bool){
         if(--(*count) == 0) emit updateReady(defaultUpdateType());
     };
 
@@ -245,14 +245,12 @@ void LocalMod::update(ModWebsiteType type)
 
 qint64 LocalMod::updateSize(ModWebsiteType type) const
 {
-    switch (type) {
-    case Curseforge:
+    if(type == Curseforge)
         return curseforgeUpdate_.size();
-    case Modrinth:
+    if(type == Modrinth)
         return modrinthUpdate_.size();
-    case None:
-        return 0;
-    }
+
+    return 0;
 }
 
 CurseforgeAPI *LocalMod::curseforgeAPI() const

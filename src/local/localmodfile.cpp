@@ -156,8 +156,10 @@ const CommonModInfo *LocalModFile::commonInfo() const
         return &fabricModInfoList_.first();
     else if(loaderType_ == ModLoaderType::Forge)
         return &forgeModInfoList_.first();
-    else
-        assert(false);//should't be here
+
+    //should't be here
+    assert(false);
+    return nullptr;
 }
 
 FabricModInfo LocalModFile::fabric() const
