@@ -40,6 +40,10 @@ jobs:
         with:
           fetch-depth: 1
           submodules: recursive
+      - name: Install zlib
+        shell: pwsh
+        run: |
+          Install-Package zlib-msvc-x64 -Version 1.2.11.8900
       - name: msvc-build
         id: build
         shell: cmd
