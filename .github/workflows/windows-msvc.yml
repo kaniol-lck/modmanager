@@ -43,7 +43,7 @@ jobs:
       - name: Install zlib
         shell: pwsh
         run: |
-          Install-Package zlib-msvc-x64 -Version 1.2.11.8900
+          Install-Package zlib-msvc-x64
       - name: msvc-build
         id: build
         shell: cmd
