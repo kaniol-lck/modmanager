@@ -45,6 +45,14 @@ jobs:
           Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat
           ./install_zlib.bat
           del install_zlib.bat
+      - name: Test zlib
+        shell: cmd
+        run: |
+          if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
+          if NOT exist "%PROGRAMFILES%"\zlib\bin\zlib.dll exit 1
+          if NOT exist "%PROGRAMFILES%"\zlib\include\zconf.h exit 1
+          if NOT exist "%PROGRAMFILES%"\zlib\include\zlib.h exit 1
+          if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
       - name: msvc-build
         id: build
         shell: cmd

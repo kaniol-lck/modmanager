@@ -170,3 +170,17 @@ TARGET = modmanager
 TEMPLATE = app
 
 QMAKE_LFLAGS += -no-pie
+
+win32 {
+    IS64BITSYSTEM = $(ProgramW6432)
+    isEmpty(IS64BITSYSTEM) {
+        message(This is 32 bit system)
+        INCLUDEPATH += $(ProgramFiles)/zlib/include
+        LIBS += -L$(ProgramFiles)/zlib/lib
+    }
+    !isEmpty(IS64BITSYSTEM) {
+        message(This is 64 bit system)
+        INCLUDEPATH += $(ProgramW6432)/zlib/include
+        LIBS += -L$(ProgramFiles)/zlib/lib
+    }
+}
