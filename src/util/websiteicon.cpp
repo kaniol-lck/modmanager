@@ -13,9 +13,7 @@ WebsiteIcon::WebsiteIcon(QObject *parent) : QObject(parent)
 
 void WebsiteIcon::get(QUrl websiteUrl)
 {
-    auto future = QtConcurrent::run([=](){
-        QEventLoop loop;
-
+    auto future = QtConcurrent::run([=]{
         //existed icon
         auto hostname = websiteUrl.host();
         if(hostname.contains("github.com"))
@@ -28,7 +26,6 @@ void WebsiteIcon::get(QUrl websiteUrl)
             return QIcon(":/image/fabric.png");
 
         //favicon
-        //TODO: doesn't work
         QUrl url;
         url.setScheme(websiteUrl.scheme());
         url.setHost(hostname);
@@ -36,26 +33,30 @@ void WebsiteIcon::get(QUrl websiteUrl)
         QNetworkRequest request(url);
         QNetworkAccessManager manager;
         auto reply = manager.get(request);
+        QEventLoop loop;
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
-        if(reply->error() == QNetworkReply::NoError){
-            auto bytes = reply->readAll();
-            reply->deleteLater();
-            return QIcon(bytes);
+        if(reply->error() != QNetworkReply::NoError){
+            qDebug() << reply->errorString();
+            return QIcon();
         }
-
-        //QWebEnginePage icon
-        auto page = new QWebEnginePage;
-        page->setUrl(websiteUrl);
-        connect(page, &QWebEnginePage::iconChanged, &loop, &QEventLoop::quit);
-        loop.exec();
-        return page->icon();
+        auto bytes = reply->readAll();
+        qDebug() << bytes;
+        reply->deleteLater();
+        return QIcon(bytes);
     });
 
     auto watcher = new QFutureWatcher<QIcon>(this);
     watcher->setFuture(future);
     connect(watcher, &QFutureWatcher<QIcon>::finished, this, [=]{
-        auto icon = watcher->result();
-        emit iconGot(icon);
+        if(auto icon = watcher->result(); !icon.isNull())
+            emit iconGot(icon);
+        else {
+            //QWebEnginePage icon
+            auto page = new QWebEnginePage(this);
+            page->load(websiteUrl);
+            connect(page, &QWebEnginePage::iconChanged, this, &WebsiteIcon::iconGot);
+            return;
+        }
     });
 }

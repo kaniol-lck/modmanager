@@ -34,7 +34,7 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, Loca
             ui->curseforgeButton->setEnabled(bl);
         };
 
-        if(mod->curseforgeMod() != nullptr)
+        if(mod_->curseforgeMod() != nullptr)
             updateCurseforge(true);
         else{
             connect(mod_, &LocalMod::curseforgeReady, this, updateCurseforge);
@@ -45,7 +45,7 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, Loca
             ui->modrinthButton->setEnabled(bl);
         };
 
-        if(mod->modrinthMod() != nullptr)
+        if(mod_->modrinthMod() != nullptr)
             updateModrinth(true);
         else{
             connect(mod_, &LocalMod::modrinthReady, this, updateModrinth);
@@ -86,28 +86,28 @@ void LocalModInfoDialog::updateInfo()
     if(!modInfo->homepage().isEmpty()){
         ui->websiteButton->setEnabled(true);
         auto homepageIcon = new WebsiteIcon(this);
-        homepageIcon->get(modInfo->homepage());
         connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
             ui->websiteButton->setIcon(icon);
         });
+        homepageIcon->get(modInfo->homepage());
     }
 
     if(!modInfo->sources().isEmpty()){
         ui->sourceButton->setEnabled(true);
         auto homepageIcon = new WebsiteIcon(this);
-        homepageIcon->get(modInfo->sources());
         connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
             ui->sourceButton->setIcon(icon);
         });
+        homepageIcon->get(modInfo->sources());
     }
 
     if(!modInfo->issues().isEmpty()){
         ui->issueButton->setEnabled(true);
         auto homepageIcon = new WebsiteIcon(this);
-        homepageIcon->get(modInfo->issues());
         connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
             ui->issueButton->setIcon(icon);
         });
+        homepageIcon->get(modInfo->issues());
     }
 
     QPixmap pixelmap;

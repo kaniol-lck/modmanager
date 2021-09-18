@@ -25,7 +25,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     ui->setupUi(this);
 
     for(const auto &type : ModLoaderType::curseforge)
-        ui->loaderSelect->addItem(ModLoaderType::toString(type));
+        ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
 

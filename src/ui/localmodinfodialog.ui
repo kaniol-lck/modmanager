@@ -301,6 +301,18 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>modDescription</tabstop>
+  <tabstop>websiteButton</tabstop>
+  <tabstop>sourceButton</tabstop>
+  <tabstop>issueButton</tabstop>
+  <tabstop>curseforgeButton</tabstop>
+  <tabstop>modrinthButton</tabstop>
+  <tabstop>fileBaseNameText</tabstop>
+  <tabstop>editFileNameButton</tabstop>
+  <tabstop>oldModListWidget</tabstop>
+ </tabstops>
  <resources>
   <include location="../images/image.qrc"/>
  </resources>

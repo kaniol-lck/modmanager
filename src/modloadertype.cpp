@@ -29,3 +29,12 @@ QString ModLoaderType::toString(Type loaderType)
         return "";
     }
 }
+
+QIcon ModLoaderType::icon(Type type)
+{
+    if(type == Fabric)
+        return QIcon(":/image/fabric.png");
+    if(type == Forge)
+        return QIcon(":/image/forge.svg");
+    return QIcon();
+}

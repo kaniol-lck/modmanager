@@ -16,7 +16,7 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
     info_.setLoaderType(ModLoaderType::Any);
 
     for(const auto &type : ModLoaderType::local)
-        ui->loaderSelect->addItem(ModLoaderType::toString(type));
+        ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::mojangVersionListUpdated, this, &LocalModBrowserSettingsDialog::updateVersionList);

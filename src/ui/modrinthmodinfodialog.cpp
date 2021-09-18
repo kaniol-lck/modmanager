@@ -54,6 +54,7 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod, 
         doc.setMarkdown(text);
         ui->modDescription->setFont(qApp->font());
         ui->modDescription->setHtml(doc.toHtml());
+        ui->modDescription->page()->setZoomFactor(1.2);
         ui->modDescription->setCursor(Qt::ArrowCursor);
 
         //update file list

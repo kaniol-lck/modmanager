@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QIcon>
 
 namespace ModLoaderType
 {
@@ -15,6 +16,8 @@ enum Type{
 
 Type fromString(const QString &str);
 QString toString(Type loaderType);
+
+QIcon icon(Type type);
 
 const QList<Type> local{ Fabric, Forge };
 const QList<Type> curseforge{ Any, Fabric, Forge/*, Rift*/ };
