@@ -40,12 +40,11 @@ jobs:
         with:
           fetch-depth: 1
           submodules: recursive
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '3.1.x'
       - name: Install zlib
-        run: dotnet add package zlib-msvc-x64 --version 1.2.11.8900
+        run: |
+          Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat
+          ./install_zlib.bat
+          del install_zlib.bat
       - name: msvc-build
         id: build
         shell: cmd
