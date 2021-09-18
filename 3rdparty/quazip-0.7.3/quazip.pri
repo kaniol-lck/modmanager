@@ -14,11 +14,6 @@ win32 {
         LIBS += -L$$quote(C:/Program Files/zlib/lib)
     }
 }
-win32 {
-}
-
-win64 {
-}
 
 HEADERS+= \
     $$PWD/quazip/crypt.h \

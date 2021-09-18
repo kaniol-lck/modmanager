@@ -60,6 +60,7 @@ void LocalMod::searchOnCurseforge()
         CurseforgeModInfo modInfo(id);
         modInfo.setLatestFiles(fileList);
         curseforgeMod_ = new CurseforgeMod(this, modInfo);
+        curseforgeFileId_ = fileInfo.id();
         curseforgeUpdate_.setCurrentFileInfo(fileInfo);
         emit curseforgeReady(true);
     }, [=]{
@@ -73,6 +74,7 @@ void LocalMod::searchOnModrinth()
     modrinthAPI_->getVersionFileBySha1(modFile_->sha1(), [=](const auto &fileInfo){
         ModrinthModInfo modInfo(fileInfo.modId());
         modrinthMod_ = new ModrinthMod(this, modInfo);
+        modrinthFileId_ = fileInfo.id();
         modrinthUpdate_.setCurrentFileInfo(fileInfo);
         emit modrinthReady(true);
     }, [=]{
@@ -358,6 +360,16 @@ const QList<std::tuple<QString, QString, FabricModInfo> > &LocalMod::conflicts()
 const QList<std::tuple<QString, QString, FabricModInfo> > &LocalMod::breaks() const
 {
     return breaks_;
+}
+
+int LocalMod::curseforgeFileId() const
+{
+    return curseforgeFileId_;
+}
+
+const QString &LocalMod::modrinthFileId() const
+{
+    return modrinthFileId_;
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

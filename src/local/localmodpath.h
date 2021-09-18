@@ -5,6 +5,7 @@
 
 #include "localmod.h"
 #include "localmodpathinfo.h"
+#include "modlinkcache.h"
 
 class LocalModFile;
 class LocalMod;
@@ -71,6 +72,7 @@ private:
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     LocalModPathInfo info_;
+    ModLinkCache cache_;
     QList<LocalModFile*> modFileList_;
     QMap<QString, LocalMod*> modMap_;
     QMultiMap<QString, FabricModInfo> fabricModMap_;

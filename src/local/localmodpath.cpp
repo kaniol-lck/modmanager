@@ -14,7 +14,8 @@ LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
     QObject(parent),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
-    info_(info)
+    info_(info),
+    cache_(info.path())
 {
     loadMods();
 }
@@ -89,7 +90,6 @@ void LocalModPath::loadMods()
                 disconnect(SIGNAL(websitesReady()));
             });
         }
-        duplicationCheck();
     });
 }
 
@@ -262,9 +262,13 @@ void LocalModPath::searchOnWebsites()
     auto count = std::make_shared<int>(0);
     for(const auto &mod : qAsConst(modMap_)){
         connect(mod, &LocalMod::websiteReady, this, [=]{
+            cache_.addCache(mod);
             (*count)++;
             emit websiteCheckedCountUpdated(*count);
-            if(*count == modMap_.size()) emit websitesReady();
+            if(*count == modMap_.size()){
+                cache_.saveToFile();
+                emit websitesReady();
+            }
         });
         mod->searchOnWebsite();
     }
@@ -362,16 +366,6 @@ int LocalModPath::updatableCount() const
 const QMap<QString, LocalMod *> &LocalModPath::modMap() const
 {
     return modMap_;
-}
-
-QMap<QString, QList<LocalMod*>> LocalModPath::duplicationCheck() const
-{
-    QMap<QString, QList<LocalMod*>> map;
-    for(const auto &id : modMap_.keys()){
-        if(modMap_.value(id).size() > 1)
-            map[id] = modMap_.value(id);
-    }
-    return map;
 }
 
 void LocalModPath::deleteAllOld() const
