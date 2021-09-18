@@ -4,15 +4,8 @@ DEFINES+= QUAZIP_BUILD
 LIBS+= -lz
 
 win32 {
-    contains(QT_ARCH, i386) {
-        message("x86 build")
-        INCLUDEPATH += $$quote(C:/Program Files (x86)/zlib/include)
-        LIBS += -L$$quote(C:/Program Files (x86)/zlib/lib)
-    } else {
-        message("x86_64 build")
-        INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
-        LIBS += -L$$quote(C:/Program Files/zlib/lib)
-    }
+    INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
+    LIBS += -L$$quote(C:/Program Files/zlib/lib)
 }
 
 HEADERS+= \

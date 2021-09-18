@@ -60,7 +60,7 @@ void LocalMod::searchOnCurseforge()
         CurseforgeModInfo modInfo(id);
         modInfo.setLatestFiles(fileList);
         curseforgeMod_ = new CurseforgeMod(this, modInfo);
-        curseforgeFileId_ = fileInfo.id();
+        curseforgeUpdate_.setFileId(fileInfo.id());
         curseforgeUpdate_.setCurrentFileInfo(fileInfo);
         emit curseforgeReady(true);
     }, [=]{
@@ -74,7 +74,7 @@ void LocalMod::searchOnModrinth()
     modrinthAPI_->getVersionFileBySha1(modFile_->sha1(), [=](const auto &fileInfo){
         ModrinthModInfo modInfo(fileInfo.modId());
         modrinthMod_ = new ModrinthMod(this, modInfo);
-        modrinthFileId_ = fileInfo.id();
+        modrinthUpdate_.setFileId(fileInfo.id());
         modrinthUpdate_.setCurrentFileInfo(fileInfo);
         emit modrinthReady(true);
     }, [=]{
@@ -111,7 +111,7 @@ void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Typ
 
 void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
-    if(!curseforgeUpdate_.isCurrentAvailable()){
+    if(!curseforgeMod_){
         emit curseforgeUpdateReady(false);
         return;
     }
@@ -135,7 +135,7 @@ void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoader
 
 void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
-    if(!modrinthUpdate_.isCurrentAvailable()){
+    if(!modrinthMod_){
         emit modrinthUpdateReady(false);
         return;
     }
@@ -289,6 +289,7 @@ void LocalMod::duplicateToOld()
 
 void LocalMod::rollback(LocalModFile *file)
 {
+    //TODO: refresh update info;
     file->removeOld();
     modFile_->addOld();
     modFile_ = file;
@@ -362,14 +363,26 @@ const QList<std::tuple<QString, QString, FabricModInfo> > &LocalMod::breaks() co
     return breaks_;
 }
 
-int LocalMod::curseforgeFileId() const
+void LocalMod::setCurseforgeId(int id)
 {
-    return curseforgeFileId_;
+    curseforgeMod_ = new CurseforgeMod(this, id);
+    emit curseforgeReady(true);
 }
 
-const QString &LocalMod::modrinthFileId() const
+void LocalMod::setModrinthId(const QString &id)
 {
-    return modrinthFileId_;
+    modrinthMod_ = new ModrinthMod(this, id);
+    emit modrinthReady(true);
+}
+
+void LocalMod::setCurseforgeFileId(int id)
+{
+    curseforgeUpdate_.setFileId(id);
+}
+
+void LocalMod::setModrinthFileId(const QString &id)
+{
+    modrinthUpdate_.setFileId(id);
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

@@ -9,6 +9,12 @@
 #include "util/funcutil.h"
 #include "download/downloadmanager.h"
 
+ModrinthMod::ModrinthMod(LocalMod *parent, const QString &id) :
+    QObject(parent),
+    api_(parent->modrinthAPI()),
+    modInfo_(id)
+{}
+
 ModrinthMod::ModrinthMod(QObject *parent, const ModrinthModInfo &info) :
     QObject(parent),
     api_(ModrinthAPI::api()),

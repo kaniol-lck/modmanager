@@ -81,15 +81,15 @@ void LocalModPath::loadMods()
         auto autoSearchOnWebsites = config.getAutoSearchOnWebsites();
         auto autoCheckUpdate = config.getAutoCheckUpdate();
 
-        if(autoSearchOnWebsites && !modMap_.isEmpty())
-            searchOnWebsites();
-
         if(autoCheckUpdate){
             connect(this, &LocalModPath::websitesReady, [=]{
                 checkModUpdates();
                 disconnect(SIGNAL(websitesReady()));
             });
         }
+
+        if(autoSearchOnWebsites && !modMap_.isEmpty())
+            searchOnWebsites();
     });
 }
 
@@ -260,18 +260,34 @@ void LocalModPath::searchOnWebsites()
     if(modMap_.isEmpty()) return;
     emit checkWebsitesStarted();
     auto count = std::make_shared<int>(0);
+    bool isAllCached = true;
     for(const auto &mod : qAsConst(modMap_)){
-        connect(mod, &LocalMod::websiteReady, this, [=]{
-            cache_.addCache(mod);
+        //has cache
+        if(cache_.linkCaches().contains(mod->commonInfo()->id())){
+            auto link = cache_.linkCaches()[mod->commonInfo()->id()];
+            if(link.curseforgeId())
+                mod->setCurseforgeId(link.curseforgeId());
+            if(link.curseforgeFileId())
+                mod->setCurseforgeFileId(link.curseforgeFileId());
+            if(!link.modrinthId().isEmpty())
+                mod->setModrinthId(link.modrinthId());
+            if(!link.modrinthFileId().isEmpty())
+                mod->setModrinthFileId(link.modrinthFileId());
+        } else{
+            isAllCached = false;
             (*count)++;
-            emit websiteCheckedCountUpdated(*count);
-            if(*count == modMap_.size()){
-                cache_.saveToFile();
-                emit websitesReady();
-            }
-        });
-        mod->searchOnWebsite();
+            connect(mod, &LocalMod::websiteReady, this, [=]{
+                cache_.addCache(mod);
+                emit websiteCheckedCountUpdated(*count);
+                if(--(*count) == 0){
+                    cache_.saveToFile();
+                    emit websitesReady();
+                }
+            });
+            mod->searchOnWebsite();
+        }
     }
+    if(isAllCached) emit websitesReady();
 }
 
 void LocalModPath::checkModUpdates()

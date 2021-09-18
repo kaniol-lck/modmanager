@@ -78,9 +78,10 @@ public:
     const QList<std::tuple<QString, QString, FabricModInfo> > &conflicts() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &breaks() const;
 
-
-    int curseforgeFileId() const;
-    const QString &modrinthFileId() const;
+    void setCurseforgeId(int id);
+    void setModrinthId(const QString &id);
+    void setCurseforgeFileId(int id);
+    void setModrinthFileId(const QString &id);
 
 signals:
     void modFileUpdated();
@@ -116,11 +117,9 @@ private:
 
     //related on websites
     CurseforgeMod *curseforgeMod_ = nullptr;
-    int curseforgeFileId_ = 0;
     Updatable<CurseforgeFileInfo> curseforgeUpdate_;
 
     ModrinthMod *modrinthMod_ = nullptr;
-    QString modrinthFileId_;
     Updatable<ModrinthFileInfo> modrinthUpdate_;
 
     //dependencies

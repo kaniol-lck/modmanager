@@ -26,10 +26,10 @@ ModLinkCache::ModLinkCache(const QString &path) :
         qDebug("%s", error.errorString().toUtf8().constData());
         return;
     }
-    QList list = jsonDocument.toVariant().toList();
-    for(const auto &variant : list){
-        auto link = ModLink::fromVariant(variant);
-        linkCaches_.insert(link.id(), link);
+    auto map = jsonDocument.toVariant().toMap();
+    for(auto it = map.cbegin(); it != map.cend(); it++){
+        auto link = ModLink::fromVariant(*it);
+        linkCaches_.insert(it.key(), link);
     }
 }
 
@@ -37,14 +37,15 @@ void ModLinkCache::addCache(LocalMod *localMod)
 {
     ModLink link;
     link.id_ = localMod->commonInfo()->id();
-    if(localMod->curseforgeMod()){
+    if(localMod->curseforgeMod())
         link.curseforgeId_ = localMod->curseforgeMod()->modInfo().id();
-        link.curseforgeFileId_ = localMod->curseforgeFileId();
-    }
-    if(localMod->modrinthMod()){
+    if(localMod->curseforgeUpdate().fileId())
+        link.curseforgeFileId_ = *localMod->curseforgeUpdate().fileId();
+
+    if(localMod->modrinthMod())
         link.modrinthId_ = localMod->modrinthMod()->modInfo().id();
-        link.modrinthFileId_ = localMod->modrinthFileId();
-    }
+    if(localMod->modrinthUpdate().fileId())
+        link.modrinthFileId_ = *localMod->modrinthUpdate().fileId();
 
     linkCaches_.insert(link.id_, link);
 }
@@ -61,6 +62,11 @@ void ModLinkCache::saveToFile()
 
     QJsonDocument doc(map);
     file.write(doc.toJson());
+}
+
+const QMap<QString, ModLinkCache::ModLink> &ModLinkCache::linkCaches() const
+{
+    return linkCaches_;
 }
 
 QJsonObject ModLinkCache::ModLink::toJsonObject()

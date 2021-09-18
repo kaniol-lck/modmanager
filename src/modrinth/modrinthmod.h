@@ -12,6 +12,7 @@ class ModrinthMod : public QObject
 {
     Q_OBJECT
 public:
+    ModrinthMod(LocalMod *parent, const QString &id);
     ModrinthMod(QObject *parent, const ModrinthModInfo &info);
     ModrinthMod(LocalMod *parent, const ModrinthModInfo &info);
 

@@ -9,12 +9,6 @@ class QJsonObject;
 class ModLinkCache
 {
 public:
-    ModLinkCache(const QString &path);
-
-    void addCache(LocalMod *localMod);
-
-    void saveToFile();
-
     class ModLink
     {
         friend class ModLinkCache;
@@ -35,6 +29,14 @@ public:
         QString modrinthId_;
         QString modrinthFileId_;
     };
+
+    ModLinkCache(const QString &path);
+
+    void addCache(LocalMod *localMod);
+    const QMap<QString, ModLink> &linkCaches() const;
+
+    void saveToFile();
+
 private:
     constexpr static auto FileName = "links.json";
     QString path_;

@@ -35,6 +35,11 @@ public:
         return updateFileInfo_.has_value();
     }
 
+    std::optional<std::remove_const_t<std::remove_reference_t<decltype(FileInfoT().id())>>> fileId() const
+    {
+        return fileId_;
+    }
+
     QPair<QString, QString> updateNames() const
     {
         return QPair(currentFileInfo_->displayName(), updateFileInfo_->displayName());
@@ -42,6 +47,13 @@ public:
 
     bool findUpdate(QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
     {
+        if(!currentFileInfo_){
+            if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
+                return fileInfo.id() == fileId_;
+            }); it != fileList.cend())
+                currentFileInfo_.emplace(*it);
+        }
+
         //select mod file for matched game versions and mod loader type
         QList<FileInfoT> list;
         std::insert_iterator<QList<FileInfoT>> iter(list, list.begin());
@@ -87,6 +99,7 @@ public:
             if(callback(*updateFileInfo_)){
                 currentFileInfo_.emplace(*updateFileInfo_);
                 updateFileInfo_.reset();
+                fileId_ = currentFileInfo_->id();
             }
         });
     }
@@ -95,14 +108,20 @@ public:
     {
         currentFileInfo_.emplace(newCurrentFileInfo);
     }
+
     void setUpdateFileInfo(FileInfoT newUpdateFileInfo)
     {
         updateFileInfo_.emplace(newUpdateFileInfo);
     }
 
+    void setFileId(const std::remove_const_t<std::remove_reference_t<decltype(FileInfoT().id())>> &newFileId){
+        fileId_.emplace(newFileId);
+    }
+
 private:
     std::optional<FileInfoT> currentFileInfo_;
     std::optional<FileInfoT> updateFileInfo_;
+    std::optional<std::remove_const_t<std::remove_reference_t<decltype(FileInfoT().id())>>> fileId_;
 };
 
 #endif // UPDATABLE_HPP
