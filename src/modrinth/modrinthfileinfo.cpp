@@ -1,5 +1,8 @@
 #include "modrinthfileinfo.h"
 
+#include <QJsonObject>
+#include <QJsonArray>
+
 #include "util/tutil.hpp"
 
 ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
@@ -30,6 +33,26 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
         fileInfo.loaderTypes_ << ModLoaderType::fromString(loader);
 
     return fileInfo;
+}
+
+QJsonObject ModrinthFileInfo::toJsonObject() const
+{
+    QJsonObject object{
+        {"id", id_},
+        {"mod_id", modId_},
+        {"name", displayName_},
+        {"version_type", releaseType_},
+        {"date_published", fileDate_.toString(Qt::DateFormat::ISODate)},
+        {"featured", isFeatured_}
+    };
+    QJsonArray fileArray;
+    fileArray << QJsonObject{
+        {"filename", fileName_},
+        {"url", url_.toString()},
+        {"primary", isPrimary_}
+    };
+    object.insert("files", fileArray);
+    return object;
 }
 
 const ModrinthFileInfo::IdType &ModrinthFileInfo::id() const

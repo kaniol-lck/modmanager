@@ -11,16 +11,16 @@
 #include "util/tutil.hpp"
 #include "config.h"
 
-LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
+LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info, bool startup) :
     QObject(parent),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
     info_(info)
 {
-    loadMods();
+    loadMods(startup);
 }
 
-void LocalModPath::loadMods()
+void LocalModPath::loadMods(bool startup)
 {
     modFileList_.clear();
     for(const auto &fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
@@ -81,17 +81,8 @@ void LocalModPath::loadMods()
         emit modListUpdated();
 
         connect(this, &LocalModPath::websitesReady, this, [=]{
-            auto count = std::make_shared<int>(0);
-            //perpare mod file info
-            for(auto mod : qAsConst(modMap_)){
-                connect(mod, &LocalMod::updateFileInfoReady, this, [=]{
-                    if(--(*count) == 0){
-                        checkModUpdates(false);
-                        emit updateFileInfosReady();
-                    }
-                });
-                if(mod->perpareUpdate()) (*count)++;
-            }
+            //new path not from exsiting will check update
+            checkModUpdates(!startup);
             disconnect(SIGNAL(websitesReady()));
         });
 
@@ -319,7 +310,6 @@ void LocalModPath::searchOnWebsites()
             isAllCached = false;
             (*count)++;
             connect(mod, &LocalMod::websiteReady, this, [=]{
-                writeToFile();
                 emit websiteCheckedCountUpdated(modMap_.size() - *count);
                 if(--(*count) == 0)
                     emit websitesReady();
@@ -351,7 +341,6 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
                     latestUpdateCheck_ = QDateTime::currentDateTime();
                     writeToFile();
                     emit updatesReady();
-                    emit updateFileInfosReady();
                 }
             });
             mod->checkUpdates(info_.gameVersion(), info_.loaderType());

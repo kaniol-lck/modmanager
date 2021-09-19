@@ -30,7 +30,6 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     connect(mod_, &LocalMod::modFileUpdated, this, &LocalModItemWidget::updateInfo);
 
     connect(mod_, &LocalMod::updateReady, this, &LocalModItemWidget::updateReady);
-    connect(mod_, &LocalMod::updateFileInfoReady, this, &LocalModItemWidget::updateFileInfoReady);
 
     connect(mod_, &LocalMod::checkCurseforgeStarted, this, &LocalModItemWidget::startCheckCurseforge);
     connect(mod_, &LocalMod::curseforgeReady, this, &LocalModItemWidget::curseforgeReady);
@@ -113,6 +112,7 @@ void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType type)
 {
     if(type == LocalMod::None) return;
     ui->updateButton->setVisible(true);
+    ui->updateButton->setEnabled(true);
     if(type == LocalMod::Curseforge)
         ui->updateButton->setIcon(QIcon(":/image/curseforge.svg"));
     else if (type == LocalMod::Modrinth)
@@ -134,11 +134,6 @@ void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType type)
             });
     }
     ui->updateButton->setMenu(menu);
-}
-
-void LocalModItemWidget::updateFileInfoReady()
-{
-    ui->updateButton->setEnabled(true);
 }
 
 void LocalModItemWidget::startCheckCurseforge()

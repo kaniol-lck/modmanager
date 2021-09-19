@@ -7,7 +7,7 @@ LocalModPathManager::LocalModPathManager(QObject *parent) : QObject(parent)
 {
     Config config;
     for(const auto &pathInfo : config.getLocalPathList()){
-        auto path = new LocalModPath(this, LocalModPathInfo::fromVariant(pathInfo));
+        auto path = new LocalModPath(this, LocalModPathInfo::fromVariant(pathInfo), true);
         pathList_ << path;
         connect(path, &LocalModPath::infoUpdated, this, &LocalModPathManager::updateList);
     }

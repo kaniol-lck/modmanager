@@ -15,9 +15,9 @@ class LocalModPath : public QObject
 {
     Q_OBJECT
 public:
-    explicit LocalModPath(QObject *parent, const LocalModPathInfo &info);
+    explicit LocalModPath(QObject *parent, const LocalModPathInfo &info, bool startup = false);
 
-    void loadMods();
+    void loadMods(bool startup = false);
 
     void checkFabric();
 
@@ -58,7 +58,6 @@ signals:
     void checkUpdatesStarted();
     void updateCheckedCountUpdated(int updateCount, int checkedCount);
     void updatesReady();
-    void updateFileInfosReady();
 
     void updatesStarted();
     void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);

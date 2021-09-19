@@ -15,6 +15,7 @@ public:
     CurseforgeFileInfo() = default;
 
     static CurseforgeFileInfo fromVariant(const QVariant &variant);
+    QJsonObject toJsonObject() const;
 
     IdType id() const;
     const QString &displayName() const;

@@ -1,11 +1,8 @@
 # quazip.pri
 INCLUDEPATH+= $$PWD/quazip
-win32{
-    INCLUDEPATH+= $$PWD/zlib
-}
 DEFINES+= QUAZIP_BUILD
-!win32{
-    LIBS+= -lz
+!win32 {
+    LIBS += -lz
 }
 
 HEADERS+= \

@@ -36,16 +36,6 @@ public:
         return updateFileInfo_;
     }
 
-    std::optional<typename FileInfoT::IdType> fileId() const
-    {
-        return fileId_;
-    }
-
-    std::optional<typename FileInfoT::IdType> updateFileId() const
-    {
-        return updateFileId_;
-    }
-
     QPair<QString, QString> updateNames() const
     {
         return QPair(currentFileInfo_->displayName(), updateFileInfo_->displayName());
@@ -53,43 +43,12 @@ public:
 
     void reset(bool clearCurrent = false){
         updateFileInfo_.reset();
-        updateFileId_.reset();
-        if(clearCurrent){
+        if(clearCurrent)
             currentFileInfo_.reset();
-            fileId_.reset();
-        }
-    }
-
-    void perpareFileInfo(QList<FileInfoT> fileList){
-        if(!currentFileInfo_){
-            if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
-                return fileInfo.id() == fileId_;
-            }); it != fileList.cend())
-                currentFileInfo_.emplace(*it);
-            else
-                fileId_.reset();
-        }
-        if(!updateFileInfo_){
-            if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
-                return fileInfo.id() == updateFileId_;
-            }); it != fileList.cend())
-                updateFileInfo_.emplace(*it);
-            else
-                updateFileId_.reset();
-        }
     }
 
     bool findUpdate(QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
     {
-        if(!currentFileInfo_){
-            if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
-                return fileInfo.id() == fileId_;
-            }); it != fileList.cend())
-                currentFileInfo_.emplace(*it);
-            else
-                return false;
-        }
-
         //select mod file for matched game versions and mod loader type
         QList<FileInfoT> list;
         std::insert_iterator<QList<FileInfoT>> iter(list, list.begin());
@@ -123,29 +82,19 @@ public:
             return false;
 
         updateFileInfo_.emplace(*resultIter);
-        updateFileId_.emplace(resultIter->id());
         return true;
     }
 
-    ModDownloader *update(const QString &path, const QByteArray &iconBytes, std::function<bool (FileInfoT)> callback, QList<FileInfoT> fileList = {})
+    ModDownloader *update(const QString &path, const QByteArray &iconBytes, std::function<bool (FileInfoT)> callback1, std::function<void ()> callback2)
     {
-        if(!updateFileInfo_){
-            if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
-                return fileInfo.id() == updateFileId_;
-            }); it != fileList.cend())
-                updateFileInfo_.emplace(*it);
-            else
-                return nullptr;
-        }
         DownloadFileInfo info(*updateFileInfo_);
         info.setPath(path);
         info.setIconBytes(iconBytes);
         return DownloadManager::addModUpdate(info, [=]{
-            if(callback(*updateFileInfo_)){
+            if(callback1(*updateFileInfo_)){
                 currentFileInfo_.emplace(*updateFileInfo_);
                 updateFileInfo_.reset();
-                updateFileId_.reset();
-                fileId_ = currentFileInfo_->id();
+                callback2();
             }
         });
     }
@@ -160,19 +109,9 @@ public:
         updateFileInfo_.emplace(newUpdateFileInfo);
     }
 
-    void setFileId(const typename FileInfoT::IdType &newFileId){
-        fileId_.emplace(newFileId);
-    }
-
-    void setUpdateFileId(const typename FileInfoT::IdType &newUpdateFileId){
-        updateFileId_.emplace(newUpdateFileId);
-    }
-
 private:
     std::optional<FileInfoT> currentFileInfo_;
     std::optional<FileInfoT> updateFileInfo_;
-    std::optional<typename FileInfoT::IdType> fileId_;
-    std::optional<typename FileInfoT::IdType> updateFileId_;
 };
 
 #endif // UPDATABLE_HPP

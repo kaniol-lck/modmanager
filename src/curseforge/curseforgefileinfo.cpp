@@ -1,5 +1,7 @@
 #include "curseforgefileinfo.h"
 
+#include <QJsonObject>
+#include <QJsonArray>
 #include <QDebug>
 
 #include "util/tutil.hpp"
@@ -30,6 +32,26 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
     }
 
     return fileInfo;
+}
+
+QJsonObject CurseforgeFileInfo::toJsonObject() const
+{
+    QJsonObject object{
+        {"id", id_},
+        {"displayName", displayName_},
+        {"fileName", fileName_},
+        {"downloadUrl", url_.toString()},
+        {"fileLength", size_},
+        {"releaseType", releaseType_},
+        {"fileDate", fileDate_.toString(Qt::DateFormat::ISODate)}
+    };
+    QJsonArray versionArray;
+    for(auto type : loaderTypes_)
+        versionArray << ModLoaderType::toString(type);
+    for(const auto &version : gameVersions_)
+        versionArray << QString(version);
+    object.insert("gameVersion", versionArray);
+    return object;
 }
 
 CurseforgeFileInfo::IdType CurseforgeFileInfo::id() const

@@ -85,7 +85,7 @@ public:
     const QString &alias() const;
     void setAlias(const QString &newAlias);
 
-    QJsonObject toJsonObject();
+    QJsonObject toJsonObject() const;
     void restore(const QVariant &variant);
 
 signals:
@@ -96,7 +96,6 @@ signals:
     void websiteReady(bool bl);
     void checkUpdatesStarted();
     void updateReady(ModWebsiteType type);
-    void updateFileInfoReady();
 
     void curseforgeReady(bool bl);
     void curseforgeUpdateReady(bool bl);

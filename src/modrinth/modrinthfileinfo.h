@@ -15,6 +15,7 @@ public:
     ModrinthFileInfo() = default;
 
     static ModrinthFileInfo fromVariant(const QVariant &variant);
+    QJsonObject toJsonObject() const;
 
     const IdType &id() const;
     const QString &modId() const;
