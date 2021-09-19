@@ -30,3 +30,12 @@ jobs:
         run: |
           qmake
           make
+      - name: package
+        run: |
+          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+          chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+          ./linuxdeployqt-continuous-x86_64.AppImage ./${{github.event.repository.name}} -appimage -verbose=2
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}
+          path: ${{github.event.repository.name}}
