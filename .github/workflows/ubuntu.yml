@@ -32,6 +32,7 @@ jobs:
           make
       - name: package
         run: |
+          sudo apt-get install libxcb-iccm4
           mkdir deploy
           cp ${{github.event.repository.name}} deploy/
           cp LICENSE* deploy/
