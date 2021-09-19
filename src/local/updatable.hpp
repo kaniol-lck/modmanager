@@ -50,6 +50,26 @@ public:
         return QPair(currentFileInfo_->displayName(), updateFileInfo_->displayName());
     }
 
+    bool perpareFileInfo(QList<FileInfoT> fileList){
+        if(!currentFileInfo_){
+            if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
+                return fileInfo.id() == fileId_;
+            }); it != fileList.cend())
+                currentFileInfo_.emplace(*it);
+            else
+                return false;
+        }
+        if(!updateFileInfo_){
+            if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
+                return fileInfo.id() == updateFileId_;
+            }); it != fileList.cend())
+                updateFileInfo_.emplace(*it);
+            else
+                return false;
+        }
+        return true;
+    }
+
     bool findUpdate(QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
     {
         if(!currentFileInfo_){

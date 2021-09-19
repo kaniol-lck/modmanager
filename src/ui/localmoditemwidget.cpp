@@ -19,6 +19,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui->setupUi(this);
     ui->updateProgress->setVisible(false);
     ui->updateButton->setVisible(false);
+    ui->updateButton->setEnabled(false);
     ui->curseforgeButton->setEnabled(false);
     ui->modrinthButton->setEnabled(false);
 
@@ -29,6 +30,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     connect(mod_, &LocalMod::modFileUpdated, this, &LocalModItemWidget::updateInfo);
 
     connect(mod_, &LocalMod::updateReady, this, &LocalModItemWidget::updateReady);
+    connect(mod_, &LocalMod::updateFileInfoReady, this, &LocalModItemWidget::updateFileInfoReady);
 
     connect(mod_, &LocalMod::checkCurseforgeStarted, this, &LocalModItemWidget::startCheckCurseforge);
     connect(mod_, &LocalMod::curseforgeReady, this, &LocalModItemWidget::curseforgeReady);
@@ -50,7 +52,11 @@ LocalModItemWidget::~LocalModItemWidget()
 
 void LocalModItemWidget::updateInfo()
 {
-    ui->modName->setText(mod_->modFile()->commonInfo()->name());
+    if(!mod_->alias().isEmpty())
+        ui->modName->setText(mod_->alias());
+    else
+        ui->modName->setText(mod_->modFile()->commonInfo()->name());
+
     ui->modVersion->setText(mod_->commonInfo()->version());
     auto description = mod_->commonInfo()->description();
     auto index = description.indexOf(".");
@@ -67,6 +73,13 @@ void LocalModItemWidget::updateInfo()
         pixelmap.loadFromData(mod_->commonInfo()->iconBytes());
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
     }
+
+    if(mod_->curseforgeMod())
+        ui->curseforgeButton->setEnabled(true);
+    if(mod_->modrinthMod())
+        ui->modrinthButton->setEnabled(true);
+
+    updateReady(mod_->defaultUpdateType());
 
     //rollback
     if(mod_->oldFiles().isEmpty())
@@ -121,6 +134,11 @@ void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType type)
             });
     }
     ui->updateButton->setMenu(menu);
+}
+
+void LocalModItemWidget::updateFileInfoReady()
+{
+    ui->updateButton->setEnabled(true);
 }
 
 void LocalModItemWidget::startCheckCurseforge()

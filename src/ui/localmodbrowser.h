@@ -34,6 +34,7 @@ private slots:
     void startCheckUpdates();
     void updateCheckedCountUpdated(int updateCount, int checkedCount);
     void updatesReady();
+    void updateFileInfosReady();
 
     void startUpdates();
     void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);

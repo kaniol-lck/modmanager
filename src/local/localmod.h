@@ -41,6 +41,7 @@ public:
     void searchOnModrinth();
 
     //update
+    bool perpareUpdate();
     void checkUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType);
     void checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
     void checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
@@ -94,6 +95,7 @@ signals:
     void websiteReady(bool bl);
     void checkUpdatesStarted();
     void updateReady(ModWebsiteType type);
+    void updateFileInfoReady();
 
     void curseforgeReady(bool bl);
     void curseforgeUpdateReady(bool bl);

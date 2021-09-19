@@ -336,12 +336,23 @@ void LocalModPath::checkModUpdates(bool force)
                     latestUpdateCheck_ = QDateTime::currentDateTime();
                     writeToFile();
                     emit updatesReady();
+                    emit updateFileInfosReady();
                 }
             });
             mod->checkUpdates(info_.gameVersion(), info_.loaderType());
         }
-    } else if(interval != Config::Never)
+    } else if(interval != Config::Never){
+        auto count = std::make_shared<int>(0);
+        for(auto mod : qAsConst(modMap_)){
+            connect(mod, &LocalMod::updateFileInfoReady, this, [=]{
+                if(--(*count) == 0)
+                    emit updateFileInfosReady();
+            });
+            if(mod->perpareUpdate()) (*count)++;
+
+        }
         emit updatesReady();
+    }
 }
 
 void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList)

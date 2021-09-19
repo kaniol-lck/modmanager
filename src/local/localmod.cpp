@@ -84,6 +84,37 @@ void LocalMod::searchOnModrinth()
     });
 }
 
+bool LocalMod::perpareUpdate()
+{
+    bool bl = false;
+    bool bl1(curseforgeUpdate_.updateFileId());
+    bool bl2(modrinthUpdate_.updateFileId());
+    auto count = std::make_shared<int>(bl1 + bl2);
+    auto foo = [=]{
+        if(--(*count) == 0) emit updateFileInfoReady();
+    };
+    if(bl1 && curseforgeMod_){
+        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, foo);
+        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, [=]{
+            curseforgeUpdate_.perpareFileInfo(curseforgeMod_->modInfo().allFileList());
+        });
+        curseforgeMod_->acquireAllFileList();
+        bl = true;
+    }
+    if(bl2 && modrinthMod_){
+        connect(modrinthMod_, &ModrinthMod::fileListReady, this, foo);
+        connect(modrinthMod_, &ModrinthMod::fileListReady, this, [=]{
+            modrinthUpdate_.perpareFileInfo(modrinthMod_->modInfo().fileList());
+        });
+        connect(modrinthMod_, &ModrinthMod::fullInfoReady, this, [=]{
+            modrinthMod_->acquireFileList();
+        });
+        modrinthMod_->acquireFullInfo();
+        bl = true;
+    }
+    return bl;
+}
+
 void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
     emit checkUpdatesStarted();
@@ -98,7 +129,10 @@ void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Typ
     }
     auto count = std::make_shared<int>(sourceCount);
     auto foo = [=](bool){
-        if(--(*count) == 0) emit updateReady(defaultUpdateType());
+        if(--(*count) == 0){
+            emit updateReady(defaultUpdateType());
+            emit updateFileInfoReady();
+        }
     };
 
     if(config.getUseCurseforgeUpdate()){
@@ -184,6 +218,8 @@ QList<LocalMod::ModWebsiteType> LocalMod::updateTypes() const
     else if(!bl1 && bl2)
         return { ModWebsiteType::Modrinth };
     else if(bl1 && bl2){
+        if(!curseforgeUpdate_.updateFileInfo() || !modrinthUpdate_.updateFileInfo())
+            return { ModWebsiteType::Curseforge, ModWebsiteType::Modrinth };
         if(curseforgeUpdate_.fileDate() > modrinthUpdate_.fileDate())
             return { ModWebsiteType::Curseforge, ModWebsiteType::Modrinth };
         else

@@ -58,6 +58,7 @@ signals:
     void checkUpdatesStarted();
     void updateCheckedCountUpdated(int updateCount, int checkedCount);
     void updatesReady();
+    void updateFileInfosReady();
 
     void updatesStarted();
     void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);

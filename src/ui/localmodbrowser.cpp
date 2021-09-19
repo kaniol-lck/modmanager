@@ -23,6 +23,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->setupUi(this);
     ui->checkUpdatesProgress->setVisible(false);
     ui->updateAllButton->setVisible(false);
+    ui->updateAllButton->setEnabled(false);
 
     ui->checkButton->setVisible(false);
 
@@ -44,6 +45,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::startCheckUpdates);
     connect(modPath_, &LocalModPath::updateCheckedCountUpdated, this, &LocalModBrowser::updateCheckedCountUpdated);
     connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::updatesReady);
+    connect(modPath_, &LocalModPath::updateFileInfosReady, this, &LocalModBrowser::updateFileInfosReady);
     connect(modPath_, &LocalModPath::updatesStarted, this, &LocalModBrowser::startUpdates);
     connect(modPath_, &LocalModPath::updatesProgress, this, &LocalModBrowser::updatesProgress);
     connect(modPath_, &LocalModPath::updatesDoneCountUpdated, this, &LocalModBrowser::updatesDoneCountUpdated);
@@ -123,6 +125,11 @@ void LocalModBrowser::updatesReady()
         ui->updateAllButton->setVisible(false);
         ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()) + " " + tr("Good! All mods are up-to-date."));
     }
+}
+
+void LocalModBrowser::updateFileInfosReady()
+{
+    ui->updateAllButton->setEnabled(true);
 }
 
 void LocalModBrowser::startUpdates()

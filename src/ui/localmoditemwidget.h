@@ -24,6 +24,7 @@ private slots:
     void on_updateButton_clicked();
 
     void updateReady(LocalMod::ModWebsiteType type);
+    void updateFileInfoReady();
 
     void startCheckCurseforge();
     void curseforgeReady(bool bl);
