@@ -52,6 +52,8 @@ public:
                 return fileInfo.id() == fileId_;
             }); it != fileList.cend())
                 currentFileInfo_.emplace(*it);
+            else
+                return false;
         }
 
         //select mod file for matched game versions and mod loader type
