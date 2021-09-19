@@ -1,8 +1,12 @@
 # quazip.pri
 INCLUDEPATH+= $$PWD/quazip
-INCLUDEPATH+= $$PWD/zlib
+win32{
+    INCLUDEPATH+= $$PWD/zlib
+}
 DEFINES+= QUAZIP_BUILD
-LIBS+= -lz
+!win32{
+    LIBS+= -lz
+}
 
 HEADERS+= \
     $$PWD/quazip/crypt.h \

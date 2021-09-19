@@ -44,6 +44,5 @@ void openFileInFolder(const QString &filePath)
     if (!QProcess::execute("/usr/bin/osascript", args))
         return;
 #endif
-    qDebug() << info.isFile();
     QDesktopServices::openUrl(QUrl::fromLocalFile(info.isFile()?info.absolutePath() : path));
 }

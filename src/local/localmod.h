@@ -90,6 +90,7 @@ public:
 
 signals:
     void modFileUpdated();
+    void modCacheUpdated();
 
     void checkWebsiteStarted();
     void websiteReady(bool bl);

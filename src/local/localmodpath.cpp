@@ -56,6 +56,9 @@ void LocalModPath::loadMods()
                 connect(mod, &LocalMod::updateFinished, this, [=](bool){
                     emit updatesReady();
                 });
+                connect(mod, &LocalMod::modCacheUpdated, this, [=]{
+                    writeToFile();
+                });
                 modMap_[id] = mod;
             }
         }
@@ -77,8 +80,18 @@ void LocalModPath::loadMods()
         readFromFile();
         emit modListUpdated();
 
-        connect(this, &LocalModPath::websitesReady, [=]{
-            checkModUpdates(false);
+        connect(this, &LocalModPath::websitesReady, this, [=]{
+            auto count = std::make_shared<int>(0);
+            //perpare mod file info
+            for(auto mod : qAsConst(modMap_)){
+                connect(mod, &LocalMod::updateFileInfoReady, this, [=]{
+                    if(--(*count) == 0){
+                        checkModUpdates(false);
+                        emit updateFileInfosReady();
+                    }
+                });
+                if(mod->perpareUpdate()) (*count)++;
+            }
             disconnect(SIGNAL(websitesReady()));
         });
 
@@ -317,12 +330,14 @@ void LocalModPath::searchOnWebsites()
     if(isAllCached) emit websitesReady();
 }
 
-void LocalModPath::checkModUpdates(bool force)
+void LocalModPath::checkModUpdates(bool force) // force = true by default
 {
+    if(modMap_.isEmpty()) return;
     auto interval = Config().getUpdateCheckInterval();
+    //check update manually or
+    //reach the check interval
     if(force || interval == Config::Always ||
       (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1)){
-        if(modMap_.isEmpty()) return;
         emit checkUpdatesStarted();
         auto count = std::make_shared<int>(0);
         auto updateCount = std::make_shared<int>(0);
@@ -342,15 +357,7 @@ void LocalModPath::checkModUpdates(bool force)
             mod->checkUpdates(info_.gameVersion(), info_.loaderType());
         }
     } else if(interval != Config::Never){
-        auto count = std::make_shared<int>(0);
-        for(auto mod : qAsConst(modMap_)){
-            connect(mod, &LocalMod::updateFileInfoReady, this, [=]{
-                if(--(*count) == 0)
-                    emit updateFileInfosReady();
-            });
-            if(mod->perpareUpdate()) (*count)++;
-
-        }
+        //not manual not never i.e. load cache
         emit updatesReady();
     }
 }

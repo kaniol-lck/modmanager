@@ -87,36 +87,52 @@ void LocalMod::searchOnModrinth()
 bool LocalMod::perpareUpdate()
 {
     bool bl = false;
-    bool bl1(curseforgeUpdate_.updateFileId());
-    bool bl2(modrinthUpdate_.updateFileId());
-    auto count = std::make_shared<int>(bl1 + bl2);
+    auto count = std::make_shared<int>(0);
     auto foo = [=]{
-        if(--(*count) == 0) emit updateFileInfoReady();
+        if(--(*count) == 0)
+            emit updateFileInfoReady();
     };
-    if(bl1 && curseforgeMod_){
-        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, foo);
-        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, [=]{
-            curseforgeUpdate_.perpareFileInfo(curseforgeMod_->modInfo().allFileList());
-        });
-        curseforgeMod_->acquireAllFileList();
+    if(curseforgeUpdate_.fileId()){
+        (*count)++;
         bl = true;
+        curseforgeAPI_->getFileInfo(curseforgeMod_->modInfo().id(), *curseforgeUpdate_.fileId(), [=](const auto &fileInfo){
+            curseforgeUpdate_.setCurrentFileInfo(fileInfo);
+            foo();
+        });
     }
-    if(bl2 && modrinthMod_){
-        connect(modrinthMod_, &ModrinthMod::fileListReady, this, foo);
-        connect(modrinthMod_, &ModrinthMod::fileListReady, this, [=]{
-            modrinthUpdate_.perpareFileInfo(modrinthMod_->modInfo().fileList());
-        });
-        connect(modrinthMod_, &ModrinthMod::fullInfoReady, this, [=]{
-            modrinthMod_->acquireFileList();
-        });
-        modrinthMod_->acquireFullInfo();
+    if(curseforgeUpdate_.updateFileId()){
+        (*count)++;
         bl = true;
+        curseforgeAPI_->getFileInfo(curseforgeMod_->modInfo().id(), *curseforgeUpdate_.updateFileId(), [=](const auto &fileInfo){
+            curseforgeUpdate_.setUpdateFileInfo(fileInfo);
+            foo();
+        });
+    }
+    if(modrinthUpdate_.fileId()){
+        (*count)++;
+        bl = true;
+        modrinthAPI_->getVersion(*modrinthUpdate_.fileId(), [=](const auto &fileInfo){
+            modrinthUpdate_.setCurrentFileInfo(fileInfo);
+            foo();
+        });
+    }
+    if(modrinthUpdate_.updateFileId()){
+        (*count)++;
+        bl = true;
+        modrinthAPI_->getVersion(*modrinthUpdate_.updateFileId(), [=](const auto &fileInfo){
+            modrinthUpdate_.setUpdateFileInfo(fileInfo);
+            foo();
+        });
     }
     return bl;
 }
 
 void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType)
 {
+    //clear update cache
+    modrinthUpdate_.reset();
+    curseforgeUpdate_.reset();
+
     emit checkUpdatesStarted();
 
     int sourceCount = 0;
@@ -266,7 +282,13 @@ void LocalMod::update(ModWebsiteType type)
             oldFiles_ << modFile_;
         }
 
+        if(type == Curseforge)
+            modrinthUpdate_.reset(true);
+        if(type == Modrinth)
+            curseforgeUpdate_.reset(true);
+
         modFile_ = file;
+        emit modCacheUpdated();
         emit modFileUpdated();
         emit updateFinished(true);
 
@@ -337,7 +359,9 @@ void LocalMod::rollback(LocalModFile *file)
 {
     //TODO: refresh update info;
     file->removeOld();
+    oldFiles_.removeAll(file);
     modFile_->addOld();
+    oldFiles_ << modFile_;
     modFile_ = file;
     emit modFileUpdated();
 }

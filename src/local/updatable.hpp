@@ -3,6 +3,7 @@
 
 #include <QDateTime>
 #include <optional>
+#include <QDebug>
 
 #include "download/downloadmanager.h"
 #include "config.h"
@@ -50,14 +51,23 @@ public:
         return QPair(currentFileInfo_->displayName(), updateFileInfo_->displayName());
     }
 
-    bool perpareFileInfo(QList<FileInfoT> fileList){
+    void reset(bool clearCurrent = false){
+        updateFileInfo_.reset();
+        updateFileId_.reset();
+        if(clearCurrent){
+            currentFileInfo_.reset();
+            fileId_.reset();
+        }
+    }
+
+    void perpareFileInfo(QList<FileInfoT> fileList){
         if(!currentFileInfo_){
             if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
                 return fileInfo.id() == fileId_;
             }); it != fileList.cend())
                 currentFileInfo_.emplace(*it);
             else
-                return false;
+                fileId_.reset();
         }
         if(!updateFileInfo_){
             if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
@@ -65,9 +75,8 @@ public:
             }); it != fileList.cend())
                 updateFileInfo_.emplace(*it);
             else
-                return false;
+                updateFileId_.reset();
         }
-        return true;
     }
 
     bool findUpdate(QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
