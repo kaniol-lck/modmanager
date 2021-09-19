@@ -278,7 +278,7 @@ void LocalModPath::searchOnWebsites()
             (*count)++;
             connect(mod, &LocalMod::websiteReady, this, [=]{
                 cache_.addCache(mod);
-                emit websiteCheckedCountUpdated(*count);
+                emit websiteCheckedCountUpdated(modMap_.size() - *count);
                 if(--(*count) == 0){
                     cache_.saveToFile();
                     emit websitesReady();
