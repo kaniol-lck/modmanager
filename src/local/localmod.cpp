@@ -6,9 +6,11 @@
 #include "modrinth/modrinthapi.h"
 #include "modrinth/modrinthmod.h"
 #include "download/downloadmanager.h"
+#include "util/tutil.hpp"
 #include "config.h"
 
 #include <QDir>
+#include <QJsonObject>
 #include <iterator>
 #include <algorithm>
 #include <tuple>
@@ -383,6 +385,57 @@ void LocalMod::setCurseforgeFileId(int id)
 void LocalMod::setModrinthFileId(const QString &id)
 {
     modrinthUpdate_.setFileId(id);
+}
+
+const QString &LocalMod::alias() const
+{
+    return alias_;
+}
+
+void LocalMod::setAlias(const QString &newAlias)
+{
+    alias_ = newAlias;
+}
+
+QJsonObject LocalMod::toJsonObject()
+{
+    QJsonObject object;
+
+    if(!alias_.isEmpty())
+        object.insert("alias", alias_);
+
+    if(curseforgeMod_){
+        QJsonObject curseforgeObject;
+        curseforgeObject.insert("id", curseforgeMod_->modInfo().id());
+        if(curseforgeUpdate_.fileId())
+            curseforgeObject.insert("fileId", *curseforgeUpdate_.fileId());
+        object.insert("curseforge", curseforgeObject);
+    }
+
+    if(modrinthMod_){
+        QJsonObject modrinthObject;
+        modrinthObject.insert("id", modrinthMod_->modInfo().id());
+        if(modrinthUpdate_.fileId())
+            modrinthObject.insert("fileId", *modrinthUpdate_.fileId());
+        object.insert("modrinth", modrinthObject);
+    }
+
+    return object;
+}
+
+void LocalMod::restore(const QVariant &variant)
+{
+    alias_ = value(variant, "alias").toString();
+    if(contains(variant, "curseforge")){
+        setCurseforgeId(value(variant, "curseforge", "id").toInt());
+        if(contains(value(variant, "curseforge"), "fileId"))
+            setCurseforgeFileId(value(variant, "curseforge", "fileId").toInt());
+    }
+    if(contains(variant, "modrinth")){
+        setModrinthId(value(variant, "modrinth", "id").toString());
+        if(contains(value(variant, "modrinth"), "fileId"))
+            setModrinthFileId(value(variant, "modrinth", "fileId").toString());
+    }
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

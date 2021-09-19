@@ -83,6 +83,12 @@ public:
     void setCurseforgeFileId(int id);
     void setModrinthFileId(const QString &id);
 
+    const QString &alias() const;
+    void setAlias(const QString &newAlias);
+
+    QJsonObject toJsonObject();
+    void restore(const QVariant &variant);
+
 signals:
     void modFileUpdated();
 
@@ -106,6 +112,8 @@ signals:
     void updateFinished(bool success);
 
 private:
+    QString alias_;
+
     //api for update
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;

@@ -8,14 +8,14 @@
 #include "localmodfile.h"
 #include "curseforge/curseforgeapi.h"
 #include "modrinth/modrinthapi.h"
+#include "util/tutil.hpp"
 #include "config.h"
 
 LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info) :
     QObject(parent),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
-    info_(info),
-    cache_(info.path())
+    info_(info)
 {
     loadMods();
 }
@@ -75,6 +75,7 @@ void LocalModPath::loadMods()
                 ;//TODO: deal with homeless old mods
         }
 
+        readFromFile();
         emit modListUpdated();
 
         Config config;
@@ -139,6 +140,46 @@ std::tuple<LocalModPath::FindResultType, std::optional<FabricModInfo> > LocalMod
     } else {
         return { Mismatch, {modInfo} };
     }
+}
+
+void LocalModPath::writeToFile()
+{
+    QJsonObject object;
+
+    QJsonObject modsObject;
+    for(auto mod : qAsConst(modMap_))
+        modsObject.insert(mod->commonInfo()->id(), mod->toJsonObject());
+    object.insert("mods", modsObject);
+
+    QJsonDocument doc(object);
+    QDir dir(info_.path());
+    QFile file(dir.absoluteFilePath(kFileName));
+    if(!file.open(QIODevice::WriteOnly)) return;
+    file.write(doc.toJson());
+    file.close();
+}
+
+void LocalModPath::readFromFile()
+{
+    QDir dir(info_.path());
+    QFile file(dir.absoluteFilePath(kFileName));
+    if(!file.open(QIODevice::ReadOnly)) return;
+    auto bytes = file.readAll();
+    file.close();
+
+    //parse json
+    QJsonParseError error;
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(bytes, &error);
+    if (error.error != QJsonParseError::NoError) {
+        qDebug("%s", error.errorString().toUtf8().constData());
+        return;
+    }
+
+    auto result = jsonDocument.toVariant();
+    auto modMap = value(result, "mods").toMap();
+    for(auto it = modMap.cbegin(); it != modMap.cend(); it++)
+        if(modMap_.contains(it.key()))
+            modMap_[it.key()]->restore(*it);
 }
 
 QList<std::tuple<FabricModInfo, QString, QString, std::optional<FabricModInfo>>> LocalModPath::checkFabricDepends() const
@@ -263,26 +304,14 @@ void LocalModPath::searchOnWebsites()
     bool isAllCached = true;
     for(const auto &mod : qAsConst(modMap_)){
         //has cache
-        if(cache_.linkCaches().contains(mod->commonInfo()->id())){
-            auto link = cache_.linkCaches()[mod->commonInfo()->id()];
-            if(link.curseforgeId())
-                mod->setCurseforgeId(link.curseforgeId());
-            if(link.curseforgeFileId())
-                mod->setCurseforgeFileId(link.curseforgeFileId());
-            if(!link.modrinthId().isEmpty())
-                mod->setModrinthId(link.modrinthId());
-            if(!link.modrinthFileId().isEmpty())
-                mod->setModrinthFileId(link.modrinthFileId());
-        } else{
+        if(!mod->curseforgeMod() && !mod->modrinthMod()){
             isAllCached = false;
             (*count)++;
             connect(mod, &LocalMod::websiteReady, this, [=]{
-                cache_.addCache(mod);
+                writeToFile();
                 emit websiteCheckedCountUpdated(modMap_.size() - *count);
-                if(--(*count) == 0){
-                    cache_.saveToFile();
+                if(--(*count) == 0)
                     emit websitesReady();
-                }
             });
             mod->searchOnWebsite();
         }

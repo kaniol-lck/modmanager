@@ -29,7 +29,6 @@ SOURCES += \
     src/local/localmodpath.cpp \
     src/local/localmodpathinfo.cpp \
     src/local/localmodpathmanager.cpp \
-    src/local/modlinkcache.cpp \
     src/modloadertype.cpp \
     src/modrinth/modrinthapi.cpp \
     src/modrinth/modrinthfileinfo.cpp \
@@ -83,7 +82,6 @@ HEADERS += \
     src/local/localmodpath.h \
     src/local/localmodpathinfo.h \
     src/local/localmodpathmanager.h \
-    src/local/modlinkcache.h \
     src/local/updatable.hpp \
     src/modloadertype.h \
     src/modrinth/modrinthapi.h \
