@@ -1,0 +1,3 @@
+[submodule "3rdparty/quazip-0.7.3/quazip/zlib"]
+	path = 3rdparty/quazip-0.7.3/quazip/zlib
+	url = git@github.com:madler/zlib.git

@@ -1,5 +1,6 @@
 # quazip.pri
 INCLUDEPATH+= $$PWD/quazip
+INCLUDEPATH+= $$PWD/quazip/zlib
 DEFINES+= QUAZIP_BUILD
 LIBS+= -lz
 
