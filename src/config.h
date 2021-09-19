@@ -31,12 +31,12 @@ public:
     getterAndSetter(CommonPath, String, commonPath, "");
     enum VersionMatchType{ MinorVersion, MajorVersion };
     getterAndSetter(VersionMatch, Int, versionMatch, MinorVersion);
-    getterAndSetter(AutoSearchOnWebsites, Bool, autoSearchWebOnSites, true);
-    getterAndSetter(AutoCheckUpdate, Bool, autoCheckUpdate, true)
     getterAndSetter(UseCurseforgeUpdate, Bool, useCurseforgeUpdate, true)
     getterAndSetter(UseModrinthUpdate, Bool, useModrinthUpdate, true)
     enum PostUpdateType{ Delete, Keep, DoNothing };
     getterAndSetter(PostUpdate, Int, postUpdate, Keep);
+    enum UpdateCheckIntervalType{ Always, EveryDay, Never };
+    getterAndSetter(UpdateCheckInterval, Int, updateCheckIntervalType, Always);
 
     //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)

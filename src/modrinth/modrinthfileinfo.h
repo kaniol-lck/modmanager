@@ -11,11 +11,12 @@
 class ModrinthFileInfo
 {
 public:
+    using IdType = QString;
     ModrinthFileInfo() = default;
 
     static ModrinthFileInfo fromVariant(const QVariant &variant);
 
-    const QString &id() const;
+    const IdType &id() const;
     const QString &modId() const;
     const QString &displayName() const;
     const QString &fileName() const;
@@ -29,7 +30,7 @@ public:
     bool isPrimary() const;
 
 private:
-    QString id_;
+    IdType id_;
     QString modId_;
     QString displayName_;
     QString fileName_;

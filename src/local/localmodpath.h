@@ -31,7 +31,7 @@ public:
     LocalMod *findLocalMod(const QString &id);
 
     void searchOnWebsites();
-    void checkModUpdates();
+    void checkModUpdates(bool force = true);
     void updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList);
 
     const LocalModPathInfo &info() const;
@@ -79,7 +79,7 @@ private:
     QMap<QString, LocalMod*> modMap_;
     QMultiMap<QString, FabricModInfo> fabricModMap_;
     QStringList provideList_;
-    int updatableCount_;
+    QDateTime latestUpdateCheck_;
 };
 
 #endif // LOCALMODPATH_H

@@ -32,7 +32,7 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
     return fileInfo;
 }
 
-int CurseforgeFileInfo::id() const
+CurseforgeFileInfo::IdType CurseforgeFileInfo::id() const
 {
     return id_;
 }

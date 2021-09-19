@@ -25,19 +25,24 @@ public:
         return updateFileInfo_->fileDate();
     }
 
-    bool isCurrentAvailable() const
+    std::optional<FileInfoT> currentFileInfo() const
     {
-        return currentFileInfo_.has_value();
+        return currentFileInfo_;
     }
 
-    bool isUpdateAvailable() const
+    std::optional<FileInfoT> updateFileInfo() const
     {
-        return updateFileInfo_.has_value();
+        return updateFileInfo_;
     }
 
-    std::optional<std::remove_const_t<std::remove_reference_t<decltype(FileInfoT().id())>>> fileId() const
+    std::optional<typename FileInfoT::IdType> fileId() const
     {
         return fileId_;
+    }
+
+    std::optional<typename FileInfoT::IdType> updateFileId() const
+    {
+        return updateFileId_;
     }
 
     QPair<QString, QString> updateNames() const
@@ -89,11 +94,20 @@ public:
             return false;
 
         updateFileInfo_.emplace(*resultIter);
+        updateFileId_.emplace(resultIter->id());
         return true;
     }
 
-    ModDownloader *update(const QString &path, const QByteArray &iconBytes, std::function<bool (FileInfoT)> callback)
+    ModDownloader *update(const QString &path, const QByteArray &iconBytes, std::function<bool (FileInfoT)> callback, QList<FileInfoT> fileList = {})
     {
+        if(!updateFileInfo_){
+            if(auto it = std::find_if(fileList.cbegin(), fileList.cend(), [=](const auto &fileInfo){
+                return fileInfo.id() == updateFileId_;
+            }); it != fileList.cend())
+                updateFileInfo_.emplace(*it);
+            else
+                return nullptr;
+        }
         DownloadFileInfo info(*updateFileInfo_);
         info.setPath(path);
         info.setIconBytes(iconBytes);
@@ -101,6 +115,7 @@ public:
             if(callback(*updateFileInfo_)){
                 currentFileInfo_.emplace(*updateFileInfo_);
                 updateFileInfo_.reset();
+                updateFileId_.reset();
                 fileId_ = currentFileInfo_->id();
             }
         });
@@ -116,14 +131,19 @@ public:
         updateFileInfo_.emplace(newUpdateFileInfo);
     }
 
-    void setFileId(const std::remove_const_t<std::remove_reference_t<decltype(FileInfoT().id())>> &newFileId){
+    void setFileId(const typename FileInfoT::IdType &newFileId){
         fileId_.emplace(newFileId);
+    }
+
+    void setUpdateFileId(const typename FileInfoT::IdType &newUpdateFileId){
+        updateFileId_.emplace(newUpdateFileId);
     }
 
 private:
     std::optional<FileInfoT> currentFileInfo_;
     std::optional<FileInfoT> updateFileInfo_;
-    std::optional<std::remove_const_t<std::remove_reference_t<decltype(FileInfoT().id())>>> fileId_;
+    std::optional<typename FileInfoT::IdType> fileId_;
+    std::optional<typename FileInfoT::IdType> updateFileId_;
 };
 
 #endif // UPDATABLE_HPP

@@ -176,8 +176,8 @@ LocalMod::ModWebsiteType LocalMod::defaultUpdateType() const
 
 QList<LocalMod::ModWebsiteType> LocalMod::updateTypes() const
 {
-    auto bl1 = curseforgeUpdate_.isUpdateAvailable();
-    auto bl2 = modrinthUpdate_.isUpdateAvailable();
+    bool bl1(curseforgeUpdate_.updateFileId());
+    bool bl2(modrinthUpdate_.updateFileId());
 
     if(bl1 && !bl2)
         return { ModWebsiteType::Curseforge };
@@ -239,10 +239,18 @@ void LocalMod::update(ModWebsiteType type)
 
     ModDownloader *downloader;
 
-    if(type == ModWebsiteType::Curseforge)
-        downloader = curseforgeUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback);
-    else if(type == ModWebsiteType::Modrinth)
-        downloader = modrinthUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback);
+    if(type == ModWebsiteType::Curseforge){
+        if(curseforgeUpdate_.updateFileInfo())
+            downloader = curseforgeUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback);
+        else
+            downloader = curseforgeUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback, curseforgeMod_->modInfo().allFileList());
+    }
+    else if(type == ModWebsiteType::Modrinth){
+        if(modrinthUpdate_.updateFileInfo())
+            downloader = modrinthUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback);
+        else
+            downloader = modrinthUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback, modrinthMod_->modInfo().fileList());
+    }
 
     connect(downloader, &ModDownloader::downloadProgress, this, &LocalMod::updateProgress);
 }
@@ -377,16 +385,6 @@ void LocalMod::setModrinthId(const QString &id)
     emit modrinthReady(true);
 }
 
-void LocalMod::setCurseforgeFileId(int id)
-{
-    curseforgeUpdate_.setFileId(id);
-}
-
-void LocalMod::setModrinthFileId(const QString &id)
-{
-    modrinthUpdate_.setFileId(id);
-}
-
 const QString &LocalMod::alias() const
 {
     return alias_;
@@ -409,6 +407,8 @@ QJsonObject LocalMod::toJsonObject()
         curseforgeObject.insert("id", curseforgeMod_->modInfo().id());
         if(curseforgeUpdate_.fileId())
             curseforgeObject.insert("fileId", *curseforgeUpdate_.fileId());
+        if(curseforgeUpdate_.updateFileId())
+            curseforgeObject.insert("updateFileId", curseforgeUpdate_.updateFileInfo()->id());
         object.insert("curseforge", curseforgeObject);
     }
 
@@ -417,6 +417,8 @@ QJsonObject LocalMod::toJsonObject()
         modrinthObject.insert("id", modrinthMod_->modInfo().id());
         if(modrinthUpdate_.fileId())
             modrinthObject.insert("fileId", *modrinthUpdate_.fileId());
+        if(modrinthUpdate_.updateFileId())
+            modrinthObject.insert("updateFileId", modrinthUpdate_.updateFileInfo()->id());
         object.insert("modrinth", modrinthObject);
     }
 
@@ -429,12 +431,16 @@ void LocalMod::restore(const QVariant &variant)
     if(contains(variant, "curseforge")){
         setCurseforgeId(value(variant, "curseforge", "id").toInt());
         if(contains(value(variant, "curseforge"), "fileId"))
-            setCurseforgeFileId(value(variant, "curseforge", "fileId").toInt());
+            curseforgeUpdate_.setFileId(value(variant, "curseforge", "fileId").toInt());
+        if(contains(value(variant, "curseforge"), "updateFileId"))
+            curseforgeUpdate_.setUpdateFileId(value(variant, "curseforge", "updateFileId").toInt());
     }
     if(contains(variant, "modrinth")){
         setModrinthId(value(variant, "modrinth", "id").toString());
         if(contains(value(variant, "modrinth"), "fileId"))
-            setModrinthFileId(value(variant, "modrinth", "fileId").toString());
+            modrinthUpdate_.setFileId(value(variant, "modrinth", "fileId").toString());
+        if(contains(value(variant, "modrinth"), "updateFileId"))
+            modrinthUpdate_.setUpdateFileId(value(variant, "modrinth", "updateFileId").toString());
     }
 }
 

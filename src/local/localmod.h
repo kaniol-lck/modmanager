@@ -80,8 +80,6 @@ public:
 
     void setCurseforgeId(int id);
     void setModrinthId(const QString &id);
-    void setCurseforgeFileId(int id);
-    void setModrinthFileId(const QString &id);
 
     const QString &alias() const;
     void setAlias(const QString &newAlias);

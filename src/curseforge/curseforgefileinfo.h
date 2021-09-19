@@ -11,11 +11,12 @@
 class CurseforgeFileInfo
 {
 public:
+    using IdType = int;
     CurseforgeFileInfo() = default;
 
     static CurseforgeFileInfo fromVariant(const QVariant &variant);
 
-    int id() const;
+    IdType id() const;
     const QString &displayName() const;
     const QString &fileName() const;
     const QUrl &url() const;
@@ -26,7 +27,7 @@ public:
     const QDateTime &fileDate() const;
 
 private:
-    int id_;
+    IdType id_;
     QString displayName_;
     QString fileName_;
     QUrl url_;

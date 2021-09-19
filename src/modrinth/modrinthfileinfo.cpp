@@ -32,7 +32,7 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
     return fileInfo;
 }
 
-const QString &ModrinthFileInfo::id() const
+const ModrinthFileInfo::IdType &ModrinthFileInfo::id() const
 {
     return id_;
 }

@@ -53,8 +53,7 @@ void LocalModPath::loadMods()
                 //new mod
                 auto mod = new LocalMod(this, file);
                 //connect update signal
-                connect(mod, &LocalMod::updateFinished, this, [=](bool success){
-                    if(success) updatableCount_--;
+                connect(mod, &LocalMod::updateFinished, this, [=](bool){
                     emit updatesReady();
                 });
                 modMap_[id] = mod;
@@ -78,19 +77,12 @@ void LocalModPath::loadMods()
         readFromFile();
         emit modListUpdated();
 
-        Config config;
-        auto autoSearchOnWebsites = config.getAutoSearchOnWebsites();
-        auto autoCheckUpdate = config.getAutoCheckUpdate();
+        connect(this, &LocalModPath::websitesReady, [=]{
+            checkModUpdates(false);
+            disconnect(SIGNAL(websitesReady()));
+        });
 
-        if(autoCheckUpdate){
-            connect(this, &LocalModPath::websitesReady, [=]{
-                checkModUpdates();
-                disconnect(SIGNAL(websitesReady()));
-            });
-        }
-
-        if(autoSearchOnWebsites && !modMap_.isEmpty())
-            searchOnWebsites();
+        searchOnWebsites();
     });
 }
 
@@ -146,6 +138,9 @@ void LocalModPath::writeToFile()
 {
     QJsonObject object;
 
+    object.insert("latestUpdateCheck", latestUpdateCheck_.toString(Qt::DateFormat::ISODate));
+
+    //mods
     QJsonObject modsObject;
     for(auto mod : qAsConst(modMap_))
         modsObject.insert(mod->commonInfo()->id(), mod->toJsonObject());
@@ -174,8 +169,11 @@ void LocalModPath::readFromFile()
         qDebug("%s", error.errorString().toUtf8().constData());
         return;
     }
-
     auto result = jsonDocument.toVariant();
+
+    latestUpdateCheck_ = value(result, "latestUpdateCheck").toDateTime();
+
+    //mods
     auto modMap = value(result, "mods").toMap();
     for(auto it = modMap.cbegin(); it != modMap.cend(); it++)
         if(modMap_.contains(it.key()))
@@ -319,25 +317,31 @@ void LocalModPath::searchOnWebsites()
     if(isAllCached) emit websitesReady();
 }
 
-void LocalModPath::checkModUpdates()
+void LocalModPath::checkModUpdates(bool force)
 {
-    if(modMap_.isEmpty()) return;
-    emit checkUpdatesStarted();
-    auto count = std::make_shared<int>(0);
-    auto updateCount = std::make_shared<int>(0);
-    for(const auto &mod : qAsConst(modMap_)){
-        connect(mod, &LocalMod::updateReady, this, [=](bool bl){
-            (*count)++;
-            if(bl) (*updateCount)++;
-            emit updateCheckedCountUpdated(*updateCount, *count);
-            //done
-            if(*count == modMap_.size()){
-                updatableCount_ = *updateCount;
-                emit updatesReady();
-            }
-        });
-        mod->checkUpdates(info_.gameVersion(), info_.loaderType());
-    }
+    auto interval = Config().getUpdateCheckInterval();
+    if(force || interval == Config::Always ||
+      (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1)){
+        if(modMap_.isEmpty()) return;
+        emit checkUpdatesStarted();
+        auto count = std::make_shared<int>(0);
+        auto updateCount = std::make_shared<int>(0);
+        for(const auto &mod : qAsConst(modMap_)){
+            connect(mod, &LocalMod::updateReady, this, [=](bool bl){
+                (*count)++;
+                if(bl) (*updateCount)++;
+                emit updateCheckedCountUpdated(*updateCount, *count);
+                //done
+                if(*count == modMap_.size()){
+                    latestUpdateCheck_ = QDateTime::currentDateTime();
+                    writeToFile();
+                    emit updatesReady();
+                }
+            });
+            mod->checkUpdates(info_.gameVersion(), info_.loaderType());
+        }
+    } else if(interval != Config::Never)
+        emit updatesReady();
 }
 
 void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList)
@@ -405,7 +409,10 @@ ModrinthAPI *LocalModPath::modrinthAPI() const
 
 int LocalModPath::updatableCount() const
 {
-    return updatableCount_;
+    auto count = std::count_if(modMap_.cbegin(), modMap_.cend(), [=](const auto &mod){
+        return !mod->updateTypes().isEmpty();
+    });
+    return count;
 }
 
 const QMap<QString, LocalMod *> &LocalModPath::modMap() const

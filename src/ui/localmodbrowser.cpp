@@ -90,6 +90,7 @@ void LocalModBrowser::websitesReady()
 {
     ui->checkUpdatesButton->setEnabled(true);
     ui->checkUpdatesProgress->setVisible(false);
+    ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()));
     ui->checkUpdatesButton->setText(tr("Check updates"));
 }
 
@@ -115,9 +116,9 @@ void LocalModBrowser::updatesReady()
     ui->checkUpdatesButton->setEnabled(true);
     ui->checkUpdatesButton->setText(tr("Check updates"));
     ui->checkUpdatesProgress->setVisible(false);
-    if(modPath_->updatableCount()){
+    if(auto count = modPath_->updatableCount(); count){
         ui->updateAllButton->setVisible(true);
-        ui->statusText->setText(tr("%1 mods need update.").arg(modPath_->updatableCount()));
+        ui->statusText->setText(tr("%1 mods need update.").arg(count));
     } else {
         ui->updateAllButton->setVisible(false);
         ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()) + " " + tr("Good! All mods are up-to-date."));
