@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-constexpr int TIMER_PER_SEC = 4;
+constexpr int TIMER_PER_SEC = 1;
 
 ModDownloader::ModDownloader(QObject *parent) : Downloader(parent)
 {

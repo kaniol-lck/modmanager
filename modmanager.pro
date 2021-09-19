@@ -172,5 +172,5 @@ TEMPLATE = app
 win32 {
     INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
     LIBS += -L$$quote(C:/Program Files/zlib/lib)
-    LIBS += -lzlibwapi
+    LIBS += -lzlib
 }

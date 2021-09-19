@@ -21,6 +21,9 @@
        <property name="placeholderText">
         <string>Search mod in local folder...</string>
        </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -194,7 +197,8 @@
         <string>Update All</string>
        </property>
        <property name="icon">
-        <iconset theme="update-none"/>
+        <iconset theme="update-none">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
