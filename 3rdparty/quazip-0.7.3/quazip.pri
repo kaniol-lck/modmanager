@@ -3,11 +3,6 @@ INCLUDEPATH+= $$PWD/quazip
 DEFINES+= QUAZIP_BUILD
 LIBS+= -lz
 
-win32 {
-    INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
-    LIBS += -L$$quote(C:/Program Files/zlib/lib)
-}
-
 HEADERS+= \
     $$PWD/quazip/crypt.h \
     $$PWD/quazip/ioapi.h \
