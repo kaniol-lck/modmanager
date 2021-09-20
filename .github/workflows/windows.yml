@@ -95,7 +95,7 @@ jobs:
           cp LICENSE* deploy/
           cp *md deploy/
       - name: copy zlib
-        if: contains(matrix.qt_arch, 'mingw')
+        if: contains(matrix.qt_arch, 'msvc')
         shell: pwsh
         run: |
           cp %PROGRAMFILES%\zlib\bin\zlib.dll deploy/
