@@ -23,34 +23,40 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
     ui->updateTableView->setColumnWidth(SourceColumn, 140);
 
     for(const auto &mod : modPath_->modMap()){
+        auto enabled = mod->modFile()->type() == LocalModFile::Normal;
+
         auto type = mod->defaultUpdateType();
         if(type == LocalMod::None) continue;
         auto names = mod->updateNames(type);
 
         auto nameItem = new QStandardItem();
         nameItem->setText(mod->commonInfo()->name());
-        nameItem->setCheckable(true);
-        nameItem->setCheckState(Qt::Checked);
+        nameItem->setCheckable(enabled);
+        nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
         nameItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         nameItem->setEditable(false);
+        nameItem->setEnabled(enabled);
 
         auto beforeItem = new QStandardItem();
         beforeItem->setText(names.first);
         beforeItem->setForeground(Qt::red);
         beforeItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         beforeItem->setEditable(false);
+        beforeItem->setEnabled(enabled);
 
         auto afterItem = new QStandardItem();
         afterItem->setText(names.second);
         afterItem->setForeground(Qt::green);
         afterItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         afterItem->setEditable(false);
+        afterItem->setEnabled(enabled);
 
         auto sourceItem = new QStandardItem();
         auto pair = UpdateSourceDelegate::sourceItems.at(type);
         sourceItem->setText(pair.first);
         sourceItem->setIcon(QIcon(pair.second));
         sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        sourceItem->setEnabled(enabled);
 
         model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
         modUpdateList_ << QPair(mod, mod->defaultUpdateType());

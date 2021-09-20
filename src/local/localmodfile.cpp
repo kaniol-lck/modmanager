@@ -78,25 +78,31 @@ bool LocalModFile::rename(const QString newBaseName)
 
 bool LocalModFile::addOld()
 {
+    if(type() != FileType::Normal) return false;
     QFile file(path_);
-    path_.append(".old");
-    fileInfo_.setFile(path_);
-
-    bool bl = file.rename(path_);
-    if(bl)
+    auto newPath = path_ + ".old";
+    bool bl = file.rename(newPath);
+    if(bl){
+        path_ = newPath;
+        fileInfo_.setFile(path_);
         emit fileChanged();
+    }
     return bl;
 }
 
 bool LocalModFile::removeOld()
 {
+    //only remove old file's old
+    if(type() != FileType::Old) return false;
     QFile file(path_);
-    path_.remove(".old");
-    fileInfo_.setFile(path_);
-
-    bool bl = file.rename(path_);
-    if(bl)
+    auto newPath = path_;
+    newPath.remove(".old");
+    bool bl = file.rename(newPath);
+    if(bl){
+        path_ = newPath;
+        fileInfo_.setFile(path_);
         emit fileChanged();
+    }
     return bl;
 }
 
@@ -107,23 +113,26 @@ bool LocalModFile::setEnabled(bool enabled)
         //only enable a disabled file
         if(fileType != Disabled) return false;
         QFile file(path_);
-        path_.remove(".disabled");
-        fileInfo_.setFile(path_);
-
-        bool bl = file.rename(path_);
-        if(bl)
+        auto newPath = path_;
+        newPath.remove(".disabled");
+        bool bl = file.rename(newPath);
+        if(bl){
+            path_ = newPath;
+            fileInfo_.setFile(path_);
             emit fileChanged();
+        }
         return bl;
     }else {
         //only disable a normal(enabled) file
         if(fileType != Normal) return false;
         QFile file(path_);
-        path_.append(".disabled");
-        fileInfo_.setFile(path_);
-
-        bool bl = file.rename(path_);
-        if(bl)
+        auto newPath = path_ + ".disabled";
+        bool bl = file.rename(newPath);
+        if(bl){
+            path_ = newPath;
+            fileInfo_.setFile(path_);
             emit fileChanged();
+        }
         return bl;
     }
 }

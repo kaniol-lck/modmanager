@@ -50,12 +50,17 @@ jobs:
         with:
           fetch-depth: 1
           submodules: recursive
-      - name: Set arch
+      - name: Install zlib 32
         if: contains(matrix.qt_arch, 'win32_msvc')
+        shell: pwsh
         run: |
             set ARCH=Win32
+            Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat
+            ./install_zlib.bat
+            del install_zlib.bat
       - name: Install zlib
-        if: contains(matrix.qt_arch, 'msvc')
+        if: contains(matrix.qt_arch, 'win64_msvc')
+        shell: pwsh
         run: |
           Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat
           ./install_zlib.bat
