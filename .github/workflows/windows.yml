@@ -1,15 +1,15 @@
-name: Windows MSVC
+name: Windows
 on:
   push:
     paths:
       - '*.pro'
       - 'src/**'
-      - '.github/workflows/windows-msvc.yml'
+      - '.github/workflows/windows.yml'
   pull_request:
     paths:
       - '*.pro'
       - 'src/**'
-      - '.github/workflows/windows-msvc.yml'
+      - '.github/workflows/windows.yml'
 jobs:
   build:
     name: Build
@@ -21,6 +21,16 @@ jobs:
             qt_arch: win64_msvc2019_64
             msvc_arch: x64
             qt_arch_install: msvc2019_64
+            openssl_url: "http://wiki.overbyte.eu/arch/openssl-1.1.1l-win64.zip"
+          - qt_arch: win32_mingw81
+            qt_ver: 5.15.2
+            qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win32_mingw810"
+            qt_tools_mingw_install: mingw810_32
+            openssl_url: "http://wiki.overbyte.eu/arch/openssl-1.1.1l-win32.zip"
+          - qt_arch: win64_mingw81
+            qt_ver: 5.15.2
+            qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win64_mingw810"
+            qt_tools_mingw_install: mingw810_64
             openssl_url: "http://wiki.overbyte.eu/arch/openssl-1.1.1l-win64.zip"
     steps:
       - name: Install Qt
@@ -36,11 +46,13 @@ jobs:
           fetch-depth: 1
           submodules: recursive
       - name: Install zlib
+        if: contains(matrix.qt_arch, 'msvc')
         run: |
           Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat
           ./install_zlib.bat
           del install_zlib.bat
       - name: Test zlib
+        if: contains(matrix.qt_arch, 'msvc')
         shell: cmd
         run: |
           if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
@@ -49,6 +61,7 @@ jobs:
           if NOT exist "%PROGRAMFILES%"\zlib\include\zlib.h exit 1
           if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
       - name: msvc-build
+        if: contains(matrix.qt_arch, 'msvc')
         id: build
         shell: cmd
         run: |
@@ -59,8 +72,21 @@ jobs:
           echo winSdkVer=%WindowsSdkVersion% >> %GITHUB_ENV%
           echo vcToolsInstallDir=%VCToolsInstallDir% >> %GITHUB_ENV%
           echo vcToolsRedistDir=%VCToolsRedistDir% >> %GITHUB_ENV%
-      - name: package
-        id: package
+      - name: where is qmake & where is mingw32-make
+        if: contains(matrix.qt_arch, 'mingw')
+        shell: pwsh
+        run: |
+          Get-Command -Name 'qmake' | Format-List
+          Get-Command -Name 'mingw32-make' | Format-List
+      - name: mingw-build
+        if: contains(matrix.qt_arch, 'mingw')
+        id: build
+        shell: cmd
+        run: |
+          qmake
+          mingw32-make.exe qmake_all
+          mingw32-make.exe
+      - name: perpare package
         shell: pwsh
         run: |
           mkdir deploy && mv release/${{github.event.repository.name}}.exe deploy
@@ -70,6 +96,15 @@ jobs:
           cp openssl/*.dll deploy/
           cp LICENSE* deploy/
           cp *md deploy/
+      - name: copy zlib
+        if: contains(matrix.qt_arch, 'mingw')
+        shell: pwsh
+        run: |
+          cp %PROGRAMFILES%\zlib\bin\zlib.dll deploy/
+      - name: package
+        id: package
+        shell: pwsh
+        run: |
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe
       - uses: actions/upload-artifact@v2
         with:

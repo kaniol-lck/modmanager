@@ -1,7 +1,11 @@
 # quazip.pri
 INCLUDEPATH+= $$PWD/quazip
 DEFINES+= QUAZIP_BUILD
-!win32 {
+win32-msvc* {
+    INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
+    LIBS += -L$$quote(C:/Program Files/zlib/lib)
+    LIBS += -lzlib
+}else {
     LIBS += -lz
 }
 

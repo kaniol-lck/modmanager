@@ -1,4 +1,4 @@
-QT       += core gui network webenginewidgets
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -168,9 +168,3 @@ RESOURCES += \
 TARGET = modmanager
 
 TEMPLATE = app
-
-win32 {
-    INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
-    LIBS += -L$$quote(C:/Program Files/zlib/lib)
-    LIBS += -lzlib
-}

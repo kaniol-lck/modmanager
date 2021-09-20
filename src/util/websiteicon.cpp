@@ -6,7 +6,7 @@
 #include <QEventLoop>
 #include <optional>
 #include <QDebug>
-#include <QWebEnginePage>
+//#include <QWebEnginePage>
 
 WebsiteIcon::WebsiteIcon(QObject *parent) : QObject(parent)
 {}
@@ -53,10 +53,10 @@ void WebsiteIcon::get(QUrl websiteUrl)
             emit iconGot(icon);
         else {
             //QWebEnginePage icon
-            auto page = new QWebEnginePage(this);
-            page->load(websiteUrl);
-            connect(page, &QWebEnginePage::iconChanged, this, &WebsiteIcon::iconGot);
-            return;
+//            auto page = new QWebEnginePage(this);
+//            page->load(websiteUrl);
+//            connect(page, &QWebEnginePage::iconChanged, this, &WebsiteIcon::iconGot);
+//            return;
         }
     });
 }

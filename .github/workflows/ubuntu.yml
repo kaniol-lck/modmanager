@@ -30,9 +30,11 @@ jobs:
         run: |
           qmake
           make
+      - name: package dependencies
+        run: |
+          sudo apt-get install libxcb-icccm4 libxcb-image0
       - name: package
         run: |
-          sudo apt-get install libxcb-icccm4
           mkdir deploy
           cp ${{github.event.repository.name}} deploy/
           cp LICENSE* deploy/
