@@ -134,7 +134,7 @@ QTreeView::branch {
   </action>
   <action name="actionManage_Browser">
    <property name="icon">
-    <iconset theme="settings-configure">
+    <iconset theme="configure">
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
@@ -143,7 +143,8 @@ QTreeView::branch {
   </action>
   <action name="action_About_Mod_Manager">
    <property name="icon">
-    <iconset theme="help-about"/>
+    <iconset theme="help-about">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;About Mod Manager</string>

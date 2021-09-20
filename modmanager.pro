@@ -164,6 +164,7 @@ include(3rdparty/cpp-semver/cpp-semver.pri)
 include(3rdparty/tomlplusplus/tomlplusplus.pri)
 
 RESOURCES += \
+    src/icons/breeze/breeze-modmanager.qrc \
     src/images/image.qrc
 
 unix {

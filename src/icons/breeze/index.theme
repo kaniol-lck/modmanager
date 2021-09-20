@@ -1,0 +1,8 @@
+[Icon Theme]
+Name=breeze-modmanager
+Comment=Breeze Icon Theme for ModManager
+Inherits=default
+Directories=16x16
+
+[16x16]
+Size=16
