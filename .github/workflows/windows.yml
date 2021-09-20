@@ -62,7 +62,6 @@ jobs:
           if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
       - name: msvc-build
         if: contains(matrix.qt_arch, 'msvc')
-        id: build
         shell: cmd
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.msvc_arch }}
@@ -80,7 +79,6 @@ jobs:
           Get-Command -Name 'mingw32-make' | Format-List
       - name: mingw-build
         if: contains(matrix.qt_arch, 'mingw')
-        id: build
         shell: cmd
         run: |
           qmake
