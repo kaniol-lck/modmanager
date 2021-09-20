@@ -27,7 +27,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="versionText">
        <property name="font">
         <font>
          <weight>75</weight>
@@ -35,7 +35,7 @@
         </font>
        </property>
        <property name="text">
-        <string notr="true">v1.0.0 alpha5</string>
+        <string notr="true"/>
        </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>

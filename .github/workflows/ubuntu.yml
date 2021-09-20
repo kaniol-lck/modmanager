@@ -26,6 +26,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+        run: |
+          export VERSION=$(cat version.h | sed 's/[^0-9,.]//g')
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: build ubuntu
         run: |
           qmake
@@ -46,5 +49,5 @@ jobs:
           ./linuxdeployqt-continuous-x86_64.AppImage deploy/${{github.event.repository.name}} -appimage -verbose=2 -unsupported-allow-new-glibc
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}.AppImage
+          name: ${{github.event.repository.name}}-${VERSION}-${{ matrix.qt_arch }}.AppImage
           file: ${{github.workspace}}/deploy/${{github.event.repository.name}}.AppImage

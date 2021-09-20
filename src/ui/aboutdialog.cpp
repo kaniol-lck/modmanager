@@ -4,11 +4,14 @@
 #include <QUrl>
 #include <QDesktopServices>
 
+#include "version.h"
+
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AboutDialog)
 {
     ui->setupUi(this);
+    ui->versionText->setText(kVersion);
 }
 
 AboutDialog::~AboutDialog()

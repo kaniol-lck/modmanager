@@ -98,7 +98,7 @@ jobs:
         if: contains(matrix.qt_arch, 'msvc')
         shell: pwsh
         run: |
-          cp %PROGRAMFILES%\zlib\bin\zlib.dll deploy/
+          cp "C:/Program Files/zlib/zlib/bin/zlib.dll" deploy/
       - name: package
         id: package
         shell: pwsh

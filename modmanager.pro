@@ -115,7 +115,8 @@ HEADERS += \
     src/util/tutil.hpp \
     src/util/datetimesortitem.h \
     src/util/updatesourcedelegate.h \
-    src/util/websiteicon.h
+    src/util/websiteicon.h \
+    src/version.h
 
 FORMS += \
     src/ui/aboutdialog.ui \

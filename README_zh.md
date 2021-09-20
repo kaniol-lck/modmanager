@@ -10,17 +10,43 @@
 
 ## 构建
 
-需要C++17。
+本项目已经配置了[GitHub Actions](https://github.com/kaniol-lck/modmanager/actions)，如果你想要尝试最新鲜的bug，可以直接在其中选择下载并帮我捉虫。
+
+### 自行构建
+
+克隆本仓库至本地：
+
+```bash
+git clone git@github.com:kaniol-lck/modmanager.git
+```
+
+#### 对于GCC/MinGW
+
+构建：
 
 ```sh
 qmake && make
+```
+
+#### 对于MSVC
+
+安装zlib（详见[zlib.install](https://github.com/horta/zlib.install)）：
+
+```bash
+powershell -Command "(Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat)"; ./install_zlib.bat; del install_zlib.bat
+```
+
+构建：
+
+```
+qmake && nmake
 ```
 
 ### 构建状态
 
 | 平台    | 状态                                                         |
 | ------- | ------------------------------------------------------------ |
-| Windows | [![windows-mingw](https://github.com/kaniol-lck/modmanager/actions/workflows/windows-msvc.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/windows-msvc.yml) |
+| Windows | [![windows](https://github.com/kaniol-lck/modmanager/actions/workflows/windows.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/windows.yml) |
 | Linux   | [![ubuntu](https://github.com/kaniol-lck/modmanager/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/ubuntu.yml) |
 | Mac OS  | *未知\**                                                     |
 
