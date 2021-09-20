@@ -26,8 +26,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+      - name: Set Env
         run: |
-          export VERSION=$(cat version.h | sed 's/[^0-9,.]//g')
+          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: build ubuntu
         run: |
