@@ -69,6 +69,8 @@ public:
     void rollback(LocalModFile *file);
     void deleteAllOld();
 
+    bool setEnabled(bool enabled);
+
     void addDepend(std::tuple<QString, QString, std::optional<FabricModInfo>> modDepend);
     void addConflict(std::tuple<QString, QString, FabricModInfo> modConflict);
     void addBreak(std::tuple<QString, QString, FabricModInfo> modBreak);

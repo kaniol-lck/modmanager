@@ -22,6 +22,9 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui->updateButton->setEnabled(false);
     ui->curseforgeButton->setEnabled(false);
     ui->modrinthButton->setEnabled(false);
+    ui->disableButton->setVisible(false);
+
+    this->setAttribute(Qt::WA_Hover, true);
 
     //init info
     updateInfo();
@@ -49,6 +52,18 @@ LocalModItemWidget::~LocalModItemWidget()
     delete ui;
 }
 
+void LocalModItemWidget::enterEvent(QEvent *event)
+{
+    ui->disableButton->setVisible(true);
+    QWidget::enterEvent(event);
+}
+
+void LocalModItemWidget::leaveEvent(QEvent *event)
+{
+    ui->disableButton->setVisible(ui->disableButton->isChecked());
+    QWidget::leaveEvent(event);
+}
+
 void LocalModItemWidget::updateInfo()
 {
     if(!mod_->alias().isEmpty())
@@ -68,8 +83,12 @@ void LocalModItemWidget::updateInfo()
         ui->modAuthors->setText("");
 
     if(!mod_->commonInfo()->iconBytes().isEmpty()){
+        QImage image;
+        image.loadFromData(mod_->commonInfo()->iconBytes());
+        if(mod_->modFile()->type() == LocalModFile::Disabled)
+            image = image.convertToFormat(QImage::Format_Grayscale8, Qt::AutoColor);
         QPixmap pixelmap;
-        pixelmap.loadFromData(mod_->commonInfo()->iconBytes());
+        pixelmap.convertFromImage(image);
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
     }
 
@@ -100,6 +119,22 @@ void LocalModItemWidget::updateInfo()
         ui->warningButton->setToolTip(tr("Duplicate mod!"));
     } else {
         ui->warningButton->setVisible(false);
+    }
+
+    //enabled
+    if(mod_->modFile()->type() == LocalModFile::Disabled){
+        ui->disableButton->setChecked(true);
+        ui->disableButton->setVisible(true);
+        ui->modName->setStyleSheet("color: #777");
+        ui->modAuthors->setStyleSheet("color: #777");
+        ui->modDescription->setStyleSheet("background-color:transparent;color: #777;");
+        ui->modVersion->setStyleSheet("color: #777");
+    }else {
+        ui->disableButton->setChecked(false);
+        ui->modName->setStyleSheet("");
+        ui->modAuthors->setStyleSheet("");
+        ui->modDescription->setStyleSheet("background-color:transparent;");
+        ui->modVersion->setStyleSheet("");
     }
 }
 
@@ -218,5 +253,11 @@ void LocalModItemWidget::on_warningButton_clicked()
     str += tr("Keep one of them and set the others as old mods?");
     if(QMessageBox::Yes == QMessageBox::question(this, tr("Incompatibility"), str))
         mod_->duplicateToOld();
+}
+
+
+void LocalModItemWidget::on_disableButton_toggled(bool checked)
+{
+    mod_->setEnabled(!checked);
 }
 

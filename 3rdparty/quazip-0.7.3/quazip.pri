@@ -1,12 +1,13 @@
 # quazip.pri
 INCLUDEPATH+= $$PWD/quazip
 DEFINES+= QUAZIP_BUILD
+LIBS += -lz
 win32-msvc* {
+    message("Build with MSVC.")
     INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
     LIBS += -L$$quote(C:/Program Files/zlib/lib)
     LIBS += -lzlib
-}else {
-    LIBS += -lz
+    LIBS -= -lz
 }
 
 HEADERS+= \

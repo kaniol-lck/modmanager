@@ -166,6 +166,37 @@ include(3rdparty/tomlplusplus/tomlplusplus.pri)
 RESOURCES += \
     src/images/image.qrc
 
-TARGET = modmanager
+unix {
+  isEmpty(PREFIX) {
+    PREFIX = /usr
+  }
 
-TEMPLATE = app
+  isEmpty(BINDIR) {
+    BINDIR = $$PREFIX/bin
+  }
+
+  isEmpty(DATADIR) {
+    DATADIR = $$PREFIX/share
+  }
+
+  INSTALLS += desktop
+
+  target.path = $$INSTROOT$$BINDIR
+
+  desktop.path = $$DATADIR/applications
+  desktop.files += src/ModManager.desktop
+}
+
+CONFIG(debug, debug|release) {
+#    QMAKE_CXXFLAGS_DEBUG += -g3 -O0
+    message("Currently in DEBUG mode.")
+} else {
+    DEFINES += QT_NO_DEBUG
+
+    # We want to allow optional debug output in releases
+#    DEFINES += QT_NO_DEBUG_OUTPUT
+    message("Currently in RELEASE mode.")
+}
+
+DISTFILES += \
+    src/ModManager.desktop

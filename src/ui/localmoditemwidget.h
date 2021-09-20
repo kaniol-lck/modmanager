@@ -17,6 +17,9 @@ public:
     explicit LocalModItemWidget(QWidget *parent, LocalMod *localMod);
     ~LocalModItemWidget();
 
+    void enterEvent(QEvent * event);
+    void leaveEvent(QEvent * event);
+
 public slots:
     void updateInfo();
 
@@ -42,6 +45,8 @@ private slots:
     void on_modrinthButton_clicked();
 
     void on_warningButton_clicked();
+
+    void on_disableButton_toggled(bool checked);
 
 private:
     Ui::LocalModItemWidget *ui;

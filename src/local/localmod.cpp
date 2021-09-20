@@ -326,6 +326,14 @@ void LocalMod::deleteAllOld()
     oldFiles_.clear();
 }
 
+bool LocalMod::setEnabled(bool enabled)
+{
+    auto bl = modFile_->setEnabled(enabled);
+    if(bl)
+        emit modFileUpdated();
+    return bl;
+}
+
 void LocalMod::addDepend(std::tuple<QString, QString, std::optional<FabricModInfo> > modDepend)
 {
     depends_ << modDepend;

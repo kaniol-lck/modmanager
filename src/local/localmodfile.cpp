@@ -100,6 +100,34 @@ bool LocalModFile::removeOld()
     return bl;
 }
 
+bool LocalModFile::setEnabled(bool enabled)
+{
+    auto fileType = type();
+    if(enabled){
+        //only enable a disabled file
+        if(fileType != Disabled) return false;
+        QFile file(path_);
+        path_.remove(".disabled");
+        fileInfo_.setFile(path_);
+
+        bool bl = file.rename(path_);
+        if(bl)
+            emit fileChanged();
+        return bl;
+    }else {
+        //only disable a normal(enabled) file
+        if(fileType != Normal) return false;
+        QFile file(path_);
+        path_.append(".disabled");
+        fileInfo_.setFile(path_);
+
+        bool bl = file.rename(path_);
+        if(bl)
+            emit fileChanged();
+        return bl;
+    }
+}
+
 const QString &LocalModFile::sha1() const
 {
     return sha1_;

@@ -41,7 +41,7 @@ void LocalModPath::loadMods(bool startup)
 
         //load normal mods (include duplicate)
         for(const auto &file : qAsConst(modFileList_)){
-            if(file->type() != LocalModFile::Normal) continue;
+            if(auto type = file->type(); type != LocalModFile::Normal && type != LocalModFile::Disabled ) continue;
             if(file->loaderType() != info_.loaderType()) continue;
             auto id = file->commonInfo()->id();
             //duplicate

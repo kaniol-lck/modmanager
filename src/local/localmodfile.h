@@ -22,6 +22,8 @@ public:
     bool addOld();
     bool removeOld();
 
+    bool setEnabled(bool enabled);
+
     const QString &sha1() const;
     const QString &murmurhash() const;
     std::tuple<QString, QString> baseNameFullSuffix() const;
