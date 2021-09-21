@@ -44,11 +44,12 @@ qmake && nmake
 
 ### Build Status
 
-| Platform | Status                                                       |
-| -------- | ------------------------------------------------------------ |
-| Windows  | [![windows](https://github.com/kaniol-lck/modmanager/actions/workflows/windows.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/windows.yml) |
-| Linux    | [![ubuntu](https://github.com/kaniol-lck/modmanager/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/ubuntu.yml) |
-| Mac OS   | *UNKNOWN\**                                                  |
+| Platform      | Status                                                       |
+| ------------- | ------------------------------------------------------------ |
+| Windows MinGW | [![windows](https://github.com/kaniol-lck/modmanager/actions/workflows/windows-mingw.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/windows-mingw.yml) |
+| Windows MSVC  | [![windows](https://github.com/kaniol-lck/modmanager/actions/workflows/windows-msvc.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/windows-msvc.yml) |
+| Linux         | [![ubuntu](https://github.com/kaniol-lck/modmanager/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/ubuntu.yml) |
+| Mac OS        | *UNKNOWN\**                                                  |
 
 \* Mac OS Build failed with c++ 17 on GitHub Actions. （HELP WANTED）
 
