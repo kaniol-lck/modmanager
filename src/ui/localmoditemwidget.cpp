@@ -133,7 +133,6 @@ void LocalModItemWidget::updateInfo()
         ui->modDescription->setStyleSheet("background-color:transparent;color: #777;");
         ui->modVersion->setStyleSheet("color: #777");
         ui->updateButton->setEnabled(false);
-        ui->rollbackButton->setEnabled(false);
     }else {
         ui->disableButton->setChecked(false);
         ui->modName->setStyleSheet("");
@@ -141,7 +140,6 @@ void LocalModItemWidget::updateInfo()
         ui->modDescription->setStyleSheet("background-color:transparent;");
         ui->modVersion->setStyleSheet("");
         ui->updateButton->setEnabled(true);
-        ui->rollbackButton->setEnabled(true);
     }
     if(mod_->isFeatured()) ui->featuredButton->setVisible(true);
     ui->featuredButton->setChecked(mod_->isFeatured());

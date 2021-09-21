@@ -311,12 +311,14 @@ void LocalMod::duplicateToOld()
 void LocalMod::rollback(LocalModFile *file)
 {
     //TODO: refresh update info;
-    //TODO: what if rollback a disabled file
+    auto disabled = isDisabled();
+    if(disabled) setEnabled(true);
     file->removeOld();
     oldFiles_.removeAll(file);
     modFile_->addOld();
     oldFiles_ << modFile_;
     modFile_ = file;
+    if(disabled) setEnabled(false);
     emit modFileUpdated();
 }
 
