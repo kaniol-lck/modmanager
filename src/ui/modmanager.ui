@@ -151,16 +151,26 @@ QTreeView::branch {
    </property>
   </action>
   <action name="actionView_Curseforge">
+   <property name="icon">
+    <iconset resource="../images/image.qrc">
+     <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+   </property>
    <property name="text">
     <string>Visit Curseforge</string>
    </property>
   </action>
   <action name="actionVisit_Modrinth">
+   <property name="icon">
+    <iconset resource="../images/image.qrc">
+     <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
+   </property>
    <property name="text">
     <string>Visit Modrinth</string>
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../images/image.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -88,8 +88,11 @@ void LocalModItemWidget::updateInfo()
     if(!mod_->commonInfo()->iconBytes().isEmpty()){
         QImage image;
         image.loadFromData(mod_->commonInfo()->iconBytes());
-        if(mod_->modFile()->type() == LocalModFile::Disabled)
-            image = image.convertToFormat(QImage::Format_Grayscale8, Qt::AutoColor);
+        if(mod_->modFile()->type() == LocalModFile::Disabled){
+            auto alphaChannel = image.convertToFormat(QImage::Format_Alpha8);
+            image = image.convertToFormat(QImage::Format_Grayscale8);
+            image.setAlphaChannel(alphaChannel);
+        }
         QPixmap pixelmap;
         pixelmap.convertFromImage(image);
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
