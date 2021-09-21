@@ -9,4 +9,6 @@ QString numberConvert(int size, const QString &suffix, int prec = 3, int limit =
 
 void openFileInFolder(const QString &filePath);
 
+bool hasFile(const QString &path, const QString &fileName);
+
 #endif // FUNCUTIL_H

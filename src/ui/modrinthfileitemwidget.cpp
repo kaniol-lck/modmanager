@@ -37,6 +37,8 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, ModrinthMod *mod
 
     //size
     ui->downloadSpeedText->setVisible(false);
+
+    setDownloadPath(path);
 }
 
 ModrinthFileItemWidget::~ModrinthFileItemWidget()
@@ -82,5 +84,12 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
 void ModrinthFileItemWidget::setDownloadPath(const QString &newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
-}
 
+    if(hasFile(downloadPath_, fileInfo_.fileName())){
+        ui->downloadButton->setEnabled(false);
+        ui->downloadButton->setText(tr("Downloaded"));
+    } else{
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setText(tr("Download"));
+    }
+}

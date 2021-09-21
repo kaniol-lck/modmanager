@@ -67,6 +67,7 @@ void ModrinthModItemWidget::updateFileList()
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setMenu(menu);
     }
+    setDownloadPath(downloadPath_);
 }
 
 void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
@@ -104,4 +105,21 @@ ModrinthMod *ModrinthModItemWidget::mod() const
 void ModrinthModItemWidget::setDownloadPath(const QString &newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
+
+    //TODO: download in local mod path -- has file
+    if(mod_->modInfo().fileList().isEmpty()) return;
+    bool bl = false;
+    for(const auto &fileInfo : mod_->modInfo().fileList()){
+        if(hasFile(downloadPath_, fileInfo.fileName())){
+            bl = true;
+            break;
+        }
+    }
+    if(bl){
+        ui->downloadButton->setEnabled(false);
+        ui->downloadButton->setText(tr("Downloaded"));
+    } else{
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setText(tr("Download"));
+    }
 }

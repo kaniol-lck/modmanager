@@ -131,10 +131,11 @@
         <enum>Qt::DefaultContextMenu</enum>
        </property>
        <property name="text">
-        <string>Download</string>
+        <string>Preparing</string>
        </property>
        <property name="icon">
-        <iconset theme="download"/>
+        <iconset theme="download">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -146,7 +147,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Preparing...</string>
+        <string>0 KB/s</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

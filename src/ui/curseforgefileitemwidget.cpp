@@ -13,8 +13,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
     ui(new Ui::CurseforgeFileItemWidget),
     mod_(mod),
     localMod_(localMod),
-    fileInfo_(info),
-    downloadPath_(path)
+    fileInfo_(info)
 {
     ui->setupUi(this);
     ui->displayNameText->setText(fileInfo_.displayName());
@@ -39,6 +38,8 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
 
     //size
     ui->downloadSpeedText->setText(numberConvert(fileInfo_.size(), "B"));
+
+    setDownloadPath(path);
 }
 
 CurseforgeFileItemWidget::~CurseforgeFileItemWidget()
@@ -83,4 +84,12 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
 void CurseforgeFileItemWidget::setDownloadPath(const QString &newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
+
+    if(hasFile(downloadPath_, fileInfo_.fileName())){
+        ui->downloadButton->setEnabled(false);
+        ui->downloadButton->setText(tr("Downloaded"));
+    } else{
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setText(tr("Download"));
+    }
 }

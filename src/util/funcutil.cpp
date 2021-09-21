@@ -47,3 +47,12 @@ void openFileInFolder(const QString &filePath)
 #endif
     QDesktopServices::openUrl(QUrl::fromLocalFile(info.isFile()?info.absolutePath() : path));
 }
+
+bool hasFile(const QString &path, const QString &fileName)
+{
+    //TODO: how to know if is a renamed mod file
+    for(const auto &fileInfo : QDir(path).entryInfoList(QDir::Files))
+        if(fileInfo.fileName().contains(fileName))
+            return true;
+    return false;
+}

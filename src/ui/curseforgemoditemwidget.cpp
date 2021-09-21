@@ -14,8 +14,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     QWidget(parent),
     ui(new Ui::CurseforgeModItemWidget),
     mod_(mod),
-    defaultFileInfo_(defaultDownload),
-    downloadPath_(path)
+    defaultFileInfo_(defaultDownload)
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
@@ -23,10 +22,11 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 
     auto menu = new QMenu(this);
 
-    if(defaultFileInfo_.has_value()){
+    if(defaultFileInfo_){
         auto name = defaultFileInfo_.value().displayName() + " ("+ numberConvert(defaultFileInfo_.value().size(), "B") + ")";
         connect(menu->addAction(QIcon::fromTheme("starred-symbolic"), name), &QAction::triggered, this, [=]{
-            downloadFile(defaultFileInfo_.value());
+            if(!hasFile(downloadPath_, defaultFileInfo_->fileName()))
+                downloadFile(*defaultFileInfo_);
         });
 
         if(!mod->modInfo().latestFileList().isEmpty())
@@ -36,11 +36,14 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     for(const auto &fileInfo : mod->modInfo().latestFileList()){
         auto name = fileInfo.displayName() + " ("+ numberConvert(fileInfo.size(), "B") + ")";
         connect(menu->addAction(name), &QAction::triggered, this, [=]{
-            downloadFile(fileInfo);
+            if(!hasFile(downloadPath_, fileInfo.fileName()))
+                downloadFile(fileInfo);
         });
     }
 
     ui->downloadButton->setMenu(menu);
+
+    setDownloadPath(path);
 
     ui->modName->setText(mod->modInfo().name());
     ui->modSummary->setText(mod->modInfo().summary());
@@ -99,4 +102,21 @@ CurseforgeMod *CurseforgeModItemWidget::mod() const
 void CurseforgeModItemWidget::setDownloadPath(const QString &newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
+
+    //TODO: download in local mod path -- has file
+    bool bl = false;
+    if(defaultFileInfo_) bl = hasFile(downloadPath_, defaultFileInfo_->fileName());
+    for(const auto &fileInfo : mod_->modInfo().latestFileList()){
+        if(hasFile(downloadPath_, fileInfo.fileName())){
+            bl = true;
+            break;
+        }
+    }
+    if(bl){
+        ui->downloadButton->setEnabled(false);
+        ui->downloadButton->setText(tr("Downloaded"));
+    } else{
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setText(tr("Download"));
+    }
 }
