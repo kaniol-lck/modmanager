@@ -44,7 +44,7 @@ LocalModBrowserSettingsDialog::~LocalModBrowserSettingsDialog()
 void LocalModBrowserSettingsDialog::updateVersionList()
 {
     ui->versionSelect->clear();
-    for(const auto &version : GameVersion::mojangVersionList())
+    for(const auto &version : GameVersion::mojangReleaseVersionList())
         ui->versionSelect->addItem(version);
 }
 

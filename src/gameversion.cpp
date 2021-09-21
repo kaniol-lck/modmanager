@@ -14,7 +14,7 @@
 GameVersion GameVersion::Any = GameVersion("");
 
 QList<GameVersion> GameVersion::mojangVersionList_;
-
+QList<GameVersion> GameVersion::mojangReleaseVersionList_;
 QList<GameVersion> GameVersion::curseforgeVersionList_;
 
 QList<GameVersion> GameVersion::cachedVersionList_{
@@ -146,7 +146,7 @@ std::optional<GameVersion> GameVersion::deduceFromString(const QString &string)
     if(re.indexIn(string) != -1){
         //2nd cap
         auto str = re.cap(1);
-        if(mojangVersionList().contains(str))
+        if(mojangReleaseVersionList().contains(str))
             return {GameVersion(str)};
     }
     return std::nullopt;
@@ -154,9 +154,9 @@ std::optional<GameVersion> GameVersion::deduceFromString(const QString &string)
 
 void VersionManager::initMojangVersionList()
 {
-    QNetworkAccessManager accessManager;
+    auto accessManager = new QNetworkAccessManager(this);
     QNetworkRequest request(QUrl("https://launchermeta.mojang.com/mc/game/version_manifest.json"));
-    auto reply = accessManager.get(request);
+    auto reply = accessManager->get(request);
     QObject::connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError){
             qDebug() << reply->errorString();
@@ -166,8 +166,11 @@ void VersionManager::initMojangVersionList()
         auto json = QJsonDocument::fromJson(reply->readAll(), &error);
         if(error.error == QJsonParseError::NoError){
             auto list = value(json.toVariant(), "versions").toList();
-            for(const auto &entry : qAsConst(list))
+            for(const auto &entry : qAsConst(list)){
                 GameVersion::mojangVersionList_ << value(entry, "id").toString();
+                if(value(entry, "type").toString() == "release")
+                    GameVersion::mojangReleaseVersionList_ << value(entry, "id").toString();
+            }
         }
         qDebug() << "mojang version updated.";
         emit mojangVersionListUpdated();
@@ -185,9 +188,9 @@ void VersionManager::initCurseforgeVersionList()
     });
 }
 
-QList<GameVersion> GameVersion::mojangVersionList()
+QList<GameVersion> GameVersion::mojangReleaseVersionList()
 {
-    return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangVersionList_;
+    return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangReleaseVersionList_;
 }
 
 QList<GameVersion> GameVersion::curseforgeVersionList()
@@ -197,7 +200,7 @@ QList<GameVersion> GameVersion::curseforgeVersionList()
 
 QList<GameVersion> GameVersion::modrinthVersionList()
 {
-    return mojangVersionList();
+    return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangVersionList_;
 }
 
 VersionManager *VersionManager::manager()
@@ -209,5 +212,5 @@ VersionManager *VersionManager::manager()
 void VersionManager::initVersionLists()
 {
     manager()->initMojangVersionList();
-//    manager()->initCurseforgeVersionList();
+    manager()->initCurseforgeVersionList();
 }

@@ -80,7 +80,7 @@ void LocalModInfoDialog::updateInfo()
     if(mod_ && mod_->isDisabled()) name.append(tr(" (Disabled)"));
     ui->modName->setText(name);
     ui->modVersion->setText(modInfo->version());
-    ui->modAuthors->setText(modInfo->authors().join("</b>, <b>").prepend("<b>").append("</b>"));
+    ui->modAuthors->setText(modInfo->authors().join(", "));
     ui->modDescription->setText(modInfo->description());
 
     ui->homepageButton->setEnabled(false);

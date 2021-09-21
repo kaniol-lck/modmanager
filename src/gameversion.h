@@ -25,7 +25,7 @@ public:
 
     static GameVersion Any;
 
-    static QList<GameVersion> mojangVersionList();
+    static QList<GameVersion> mojangReleaseVersionList();
     static QList<GameVersion> curseforgeVersionList();
     static QList<GameVersion> modrinthVersionList();
 
@@ -38,6 +38,7 @@ private:
 
     static QList<GameVersion> cachedVersionList_;
     static QList<GameVersion> mojangVersionList_;
+    static QList<GameVersion> mojangReleaseVersionList_;
     static QList<GameVersion> curseforgeVersionList_;
 };
 
