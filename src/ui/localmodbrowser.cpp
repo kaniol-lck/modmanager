@@ -120,6 +120,7 @@ void LocalModBrowser::updatesReady()
     if(auto count = modPath_->updatableCount(); count){
         ui->updateAllButton->setVisible(true);
         ui->updateAllButton->setEnabled(true);
+        ui->updateAllButton->setText(tr("Update All"));
         ui->statusText->setText(tr("%1 mods need update.").arg(count));
     } else {
         ui->updateAllButton->setVisible(false);

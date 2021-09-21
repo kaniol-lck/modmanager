@@ -36,7 +36,7 @@ public:
     enum PostUpdateType{ Delete, Keep, DoNothing };
     getterAndSetter(PostUpdate, Int, postUpdate, Keep);
     enum UpdateCheckIntervalType{ Always, EveryDay, Never };
-    getterAndSetter(UpdateCheckInterval, Int, updateCheckIntervalType, Always);
+    getterAndSetter(UpdateCheckInterval, Int, updateCheckIntervalType, EveryDay);
 
     //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)

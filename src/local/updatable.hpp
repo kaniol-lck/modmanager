@@ -81,6 +81,9 @@ public:
         if(resultIter->fileDate() <= currentFileInfo_->fileDate())
             return false;
 
+        if(resultIter->id() == currentFileInfo_->id())
+            return false;
+
         updateFileInfo_.emplace(*resultIter);
         return true;
     }
