@@ -93,7 +93,7 @@ jobs:
         if: contains(matrix.qt_arch, 'win64_msvc')
         shell: pwsh
         run: |
-          cp "C:/Program Files/zlib/bin/zlib.dll deploy/
+          cp "C:/Program Files/zlib/bin/zlib.dll" deploy/
       - name: package
         id: package
         shell: pwsh

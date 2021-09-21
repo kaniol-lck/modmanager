@@ -12,6 +12,17 @@ It should be able to manage, update and download mod.
 
 This repository has deployed [GitHub Actions](https://github.com/kaniol-lck/modmanager/actions). If you want to try my new-written bugs, welcome to try it and open some issues.
 
+### Build Status
+
+| Platform      | Status                                                       |
+| ------------- | ------------------------------------------------------------ |
+| Windows MinGW | [![windows](https://github.com/kaniol-lck/modmanager/actions/workflows/windows-mingw.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/windows-mingw.yml) |
+| Windows MSVC  | [![windows](https://github.com/kaniol-lck/modmanager/actions/workflows/windows-msvc.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/windows-msvc.yml) |
+| Linux         | [![ubuntu](https://github.com/kaniol-lck/modmanager/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/ubuntu.yml) |
+| Mac OS        | *UNKNOWN\**                                                  |
+
+\* Mac OS Build failed with c++ 17 on GitHub Actions. （HELP WANTED）
+
 ### Build Yourself
 
 Clone this repository: 
@@ -41,17 +52,6 @@ Build:
 ```bash
 qmake && nmake
 ```
-
-### Build Status
-
-| Platform      | Status                                                       |
-| ------------- | ------------------------------------------------------------ |
-| Windows MinGW | [![windows](https://github.com/kaniol-lck/modmanager/actions/workflows/windows-mingw.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/windows-mingw.yml) |
-| Windows MSVC  | [![windows](https://github.com/kaniol-lck/modmanager/actions/workflows/windows-msvc.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/windows-msvc.yml) |
-| Linux         | [![ubuntu](https://github.com/kaniol-lck/modmanager/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/kaniol-lck/modmanager/blob/master/.github/workflows/ubuntu.yml) |
-| Mac OS        | *UNKNOWN\**                                                  |
-
-\* Mac OS Build failed with c++ 17 on GitHub Actions. （HELP WANTED）
 
 ## Usage
 
