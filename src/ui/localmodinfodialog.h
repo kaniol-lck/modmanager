@@ -47,7 +47,6 @@ private:
     LocalMod *mod_ = nullptr;
 
     bool isRenaming = false;
-    bool isDisabling = true;
 };
 
 #endif // LOCALMODINFODIALOG_H

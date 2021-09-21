@@ -2,10 +2,18 @@
 INCLUDEPATH+= $$PWD/quazip
 DEFINES+= QUAZIP_BUILD
 LIBS += -lz
+
 win32-msvc* {
     message("Build with MSVC.")
-    INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
-    LIBS += -L$$quote(C:/Program Files/zlib/lib)
+    contains(QT_ARCH, i386) {
+        message("32-bit")
+        INCLUDEPATH += $$quote(C:/Program Files (x86)/zlib/include)
+        LIBS += -L$$quote(C:/Program Files (x86)/zlib/lib)
+    } else {
+        message("64-bit")
+        INCLUDEPATH += $$quote(C:/Program Files/zlib/include)
+        LIBS += -L$$quote(C:/Program Files/zlib/lib)
+    }
     LIBS += -lzlib
     LIBS -= -lz
 }

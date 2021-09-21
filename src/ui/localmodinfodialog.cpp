@@ -21,6 +21,8 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, Loca
     mod_(mod)
 {
     ui->setupUi(this);
+    //not use it currently
+    ui->disableButton->setVisible(false);
 
     //init info
     updateInfo();
@@ -56,7 +58,6 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, Loca
         //remove old tab
         ui->tabWidget->removeTab(2);
     }
-    isDisabling = false;
 }
 
 LocalModInfoDialog::~LocalModInfoDialog()
@@ -213,9 +214,8 @@ void LocalModInfoDialog::on_oldModListWidget_doubleClicked(const QModelIndex &in
 
 void LocalModInfoDialog::on_disableButton_toggled(bool checked)
 {
-    if(isDisabling) return;
-    isDisabling = true;
+    ui->disableButton->setEnabled(false);
     mod_->setEnabled(!checked);
-    isDisabling = false;
+    ui->disableButton->setEnabled(true);
 }
 

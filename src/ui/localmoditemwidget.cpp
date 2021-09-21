@@ -23,13 +23,12 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui->curseforgeButton->setEnabled(false);
     ui->modrinthButton->setEnabled(false);
     ui->disableButton->setVisible(false);
+    ui->featuredButton->setVisible(false);
 
     this->setAttribute(Qt::WA_Hover, true);
 
     //init info
     updateInfo();
-
-    isDisabling = false;
 
     //signals / slots
     connect(mod_, &LocalMod::modFileUpdated, this, &LocalModItemWidget::updateInfo);
@@ -57,12 +56,14 @@ LocalModItemWidget::~LocalModItemWidget()
 void LocalModItemWidget::enterEvent(QEvent *event)
 {
     ui->disableButton->setVisible(true);
+    ui->featuredButton->setVisible(true);
     QWidget::enterEvent(event);
 }
 
 void LocalModItemWidget::leaveEvent(QEvent *event)
 {
     ui->disableButton->setVisible(ui->disableButton->isChecked());
+    ui->featuredButton->setVisible(ui->featuredButton->isChecked());
     QWidget::leaveEvent(event);
 }
 
@@ -142,6 +143,8 @@ void LocalModItemWidget::updateInfo()
         ui->updateButton->setEnabled(true);
         ui->rollbackButton->setEnabled(true);
     }
+    if(mod_->isFeatured()) ui->featuredButton->setVisible(true);
+    ui->featuredButton->setChecked(mod_->isFeatured());
 }
 
 void LocalModItemWidget::on_updateButton_clicked()
@@ -264,9 +267,17 @@ void LocalModItemWidget::on_warningButton_clicked()
 
 void LocalModItemWidget::on_disableButton_toggled(bool checked)
 {
-    if(isDisabling) return;
-    isDisabling = true;
+    ui->disableButton->setEnabled(false);
     mod_->setEnabled(!checked);
-    isDisabling = false;
+    ui->disableButton->setEnabled(true);
+}
+
+
+void LocalModItemWidget::on_featuredButton_toggled(bool checked)
+{
+    ui->featuredButton->setEnabled(false);
+    ui->featuredButton->setIcon(QIcon::fromTheme(checked? "starred-symbolic" : "non-starred-symbolic"));
+    mod_->setFeatured(checked);
+    ui->featuredButton->setEnabled(true);
 }
 

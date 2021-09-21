@@ -428,6 +428,8 @@ QJsonObject LocalMod::toJsonObject() const
 
     if(!alias_.isEmpty())
         object.insert("alias", alias_);
+    if(isFeatured_)
+        object.insert("featured", isFeatured_);
 
     if(curseforgeMod_){
         QJsonObject curseforgeObject;
@@ -455,6 +457,7 @@ QJsonObject LocalMod::toJsonObject() const
 void LocalMod::restore(const QVariant &variant)
 {
     alias_ = value(variant, "alias").toString();
+    isFeatured_ = value(variant, "featured").toBool();
     if(contains(variant, "curseforge")){
         setCurseforgeId(value(variant, "curseforge", "id").toInt());
         if(contains(value(variant, "curseforge"), "currentFileInfo"))
@@ -469,6 +472,18 @@ void LocalMod::restore(const QVariant &variant)
         if(contains(value(variant, "modrinth"), "updateFileInfo"))
             modrinthUpdate_.setUpdateFileInfo(ModrinthFileInfo::fromVariant(value(variant, "modrinth", "updateFileInfo")));
     }
+}
+
+bool LocalMod::isFeatured() const
+{
+    return isFeatured_;
+}
+
+void LocalMod::setFeatured(bool featured)
+{
+    isFeatured_ = featured;
+    emit modCacheUpdated();
+    emit modFileUpdated();
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

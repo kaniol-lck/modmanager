@@ -48,11 +48,11 @@ private slots:
 
     void on_disableButton_toggled(bool checked);
 
+    void on_featuredButton_toggled(bool checked);
+
 private:
     Ui::LocalModItemWidget *ui;
     LocalMod *mod_;
-
-    bool isDisabling = true;
 };
 
 #endif // MODENTRYWIDGET_H

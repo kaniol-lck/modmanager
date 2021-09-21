@@ -91,6 +91,9 @@ public:
     QJsonObject toJsonObject() const;
     void restore(const QVariant &variant);
 
+    bool isFeatured() const;
+    void setFeatured(bool featured);
+
 signals:
     void modFileUpdated();
     void modCacheUpdated();
@@ -115,6 +118,7 @@ signals:
     void updateFinished(bool success);
 
 private:
+    bool isFeatured_ = false;
     QString alias_;
 
     //api for update
