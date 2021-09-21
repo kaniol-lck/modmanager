@@ -1,21 +1,21 @@
-<?xml version="1.0" ?>
-<RCC version="1.0">
-	<qresource prefix="icons/breeze-modmanager">
-		<file alias="index.theme">index.theme</file>
-		<file alias="16x16/backup.svg">16x16/backup.svg</file>
-		<file alias="16x16/checkmark.svg">16x16/checkmark.svg</file>
-		<file alias="16x16/configure.svg">16x16/configure.svg</file>
-		<file alias="16x16/delete.svg">16x16/delete.svg</file>
-		<file alias="16x16/download.svg">16x16/download.svg</file>
-		<file alias="16x16/emblem-warning.svg">16x16/emblem-warning.svg</file>
-		<file alias="16x16/entry-edit.svg">16x16/entry-edit.svg</file>
-		<file alias="16x16/folder.svg">16x16/folder.svg</file>
-		<file alias="16x16/go-down.svg">16x16/go-down.svg</file>
-		<file alias="16x16/go-up.svg">16x16/go-up.svg</file>
-		<file alias="16x16/help-about.svg">16x16/help-about.svg</file>
-		<file alias="16x16/list-add.svg">16x16/list-add.svg</file>
-		<file alias="16x16/list-remove.svg">16x16/list-remove.svg</file>
-		<file alias="16x16/search.svg">16x16/search.svg</file>
-		<file alias="16x16/view-refresh.svg">16x16/view-refresh.svg</file>
-	</qresource>
+<RCC>
+    <qresource prefix="/icons/breeze-modmanager">
+        <file alias="index.theme">index.theme</file>
+        <file alias="16x16/backup.svg">16x16/backup.svg</file>
+        <file alias="16x16/checkmark.svg">16x16/checkmark.svg</file>
+        <file alias="16x16/configure.svg">16x16/configure.svg</file>
+        <file alias="16x16/delete.svg">16x16/delete.svg</file>
+        <file alias="16x16/download.svg">16x16/download.svg</file>
+        <file alias="16x16/emblem-warning.svg">16x16/emblem-warning.svg</file>
+        <file alias="16x16/entry-edit.svg">16x16/entry-edit.svg</file>
+        <file alias="16x16/folder.svg">16x16/folder.svg</file>
+        <file alias="16x16/go-down.svg">16x16/go-down.svg</file>
+        <file alias="16x16/go-up.svg">16x16/go-up.svg</file>
+        <file alias="16x16/help-about.svg">16x16/help-about.svg</file>
+        <file alias="16x16/list-add.svg">16x16/list-add.svg</file>
+        <file alias="16x16/list-remove.svg">16x16/list-remove.svg</file>
+        <file alias="16x16/search.svg">16x16/search.svg</file>
+        <file alias="16x16/view-refresh.svg">16x16/view-refresh.svg</file>
+        <file alias="16x16/action-unavailable-symbolic.svg">16x16/action-unavailable-symbolic.svg</file>
+    </qresource>
 </RCC>

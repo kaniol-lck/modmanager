@@ -29,6 +29,8 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     //init info
     updateInfo();
 
+    isDisabling = false;
+
     //signals / slots
     connect(mod_, &LocalMod::modFileUpdated, this, &LocalModItemWidget::updateInfo);
 
@@ -122,7 +124,7 @@ void LocalModItemWidget::updateInfo()
     }
 
     //enabled
-    if(mod_->modFile()->type() == LocalModFile::Disabled){
+    if(mod_->isDisabled()){
         ui->disableButton->setChecked(true);
         ui->disableButton->setVisible(true);
         ui->modName->setStyleSheet("color: #777");
@@ -262,6 +264,9 @@ void LocalModItemWidget::on_warningButton_clicked()
 
 void LocalModItemWidget::on_disableButton_toggled(bool checked)
 {
+    if(isDisabling) return;
+    isDisabling = true;
     mod_->setEnabled(!checked);
+    isDisabling = false;
 }
 

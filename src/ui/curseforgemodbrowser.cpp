@@ -85,10 +85,8 @@ void CurseforgeModBrowser::updateLocalPathList()
     //reset selected path
     if(selectedPath != nullptr){
         auto index = LocalModPathManager::pathList().indexOf(selectedPath);
-        if(index >= 0){
+        if(index >= 0)
             ui->downloadPathSelect->setCurrentIndex(index);
-            searchModByPathInfo(selectedPath->info());
-        }
     }
 }
 

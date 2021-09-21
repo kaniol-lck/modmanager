@@ -69,6 +69,7 @@ public:
     void rollback(LocalModFile *file);
     void deleteAllOld();
 
+    bool isDisabled();
     bool setEnabled(bool enabled);
 
     void addDepend(std::tuple<QString, QString, std::optional<FabricModInfo>> modDepend);

@@ -23,7 +23,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
     ui->updateTableView->setColumnWidth(SourceColumn, 140);
 
     for(const auto &mod : modPath_->modMap()){
-        auto enabled = mod->modFile()->type() == LocalModFile::Normal;
+        auto enabled = !mod->isDisabled();
 
         auto type = mod->defaultUpdateType();
         if(type == LocalMod::None) continue;
@@ -39,14 +39,14 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
 
         auto beforeItem = new QStandardItem();
         beforeItem->setText(names.first);
-        beforeItem->setForeground(Qt::red);
+        if(enabled) beforeItem->setForeground(Qt::red);
         beforeItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         beforeItem->setEditable(false);
         beforeItem->setEnabled(enabled);
 
         auto afterItem = new QStandardItem();
         afterItem->setText(names.second);
-        afterItem->setForeground(Qt::green);
+        if(enabled) afterItem->setForeground(Qt::green);
         afterItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         afterItem->setEditable(false);
         afterItem->setEnabled(enabled);

@@ -27,7 +27,7 @@ private slots:
 
     void on_modrinthButton_clicked();
 
-    void on_websiteButton_clicked();
+    void on_homepageButton_clicked();
 
     void on_sourceButton_clicked();
 
@@ -39,12 +39,15 @@ private slots:
 
     void on_oldModListWidget_doubleClicked(const QModelIndex &index);
 
+    void on_disableButton_toggled(bool checked);
+
 private:
     Ui::LocalModInfoDialog *ui;
     LocalModFile *file_;
     LocalMod *mod_ = nullptr;
 
     bool isRenaming = false;
+    bool isDisabling = true;
 };
 
 #endif // LOCALMODINFODIALOG_H

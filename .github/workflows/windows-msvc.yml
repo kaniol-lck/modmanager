@@ -18,6 +18,11 @@ jobs:
       matrix:
         include:
           - qt_ver: 5.15.2
+            qt_arch: win32_msvc2019
+            msvc_arch: x86
+            qt_arch_install: msvc2019
+            openssl_url: "http://wiki.overbyte.eu/arch/openssl-1.1.1l-win32.zip"
+          - qt_ver: 5.15.2
             qt_arch: win64_msvc2019_64
             msvc_arch: x64
             qt_arch_install: msvc2019_64
@@ -35,7 +40,17 @@ jobs:
         with:
           fetch-depth: 1
           submodules: recursive
+      - name: Install zlib 32
+        if: contains(matrix.qt_arch, 'win32_msvc')
+        shell: pwsh
+        run: |
+            set ARCH=Win32
+            Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat
+            ./install_zlib.bat
+            del install_zlib.bat
       - name: Install zlib
+        if: contains(matrix.qt_arch, 'win64_msvc')
+        shell: pwsh
         run: |
           Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat
           ./install_zlib.bat
@@ -59,8 +74,7 @@ jobs:
           echo winSdkVer=%WindowsSdkVersion% >> %GITHUB_ENV%
           echo vcToolsInstallDir=%VCToolsInstallDir% >> %GITHUB_ENV%
           echo vcToolsRedistDir=%VCToolsRedistDir% >> %GITHUB_ENV%
-      - name: package
-        id: package
+      - name: perpare package
         shell: pwsh
         run: |
           mkdir deploy && mv release/${{github.event.repository.name}}.exe deploy
@@ -68,9 +82,22 @@ jobs:
           $client.DownloadFile('${{ matrix.openssl_url }}', 'openssl-bin.zip')
           Expand-Archive -Path openssl-bin.zip -DestinationPath openssl
           cp openssl/*.dll deploy/
-          cp "%PROGRAMFILES%"/zlib/bin/zlib.dll deploy/
           cp LICENSE* deploy/
           cp *md deploy/
+      - name: copy zlib 32
+        if: contains(matrix.qt_arch, 'win32_msvc')
+        shell: pwsh
+        run: |
+          cp "C:/Program Files (x86)/zlib/bin/zlib.dll" deploy/
+      - name: copy zlib
+        if: contains(matrix.qt_arch, 'win64_msvc')
+        shell: pwsh
+        run: |
+          cp "C:/Program Files/zlib/bin/zlib.dll deploy/
+      - name: package
+        id: package
+        shell: pwsh
+        run: |
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe
       - uses: actions/upload-artifact@v2
         with:

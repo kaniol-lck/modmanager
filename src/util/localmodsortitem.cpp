@@ -8,7 +8,9 @@ LocalModSortItem::LocalModSortItem(LocalMod *mod) :
 
 bool LocalModSortItem::operator<(const QListWidgetItem &other) const
 {
+    if(mod_->isDisabled()) return false;
     auto otherMod = dynamic_cast<const LocalModSortItem&>(other).mod_;
+    if(otherMod->isDisabled()) return true;
     switch (sortRule_) {
     case Name:
         return mod_->commonInfo()->name().toLower() < otherMod->commonInfo()->name().toLower();

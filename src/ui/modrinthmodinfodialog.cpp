@@ -49,7 +49,7 @@ ModrinthModInfoDialog::ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod, 
     auto updateFullInfo = [=]{
         if(!bl) updateBasicInfo();
         auto text = mod->modInfo().description();
-        text.replace("<br>", "\n");
+        text.replace(QRegExp(R"(<br\s*/?>)"), "\n");
         ui->modDescription->setMarkdown(text);
         ui->modDescription->setCursor(Qt::ArrowCursor);
 

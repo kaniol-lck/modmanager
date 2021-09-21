@@ -51,6 +51,8 @@ private slots:
 private:
     Ui::LocalModItemWidget *ui;
     LocalMod *mod_;
+
+    bool isDisabling = true;
 };
 
 #endif // MODENTRYWIDGET_H

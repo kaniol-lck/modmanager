@@ -56,6 +56,7 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, Loca
         //remove old tab
         ui->tabWidget->removeTab(2);
     }
+    isDisabling = false;
 }
 
 LocalModInfoDialog::~LocalModInfoDialog()
@@ -74,20 +75,22 @@ void LocalModInfoDialog::updateInfo()
     else
         setWindowTitle(modInfo->name() + tr(" - Local Old"));
 
-    ui->modName->setText(modInfo->name());
+    auto name = modInfo->name();
+    if(mod_ && mod_->isDisabled()) name.append(tr(" (Disabled)"));
+    ui->modName->setText(name);
     ui->modVersion->setText(modInfo->version());
-    ui->modAuthors->setText(modInfo->authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    ui->modAuthors->setText(modInfo->authors().join("</b>, <b>").prepend("<b>").append("</b>"));
     ui->modDescription->setText(modInfo->description());
 
-    ui->websiteButton->setEnabled(false);
+    ui->homepageButton->setEnabled(false);
     ui->sourceButton->setEnabled(false);
     ui->issueButton->setEnabled(false);
 
     if(!modInfo->homepage().isEmpty()){
-        ui->websiteButton->setEnabled(true);
+        ui->homepageButton->setEnabled(true);
         auto homepageIcon = new WebsiteIcon(this);
         connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
-            ui->websiteButton->setIcon(icon);
+            ui->homepageButton->setIcon(icon);
         });
         homepageIcon->get(modInfo->homepage());
     }
@@ -139,6 +142,8 @@ void LocalModInfoDialog::updateInfo()
                 ui->oldModListWidget->setItemWidget(listItem, itemWidget);
             }
         }
+        //if disabled
+        ui->disableButton->setChecked(mod_->isDisabled());
     }
 }
 
@@ -160,7 +165,7 @@ void LocalModInfoDialog::on_modrinthButton_clicked()
     dialog->show();
 }
 
-void LocalModInfoDialog::on_websiteButton_clicked()
+void LocalModInfoDialog::on_homepageButton_clicked()
 {
     QDesktopServices::openUrl(file_->commonInfo()->homepage());
 }
@@ -203,5 +208,14 @@ void LocalModInfoDialog::on_oldModListWidget_doubleClicked(const QModelIndex &in
     auto file = mod_->oldFiles().at(index.row());
     auto dialog = new LocalModInfoDialog(this, file);
     dialog->show();
+}
+
+
+void LocalModInfoDialog::on_disableButton_toggled(bool checked)
+{
+    if(isDisabling) return;
+    isDisabling = true;
+    mod_->setEnabled(!checked);
+    isDisabling = false;
 }
 

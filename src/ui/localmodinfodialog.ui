@@ -14,8 +14,50 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" rowspan="2">
+    <widget class="QLabel" name="modIcon">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>80</width>
+       <height>80</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>80</width>
+       <height>80</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QToolButton" name="disableButton">
+       <property name="text">
+        <string>disable</string>
+       </property>
+       <property name="icon">
+        <iconset theme="action-unavailable-symbolic">
+         <normaloff>.</normaloff>.</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLabel" name="modName">
        <property name="sizePolicy">
@@ -36,25 +78,9 @@
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QLabel" name="modAuthors">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string notr="true">by xxx</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
-   <item row="0" column="2" rowspan="3">
+   <item row="0" column="2" rowspan="2">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QPushButton" name="curseforgeButton">
@@ -111,80 +137,96 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Author:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="modAuthors">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string notr="true">by xxx</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
-   <item row="2" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="websiteButton">
-       <property name="text">
-        <string>Website</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="sourceButton">
-       <property name="text">
-        <string>Sources</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="issueButton">
-       <property name="text">
-        <string>Issues</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0" colspan="3">
+   <item row="2" column="0" colspan="3">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="0" column="0" rowspan="3">
-    <widget class="QLabel" name="modIcon">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>80</width>
-       <height>80</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>80</width>
-       <height>80</height>
-      </size>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="3">
+   <item row="3" column="0" colspan="3">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>Description</string>
+       <string>Infomation</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
-        <widget class="QTextBrowser" name="modDescription">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Websites</string>
          </property>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QPushButton" name="homepageButton">
+              <property name="text">
+               <string>Homepage</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="sourceButton">
+              <property name="text">
+               <string>Sources</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="issueButton">
+              <property name="text">
+               <string>Issues</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Description</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QTextBrowser" name="modDescription">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -304,7 +346,7 @@
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>modDescription</tabstop>
-  <tabstop>websiteButton</tabstop>
+  <tabstop>homepageButton</tabstop>
   <tabstop>sourceButton</tabstop>
   <tabstop>issueButton</tabstop>
   <tabstop>curseforgeButton</tabstop>

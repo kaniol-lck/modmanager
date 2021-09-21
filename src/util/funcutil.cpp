@@ -22,6 +22,7 @@ void openFileInFolder(const QString &filePath)
 {
     QFileInfo info(filePath);
     QString path = QDir(filePath).absolutePath();
+    //TODO: does not work on windows
 #if defined(Q_OS_WIN)
     QStringList args;
     if (!info.isFile())

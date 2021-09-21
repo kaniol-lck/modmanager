@@ -311,6 +311,7 @@ void LocalMod::duplicateToOld()
 void LocalMod::rollback(LocalModFile *file)
 {
     //TODO: refresh update info;
+    //TODO: what if rollback a disabled file
     file->removeOld();
     oldFiles_.removeAll(file);
     modFile_->addOld();
@@ -324,6 +325,11 @@ void LocalMod::deleteAllOld()
     for(auto &oldFile : qAsConst(oldFiles_))
         oldFile->remove();
     oldFiles_.clear();
+}
+
+bool LocalMod::isDisabled()
+{
+    return modFile_->type() == LocalModFile::Disabled;
 }
 
 bool LocalMod::setEnabled(bool enabled)
