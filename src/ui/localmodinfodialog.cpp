@@ -14,10 +14,10 @@
 #include "util/funcutil.h"
 #include "util/websiteicon.h"
 
-LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, LocalMod *mod) :
+LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
     QDialog(parent),
     ui(new Ui::LocalModInfoDialog),
-    file_(file),
+    file_(mod->modFile()),
     mod_(mod)
 {
     ui->setupUi(this);
@@ -26,40 +26,16 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, Loca
     ui->aliasText->setVisible(false);
 
     //init info
-    updateInfo();
+    onCurrentModChanged();
 
-    if(mod_){
-        //signals / slots
-        connect(mod_, &LocalMod::modFileUpdated, this, &LocalModInfoDialog::updateInfo);
-
-        //update curseforge
-        auto updateCurseforge = [=](bool bl){
-            ui->curseforgeButton->setEnabled(bl);
-        };
-
-        if(mod_->curseforgeMod() != nullptr)
-            updateCurseforge(true);
-        else{
-            connect(mod_, &LocalMod::curseforgeReady, this, updateCurseforge);
-        }
-
-        //update modrinth
-        auto updateModrinth = [=](bool bl){
-            ui->modrinthButton->setEnabled(bl);
-        };
-
-        if(mod_->modrinthMod() != nullptr)
-            updateModrinth(true);
-        else{
-            connect(mod_, &LocalMod::modrinthReady, this, updateModrinth);
-        }
-    } else{
-        ui->editAliasButton->setVisible(false);
-        ui->curseforgeButton->setVisible(false);
-        ui->modrinthButton->setVisible(false);
-        //remove old tab
-        ui->tabWidget->removeTab(2);
-    }
+    //signals / slots
+    connect(mod_, &LocalMod::curseforgeReady, this, [=](bool bl){
+        ui->curseforgeButton->setEnabled(bl);
+    });
+    connect(mod_, &LocalMod::modrinthReady, this, [=](bool bl){
+        ui->modrinthButton->setEnabled(bl);
+    });
+    connect(mod_, &LocalMod::modFileUpdated, this, &LocalModInfoDialog::onCurrentModChanged);
     connect(ui->aliasText, &QLineEdit::returnPressed, this, [=]{
         ui->editAliasButton->setChecked(false);
     });
@@ -73,58 +49,75 @@ LocalModInfoDialog::~LocalModInfoDialog()
     delete ui;
 }
 
-void LocalModInfoDialog::updateInfo()
+void LocalModInfoDialog::onCurrentModChanged()
 {
-    if(mod_) file_ = mod_->modFile();
+    file_ = mod_->modFile();
+    if(mod_->curseforgeMod()) ui->curseforgeButton->setEnabled(true);
+    if(mod_->modrinthMod()) ui->modrinthButton->setEnabled(true);
+    ui->modName->setText(mod_->alias());
+    ui->aliasText->setText(mod_->alias());
 
-    auto modInfo = file_->commonInfo();
+    ui->versionSelect->clear();
+    ui->versionSelect->addItem(mod_->modFile()->commonInfo()->version());
+    for(auto file : mod_->oldFiles())
+        ui->versionSelect->addItem(file->commonInfo()->version());
+    //TODO: if this version was deleted
+    ui->versionSelect->setCurrentText(file_->commonInfo()->version());
 
-    if(mod_) ui->aliasText->setText(mod_->alias());
-    if(mod_)
-        setWindowTitle(modInfo->name() + tr(" - Local"));
+    onCurrentFileChanged();
+}
+
+void LocalModInfoDialog::onCurrentFileChanged()
+{
+    ui->rollbackButton->setVisible(file_ != mod_->modFile());
+    if(mod_->alias().isEmpty()) ui->modName->setText(file_->commonInfo()->name());
+    ui->aliasText->setPlaceholderText(file_->commonInfo()->name());
+
+    auto str = ui->modName->text();
+    if(file_ == mod_->modFile())
+        str.append(" - " + tr("Local"));
     else
-        setWindowTitle(modInfo->name() + tr(" - Local Old"));
+        str.append(" - " + tr("Local Old"));
+    setWindowTitle(str);
 
-    auto name = mod_? mod_->displayName() : modInfo->name();
-    if(mod_ && mod_->isDisabled()) name.append(tr(" (Disabled)"));
-    ui->modName->setText(name);
-    ui->modVersion->setText(modInfo->version());
-    ui->modAuthors->setText(modInfo->authors().join(", "));
-    ui->modDescription->setText(modInfo->description());
+    if(mod_->isDisabled())
+        ui->modName->setText(ui->modName->text() + tr(" (Disabled)"));
+    ui->modAuthors->setText(file_->commonInfo()->authors().join(", "));
+    ui->modDescription->setText(file_->commonInfo()->description());
 
     ui->homepageButton->setEnabled(false);
     ui->sourceButton->setEnabled(false);
     ui->issueButton->setEnabled(false);
 
-    if(!modInfo->homepage().isEmpty()){
+    if(!file_->commonInfo()->homepage().isEmpty()){
         ui->homepageButton->setEnabled(true);
         auto homepageIcon = new WebsiteIcon(this);
         connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
             ui->homepageButton->setIcon(icon);
         });
-        homepageIcon->get(modInfo->homepage());
+        homepageIcon->get(file_->commonInfo()->homepage());
     }
 
-    if(!modInfo->sources().isEmpty()){
+    if(!file_->commonInfo()->sources().isEmpty()){
         ui->sourceButton->setEnabled(true);
         auto homepageIcon = new WebsiteIcon(this);
         connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
             ui->sourceButton->setIcon(icon);
         });
-        homepageIcon->get(modInfo->sources());
+        homepageIcon->get(file_->commonInfo()->sources());
     }
 
-    if(!modInfo->issues().isEmpty()){
+    if(!file_->commonInfo()->issues().isEmpty()){
         ui->issueButton->setEnabled(true);
         auto homepageIcon = new WebsiteIcon(this);
         connect(homepageIcon, &WebsiteIcon::iconGot, this, [=](const auto &icon){
             ui->issueButton->setIcon(icon);
         });
-        homepageIcon->get(modInfo->issues());
+        homepageIcon->get(file_->commonInfo()->issues());
     }
 
     QPixmap pixelmap;
-    pixelmap.loadFromData(modInfo->iconBytes());
+    pixelmap.loadFromData(file_->commonInfo()->iconBytes());
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 
@@ -137,24 +130,8 @@ void LocalModInfoDialog::updateInfo()
     ui->createdTimeText->setText(fileInfo.fileTime(QFile::FileBirthTime).toString());
     ui->modifiedTimeText->setText(fileInfo.fileTime(QFile::FileModificationTime).toString());
 
-    if(mod_){
-        //old mod info list
-        if(mod_->oldFiles().isEmpty())
-            ui->tabWidget->setTabEnabled(2, false);
-        else{
-            ui->tabWidget->setTabEnabled(2, true);
-            ui->oldModListWidget->clear();
-            for(const auto &file : mod_->oldFiles()){
-                auto *listItem = new QListWidgetItem();
-                listItem->setSizeHint(QSize(500, 90));
-                auto itemWidget = new LocalFileItemWidget(this, mod_, file);
-                ui->oldModListWidget->addItem(listItem);
-                ui->oldModListWidget->setItemWidget(listItem, itemWidget);
-            }
-        }
-        //if disabled
-        ui->disableButton->setChecked(mod_->isDisabled());
-    }
+    //if disabled
+    ui->disableButton->setChecked(mod_->isDisabled());
 }
 
 void LocalModInfoDialog::on_curseforgeButton_clicked()
@@ -185,19 +162,10 @@ void LocalModInfoDialog::on_sourceButton_clicked()
     QDesktopServices::openUrl(file_->commonInfo()->sources());
 }
 
-
 void LocalModInfoDialog::on_issueButton_clicked()
 {
     QDesktopServices::openUrl(file_->commonInfo()->issues());
 }
-
-void LocalModInfoDialog::on_oldModListWidget_doubleClicked(const QModelIndex &index)
-{
-    auto file = mod_->oldFiles().at(index.row());
-    auto dialog = new LocalModInfoDialog(this, file);
-    dialog->show();
-}
-
 
 void LocalModInfoDialog::on_disableButton_toggled(bool checked)
 {
@@ -205,7 +173,6 @@ void LocalModInfoDialog::on_disableButton_toggled(bool checked)
     mod_->setEnabled(!checked);
     ui->disableButton->setEnabled(true);
 }
-
 
 void LocalModInfoDialog::on_editAliasButton_toggled(bool checked)
 {
@@ -219,7 +186,6 @@ void LocalModInfoDialog::on_editAliasButton_toggled(bool checked)
         mod_->setAlias(ui->aliasText->text());
     }
 }
-
 
 void LocalModInfoDialog::on_editFileNameButton_toggled(bool checked)
 {
@@ -242,3 +208,17 @@ void LocalModInfoDialog::on_editFileNameButton_toggled(bool checked)
     }
 }
 
+void LocalModInfoDialog::on_versionSelect_currentIndexChanged(int index)
+{
+    if(index < 0 || index > mod_->oldFiles().size()) return;
+    if(index == 0)
+        file_ = mod_->modFile();
+    else
+        file_ = mod_->oldFiles().at(index - 1);
+    onCurrentFileChanged();
+}
+
+void LocalModInfoDialog::on_rollbackButton_clicked()
+{
+    mod_->rollback(file_);
+}

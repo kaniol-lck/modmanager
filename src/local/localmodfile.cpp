@@ -3,6 +3,7 @@
 #include <QDir>
 #include <QCryptographicHash>
 #include <MurmurHash2.h>
+#include <QDebug>
 
 const QStringList LocalModFile::availableSuffix{ "jar", "old", "disabled"};
 
@@ -195,6 +196,7 @@ const CommonModInfo *LocalModFile::commonInfo() const
         return &forgeModInfoList_.first();
 
     //should't be here
+    qDebug() << loaderType_;
     assert(false);
     return nullptr;
 }

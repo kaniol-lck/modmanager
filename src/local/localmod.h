@@ -62,7 +62,7 @@ public:
     void addOldFile(LocalModFile *oldFile);
     const QList<LocalModFile *> &oldFiles() const;
 
-    //duplicate
+    //duplicateP
     void addDuplicateFile(LocalModFile *duplicateFile);
     const QList<LocalModFile *> &duplicateFiles() const;
 

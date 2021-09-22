@@ -15,12 +15,13 @@ class LocalModInfoDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit LocalModInfoDialog(QWidget *parent, LocalModFile *file, LocalMod *mod = nullptr);
+    explicit LocalModInfoDialog(QWidget *parent, LocalMod *mod = nullptr);
 
     ~LocalModInfoDialog();
 
 public slots:
-    void updateInfo();
+    void onCurrentModChanged();
+    void onCurrentFileChanged();
 
 private slots:
     void on_curseforgeButton_clicked();
@@ -33,13 +34,15 @@ private slots:
 
     void on_issueButton_clicked();
 
-    void on_oldModListWidget_doubleClicked(const QModelIndex &index);
-
     void on_disableButton_toggled(bool checked);
 
     void on_editAliasButton_toggled(bool checked);
 
     void on_editFileNameButton_toggled(bool checked);
+
+    void on_versionSelect_currentIndexChanged(int index);
+
+    void on_rollbackButton_clicked();
 
 private:
     Ui::LocalModInfoDialog *ui;

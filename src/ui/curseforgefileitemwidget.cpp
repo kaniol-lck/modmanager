@@ -77,8 +77,11 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
         ui->downloadButton->setText(tr("Downloaded"));
         if(localMod_){
             auto file = new LocalModFile(this, downloader->filePath());
-            file->addOld();
-            localMod_->addOldFile(file);
+            if(file->loaderType() == localMod_->modFile()->loaderType()){
+                file->addOld();
+                localMod_->addOldFile(file);
+            } else
+                file->deleteLater();
         }
     });
 }

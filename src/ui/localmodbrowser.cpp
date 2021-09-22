@@ -164,7 +164,7 @@ void LocalModBrowser::updatesDone(int successCount, int failCount)
 void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
     auto mod = dynamic_cast<const LocalModSortItem*>(ui->modListWidget->item(index.row()))->mod();
-    auto dialog = new LocalModInfoDialog(this, mod->modFile(), mod);
+    auto dialog = new LocalModInfoDialog(this, mod);
     dialog->show();
 }
 
