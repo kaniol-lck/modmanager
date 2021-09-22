@@ -1,5 +1,5 @@
-#include "localmodbrowsersettingsdialog.h"
-#include "ui_localmodbrowsersettingsdialog.h"
+#include "localmodpathsettingsdialog.h"
+#include "ui_localmodpathsettingsdialog.h"
 
 #include <QFileDialog>
 #include <QDir>
@@ -8,9 +8,9 @@
 #include "gameversion.h"
 #include "config.h"
 
-LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
+LocalModPathSettingsDialog::LocalModPathSettingsDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::LocalModBrowserSettingsDialog)
+    ui(new Ui::LocalModPathSettingsDialog)
 {
     ui->setupUi(this);
     info_.setLoaderType(ModLoaderType::Any);
@@ -19,11 +19,11 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent) :
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
     updateVersionList();
-    connect(VersionManager::manager(), &VersionManager::mojangVersionListUpdated, this, &LocalModBrowserSettingsDialog::updateVersionList);
+    connect(VersionManager::manager(), &VersionManager::mojangVersionListUpdated, this, &LocalModPathSettingsDialog::updateVersionList);
 }
 
-LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, const LocalModPathInfo &info) :
-    LocalModBrowserSettingsDialog(parent)
+LocalModPathSettingsDialog::LocalModPathSettingsDialog(QWidget *parent, const LocalModPathInfo &info) :
+    LocalModPathSettingsDialog(parent)
 {
     info_ = info;
     customName = info.name();
@@ -36,19 +36,19 @@ LocalModBrowserSettingsDialog::LocalModBrowserSettingsDialog(QWidget *parent, co
     on_useAutoName_toggled(info.isAutoName());
 }
 
-LocalModBrowserSettingsDialog::~LocalModBrowserSettingsDialog()
+LocalModPathSettingsDialog::~LocalModPathSettingsDialog()
 {
     delete ui;
 }
 
-void LocalModBrowserSettingsDialog::updateVersionList()
+void LocalModPathSettingsDialog::updateVersionList()
 {
     ui->versionSelect->clear();
     for(const auto &version : GameVersion::mojangReleaseVersionList())
         ui->versionSelect->addItem(version);
 }
 
-void LocalModBrowserSettingsDialog::on_modDirButton_clicked()
+void LocalModPathSettingsDialog::on_modDirButton_clicked()
 {
     auto str = ui->modsDirText->text();
     if(str.isEmpty()) str = Config().getCommonPath();
@@ -84,38 +84,38 @@ void LocalModBrowserSettingsDialog::on_modDirButton_clicked()
     ui->modsDirText->setText(resultStr);
 }
 
-void LocalModBrowserSettingsDialog::on_buttonBox_accepted()
+void LocalModPathSettingsDialog::on_buttonBox_accepted()
 {
     emit settingsUpdated(info_);
 }
 
-void LocalModBrowserSettingsDialog::on_loaderSelect_currentIndexChanged(const QString &arg1)
+void LocalModPathSettingsDialog::on_loaderSelect_currentIndexChanged(const QString &arg1)
 {
     info_.setLoaderType(ModLoaderType::fromString(arg1));
     updateAutoName();
 }
 
-void LocalModBrowserSettingsDialog::updateAutoName()
+void LocalModPathSettingsDialog::updateAutoName()
 {
     if(!ui->useAutoName->isChecked()) return;
     info_.setName(info_.autoName());
     ui->nameText->setText(info_.autoName());
 }
 
-void LocalModBrowserSettingsDialog::on_versionSelect_currentIndexChanged(const QString &arg1)
+void LocalModPathSettingsDialog::on_versionSelect_currentIndexChanged(const QString &arg1)
 {
     info_.setGameVersion(arg1);
     updateAutoName();
 }
 
-void LocalModBrowserSettingsDialog::on_nameText_textEdited(const QString &arg1)
+void LocalModPathSettingsDialog::on_nameText_textEdited(const QString &arg1)
 {
     customName = arg1;
     info_.setName(arg1);
 }
 
 
-void LocalModBrowserSettingsDialog::on_useAutoName_toggled(bool checked)
+void LocalModPathSettingsDialog::on_useAutoName_toggled(bool checked)
 {
     info_.setIsAutoName(checked);
     ui->nameText->setEnabled(!checked);

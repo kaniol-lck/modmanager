@@ -22,7 +22,8 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset theme="non-starred-symbolic"/>
+        <iconset theme="non-starred-symbolic">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -64,6 +65,9 @@
          <bold>true</bold>
         </font>
        </property>
+       <property name="toolTip">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>Name</string>
        </property>
@@ -90,6 +94,9 @@
         <font>
          <pointsize>9</pointsize>
         </font>
+       </property>
+       <property name="toolTip">
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>by xxx</string>
@@ -259,6 +266,9 @@
          <bold>true</bold>
         </font>
        </property>
+       <property name="toolTip">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string>Version</string>
        </property>
@@ -279,7 +289,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../images/image.qrc">
+        <iconset resource="../../images/image.qrc">
          <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
        </property>
        <property name="autoRaise">
@@ -299,7 +309,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../images/image.qrc">
+        <iconset resource="../../images/image.qrc">
          <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
        </property>
        <property name="autoRaise">
@@ -353,7 +363,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../images/image.qrc"/>
+  <include location="../../images/image.qrc"/>
  </resources>
  <connections/>
 </ui>

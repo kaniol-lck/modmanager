@@ -1,15 +1,15 @@
-#ifndef LOCALMODBROWSERSETTINGSDIALOG_H
-#define LOCALMODBROWSERSETTINGSDIALOG_H
+#ifndef LOCALMODPATHSETTINGSDIALOG_H
+#define LOCALMODPATHSETTINGSDIALOG_H
 
 #include <QDialog>
 
 #include "local/localmodpathinfo.h"
 
 namespace Ui {
-class LocalModBrowserSettingsDialog;
+class LocalModPathSettingsDialog;
 }
 
-class LocalModBrowserSettingsDialog : public QDialog
+class LocalModPathSettingsDialog : public QDialog
 {
     Q_OBJECT
 
@@ -17,10 +17,10 @@ signals:
     void settingsUpdated(LocalModPathInfo info);
 
 public:
-    explicit LocalModBrowserSettingsDialog(QWidget *parent = nullptr);
-    LocalModBrowserSettingsDialog(QWidget *parent, const LocalModPathInfo &info);
+    explicit LocalModPathSettingsDialog(QWidget *parent = nullptr);
+    LocalModPathSettingsDialog(QWidget *parent, const LocalModPathInfo &info);
 
-    ~LocalModBrowserSettingsDialog();
+    ~LocalModPathSettingsDialog();
 
 private slots:
     void updateVersionList();
@@ -38,11 +38,11 @@ private slots:
     void on_useAutoName_toggled(bool checked);
 
 private:
-    Ui::LocalModBrowserSettingsDialog *ui;
+    Ui::LocalModPathSettingsDialog *ui;
     LocalModPathInfo info_;
     QString customName;
 
     void updateAutoName();
 };
 
-#endif // LOCALMODBROWSERSETTINGSDIALOG_H
+#endif // LOCALMODPATHSETTINGSDIALOG_H

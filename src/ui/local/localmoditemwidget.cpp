@@ -6,8 +6,8 @@
 
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
-#include "curseforgemodinfodialog.h"
-#include "modrinthmodinfodialog.h"
+#include "ui/curseforge/curseforgemoddialog.h"
+#include "ui/modrinth/modrinthmoddialog.h"
 #include "util/tutil.hpp"
 
 LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
@@ -236,7 +236,7 @@ void LocalModItemWidget::on_curseforgeButton_clicked()
     auto curseforgeMod = mod_->curseforgeMod();
     if(!curseforgeMod->modInfo().hasBasicInfo())
         curseforgeMod->acquireBasicInfo();
-    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, mod_);
+    auto dialog = new CurseforgeModDialog(this, curseforgeMod, mod_);
     dialog->show();
 }
 
@@ -245,7 +245,7 @@ void LocalModItemWidget::on_modrinthButton_clicked()
     auto modrinthMod = mod_->modrinthMod();
     if(!modrinthMod->modInfo().hasBasicInfo())
         modrinthMod->acquireFullInfo();
-    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, mod_);
+    auto dialog = new ModrinthModDialog(this, modrinthMod, mod_);
     dialog->show();
 }
 

@@ -36,26 +36,25 @@ SOURCES += \
     src/modrinth/modrinthmodinfo.cpp \
     src/ui/aboutdialog.cpp \
     src/ui/browsermanagerdialog.cpp \
-    src/ui/curseforgefileitemwidget.cpp \
-    src/ui/curseforgemodbrowser.cpp \
-    src/ui/curseforgemodinfodialog.cpp \
-    src/ui/curseforgemoditemwidget.cpp \
+    src/ui/curseforge/curseforgefileitemwidget.cpp \
+    src/ui/curseforge/curseforgemodbrowser.cpp \
+    src/ui/curseforge/curseforgemoddialog.cpp \
+    src/ui/curseforge/curseforgemoditemwidget.cpp \
     src/gameversion.cpp \
     src/ui/downloadbrowser.cpp \
     src/ui/downloaderitemwidget.cpp \
-    src/ui/localfileitemwidget.cpp \
-    src/ui/localmodbrowser.cpp \
-    src/ui/localmodbrowsersettingsdialog.cpp \
-    src/ui/localmodcheckdialog.cpp \
-    src/ui/localmodinfodialog.cpp \
-    src/ui/localmoditemwidget.cpp \
+    src/ui/local/localmodbrowser.cpp \
+    src/ui/local/localmodcheckdialog.cpp \
+    src/ui/local/localmoddialog.cpp \
+    src/ui/local/localmoditemwidget.cpp \
     src/main.cpp \
-    src/ui/localmodupdatedialog.cpp \
+    src/ui/local/localmodpathsettingsdialog.cpp \
+    src/ui/local/localmodupdatedialog.cpp \
     src/ui/modmanager.cpp \
-    src/ui/modrinthfileitemwidget.cpp \
-    src/ui/modrinthmodbrowser.cpp \
-    src/ui/modrinthmodinfodialog.cpp \
-    src/ui/modrinthmoditemwidget.cpp \
+    src/ui/modrinth/modrinthfileitemwidget.cpp \
+    src/ui/modrinth/modrinthmodbrowser.cpp \
+    src/ui/modrinth/modrinthmoddialog.cpp \
+    src/ui/modrinth/modrinthmoditemwidget.cpp \
     src/ui/preferences.cpp \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
@@ -90,25 +89,24 @@ HEADERS += \
     src/modrinth/modrinthmodinfo.h \
     src/ui/aboutdialog.h \
     src/ui/browsermanagerdialog.h \
-    src/ui/curseforgefileitemwidget.h \
-    src/ui/curseforgemodbrowser.h \
-    src/ui/curseforgemodinfodialog.h \
-    src/ui/curseforgemoditemwidget.h \
+    src/ui/curseforge/curseforgefileitemwidget.h \
+    src/ui/curseforge/curseforgemodbrowser.h \
+    src/ui/curseforge/curseforgemoddialog.h \
+    src/ui/curseforge/curseforgemoditemwidget.h \
     src/gameversion.h \
     src/ui/downloadbrowser.h \
     src/ui/downloaderitemwidget.h \
-    src/ui/localfileitemwidget.h \
-    src/ui/localmodbrowser.h \
-    src/ui/localmodbrowsersettingsdialog.h \
-    src/ui/localmodcheckdialog.h \
-    src/ui/localmodinfodialog.h \
-    src/ui/localmoditemwidget.h \
-    src/ui/localmodupdatedialog.h \
+    src/ui/local/localmodbrowser.h \
+    src/ui/local/localmodcheckdialog.h \
+    src/ui/local/localmoddialog.h \
+    src/ui/local/localmoditemwidget.h \
+    src/ui/local/localmodpathsettingsdialog.h \
+    src/ui/local/localmodupdatedialog.h \
     src/ui/modmanager.h \
-    src/ui/modrinthfileitemwidget.h \
-    src/ui/modrinthmodbrowser.h \
-    src/ui/modrinthmodinfodialog.h \
-    src/ui/modrinthmoditemwidget.h \
+    src/ui/modrinth/modrinthfileitemwidget.h \
+    src/ui/modrinth/modrinthmodbrowser.h \
+    src/ui/modrinth/modrinthmoddialog.h \
+    src/ui/modrinth/modrinthmoditemwidget.h \
     src/ui/preferences.h \
     src/util/funcutil.h \
     src/util/localmodsortitem.h \
@@ -121,24 +119,23 @@ HEADERS += \
 FORMS += \
     src/ui/aboutdialog.ui \
     src/ui/browsermanagerdialog.ui \
-    src/ui/curseforgefileitemwidget.ui \
-    src/ui/curseforgemodbrowser.ui \
-    src/ui/curseforgemodinfodialog.ui \
-    src/ui/curseforgemoditemwidget.ui \
+    src/ui/curseforge/curseforgefileitemwidget.ui \
+    src/ui/curseforge/curseforgemodbrowser.ui \
+    src/ui/curseforge/curseforgemoddialog.ui \
+    src/ui/curseforge/curseforgemoditemwidget.ui \
     src/ui/downloadbrowser.ui \
     src/ui/downloaderitemwidget.ui \
-    src/ui/localfileitemwidget.ui \
-    src/ui/localmodbrowser.ui \
-    src/ui/localmodbrowsersettingsdialog.ui \
-    src/ui/localmodcheckdialog.ui \
-    src/ui/localmodinfodialog.ui \
-    src/ui/localmoditemwidget.ui \
-    src/ui/localmodupdatedialog.ui \
+    src/ui/local/localmodbrowser.ui \
+    src/ui/local/localmodcheckdialog.ui \
+    src/ui/local/localmoddialog.ui \
+    src/ui/local/localmoditemwidget.ui \
+    src/ui/local/localmodpathsettingsdialog.ui \
+    src/ui/local/localmodupdatedialog.ui \
     src/ui/modmanager.ui \
-    src/ui/modrinthfileitemwidget.ui \
-    src/ui/modrinthmodbrowser.ui \
-    src/ui/modrinthmodinfodialog.ui \
-    src/ui/modrinthmoditemwidget.ui \
+    src/ui/modrinth/modrinthfileitemwidget.ui \
+    src/ui/modrinth/modrinthmodbrowser.ui \
+    src/ui/modrinth/modrinthmoddialog.ui \
+    src/ui/modrinth/modrinthmoditemwidget.ui \
     src/ui/preferences.ui
 
 TRANSLATIONS += \

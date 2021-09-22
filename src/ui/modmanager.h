@@ -32,7 +32,7 @@ private slots:
 
     void on_actionManage_Browser_triggered();
 
-    void on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+    void on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *);
 
     void on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int);
 

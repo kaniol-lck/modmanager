@@ -10,7 +10,7 @@
 #include "curseforge/curseforgemod.h"
 #include "curseforge/curseforgeapi.h"
 #include "curseforgemoditemwidget.h"
-#include "curseforgemodinfodialog.h"
+#include "curseforgemoddialog.h"
 #include "gameversion.h"
 #include "modloadertype.h"
 #include "config.h"
@@ -164,9 +164,9 @@ void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &ind
 {
     auto widget = ui->modListWidget->itemWidget(ui->modListWidget->item(index.row()));
     auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
-    auto dialog = new CurseforgeModInfoDialog(this, mod);
+    auto dialog = new CurseforgeModDialog(this, mod);
     dialog->setDownloadPath(downloadPath_);
-    connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModInfoDialog::setDownloadPath);
+    connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
     dialog->show();
 }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LocalModInfoDialog</class>
- <widget class="QDialog" name="LocalModInfoDialog">
+ <class>LocalModDialog</class>
+ <widget class="QDialog" name="LocalModDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -310,6 +310,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string notr="true"/>
+       </property>
        <property name="text">
         <string notr="true">xxx</string>
        </property>
@@ -341,7 +344,7 @@
         <string>Curseforge</string>
        </property>
        <property name="icon">
-        <iconset resource="../images/image.qrc">
+        <iconset resource="../../images/image.qrc">
          <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
        </property>
       </widget>
@@ -355,7 +358,7 @@
         <string>Modrinth</string>
        </property>
        <property name="icon">
-        <iconset resource="../images/image.qrc">
+        <iconset resource="../../images/image.qrc">
          <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
        </property>
       </widget>
@@ -376,7 +379,7 @@
   <tabstop>editFileNameButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../images/image.qrc"/>
+  <include location="../../images/image.qrc"/>
  </resources>
  <connections/>
 </ui>

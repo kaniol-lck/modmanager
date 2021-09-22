@@ -5,7 +5,7 @@
 #include <QDir>
 
 #include "modrinthmoditemwidget.h"
-#include "modrinthmodinfodialog.h"
+#include "modrinthmoddialog.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
 #include "modrinth/modrinthmod.h"
@@ -148,7 +148,7 @@ void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index
 {
     auto widget = ui->modListWidget->itemWidget(ui->modListWidget->item(index.row()));
     auto mod = dynamic_cast<ModrinthModItemWidget*>(widget)->mod();
-    auto dialog = new ModrinthModInfoDialog(this, mod);
+    auto dialog = new ModrinthModDialog(this, mod);
     dialog->setDownloadPath(downloadPath_);
     dialog->show();
 }

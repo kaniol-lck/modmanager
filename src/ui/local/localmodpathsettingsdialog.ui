@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LocalModBrowserSettingsDialog</class>
- <widget class="QDialog" name="LocalModBrowserSettingsDialog">
+ <class>LocalModPathSettingsDialog</class>
+ <widget class="QDialog" name="LocalModPathSettingsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Mod Directory Settings</string>
+   <string>Local Mod Path Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -87,7 +87,8 @@
           <string>...</string>
          </property>
          <property name="icon">
-          <iconset theme="folder"/>
+          <iconset theme="folder">
+           <normaloff>.</normaloff>.</iconset>
          </property>
         </widget>
        </item>
@@ -169,7 +170,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>LocalModBrowserSettingsDialog</receiver>
+   <receiver>LocalModPathSettingsDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -185,7 +186,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>LocalModBrowserSettingsDialog</receiver>
+   <receiver>LocalModPathSettingsDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

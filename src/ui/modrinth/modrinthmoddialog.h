@@ -1,5 +1,5 @@
-#ifndef MODRINTHMODINFODIALOG_H
-#define MODRINTHMODINFODIALOG_H
+#ifndef MODRINTHMODDIALOG_H
+#define MODRINTHMODDIALOG_H
 
 #include <QDialog>
 
@@ -8,16 +8,16 @@ class LocalMod;
 class LocalModPath;
 
 namespace Ui {
-class ModrinthModInfoDialog;
+class ModrinthModDialog;
 }
 
-class ModrinthModInfoDialog : public QDialog
+class ModrinthModDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ModrinthModInfoDialog(QWidget *parent, ModrinthMod *mod, LocalMod *localMod = nullptr);
-    ~ModrinthModInfoDialog();
+    explicit ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod *localMod = nullptr);
+    ~ModrinthModDialog();
 
 signals:
     void downloadPathChanged(LocalModPath *path);
@@ -26,10 +26,10 @@ public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
 
 private:
-    Ui::ModrinthModInfoDialog *ui;
+    Ui::ModrinthModDialog *ui;
     ModrinthMod *mod_;
     LocalMod *localMod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
 };
 
-#endif // MODRINTHMODINFODIALOG_H
+#endif // MODRINTHMODDIALOG_H

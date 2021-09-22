@@ -8,7 +8,7 @@
 
 #include "local/localmodpath.h"
 #include "localmoditemwidget.h"
-#include "localmodinfodialog.h"
+#include "localmoddialog.h"
 #include "localmodupdatedialog.h"
 #include "localmodcheckdialog.h"
 #include "config.h"
@@ -164,7 +164,7 @@ void LocalModBrowser::updatesDone(int successCount, int failCount)
 void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
     auto mod = dynamic_cast<const LocalModSortItem*>(ui->modListWidget->item(index.row()))->mod();
-    auto dialog = new LocalModInfoDialog(this, mod);
+    auto dialog = new LocalModDialog(this, mod);
     dialog->show();
 }
 

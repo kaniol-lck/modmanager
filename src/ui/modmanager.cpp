@@ -10,16 +10,16 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 
-#include "aboutdialog.h"
+#include "ui/aboutdialog.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
-#include "localmodbrowser.h"
-#include "curseforgemodbrowser.h"
-#include "modrinthmodbrowser.h"
-#include "downloadbrowser.h"
-#include "preferences.h"
-#include "browsermanagerdialog.h"
-#include "localmodbrowsersettingsdialog.h"
+#include "ui/local/localmodbrowser.h"
+#include "ui/curseforge/curseforgemodbrowser.h"
+#include "ui/modrinth/modrinthmodbrowser.h"
+#include "ui/downloadbrowser.h"
+#include "ui/preferences.h"
+#include "ui/browsermanagerdialog.h"
+#include "ui/local/localmodpathsettingsdialog.h"
 #include "gameversion.h"
 #include "config.h"
 
@@ -150,8 +150,8 @@ void ModManager::syncPathList()
 void ModManager::editLocalPath(int index)
 {
     auto pathInfo = LocalModPathManager::pathList().at(index)->info();
-    auto dialog = new LocalModBrowserSettingsDialog(this, pathInfo);
-    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
+    auto dialog = new LocalModPathSettingsDialog(this, pathInfo);
+    connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
         LocalModPathManager::pathList().at(index)->setInfo(newInfo);
         localItem_->child(index)->setText(0, newInfo.displayName());
     });
@@ -171,7 +171,7 @@ void ModManager::on_actionManage_Browser_triggered()
     dialog->show();
 }
 
-void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem */*previous*/)
 {
     if(current == nullptr) return;
     auto parent = current->parent();
@@ -201,9 +201,9 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
     if(item == nullptr){
         // in empty area
         connect(menu->addAction(QIcon::fromTheme("list-add"), tr("New Mod Path")), &QAction::triggered, this, [=]{
-            auto dialog = new LocalModBrowserSettingsDialog(this);
+            auto dialog = new LocalModPathSettingsDialog(this);
             dialog->show();
-            connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
+            connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
                 auto path = new LocalModPath(this, pathInfo);
                 LocalModPathManager::addPath(path);
             });

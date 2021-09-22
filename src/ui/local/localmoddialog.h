@@ -1,5 +1,5 @@
-#ifndef LOCALMODINFODIALOG_H
-#define LOCALMODINFODIALOG_H
+#ifndef LOCALMODDIALOG_H
+#define LOCALMODDIALOG_H
 
 #include <QDialog>
 
@@ -7,17 +7,17 @@ class LocalMod;
 class LocalModFile;
 
 namespace Ui {
-class LocalModInfoDialog;
+class LocalModDialog;
 }
 
-class LocalModInfoDialog : public QDialog
+class LocalModDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit LocalModInfoDialog(QWidget *parent, LocalMod *mod = nullptr);
+    explicit LocalModDialog(QWidget *parent, LocalMod *mod = nullptr);
 
-    ~LocalModInfoDialog();
+    ~LocalModDialog();
 
 public slots:
     void onCurrentModChanged();
@@ -45,11 +45,11 @@ private slots:
     void on_rollbackButton_clicked();
 
 private:
-    Ui::LocalModInfoDialog *ui;
+    Ui::LocalModDialog *ui;
     LocalModFile *file_;
     LocalMod *mod_ = nullptr;
 
     bool isRenaming = false;
 };
 
-#endif // LOCALMODINFODIALOG_H
+#endif // LOCALMODDIALOG_H

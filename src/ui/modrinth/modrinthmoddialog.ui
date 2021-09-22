@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CurseforgeModInfoDialog</class>
- <widget class="QDialog" name="CurseforgeModInfoDialog">
+ <class>ModrinthModDialog</class>
+ <widget class="QDialog" name="ModrinthModDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -34,8 +34,11 @@
        <height>80</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string notr="true"/>
+     </property>
      <property name="text">
-      <string>ICON</string>
+      <string/>
      </property>
     </widget>
    </item>
@@ -54,6 +57,9 @@
        <bold>true</bold>
       </font>
      </property>
+     <property name="toolTip">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>Name</string>
      </property>
@@ -66,6 +72,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>by xxx</string>
@@ -88,6 +97,9 @@
        <italic>true</italic>
       </font>
      </property>
+     <property name="toolTip">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>Summary: balabalabalabalabalabala</string>
      </property>
@@ -98,6 +110,9 @@
    </item>
    <item row="2" column="1" colspan="2">
     <widget class="QLabel" name="modUrl">
+     <property name="toolTip">
+      <string notr="true"/>
+     </property>
      <property name="text">
       <string>https://www.curseforge.com</string>
      </property>

@@ -1,22 +1,21 @@
-#include "localmodinfodialog.h"
-#include "ui_localmodinfodialog.h"
+#include "localmoddialog.h"
+#include "ui_localmoddialog.h"
 
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QDebug>
 
-#include "localfileitemwidget.h"
 #include "local/localmod.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
-#include "curseforgemodinfodialog.h"
-#include "modrinthmodinfodialog.h"
+#include "ui/curseforge/curseforgemoddialog.h"
+#include "ui/modrinth/modrinthmoddialog.h"
 #include "util/funcutil.h"
 #include "util/websiteicon.h"
 
-LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
+LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     QDialog(parent),
-    ui(new Ui::LocalModInfoDialog),
+    ui(new Ui::LocalModDialog),
     file_(mod->modFile()),
     mod_(mod)
 {
@@ -35,7 +34,7 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
     connect(mod_, &LocalMod::modrinthReady, this, [=](bool bl){
         ui->modrinthButton->setEnabled(bl);
     });
-    connect(mod_, &LocalMod::modFileUpdated, this, &LocalModInfoDialog::onCurrentModChanged);
+    connect(mod_, &LocalMod::modFileUpdated, this, &LocalModDialog::onCurrentModChanged);
     connect(ui->aliasText, &QLineEdit::returnPressed, this, [=]{
         ui->editAliasButton->setChecked(false);
     });
@@ -44,12 +43,12 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalMod *mod) :
     });
 }
 
-LocalModInfoDialog::~LocalModInfoDialog()
+LocalModDialog::~LocalModDialog()
 {
     delete ui;
 }
 
-void LocalModInfoDialog::onCurrentModChanged()
+void LocalModDialog::onCurrentModChanged()
 {
     file_ = mod_->modFile();
     if(mod_->curseforgeMod()) ui->curseforgeButton->setEnabled(true);
@@ -67,7 +66,7 @@ void LocalModInfoDialog::onCurrentModChanged()
     onCurrentFileChanged();
 }
 
-void LocalModInfoDialog::onCurrentFileChanged()
+void LocalModDialog::onCurrentFileChanged()
 {
     ui->rollbackButton->setVisible(file_ != mod_->modFile());
     if(mod_->alias().isEmpty()) ui->modName->setText(file_->commonInfo()->name());
@@ -134,47 +133,47 @@ void LocalModInfoDialog::onCurrentFileChanged()
     ui->disableButton->setChecked(mod_->isDisabled());
 }
 
-void LocalModInfoDialog::on_curseforgeButton_clicked()
+void LocalModDialog::on_curseforgeButton_clicked()
 {
     auto curseforgeMod = mod_->curseforgeMod();
     if(!curseforgeMod->modInfo().hasBasicInfo())
         curseforgeMod->acquireBasicInfo();
-    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, mod_);
+    auto dialog = new CurseforgeModDialog(this, curseforgeMod, mod_);
     dialog->show();
 }
 
-void LocalModInfoDialog::on_modrinthButton_clicked()
+void LocalModDialog::on_modrinthButton_clicked()
 {
     auto modrinthMod = mod_->modrinthMod();
     if(!modrinthMod->modInfo().hasBasicInfo())
         modrinthMod->acquireFullInfo();
-    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, mod_);
+    auto dialog = new ModrinthModDialog(this, modrinthMod, mod_);
     dialog->show();
 }
 
-void LocalModInfoDialog::on_homepageButton_clicked()
+void LocalModDialog::on_homepageButton_clicked()
 {
     QDesktopServices::openUrl(file_->commonInfo()->homepage());
 }
 
-void LocalModInfoDialog::on_sourceButton_clicked()
+void LocalModDialog::on_sourceButton_clicked()
 {
     QDesktopServices::openUrl(file_->commonInfo()->sources());
 }
 
-void LocalModInfoDialog::on_issueButton_clicked()
+void LocalModDialog::on_issueButton_clicked()
 {
     QDesktopServices::openUrl(file_->commonInfo()->issues());
 }
 
-void LocalModInfoDialog::on_disableButton_toggled(bool checked)
+void LocalModDialog::on_disableButton_toggled(bool checked)
 {
     ui->disableButton->setEnabled(false);
     mod_->setEnabled(!checked);
     ui->disableButton->setEnabled(true);
 }
 
-void LocalModInfoDialog::on_editAliasButton_toggled(bool checked)
+void LocalModDialog::on_editAliasButton_toggled(bool checked)
 {
     ui->aliasText->setVisible(checked);
     ui->modName->setVisible(!checked);
@@ -187,7 +186,7 @@ void LocalModInfoDialog::on_editAliasButton_toggled(bool checked)
     }
 }
 
-void LocalModInfoDialog::on_editFileNameButton_toggled(bool checked)
+void LocalModDialog::on_editFileNameButton_toggled(bool checked)
 {
     ui->fileBaseNameText->setEnabled(checked);
     if(checked){
@@ -208,7 +207,7 @@ void LocalModInfoDialog::on_editFileNameButton_toggled(bool checked)
     }
 }
 
-void LocalModInfoDialog::on_versionSelect_currentIndexChanged(int index)
+void LocalModDialog::on_versionSelect_currentIndexChanged(int index)
 {
     if(index < 0 || index > mod_->oldFiles().size()) return;
     if(index == 0)
@@ -218,7 +217,7 @@ void LocalModInfoDialog::on_versionSelect_currentIndexChanged(int index)
     onCurrentFileChanged();
 }
 
-void LocalModInfoDialog::on_rollbackButton_clicked()
+void LocalModDialog::on_rollbackButton_clicked()
 {
     mod_->rollback(file_);
 }

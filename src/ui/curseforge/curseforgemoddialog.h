@@ -1,5 +1,5 @@
-#ifndef CURSEFORGEMODINFODIALOG_H
-#define CURSEFORGEMODINFODIALOG_H
+#ifndef CURSEFORGEMODDIALOG_H
+#define CURSEFORGEMODDIALOG_H
 
 #include <QDialog>
 
@@ -8,16 +8,16 @@ class LocalMod;
 class LocalModPath;
 
 namespace Ui {
-class CurseforgeModInfoDialog;
+class CurseforgeModDialog;
 }
 
-class CurseforgeModInfoDialog : public QDialog
+class CurseforgeModDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit CurseforgeModInfoDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod = nullptr);
-    ~CurseforgeModInfoDialog();
+    explicit CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod = nullptr);
+    ~CurseforgeModDialog();
 
 signals:
     void downloadPathChanged(LocalModPath *path);
@@ -26,10 +26,10 @@ public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
 
 private:
-    Ui::CurseforgeModInfoDialog *ui;
+    Ui::CurseforgeModDialog *ui;
     CurseforgeMod *mod_;
     LocalMod *localMod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
 };
 
-#endif // CURSEFORGEMODINFODIALOG_H
+#endif // CURSEFORGEMODDIALOG_H

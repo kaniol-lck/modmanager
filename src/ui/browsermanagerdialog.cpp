@@ -3,7 +3,7 @@
 
 #include <QListWidgetItem>
 
-#include "localmodbrowsersettingsdialog.h"
+#include "local/localmodpathsettingsdialog.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
 #include "config.h"
@@ -55,9 +55,9 @@ void BrowserManagerDialog::on_downButton_clicked()
 
 void BrowserManagerDialog::on_addButton_clicked()
 {
-    auto dialog = new LocalModBrowserSettingsDialog(this);
+    auto dialog = new LocalModPathSettingsDialog(this);
     dialog->show();
-    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
+    connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
         auto path = new LocalModPath(this, pathInfo);
         pathList_ << path;
         ui->browserList->addItem(pathInfo.displayName());
@@ -100,8 +100,8 @@ void BrowserManagerDialog::on_browserList_doubleClicked(const QModelIndex &index
     if(row < 0) return;
 
     auto path = pathList_.at(row);
-    auto dialog = new LocalModBrowserSettingsDialog(this, path->info());
-    connect(dialog, &LocalModBrowserSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
+    auto dialog = new LocalModPathSettingsDialog(this, path->info());
+    connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
         pathList_[row]->setInfo(newInfo);
         ui->browserList->item(row)->setText(newInfo.displayName());
     });
