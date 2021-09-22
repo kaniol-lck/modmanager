@@ -14,6 +14,7 @@ ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
     modInfo.basicInfo_ = true;
 
     modInfo.modId_ = value(variant, "mod_id").toString();
+    modInfo.modId_.remove("local-");
     modInfo.name_ = value(variant, "title").toString();
     modInfo.author_ = value(variant, "author").toString();
     modInfo.summary_ = value(variant, "description").toString();

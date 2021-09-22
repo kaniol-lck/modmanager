@@ -166,5 +166,22 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>searchText</sender>
+   <signal>returnPressed()</signal>
+   <receiver>searchButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>662</x>
+     <y>38</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>779</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

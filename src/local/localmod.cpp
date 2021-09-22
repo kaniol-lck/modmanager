@@ -26,6 +26,7 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     QObject(parent),
     curseforgeAPI_(parent->curseforgeAPI()),
     modrinthAPI_(parent->modrinthAPI()),
+    path_(parent),
     modFile_(file)
 {}
 
@@ -486,6 +487,11 @@ void LocalMod::setFeatured(bool featured)
     isFeatured_ = featured;
     emit modCacheUpdated();
     emit modFileUpdated();
+}
+
+LocalModPath *LocalMod::path() const
+{
+    return path_;
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

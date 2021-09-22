@@ -4,11 +4,12 @@
 #include <QDebug>
 
 #include "local/localmod.h"
+#include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
 #include "util/funcutil.h"
 #include "download/downloadmanager.h"
 
-CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMod *mod, const CurseforgeFileInfo &info, const QString &path, LocalMod *localMod) :
+CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMod *mod, const CurseforgeFileInfo &info, LocalMod *localMod) :
     QWidget(parent),
     ui(new Ui::CurseforgeFileItemWidget),
     mod_(mod),
@@ -38,8 +39,6 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
 
     //size
     ui->downloadSpeedText->setText(numberConvert(fileInfo_.size(), "B"));
-
-    setDownloadPath(path);
 }
 
 CurseforgeFileItemWidget::~CurseforgeFileItemWidget()
@@ -60,7 +59,10 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
         info.setIconBytes(localMod_->commonInfo()->iconBytes());
     else
         info.setIconBytes(mod_->modInfo().iconBytes());
-    info.setPath(downloadPath_);
+    if(downloadPath_)
+        info.setPath(downloadPath_->info().path());
+    else
+        info.setPath(Config().getDownloadPath());
 
     auto downloader = DownloadManager::addModDownload(info);
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
@@ -81,11 +83,17 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
     });
 }
 
-void CurseforgeFileItemWidget::setDownloadPath(const QString &newDownloadPath)
+void CurseforgeFileItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
 
-    if(hasFile(downloadPath_, fileInfo_.fileName())){
+    bool bl;
+    if(downloadPath_)
+        bl = hasFile(downloadPath_, fileInfo_);
+    else
+        bl = hasFile(Config().getDownloadPath(), fileInfo_.fileName());
+
+    if(bl){
         ui->downloadButton->setEnabled(false);
         ui->downloadButton->setText(tr("Downloaded"));
     } else{

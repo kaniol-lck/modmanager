@@ -94,6 +94,8 @@ public:
     bool isFeatured() const;
     void setFeatured(bool featured);
 
+    LocalModPath *path() const;
+
 signals:
     void modFileUpdated();
     void modCacheUpdated();
@@ -126,6 +128,7 @@ private:
     ModrinthAPI *modrinthAPI_;
 
     //files
+    LocalModPath *path_;
     LocalModFile *modFile_;
     QList<LocalModFile*> oldFiles_;
     QList<LocalModFile*> duplicateFiles_;

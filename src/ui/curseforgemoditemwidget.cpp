@@ -3,14 +3,14 @@
 
 #include <QDebug>
 #include <QMenu>
-#include <algorithm>
 
+#include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
 #include "download/downloadmanager.h"
 #include "download/downloader.h"
 #include "util/funcutil.h"
 
-CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload, const QString &path) :
+CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload) :
     QWidget(parent),
     ui(new Ui::CurseforgeModItemWidget),
     mod_(mod),
@@ -25,8 +25,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     if(defaultFileInfo_){
         auto name = defaultFileInfo_.value().displayName() + " ("+ numberConvert(defaultFileInfo_.value().size(), "B") + ")";
         connect(menu->addAction(QIcon::fromTheme("starred-symbolic"), name), &QAction::triggered, this, [=]{
-            if(!hasFile(downloadPath_, defaultFileInfo_->fileName()))
-                downloadFile(*defaultFileInfo_);
+            downloadFile(*defaultFileInfo_);
         });
 
         if(!mod->modInfo().latestFileList().isEmpty())
@@ -36,14 +35,11 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     for(const auto &fileInfo : mod->modInfo().latestFileList()){
         auto name = fileInfo.displayName() + " ("+ numberConvert(fileInfo.size(), "B") + ")";
         connect(menu->addAction(name), &QAction::triggered, this, [=]{
-            if(!hasFile(downloadPath_, fileInfo.fileName()))
-                downloadFile(fileInfo);
+            downloadFile(fileInfo);
         });
     }
 
     ui->downloadButton->setMenu(menu);
-
-    setDownloadPath(path);
 
     ui->modName->setText(mod->modInfo().name());
     ui->modSummary->setText(mod->modInfo().summary());
@@ -74,7 +70,10 @@ void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
     ui->downloadProgress->setVisible(true);
 
     DownloadFileInfo info(fileInfo);
-    info.setPath(downloadPath_);
+    if(downloadPath_)
+        info.setPath(downloadPath_->info().path());
+    else
+        info.setPath(Config().getDownloadPath());
     info.setIconBytes(mod_->modInfo().iconBytes());
 
     auto downloader = DownloadManager::addModDownload(info);
@@ -99,18 +98,23 @@ CurseforgeMod *CurseforgeModItemWidget::mod() const
     return mod_;
 }
 
-void CurseforgeModItemWidget::setDownloadPath(const QString &newDownloadPath)
+void CurseforgeModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
 
-    //TODO: download in local mod path -- has file
     bool bl = false;
-    if(defaultFileInfo_) bl = hasFile(downloadPath_, defaultFileInfo_->fileName());
-    for(const auto &fileInfo : mod_->modInfo().latestFileList()){
-        if(hasFile(downloadPath_, fileInfo.fileName())){
-            bl = true;
-            break;
-        }
+    if(downloadPath_)
+        bl = hasFile(downloadPath_, mod_);
+    else{
+        if(defaultFileInfo_)
+            bl = hasFile(Config().getDownloadPath(), defaultFileInfo_->fileName());
+        if(!mod_->modInfo().latestFileList().isEmpty())
+            for(const auto &fileInfo : mod_->modInfo().latestFileList()){
+                if(hasFile(Config().getDownloadPath(), fileInfo.fileName())){
+                    bl = true;
+                    break;
+                }
+            }
     }
     if(bl){
         ui->downloadButton->setEnabled(false);

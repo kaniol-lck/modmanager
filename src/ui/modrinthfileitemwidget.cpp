@@ -2,17 +2,17 @@
 #include "ui_modrinthfileitemwidget.h"
 
 #include "local/localmod.h"
+#include "local/localmodpath.h"
 #include "modrinth/modrinthmod.h"
 #include "download/downloadmanager.h"
 #include "util/funcutil.h"
 
-ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, ModrinthMod *mod, const ModrinthFileInfo &info, const QString &path, LocalMod *localMod) :
+ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, ModrinthMod *mod, const ModrinthFileInfo &info, LocalMod *localMod) :
     QWidget(parent),
     ui(new Ui::ModrinthFileItemWidget),
     mod_(mod),
     localMod_(localMod),
-    fileInfo_(info),
-    downloadPath_(path)
+    fileInfo_(info)
 {
     ui->setupUi(this);
     ui->displayNameText->setText(info.displayName());
@@ -37,8 +37,6 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, ModrinthMod *mod
 
     //size
     ui->downloadSpeedText->setVisible(false);
-
-    setDownloadPath(path);
 }
 
 ModrinthFileItemWidget::~ModrinthFileItemWidget()
@@ -59,8 +57,10 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
         info.setIconBytes(localMod_->commonInfo()->iconBytes());
     else
         info.setIconBytes(mod_->modInfo().iconBytes());
-    info.setPath(downloadPath_);
-
+    if(downloadPath_)
+        info.setPath(downloadPath_->info().path());
+    else
+        info.setPath(Config().getDownloadPath());
 
     auto downloader = DownloadManager::addModDownload(info);
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
@@ -81,11 +81,17 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
     });
 }
 
-void ModrinthFileItemWidget::setDownloadPath(const QString &newDownloadPath)
+void ModrinthFileItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
 
-    if(hasFile(downloadPath_, fileInfo_.fileName())){
+    bool bl;
+    if(downloadPath_)
+        bl = hasFile(downloadPath_, fileInfo_);
+    else
+        bl = hasFile(Config().getDownloadPath(), fileInfo_.fileName());
+
+    if(bl){
         ui->downloadButton->setEnabled(false);
         ui->downloadButton->setText(tr("Downloaded"));
     } else{

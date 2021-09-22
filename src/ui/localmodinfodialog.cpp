@@ -153,7 +153,7 @@ void LocalModInfoDialog::on_curseforgeButton_clicked()
     auto curseforgeMod = mod_->curseforgeMod();
     if(!curseforgeMod->modInfo().hasBasicInfo())
         curseforgeMod->acquireBasicInfo();
-    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, mod_->modFile()->fileInfo().absolutePath(), mod_);
+    auto dialog = new CurseforgeModInfoDialog(this, curseforgeMod, mod_);
     dialog->show();
 }
 
@@ -162,7 +162,7 @@ void LocalModInfoDialog::on_modrinthButton_clicked()
     auto modrinthMod = mod_->modrinthMod();
     if(!modrinthMod->modInfo().hasBasicInfo())
         modrinthMod->acquireFullInfo();
-    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, mod_->modFile()->fileInfo().absolutePath(), mod_);
+    auto dialog = new ModrinthModInfoDialog(this, modrinthMod, mod_);
     dialog->show();
 }
 

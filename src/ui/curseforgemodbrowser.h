@@ -6,9 +6,8 @@
 #include "local/localmodpathinfo.h"
 
 class CurseforgeAPI;
-class QNetworkReply;
 class CurseforgeMod;
-class QListWidgetItem;
+class LocalModPath;
 
 namespace Ui {
 class CurseforgeModBrowser;
@@ -23,7 +22,7 @@ public:
     ~CurseforgeModBrowser();
 
 signals:
-    void downloadPathChanged(QString path);
+    void downloadPathChanged(LocalModPath *path);
 
 public slots:
     void searchModByPathInfo(const LocalModPathInfo &info);
@@ -53,8 +52,7 @@ private:
     Ui::CurseforgeModBrowser *ui;
     CurseforgeAPI *api_;
     QList<int> idList_;
-    QStringList downloadPathList_;
-    QString downloadPath_;
+    LocalModPath *downloadPath_;
     QString currentName_;
     int currentIndex_;
     bool isUiSet_ = false;

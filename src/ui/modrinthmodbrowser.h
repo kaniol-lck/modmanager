@@ -7,6 +7,7 @@
 
 class ModrinthAPI;
 class ModrinthMod;
+class LocalModPath;
 
 namespace Ui {
 class ModrinthModBrowser;
@@ -21,7 +22,7 @@ public:
     ~ModrinthModBrowser();
 
 signals:
-    void downloadPathChanged(QString path);
+    void downloadPathChanged(LocalModPath *path);
 
 public slots:
     void searchModByPathInfo(const LocalModPathInfo &info);
@@ -50,8 +51,7 @@ private slots:
 private:
     Ui::ModrinthModBrowser *ui;
     ModrinthAPI *api_;
-    QStringList downloadPathList_;
-    QString downloadPath_;
+    LocalModPath *downloadPath_;
     QString currentName_;
     int currentIndex_;
     bool isUiSet_ = false;

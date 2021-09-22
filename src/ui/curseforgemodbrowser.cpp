@@ -3,7 +3,6 @@
 
 #include <QScrollBar>
 #include <QDir>
-#include <QDesktopServices>
 #include <QDebug>
 
 #include "local/localmodpathmanager.h"
@@ -73,14 +72,9 @@ void CurseforgeModBrowser::updateLocalPathList()
         selectedPath = LocalModPathManager::pathList().at(ui->downloadPathSelect->currentIndex());
 
     ui->downloadPathSelect->clear();
-    downloadPathList_.clear();
     ui->downloadPathSelect->addItem(tr("Custom"));
-    downloadPathList_ << Config().getDownloadPath();
-    if(downloadPath_.isEmpty()) downloadPath_ = downloadPathList_.first();
-    for(const auto &path : LocalModPathManager::pathList()){
+    for(const auto &path : LocalModPathManager::pathList())
         ui->downloadPathSelect->addItem(path->info().displayName());
-        downloadPathList_ << path->info().path();
-    }
 
     //reset selected path
     if(selectedPath != nullptr){
@@ -147,7 +141,8 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
             auto loaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
             auto fileInfo = mod->modInfo().latestFileInfo(version, loaderType);
-            auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo, downloadPath_);
+            auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo);
+            modItemWidget->setDownloadPath(downloadPath_);
             connect(this, &CurseforgeModBrowser::downloadPathChanged, modItemWidget, &CurseforgeModItemWidget::setDownloadPath);
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
@@ -169,23 +164,21 @@ void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &ind
 {
     auto widget = ui->modListWidget->itemWidget(ui->modListWidget->item(index.row()));
     auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
-    auto dialog = new CurseforgeModInfoDialog(this, mod, downloadPath_);
+    auto dialog = new CurseforgeModInfoDialog(this, mod);
+    dialog->setDownloadPath(downloadPath_);
     connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModInfoDialog::setDownloadPath);
     dialog->show();
 }
-
 
 void CurseforgeModBrowser::on_versionSelect_currentIndexChanged(int)
 {
     if(isUiSet_) getModList(currentName_);
 }
 
-
 void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
 {
     if(isUiSet_) getModList(currentName_);
 }
-
 
 void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
 {
@@ -203,17 +196,24 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
     }
 }
 
-
 void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
-    if(!isUiSet_ || index < 0 || index >= downloadPathList_.size()) return;
-    downloadPath_ = downloadPathList_.at(index);
+    if(!isUiSet_ || index < 0 || index >= ui->downloadPathSelect->count()) return;
+    if(index == 0)
+        downloadPath_ = nullptr;
+    else
+        downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
     emit downloadPathChanged(downloadPath_);
 }
 
 
 void CurseforgeModBrowser::on_openFolderButton_clicked()
 {
-    openFileInFolder(downloadPath_);
+    QString path;
+    if(downloadPath_)
+        path = downloadPath_->info().path();
+    else
+        path = Config().getDownloadPath();
+    openFileInFolder(path);
 }
 

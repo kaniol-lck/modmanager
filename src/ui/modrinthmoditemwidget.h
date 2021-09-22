@@ -6,6 +6,7 @@
 #include "modrinth/modrinthfileinfo.h"
 
 class ModrinthMod;
+class LocalModPath;
 
 namespace Ui {
 class ModrinthModItemWidget;
@@ -16,13 +17,13 @@ class ModrinthModItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod, const QString &path);
+    explicit ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod);
     ~ModrinthModItemWidget();
 
     ModrinthMod *mod() const;
 
 public slots:
-    void setDownloadPath(const QString &newDownloadPath);
+    void setDownloadPath(LocalModPath *newDownloadPath);
 
 private slots:
     void updateIcon();
@@ -33,7 +34,7 @@ private slots:
 private:
     Ui::ModrinthModItemWidget *ui;
     ModrinthMod *mod_;
-    QString downloadPath_;
+    LocalModPath *downloadPath_;
 };
 
 #endif // MODRINTHMODITEMWIDGET_H

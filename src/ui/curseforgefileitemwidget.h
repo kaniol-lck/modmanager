@@ -7,6 +7,7 @@
 
 class CurseforgeMod;
 class LocalMod;
+class LocalModPath;
 
 namespace Ui {
 class CurseforgeFileItemWidget;
@@ -17,11 +18,11 @@ class CurseforgeFileItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit CurseforgeFileItemWidget(QWidget *parent, CurseforgeMod *mod, const CurseforgeFileInfo &info, const QString &path, LocalMod* localMod = nullptr);
+    explicit CurseforgeFileItemWidget(QWidget *parent, CurseforgeMod *mod, const CurseforgeFileInfo &info, LocalMod* localMod = nullptr);
     ~CurseforgeFileItemWidget();
 
 public slots:
-    void setDownloadPath(const QString &newDownloadPath);
+    void setDownloadPath(LocalModPath *newDownloadPath);
 
 private slots:
     void on_downloadButton_clicked();
@@ -32,7 +33,7 @@ private:
     LocalMod *localMod_ = nullptr;
     CurseforgeFileInfo fileInfo_;
 
-    QString downloadPath_;
+    LocalModPath *downloadPath_ = nullptr;
 };
 
 #endif // CURSEFORGEFILEITEMWIDGET_H

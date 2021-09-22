@@ -3,15 +3,16 @@
 
 #include <QMenu>
 
+#include "local/localmodpath.h"
 #include "modrinth/modrinthmod.h"
 #include "download/downloadmanager.h"
 #include "util/funcutil.h"
+#include "config.h"
 
-ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod, const QString &path) :
+ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) :
     QWidget(parent),
     ui(new Ui::ModrinthModItemWidget),
-    mod_(mod),
-    downloadPath_(path)
+    mod_(mod)
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
@@ -77,8 +78,11 @@ void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
     ui->downloadProgress->setVisible(true);
 
     DownloadFileInfo info(fileInfo);
+    if(downloadPath_)
+        info.setPath(downloadPath_->info().path());
+    else
+        info.setPath(Config().getDownloadPath());
     info.setIconBytes(mod_->modInfo().iconBytes());
-    info.setPath(downloadPath_);
 
     auto downloader = DownloadManager::addModDownload(info);
 
@@ -102,19 +106,21 @@ ModrinthMod *ModrinthModItemWidget::mod() const
     return mod_;
 }
 
-void ModrinthModItemWidget::setDownloadPath(const QString &newDownloadPath)
+void ModrinthModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
 
-    //TODO: download in local mod path -- has file
     if(mod_->modInfo().fileList().isEmpty()) return;
     bool bl = false;
-    for(const auto &fileInfo : mod_->modInfo().fileList()){
-        if(hasFile(downloadPath_, fileInfo.fileName())){
-            bl = true;
-            break;
+    if(downloadPath_)
+        bl = hasFile(downloadPath_, mod_);
+    else if(!mod_->modInfo().fileList().isEmpty())
+        for(const auto &fileInfo : mod_->modInfo().fileList()){
+            if(hasFile(Config().getDownloadPath(), fileInfo.fileName())){
+                bl = true;
+                break;
+            }
         }
-    }
     if(bl){
         ui->downloadButton->setEnabled(false);
         ui->downloadButton->setText(tr("Downloaded"));
