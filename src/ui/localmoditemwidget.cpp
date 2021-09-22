@@ -69,11 +69,7 @@ void LocalModItemWidget::leaveEvent(QEvent *event)
 
 void LocalModItemWidget::updateInfo()
 {
-    if(!mod_->alias().isEmpty())
-        ui->modName->setText(mod_->alias());
-    else
-        ui->modName->setText(mod_->modFile()->commonInfo()->name());
-
+    ui->modName->setText(mod_->displayName());
     ui->modVersion->setText(mod_->commonInfo()->version());
     auto description = mod_->commonInfo()->description();
     auto index = description.indexOf(".");
@@ -280,5 +276,10 @@ void LocalModItemWidget::on_featuredButton_toggled(bool checked)
     ui->featuredButton->setIcon(QIcon::fromTheme(checked? "starred-symbolic" : "non-starred-symbolic"));
     mod_->setFeatured(checked);
     ui->featuredButton->setEnabled(true);
+}
+
+LocalMod *LocalModItemWidget::mod() const
+{
+    return mod_;
 }
 

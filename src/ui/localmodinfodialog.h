@@ -33,13 +33,13 @@ private slots:
 
     void on_issueButton_clicked();
 
-    void on_editFileNameButton_clicked();
-
-    void on_fileBaseNameText_editingFinished();
-
     void on_oldModListWidget_doubleClicked(const QModelIndex &index);
 
     void on_disableButton_toggled(bool checked);
+
+    void on_editAliasButton_toggled(bool checked);
+
+    void on_editFileNameButton_toggled(bool checked);
 
 private:
     Ui::LocalModInfoDialog *ui;

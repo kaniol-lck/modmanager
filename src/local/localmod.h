@@ -27,6 +27,7 @@ public:
     //info
     LocalModFile *modFile() const;
     const CommonModInfo *commonInfo() const;
+    QString displayName() const;
 
     //link
     CurseforgeMod *curseforgeMod() const;

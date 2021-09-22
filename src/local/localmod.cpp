@@ -368,6 +368,11 @@ const CommonModInfo *LocalMod::commonInfo() const
     return modFile_->commonInfo();
 }
 
+QString LocalMod::displayName() const
+{
+    return alias_.isEmpty()? commonInfo()->name() : alias_;
+}
+
 const QList<LocalModFile *> &LocalMod::oldFiles() const
 {
     return oldFiles_;
@@ -422,7 +427,10 @@ const QString &LocalMod::alias() const
 
 void LocalMod::setAlias(const QString &newAlias)
 {
+    if(alias_ == newAlias) return;
     alias_ = newAlias;
+    emit modFileUpdated();
+    emit modCacheUpdated();
 }
 
 QJsonObject LocalMod::toJsonObject() const

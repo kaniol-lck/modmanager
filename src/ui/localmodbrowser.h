@@ -56,6 +56,8 @@ private slots:
 
     void on_updateAllButton_clicked();
 
+    void on_modListWidget_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::LocalModBrowser *ui;
     LocalModPath *modPath_;

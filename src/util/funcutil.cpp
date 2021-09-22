@@ -81,7 +81,6 @@ bool hasFile(LocalModPath *path, const CurseforgeFileInfo &modInfo)
 
 bool hasFile(LocalModPath *path, ModrinthMod *mod)
 {
-
     for(auto localMod : path->modMap())
         if(localMod->modrinthMod() && localMod->modrinthMod()->modInfo().id() == mod->modInfo().id())
             return true;

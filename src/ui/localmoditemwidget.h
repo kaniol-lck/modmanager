@@ -20,6 +20,8 @@ public:
     void enterEvent(QEvent * event);
     void leaveEvent(QEvent * event);
 
+    LocalMod *mod() const;
+
 public slots:
     void updateInfo();
 

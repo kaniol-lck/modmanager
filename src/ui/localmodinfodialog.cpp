@@ -23,6 +23,7 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, Loca
     ui->setupUi(this);
     //not use it currently
     ui->disableButton->setVisible(false);
+    ui->aliasText->setVisible(false);
 
     //init info
     updateInfo();
@@ -53,11 +54,18 @@ LocalModInfoDialog::LocalModInfoDialog(QWidget *parent, LocalModFile *file, Loca
             connect(mod_, &LocalMod::modrinthReady, this, updateModrinth);
         }
     } else{
+        ui->editAliasButton->setVisible(false);
         ui->curseforgeButton->setVisible(false);
         ui->modrinthButton->setVisible(false);
         //remove old tab
         ui->tabWidget->removeTab(2);
     }
+    connect(ui->aliasText, &QLineEdit::returnPressed, this, [=]{
+        ui->editAliasButton->setChecked(false);
+    });
+    connect(ui->fileBaseNameText, &QLineEdit::returnPressed, this, [=]{
+        ui->editFileNameButton->setChecked(false);
+    });
 }
 
 LocalModInfoDialog::~LocalModInfoDialog()
@@ -71,12 +79,13 @@ void LocalModInfoDialog::updateInfo()
 
     auto modInfo = file_->commonInfo();
 
+    if(mod_) ui->aliasText->setText(mod_->alias());
     if(mod_)
         setWindowTitle(modInfo->name() + tr(" - Local"));
     else
         setWindowTitle(modInfo->name() + tr(" - Local Old"));
 
-    auto name = modInfo->name();
+    auto name = mod_? mod_->displayName() : modInfo->name();
     if(mod_ && mod_->isDisabled()) name.append(tr(" (Disabled)"));
     ui->modName->setText(name);
     ui->modVersion->setText(modInfo->version());
@@ -182,28 +191,6 @@ void LocalModInfoDialog::on_issueButton_clicked()
     QDesktopServices::openUrl(file_->commonInfo()->issues());
 }
 
-void LocalModInfoDialog::on_editFileNameButton_clicked()
-{
-    ui->fileBaseNameText->setEnabled(true);
-    ui->fileBaseNameText->setFocus();
-}
-
-void LocalModInfoDialog::on_fileBaseNameText_editingFinished()
-{
-    QString baseName;
-    if(isRenaming) return;
-    ui->fileBaseNameText->setEnabled(false);
-    baseName = std::get<0>(file_->baseNameFullSuffix());
-    if(ui->fileBaseNameText->text() == baseName)
-        return;
-    isRenaming = true;
-    if(!file_->rename(ui->fileBaseNameText->text())) {
-        ui->fileBaseNameText->setText(baseName);
-        QMessageBox::information(this, tr("Rename Failed"), tr("Rename failed!"));
-    }
-    isRenaming = false;
-}
-
 void LocalModInfoDialog::on_oldModListWidget_doubleClicked(const QModelIndex &index)
 {
     auto file = mod_->oldFiles().at(index.row());
@@ -217,5 +204,41 @@ void LocalModInfoDialog::on_disableButton_toggled(bool checked)
     ui->disableButton->setEnabled(false);
     mod_->setEnabled(!checked);
     ui->disableButton->setEnabled(true);
+}
+
+
+void LocalModInfoDialog::on_editAliasButton_toggled(bool checked)
+{
+    ui->aliasText->setVisible(checked);
+    ui->modName->setVisible(!checked);
+    if(checked)
+        //start edit
+        ui->aliasText->setFocus();
+    else{
+        //finish edit
+        mod_->setAlias(ui->aliasText->text());
+    }
+}
+
+
+void LocalModInfoDialog::on_editFileNameButton_toggled(bool checked)
+{
+    ui->fileBaseNameText->setEnabled(checked);
+    if(checked){
+        //start edit
+        ui->fileBaseNameText->setFocus();
+    } else{
+        QString baseName;
+        if(isRenaming) return;
+        baseName = std::get<0>(file_->baseNameFullSuffix());
+        if(ui->fileBaseNameText->text() == baseName)
+            return;
+        isRenaming = true;
+        if(!file_->rename(ui->fileBaseNameText->text())) {
+            ui->fileBaseNameText->setText(baseName);
+            QMessageBox::information(this, tr("Rename Failed"), tr("Rename failed!"));
+        }
+        isRenaming = false;
+    }
 }
 

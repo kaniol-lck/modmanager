@@ -81,6 +81,22 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QLineEdit" name="aliasText"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="editAliasButton">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="entry-edit"/>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="0" column="2" rowspan="2">
@@ -181,7 +197,7 @@
    <item row="3" column="0" colspan="3">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -287,6 +303,9 @@
              <property name="icon">
               <iconset theme="entry-edit">
                <normaloff>.</normaloff>.</iconset>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
