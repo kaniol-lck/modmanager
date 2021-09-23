@@ -27,16 +27,17 @@ public:
     explicit Config();
 
     //General
-    getterAndSetter(DownloadPath, String, downloadPath, "");
-    getterAndSetter(CommonPath, String, commonPath, "");
+    getterAndSetter(DownloadPath, String, downloadPath, "")
+    getterAndSetter(CommonPath, String, commonPath, "")
+    getterAndSetter(SearchResultCount, Int, searchResultCount, 30)
     enum VersionMatchType{ MinorVersion, MajorVersion };
     getterAndSetter(VersionMatch, Int, versionMatch, MinorVersion);
     getterAndSetter(UseCurseforgeUpdate, Bool, useCurseforgeUpdate, true)
     getterAndSetter(UseModrinthUpdate, Bool, useModrinthUpdate, true)
     enum PostUpdateType{ Delete, Keep, DoNothing };
-    getterAndSetter(PostUpdate, Int, postUpdate, Keep);
+    getterAndSetter(PostUpdate, Int, postUpdate, Keep)
     enum UpdateCheckIntervalType{ Always, EveryDay, Never };
-    getterAndSetter(UpdateCheckInterval, Int, updateCheckIntervalType, EveryDay);
+    getterAndSetter(UpdateCheckInterval, Int, updateCheckIntervalType, EveryDay)
 
     //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)

@@ -174,6 +174,11 @@
         <translation>自定义</translation>
     </message>
     <message>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="152"/>
+        <source>There is no more mod here...</source>
+        <translation>这里没有更多的mod了...</translation>
+    </message>
+    <message>
         <source>Sort: </source>
         <translation type="vanished">排序：</translation>
     </message>
@@ -735,12 +740,12 @@
         <translation type="vanished">名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="344"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="350"/>
         <source>Curseforge</source>
         <translation>Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="358"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="373"/>
         <source>Modrinth</source>
         <translation>Modrinth</translation>
     </message>
@@ -1302,6 +1307,11 @@
         <source>Searching...</source>
         <translation>搜索中...</translation>
     </message>
+    <message>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="140"/>
+        <source>There is no more mod here...</source>
+        <translation>这里没有更多的mod了...</translation>
+    </message>
 </context>
 <context>
     <name>ModrinthModDialog</name>
@@ -1468,42 +1478,47 @@
         <translation>你的mod下载文件夹...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="148"/>
+        <location filename="../src/ui/preferences.ui" line="146"/>
+        <source>Search result count:</source>
+        <translation>搜索结果数量：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="158"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="154"/>
+        <location filename="../src/ui/preferences.ui" line="164"/>
         <source>Game version match:</source>
         <translation>游戏版本匹配：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="171"/>
+        <location filename="../src/ui/preferences.ui" line="181"/>
         <source>Minor Version</source>
         <translation>小版本号</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="176"/>
+        <location filename="../src/ui/preferences.ui" line="186"/>
         <source>Major Version</source>
         <translation>大版本号</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="184"/>
+        <location filename="../src/ui/preferences.ui" line="194"/>
         <source>Update check interval:</source>
         <translation>更新检查间隔：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="192"/>
+        <location filename="../src/ui/preferences.ui" line="202"/>
         <source>Always</source>
         <translation>总是</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="197"/>
+        <location filename="../src/ui/preferences.ui" line="207"/>
         <source>Every Day</source>
         <translation>每天</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="202"/>
+        <location filename="../src/ui/preferences.ui" line="212"/>
         <source>Never</source>
         <translation>从不</translation>
     </message>
@@ -1512,22 +1527,22 @@
         <translation type="vanished">启动时在mod网站上搜索</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="233"/>
+        <location filename="../src/ui/preferences.ui" line="243"/>
         <source>Operation on old files after update:</source>
         <translation>旧文件在更新后：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="241"/>
+        <location filename="../src/ui/preferences.ui" line="251"/>
         <source>Delete Immediately</source>
         <translation>立即删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="246"/>
+        <location filename="../src/ui/preferences.ui" line="256"/>
         <source>Keep Until Confirm</source>
         <translation>保留直至确认</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="251"/>
+        <location filename="../src/ui/preferences.ui" line="261"/>
         <source>Do Nothing</source>
         <translation>不做任何事</translation>
     </message>
@@ -1536,12 +1551,12 @@
         <translation type="vanished">启动时检查更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="294"/>
+        <location filename="../src/ui/preferences.ui" line="304"/>
         <source>Max parallel download count:</source>
         <translation>最大并行下载数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="307"/>
+        <location filename="../src/ui/preferences.ui" line="321"/>
         <source>Download thread count:</source>
         <translation>下载线程数量：</translation>
     </message>
@@ -1550,27 +1565,27 @@
         <translation type="vanished">自动删除旧版mod文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="210"/>
+        <location filename="../src/ui/preferences.ui" line="220"/>
         <source>Update Source</source>
         <translation>更新来源</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="216"/>
+        <location filename="../src/ui/preferences.ui" line="226"/>
         <source>Curseforge</source>
         <translation>Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="223"/>
+        <location filename="../src/ui/preferences.ui" line="233"/>
         <source>Modrinth</source>
         <translation>Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="280"/>
+        <location filename="../src/ui/preferences.ui" line="290"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="286"/>
+        <location filename="../src/ui/preferences.ui" line="296"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
@@ -1583,23 +1598,23 @@
         <translation type="vanished">线程数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="325"/>
+        <location filename="../src/ui/preferences.ui" line="343"/>
         <source>Proxy</source>
         <translation>代理</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="333"/>
-        <location filename="../src/ui/preferences.ui" line="346"/>
+        <location filename="../src/ui/preferences.ui" line="351"/>
+        <location filename="../src/ui/preferences.ui" line="364"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.cpp" line="50"/>
+        <location filename="../src/ui/preferences.cpp" line="52"/>
         <source>Select your mod directory...</source>
         <translation>选择你的mod路径...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.cpp" line="57"/>
+        <location filename="../src/ui/preferences.cpp" line="59"/>
         <source>Select default mod download directory...</source>
         <translation>选择默认的mod下载路径...</translation>
     </message>

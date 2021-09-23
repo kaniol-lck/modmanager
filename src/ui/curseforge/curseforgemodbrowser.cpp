@@ -122,11 +122,6 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             hasMore_ = true;
         }
 
-        if(infoList.isEmpty()){
-            hasMore_ = false;
-            return ;
-        }
-
         //show them
         int shownCount = 0;
         for(const auto &info : qAsConst(infoList)){
@@ -153,6 +148,16 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
                 mod->acquireIcon();
             }
         }
+        if(infoList.size() < Config().getSearchResultCount()){
+            auto item = new QListWidgetItem(tr("There is no more mod here..."));
+            item->setSizeHint(QSize(500, 100));
+            auto font = qApp->font();
+            font.setPointSize(20);
+            item->setFont(font);
+            item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            ui->modListWidget->addItem(item);
+            hasMore_ = false;
+        }
         if(shownCount != infoList.count() && shownCount < needMore){
             currentIndex_ += 20;
             getModList(currentName_, currentIndex_, needMore - shownCount);
@@ -162,7 +167,9 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 
 void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
-    auto widget = ui->modListWidget->itemWidget(ui->modListWidget->item(index.row()));
+    auto item = ui->modListWidget->item(index.row());
+    if(!item->text().isEmpty()) return;
+    auto widget = ui->modListWidget->itemWidget(item);
     auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
     auto dialog = new CurseforgeModDialog(this, mod);
     dialog->setDownloadPath(downloadPath_);
@@ -184,6 +191,7 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
 {
     for(int i = 0; i < ui->modListWidget->count(); i++){
         auto item = ui->modListWidget->item(i);
+        if(!item->text().isEmpty()) continue;
         auto isHidden = item->isHidden();
         auto widget = ui->modListWidget->itemWidget(item);
         auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();

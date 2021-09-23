@@ -122,11 +122,6 @@ void ModrinthModBrowser::getModList(QString name, int index)
             hasMore_ = true;
         }
 
-        if(infoList.isEmpty()){
-            hasMore_ = false;
-            return ;
-        }
-
         //show them
         for(const auto &info : qAsConst(infoList)){
             auto mod = new ModrinthMod(this, info);
@@ -141,12 +136,24 @@ void ModrinthModBrowser::getModList(QString name, int index)
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
             mod->acquireIcon();
         }
+        if(infoList.size() < Config().getSearchResultCount()){
+            auto item = new QListWidgetItem(tr("There is no more mod here..."));
+            item->setSizeHint(QSize(500, 100));
+            auto font = qApp->font();
+            font.setPointSize(20);
+            item->setFont(font);
+            item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            ui->modListWidget->addItem(item);
+            hasMore_ = false;
+        }
     });
 }
 
 void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
-    auto widget = ui->modListWidget->itemWidget(ui->modListWidget->item(index.row()));
+    auto item = ui->modListWidget->item(index.row());
+    if(!item->text().isEmpty()) return;
+    auto widget = ui->modListWidget->itemWidget(item);
     auto mod = dynamic_cast<ModrinthModItemWidget*>(widget)->mod();
     auto dialog = new ModrinthModDialog(this, mod);
     dialog->setDownloadPath(downloadPath_);

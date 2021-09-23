@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
+#include "config.h"
 
 const QString ModrinthAPI::PREFIX = "https://api.modrinth.com";
 
@@ -47,8 +48,8 @@ void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &v
     urlQuery.addQueryItem("index", str);
     //index - offset
     urlQuery.addQueryItem("offset", QString::number(index));
-    //search page size, 30 by default [Customize it]
-    urlQuery.addQueryItem("limit", "30");
+    //search page size
+    urlQuery.addQueryItem("limit", QString::number(Config().getSearchResultCount()));
 
     QStringList facets;
     //game version

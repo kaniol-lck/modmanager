@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
+#include "config.h"
 
 const QString CurseforgeAPI::PREFIX = "https://addons-ecs.forgesvc.net";
 
@@ -35,8 +36,8 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
         urlQuery.addQueryItem("gameVersion", version);
     //index
     urlQuery.addQueryItem("index", QString::number(index));
-    //search page size, 30 by default [Customize it]
-    urlQuery.addQueryItem("pageSize", "30");
+    //search page size
+    urlQuery.addQueryItem("pageSize", QString::number(Config().getSearchResultCount()));
     //search by name
     urlQuery.addQueryItem("searchFilter", searchFilter);
     //mod
