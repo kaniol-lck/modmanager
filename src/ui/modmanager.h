@@ -10,6 +10,7 @@ class QListWidgetItem;
 class LocalModPath;
 class CurseforgeModBrowser;
 class ModrinthModBrowser;
+class OptifineModBrowser;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ModManager; }
@@ -48,6 +49,7 @@ private:
     Ui::ModManager *ui;
     CurseforgeModBrowser *curseforgeModBrowser_;
     ModrinthModBrowser *modrinthModBrowser_;
+    OptifineModBrowser *optifineModBrowser_;
 
     QList<LocalModPath*> pathList_;
 

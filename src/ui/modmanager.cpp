@@ -16,6 +16,7 @@
 #include "ui/local/localmodbrowser.h"
 #include "ui/curseforge/curseforgemodbrowser.h"
 #include "ui/modrinth/modrinthmodbrowser.h"
+#include "ui/optifine/optifinemodbrowser.h"
 #include "ui/downloadbrowser.h"
 #include "ui/preferences.h"
 #include "ui/browsermanagerdialog.h"
@@ -51,17 +52,24 @@ ModManager::ModManager(QWidget *parent) :
 
     //Curseforge
     curseforgeModBrowser_ = new CurseforgeModBrowser(this);
-    auto curseforgeItem = new QTreeWidgetItem(exploreItem_, {tr("Curseforge")});
+    auto curseforgeItem = new QTreeWidgetItem(exploreItem_, {"Curseforge"});
     exploreItem_->addChild(curseforgeItem);
     curseforgeItem->setIcon(0, QIcon(":/image/curseforge.svg"));
     ui->stackedWidget->addWidget(curseforgeModBrowser_);
 
     //Modrinth
     modrinthModBrowser_ = new ModrinthModBrowser(this);
-    auto modrinthItem = new QTreeWidgetItem(exploreItem_, {tr("Modrinth")});
+    auto modrinthItem = new QTreeWidgetItem(exploreItem_, {"Modrinth"});
     exploreItem_->addChild(modrinthItem);
     modrinthItem->setIcon(0, QIcon(":/image/modrinth.svg"));
     ui->stackedWidget->addWidget(modrinthModBrowser_);
+
+    //Optifine
+    optifineModBrowser_ = new OptifineModBrowser(this);
+    auto optifineItem = new QTreeWidgetItem(exploreItem_, {"Optifine"});
+    exploreItem_->addChild(optifineItem);
+    optifineItem->setIcon(0, QIcon(":/image/optifine.png"));
+    ui->stackedWidget->addWidget(optifineModBrowser_);
 
     //Local
     syncPathList();
@@ -120,7 +128,8 @@ void ModManager::syncPathList()
             oldCount--;
             pathList_ << pathList_.takeAt(i);
             localItem_->addChild(localItem_->takeChild(i));
-            auto widget = ui->stackedWidget->widget(i + 3);
+            //TODO: magic number
+            auto widget = ui->stackedWidget->widget(i + 4);
             ui->stackedWidget->removeWidget(widget);
             ui->stackedWidget->addWidget(widget);
         }
@@ -128,7 +137,8 @@ void ModManager::syncPathList()
     //remove remained mod path
     auto i = oldCount;
     while (i--) {
-        auto j = i + 3;
+        //TODO: magic number
+        auto j = i + 4;
         pathList_.removeAt(i);
         delete localItem_->takeChild(i);
         auto widget = ui->stackedWidget->widget(j);
@@ -183,7 +193,8 @@ void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *curren
         ui->stackedWidget->setCurrentIndex(1 + index);
     } else if(parent == localItem_){
         auto index = parent->indexOfChild(current);
-        ui->stackedWidget->setCurrentIndex(3 + index);
+        //TODO: magic number
+        ui->stackedWidget->setCurrentIndex(4 + index);
     }
 }
 

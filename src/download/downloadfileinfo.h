@@ -5,7 +5,8 @@
 #include <QUrl>
 
 #include "curseforge/curseforgefileinfo.h"
-#include "modrinth/modrinthmodinfo.h"
+#include "modrinth/modrinthfileinfo.h"
+#include "optifine/optifinemodinfo.h"
 
 class DownloadFileInfo
 {
@@ -18,6 +19,7 @@ public:
     //implicit convert
     DownloadFileInfo(const CurseforgeFileInfo &info);
     DownloadFileInfo(const ModrinthFileInfo &info);
+    DownloadFileInfo(const OptifineModInfo &info);
 
     static DownloadFileInfo fromCurseforge(const CurseforgeFileInfo &info);
     static DownloadFileInfo fromModrinth(const ModrinthFileInfo &info);

@@ -96,3 +96,13 @@ bool hasFile(LocalModPath *path, const ModrinthFileInfo &modInfo)
             return true;
     return false;
 }
+
+QString capture(const QString &str, const QString &regExp, bool minimal)
+{
+    QRegExp re(regExp);
+    re.setMinimal(minimal);
+    if(re.indexIn(str) != -1)
+        return re.cap(1);
+    else
+        return "";
+}

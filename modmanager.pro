@@ -34,6 +34,9 @@ SOURCES += \
     src/modrinth/modrinthfileinfo.cpp \
     src/modrinth/modrinthmod.cpp \
     src/modrinth/modrinthmodinfo.cpp \
+    src/optifine/optifineapi.cpp \
+    src/optifine/optifinemod.cpp \
+    src/optifine/optifinemodinfo.cpp \
     src/ui/aboutdialog.cpp \
     src/ui/browsermanagerdialog.cpp \
     src/ui/curseforge/curseforgefileitemwidget.cpp \
@@ -55,6 +58,8 @@ SOURCES += \
     src/ui/modrinth/modrinthmodbrowser.cpp \
     src/ui/modrinth/modrinthmoddialog.cpp \
     src/ui/modrinth/modrinthmoditemwidget.cpp \
+    src/ui/optifine/optifinemodbrowser.cpp \
+    src/ui/optifine/optifinemoditemwidget.cpp \
     src/ui/preferences.cpp \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
@@ -87,6 +92,9 @@ HEADERS += \
     src/modrinth/modrinthfileinfo.h \
     src/modrinth/modrinthmod.h \
     src/modrinth/modrinthmodinfo.h \
+    src/optifine/optifineapi.h \
+    src/optifine/optifinemod.h \
+    src/optifine/optifinemodinfo.h \
     src/ui/aboutdialog.h \
     src/ui/browsermanagerdialog.h \
     src/ui/curseforge/curseforgefileitemwidget.h \
@@ -107,6 +115,8 @@ HEADERS += \
     src/ui/modrinth/modrinthmodbrowser.h \
     src/ui/modrinth/modrinthmoddialog.h \
     src/ui/modrinth/modrinthmoditemwidget.h \
+    src/ui/optifine/optifinemodbrowser.h \
+    src/ui/optifine/optifinemoditemwidget.h \
     src/ui/preferences.h \
     src/util/funcutil.h \
     src/util/localmodsortitem.h \
@@ -136,6 +146,8 @@ FORMS += \
     src/ui/modrinth/modrinthmodbrowser.ui \
     src/ui/modrinth/modrinthmoddialog.ui \
     src/ui/modrinth/modrinthmoditemwidget.ui \
+    src/ui/optifine/optifinemodbrowser.ui \
+    src/ui/optifine/optifinemoditemwidget.ui \
     src/ui/preferences.ui
 
 TRANSLATIONS += \

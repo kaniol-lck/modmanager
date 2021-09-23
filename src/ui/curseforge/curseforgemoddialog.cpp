@@ -1,6 +1,7 @@
 #include "curseforgemoddialog.h"
 #include "ui_curseforgemoddialog.h"
 
+#include <QDir>
 #include <QDesktopServices>
 
 #include "local/localmodpath.h"
@@ -51,7 +52,28 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     //update description
     auto updateDescription = [=]{
         ui->modDescription->setFont(qApp->font());
-        ui->modDescription->setHtml(mod_->modInfo().description());
+        auto desc = mod_->modInfo().description();
+//        QRegExp re(R"(<img.*src=\"(.+)\")");
+//        re.setMinimal(true);
+//        int pos = 0;
+//        QStringList replceList;
+//        while ((pos = re.indexIn(desc, pos)) != -1) {
+//            replceList << re.cap(1);
+//            pos +=  re.matchedLength();
+//        }
+//        QDir().mkdir("image_cache");
+//        for(const auto &str : qAsConst(replceList)){
+//            qDebug() << str;
+//            QUrl url(str);
+//            auto fileName = url.fileName();
+//            QFileInfo fileInfo("./image_cache/" + fileName);
+//            if(fileInfo.exists()) continue;
+//            auto downloader = new Downloader(this);
+//            connect(downloader, &Downloader::finished, ui->modDescription, &QTextBrowser::reload);
+//            downloader->download(url, "./image_cache/", fileName);
+//            desc.replace(str, "./image_cache/" + fileName);
+//        }
+        ui->modDescription->setHtml(desc);
         ui->modDescription->setCursor(Qt::ArrowCursor);
     };
 

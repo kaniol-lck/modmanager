@@ -21,4 +21,6 @@ bool hasFile(LocalModPath *path, const CurseforgeFileInfo &modInfo);
 bool hasFile(LocalModPath *path, ModrinthMod *mod);
 bool hasFile(LocalModPath *path, const ModrinthFileInfo &modInfo);
 
+QString capture(const QString &str, const QString &regExp, bool minimal = true);
+
 #endif // FUNCUTIL_H

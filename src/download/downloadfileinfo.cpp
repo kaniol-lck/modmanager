@@ -20,6 +20,14 @@ DownloadFileInfo::DownloadFileInfo(const ModrinthFileInfo &info) :
     //modrinth does not provide size info
 }
 
+DownloadFileInfo::DownloadFileInfo(const OptifineModInfo &info) :
+    DownloadFileInfo(info.downloadUrl())
+{
+    displayName_ = info.name();
+    fileName_ = info.fileName();
+    //optifine does not provide size info
+}
+
 DownloadFileInfo DownloadFileInfo::fromCurseforge(const CurseforgeFileInfo &info)
 {
     DownloadFileInfo downloadInfo(info.url());
