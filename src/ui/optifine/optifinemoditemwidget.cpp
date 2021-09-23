@@ -2,6 +2,10 @@
 #include "ui_optifinemoditemwidget.h"
 
 #include "optifine/optifinemod.h"
+#include "download/downloadmanager.h"
+#include "local/localmodpath.h"
+#include "util/funcutil.h"
+#include "config.h"
 
 OptifineModItemWidget::OptifineModItemWidget(QWidget *parent, OptifineMod *mod) :
     QWidget(parent),
@@ -13,10 +17,11 @@ OptifineModItemWidget::OptifineModItemWidget(QWidget *parent, OptifineMod *mod) 
     ui->downloadProgress->setVisible(false);
 
     ui->displayNameText->setText(mod_->modInfo().name());
+    ui->gameVersion->setText("Minecraft " + mod_->modInfo().gameVersion());
     if(mod_->modInfo().downloadUrl().isEmpty()){
         ui->downloadButton->setDisabled(true);
         connect(mod_, &OptifineMod::downloadUrlReady, this, [=]{
-            ui->downloadButton->setEnabled(true);
+            if(ui->downloadButton->text() != tr("Downloaded")) ui->downloadButton->setEnabled(true);
         });
     }
 }
@@ -28,7 +33,45 @@ OptifineModItemWidget::~OptifineModItemWidget()
 
 void OptifineModItemWidget::on_downloadButton_clicked()
 {
-    //download
+    ui->downloadButton->setEnabled(false);
+    ui->downloadProgress->setVisible(true);
+    DownloadFileInfo info(mod_->modInfo());
+    if(downloadPath_)
+        info.setPath(downloadPath_->info().path());
+    else
+        info.setPath(Config().getDownloadPath());
+//    info.setIconBytes();
+
+    auto downloader = DownloadManager::addModDownload(info);
+    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+        ui->downloadProgress->setValue(bytesReceived);
+    });
+    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+        ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
+    });
+    connect(downloader, &Downloader::finished, this, [=]{
+        ui->downloadProgress->setVisible(false);
+        ui->downloadButton->setText(tr("Downloaded"));
+    });
+}
+
+void OptifineModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
+{
+    downloadPath_ = newDownloadPath;
+
+    bool bl;
+    if(downloadPath_)
+        bl = hasFile(downloadPath_->info().path(), mod_->modInfo().fileName()); //TODO
+    else
+        bl = hasFile(Config().getDownloadPath(), mod_->modInfo().fileName()); //TODO
+
+    if(bl){
+        ui->downloadButton->setEnabled(false);
+        ui->downloadButton->setText(tr("Downloaded"));
+    } else{
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setText(tr("Download"));
+    }
 }
 
 OptifineMod *OptifineModItemWidget::mod() const

@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class OptifineMod;
+class LocalModPath;
 
 namespace Ui {
 class OptifineModItemWidget;
@@ -19,12 +20,16 @@ public:
 
     OptifineMod *mod() const;
 
+public slots:
+    void setDownloadPath(LocalModPath *newDownloadPath);
+
 private slots:
     void on_downloadButton_clicked();
 
 private:
     Ui::OptifineModItemWidget *ui;
     OptifineMod *mod_;
+    LocalModPath *downloadPath_ = nullptr;
 };
 
 #endif // OPTIFINEMODITEMWIDGET_H

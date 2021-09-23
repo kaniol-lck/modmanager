@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QLineEdit" name="searchText">
      <property name="placeholderText">
-      <string>Search mod on Optifine...</string>
+      <string>Search mod on OptiFine...</string>
      </property>
      <property name="clearButtonEnabled">
       <bool>true</bool>

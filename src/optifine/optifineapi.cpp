@@ -31,8 +31,14 @@ void OptifineAPI::getModList(std::function<void (QList<OptifineModInfo>)> callba
         re.setMinimal(true);
         int pos = 0;
         QList<OptifineModInfo> list;
+        GameVersion gameVersion = capture(webPage, "<h2>Minecraft (.+)</h2>", true, pos);
+        GameVersion nextGameVersion;
         while ((pos = re.indexIn(webPage, pos)) != -1) {
-            list << OptifineModInfo::fromHtml(re.cap(1));
+            if(auto gv = capture(webPage, "<h2>Minecraft (.+)</h2>", true, pos); gv != nextGameVersion){
+                if(nextGameVersion != GameVersion::Any) gameVersion = nextGameVersion;
+                nextGameVersion = gv;
+            }
+            list << OptifineModInfo::fromHtml(re.cap(1), gameVersion);
             pos +=  re.matchedLength();
         }
         callback(list);

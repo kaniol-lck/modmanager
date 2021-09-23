@@ -30,14 +30,14 @@ private slots:
 
     void on_checkBox_stateChanged(int arg1);
 
-    void on_versionSelect_currentIndexChanged(int index);
-
     void on_searchText_textEdited(const QString &arg1);
+
+    void on_versionSelect_currentTextChanged(const QString &arg1);
 
 private:
     Ui::OptifineModBrowser *ui;
     OptifineAPI *api_;
-    LocalModPath *downloadPath_;
+    LocalModPath *downloadPath_ = nullptr;
     bool isUiSet_ = false;
 
     void getModList();

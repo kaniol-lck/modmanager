@@ -66,7 +66,7 @@ ModManager::ModManager(QWidget *parent) :
 
     //Optifine
     optifineModBrowser_ = new OptifineModBrowser(this);
-    auto optifineItem = new QTreeWidgetItem(exploreItem_, {"Optifine"});
+    auto optifineItem = new QTreeWidgetItem(exploreItem_, {"OptiFine"});
     exploreItem_->addChild(optifineItem);
     optifineItem->setIcon(0, QIcon(":/image/optifine.png"));
     ui->stackedWidget->addWidget(optifineModBrowser_);

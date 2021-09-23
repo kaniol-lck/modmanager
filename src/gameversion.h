@@ -18,6 +18,7 @@ public:
     const QString &getVersionString() const;
 
     operator QString() const;
+//    const GameVersion &operator=(const GameVersion &other);
     bool operator==(const GameVersion &other) const;
     bool operator!=(const GameVersion &other) const;
 

@@ -8,6 +8,7 @@
 #include "optifinemodinfo.h"
 
 // technically, it's not an API, I just parse the html doc of optifine's website
+// TODO: BMCLAPI
 class OptifineAPI : public QObject
 {
     Q_OBJECT

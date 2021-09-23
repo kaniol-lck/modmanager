@@ -288,7 +288,7 @@
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="21"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="22"/>
         <source> - Curseforge</source>
         <translation> - Curseforge</translation>
     </message>
@@ -1115,58 +1115,56 @@
         <translation type="vanished">+</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="29"/>
+        <location filename="../src/ui/modmanager.cpp" line="30"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="30"/>
+        <location filename="../src/ui/modmanager.cpp" line="31"/>
         <source>Explore</source>
         <translation>探索</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="31"/>
+        <location filename="../src/ui/modmanager.cpp" line="32"/>
         <source>Local</source>
         <translation>本地</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="47"/>
+        <location filename="../src/ui/modmanager.cpp" line="48"/>
         <source>Downloader</source>
         <translation>下载器</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="54"/>
         <source>Curseforge</source>
-        <translation>Curseforge</translation>
+        <translation type="vanished">Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="61"/>
         <source>Modrinth</source>
-        <translation>Modrinth</translation>
+        <translation type="vanished">Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="203"/>
+        <location filename="../src/ui/modmanager.cpp" line="214"/>
         <source>New Mod Path</source>
         <translation>新建mod路径</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="217"/>
+        <location filename="../src/ui/modmanager.cpp" line="228"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="220"/>
+        <location filename="../src/ui/modmanager.cpp" line="231"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="223"/>
-        <location filename="../src/ui/modmanager.cpp" line="224"/>
+        <location filename="../src/ui/modmanager.cpp" line="234"/>
+        <location filename="../src/ui/modmanager.cpp" line="235"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="224"/>
+        <location filename="../src/ui/modmanager.cpp" line="235"/>
         <source>Delete this mod path?</source>
         <translation>删除该mod路径？</translation>
     </message>
@@ -1427,6 +1425,75 @@
     <message>
         <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="100"/>
         <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="126"/>
+        <source>Downloaded</source>
+        <translation>已下载</translation>
+    </message>
+</context>
+<context>
+    <name>OptifineModBrowser</name>
+    <message>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="20"/>
+        <source>Search mod on OptiFine...</source>
+        <translation>在OptiFine上搜索mod...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="32"/>
+        <source>Game Version: </source>
+        <translation>游戏版本：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="48"/>
+        <source>Show Preview</source>
+        <translation>显示预览版本</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="55"/>
+        <source>Save To:</source>
+        <translation>保存至：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="70"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="46"/>
+        <source>Custom</source>
+        <translation>自定义</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="78"/>
+        <source>Any</source>
+        <translation>任意</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="81"/>
+        <source>There is no more mod here...</source>
+        <translation>这里没有更多的mod了...</translation>
+    </message>
+</context>
+<context>
+    <name>OptifineModItemWidget</name>
+    <message>
+        <location filename="../src/ui/optifine/optifinemoditemwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemoditemwidget.ui" line="70"/>
+        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="73"/>
+        <source>Download</source>
+        <translation>下载</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="24"/>
+        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="54"/>
+        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="70"/>
         <source>Downloaded</source>
         <translation>已下载</translation>
     </message>
