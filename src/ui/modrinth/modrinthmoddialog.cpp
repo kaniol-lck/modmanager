@@ -1,6 +1,7 @@
 #include "modrinthmoddialog.h"
 #include "ui_modrinthmoddialog.h"
 
+#include <QDesktopServices>
 #include <QTextDocument>
 #include <QDebug>
 
@@ -21,8 +22,7 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
         setWindowTitle(mod->modInfo().name() + tr(" - Modrinth"));
         ui->modName->setText(mod->modInfo().name());
         ui->modSummary->setText(mod->modInfo().summary());
-            ui->modUrl->setText(QString("<a href= \"%1\">%1</a>").arg(mod->modInfo().websiteUrl().toString()));
-        ui->modAuthors->setText("by " + mod->modInfo().author());
+        ui->modAuthors->setText(mod->modInfo().author());
 
         //update icon
         //included by basic info
@@ -49,8 +49,9 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
     auto updateFullInfo = [=]{
         if(!bl) updateBasicInfo();
         auto text = mod->modInfo().description();
-        text.replace(QRegExp(R"(<br\s*/?>)"), "\n");
-        ui->modDescription->setMarkdown(text);
+        QTextDocument doc;
+        doc.setMarkdown(text);
+        ui->modDescription->setHtml(doc.toHtml());
         ui->modDescription->setCursor(Qt::ArrowCursor);
 
         //update file list
@@ -98,4 +99,9 @@ void ModrinthModDialog::setDownloadPath(LocalModPath *newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
     emit downloadPathChanged(newDownloadPath);
+}
+
+void ModrinthModDialog::on_websiteButton_clicked()
+{
+    QDesktopServices::openUrl(mod_->modInfo().websiteUrl());
 }

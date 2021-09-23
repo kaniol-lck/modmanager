@@ -1,6 +1,8 @@
 #include "curseforgemoddialog.h"
 #include "ui_curseforgemoddialog.h"
 
+#include <QDesktopServices>
+
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
 #include "curseforgefileitemwidget.h"
@@ -19,8 +21,7 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
         setWindowTitle(mod->modInfo().name() + tr(" - Curseforge"));
         ui->modName->setText(mod->modInfo().name());
         ui->modSummary->setText(mod->modInfo().summary());
-        ui->modUrl->setText(QString("<a href= \"%1\">%1</a>").arg(mod->modInfo().websiteUrl().toString()));
-        ui->modAuthors->setText(mod->modInfo().authors().join(", ").prepend(tr("by ")));
+        ui->modAuthors->setText(mod->modInfo().authors().join(", "));
 
         //update thumbnail
         //included by basic info
@@ -101,3 +102,9 @@ void CurseforgeModDialog::setDownloadPath(LocalModPath *newDownloadPath)
     downloadPath_ = newDownloadPath;
     emit downloadPathChanged(newDownloadPath);
 }
+
+void CurseforgeModDialog::on_websiteButton_clicked()
+{
+    QDesktopServices::openUrl(mod_->modInfo().websiteUrl());
+}
+

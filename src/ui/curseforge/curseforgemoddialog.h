@@ -25,6 +25,9 @@ signals:
 public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
 
+private slots:
+    void on_websiteButton_clicked();
+
 private:
     Ui::CurseforgeModDialog *ui;
     CurseforgeMod *mod_;

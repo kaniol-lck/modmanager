@@ -258,39 +258,38 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="80"/>
-        <source>by xxx</source>
-        <translation></translation>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="73"/>
+        <source>Author:</source>
+        <translation>作者：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="104"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="169"/>
+        <source>Website</source>
+        <translation>网站</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="118"/>
         <source>Summary: balabalabalabalabalabala</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="117"/>
-        <source>https://www.curseforge.com</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="141"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="139"/>
         <source>Description</source>
         <translation>描述</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="155"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="153"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="19"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="21"/>
         <source> - Curseforge</source>
         <translation> - Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="23"/>
         <source>by </source>
-        <translation>作者：</translation>
+        <translation type="vanished">作者：</translation>
     </message>
 </context>
 <context>
@@ -1321,32 +1320,40 @@
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="80"/>
         <source>by xxx</source>
-        <translation>by xxx</translation>
+        <translation type="vanished">by xxx</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="104"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="118"/>
         <source>Summary: balabalabalabalabalabala</source>
         <translation>Summary: balabalabalabalabalabala</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="117"/>
         <source>https://www.curseforge.com</source>
-        <translation>https://www.curseforge.com</translation>
+        <translation type="vanished">https://www.curseforge.com</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="141"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="73"/>
+        <source>Author:</source>
+        <translation>作者：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="139"/>
         <source>Description</source>
         <translation>描述</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="155"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="153"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="21"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="169"/>
+        <source>Website</source>
+        <translation>网站</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="22"/>
         <source> - Modrinth</source>
         <translation> - Modrinth</translation>
     </message>
