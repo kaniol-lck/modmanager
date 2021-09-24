@@ -34,6 +34,12 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(menu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth"), &QAction::triggered, this, [=]{
         emit findNewOnModrinth(modPath_->info());
     });
+    connect(menu->addAction(QIcon(":/image/optifine.png"), "OptiFine"), &QAction::triggered, this, [=]{
+        emit findNewOnOptifine(modPath_->info());
+    });
+    connect(menu->addAction(QIcon(":/image/replay.png"), "ReplayMod"), &QAction::triggered, this, [=]{
+        emit findNewOnReplay(modPath_->info());
+    });
     ui->findnewButton->setMenu(menu);
 
     updateModList();

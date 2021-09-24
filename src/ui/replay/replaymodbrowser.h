@@ -1,24 +1,24 @@
-#ifndef OPTIFINEMODBROWSER_H
-#define OPTIFINEMODBROWSER_H
+#ifndef REPLAYMODBROWSER_H
+#define REPLAYMODBROWSER_H
 
 #include <QWidget>
 
-class OptifineAPI;
-class LocalModPath;
-
 #include "local/localmodpathinfo.h"
 
+class LocalModPath;
+class ReplayAPI;
+
 namespace Ui {
-class OptifineModBrowser;
+class ReplayModBrowser;
 }
 
-class OptifineModBrowser : public QWidget
+class ReplayModBrowser : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit OptifineModBrowser(QWidget *parent = nullptr);
-    ~OptifineModBrowser();
+    explicit ReplayModBrowser(QWidget *parent = nullptr);
+    ~ReplayModBrowser();
 
 public slots:
     void searchModByPathInfo(const LocalModPathInfo &info);
@@ -33,19 +33,17 @@ private slots:
 
     void on_downloadPathSelect_currentIndexChanged(int index);
 
-    void on_checkBox_stateChanged(int arg1);
-
     void on_searchText_textEdited(const QString &arg1);
 
     void on_versionSelect_currentTextChanged(const QString &arg1);
 
 private:
-    Ui::OptifineModBrowser *ui;
-    OptifineAPI *api_;
+    Ui::ReplayModBrowser *ui;
+    ReplayAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     bool isUiSet_ = false;
 
     void getModList();
 };
 
-#endif // OPTIFINEMODBROWSER_H
+#endif // REPLAYMODBROWSER_H

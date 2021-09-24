@@ -28,6 +28,16 @@ DownloadFileInfo::DownloadFileInfo(const OptifineModInfo &info) :
     //optifine does not provide size info
 }
 
+DownloadFileInfo::DownloadFileInfo(const ReplayModInfo &info) :
+    DownloadFileInfo("https://www.replaymod.com" + info.urlPath())
+{
+    displayName_ = info.name();
+    //TODO
+    //replay does not actually provide filename info
+    fileName_ = info.fileName();
+    //replay does not provide size info
+}
+
 DownloadFileInfo DownloadFileInfo::fromCurseforge(const CurseforgeFileInfo &info)
 {
     DownloadFileInfo downloadInfo(info.url());

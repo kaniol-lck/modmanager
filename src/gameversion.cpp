@@ -130,14 +130,10 @@ GameVersion::operator QString() const
     return versionString_;
 }
 
-//const GameVersion &GameVersion::operator=(const GameVersion &other)
-//{
-//    versionString_ = other.versionString_;
-//    mainVersionNumber_ = other.mainVersionNumber_;
-//    majorVersionNumber_ = other.majorVersionNumber_;
-//    minorVersionNumber_ = other.minorVersionNumber_;
-//    return *this;
-//}
+QString GameVersion::toString() const
+{
+    return versionString_;
+}
 
 bool GameVersion::operator==(const GameVersion &other) const
 {

@@ -5,6 +5,8 @@
 
 #include "util/funcutil.h"
 
+const QString OptifineAPI::PREFIX = "https://optifine.net";
+
 OptifineAPI::OptifineAPI(QObject *parent) : QObject(parent)
 {}
 
@@ -16,7 +18,7 @@ OptifineAPI *OptifineAPI::api()
 
 void OptifineAPI::getModList(std::function<void (QList<OptifineModInfo>)> callback)
 {
-    QUrl url("https://optifine.net/downloads");
+    QUrl url = PREFIX + "/downloads";
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
@@ -47,7 +49,7 @@ void OptifineAPI::getModList(std::function<void (QList<OptifineModInfo>)> callba
 
 void OptifineAPI::getDownloadUrl(const QString &fileName, std::function<void (QUrl)> callback)
 {
-    QUrl url("https://optifine.net/adloadx");
+    QUrl url = PREFIX + "/adloadx";
     QUrlQuery urlQuery;
     urlQuery.addQueryItem("f", fileName);
     url.setQuery(urlQuery);

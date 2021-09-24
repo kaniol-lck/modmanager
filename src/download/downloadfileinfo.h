@@ -7,6 +7,7 @@
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
 #include "optifine/optifinemodinfo.h"
+#include "replay/replaymodinfo.h"
 
 class DownloadFileInfo
 {
@@ -20,6 +21,7 @@ public:
     DownloadFileInfo(const CurseforgeFileInfo &info);
     DownloadFileInfo(const ModrinthFileInfo &info);
     DownloadFileInfo(const OptifineModInfo &info);
+    DownloadFileInfo(const ReplayModInfo &info);
 
     static DownloadFileInfo fromCurseforge(const CurseforgeFileInfo &info);
     static DownloadFileInfo fromModrinth(const ModrinthFileInfo &info);

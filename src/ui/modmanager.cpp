@@ -17,6 +17,7 @@
 #include "ui/curseforge/curseforgemodbrowser.h"
 #include "ui/modrinth/modrinthmodbrowser.h"
 #include "ui/optifine/optifinemodbrowser.h"
+#include "ui/replay/replaymodbrowser.h"
 #include "ui/downloadbrowser.h"
 #include "ui/preferences.h"
 #include "ui/browsermanagerdialog.h"
@@ -71,6 +72,13 @@ ModManager::ModManager(QWidget *parent) :
     optifineItem->setIcon(0, QIcon(":/image/optifine.png"));
     ui->stackedWidget->addWidget(optifineModBrowser_);
 
+    //Replay
+    replayModBrowser_ = new ReplayModBrowser(this);
+    auto replayItem = new QTreeWidgetItem(exploreItem_, {"ReplayMod"});
+    exploreItem_->addChild(replayItem);
+    replayItem->setIcon(0, QIcon(":/image/replay.png"));
+    ui->stackedWidget->addWidget(replayModBrowser_);
+
     //Local
     syncPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModManager::syncPathList);
@@ -118,10 +126,17 @@ void ModManager::syncPathList()
             connect(localModBrowser, &LocalModBrowser::findNewOnCurseforge, this, [=]{
                 ui->browserTreeWidget->setCurrentItem(exploreItem_->child(0));
             });
-
             connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, modrinthModBrowser_, &ModrinthModBrowser::searchModByPathInfo);
             connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, this, [=]{
                 ui->browserTreeWidget->setCurrentItem(exploreItem_->child(1));
+            });
+            connect(localModBrowser, &LocalModBrowser::findNewOnOptifine, optifineModBrowser_, &OptifineModBrowser::searchModByPathInfo);
+            connect(localModBrowser, &LocalModBrowser::findNewOnOptifine, this, [=]{
+                ui->browserTreeWidget->setCurrentItem(exploreItem_->child(2));
+            });
+            connect(localModBrowser, &LocalModBrowser::findNewOnReplay, replayModBrowser_, &ReplayModBrowser::searchModByPathInfo);
+            connect(localModBrowser, &LocalModBrowser::findNewOnReplay, this, [=]{
+                ui->browserTreeWidget->setCurrentItem(exploreItem_->child(3));
             });
         } else{
             //present, move position
@@ -129,7 +144,7 @@ void ModManager::syncPathList()
             pathList_ << pathList_.takeAt(i);
             localItem_->addChild(localItem_->takeChild(i));
             //TODO: magic number
-            auto widget = ui->stackedWidget->widget(i + 4);
+            auto widget = ui->stackedWidget->widget(i + 5);
             ui->stackedWidget->removeWidget(widget);
             ui->stackedWidget->addWidget(widget);
         }
@@ -138,7 +153,7 @@ void ModManager::syncPathList()
     auto i = oldCount;
     while (i--) {
         //TODO: magic number
-        auto j = i + 4;
+        auto j = i + 5;
         pathList_.removeAt(i);
         delete localItem_->takeChild(i);
         auto widget = ui->stackedWidget->widget(j);
@@ -194,7 +209,7 @@ void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *curren
     } else if(parent == localItem_){
         auto index = parent->indexOfChild(current);
         //TODO: magic number
-        ui->stackedWidget->setCurrentIndex(4 + index);
+        ui->stackedWidget->setCurrentIndex(5 + index);
     }
 }
 

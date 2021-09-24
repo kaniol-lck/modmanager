@@ -6,5 +6,6 @@
         <file>forge.svg</file>
         <file>fabric.png</file>
         <file>optifine.png</file>
+        <file>replay.png</file>
     </qresource>
 </RCC>

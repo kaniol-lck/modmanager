@@ -12,6 +12,8 @@
 class OptifineAPI : public QObject
 {
     Q_OBJECT
+    static const QString PREFIX;
+
 public:
     explicit OptifineAPI(QObject *parent = nullptr);
     static OptifineAPI *api();
@@ -19,11 +21,8 @@ public:
     void getModList(std::function<void (QList<OptifineModInfo>)> callback);
     void getDownloadUrl(const QString &fileName, std::function<void (QUrl)> callback);
 
-signals:
-
 private:
     QNetworkAccessManager accessManager_;
-
 };
 
 #endif // OPTIFINEAPI_H

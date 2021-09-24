@@ -1,9 +1,6 @@
 #include "optifinemodbrowser.h"
 #include "ui_optifinemodbrowser.h"
 
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QDebug>
 
 #include "optifinemoditemwidget.h"
@@ -32,6 +29,14 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
 OptifineModBrowser::~OptifineModBrowser()
 {
     delete ui;
+}
+
+void OptifineModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
+{
+    isUiSet_ = false;
+    ui->versionSelect->setCurrentText(info.gameVersion());
+    isUiSet_ = true;
+    ui->downloadPathSelect->setCurrentText(info.displayName());
 }
 
 void OptifineModBrowser::updateLocalPathList()
@@ -132,13 +137,13 @@ void OptifineModBrowser::on_searchText_textEdited(const QString &arg1)
         auto mod = dynamic_cast<const OptifineModItemWidget*>(widget)->mod();
         if(!ui->checkBox->isChecked() && mod->modInfo().isPreview()) continue;
         auto str = arg1.toLower();
-        if(mod->modInfo().name().toLower().contains(str))
+        if(mod->modInfo().name().toLower().contains(str) ||
+                mod->modInfo().gameVersion().toString().contains(str))
             ui->modListWidget->item(i)->setHidden(false);
         else
             ui->modListWidget->item(i)->setHidden(true);
     }
 }
-
 
 void OptifineModBrowser::on_versionSelect_currentTextChanged(const QString &arg1)
 {
@@ -155,4 +160,3 @@ void OptifineModBrowser::on_versionSelect_currentTextChanged(const QString &arg1
             item->setHidden(mod->modInfo().gameVersion() != gameVersion);
     }
 }
-

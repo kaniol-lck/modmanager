@@ -11,6 +11,7 @@ class LocalModPath;
 class CurseforgeModBrowser;
 class ModrinthModBrowser;
 class OptifineModBrowser;
+class ReplayModBrowser;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ModManager; }
@@ -50,6 +51,7 @@ private:
     CurseforgeModBrowser *curseforgeModBrowser_;
     ModrinthModBrowser *modrinthModBrowser_;
     OptifineModBrowser *optifineModBrowser_;
+    ReplayModBrowser *replayModBrowser_;
 
     QList<LocalModPath*> pathList_;
 

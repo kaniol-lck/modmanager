@@ -22,6 +22,8 @@ public:
 signals:
     void findNewOnCurseforge(LocalModPathInfo info);
     void findNewOnModrinth(LocalModPathInfo info);
+    void findNewOnOptifine(LocalModPathInfo info);
+    void findNewOnReplay(LocalModPathInfo info);
 
 public slots:
     void updateModList();

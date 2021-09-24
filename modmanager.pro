@@ -37,6 +37,9 @@ SOURCES += \
     src/optifine/optifineapi.cpp \
     src/optifine/optifinemod.cpp \
     src/optifine/optifinemodinfo.cpp \
+    src/replay/replayapi.cpp \
+    src/replay/replaymod.cpp \
+    src/replay/replaymodinfo.cpp \
     src/ui/aboutdialog.cpp \
     src/ui/browsermanagerdialog.cpp \
     src/ui/curseforge/curseforgefileitemwidget.cpp \
@@ -61,6 +64,8 @@ SOURCES += \
     src/ui/optifine/optifinemodbrowser.cpp \
     src/ui/optifine/optifinemoditemwidget.cpp \
     src/ui/preferences.cpp \
+    src/ui/replay/replaymodbrowser.cpp \
+    src/ui/replay/replaymoditemwidget.cpp \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
     src/util/localmodsortitem.cpp \
@@ -95,6 +100,9 @@ HEADERS += \
     src/optifine/optifineapi.h \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \
+    src/replay/replayapi.h \
+    src/replay/replaymod.h \
+    src/replay/replaymodinfo.h \
     src/ui/aboutdialog.h \
     src/ui/browsermanagerdialog.h \
     src/ui/curseforge/curseforgefileitemwidget.h \
@@ -118,6 +126,8 @@ HEADERS += \
     src/ui/optifine/optifinemodbrowser.h \
     src/ui/optifine/optifinemoditemwidget.h \
     src/ui/preferences.h \
+    src/ui/replay/replaymodbrowser.h \
+    src/ui/replay/replaymoditemwidget.h \
     src/util/funcutil.h \
     src/util/localmodsortitem.h \
     src/util/tutil.hpp \
@@ -148,7 +158,9 @@ FORMS += \
     src/ui/modrinth/modrinthmoditemwidget.ui \
     src/ui/optifine/optifinemodbrowser.ui \
     src/ui/optifine/optifinemoditemwidget.ui \
-    src/ui/preferences.ui
+    src/ui/preferences.ui \
+    src/ui/replay/replaymodbrowser.ui \
+    src/ui/replay/replaymoditemwidget.ui
 
 TRANSLATIONS += \
     languages/zh_CN.ts

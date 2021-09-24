@@ -481,7 +481,7 @@
     </message>
     <message>
         <location filename="../src/ui/local/localmodbrowser.ui" line="200"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="123"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="129"/>
         <source>Update All</source>
         <translation>更新全部</translation>
     </message>
@@ -527,7 +527,7 @@
         <translation type="vanished">在Mod网站上搜索...（%1/%2）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="80"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="86"/>
         <source>Searching on mod websites...</source>
         <translation>在mod网站上搜索中...</translation>
     </message>
@@ -536,75 +536,75 @@
         <translation type="vanished">在mod网站上搜索中...（%1/%2）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="72"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="94"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="127"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="78"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="100"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="133"/>
         <source>%1 mods in total.</source>
         <translation>共计%1个mod。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="86"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="92"/>
         <source>Searching on mod websites... (Searched %1/%2 mods)</source>
         <translation>在mod网站上搜索中...（已搜索%1/%2个mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="95"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="118"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="101"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="124"/>
         <source>Check updates</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="104"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="110"/>
         <source>Checking updates...</source>
         <translation>检查更新中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="110"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="116"/>
         <source>%1 mods need update... (Checked %2/%3 mods)</source>
         <translation>%1个mod需要更新（已检查%2/%3个mod...）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="124"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="130"/>
         <source>%1 mods need update.</source>
         <translation>%1个mod需要更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="148"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="154"/>
         <source>Updating... (Updated %1/%2 mods)</source>
         <translation>更新中...（已更新%1/%2个mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="154"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="160"/>
         <source>%1 mods in %2 has been updated. Enjoy it!</source>
         <translation>%2中的%1个mod已更新。去游戏里体验一下更新吧！</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="156"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="162"/>
         <source>Sadly, %1 mods failed to update.</source>
         <translation>很遗憾，%1个mod更新失败了。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="231"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="237"/>
         <source>Set Alias</source>
         <translation>设置别名</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="233"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="239"/>
         <source>Set mod alias</source>
         <translation>设置mod别名</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="233"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="239"/>
         <source>Alias of &lt;b&gt;%1&lt;/b&gt; mod:</source>
         <translation>&lt;b&gt;%1&lt;/b&gt; mod的别名：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="238"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="244"/>
         <source>Star</source>
         <translation>星标</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="244"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="250"/>
         <source>Disable</source>
         <translation>禁用</translation>
     </message>
@@ -613,17 +613,17 @@
         <translation type="vanished">已更新%1个mod。去游戏里体验一下更新吧！</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="158"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="164"/>
         <source>You can revert update if find any incompatibility.</source>
         <translation>如果发现有mod不兼容可以及时回退更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="159"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="165"/>
         <source>Update Finished</source>
         <translation>更新完成</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="137"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="143"/>
         <source>Updating...</source>
         <translation>更新中...</translation>
     </message>
@@ -636,7 +636,7 @@
         <translation type="vanished">更新%1个mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="127"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="133"/>
         <source>Good! All mods are up-to-date.</source>
         <translation>太棒了！所有的mod都是最新版。</translation>
     </message>
@@ -1115,22 +1115,22 @@
         <translation type="vanished">+</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="30"/>
+        <location filename="../src/ui/modmanager.cpp" line="31"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="31"/>
+        <location filename="../src/ui/modmanager.cpp" line="32"/>
         <source>Explore</source>
         <translation>探索</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="32"/>
+        <location filename="../src/ui/modmanager.cpp" line="33"/>
         <source>Local</source>
         <translation>本地</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="48"/>
+        <location filename="../src/ui/modmanager.cpp" line="49"/>
         <source>Downloader</source>
         <translation>下载器</translation>
     </message>
@@ -1143,28 +1143,28 @@
         <translation type="vanished">Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="214"/>
+        <location filename="../src/ui/modmanager.cpp" line="229"/>
         <source>New Mod Path</source>
         <translation>新建mod路径</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="228"/>
+        <location filename="../src/ui/modmanager.cpp" line="243"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="231"/>
+        <location filename="../src/ui/modmanager.cpp" line="246"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="234"/>
-        <location filename="../src/ui/modmanager.cpp" line="235"/>
+        <location filename="../src/ui/modmanager.cpp" line="249"/>
+        <location filename="../src/ui/modmanager.cpp" line="250"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="235"/>
+        <location filename="../src/ui/modmanager.cpp" line="250"/>
         <source>Delete this mod path?</source>
         <translation>删除该mod路径？</translation>
     </message>
@@ -1462,17 +1462,17 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="46"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="51"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="78"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="83"/>
         <source>Any</source>
         <translation>任意</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="81"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="86"/>
         <source>There is no more mod here...</source>
         <translation>这里没有更多的mod了...</translation>
     </message>
@@ -1748,6 +1748,74 @@
         <location filename="../3rdparty/quazip-0.7.3/quazip/quazipfile.cpp" line="247"/>
         <source>ZIP/UNZIP API error %1</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>ReplayModBrowser</name>
+    <message>
+        <location filename="../src/ui/replay/replaymodbrowser.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymodbrowser.ui" line="20"/>
+        <source>Search mod on ReplayMod...</source>
+        <translation>在ReplayMod上搜索mod...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymodbrowser.ui" line="32"/>
+        <source>Game Version: </source>
+        <translation>游戏版本：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymodbrowser.ui" line="48"/>
+        <source>Save To:</source>
+        <translation>保存至：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymodbrowser.ui" line="63"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymodbrowser.cpp" line="53"/>
+        <source>Custom</source>
+        <translation>自定义</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymodbrowser.cpp" line="134"/>
+        <source>Any</source>
+        <translation>任意</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymodbrowser.cpp" line="137"/>
+        <source>There is no more mod here...</source>
+        <translation>这里没有更多的mod了...</translation>
+    </message>
+</context>
+<context>
+    <name>ReplayModItemWidget</name>
+    <message>
+        <location filename="../src/ui/replay/replaymoditemwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymoditemwidget.ui" line="63"/>
+        <location filename="../src/ui/replay/replaymoditemwidget.cpp" line="47"/>
+        <source>Download</source>
+        <translation>下载</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymoditemwidget.cpp" line="16"/>
+        <source> Downloads</source>
+        <translation> 次下载</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/replay/replaymoditemwidget.cpp" line="44"/>
+        <location filename="../src/ui/replay/replaymoditemwidget.cpp" line="71"/>
+        <source>Downloaded</source>
+        <translation>已下载</translation>
     </message>
 </context>
 </TS>
