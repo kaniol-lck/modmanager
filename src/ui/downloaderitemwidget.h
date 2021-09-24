@@ -26,7 +26,7 @@ private slots:
 
     void updateSize(qint64 size);
 
-    void on_openFolderButton_clicked();
+    void on_DownloaderItemWidget_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::DownloaderItemWidget *ui;

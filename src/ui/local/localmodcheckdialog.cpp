@@ -38,7 +38,7 @@ LocalModCheckDialog::LocalModCheckDialog(QWidget *parent, LocalModPath *modPath)
                 str += "MisMatch:\n" + modid + " " + version;
 
             auto item = new QTreeWidgetItem(dependsItem_, { "", str });
-            item->setSizeHint(0, QSize(500, 100));
+            item->setSizeHint(0, QSize(0, 100));
 
             auto localMod = modPath_->modMap().value(fabricMod.mainId());
             auto widget = new LocalModItemWidget(this, localMod);

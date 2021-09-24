@@ -21,7 +21,6 @@ signals:
 private:
     ReplayAPI *api_;
     ReplayModInfo modInfo_;
-
 };
 
 #endif // REPLAYMOD_H

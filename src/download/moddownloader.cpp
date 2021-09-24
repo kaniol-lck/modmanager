@@ -21,12 +21,7 @@ ModDownloader::ModDownloader(QObject *parent) : Downloader(parent)
         auto bytes = currentDownloadBytes_ - lastDownloadBytes_;
         lastDownloadBytes_ = currentDownloadBytes_;
 
-        downloadBytes_ << bytes;
-        if(downloadBytes_.size() > 4) downloadBytes_.pop_front();
-
-        auto aver = std::accumulate(downloadBytes_.cbegin(), downloadBytes_.cend(), 0) / downloadBytes_.size();
-
-        emit downloadSpeed(aver * TIMER_PER_SEC);
+        emit downloadSpeed(bytes * TIMER_PER_SEC);
     });
 }
 

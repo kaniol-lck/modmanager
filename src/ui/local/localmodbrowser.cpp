@@ -69,7 +69,7 @@ void LocalModBrowser::updateModList()
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
 
         auto *item = new LocalModSortItem(mod);
-        item->setSizeHint(QSize(500, 100));
+        item->setSizeHint(QSize(0, 100));
 
         ui->modListWidget->addItem(item);
         ui->modListWidget->setItemWidget(item, modItemWidget);

@@ -57,6 +57,8 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
         sourceItem->setIcon(QIcon(pair.second));
         sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         sourceItem->setEnabled(enabled);
+        if(mod->updateTypes().size() == 1)
+            sourceItem->setEnabled(false);
 
         model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
         modUpdateList_ << QPair(mod, mod->defaultUpdateType());
@@ -84,7 +86,6 @@ void LocalModUpdateDialog::onUpdateSourceChanged(int row, LocalMod::ModWebsiteTy
     afterItem->setText(names.second);
 }
 
-
 void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
 {
     QList<QPair<LocalMod *, LocalMod::ModWebsiteType>> modUpdateList;
@@ -93,4 +94,3 @@ void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
             modUpdateList << modUpdateList_.at(row);
     modPath_->updateMods(modUpdateList);
 }
-

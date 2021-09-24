@@ -127,7 +127,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
             auto mod = new ModrinthMod(this, info);
 
             auto *listItem = new QListWidgetItem();
-            listItem->setSizeHint(QSize(500, 100));
+            listItem->setSizeHint(QSize(0, 100));
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
             auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, mod);
             modItemWidget->setDownloadPath(downloadPath_);
@@ -138,7 +138,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
         }
         if(infoList.size() < Config().getSearchResultCount()){
             auto item = new QListWidgetItem(tr("There is no more mod here..."));
-            item->setSizeHint(QSize(500, 100));
+            item->setSizeHint(QSize(0, 100));
             auto font = qApp->font();
             font.setPointSize(20);
             item->setFont(font);

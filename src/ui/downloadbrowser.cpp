@@ -24,7 +24,7 @@ DownloadBrowser::~DownloadBrowser()
 void DownloadBrowser::addNewDownloaderItem(ModDownloader *downloader)
 {
     auto *listItem = new QListWidgetItem();
-    listItem->setSizeHint(QSize(500, 100));
+    listItem->setSizeHint(QSize(0, 100));
     auto widget = new DownloaderItemWidget(this, downloader);
     ui->downloaderListWidget->addItem(listItem);
     ui->downloaderListWidget->setItemWidget(listItem, widget);

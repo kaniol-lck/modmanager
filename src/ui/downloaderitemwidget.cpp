@@ -3,6 +3,8 @@
 
 #include <QDir>
 #include <QDesktopServices>
+#include <QMenu>
+#include <QClipboard>
 
 #include "download/moddownloader.h"
 #include "util/funcutil.h"
@@ -14,16 +16,15 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
 {
     ui->setupUi(this);
     ui->downloadSpeedText->setVisible(false);
-    ui->downloadProgress->setVisible(false);
-    ui->openFolderButton->setVisible(false);
+//    ui->downloadProgress->setVisible(false);
 
     auto fileInfo = modDownlaoder_->fileInfo();
     ui->displayNameText->setText(fileInfo.displayName());
     ui->downloadSizeText->setText(numberConvert(fileInfo.size(), "B"));
 
-    QString linkText = fileInfo.fileName();
-    linkText = "<a href=%1>" + linkText + "</a>";
-    ui->fileNameText->setText(linkText.arg(fileInfo.url().toString()));
+//    QString linkText = fileInfo.fileName();
+//    linkText = "<a href=%1>" + linkText + "</a>";
+//    ui->fileNameText->setText(linkText.arg(fileInfo.url().toString()));
 
     if(fileInfo.iconBytes().isEmpty())
         ;//ui->downloadIcon->setVisible(false);
@@ -61,7 +62,7 @@ void DownloaderItemWidget::refreshStatus()
     case ModDownloader::Downloading:
         ui->downloaStatus->setText(tr("Downloading"));
         ui->downloadSpeedText->setVisible(true);
-        ui->downloadProgress->setVisible(true);
+//        ui->downloadProgress->setVisible(true);
         break;
     case ModDownloader::Paused:
         ui->downloaStatus->setText(tr("Paused"));
@@ -69,8 +70,7 @@ void DownloaderItemWidget::refreshStatus()
     case ModDownloader::Finished:
         ui->downloaStatus->setText(tr("Finished"));
         ui->downloadSpeedText->setVisible(false);
-        ui->downloadProgress->setVisible(false);
-        ui->openFolderButton->setVisible(true);
+//        ui->downloadProgress->setVisible(false);
         break;
     }
 }
@@ -91,7 +91,18 @@ void DownloaderItemWidget::updateSize(qint64 size)
     ui->downloadSizeText->setText(numberConvert(size, "B"));
 }
 
-void DownloaderItemWidget::on_openFolderButton_clicked()
+void DownloaderItemWidget::on_DownloaderItemWidget_customContextMenuRequested(const QPoint &pos)
 {
-    openFileInFolder(modDownlaoder_->filePath());
+    auto menu = new QMenu(this);
+    connect(menu->addAction(tr("Copy file name")), &QAction::triggered, this, [=]{
+        QApplication::clipboard()->setText(modDownlaoder_->fileInfo().fileName());
+    });
+    connect(menu->addAction(tr("Copy download link")), &QAction::triggered, this, [=]{
+        QApplication::clipboard()->setText(modDownlaoder_->fileInfo().url().toString());
+    });
+    connect(menu->addAction(QIcon::fromTheme("folder"), tr("Open folder")), &QAction::triggered, this, [=]{
+        openFileInFolder(modDownlaoder_->filePath());
+    });
+    if(!menu->isEmpty())
+        menu->exec(mapToGlobal(pos));
 }

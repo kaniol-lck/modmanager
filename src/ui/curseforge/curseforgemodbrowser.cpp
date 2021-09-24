@@ -132,7 +132,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 
             auto mod = new CurseforgeMod(this, info);
             auto *listItem = new QListWidgetItem();
-            listItem->setSizeHint(QSize(500, 100));
+            listItem->setSizeHint(QSize(0, 100));
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
             auto loaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
             auto fileInfo = mod->modInfo().latestFileInfo(version, loaderType);
@@ -150,7 +150,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
         }
         if(infoList.size() < Config().getSearchResultCount()){
             auto item = new QListWidgetItem(tr("There is no more mod here..."));
-            item->setSizeHint(QSize(500, 100));
+            item->setSizeHint(QSize(0, 100));
             auto font = qApp->font();
             font.setPointSize(20);
             item->setFont(font);

@@ -37,7 +37,6 @@ private:
     QTimer speedTimer_;
     qint64 currentDownloadBytes_ = 0;
     qint64 lastDownloadBytes_ = 0;
-    QList<qint64> downloadBytes_;
     DownloadFileInfo fileInfo_;
     DownloadStatus status_ = DownloadStatus::Idol;
     DownloadType type_;
