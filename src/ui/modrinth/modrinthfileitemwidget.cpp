@@ -63,7 +63,10 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
         info.setPath(Config().getDownloadPath());
 
     auto downloader = DownloadManager::addModDownload(info);
-    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(downloader, &ModDownloader::sizeUpdated, this, [=](qint64 size){
+        ui->downloadProgress->setMaximum(size);
+    });
+    connect(downloader, &ModDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });
     connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){

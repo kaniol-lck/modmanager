@@ -50,7 +50,7 @@ public:
     ModWebsiteType defaultUpdateType() const;
     QList<ModWebsiteType> updateTypes() const;
     QPair<QString, QString> updateNames(ModWebsiteType type) const;
-    void update(ModWebsiteType type);
+    ModDownloader *update(ModWebsiteType type);
 
     qint64 updateSize(ModWebsiteType type) const;
 

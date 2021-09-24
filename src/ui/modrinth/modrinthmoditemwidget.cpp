@@ -85,9 +85,9 @@ void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
     info.setIconBytes(mod_->modInfo().iconBytes());
 
     auto downloader = DownloadManager::addModDownload(info);
-
-    ui->downloadProgress->setMaximum(fileInfo.size());
-
+    connect(downloader, &ModDownloader::sizeUpdated, this, [=](qint64 size){
+        ui->downloadProgress->setMaximum(size);
+    });
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });

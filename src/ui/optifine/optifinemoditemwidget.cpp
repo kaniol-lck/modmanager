@@ -43,6 +43,9 @@ void OptifineModItemWidget::on_downloadButton_clicked()
 //    info.setIconBytes();
 
     auto downloader = DownloadManager::addModDownload(info);
+    connect(downloader, &Downloader::sizeUpdated, this, [=](qint64 size){
+        ui->downloadProgress->setMaximum(size);
+    });
     connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });

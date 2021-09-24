@@ -34,7 +34,7 @@ void DownloadManager::tryDownload()
             count ++;
         //max download
         if(count >= DOWNLOAD_COUNT) return;
-        if(downloader->status() == ModDownloader::Queue){
+        if(downloader->status() == ModDownloader::Queue && downloader->readyDownload()){
             downloader->startDownload();
             count ++;
         }
@@ -66,6 +66,7 @@ void DownloadManager::addDownloader(ModDownloader *downloader)
 {
     auto index = downloadList_.size();
     downloadList_ << downloader;
+    connect(downloader, &Downloader::downloadInfoReady, DownloadManager::manager(), &DownloadManager::tryDownload);
     speedList_.append(0);
     connect(downloader, &ModDownloader::finished, this, &DownloadManager::tryDownload);
     connect(downloader, &ModDownloader::finished, this, [=]{

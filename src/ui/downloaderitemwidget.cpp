@@ -95,10 +95,10 @@ void DownloaderItemWidget::on_DownloaderItemWidget_customContextMenuRequested(co
 {
     auto menu = new QMenu(this);
     connect(menu->addAction(tr("Copy file name")), &QAction::triggered, this, [=]{
-        QApplication::clipboard()->setText(modDownlaoder_->fileInfo().fileName());
+        QApplication::clipboard()->setText(modDownlaoder_->file().fileName());
     });
     connect(menu->addAction(tr("Copy download link")), &QAction::triggered, this, [=]{
-        QApplication::clipboard()->setText(modDownlaoder_->fileInfo().url().toString());
+        QApplication::clipboard()->setText(modDownlaoder_->url().toString());
     });
     connect(menu->addAction(QIcon::fromTheme("folder"), tr("Open folder")), &QAction::triggered, this, [=]{
         openFileInFolder(modDownlaoder_->filePath());

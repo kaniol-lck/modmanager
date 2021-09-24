@@ -18,15 +18,18 @@ Downloader::Downloader(QObject *parent) :
     bytesReceived_(THREAD_COUNT),
     bytesTotal_(THREAD_COUNT)
 {
-    connect(this, &Downloader::downloadInfoReady, this, &Downloader::startDownload, Qt::QueuedConnection);
+    connect(this, &Downloader::waitForRedirect, this, [=]{
+        handleRedirect();
+        readyDownload_ = true;
+        emit sizeUpdated(size_);
+        emit downloadInfoReady();
+    }, Qt::QueuedConnection);
 }
 
-bool Downloader::download(const QUrl &url, const QString &path, const QString &fileName)
+void Downloader::addDownload(const QUrl &url, const QString &path, const QString &fileName)
 {
     url_ = url;
-
     QDir dir(path);
-
     QString filePath;
 
     //get name
@@ -38,11 +41,8 @@ bool Downloader::download(const QUrl &url, const QString &path, const QString &f
         filePath = dir.absoluteFilePath("index.html");
 
     file_.setFileName(filePath + ".downloading");
-    if(!file_.open(QIODevice::WriteOnly)) return false;
 
-    emit downloadInfoReady();
-
-    return true;
+    emit waitForRedirect();
 }
 
 QString Downloader::filePath() const
@@ -71,13 +71,14 @@ void Downloader::updateProgress(int index, qint64 threadBytesReceived)
     emit downloadProgress(bytesReceivedSum, size_);
 }
 
-void Downloader::startDownload()
+bool Downloader::readyDownload() const
 {
-    //handle redirect
-    //this will update url and size
-    handleRedirect();
-    emit sizeUpdated(size_);
+    return readyDownload_;
+}
 
+bool Downloader::startDownload()
+{
+    if(!file_.open(QIODevice::WriteOnly)) return false;
     file_.resize(size_);
     //slice file into threads
     for(int i=0; i < THREAD_COUNT; i++){
@@ -92,6 +93,22 @@ void Downloader::startDownload()
         });
         thread->download(i, url_, &file_, startPos, endPos);
     }
+    return true;
+}
+
+const QUrl &Downloader::url() const
+{
+    return url_;
+}
+
+const QFile &Downloader::file() const
+{
+    return file_;
+}
+
+qint64 Downloader::size() const
+{
+    return size_;
 }
 
 void Downloader::handleRedirect()

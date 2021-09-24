@@ -14,21 +14,28 @@ class Downloader : public QObject
 public:
     explicit Downloader(QObject *parent = nullptr);
 
-    bool download(const QUrl &url, const QString &path = "", const QString &fileName = "");
+    void addDownload(const QUrl &url, const QString &path = "", const QString &fileName = "");
+    bool startDownload();
 
     QString filePath() const;
+
+    const QUrl &url() const;
+    const QFile &file() const;
+    qint64 size() const;
+
+    bool readyDownload() const;
 
 signals:
     void finished();
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadInfoReady();
+    void waitForRedirect();
 
     void sizeUpdated(qint64 size);
 
 private slots:
     void threadFinished(int index);
     void updateProgress(int index, qint64 threadBytesReceived);
-    void startDownload();
 
 private:
     const int THREAD_COUNT;
@@ -40,6 +47,7 @@ private:
     QVector<qint64> bytesReceived_;
     QVector<qint64> bytesTotal_;
 
+    bool readyDownload_ = false;
     void handleRedirect();
 };
 

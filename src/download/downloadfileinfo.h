@@ -11,6 +11,7 @@
 
 class DownloadFileInfo
 {
+    friend class ModDownloader;
 public:
     enum SourceType{ Curseforge, Modrinth, Custom };
 

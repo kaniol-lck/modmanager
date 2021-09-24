@@ -206,9 +206,9 @@ QPair<QString, QString> LocalMod::updateNames(ModWebsiteType type) const
         return QPair("", "");
 }
 
-void LocalMod::update(ModWebsiteType type)
+ModDownloader *LocalMod::update(ModWebsiteType type)
 {
-    if(type == None) return;
+    if(type == None) return nullptr;
     emit updateStarted();
 
     auto path = QFileInfo(modFile_->path()).absolutePath();
@@ -257,7 +257,7 @@ void LocalMod::update(ModWebsiteType type)
         else
             downloader = curseforgeUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback1, callback2);
     }
-    else if(type == ModWebsiteType::Modrinth){
+    else /*if(type == ModWebsiteType::Modrinth)*/{
         if(modrinthUpdate_.updateFileInfo())
             downloader = modrinthUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback1, callback2);
         else
@@ -265,6 +265,7 @@ void LocalMod::update(ModWebsiteType type)
     }
 
     connect(downloader, &ModDownloader::downloadProgress, this, &LocalMod::updateProgress);
+    return downloader;
 }
 
 qint64 LocalMod::updateSize(ModWebsiteType type) const

@@ -6,11 +6,13 @@ constexpr int TIMER_PER_SEC = 1;
 
 ModDownloader::ModDownloader(QObject *parent) : Downloader(parent)
 {
+    connect(this, &Downloader::sizeUpdated, this, [=](qint64 size){
+        fileInfo_.size_ = size;
+    });
     connect(this, &Downloader::finished, this, [=]{
         setStatus(DownloadStatus::Finished);
         speedTimer_.stop();
     });
-
     connect(this, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         currentDownloadBytes_ = bytesReceived;
     });
@@ -20,7 +22,7 @@ ModDownloader::ModDownloader(QObject *parent) : Downloader(parent)
     connect(&speedTimer_, &QTimer::timeout, this, [=]{
         auto bytes = currentDownloadBytes_ - lastDownloadBytes_;
         lastDownloadBytes_ = currentDownloadBytes_;
-
+        //TODO: average speed;
         emit downloadSpeed(bytes * TIMER_PER_SEC);
     });
 }
@@ -28,6 +30,7 @@ ModDownloader::ModDownloader(QObject *parent) : Downloader(parent)
 void ModDownloader::downloadMod(const DownloadFileInfo &info)
 {
     fileInfo_ = info;
+    addDownload(fileInfo_.url(), fileInfo_.path(), fileInfo_.fileName());
     setStatus(DownloadStatus::Queue);
     type_ = DownloadType::Download;
 }
@@ -35,6 +38,7 @@ void ModDownloader::downloadMod(const DownloadFileInfo &info)
 void ModDownloader::updateMod(const DownloadFileInfo &info)
 {
     fileInfo_ = info;
+    addDownload(fileInfo_.url(), fileInfo_.path(), fileInfo_.fileName());
     setStatus(DownloadStatus::Queue);
     type_ = DownloadType::Update;
 }
@@ -43,7 +47,7 @@ void ModDownloader::startDownload()
 {
     setStatus(DownloadStatus::Downloading);
     speedTimer_.start();
-    download(fileInfo_.url(), fileInfo_.path(), fileInfo_.fileName());
+    Downloader::startDownload();
 }
 
 const DownloadFileInfo &ModDownloader::fileInfo() const

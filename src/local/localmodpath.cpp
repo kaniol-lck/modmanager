@@ -358,21 +358,21 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> 
     auto successCount = std::make_shared<int>(0);
     auto failCount = std::make_shared<int>(0);
     auto bytesReceivedList = std::make_shared<QVector<qint64>>(modUpdateList.size());
-
-    qint64 totalSize = 0;
-    for(const auto &pair : modUpdateList)
-        totalSize += pair.first->updateSize(pair.second);
+    auto totalSize = std::make_shared<qint64>(0);
 
     for(int i = 0; i < modUpdateList.size(); i++){
         auto mod = modUpdateList.at(i).first;
         auto updateSource = modUpdateList.at(i).second;
 
-        mod->update(updateSource);
+        auto downloader = mod->update(updateSource);
 
-        connect(mod, &LocalMod::updateProgress, this, [=](qint64 bytesReceived, qint64){
+        connect(downloader, &ModDownloader::downloadInfoReady, this, [=]{
+            *totalSize += downloader->fileInfo().size();
+        });
+        connect(downloader, &ModDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64){
             (*bytesReceivedList)[i] = bytesReceived;
             auto sumReceived = std::accumulate(bytesReceivedList->cbegin(), bytesReceivedList->cend(), 0);
-            emit updatesProgress(sumReceived, totalSize);
+            emit updatesProgress(sumReceived, *totalSize);
         });
         connect(mod, &LocalMod::updateFinished, this, [=](bool success){
             (*count)++;
