@@ -12,6 +12,8 @@ ReplayModItemWidget::ReplayModItemWidget(QWidget *parent, ReplayMod *mod) :
     mod_(mod)
 {
     ui->setupUi(this);
+    QPixmap pixmap(":/image/replay.png");
+    ui->modIcon->setPixmap(pixmap.scaled(80, 80, Qt::KeepAspectRatio));
     ui->downloadProgress->setVisible(false);
     ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
 

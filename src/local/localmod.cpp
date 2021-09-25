@@ -71,10 +71,13 @@ void LocalMod::searchOnCurseforge()
     }, [=]{
         if(IdMapper::idMap().contains(commonInfo()->id())){
             auto curseforgeId = IdMapper::get(commonInfo()->id()).curseforgeId();
-            curseforgeMod_ = new CurseforgeMod(this, curseforgeId);
-            emit curseforgeReady(true);
-        } else
-            emit curseforgeReady(false);
+            if(curseforgeId){
+                curseforgeMod_ = new CurseforgeMod(this, curseforgeId);
+                emit curseforgeReady(true);
+                return;
+            }
+        }
+        emit curseforgeReady(false);
     });
 }
 
@@ -90,10 +93,13 @@ void LocalMod::searchOnModrinth()
     }, [=]{
         if(IdMapper::idMap().contains(commonInfo()->id())){
             auto modrinthId = IdMapper::get(commonInfo()->id()).modrinthId();
-            modrinthMod_ = new ModrinthMod(this, modrinthId);
-            emit modrinthReady(true);
-        } else
-            emit modrinthReady(false);
+            if(!modrinthId.isEmpty()){
+                modrinthMod_ = new ModrinthMod(this, modrinthId);
+                emit modrinthReady(true);
+                return;
+            }
+        }
+        emit modrinthReady(false);
     });
 }
 
@@ -342,6 +348,14 @@ void LocalMod::deleteAllOld()
     for(auto &oldFile : qAsConst(oldFiles_))
         oldFile->remove();
     oldFiles_.clear();
+    emit modFileUpdated();
+}
+
+void LocalMod::deleteOld(LocalModFile *file)
+{
+    if(file->remove())
+        oldFiles_.removeOne(file);
+    emit modFileUpdated();
 }
 
 bool LocalMod::isDisabled()
@@ -424,12 +438,14 @@ const QList<std::tuple<QString, QString, FabricModInfo> > &LocalMod::breaks() co
 
 void LocalMod::setCurseforgeId(int id)
 {
+    if(id == 0) return;
     curseforgeMod_ = new CurseforgeMod(this, id);
     emit curseforgeReady(true);
 }
 
 void LocalMod::setModrinthId(const QString &id)
 {
+    if(id.isEmpty()) return;
     modrinthMod_ = new ModrinthMod(this, id);
     emit modrinthReady(true);
 }
@@ -484,14 +500,16 @@ void LocalMod::restore(const QVariant &variant)
     alias_ = value(variant, "alias").toString();
     isFeatured_ = value(variant, "featured").toBool();
     if(contains(variant, "curseforge")){
-        setCurseforgeId(value(variant, "curseforge", "id").toInt());
+        if(contains(value(variant, "curseforge"), "id"))
+            setCurseforgeId(value(variant, "curseforge", "id").toInt());
         if(contains(value(variant, "curseforge"), "currentFileInfo"))
             curseforgeUpdate_.setCurrentFileInfo(CurseforgeFileInfo::fromVariant(value(variant, "curseforge", "currentFileInfo")));
         if(contains(value(variant, "curseforge"), "updateFileInfo"))
             curseforgeUpdate_.setUpdateFileInfo(CurseforgeFileInfo::fromVariant(value(variant, "curseforge", "updateFileInfo")));
     }
     if(contains(variant, "modrinth")){
-        setModrinthId(value(variant, "modrinth", "id").toString());
+        if(contains(value(variant, "modrinth"), "id"))
+            setModrinthId(value(variant, "modrinth", "id").toString());
         if(contains(value(variant, "modrinth"), "currentFileInfo"))
             modrinthUpdate_.setCurrentFileInfo(ModrinthFileInfo::fromVariant(value(variant, "modrinth", "currentFileInfo")));
         if(contains(value(variant, "modrinth"), "updateFileInfo"))

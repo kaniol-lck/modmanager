@@ -17,39 +17,27 @@ public:
     static ModrinthModInfo fromVariant(const QVariant &variant);
 
     const QString &id() const;
-
     const QString &author() const;
-
+    const QString &authorId() const;
     const QString &name() const;
-
     const QString &description() const;
-
     const QStringList &versions() const;
-
     int downloadCount() const;
-
     const QUrl &iconUrl() const;
-
     const QByteArray &iconBytes() const;
-
     const QString &summary() const;
-
     const QUrl &websiteUrl() const;
-
     const QList<ModrinthFileInfo> &fileList() const;
     QList<ModrinthFileInfo> featuredFileList() const;
-
     const QList<GameVersion> &gameVersions() const;
-
     const QStringList &versionList() const;
-
     bool hasBasicInfo() const;
-
     bool hasFullInfo() const;
 
 private:
     QString modId_;
     QString author_;
+    QString authorId_;
     QString name_;
     QString summary_;
     QString description_;

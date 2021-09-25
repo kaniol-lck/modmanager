@@ -18,11 +18,13 @@ public:
 
     ModrinthModInfo modInfo() const;
 
+    void acquireAuthor();
     void acquireIcon();
     void acquireFullInfo();
     void acquireFileList();
 
 signals:
+    void authorReady();
     void iconReady();
     void fullInfoReady();
     void fileListReady();
@@ -34,6 +36,7 @@ private:
     ModrinthAPI *api_;
     ModrinthModInfo modInfo_;
 
+    bool gettingAuthor_ = false;
     bool gettingIcon_ = false;
     bool gettingFullInfo_ = false;
     bool gettingFileList_ = false;

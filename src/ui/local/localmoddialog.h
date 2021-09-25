@@ -44,6 +44,8 @@ private slots:
 
     void on_rollbackButton_clicked();
 
+    void on_deleteButton_clicked();
+
 private:
     Ui::LocalModDialog *ui;
     LocalModFile *file_;

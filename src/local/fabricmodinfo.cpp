@@ -46,7 +46,11 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
     info.id_ = value(result, "id").toString();
     info.version_ = value(result, "version").toString();
     info.name_ = value(result, "name").toString();
-    info.authors_ = value(result, "authors").toStringList();
+    for(const auto &variant : value(result, "authors").toList())
+        if(auto author = variant.toString(); !author.isEmpty())
+            info.authors_ << author;
+        else
+            info.authors_ << value(variant, "name").toString();
     info.description_ = value(result, "description").toString();
 
     if(result.toMap().contains("contact")){

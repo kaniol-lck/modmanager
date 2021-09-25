@@ -13,6 +13,8 @@ OptifineModItemWidget::OptifineModItemWidget(QWidget *parent, OptifineMod *mod) 
     mod_(mod)
 {
     ui->setupUi(this);
+    QPixmap pixmap(":/image/optifine.png");
+    ui->modIcon->setPixmap(pixmap.scaled(80, 80, Qt::KeepAspectRatio));
     ui->downloadSpeedText->setVisible(false);
     ui->downloadProgress->setVisible(false);
 

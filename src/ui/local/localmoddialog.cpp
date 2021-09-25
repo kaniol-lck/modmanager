@@ -58,10 +58,13 @@ void LocalModDialog::onCurrentModChanged()
 
     ui->versionSelect->clear();
     ui->versionSelect->addItem(mod_->modFile()->commonInfo()->version());
+    ui->versionText->setText(mod_->modFile()->commonInfo()->version());
     for(auto file : mod_->oldFiles())
         ui->versionSelect->addItem(file->commonInfo()->version());
     //TODO: if this version was deleted
     ui->versionSelect->setCurrentText(file_->commonInfo()->version());
+    ui->versionSelect->setVisible(!mod_->oldFiles().empty());
+    ui->versionText->setVisible(mod_->oldFiles().empty());
 
     onCurrentFileChanged();
 }
@@ -69,6 +72,7 @@ void LocalModDialog::onCurrentModChanged()
 void LocalModDialog::onCurrentFileChanged()
 {
     ui->rollbackButton->setVisible(file_ != mod_->modFile());
+    ui->deleteButton->setVisible(file_ != mod_->modFile());
     if(mod_->alias().isEmpty()) ui->modName->setText(file_->commonInfo()->name());
     ui->aliasText->setPlaceholderText(file_->commonInfo()->name());
 
@@ -221,3 +225,10 @@ void LocalModDialog::on_rollbackButton_clicked()
 {
     mod_->rollback(file_);
 }
+
+void LocalModDialog::on_deleteButton_clicked()
+{
+    if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this version?"))) return;
+    mod_->deleteOld(file_);
+}
+

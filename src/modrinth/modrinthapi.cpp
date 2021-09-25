@@ -180,6 +180,34 @@ void ModrinthAPI::getVersion(const QString &version, std::function<void (Modrint
     });
 }
 
+void ModrinthAPI::getAuthor(const QString &authorId, std::function<void (QString)> callback)
+{
+    QUrl url = PREFIX + "/api/v1/user/" + authorId;
+    qDebug() << url;
+    QNetworkRequest request(url);
+    auto reply = accessManager_.get(request);
+    connect(reply, &QNetworkReply::finished, this,  [=]{
+        if(reply->error() != QNetworkReply::NoError) {
+            qDebug() << reply->errorString();
+            return;
+        }
+
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return;
+        }
+
+        auto result = jsonDocument.toVariant();
+        auto author = value(result, "name").toString();
+
+        callback(author);
+        reply->deleteLater();
+    });
+}
+
 void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (ModrinthFileInfo)> callback, std::function<void ()> noMatch)
 {
     QUrl url = PREFIX + "/api/v1/version_file/" + sha1;

@@ -129,14 +129,14 @@ void LocalModItemWidget::updateInfo()
         ui->disableButton->setVisible(true);
         ui->modName->setStyleSheet("color: #777");
         ui->modAuthors->setStyleSheet("color: #777");
-        ui->modDescription->setStyleSheet("background-color:transparent;color: #777;");
+        ui->modDescription->setStyleSheet("color: #777;");
         ui->modVersion->setStyleSheet("color: #777");
         ui->updateButton->setEnabled(false);
     }else {
         ui->disableButton->setChecked(false);
         ui->modName->setStyleSheet("");
         ui->modAuthors->setStyleSheet("");
-        ui->modDescription->setStyleSheet("background-color:transparent;");
+        ui->modDescription->setStyleSheet("");
         ui->modVersion->setStyleSheet("");
         ui->updateButton->setEnabled(true);
     }

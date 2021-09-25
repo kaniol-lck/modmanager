@@ -69,6 +69,7 @@ public:
     void duplicateToOld();
     void rollback(LocalModFile *file);
     void deleteAllOld();
+    void deleteOld(LocalModFile *file);
 
     bool isDisabled();
     bool setEnabled(bool enabled);

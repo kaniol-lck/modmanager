@@ -22,7 +22,14 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
         setWindowTitle(mod->modInfo().name() + tr(" - Modrinth"));
         ui->modName->setText(mod->modInfo().name());
         ui->modSummary->setText(mod->modInfo().summary());
-        ui->modAuthors->setText(mod->modInfo().author());
+        if(!mod->modInfo().author().isEmpty()){
+            ui->modAuthors->setText(mod->modInfo().author());
+            ui->modAuthors->setVisible(true);
+            ui->author_label->setVisible(true);
+        } else{
+            ui->modAuthors->setVisible(false);
+            ui->author_label->setVisible(false);
+        }
 
         //update icon
         //included by basic info

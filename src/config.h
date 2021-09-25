@@ -41,7 +41,7 @@ public:
 
     //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)
-    getterAndSetter(DownloadCount, Int, downloadCount, 8)
+    getterAndSetter(DownloadCount, Int, downloadCount, 16)
 
     //Path List
     getterAndSetter(LocalPathList, List, localPathList, QVariant())

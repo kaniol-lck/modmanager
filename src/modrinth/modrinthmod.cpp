@@ -32,6 +32,17 @@ ModrinthModInfo ModrinthMod::modInfo() const
     return modInfo_;
 }
 
+void ModrinthMod::acquireAuthor()
+{
+    if(modInfo_.authorId_.isEmpty() || gettingAuthor_) return;
+    gettingAuthor_ = true;
+    api_->getAuthor(modInfo_.modId_, [=](const auto &author){
+        gettingAuthor_ = false;
+        modInfo_.author_ = author;
+        emit authorReady();
+    });
+}
+
 void ModrinthMod::acquireIcon()
 {
     if(modInfo_.iconUrl_.isEmpty() || gettingIcon_) return;

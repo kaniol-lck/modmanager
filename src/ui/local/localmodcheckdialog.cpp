@@ -11,7 +11,7 @@ LocalModCheckDialog::LocalModCheckDialog(QWidget *parent, LocalModPath *modPath)
     QDialog(parent),
     ui(new Ui::LocalModCheckDialog),
     modPath_(modPath),
-    dependsItem_(new QTreeWidgetItem({tr("Denpends")})),
+    dependsItem_(new QTreeWidgetItem({tr("Depends")})),
     conflictsItem_(new QTreeWidgetItem({tr("Conflicts")})),
     breaksItem_(new QTreeWidgetItem({tr("Breaks")}))
 {

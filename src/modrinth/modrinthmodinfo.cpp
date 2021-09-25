@@ -56,6 +56,11 @@ const QString &ModrinthModInfo::author() const
     return author_;
 }
 
+const QString &ModrinthModInfo::authorId() const
+{
+    return authorId_;
+}
+
 const QString &ModrinthModInfo::name() const
 {
     return name_;
