@@ -25,7 +25,11 @@ public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
 
 private slots:
+    void updateLocalInfo();
+
     void on_downloadButton_clicked();
+
+    void on_ModrinthFileItemWidget_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::ModrinthFileItemWidget *ui;

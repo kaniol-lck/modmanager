@@ -2,6 +2,8 @@
 #include "ui_curseforgefileitemwidget.h"
 
 #include <QDebug>
+#include <QMenu>
+#include <QClipboard>
 
 #include "local/localmod.h"
 #include "local/localmodpath.h"
@@ -17,13 +19,11 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
     fileInfo_(info)
 {
     ui->setupUi(this);
-    ui->displayNameText->setText(fileInfo_.displayName());
     ui->downloadProgress->setVisible(false);
 
-    //file name and link
-    QString linkText = fileInfo_.fileName();
-    linkText = "<a href=%1>" + linkText + "</a>";
-    ui->fileNameText->setText(linkText.arg(fileInfo_.url().toString()));
+    updateLocalInfo();
+    if(localMod_)
+        connect(localMod_, &LocalMod::modCacheUpdated, this, &CurseforgeFileItemWidget::updateLocalInfo);
 
     //game version
     QString gameversionText;
@@ -103,4 +103,28 @@ void CurseforgeFileItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setText(tr("Download"));
     }
+}
+
+void CurseforgeFileItemWidget::updateLocalInfo()
+{
+    auto name = fileInfo_.displayName();
+    if(localMod_ && localMod_->curseforgeUpdate().currentFileInfo() && localMod_->curseforgeUpdate().currentFileInfo()->id() == fileInfo_.id())
+        name.prepend("<font color=\"#56a\">" + tr("[Current]") + "</font> ");
+    ui->displayNameText->setText(name);
+    //refresh downloaded infos
+    setDownloadPath(downloadPath_);
+}
+
+void CurseforgeFileItemWidget::on_CurseforgeFileItemWidget_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    connect(menu->addAction(tr("Copy download link")), &QAction::triggered, this, [=]{
+        QApplication::clipboard()->setText(fileInfo_.url().toString());
+    });
+    if(localMod_ && !(localMod_->curseforgeUpdate().currentFileInfo() && localMod_->curseforgeUpdate().currentFileInfo()->id() == fileInfo_.id()))
+        connect(menu->addAction(tr("Set as current")), &QAction::triggered, this, [=]{
+            localMod_->setCurrentCurseforgeFileInfo(fileInfo_);
+        });
+    if(!menu->isEmpty())
+        menu->exec(mapToGlobal(pos));
 }

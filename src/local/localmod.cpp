@@ -253,6 +253,7 @@ ModDownloader *LocalMod::update(ModWebsiteType type)
             oldFiles_ << modFile_;
         }
 
+        //TODO: if version updated from curseforge also in modrinth, etc...
         if(type == Curseforge)
             modrinthUpdate_.reset(true);
         if(type == Modrinth)
@@ -419,6 +420,18 @@ const Updatable<CurseforgeFileInfo> &LocalMod::curseforgeUpdate() const
 const Updatable<ModrinthFileInfo> &LocalMod::modrinthUpdate() const
 {
     return modrinthUpdate_;
+}
+
+void LocalMod::setCurrentCurseforgeFileInfo(const CurseforgeFileInfo &info)
+{
+    curseforgeUpdate_.setCurrentFileInfo(info);
+    emit modCacheUpdated();
+}
+
+void LocalMod::setCurrentModrinthFileInfo(const ModrinthFileInfo &info)
+{
+    modrinthUpdate_.setCurrentFileInfo(info);
+    emit modCacheUpdated();
 }
 
 const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &LocalMod::depends() const

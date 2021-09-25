@@ -1,6 +1,9 @@
 #include "modrinthfileitemwidget.h"
 #include "ui_modrinthfileitemwidget.h"
 
+#include <QMenu>
+#include <QClipboard>
+
 #include "local/localmod.h"
 #include "local/localmodpath.h"
 #include "modrinth/modrinthmod.h"
@@ -15,13 +18,12 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, ModrinthMod *mod
     fileInfo_(info)
 {
     ui->setupUi(this);
-    ui->displayNameText->setText(info.displayName());
     ui->downloadProgress->setVisible(false);
 
-    //file name and link
-    QString linkText = info.fileName();
-    linkText = "<a href=%1>" + linkText + "</a>";
-    ui->fileNameText->setText(linkText.arg(info.url().toString()));
+    updateLocalInfo();
+    if(localMod_)
+        connect(localMod_, &LocalMod::modCacheUpdated, this, &ModrinthFileItemWidget::updateLocalInfo);
+
 
     //game version
     QString gameversionText;
@@ -102,3 +104,28 @@ void ModrinthFileItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
         ui->downloadButton->setText(tr("Download"));
     }
 }
+
+void ModrinthFileItemWidget::updateLocalInfo()
+{
+    auto name = fileInfo_.displayName();
+    if(localMod_ && localMod_->modrinthUpdate().currentFileInfo() && localMod_->modrinthUpdate().currentFileInfo()->id() == fileInfo_.id())
+        name.prepend("(<font color=\"#56a\">" + tr("[Current]") + "</font>) ");
+    ui->displayNameText->setText(name);
+    //refresh downloaded infos
+    setDownloadPath(downloadPath_);
+}
+
+void ModrinthFileItemWidget::on_ModrinthFileItemWidget_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    connect(menu->addAction(tr("Copy download link")), &QAction::triggered, this, [=]{
+        QApplication::clipboard()->setText(fileInfo_.url().toString());
+    });
+    if(localMod_ && !(localMod_->modrinthUpdate().currentFileInfo() && localMod_->modrinthUpdate().currentFileInfo()->id() == fileInfo_.id()))
+        connect(menu->addAction(tr("Set as current")), &QAction::triggered, this, [=]{
+            localMod_->setCurrentModrinthFileInfo(fileInfo_);
+        });
+    if(!menu->isEmpty())
+        menu->exec(mapToGlobal(pos));
+}
+

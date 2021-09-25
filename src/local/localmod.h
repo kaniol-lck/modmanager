@@ -80,6 +80,8 @@ public:
 
     const Updatable<CurseforgeFileInfo> &curseforgeUpdate() const;
     const Updatable<ModrinthFileInfo> &modrinthUpdate() const;
+    void setCurrentCurseforgeFileInfo(const CurseforgeFileInfo &info);
+    void setCurrentModrinthFileInfo(const ModrinthFileInfo &info);
     const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &depends() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &conflicts() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &breaks() const;
