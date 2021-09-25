@@ -1,6 +1,13 @@
 #include "localmod.h"
 
+#include <QDir>
+#include <QJsonObject>
+#include <iterator>
+#include <algorithm>
+#include <tuple>
+
 #include "local/localmodpath.h"
+#include "local/idmapper.h"
 #include "curseforge/curseforgeapi.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthapi.h"
@@ -8,12 +15,6 @@
 #include "download/downloadmanager.h"
 #include "util/tutil.hpp"
 #include "config.h"
-
-#include <QDir>
-#include <QJsonObject>
-#include <iterator>
-#include <algorithm>
-#include <tuple>
 
 LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
     QObject(parent),
@@ -60,6 +61,7 @@ void LocalMod::searchOnCurseforge()
 {
     emit checkCurseforgeStarted();
     curseforgeAPI_->getIdByFingerprint(modFile_->murmurhash(), [=](int id, auto fileInfo, const auto &fileList){
+        IdMapper::addCurseforge(commonInfo()->id(), id);
         CurseforgeModInfo modInfo(id);
         modInfo.setLatestFiles(fileList);
         curseforgeMod_ = new CurseforgeMod(this, modInfo);
@@ -67,7 +69,12 @@ void LocalMod::searchOnCurseforge()
         emit modCacheUpdated();
         emit curseforgeReady(true);
     }, [=]{
-        emit curseforgeReady(false);
+        if(IdMapper::idMap().contains(commonInfo()->id())){
+            auto curseforgeId = IdMapper::get(commonInfo()->id()).curseforgeId();
+            curseforgeMod_ = new CurseforgeMod(this, curseforgeId);
+            emit curseforgeReady(true);
+        } else
+            emit curseforgeReady(false);
     });
 }
 
@@ -75,12 +82,18 @@ void LocalMod::searchOnModrinth()
 {
     emit checkModrinthStarted();
     modrinthAPI_->getVersionFileBySha1(modFile_->sha1(), [=](const auto &fileInfo){
+        IdMapper::addModrinth(commonInfo()->id(), fileInfo.modId());
         ModrinthModInfo modInfo(fileInfo.modId());
         modrinthMod_ = new ModrinthMod(this, modInfo);
         modrinthUpdate_.setCurrentFileInfo(fileInfo);
         emit modrinthReady(true);
     }, [=]{
-        emit modrinthReady(false);
+        if(IdMapper::idMap().contains(commonInfo()->id())){
+            auto modrinthId = IdMapper::get(commonInfo()->id()).modrinthId();
+            modrinthMod_ = new ModrinthMod(this, modrinthId);
+            emit modrinthReady(true);
+        } else
+            emit modrinthReady(false);
     });
 }
 

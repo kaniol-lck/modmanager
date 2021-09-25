@@ -24,6 +24,7 @@ SOURCES += \
     src/local/commonmodinfo.cpp \
     src/local/fabricmodinfo.cpp \
     src/local/forgemodinfo.cpp \
+    src/local/idmapper.cpp \
     src/local/localmod.cpp \
     src/local/localmodfile.cpp \
     src/local/localmodpath.cpp \
@@ -86,6 +87,7 @@ HEADERS += \
     src/local/commonmodinfo.h \
     src/local/fabricmodinfo.h \
     src/local/forgemodinfo.h \
+    src/local/idmapper.h \
     src/local/localmod.h \
     src/local/localmodfile.h \
     src/local/localmodpath.h \
