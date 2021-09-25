@@ -38,7 +38,7 @@ private slots:
     void updateProgress(int index, qint64 threadBytesReceived);
 
 private:
-    const int THREAD_COUNT;
+    int threadCount_;
 
     int finishedThreadCount_ = 0;
     QUrl url_;

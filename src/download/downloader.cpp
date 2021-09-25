@@ -14,9 +14,7 @@
 
 Downloader::Downloader(QObject *parent) :
     QObject(parent),
-    THREAD_COUNT(Config().getThreadCount()),
-    bytesReceived_(THREAD_COUNT),
-    bytesTotal_(THREAD_COUNT)
+    threadCount_(Config().getThreadCount())
 {
     connect(this, &Downloader::waitForRedirect, this, [=]{
         handleRedirect();
@@ -54,7 +52,7 @@ void Downloader::threadFinished(int /*index*/)
 {
     finishedThreadCount_++;
 //    qDebug() << finishedThreadCount << "/" << THREAD_COUNT;
-    if(finishedThreadCount_ == THREAD_COUNT){
+    if(finishedThreadCount_ == threadCount_){
         file_.close();
         file_.rename(file_.fileName().remove(".downloading"));
         emit finished();
@@ -80,10 +78,15 @@ bool Downloader::startDownload()
 {
     if(!file_.open(QIODevice::WriteOnly)) return false;
     file_.resize(size_);
+    auto count = size_ / (512 * 1024) + 1; // 512KiB
+    if(count < threadCount_) threadCount_ = count;
+    qDebug() << "Thread Count:" << threadCount_;
+    bytesReceived_.resize(threadCount_);
+    bytesTotal_.resize(threadCount_);
     //slice file into threads
-    for(int i=0; i < THREAD_COUNT; i++){
-        qint64 startPos = size_ * i / THREAD_COUNT;
-        qint64 endPos = size_ * (i+1) / THREAD_COUNT;
+    for(int i=0; i < threadCount_; i++){
+        qint64 startPos = size_ * i / threadCount_;
+        qint64 endPos = size_ * (i+1) / threadCount_;
 
         auto thread = new DownloaderThread(this);
         connect(thread, &DownloaderThread::threadFinished, this, &Downloader::threadFinished);

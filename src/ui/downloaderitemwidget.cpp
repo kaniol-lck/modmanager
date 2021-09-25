@@ -26,13 +26,8 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downl
 //    linkText = "<a href=%1>" + linkText + "</a>";
 //    ui->fileNameText->setText(linkText.arg(fileInfo.url().toString()));
 
-    if(fileInfo.iconBytes().isEmpty())
-        ;//ui->downloadIcon->setVisible(false);
-    else{
-        QPixmap pixmap;
-        pixmap.loadFromData(fileInfo.iconBytes());
-        ui->downloadIcon->setPixmap(pixmap.scaled(80, 80, Qt::KeepAspectRatio));
-    }
+    if(!fileInfo.icon().isNull())
+        ui->downloadIcon->setPixmap(fileInfo.icon().scaled(80, 80, Qt::KeepAspectRatio));
 
     refreshStatus();
 

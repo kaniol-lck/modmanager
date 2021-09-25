@@ -24,9 +24,6 @@ public:
     DownloadFileInfo(const OptifineModInfo &info);
     DownloadFileInfo(const ReplayModInfo &info);
 
-    static DownloadFileInfo fromCurseforge(const CurseforgeFileInfo &info);
-    static DownloadFileInfo fromModrinth(const ModrinthFileInfo &info);
-
     const QString &displayName() const;
     const QString &fileName() const;
     const QUrl &url() const;
@@ -35,9 +32,9 @@ public:
     const QString &path() const;
     void setPath(const QString &newPath);
 
-    const QByteArray &iconBytes() const;
+    const QPixmap &icon() const;
+    void setIcon(const QPixmap &newIcon);
     void setIconBytes(const QByteArray &newIconBytes);
-
 
 protected:
     QString displayName_;
@@ -45,7 +42,7 @@ protected:
     QUrl url_;
     qint64 size_ = 0;
     QString path_;
-    QByteArray iconBytes_;
+    QPixmap icon_;
 };
 
 #endif // DOWNLOADFILEINFO_H

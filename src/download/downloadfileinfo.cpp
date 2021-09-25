@@ -23,6 +23,7 @@ DownloadFileInfo::DownloadFileInfo(const ModrinthFileInfo &info) :
 DownloadFileInfo::DownloadFileInfo(const OptifineModInfo &info) :
     DownloadFileInfo(info.downloadUrl())
 {
+    icon_.load(":/image/optifine.png");
     displayName_ = info.name();
     fileName_ = info.fileName();
     //optifine does not provide size info
@@ -31,29 +32,12 @@ DownloadFileInfo::DownloadFileInfo(const OptifineModInfo &info) :
 DownloadFileInfo::DownloadFileInfo(const ReplayModInfo &info) :
     DownloadFileInfo("https://www.replaymod.com" + info.urlPath())
 {
+    icon_.load(":/image/replay.png");
     displayName_ = info.name();
     //TODO
     //replay does not actually provide filename info
     fileName_ = info.fileName();
     //replay does not provide size info
-}
-
-DownloadFileInfo DownloadFileInfo::fromCurseforge(const CurseforgeFileInfo &info)
-{
-    DownloadFileInfo downloadInfo(info.url());
-    downloadInfo.displayName_ = info.displayName();
-    downloadInfo.fileName_ = info.fileName();
-    downloadInfo.size_ = info.size();
-    return downloadInfo;
-}
-
-DownloadFileInfo DownloadFileInfo::fromModrinth(const ModrinthFileInfo &info)
-{
-    DownloadFileInfo downloadInfo(info.url());
-    downloadInfo.displayName_ = info.displayName();
-    downloadInfo.fileName_ = info.fileName();
-    //modrinth does not provide size info
-    return downloadInfo;
 }
 
 const QString &DownloadFileInfo::displayName() const
@@ -86,12 +70,17 @@ void DownloadFileInfo::setPath(const QString &newPath)
     path_ = newPath;
 }
 
-const QByteArray &DownloadFileInfo::iconBytes() const
+const QPixmap &DownloadFileInfo::icon() const
 {
-    return iconBytes_;
+    return icon_;
 }
 
 void DownloadFileInfo::setIconBytes(const QByteArray &newIconBytes)
 {
-    iconBytes_ = newIconBytes;
+    icon_.loadFromData(newIconBytes);
+}
+
+void DownloadFileInfo::setIcon(const QPixmap &newIcon)
+{
+    icon_ = newIcon;
 }
