@@ -45,9 +45,26 @@ void ModDownloader::updateMod(const DownloadFileInfo &info)
 
 void ModDownloader::startDownload()
 {
+    if(status_ != DownloadStatus::Queue) return;
     setStatus(DownloadStatus::Downloading);
     speedTimer_.start();
     Downloader::startDownload();
+}
+
+void ModDownloader::pauseDownload()
+{
+    if(status_ != DownloadStatus::Downloading) return;
+    setStatus(DownloadStatus::Paused);
+    speedTimer_.stop();
+    Downloader::pauseDownload();
+}
+
+bool ModDownloader::resumeDownload()
+{
+    if(status_ != DownloadStatus::Paused) return false;
+    setStatus(DownloadStatus::Downloading);
+    speedTimer_.start();
+    return Downloader::resumeDownload();
 }
 
 const DownloadFileInfo &ModDownloader::fileInfo() const
@@ -63,11 +80,6 @@ ModDownloader::DownloadStatus ModDownloader::status() const
 ModDownloader::DownloadType ModDownloader::type() const
 {
     return type_;
-}
-
-const QString &ModDownloader::readySize() const
-{
-    return readySize_;
 }
 
 void ModDownloader::setStatus(DownloadStatus newStatus)

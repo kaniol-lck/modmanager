@@ -16,6 +16,8 @@ public:
     void downloadMod(const DownloadFileInfo &info);
     void updateMod(const DownloadFileInfo &info);
     void startDownload();
+    void pauseDownload();
+    bool resumeDownload();
 
     enum DownloadStatus { Idol, Queue, Downloading, Paused, Finished };
 
@@ -40,7 +42,6 @@ private:
     DownloadFileInfo fileInfo_;
     DownloadStatus status_ = DownloadStatus::Idol;
     DownloadType type_;
-    QString readySize_;
 };
 
 #endif // MODDOWNLOADER_H

@@ -7,34 +7,46 @@
 
 #include "util/funcutil.h"
 
-DownloaderThread::DownloaderThread(QObject *parent) :
+DownloaderThread::DownloaderThread(QObject *parent, int index, const QUrl &url, QFile *file, qint64 startPos, qint64 endPos) :
     QObject(parent),
-    accessManager_(new QNetworkAccessManager(this))
+    index_(index),
+    url_(url),
+    file_(file),
+    threadStartPos_(startPos),
+    threadEndPos_(endPos)
 {}
 
-void DownloaderThread::download(int index, const QUrl &url, QFile *file, qint64 startPos, qint64 endPos)
+void DownloaderThread::start()
 {
-    file_ = file;
-    threadStartPos_ = startPos;
-    threadEndPos_ = startPos;
-
     //download range
     QNetworkRequest request;
-    request.setUrl(url);
-    QString range = QString("bytes=%0-%1").arg(startPos).arg(endPos);
+    request.setUrl(url_);
+    QString range = QString("bytes=%0-%1").arg(threadStartPos_ + readySize_).arg(threadEndPos_);
     request.setRawHeader("Range", range.toUtf8());
 
-    reply_ = accessManager_->get(request);
+    paused_ = false;
+    reply_ = accessManager_.get(request);
     connect(reply_, &QNetworkReply::finished, this, [=]{
-        emit threadFinished(index);
+        if(paused_) return;
+        file_->flush();
+        emit threadFinished(index_);
     });
-    connect(reply_, &QNetworkReply::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
-        emit threadDownloadProgress(index, bytesReceived);
+    connect(reply_, &QNetworkReply::downloadProgress, this, [=](qint64 /*bytesReceived*/, qint64 /*bytesTotal*/){
+        emit threadDownloadProgress(index_, readySize_);
     });
     connect(reply_, &QNetworkReply::readyRead, this, &DownloaderThread::writeFile);
     connect(reply_, &QNetworkReply::errorOccurred, this, [=](QNetworkReply::NetworkError code){
-        emit threadErrorOccurred(index, code);
+        if(paused_) return ;
+        emit threadErrorOccurred(index_, code);
     });
+}
+
+void DownloaderThread::stop()
+{
+    paused_ = true;
+    reply_->abort();
+    file_->flush();
+    reply_->deleteLater();
 }
 
 void DownloaderThread::writeFile()

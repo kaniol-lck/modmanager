@@ -67,6 +67,7 @@ void DownloadManager::addDownloader(ModDownloader *downloader)
     auto index = downloadList_.size();
     downloadList_ << downloader;
     connect(downloader, &Downloader::downloadInfoReady, DownloadManager::manager(), &DownloadManager::tryDownload);
+    connect(downloader, &ModDownloader::statusChanged, DownloadManager::manager(), &DownloadManager::tryDownload);
     speedList_.append(0);
     connect(downloader, &ModDownloader::finished, this, &DownloadManager::tryDownload);
     connect(downloader, &ModDownloader::finished, this, [=]{

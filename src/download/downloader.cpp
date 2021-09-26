@@ -63,10 +63,9 @@ void Downloader::threadFinished(int /*index*/)
 void Downloader::updateProgress(int index, qint64 threadBytesReceived)
 {
     bytesReceived_[index] = threadBytesReceived;
-
-    auto bytesReceivedSum = std::accumulate(bytesReceived_.begin(), bytesReceived_.end(), 0);
-
+    auto bytesReceivedSum = std::accumulate(bytesReceived_.cbegin(), bytesReceived_.cend(), 0);
     emit downloadProgress(bytesReceivedSum, size_);
+//    qDebug() << bytesReceivedSum << size_;
 }
 
 bool Downloader::readyDownload() const
@@ -81,6 +80,7 @@ bool Downloader::startDownload()
     auto count = size_ / (512 * 1024) + 1; // 512KiB
     if(count < threadCount_) threadCount_ = count;
     qDebug() << "Thread Count:" << threadCount_;
+    threads_.resize(threadCount_);
     bytesReceived_.resize(threadCount_);
     bytesTotal_.resize(threadCount_);
     //slice file into threads
@@ -88,14 +88,30 @@ bool Downloader::startDownload()
         qint64 startPos = size_ * i / threadCount_;
         qint64 endPos = size_ * (i+1) / threadCount_;
 
-        auto thread = new DownloaderThread(this);
+        auto thread = new DownloaderThread(this, i, url_, &file_, startPos, endPos);
+        threads_[i] = thread;
         connect(thread, &DownloaderThread::threadFinished, this, &Downloader::threadFinished);
         connect(thread, &DownloaderThread::threadDownloadProgress, this, &Downloader::updateProgress);
         connect(thread, &DownloaderThread::threadErrorOccurred, [](int index, QNetworkReply::NetworkError code){
             qDebug() << index << code;
         });
-        thread->download(i, url_, &file_, startPos, endPos);
+        thread->start();
     }
+    return true;
+}
+
+void Downloader::pauseDownload()
+{
+    for(auto thread : qAsConst(threads_))
+        thread->stop();
+    file_.close();
+}
+
+bool Downloader::resumeDownload()
+{
+    if(!file_.open(QIODevice::WriteOnly)) return false;
+    for(auto thread : qAsConst(threads_))
+        thread->start();
     return true;
 }
 

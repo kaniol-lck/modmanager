@@ -6,7 +6,7 @@
 #include <QUrl>
 #include <QVector>
 
-class QNetworkAccessManager;
+class DownloaderThread;
 
 class Downloader : public QObject
 {
@@ -16,6 +16,8 @@ public:
 
     void addDownload(const QUrl &url, const QString &path = "", const QString &fileName = "");
     bool startDownload();
+    void pauseDownload();
+    bool resumeDownload();
 
     QString filePath() const;
 
@@ -39,7 +41,7 @@ private slots:
 
 private:
     int threadCount_;
-
+    QVector<DownloaderThread*> threads_;
     int finishedThreadCount_ = 0;
     QUrl url_;
     QFile file_;

@@ -5,6 +5,7 @@
 #include <QDesktopServices>
 #include <QMenu>
 #include <QClipboard>
+#include <QDebug>
 
 #include "download/moddownloader.h"
 #include "util/funcutil.h"
@@ -100,4 +101,12 @@ void DownloaderItemWidget::on_DownloaderItemWidget_customContextMenuRequested(co
     });
     if(!menu->isEmpty())
         menu->exec(mapToGlobal(pos));
+}
+
+void DownloaderItemWidget::mouseDoubleClickEvent(QMouseEvent *)
+{
+    if(modDownlaoder_->status() == ModDownloader::Downloading)
+        modDownlaoder_->pauseDownload();
+    else if(modDownlaoder_->status() == ModDownloader::Paused)
+        modDownlaoder_->resumeDownload();
 }
