@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "download/downloader.h"
+
 class ModDownloader;
 
 namespace Ui {
@@ -14,11 +16,11 @@ class DownloaderItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit DownloaderItemWidget(QWidget *parent, ModDownloader *downloader);
+    explicit DownloaderItemWidget(QWidget *parent, Downloader *downloader);
     ~DownloaderItemWidget();
 
 private slots:
-    void refreshStatus();
+    void refreshStatus(Downloader::DownloadStatus status);
 
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 
@@ -32,7 +34,7 @@ protected:
 
 private:
     Ui::DownloaderItemWidget *ui;
-    ModDownloader *modDownlaoder_;
+    Downloader *downloader_;
 };
 
 #endif // DOWNLOADERITEMWIDGET_H

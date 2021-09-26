@@ -18,6 +18,8 @@ signals:
 
 public:
     explicit DownloaderThread(QObject *parent, int index, const QUrl &url, QFile *file, qint64 startPos, qint64 endPos);
+    explicit DownloaderThread(QObject *parent, const QUrl &url, QFile *file, const QVariant &variant);
+    QVariant toVariant() const;
 
     void start();
     void stop();
@@ -34,7 +36,7 @@ private:
     qint64 threadStartPos_;
     qint64 threadEndPos_;
     qint64 readySize_ = 0;
-    bool paused_ = false;
+    bool stopped_ = false;
 };
 
 #endif // DOWNLOADERTHREAD_H

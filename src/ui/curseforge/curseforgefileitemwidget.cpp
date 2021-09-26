@@ -76,7 +76,7 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
         ui->downloadSpeedText->setText(numberConvert(fileInfo_.size(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
         if(localMod_){
-            auto file = new LocalModFile(this, downloader->filePath());
+            auto file = new LocalModFile(this, downloader->file().fileName());
             if(file->loaderType() == localMod_->modFile()->loaderType()){
                 file->addOld();
                 localMod_->addOldFile(file);

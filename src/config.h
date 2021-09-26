@@ -45,6 +45,8 @@ public:
 
     //Path List
     getterAndSetter(LocalPathList, List, localPathList, QVariant())
+    //Download List
+    getterAndSetter(DownloaderList, List, downloaderList, QVariant())
 };
 
 #endif // CONFIG_H

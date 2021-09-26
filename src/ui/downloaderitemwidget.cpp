@@ -10,33 +10,35 @@
 #include "download/moddownloader.h"
 #include "util/funcutil.h"
 
-DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, ModDownloader *downloader) :
+DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, Downloader *downloader) :
     QWidget(parent),
     ui(new Ui::DownloaderItemWidget),
-    modDownlaoder_(downloader)
+    downloader_(downloader)
 {
     ui->setupUi(this);
     ui->downloadSpeedText->setVisible(false);
 //    ui->downloadProgress->setVisible(false);
 
-    auto fileInfo = modDownlaoder_->fileInfo();
-    ui->displayNameText->setText(fileInfo.displayName());
-    ui->downloadSizeText->setText(numberConvert(fileInfo.size(), "B"));
+    //TODO
+//    auto fileInfo = qobject_cast<ModDownloader*>(downloader_)->fileInfo();
+    ui->displayNameText->setText(downloader_->file().fileName());
+    ui->downloadSizeText->setText(numberConvert(downloader_->size(), "B"));
 
 //    QString linkText = fileInfo.fileName();
 //    linkText = "<a href=%1>" + linkText + "</a>";
 //    ui->fileNameText->setText(linkText.arg(fileInfo.url().toString()));
 
-    if(!fileInfo.icon().isNull())
-        ui->downloadIcon->setPixmap(fileInfo.icon().scaled(80, 80, Qt::KeepAspectRatio));
+    //TODO
+//    if(!fileInfo.icon().isNull())
+//        ui->downloadIcon->setPixmap(fileInfo.icon().scaled(80, 80, Qt::KeepAspectRatio));
 
-    refreshStatus();
+    refreshStatus(downloader->status());
 
-    connect(modDownlaoder_, &ModDownloader::sizeUpdated, this, &DownloaderItemWidget::updateSize);
-    connect(modDownlaoder_, &ModDownloader::statusChanged, this, &DownloaderItemWidget::refreshStatus);
-    connect(modDownlaoder_, &ModDownloader::downloadProgress, this, &DownloaderItemWidget::downloadProgress);
-    connect(modDownlaoder_, &ModDownloader::downloadSpeed, this, &DownloaderItemWidget::downloadSpeed);
-    connect(modDownlaoder_, &ModDownloader::finished, this, [=]{
+    connect(downloader_, &Downloader::sizeUpdated, this, &DownloaderItemWidget::updateSize);
+    connect(downloader_, &Downloader::statusChanged, this, &DownloaderItemWidget::refreshStatus);
+    connect(downloader_, &Downloader::downloadProgress, this, &DownloaderItemWidget::downloadProgress);
+    connect(downloader_, &Downloader::downloadSpeed, this, &DownloaderItemWidget::downloadSpeed);
+    connect(downloader_, &Downloader::finished, this, [=]{
         ui->downloadProgress->setValue(ui->downloadProgress->maximum());
     });
 }
@@ -46,27 +48,34 @@ DownloaderItemWidget::~DownloaderItemWidget()
     delete ui;
 }
 
-void DownloaderItemWidget::refreshStatus()
+void DownloaderItemWidget::refreshStatus(Downloader::DownloadStatus status)
 {
-    switch (modDownlaoder_->status()) {
-    case ModDownloader::Idol:
+    switch (status) {
+    case Downloader::Idol:
         ui->downloaStatus->setText(tr("Idol"));
         break;
-    case ModDownloader::Queue:
+    case Downloader::Perparing:
+        ui->downloaStatus->setText(tr("Perparing"));
+        break;
+    case Downloader::Queue:
         ui->downloaStatus->setText(tr("Queue"));
         break;
-    case ModDownloader::Downloading:
+    case Downloader::Downloading:
         ui->downloaStatus->setText(tr("Downloading"));
         ui->downloadSpeedText->setVisible(true);
 //        ui->downloadProgress->setVisible(true);
         break;
-    case ModDownloader::Paused:
+    case Downloader::Paused:
         ui->downloaStatus->setText(tr("Paused"));
         break;
-    case ModDownloader::Finished:
+    case Downloader::Finished:
         ui->downloaStatus->setText(tr("Finished"));
         ui->downloadSpeedText->setVisible(false);
 //        ui->downloadProgress->setVisible(false);
+        break;
+    case Downloader::Error:
+        ui->downloaStatus->setText(tr("Error"));
+        ui->downloadSpeedText->setVisible(false);
         break;
     }
 }
@@ -91,13 +100,13 @@ void DownloaderItemWidget::on_DownloaderItemWidget_customContextMenuRequested(co
 {
     auto menu = new QMenu(this);
     connect(menu->addAction(tr("Copy file name")), &QAction::triggered, this, [=]{
-        QApplication::clipboard()->setText(modDownlaoder_->file().fileName());
+        QApplication::clipboard()->setText(downloader_->file().fileName());
     });
     connect(menu->addAction(tr("Copy download link")), &QAction::triggered, this, [=]{
-        QApplication::clipboard()->setText(modDownlaoder_->url().toString());
+        QApplication::clipboard()->setText(downloader_->url().toString());
     });
     connect(menu->addAction(QIcon::fromTheme("folder"), tr("Open folder")), &QAction::triggered, this, [=]{
-        openFileInFolder(modDownlaoder_->filePath());
+        openFileInFolder(downloader_->file().fileName());
     });
     if(!menu->isEmpty())
         menu->exec(mapToGlobal(pos));
@@ -105,8 +114,8 @@ void DownloaderItemWidget::on_DownloaderItemWidget_customContextMenuRequested(co
 
 void DownloaderItemWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
-    if(modDownlaoder_->status() == ModDownloader::Downloading)
-        modDownlaoder_->pauseDownload();
-    else if(modDownlaoder_->status() == ModDownloader::Paused)
-        modDownlaoder_->resumeDownload();
+    if(downloader_->status() == ModDownloader::Downloading)
+        downloader_->pauseDownload();
+    else if(downloader_->status() == ModDownloader::Paused)
+        downloader_->resumeDownload();
 }

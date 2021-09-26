@@ -366,8 +366,9 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> 
 
         auto downloader = mod->update(updateSource);
 
-        connect(downloader, &ModDownloader::downloadInfoReady, this, [=]{
-            *totalSize += downloader->fileInfo().size();
+        connect(downloader, &Downloader::statusChanged, this, [=](auto status){
+            if(status == Downloader::Queue)
+                *totalSize += downloader->fileInfo().size();
         });
         connect(downloader, &ModDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64){
             (*bytesReceivedList)[i] = bytesReceived;

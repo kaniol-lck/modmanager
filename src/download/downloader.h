@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QUrl>
 #include <QVector>
+#include <QTimer>
 
 class DownloaderThread;
 
@@ -12,44 +13,55 @@ class Downloader : public QObject
 {
     Q_OBJECT
 public:
+    enum DownloadStatus { Idol, Perparing, Queue, Downloading, Paused, Finished, Error };
+    enum DownloadType { Download, Update, Custom };
+
     explicit Downloader(QObject *parent = nullptr);
+    explicit Downloader(QObject *parent, const QVariant &variant);
+    QVariant toVariant() const;
 
     void addDownload(const QUrl &url, const QString &path = "", const QString &fileName = "");
     bool startDownload();
     void pauseDownload();
     bool resumeDownload();
 
-    QString filePath() const;
-
     const QUrl &url() const;
     const QFile &file() const;
     qint64 size() const;
 
-    bool readyDownload() const;
+    DownloadStatus status() const;
+    void setStatus(DownloadStatus newStatus);
 
 signals:
+    void statusChanged(DownloadStatus status);
+    void downloadSpeed(qint64 bytesPerSec);
     void finished();
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void downloadInfoReady();
-    void waitForRedirect();
-
     void sizeUpdated(qint64 size);
 
+    void waitForRedirect();
 private slots:
     void threadFinished(int index);
     void updateProgress(int index, qint64 threadBytesReceived);
 
+protected:
+    DownloadType type_;
+
 private:
     int threadCount_;
-    QVector<DownloaderThread*> threads_;
     int finishedThreadCount_ = 0;
     QUrl url_;
     QFile file_;
     qint64 size_;
+    QVector<DownloaderThread*> threads_;
     QVector<qint64> bytesReceived_;
     QVector<qint64> bytesTotal_;
 
-    bool readyDownload_ = false;
+    QTimer speedTimer_;
+    qint64 currentDownloadBytes_ = 0;
+    qint64 lastDownloadBytes_ = 0;
+    DownloadStatus status_ = DownloadStatus::Idol;
+
     void handleRedirect();
 };
 

@@ -11,6 +11,7 @@
 #include "downloaderthread.h"
 #include "config.h"
 #include "util/funcutil.h"
+#include "util/tutil.hpp"
 
 Downloader::Downloader(QObject *parent) :
     QObject(parent),
@@ -18,10 +19,52 @@ Downloader::Downloader(QObject *parent) :
 {
     connect(this, &Downloader::waitForRedirect, this, [=]{
         handleRedirect();
-        readyDownload_ = true;
         emit sizeUpdated(size_);
-        emit downloadInfoReady();
+        setStatus(Queue);
     }, Qt::QueuedConnection);
+
+    //setup timer
+    speedTimer_.setInterval(1000);
+    connect(&speedTimer_, &QTimer::timeout, this, [=]{
+        auto bytes = currentDownloadBytes_ - lastDownloadBytes_;
+        lastDownloadBytes_ = currentDownloadBytes_;
+        //TODO: average speed;
+        emit downloadSpeed(bytes);
+    });
+}
+
+Downloader::Downloader(QObject *parent, const QVariant &variant) :
+    QObject(parent)
+{
+    threadCount_ = value(variant, "threadCount").toInt();
+    bytesReceived_.resize(threadCount_);
+    bytesTotal_.resize(threadCount_);
+    url_ = value(variant, "url").toUrl();
+    file_.setFileName(value(variant, "file").toString());
+    size_ = value(variant, "size").toInt();
+    for(const auto &v : value(variant, "threads").toList()){
+        qDebug() << v;
+        threads_.push_back(new DownloaderThread(this, url_, &file_, v));
+    }
+    status_ = static_cast<DownloadStatus>(value(variant, "status").toInt());
+//    if(status_ == DownloadStatus::Perparing)
+//        emit waitForRedirect();
+}
+
+QVariant Downloader::toVariant() const
+{
+    QMap<QString, QVariant> map;
+    map["threadCount"] = threadCount_;
+    map["url"] = url_;
+    map["file"] = file_.fileName();
+    map["size"] = size_;
+    map["status"] = status_;
+    QList<QVariant> threadList;
+    for(const auto &thread : threads_)
+        threadList << thread->toVariant();
+    map["threads"] = threadList;
+
+    return QVariant::fromValue(map);
 }
 
 void Downloader::addDownload(const QUrl &url, const QString &path, const QString &fileName)
@@ -40,12 +83,8 @@ void Downloader::addDownload(const QUrl &url, const QString &path, const QString
 
     file_.setFileName(filePath + ".downloading");
 
+    setStatus(DownloadStatus::Perparing);
     emit waitForRedirect();
-}
-
-QString Downloader::filePath() const
-{
-    return file_.fileName();
 }
 
 void Downloader::threadFinished(int /*index*/)
@@ -55,6 +94,8 @@ void Downloader::threadFinished(int /*index*/)
     if(finishedThreadCount_ == threadCount_){
         file_.close();
         file_.rename(file_.fileName().remove(".downloading"));
+        setStatus(DownloadStatus::Finished);
+        speedTimer_.stop();
         emit finished();
         qDebug() << "finish:" << file_.fileName();
     }
@@ -63,18 +104,29 @@ void Downloader::threadFinished(int /*index*/)
 void Downloader::updateProgress(int index, qint64 threadBytesReceived)
 {
     bytesReceived_[index] = threadBytesReceived;
-    auto bytesReceivedSum = std::accumulate(bytesReceived_.cbegin(), bytesReceived_.cend(), 0);
-    emit downloadProgress(bytesReceivedSum, size_);
-//    qDebug() << bytesReceivedSum << size_;
+    currentDownloadBytes_ = std::accumulate(bytesReceived_.cbegin(), bytesReceived_.cend(), 0);
+    emit downloadProgress(currentDownloadBytes_, size_);
+//    qDebug() << currentDownloadBytes_ << size_;
 }
 
-bool Downloader::readyDownload() const
+void Downloader::setStatus(DownloadStatus newStatus)
 {
-    return readyDownload_;
+    if (status_ == newStatus)
+        return;
+    status_ = newStatus;
+    emit statusChanged(status_);
+}
+
+Downloader::DownloadStatus Downloader::status() const
+{
+    return status_;
 }
 
 bool Downloader::startDownload()
 {
+    if(status_ != DownloadStatus::Queue) return false;
+    setStatus(DownloadStatus::Downloading);
+    speedTimer_.start();
     if(!file_.open(QIODevice::WriteOnly)) return false;
     file_.resize(size_);
     auto count = size_ / (512 * 1024) + 1; // 512KiB
@@ -92,8 +144,14 @@ bool Downloader::startDownload()
         threads_[i] = thread;
         connect(thread, &DownloaderThread::threadFinished, this, &Downloader::threadFinished);
         connect(thread, &DownloaderThread::threadDownloadProgress, this, &Downloader::updateProgress);
-        connect(thread, &DownloaderThread::threadErrorOccurred, [](int index, QNetworkReply::NetworkError code){
+        connect(thread, &DownloaderThread::threadErrorOccurred, this, [=](int index, QNetworkReply::NetworkError code){
             qDebug() << index << code;
+            speedTimer_.stop();
+            emit downloadSpeed(0);
+            for(auto thread : qAsConst(threads_))
+                thread->stop();
+            file_.close();
+            setStatus(Error);
         });
         thread->start();
     }
@@ -102,6 +160,10 @@ bool Downloader::startDownload()
 
 void Downloader::pauseDownload()
 {
+    if(status_ != DownloadStatus::Downloading) return;
+    setStatus(DownloadStatus::Paused);
+    speedTimer_.stop();
+    emit downloadSpeed(0);
     for(auto thread : qAsConst(threads_))
         thread->stop();
     file_.close();
@@ -109,6 +171,9 @@ void Downloader::pauseDownload()
 
 bool Downloader::resumeDownload()
 {
+    if(status_ != DownloadStatus::Paused) return false;
+    setStatus(DownloadStatus::Downloading);
+    speedTimer_.start();
     if(!file_.open(QIODevice::WriteOnly)) return false;
     for(auto thread : qAsConst(threads_))
         thread->start();
@@ -136,12 +201,11 @@ void Downloader::handleRedirect()
     while(tryTimes--)
     {
         QNetworkRequest request(url_);
-        #ifndef QT_NO_SSL
+#ifndef QT_NO_SSL
         QSslConfiguration sslConfig = request.sslConfiguration();
         sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
         request.setSslConfiguration(sslConfig);
-        #endif
-
+#endif
         static QNetworkAccessManager accessManager;
         auto reply = accessManager.head(request);
         if(!reply) continue;

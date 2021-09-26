@@ -7,7 +7,7 @@ namespace Ui {
 class DownloadBrowser;
 }
 
-class ModDownloader;
+class Downloader;
 class DownloadManager;
 
 class DownloadBrowser : public QWidget
@@ -19,7 +19,7 @@ public:
     ~DownloadBrowser();
 
 public slots:
-    void addNewDownloaderItem(ModDownloader *downloader);
+    void addNewDownloaderItem(Downloader *downloader);
     void downloadSpeed(qint64 bytesPerSec);
 
 private:

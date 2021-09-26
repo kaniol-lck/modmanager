@@ -316,7 +316,7 @@
     </message>
     <message>
         <location filename="../src/ui/curseforge/curseforgemoditemwidget.ui" line="43"/>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="124"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="129"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
@@ -341,19 +341,19 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="49"/>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="51"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="54"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="56"/>
         <source> Downloads</source>
         <translation> 次下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="68"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="73"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="92"/>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="121"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="97"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="126"/>
         <source>Downloaded</source>
         <translation>已下载</translation>
     </message>
@@ -411,42 +411,52 @@
         <translation type="vanished">...</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="52"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="53"/>
         <source>Idol</source>
         <translation>Idol</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="55"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="56"/>
+        <source>Perparing</source>
+        <translation>准备中</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="59"/>
         <source>Queue</source>
         <translation>队列中</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="58"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="62"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="63"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="67"/>
         <source>Paused</source>
         <translation>已暂停</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="66"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="70"/>
         <source>Finished</source>
         <translation>已完成</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="92"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="75"/>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="100"/>
         <source>Copy file name</source>
         <translation>复制文件名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="95"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="103"/>
         <source>Copy download link</source>
         <translation>复制下载链接</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="98"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="106"/>
         <source>Open folder</source>
         <translation>打开文件夹</translation>
     </message>

@@ -18,6 +18,27 @@ DownloadManager::DownloadManager(QObject *parent) :
         auto bytes = std::accumulate(speedList_.cbegin(), speedList_.cend(), 0);
         emit downloadSpeed(bytes);
     });
+    //load from config
+//    Config config;
+//    for(const auto &variant : config.getDownloaderList()){
+//        qDebug() << variant;
+//        auto downloader = new Downloader(this, variant);
+//        downloadList_ << downloader;
+//        auto index = downloadList_.size();
+//        connect(downloader, &Downloader::statusChanged, this, &DownloadManager::tryDownload);
+//        speedList_.append(0);
+//        connect(downloader, &Downloader::finished, this, &DownloadManager::tryDownload);
+//        connect(downloader, &Downloader::finished, this, [=]{
+//            speedList_[index] = 0;
+//        });
+//        connect(downloader, &Downloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+//            speedList_[index] = bytesPerSec;
+//        });
+//        connect(downloader, &Downloader::downloadProgress, this, &DownloadManager::saveToConfig);
+//        connect(downloader, &Downloader::statusChanged, this, &DownloadManager::saveToConfig);
+//    }
+//    qDebug() << downloadList_.size();
+//    tryDownload();
 }
 
 DownloadManager *DownloadManager::manager()
@@ -30,11 +51,11 @@ void DownloadManager::tryDownload()
 {
     int count = 0;
     for(auto downloader : qAsConst(downloadList_)){
-        if(downloader->status() == ModDownloader::Downloading)
+        if(downloader->status() == Downloader::Downloading)
             count ++;
         //max download
         if(count >= DOWNLOAD_COUNT) return;
-        if(downloader->status() == ModDownloader::Queue && downloader->readyDownload()){
+        if(downloader->status() == Downloader::Queue){
             downloader->startDownload();
             count ++;
         }
@@ -62,24 +83,35 @@ ModDownloader *DownloadManager::addModUpdate(const DownloadFileInfo &info, std::
     return downloader;
 }
 
-void DownloadManager::addDownloader(ModDownloader *downloader)
+void DownloadManager::addDownloader(Downloader *downloader)
 {
     auto index = downloadList_.size();
     downloadList_ << downloader;
-    connect(downloader, &Downloader::downloadInfoReady, DownloadManager::manager(), &DownloadManager::tryDownload);
-    connect(downloader, &ModDownloader::statusChanged, DownloadManager::manager(), &DownloadManager::tryDownload);
+    connect(downloader, &Downloader::statusChanged, DownloadManager::manager(), &DownloadManager::tryDownload);
     speedList_.append(0);
-    connect(downloader, &ModDownloader::finished, this, &DownloadManager::tryDownload);
-    connect(downloader, &ModDownloader::finished, this, [=]{
+    connect(downloader, &Downloader::finished, this, &DownloadManager::tryDownload);
+    connect(downloader, &Downloader::finished, this, [=]{
         speedList_[index] = 0;
     });
-    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+    connect(downloader, &Downloader::downloadSpeed, this, [=](qint64 bytesPerSec){
         speedList_[index] = bytesPerSec;
     });
+    connect(downloader, &Downloader::downloadProgress, this, &DownloadManager::saveToConfig);
     emit downloaderAdded(downloader);
 }
 
-const QList<ModDownloader *> &DownloadManager::downloadList() const
+const QList<Downloader *> &DownloadManager::downloadList() const
 {
     return downloadList_;
+}
+
+void DownloadManager::saveToConfig()
+{
+    Config config;
+    QList<QVariant> list;
+    for(const auto &downloader : qAsConst(manager()->downloadList_)){
+        if(downloader->status() != Downloader::Finished)
+            list << downloader->toVariant();
+    }
+    config.setDownloaderList(list);
 }

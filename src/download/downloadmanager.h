@@ -18,23 +18,25 @@ public:
     static ModDownloader *addModDownload(const DownloadFileInfo &info);
     static ModDownloader *addModUpdate(const DownloadFileInfo &info, std::function<void()> finishCallback);
 
-    const QList<ModDownloader *> &downloadList() const;
+    const QList<Downloader *> &downloadList() const;
+
 
 signals:
-    void downloaderAdded(ModDownloader *downloader);
+    void downloaderAdded(Downloader *downloader);
 
     void downloadSpeed(qint64 bytesPerSec);
 
 public slots:
     void tryDownload();
+    void saveToConfig();
 
 private:
-    void addDownloader(ModDownloader *downloader);
+    void addDownloader(Downloader *downloader);
 
     QTimer speedTimer_;
 
     const int DOWNLOAD_COUNT;
-    QList<ModDownloader*> downloadList_;
+    QList<Downloader*> downloadList_;
     QList<qint64> speedList_;
 };
 

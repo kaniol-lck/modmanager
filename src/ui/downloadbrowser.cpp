@@ -12,6 +12,9 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    for(auto downloader : manager_->downloadList())
+        addNewDownloaderItem(downloader);
+
     connect(manager_, &DownloadManager::downloaderAdded, this, &DownloadBrowser::addNewDownloaderItem);
     connect(manager_, &DownloadManager::downloadSpeed, this, &DownloadBrowser::downloadSpeed);
 }
@@ -21,7 +24,7 @@ DownloadBrowser::~DownloadBrowser()
     delete ui;
 }
 
-void DownloadBrowser::addNewDownloaderItem(ModDownloader *downloader)
+void DownloadBrowser::addNewDownloaderItem(Downloader *downloader)
 {
     auto *listItem = new QListWidgetItem();
     listItem->setSizeHint(QSize(0, 100));
