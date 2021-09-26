@@ -24,6 +24,10 @@ void WebsiteIcon::get(QUrl websiteUrl)
             return QIcon(":/image/modrinth.svg");
         if(hostname.contains("fabricmc.net"))
             return QIcon(":/image/fabric.png");
+        if(hostname.contains("replaymod.com"))
+            return QIcon(":/image/replay.png");
+        if(hostname.contains("optifine.net"))
+            return QIcon(":/image/optifine.png");
 
         //favicon
         QUrl url;

@@ -9,6 +9,7 @@
 #include "download/downloadmanager.h"
 #include "download/downloader.h"
 #include "util/funcutil.h"
+#include "util/youdaotranslator.h"
 
 CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload) :
     QWidget(parent),
@@ -43,6 +44,10 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 
     ui->modName->setText(mod->modInfo().name());
     ui->modSummary->setText(mod->modInfo().summary());
+//    YoudaoTranslator::translator()->translate(mod->modInfo().summary(), [=](const auto &translted){
+//        if(!translted.isEmpty())
+//            ui->modSummary->setText(translted);
+//    });
     ui->modAuthors->setText(mod->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
     if(defaultFileInfo_.has_value())
         ui->downloadSpeedText->setText(numberConvert(defaultDownload.value().size(), "B") + "\n"

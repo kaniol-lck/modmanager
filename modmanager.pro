@@ -71,7 +71,8 @@ SOURCES += \
     src/util/datetimesortitem.cpp \
     src/util/localmodsortitem.cpp \
     src/util/updatesourcedelegate.cpp \
-    src/util/websiteicon.cpp
+    src/util/websiteicon.cpp \
+    src/util/youdaotranslator.cpp
 
 HEADERS += \
     src/config.h \
@@ -136,6 +137,7 @@ HEADERS += \
     src/util/datetimesortitem.h \
     src/util/updatesourcedelegate.h \
     src/util/websiteicon.h \
+    src/util/youdaotranslator.h \
     src/version.h
 
 FORMS += \
