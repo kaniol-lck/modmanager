@@ -20,8 +20,8 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, Downloader *download
 //    ui->downloadProgress->setVisible(false);
 
     //TODO
-//    auto fileInfo = qobject_cast<ModDownloader*>(downloader_)->fileInfo();
-    ui->displayNameText->setText(downloader_->file().fileName());
+    auto fileInfo = qobject_cast<ModDownloader*>(downloader_)->fileInfo();
+    ui->displayNameText->setText(fileInfo.fileName());
     ui->downloadSizeText->setText(numberConvert(downloader_->size(), "B"));
 
 //    QString linkText = fileInfo.fileName();
@@ -29,8 +29,8 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, Downloader *download
 //    ui->fileNameText->setText(linkText.arg(fileInfo.url().toString()));
 
     //TODO
-//    if(!fileInfo.icon().isNull())
-//        ui->downloadIcon->setPixmap(fileInfo.icon().scaled(80, 80, Qt::KeepAspectRatio));
+    if(!fileInfo.icon().isNull())
+        ui->downloadIcon->setPixmap(fileInfo.icon().scaled(80, 80, Qt::KeepAspectRatio));
 
     refreshStatus(downloader->status());
 

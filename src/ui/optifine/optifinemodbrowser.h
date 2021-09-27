@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class OptifineAPI;
+class BMCLAPI;
 class LocalModPath;
 
 #include "local/localmodpathinfo.h"
@@ -42,6 +43,7 @@ private slots:
 private:
     Ui::OptifineModBrowser *ui;
     OptifineAPI *api_;
+    BMCLAPI *bmclapi_;
     LocalModPath *downloadPath_ = nullptr;
     bool isUiSet_ = false;
 

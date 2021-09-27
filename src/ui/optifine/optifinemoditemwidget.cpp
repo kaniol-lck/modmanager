@@ -42,7 +42,6 @@ void OptifineModItemWidget::on_downloadButton_clicked()
         info.setPath(downloadPath_->info().path());
     else
         info.setPath(Config().getDownloadPath());
-//    info.setIconBytes();
 
     auto downloader = DownloadManager::addModDownload(info);
     connect(downloader, &Downloader::sizeUpdated, this, [=](qint64 size){

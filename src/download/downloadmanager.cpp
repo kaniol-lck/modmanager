@@ -107,11 +107,11 @@ const QList<Downloader *> &DownloadManager::downloadList() const
 
 void DownloadManager::saveToConfig()
 {
-    Config config;
-    QList<QVariant> list;
-    for(const auto &downloader : qAsConst(manager()->downloadList_)){
-        if(downloader->status() != Downloader::Finished)
-            list << downloader->toVariant();
-    }
-    config.setDownloaderList(list);
+//    Config config;
+//    QList<QVariant> list;
+//    for(const auto &downloader : qAsConst(manager()->downloadList_)){
+//        if(downloader->status() != Downloader::Finished)
+//            list << downloader->toVariant();
+//    }
+//    config.setDownloaderList(list);
 }

@@ -11,6 +11,7 @@ CONFIG += c++17
 INCLUDEPATH += $$PWD/src
 
 SOURCES += \
+    src/bmclapi.cpp \
     src/config.cpp \
     src/curseforge/curseforgeapi.cpp \
     src/curseforge/curseforgefileinfo.cpp \
@@ -75,6 +76,7 @@ SOURCES += \
     src/util/youdaotranslator.cpp
 
 HEADERS += \
+    src/bmclapi.h \
     src/config.h \
     src/curseforge/curseforgeapi.h \
     src/curseforge/curseforgefileinfo.h \

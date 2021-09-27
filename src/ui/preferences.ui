@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
+    <width>600</width>
     <height>640</height>
    </rect>
   </property>
@@ -53,8 +53,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>534</width>
-            <height>511</height>
+            <width>547</width>
+            <height>528</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -149,6 +149,27 @@
              </item>
              <item row="2" column="1">
               <widget class="QSpinBox" name="searchResultCount"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_11">
+               <property name="text">
+                <string>OptiFine version source:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="optifineVersionSource">
+               <item>
+                <property name="text">
+                 <string>Official Website</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>BMCLAPI</string>
+                </property>
+               </item>
+              </widget>
              </item>
             </layout>
            </item>

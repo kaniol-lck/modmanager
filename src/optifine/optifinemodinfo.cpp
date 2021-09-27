@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include "util/funcutil.h"
+#include "util/tutil.hpp"
 
 OptifineModInfo OptifineModInfo::fromHtml(const QString &html, const GameVersion &gameVersion)
 {
@@ -12,6 +13,23 @@ OptifineModInfo OptifineModInfo::fromHtml(const QString &html, const GameVersion
     info.fileName_ = capture(info.mirrorUrl_.toString(), R"(=(.*\.jar))");
     info.gameVersion_ = gameVersion;
     info.isPreview_ = info.fileName_.contains("preview");
+    return info;
+}
+
+OptifineModInfo OptifineModInfo::fromVariant(const QVariant &variant)
+{
+    OptifineModInfo info;
+    info.type_ = value(variant, "type").toString();
+    info.patch_ = value(variant, "patch").toString();
+    QStringList list;
+    list << "Optifine"
+         << QString(info.type_).replace("_", " ")
+         << info.patch_;
+    info.name_ = list.join(" ");
+//    info.mirrorUrl_
+    info.fileName_ = QString(info.name_).replace(" ", "_") + ".jar";
+    info.gameVersion_ = value(variant, "mcversion").toString();
+    info.isPreview_ = info.patch_.contains("pre");
     return info;
 }
 
@@ -48,4 +66,14 @@ bool OptifineModInfo::isPreview() const
 void OptifineModInfo::setGameVersion(const GameVersion &newGameVersion)
 {
     gameVersion_ = newGameVersion;
+}
+
+const QString &OptifineModInfo::type() const
+{
+    return type_;
+}
+
+const QString &OptifineModInfo::patch() const
+{
+    return patch_;
 }

@@ -11,11 +11,15 @@ Preferences::Preferences(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->proxyBox->setVisible(false);
+    //TODO
+    ui->label_11->setVisible(false);
+    ui->optifineVersionSource->setVisible(false);
 
     Config config;
     ui->commonPathText->setText(config.getCommonPath());
     ui->downloadPathText->setText(config.getDownloadPath());
     ui->searchResultCount->setValue(config.getSearchResultCount());
+    ui->optifineVersionSource->setCurrentIndex(config.getOptifineSource());
     ui->versionMatchSelect->setCurrentIndex(config.getVersionMatch());
     ui->updateCheckIntervalSelect->setCurrentIndex(config.getUpdateCheckInterval());
     ui->useCurseforgeUpdate->setChecked(config.getUseCurseforgeUpdate());
@@ -37,6 +41,7 @@ void Preferences::on_Preferences_accepted()
     config.setCommonPath(ui->commonPathText->text());
     config.setDownloadPath(ui->downloadPathText->text());
     config.setSearchResultCount(ui->searchResultCount->value());
+    config.setOptifineSource(ui->optifineVersionSource->currentIndex());
     config.setVersionMatch(ui->versionMatchSelect->currentIndex());
     config.setUpdateCheckInterval(ui->updateCheckIntervalSelect->currentIndex());
     config.setUseCurseforgeUpdate(ui->useCurseforgeUpdate->isChecked());

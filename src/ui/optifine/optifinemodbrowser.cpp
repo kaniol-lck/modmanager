@@ -6,6 +6,7 @@
 #include "optifinemoditemwidget.h"
 #include "optifine/optifineapi.h"
 #include "optifine/optifinemod.h"
+#include "bmclapi.h"
 #include "local/localmodpath.h"
 #include "local/localmodpathmanager.h"
 #include "util/funcutil.h"
@@ -14,7 +15,8 @@
 OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::OptifineModBrowser),
-    api_(new OptifineAPI(this))
+    api_(new OptifineAPI(this)),
+    bmclapi_(new BMCLAPI(this))
 {
     ui->setupUi(this);
 
@@ -62,7 +64,7 @@ void OptifineModBrowser::updateLocalPathList()
 
 void OptifineModBrowser::getModList()
 {
-    api_->getModList([=](const auto &list){
+    auto callback = [=](const auto &list){
         ui->modListWidget->clear();
         QStringList gameVersions;
         for(auto modInfo : list){
@@ -90,7 +92,12 @@ void OptifineModBrowser::getModList()
         item->setFont(font);
         item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui->modListWidget->addItem(item);
-    });
+    };
+    auto source = Config().getOptifineSource();
+    if(source == Config::OptifineSourceType::Official)
+        api_->getModList(callback);
+    else if (source == Config::OptifineSourceType::BMCLAPI)
+        bmclapi_->getOptifineList(callback);
 }
 
 void OptifineModBrowser::on_openFolderButton_clicked()

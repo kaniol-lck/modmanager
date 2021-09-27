@@ -13,6 +13,7 @@ class OptifineModInfo
 public:
     OptifineModInfo() = default;
     static OptifineModInfo fromHtml(const QString &html, const GameVersion &gameVersion = GameVersion::Any);
+    static OptifineModInfo fromVariant(const QVariant &variant);
 
     const QString &name() const;
     const QString &fileName() const;
@@ -23,6 +24,9 @@ public:
 
     void setGameVersion(const GameVersion &newGameVersion);
 
+    const QString &type() const;
+    const QString &patch() const;
+
 private:
     QString name_;
     QString fileName_;
@@ -30,6 +34,10 @@ private:
     QUrl mirrorUrl_;
     QUrl downloadUrl_;
     bool isPreview_;
+
+    //for BMCLAPI
+    QString type_;
+    QString patch_;
 };
 
 #endif // OPTIFINEMODINFO_H

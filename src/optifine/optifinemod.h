@@ -6,6 +6,7 @@
 #include "optifinemodinfo.h"
 
 class OptifineAPI;
+class BMCLAPI;
 
 class OptifineMod : public QObject
 {
@@ -23,6 +24,7 @@ signals:
 
 private:
     OptifineAPI *api_;
+    BMCLAPI *bmclapi_;
     OptifineModInfo modInfo_;
 
     bool gettingDownloadUrl_ = false;

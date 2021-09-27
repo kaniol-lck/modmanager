@@ -217,6 +217,8 @@ void Downloader::handleRedirect()
 
         //update size
         size_ = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
+        //TODO: some download link does not get redirected
+        //bmclapi
         if(auto redirection = reply->attribute(QNetworkRequest::RedirectionTargetAttribute); !redirection.isNull()){
             //update url
             url_ = redirection.toString();

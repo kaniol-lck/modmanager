@@ -38,6 +38,8 @@ public:
     getterAndSetter(PostUpdate, Int, postUpdate, Keep)
     enum UpdateCheckIntervalType{ Always, EveryDay, Never };
     getterAndSetter(UpdateCheckInterval, Int, updateCheckIntervalType, EveryDay)
+    enum OptifineSourceType{ Official, BMCLAPI };
+    getterAndSetter(OptifineSource, Int, optifineSource, Official)
 
     //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)

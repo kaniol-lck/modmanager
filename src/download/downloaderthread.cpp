@@ -74,11 +74,10 @@ void DownloaderThread::writeFile()
     //TODO:
     //some download does not follow endPos
     //QNetworkReplyImplPrivate::error: Internal problem, this method must only be called once.
-    if(threadStartPos_ + readySize_ > threadEndPos_)
-        return;
     const QByteArray &buffer = reply_->readAll();
     file_->seek(threadStartPos_ + readySize_);
     file_->write(buffer);
     readySize_ += buffer.size();
+    if(threadStartPos_ + readySize_ > threadEndPos_) return;
     emit threadDownloadProgress(index_, readySize_);
 }
