@@ -25,7 +25,17 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     for(const auto &type : ModLoaderType::modrinth)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
+    //categories
+    //TODO: using menu/submenu
+    ui->categorySelect->clear();
+    ui->categorySelect->addItem(tr("Any"));
+    for(const auto &[name, iconName] : ModrinthAPI::getCategories()){
+        QIcon icon(QString(":/image/modrinth/%1.svg").arg(iconName));
+        ui->categorySelect->addItem(icon, name);
+    }
+
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
+    connect(ui->searchText, &QLineEdit::editingFinished, this, &ModrinthModBrowser::search);
 
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
@@ -83,7 +93,7 @@ void ModrinthModBrowser::updateLocalPathList()
     }
 }
 
-void ModrinthModBrowser::on_searchButton_clicked()
+void ModrinthModBrowser::search()
 {
     currentName_ = ui->searchText->text();
     getModList(currentName_);
@@ -100,18 +110,20 @@ void ModrinthModBrowser::onSliderChanged(int i)
 void ModrinthModBrowser::getModList(QString name, int index)
 {
     if(!index) currentIndex_ = 0;
-    ui->searchButton->setText(tr("Searching..."));
-    ui->searchButton->setEnabled(false);
+//    ui->searchButton->setText(tr("Searching..."));
+//    ui->searchButton->setEnabled(false);
     setCursor(Qt::BusyCursor);
 
     GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
+    auto categoryIndex = ui->categorySelect->currentIndex() - 1;
+    auto category = categoryIndex < 0 ? "" : std::get<1>(ModrinthAPI::getCategories()[categoryIndex]);
     auto sort = ui->sortSelect->currentIndex();
     GameVersion version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
     auto type = ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex());
 
-    api_->searchMods(name, currentIndex_, version, type, sort, [=](const QList<ModrinthModInfo> &infoList){
-        ui->searchButton->setText(tr("&Search"));
-        ui->searchButton->setEnabled(true);
+    api_->searchMods(name, currentIndex_, version, type, category, sort, [=](const QList<ModrinthModInfo> &infoList){
+//        ui->searchButton->setText(tr("&Search"));
+//        ui->searchButton->setEnabled(true);
         setCursor(Qt::ArrowCursor);
 
         //new search
@@ -194,3 +206,9 @@ void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
         downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
     emit downloadPathChanged(downloadPath_);
 }
+
+void ModrinthModBrowser::on_categorySelect_currentIndexChanged(int)
+{
+    if(isUiSet_) getModList(currentName_);
+}
+

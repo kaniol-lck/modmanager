@@ -20,7 +20,7 @@ ModrinthAPI *ModrinthAPI::api()
     return &api;
 }
 
-void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &version, ModLoaderType::Type type, int sort, std::function<void (QList<ModrinthModInfo>)> callback)
+void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &version, ModLoaderType::Type type, const QString &category, int sort, std::function<void (QList<ModrinthModInfo>)> callback)
 {
     QUrl url = PREFIX + "/api/v1/mod";
 
@@ -59,6 +59,10 @@ void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &v
     //loader type
     if(type != ModLoaderType::Any)
         facets << "\"categories:" + ModLoaderType::toString(type) + "\"";
+
+    //loader type
+    if(!category.isEmpty())
+        facets << "\"categories:" + category + "\"";
 
     if(!facets.isEmpty())
         urlQuery.addQueryItem("facets", "[[" + facets.join(",") + "]]");
@@ -242,4 +246,23 @@ void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (M
         callback(modrinthFileInfo);
         reply->deleteLater();
     });
+}
+
+const QList<std::tuple<QString, QString> > &ModrinthAPI::getCategories()
+{
+    static const QList<std::tuple<QString, QString>> categories{
+        { tr("World generation"), "worldgen" },
+        { tr("Technology"), "technology" },
+        { tr("Food"), "food" },
+        { tr("Magic"), "magic" },
+        { tr("Storage"), "storage" },
+        { tr("Library"), "library" },
+        { tr("Adventure"), "adventure" },
+        { tr("Utility"), "utility" },
+        { tr("Decoration"), "decoration" },
+        { tr("Miscellaneous"), "misc" },
+        { tr("Equipment"), "equipment" },
+        { tr("Cursed"), "cursed" }
+    };
+    return categories;
 }

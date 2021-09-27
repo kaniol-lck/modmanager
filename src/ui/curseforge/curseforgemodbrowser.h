@@ -28,11 +28,13 @@ public slots:
     void searchModByPathInfo(const LocalModPathInfo &info);
 
 private slots:
+    void getModList(QString name, int index = 0, int needMore = 20);
+
     void updateVersionList();
 
     void updateLocalPathList();
 
-    void on_searchButton_clicked();
+    void search();
 
     void onSliderChanged(int i);
 
@@ -48,6 +50,8 @@ private slots:
 
     void on_openFolderButton_clicked();
 
+    void on_categorySelect_currentIndexChanged(int);
+
 private:
     Ui::CurseforgeModBrowser *ui;
     CurseforgeAPI *api_;
@@ -58,7 +62,6 @@ private:
     bool isUiSet_ = false;
     bool hasMore_ = false;
 
-    void getModList(QString name, int index = 0, int needMore = 20);
 };
 
 #endif // CURSEFORGEMODBROWSER_H

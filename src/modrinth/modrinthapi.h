@@ -19,13 +19,14 @@ public:
     explicit ModrinthAPI(QObject *parent = nullptr);
     static ModrinthAPI *api();
 
-    void searchMods(const QString name, int index, const GameVersion &version, ModLoaderType::Type type, int sort, std::function<void (QList<ModrinthModInfo>)> callback);
+    void searchMods(const QString name, int index, const GameVersion &version, ModLoaderType::Type type, const QString &category, int sort, std::function<void (QList<ModrinthModInfo>)> callback);
     void getInfo(const QString &id, std::function<void (ModrinthModInfo)> callback);
     void getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback);
     void getVersion(const QString &version, std::function<void (ModrinthFileInfo)> callback);
     void getAuthor(const QString &authorId, std::function<void (QString)> callback);
     void getVersionFileBySha1(const QString sha1, std::function<void (ModrinthFileInfo)> callback, std::function<void ()> noMatch);
 
+    static const QList<std::tuple<QString, QString>> &getCategories();
 private:
     QNetworkAccessManager accessManager_;
 };

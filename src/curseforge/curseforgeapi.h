@@ -17,7 +17,7 @@ public:
     explicit CurseforgeAPI(QObject *parent = nullptr);
     static CurseforgeAPI *api();
 
-    void searchMods(const GameVersion &version, int index, const QString &searchFilter, int sort, std::function<void (QList<CurseforgeModInfo>)> callback);
+    void searchMods(const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback);
     void getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback, std::function<void()> noMatch);
     void getDescription(int id, std::function<void(QString)> callback);
     void getChangelog(int id, int FileID, std::function<void (QString)> callback);
@@ -27,6 +27,8 @@ public:
     void getInfo(int id, std::function<void (CurseforgeModInfo)> callback);
     void getTimestamp(std::function<void (QString)> callback);
     void getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback);
+
+    static const QList<std::tuple<int, QString, QString>> &getCategories();
 
 private:
     QNetworkAccessManager accessManager_;

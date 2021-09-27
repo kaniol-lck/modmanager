@@ -91,6 +91,204 @@
     </message>
 </context>
 <context>
+    <name>CurseforgeAPI</name>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="249"/>
+        <source>Map and Information</source>
+        <translation>地图与信息</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="250"/>
+        <source>Addons</source>
+        <translation>附加包</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="251"/>
+        <source>Armor, Tools, and Weapons</source>
+        <translation>盔甲、工具与武器</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="252"/>
+        <source>Structures</source>
+        <translation>结构</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="253"/>
+        <source>Blood Magic</source>
+        <translation>血魔法</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="254"/>
+        <source>Industrial Craft</source>
+        <translation>工业（IC）</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="255"/>
+        <source>Storage</source>
+        <translation>仓储</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="256"/>
+        <source>Tinker&apos;s Construct</source>
+        <translation>匠魂</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="257"/>
+        <source>Magic</source>
+        <translation>魔法</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="258"/>
+        <source>Technology</source>
+        <translation>科技</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="259"/>
+        <source>Player Transport</source>
+        <translation>玩家运输</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="260"/>
+        <source>Lucky Blocks</source>
+        <translation>幸运方块</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="261"/>
+        <source>Buildcraft</source>
+        <translation>建筑</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="262"/>
+        <source>Genetics</source>
+        <translation>基因</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="263"/>
+        <source>Twitch Integration</source>
+        <translation>Twitch集成</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="264"/>
+        <source>Ores and Resources</source>
+        <translation>矿物与资源</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="265"/>
+        <source>CraftTweaker</source>
+        <translation>修改合成</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="266"/>
+        <source>Thaumcraft</source>
+        <translation>神秘时代</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="267"/>
+        <source>Adventure and RPG</source>
+        <translation>冒险与RPG</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="268"/>
+        <source>Processing</source>
+        <translation>处理</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="269"/>
+        <source>Forestry</source>
+        <translation>林业</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="270"/>
+        <source>Farming</source>
+        <translation>农业</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="271"/>
+        <source>Energy</source>
+        <translation>能源</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="272"/>
+        <source>Energy, Fluid, and Item Transport</source>
+        <translation>能源、流体与物品运输</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="273"/>
+        <source>Miscellaneous</source>
+        <translation>杂项</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="274"/>
+        <source>Applied Energistics 2</source>
+        <translation>应用能源2（AE2）</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="275"/>
+        <source>API and Library</source>
+        <translation>API与库</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="276"/>
+        <source>Cosmetic</source>
+        <translation>美化</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="277"/>
+        <source>Mobs</source>
+        <translation>生物</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="278"/>
+        <source>World Gen</source>
+        <translation>世界生成</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="279"/>
+        <source>Server Utility</source>
+        <translation>服务器工具</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="280"/>
+        <source>Biomes</source>
+        <translation>生物群系</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="281"/>
+        <source>Thermal Expansion</source>
+        <translation>热力膨胀</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="282"/>
+        <source>Dimensions</source>
+        <translation>维度</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="283"/>
+        <source>Food</source>
+        <translation>食物</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="284"/>
+        <source>Redstone</source>
+        <translation>红石</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="285"/>
+        <source>Automation</source>
+        <translation>自动化</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="286"/>
+        <source>MCreator</source>
+        <translation>MCreator</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgeapi.cpp" line="287"/>
+        <source>Fabric</source>
+        <translation>Fabric</translation>
+    </message>
+</context>
+<context>
     <name>CurseforgeFileItemWidget</name>
     <message>
         <location filename="../src/ui/curseforge/curseforgefileitemwidget.ui" line="17"/>
@@ -163,28 +361,27 @@
         <translation>在Curseforge上搜索mod...</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="50"/>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="112"/>
         <source>&amp;Search</source>
-        <translation>搜索</translation>
+        <translation type="vanished">搜索</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="61"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="83"/>
         <source>Game Version: </source>
         <translation>游戏版本：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="60"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="32"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="70"/>
         <source>Any</source>
         <translation>任意</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="75"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="85"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="152"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="164"/>
         <source>There is no more mod here...</source>
         <translation>这里没有更多的mod了...</translation>
     </message>
@@ -193,52 +390,57 @@
         <translation type="vanished">排序：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="77"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="32"/>
         <source>Sort:</source>
         <translation>排序：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="91"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="46"/>
         <source>Default</source>
         <translation>默认</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="96"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="51"/>
         <source>Date Created</source>
         <translation>创建时间</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="101"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="56"/>
         <source>Last Updated</source>
         <translation>最后更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="106"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="61"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="111"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="66"/>
         <source>Popularity</source>
         <translation>热门</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="116"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="71"/>
         <source>Total Downloads</source>
         <translation>下载总量</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="124"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="99"/>
+        <source>Category:</source>
+        <translation>类别：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="112"/>
         <source>Mod Loader:</source>
         <translation>mod加载器：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="137"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="125"/>
         <source>Save To:</source>
         <translation>保存至：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="150"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="138"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -255,9 +457,8 @@
         <translation type="vanished">Rift</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="104"/>
         <source>Searching...</source>
-        <translation>搜索中...</translation>
+        <translation type="vanished">搜索中...</translation>
     </message>
 </context>
 <context>
@@ -366,7 +567,7 @@
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloadbrowser.cpp" line="35"/>
+        <location filename="../src/ui/downloadbrowser.cpp" line="38"/>
         <source>Download Speed: </source>
         <translation>下载速度：</translation>
     </message>
@@ -411,52 +612,52 @@
         <translation type="vanished">...</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="53"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="55"/>
         <source>Idol</source>
         <translation>Idol</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="56"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="58"/>
         <source>Perparing</source>
         <translation>准备中</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="59"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="61"/>
         <source>Queue</source>
         <translation>队列中</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="62"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="64"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="67"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="69"/>
         <source>Paused</source>
         <translation>已暂停</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="70"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="72"/>
         <source>Finished</source>
         <translation>已完成</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="75"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="77"/>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="100"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="102"/>
         <source>Copy file name</source>
         <translation>复制文件名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="103"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="105"/>
         <source>Copy download link</source>
         <translation>复制下载链接</translation>
     </message>
     <message>
-        <location filename="../src/ui/downloaderitemwidget.cpp" line="106"/>
+        <location filename="../src/ui/downloaderitemwidget.cpp" line="108"/>
         <source>Open folder</source>
         <translation>打开文件夹</translation>
     </message>
@@ -1223,6 +1424,69 @@
     </message>
 </context>
 <context>
+    <name>ModrinthAPI</name>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="254"/>
+        <source>World generation</source>
+        <translation>世界生成</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="255"/>
+        <source>Technology</source>
+        <translation>科技</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="256"/>
+        <source>Food</source>
+        <translation>食物</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="257"/>
+        <source>Magic</source>
+        <translation>魔法</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="258"/>
+        <source>Storage</source>
+        <translation>仓储</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="259"/>
+        <source>Library</source>
+        <translation>库</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="260"/>
+        <source>Adventure</source>
+        <translation>冒险</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="261"/>
+        <source>Utility</source>
+        <translation>工具</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="262"/>
+        <source>Decoration</source>
+        <translation>装饰</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="263"/>
+        <source>Miscellaneous</source>
+        <translation>杂项</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="264"/>
+        <source>Equipment</source>
+        <translation>装备</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="265"/>
+        <source>Cursed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ModrinthFileItemWidget</name>
     <message>
         <location filename="../src/ui/modrinth/modrinthfileitemwidget.ui" line="17"/>
@@ -1295,59 +1559,63 @@
         <translation>在Modrinth上搜索mod...</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="50"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="113"/>
         <source>&amp;Search</source>
-        <translation>搜索</translation>
+        <translation type="vanished">搜索</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="61"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="73"/>
         <source>Game Version: </source>
         <translation>游戏版本：</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="75"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="59"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="87"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="31"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="69"/>
         <source>Any</source>
         <translation>任意</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="83"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="32"/>
         <source>Sort:</source>
         <translation>排序：</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="97"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="46"/>
         <source>Relevance</source>
         <translation>相关度</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="102"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="51"/>
         <source>Downloads</source>
         <translation>下载量</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="107"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="56"/>
         <source>Updated</source>
         <translation>最近更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="112"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="61"/>
         <source>Newest</source>
         <translation>最新</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="120"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="95"/>
+        <source>Category:</source>
+        <translation>类别：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="108"/>
         <source>Mod Loader:</source>
         <translation>mod加载器：</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="136"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="124"/>
         <source>Save To:</source>
         <translation>保存至：</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="149"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="137"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -1364,17 +1632,16 @@
         <translation type="vanished">Rift</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="74"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="84"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="103"/>
         <source>Searching...</source>
-        <translation>搜索中...</translation>
+        <translation type="vanished">搜索中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="140"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="152"/>
         <source>There is no more mod here...</source>
         <translation>这里没有更多的mod了...</translation>
     </message>
@@ -1530,17 +1797,17 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="51"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="53"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="83"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="85"/>
         <source>Any</source>
         <translation>任意</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="86"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="88"/>
         <source>There is no more mod here...</source>
         <translation>这里没有更多的mod了...</translation>
     </message>
@@ -1554,14 +1821,14 @@
     </message>
     <message>
         <location filename="../src/ui/optifine/optifinemoditemwidget.ui" line="91"/>
-        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="78"/>
+        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="77"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
     <message>
         <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="26"/>
-        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="59"/>
-        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="75"/>
+        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="58"/>
+        <location filename="../src/ui/optifine/optifinemoditemwidget.cpp" line="74"/>
         <source>Downloaded</source>
         <translation>已下载</translation>
     </message>
@@ -1618,42 +1885,57 @@
         <translation>搜索结果数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="158"/>
+        <location filename="../src/ui/preferences.ui" line="156"/>
+        <source>OptiFine version source:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="164"/>
+        <source>Official Website</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="169"/>
+        <source>BMCLAPI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="179"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="164"/>
+        <location filename="../src/ui/preferences.ui" line="185"/>
         <source>Game version match:</source>
         <translation>游戏版本匹配：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="181"/>
+        <location filename="../src/ui/preferences.ui" line="202"/>
         <source>Minor Version</source>
         <translation>小版本号</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="186"/>
+        <location filename="../src/ui/preferences.ui" line="207"/>
         <source>Major Version</source>
         <translation>大版本号</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="194"/>
+        <location filename="../src/ui/preferences.ui" line="215"/>
         <source>Update check interval:</source>
         <translation>更新检查间隔：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="202"/>
+        <location filename="../src/ui/preferences.ui" line="223"/>
         <source>Always</source>
         <translation>总是</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="207"/>
+        <location filename="../src/ui/preferences.ui" line="228"/>
         <source>Every Day</source>
         <translation>每天</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="212"/>
+        <location filename="../src/ui/preferences.ui" line="233"/>
         <source>Never</source>
         <translation>从不</translation>
     </message>
@@ -1662,22 +1944,22 @@
         <translation type="vanished">启动时在mod网站上搜索</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="243"/>
+        <location filename="../src/ui/preferences.ui" line="264"/>
         <source>Operation on old files after update:</source>
         <translation>旧文件在更新后：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="251"/>
+        <location filename="../src/ui/preferences.ui" line="272"/>
         <source>Delete Immediately</source>
         <translation>立即删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="256"/>
+        <location filename="../src/ui/preferences.ui" line="277"/>
         <source>Keep Until Confirm</source>
         <translation>保留直至确认</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="261"/>
+        <location filename="../src/ui/preferences.ui" line="282"/>
         <source>Do Nothing</source>
         <translation>不做任何事</translation>
     </message>
@@ -1686,12 +1968,12 @@
         <translation type="vanished">启动时检查更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="304"/>
+        <location filename="../src/ui/preferences.ui" line="325"/>
         <source>Max parallel download count:</source>
         <translation>最大并行下载数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="321"/>
+        <location filename="../src/ui/preferences.ui" line="342"/>
         <source>Download thread count:</source>
         <translation>下载线程数量：</translation>
     </message>
@@ -1700,27 +1982,27 @@
         <translation type="vanished">自动删除旧版mod文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="220"/>
+        <location filename="../src/ui/preferences.ui" line="241"/>
         <source>Update Source</source>
         <translation>更新来源</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="226"/>
+        <location filename="../src/ui/preferences.ui" line="247"/>
         <source>Curseforge</source>
         <translation>Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="233"/>
+        <location filename="../src/ui/preferences.ui" line="254"/>
         <source>Modrinth</source>
         <translation>Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="290"/>
+        <location filename="../src/ui/preferences.ui" line="311"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="296"/>
+        <location filename="../src/ui/preferences.ui" line="317"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
@@ -1733,23 +2015,23 @@
         <translation type="vanished">线程数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="343"/>
+        <location filename="../src/ui/preferences.ui" line="364"/>
         <source>Proxy</source>
         <translation>代理</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="351"/>
-        <location filename="../src/ui/preferences.ui" line="364"/>
+        <location filename="../src/ui/preferences.ui" line="372"/>
+        <location filename="../src/ui/preferences.ui" line="385"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.cpp" line="52"/>
+        <location filename="../src/ui/preferences.cpp" line="57"/>
         <source>Select your mod directory...</source>
         <translation>选择你的mod路径...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.cpp" line="59"/>
+        <location filename="../src/ui/preferences.cpp" line="64"/>
         <source>Select default mod download directory...</source>
         <translation>选择默认的mod下载路径...</translation>
     </message>

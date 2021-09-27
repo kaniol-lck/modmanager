@@ -20,7 +20,7 @@ CurseforgeAPI *CurseforgeAPI::api()
     return &api;
 }
 
-void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QString &searchFilter, int sort, std::function<void (QList<CurseforgeModInfo>)> callback)
+void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback)
 {
     QUrl url = PREFIX + "/api/v2/addon/search";
 
@@ -28,7 +28,7 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
     QUrlQuery urlQuery;
 
     //?
-    urlQuery.addQueryItem("categoryId", "0");
+    urlQuery.addQueryItem("categoryId", QString::number(category));
     //minecraft
     urlQuery.addQueryItem("gameId", "432");
     //game version
@@ -46,6 +46,7 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
     urlQuery.addQueryItem("sort", QString::number(sort));
 
     url.setQuery(urlQuery);
+    qDebug() << url;
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
@@ -240,4 +241,50 @@ void CurseforgeAPI::getMinecraftVersionList(std::function<void (QList<GameVersio
         callback(versionList);
         reply->deleteLater();
     });
+}
+
+const QList<std::tuple<int, QString, QString> > &CurseforgeAPI::getCategories()
+{
+    static const QList<std::tuple<int, QString, QString>> categories{
+        { 423, tr("Map and Information"), "map-information" },
+        { 426, tr("Addons"), "mc-addons" },
+        { 434, tr("Armor, Tools, and Weapons"), "armor-weapons-tools" },
+        { 409, tr("Structures"), "world-structures" },
+        { 4485, tr("Blood Magic"), "blood-magic" },
+        { 429, tr("Industrial Craft"), "addons-industrialcraft" },
+        { 420, tr("Storage"), "storage" },
+        { 428, tr("Tinker's Construct"), "addons-tinkers-construct" },
+        { 419, tr("Magic"), "magic" },
+        { 412, tr("Technology"), "technology" },
+        { 414, tr("Player Transport"), "technology-player-transport" },
+        { 4486, tr("Lucky Blocks"), "[4486]lucky-blocks" },
+        { 432, tr("Buildcraft"), "addons-buildcraft" },
+        { 418, tr("Genetics"), "technology-genetics" },
+        { 4671, tr("Twitch Integration"), "twitch-integration" },
+        { 408, tr("Ores and Resources"), "world-ores-resources" },
+        { 4773, tr("CraftTweaker"), "crafttweaker" },
+        { 430, tr("Thaumcraft"), "addons-thaumcraft" },
+        { 422, tr("Adventure and RPG"), "adventure-rpg" },
+        { 413, tr("Processing"), "technology-processing" },
+        { 433, tr("Forestry"), "addons-forestry" },
+        { 416, tr("Farming"), "technology-farming" },
+        { 417, tr("Energy"), "technology-energy" },
+        { 415, tr("Energy, Fluid, and Item Transport"), "technology-item-fluid-energy-transport" },
+        { 425, tr("Miscellaneous"), "mc-miscellaneous" },
+        { 4545, tr("Applied Energistics 2"), "applied-energistics-2" },
+        { 421, tr("API and Library"), "library-api" },
+        { 424, tr("Cosmetic"), "cosmetic" },
+        { 411, tr("Mobs"), "world-mobs" },
+        { 406, tr("World Gen"), "world-gen" },
+        { 435, tr("Server Utility"), "server-utility" },
+        { 407, tr("Biomes"), "world-biomes" },
+        { 427, tr("Thermal Expansion"), "addons-thermalexpansion" },
+        { 410, tr("Dimensions"), "world-dimensions" },
+        { 436, tr("Food"), "mc-food" },
+        { 4558, tr("Redstone"), "redstone" },
+        { 4843, tr("Automation"), "technology-automation" },
+        { 4906, tr("MCreator"), "mc-creator" },
+        { 4780, tr("Fabric"), "[4780]fabric"}
+    };
+    return categories;
 }

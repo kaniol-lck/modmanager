@@ -32,7 +32,7 @@ private slots:
 
     void updateLocalPathList();
 
-    void on_searchButton_clicked();
+    void search();
 
     void onSliderChanged(int i);
 
@@ -47,6 +47,8 @@ private slots:
     void on_openFolderButton_clicked();
 
     void on_downloadPathSelect_currentIndexChanged(int index);
+
+    void on_categorySelect_currentIndexChanged(int);
 
 private:
     Ui::ModrinthModBrowser *ui;

@@ -7,5 +7,57 @@
         <file>fabric.png</file>
         <file>optifine.png</file>
         <file>replay.png</file>
+        <file>curseforge/[4780]fabric.png</file>
+        <file>curseforge/mc-creator.png</file>
+        <file>curseforge/technology-automation.png</file>
+        <file>curseforge/world-gen.png</file>
+        <file>curseforge/world-mobs.png</file>
+        <file>curseforge/cosmetic.png</file>
+        <file>curseforge/addons-forestry.png</file>
+        <file>curseforge/technology-processing.png</file>
+        <file>curseforge/adventure-rpg.png</file>
+        <file>curseforge/redstone.png</file>
+        <file>curseforge/mc-food.png</file>
+        <file>curseforge/library-api.png</file>
+        <file>curseforge/applied-energistics-2.png</file>
+        <file>curseforge/addons-thaumcraft.png</file>
+        <file>curseforge/crafttweaker.png</file>
+        <file>curseforge/[4486]lucky-blocks.png</file>
+        <file>curseforge/technology-player-transport.png</file>
+        <file>curseforge/technology.png</file>
+        <file>curseforge/armor-weapons-tools.png</file>
+        <file>curseforge/mc-addons.png</file>
+        <file>curseforge/map-information.png</file>
+        <file>curseforge/magic.png</file>
+        <file>curseforge/addons-tinkers-construct.png</file>
+        <file>curseforge/world-dimensions.png</file>
+        <file>curseforge/addons-thermalexpansion.png</file>
+        <file>curseforge/mc-miscellaneous.png</file>
+        <file>curseforge/technology-item-fluid-energy-transport.png</file>
+        <file>curseforge/world-ores-resources.png</file>
+        <file>curseforge/twitch-integration.png</file>
+        <file>curseforge/world-biomes.png</file>
+        <file>curseforge/server-utility.png</file>
+        <file>curseforge/technology-energy.png</file>
+        <file>curseforge/technology-farming.png</file>
+        <file>curseforge/technology-genetics.png</file>
+        <file>curseforge/addons-buildcraft.png</file>
+        <file>curseforge/storage.png</file>
+        <file>curseforge/addons-industrialcraft.png</file>
+        <file>curseforge/blood-magic.png</file>
+        <file>curseforge/world-structures.png</file>
+        <file>modrinth/adventure.svg</file>
+        <file>modrinth/cursed.svg</file>
+        <file>modrinth/decoration.svg</file>
+        <file>modrinth/equipment.svg</file>
+        <file>modrinth/food.svg</file>
+        <file>modrinth/library.svg</file>
+        <file>modrinth/magic.svg</file>
+        <file>modrinth/misc.svg</file>
+        <file>modrinth/storage.svg</file>
+        <file>modrinth/technology.svg</file>
+        <file>modrinth/utility.svg</file>
+        <file>modrinth/worldgen.svg</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>

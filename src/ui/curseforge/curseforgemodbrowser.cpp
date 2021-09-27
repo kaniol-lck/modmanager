@@ -26,7 +26,17 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     for(const auto &type : ModLoaderType::curseforge)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
+    //categories
+    //TODO: using menu/submenu
+    ui->categorySelect->clear();
+    ui->categorySelect->addItem(tr("Any"));
+    for(const auto &[id, name, iconName] : CurseforgeAPI::getCategories()){
+        QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
+        ui->categorySelect->addItem(icon, name);
+    }
+
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
+    connect(ui->searchText, &QLineEdit::editingFinished, this, &CurseforgeModBrowser::search);
 
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
@@ -84,7 +94,7 @@ void CurseforgeModBrowser::updateLocalPathList()
     }
 }
 
-void CurseforgeModBrowser::on_searchButton_clicked()
+void CurseforgeModBrowser::search()
 {
     currentName_ = ui->searchText->text();
     getModList(currentName_);
@@ -101,16 +111,18 @@ void CurseforgeModBrowser::onSliderChanged(int i)
 void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 {
     if(!index) currentIndex_ = 0;
-    ui->searchButton->setText(tr("Searching..."));
-    ui->searchButton->setEnabled(false);
+//    ui->searchButton->setText(tr("Searching..."));
+//    ui->searchButton->setEnabled(false);
     setCursor(Qt::BusyCursor);
 
     GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
+    auto categoryIndex = ui->categorySelect->currentIndex() - 1;
+    auto category = categoryIndex < 0 ? 0 : std::get<0>(CurseforgeAPI::getCategories()[categoryIndex]);
     auto sort = ui->sortSelect->currentIndex();
 
-    api_->searchMods(gameVersion, index, name, sort, [=](const QList<CurseforgeModInfo> &infoList){
-        ui->searchButton->setText(tr("&Search"));
-        ui->searchButton->setEnabled(true);
+    api_->searchMods(gameVersion, index, name, category, sort, [=](const QList<CurseforgeModInfo> &infoList){
+//        ui->searchButton->setText(tr("&Search"));
+//        ui->searchButton->setEnabled(true);
         setCursor(Qt::ArrowCursor);
 
         //new search
@@ -223,5 +235,11 @@ void CurseforgeModBrowser::on_openFolderButton_clicked()
     else
         path = Config().getDownloadPath();
     openFileInFolder(path);
+}
+
+
+void CurseforgeModBrowser::on_categorySelect_currentIndexChanged(int)
+{
+    if(isUiSet_) getModList(currentName_);
 }
 
