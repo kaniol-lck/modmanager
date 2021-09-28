@@ -9,6 +9,12 @@
 #include "util/tutil.hpp"
 #include "util/funcutil.h"
 
+CurseforgeMod::CurseforgeMod(QObject *parent, int id) :
+    QObject(parent),
+    api_(CurseforgeAPI::api()),
+    modInfo_(id)
+{}
+
 CurseforgeMod::CurseforgeMod(LocalMod *parent, int id) :
     QObject(parent),
     api_(parent->curseforgeAPI()),

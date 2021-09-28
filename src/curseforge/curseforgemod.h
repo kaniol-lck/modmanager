@@ -12,6 +12,7 @@ class CurseforgeMod : public QObject
 {
     Q_OBJECT
 public:
+    CurseforgeMod(QObject *parent, int id);
     CurseforgeMod(LocalMod *parent, int id);
     CurseforgeMod(QObject *parent, const CurseforgeModInfo &info);
     CurseforgeMod(LocalMod *parent, const CurseforgeModInfo &info);

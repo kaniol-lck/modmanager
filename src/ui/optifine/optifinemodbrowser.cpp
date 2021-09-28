@@ -6,6 +6,8 @@
 #include "optifinemoditemwidget.h"
 #include "optifine/optifineapi.h"
 #include "optifine/optifinemod.h"
+#include "curseforge/curseforgemod.h"
+#include "ui/curseforge/curseforgemoddialog.h"
 #include "bmclapi.h"
 #include "local/localmodpath.h"
 #include "local/localmodpathmanager.h"
@@ -137,4 +139,26 @@ void OptifineModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     else
         downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
     emit downloadPathChanged(downloadPath_);
+}
+
+void OptifineModBrowser::on_getOptiFabric_clicked()
+{
+    //OptiFabric on Curseforge
+    //Project ID 322385
+    auto mod = new CurseforgeMod(this, 322385);
+    auto dialog = new CurseforgeModDialog(this, mod);
+    dialog->setDownloadPath(downloadPath_);
+    connect(this, &OptifineModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
+    dialog->show();
+}
+
+void OptifineModBrowser::on_getOptiForge_clicked()
+{
+    //OptiForge on Curseforge
+    //Project ID 372196
+    auto mod = new CurseforgeMod(this, 372196);
+    auto dialog = new CurseforgeModDialog(this, mod);
+    dialog->setDownloadPath(downloadPath_);
+    connect(this, &OptifineModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
+    dialog->show();
 }

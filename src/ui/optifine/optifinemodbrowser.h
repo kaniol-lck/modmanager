@@ -35,6 +35,10 @@ private slots:
 
     void on_downloadPathSelect_currentIndexChanged(int index);
 
+    void on_getOptiFabric_clicked();
+
+    void on_getOptiForge_clicked();
+
 private:
     Ui::OptifineModBrowser *ui;
     OptifineAPI *api_;
