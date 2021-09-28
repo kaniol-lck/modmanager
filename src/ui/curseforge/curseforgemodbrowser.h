@@ -44,7 +44,7 @@ private slots:
 
     void on_sortSelect_currentIndexChanged(int);
 
-    void on_loaderSelect_currentIndexChanged(int);
+    void on_loaderSelect_currentIndexChanged(int index);
 
     void on_downloadPathSelect_currentIndexChanged(int index);
 

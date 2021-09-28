@@ -20,11 +20,17 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    for(const auto &type : ModLoaderType::replay)
+        ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
+
     getModList();
 
     updateLocalPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ReplayModBrowser::updateLocalPathList);
 
+    connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
+    connect(ui->loaderSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
+    connect(ui->searchText, &QLineEdit::textChanged, this, &ReplayModBrowser::filterList);
     isUiSet_ = true;
 }
 
@@ -37,8 +43,10 @@ void ReplayModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
     isUiSet_ = false;
     ui->versionSelect->setCurrentText(info.gameVersion());
-    isUiSet_ = true;
+    ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
     ui->downloadPathSelect->setCurrentText(info.displayName());
+    isUiSet_ = true;
+    filterList();
 }
 
 void ReplayModBrowser::updateLocalPathList()
@@ -82,37 +90,6 @@ void ReplayModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     emit downloadPathChanged(downloadPath_);
 }
 
-void ReplayModBrowser::on_searchText_textEdited(const QString &arg1)
-{
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        if(!item->text().isEmpty()) continue;
-        auto widget = ui->modListWidget->itemWidget(item);
-        auto mod = dynamic_cast<const ReplayModItemWidget*>(widget)->mod();
-        auto str = arg1.toLower();
-        if(mod->modInfo().name().toLower().contains(str) ||
-                mod->modInfo().gameVersionString().contains(str))
-            ui->modListWidget->item(i)->setHidden(false);
-        else
-            ui->modListWidget->item(i)->setHidden(true);
-    }
-}
-
-void ReplayModBrowser::on_versionSelect_currentTextChanged(const QString &arg1)
-{
-    auto gameVersion = ui->versionSelect->currentIndex()? GameVersion(arg1) : GameVersion::Any;
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        if(!item->text().isEmpty()) continue;
-        auto widget = ui->modListWidget->itemWidget(item);
-        auto mod = dynamic_cast<const ReplayModItemWidget*>(widget)->mod();
-        if(gameVersion == GameVersion::Any)
-            item->setHidden(false);
-        else
-            item->setHidden(mod->modInfo().gameVersion() != gameVersion && !mod->modInfo().gameVersionString().contains(gameVersion));
-    }
-}
-
 void ReplayModBrowser::getModList()
 {
     api_->getModList([=](const auto &list){
@@ -142,4 +119,21 @@ void ReplayModBrowser::getModList()
         item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         ui->modListWidget->addItem(item);
     });
+}
+
+void ReplayModBrowser::filterList()
+{
+    auto gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
+    auto loaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
+    auto searchText = ui->searchText->text().toLower();
+    for(int i = 0; i < ui->modListWidget->count(); i++){
+        auto item = ui->modListWidget->item(i);
+        if(!item->text().isEmpty()) continue;
+        auto widget = ui->modListWidget->itemWidget(item);
+        auto mod = dynamic_cast<ReplayModItemWidget*>(widget)->mod();
+        item->setHidden((loaderType != ModLoaderType::Any && mod->modInfo().loaderType() != loaderType) ||
+                        (gameVersion != GameVersion::Any && gameVersion != mod->modInfo().gameVersion()) ||
+                        !(mod->modInfo().name().toLower().contains(searchText) ||
+                          mod->modInfo().gameVersionString().contains(searchText)));
+    }
 }

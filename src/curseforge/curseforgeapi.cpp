@@ -46,7 +46,6 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
     urlQuery.addQueryItem("sort", QString::number(sort));
 
     url.setQuery(urlQuery);
-    qDebug() << url;
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{

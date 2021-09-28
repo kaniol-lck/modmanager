@@ -200,7 +200,7 @@ void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
     if(isUiSet_) getModList(currentName_);
 }
 
-void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
+void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
 {
     for(int i = 0; i < ui->modListWidget->count(); i++){
         auto item = ui->modListWidget->item(i);
@@ -208,7 +208,7 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int)
         auto isHidden = item->isHidden();
         auto widget = ui->modListWidget->itemWidget(item);
         auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
-        auto selectedLoaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
+        auto selectedLoaderType = ModLoaderType::curseforge.at(index);
         auto isShown = selectedLoaderType == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(selectedLoaderType);
         item->setHidden(!isShown);
         //hidden -> shown, while not have downloaded thumbnail yet

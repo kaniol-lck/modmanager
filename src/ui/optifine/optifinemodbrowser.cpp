@@ -24,7 +24,9 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
 
     updateLocalPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &OptifineModBrowser::updateLocalPathList);
-
+    connect(ui->showPreview, &QCheckBox::stateChanged, this, &OptifineModBrowser::filterList);
+    connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &OptifineModBrowser::filterList);
+    connect(ui->searchText, &QLineEdit::textChanged, this, &OptifineModBrowser::filterList);
     isUiSet_ = true;
 }
 
@@ -37,8 +39,9 @@ void OptifineModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
     isUiSet_ = false;
     ui->versionSelect->setCurrentText(info.gameVersion());
-    isUiSet_ = true;
     ui->downloadPathSelect->setCurrentText(info.displayName());
+    isUiSet_ = true;
+    filterList();
 }
 
 void OptifineModBrowser::updateLocalPathList()
@@ -59,6 +62,22 @@ void OptifineModBrowser::updateLocalPathList()
         auto index = LocalModPathManager::pathList().indexOf(selectedPath);
         if(index >= 0)
             ui->downloadPathSelect->setCurrentIndex(index);
+    }
+}
+
+void OptifineModBrowser::filterList()
+{
+    auto gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
+    auto showPreview = ui->showPreview->isChecked();
+    auto searchText = ui->searchText->text().toLower();
+    for(int i = 0; i < ui->modListWidget->count(); i++){
+        auto item = ui->modListWidget->item(i);
+        if(!item->text().isEmpty()) continue;
+        auto widget = ui->modListWidget->itemWidget(item);
+        auto mod = dynamic_cast<const OptifineModItemWidget*>(widget)->mod();
+        item->setHidden((gameVersion != GameVersion::Any && mod->modInfo().gameVersion() != gameVersion) ||
+                        (!showPreview && mod->modInfo().isPreview()) ||
+                        !(mod->modInfo().name().toLower().contains(searchText) || mod->modInfo().gameVersion().toString().contains(searchText)));
     }
 }
 
@@ -118,52 +137,4 @@ void OptifineModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     else
         downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
     emit downloadPathChanged(downloadPath_);
-}
-
-void OptifineModBrowser::on_checkBox_stateChanged(int arg1)
-{
-    auto showPreview = arg1 == Qt::Checked;
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        if(!item->text().isEmpty()) continue;
-        auto widget = ui->modListWidget->itemWidget(item);
-        auto mod = dynamic_cast<const OptifineModItemWidget*>(widget)->mod();
-        auto gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
-        if(gameVersion != GameVersion::Any && gameVersion != mod->modInfo().gameVersion()) continue;
-        if(mod->modInfo().isPreview())
-            item->setHidden(!showPreview);
-    }
-}
-
-void OptifineModBrowser::on_searchText_textEdited(const QString &arg1)
-{
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        if(!item->text().isEmpty()) continue;
-        auto widget = ui->modListWidget->itemWidget(item);
-        auto mod = dynamic_cast<const OptifineModItemWidget*>(widget)->mod();
-        if(!ui->checkBox->isChecked() && mod->modInfo().isPreview()) continue;
-        auto str = arg1.toLower();
-        if(mod->modInfo().name().toLower().contains(str) ||
-                mod->modInfo().gameVersion().toString().contains(str))
-            ui->modListWidget->item(i)->setHidden(false);
-        else
-            ui->modListWidget->item(i)->setHidden(true);
-    }
-}
-
-void OptifineModBrowser::on_versionSelect_currentTextChanged(const QString &arg1)
-{
-    auto gameVersion = ui->versionSelect->currentIndex()? GameVersion(arg1) : GameVersion::Any;
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        if(!item->text().isEmpty()) continue;
-        auto widget = ui->modListWidget->itemWidget(item);
-        auto mod = dynamic_cast<const OptifineModItemWidget*>(widget)->mod();
-        if(!ui->checkBox->isChecked() && mod->modInfo().isPreview()) continue;
-        if(gameVersion == GameVersion::Any)
-            item->setHidden(false);
-        else
-            item->setHidden(mod->modInfo().gameVersion() != gameVersion);
-    }
 }

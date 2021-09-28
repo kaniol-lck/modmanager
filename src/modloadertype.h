@@ -22,6 +22,7 @@ QIcon icon(Type type);
 const QList<Type> local{ Fabric, Forge };
 const QList<Type> curseforge{ Any, Fabric, Forge/*, Rift*/ };
 const QList<Type> modrinth{ Any, Fabric, Forge };
+const QList<Type> replay{ Any, Fabric, Forge };
 
 };
 

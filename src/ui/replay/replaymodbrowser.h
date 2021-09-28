@@ -28,14 +28,11 @@ signals:
 
 private slots:
     void updateLocalPathList();
+    void filterList();
 
     void on_openFolderButton_clicked();
 
     void on_downloadPathSelect_currentIndexChanged(int index);
-
-    void on_searchText_textEdited(const QString &arg1);
-
-    void on_versionSelect_currentTextChanged(const QString &arg1);
 
 private:
     Ui::ReplayModBrowser *ui;

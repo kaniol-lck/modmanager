@@ -200,17 +200,16 @@ void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *curren
 {
     if(current == nullptr) return;
     auto parent = current->parent();
-
-    if(parent == downloadItem_){
-        ui->stackedWidget->setCurrentIndex(0);
-    } else if(parent == exploreItem_){
-        auto index = parent->indexOfChild(current);
-        ui->stackedWidget->setCurrentIndex(1 + index);
-    } else if(parent == localItem_){
-        auto index = parent->indexOfChild(current);
-        //TODO: magic number
-        ui->stackedWidget->setCurrentIndex(5 + index);
-    }
+//    int currentIndex = ui->stackedWidget->currentIndex();
+    int index = 0;
+    //TODO: magic number
+    if(parent == downloadItem_)
+        index = 0;
+    else if(parent == exploreItem_)
+        index = 1 + parent->indexOfChild(current);
+    else if(parent == localItem_)
+        index = 5 + parent->indexOfChild(current);
+    ui->stackedWidget->setCurrentIndex(index);
 }
 
 void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)

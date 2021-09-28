@@ -19,6 +19,7 @@ ReplayModItemWidget::ReplayModItemWidget(QWidget *parent, ReplayMod *mod) :
 
     ui->displayNameText->setText(mod_->modInfo().name());
     ui->gameVersion->setText(mod_->modInfo().gameVersionString());
+    ui->loaderType->setText(ModLoaderType::toString(mod_->modInfo().loaderType()));
 }
 
 ReplayModItemWidget::~ReplayModItemWidget()

@@ -43,7 +43,7 @@
       <widget class="QComboBox" name="versionSelect"/>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBox">
+      <widget class="QCheckBox" name="showPreview">
        <property name="text">
         <string>Show Preview</string>
        </property>
