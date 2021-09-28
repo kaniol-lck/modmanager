@@ -61,7 +61,7 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Name</string>
+      <string/>
      </property>
     </widget>
    </item>
@@ -86,7 +86,7 @@
         <string notr="true"/>
        </property>
        <property name="text">
-        <string notr="true">xxx</string>
+        <string notr="true"/>
        </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
@@ -153,7 +153,7 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Summary: balabalabalabalabalabala</string>
+      <string/>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
