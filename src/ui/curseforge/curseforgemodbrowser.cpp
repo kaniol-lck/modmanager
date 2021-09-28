@@ -102,17 +102,18 @@ void CurseforgeModBrowser::search()
 
 void CurseforgeModBrowser::onSliderChanged(int i)
 {
-    if(hasMore_ && i == ui->modListWidget->verticalScrollBar()->maximum()){
-        currentIndex_ += 20;
+    if(hasMore_ && i >= ui->modListWidget->verticalScrollBar()->maximum() - 1000){
+        currentIndex_ += Config().getSearchResultCount();
         getModList(currentName_, currentIndex_);
     }
 }
 
 void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 {
-    if(!index) currentIndex_ = 0;
-//    ui->searchButton->setText(tr("Searching..."));
-//    ui->searchButton->setEnabled(false);
+    if(!index)
+        currentIndex_ = 0;
+    else if(!hasMore_ || isSearching_)
+        return;
     setCursor(Qt::BusyCursor);
 
     GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
@@ -120,9 +121,8 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
     auto category = categoryIndex < 0 ? 0 : std::get<0>(CurseforgeAPI::getCategories()[categoryIndex]);
     auto sort = ui->sortSelect->currentIndex();
 
+    isSearching_ = true;
     api_->searchMods(gameVersion, index, name, category, sort, [=](const QList<CurseforgeModInfo> &infoList){
-//        ui->searchButton->setText(tr("&Search"));
-//        ui->searchButton->setEnabled(true);
         setCursor(Qt::ArrowCursor);
 
         //new search
@@ -170,6 +170,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             ui->modListWidget->addItem(item);
             hasMore_ = false;
         }
+        isSearching_ = false;
         if(shownCount != infoList.count() && shownCount < needMore){
             currentIndex_ += 20;
             getModList(currentName_, currentIndex_, needMore - shownCount);
@@ -242,4 +243,3 @@ void CurseforgeModBrowser::on_categorySelect_currentIndexChanged(int)
 {
     if(isUiSet_) getModList(currentName_);
 }
-

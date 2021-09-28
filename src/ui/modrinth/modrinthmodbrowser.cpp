@@ -101,17 +101,18 @@ void ModrinthModBrowser::search()
 
 void ModrinthModBrowser::onSliderChanged(int i)
 {
-    if(hasMore_ && i == ui->modListWidget->verticalScrollBar()->maximum()){
-        currentIndex_ += 20;
+    if(hasMore_ && i >= ui->modListWidget->verticalScrollBar()->maximum() - 1000){
+        currentIndex_ += Config().getSearchResultCount();
         getModList(currentName_, currentIndex_);
     }
 }
 
 void ModrinthModBrowser::getModList(QString name, int index)
 {
-    if(!index) currentIndex_ = 0;
-//    ui->searchButton->setText(tr("Searching..."));
-//    ui->searchButton->setEnabled(false);
+    if(!index)
+        currentIndex_ = 0;
+    else if(!hasMore_ || isSearching_)
+        return;
     setCursor(Qt::BusyCursor);
 
     GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
@@ -121,9 +122,8 @@ void ModrinthModBrowser::getModList(QString name, int index)
     GameVersion version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
     auto type = ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex());
 
+    isSearching_ = true;
     api_->searchMods(name, currentIndex_, version, type, category, sort, [=](const QList<ModrinthModInfo> &infoList){
-//        ui->searchButton->setText(tr("&Search"));
-//        ui->searchButton->setEnabled(true);
         setCursor(Qt::ArrowCursor);
 
         //new search
@@ -158,6 +158,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
             ui->modListWidget->addItem(item);
             hasMore_ = false;
         }
+        isSearching_ = false;
     });
 }
 
@@ -211,4 +212,3 @@ void ModrinthModBrowser::on_categorySelect_currentIndexChanged(int)
 {
     if(isUiSet_) getModList(currentName_);
 }
-

@@ -58,6 +58,7 @@ private:
     int currentIndex_;
     bool isUiSet_ = false;
     bool hasMore_ = false;
+    bool isSearching_ = false;
 
     void getModList(QString name, int index = 0);
 };

@@ -61,7 +61,7 @@ private:
     int currentIndex_;
     bool isUiSet_ = false;
     bool hasMore_ = false;
-
+    bool isSearching_ = false;
 };
 
 #endif // CURSEFORGEMODBROWSER_H
