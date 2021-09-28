@@ -122,6 +122,7 @@ CurseforgeModDialog::~CurseforgeModDialog()
 void CurseforgeModDialog::setDownloadPath(LocalModPath *newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
+    qDebug() << (downloadPath_? downloadPath_->info().path() : "null");
     emit downloadPathChanged(newDownloadPath);
 }
 
@@ -129,4 +130,3 @@ void CurseforgeModDialog::on_websiteButton_clicked()
 {
     QDesktopServices::openUrl(mod_->modInfo().websiteUrl());
 }
-

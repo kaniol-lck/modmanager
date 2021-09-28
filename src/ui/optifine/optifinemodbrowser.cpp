@@ -41,8 +41,8 @@ void OptifineModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
     isUiSet_ = false;
     ui->versionSelect->setCurrentText(info.gameVersion());
-    ui->downloadPathSelect->setCurrentText(info.displayName());
     isUiSet_ = true;
+    ui->downloadPathSelect->setCurrentText(info.displayName());
     filterList();
 }
 
