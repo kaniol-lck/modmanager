@@ -54,7 +54,7 @@
             <x>0</x>
             <y>0</y>
             <width>547</width>
-            <height>570</height>
+            <height>562</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -176,7 +176,7 @@
            <item>
             <widget class="QCheckBox" name="showModrinthSnapshot">
              <property name="text">
-              <string>Show snapshot versions in modrinth tab</string>
+              <string>Show snapshot versions in Modrinth tab</string>
              </property>
             </widget>
            </item>
