@@ -92,6 +92,9 @@ void LocalModItemWidget::updateInfo()
         QPixmap pixelmap;
         pixelmap.convertFromImage(image);
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+    } else{
+        QPixmap pixelmap(":/image/modmanager.png");
+        ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
     }
 
     if(mod_->curseforgeMod())

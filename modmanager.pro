@@ -227,4 +227,7 @@ CONFIG(debug, debug|release) {
 }
 
 DISTFILES += \
-    src/ModManager.desktop
+    src/ModManager.desktop \
+    src/modmanager.ico
+
+win32: RC_ICONS = src/modmanager.ico

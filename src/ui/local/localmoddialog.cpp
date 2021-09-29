@@ -119,11 +119,15 @@ void LocalModDialog::onCurrentFileChanged()
         homepageIcon->get(file_->commonInfo()->issues());
     }
 
-    QPixmap pixelmap;
-    pixelmap.loadFromData(file_->commonInfo()->iconBytes());
-    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-    ui->modIcon->setCursor(Qt::ArrowCursor);
-
+    if(!mod_->commonInfo()->iconBytes().isEmpty()){
+        QPixmap pixelmap;
+        pixelmap.loadFromData(file_->commonInfo()->iconBytes());
+        ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+        ui->modIcon->setCursor(Qt::ArrowCursor);
+    } else {
+        QPixmap pixelmap(":/image/modmanager.png");
+        ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+    }
     //file info
     auto fileInfo = file_->fileInfo();
     auto [ baseName, suffix ] = file_->baseNameFullSuffix();

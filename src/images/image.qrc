@@ -58,6 +58,7 @@
         <file>modrinth/technology.svg</file>
         <file>modrinth/utility.svg</file>
         <file>modrinth/worldgen.svg</file>
+        <file>modmanager.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>
