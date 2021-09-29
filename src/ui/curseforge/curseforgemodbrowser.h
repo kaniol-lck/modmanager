@@ -21,6 +21,8 @@ public:
     explicit CurseforgeModBrowser(QWidget *parent = nullptr);
     ~CurseforgeModBrowser();
 
+    void refresh();
+
 signals:
     void downloadPathChanged(LocalModPath *path);
 

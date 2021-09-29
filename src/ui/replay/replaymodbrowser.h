@@ -20,6 +20,8 @@ public:
     explicit ReplayModBrowser(QWidget *parent = nullptr);
     ~ReplayModBrowser();
 
+    void refresh();
+
 public slots:
     void searchModByPathInfo(const LocalModPathInfo &info);
 

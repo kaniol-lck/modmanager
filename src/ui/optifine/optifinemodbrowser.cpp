@@ -37,6 +37,11 @@ OptifineModBrowser::~OptifineModBrowser()
     delete ui;
 }
 
+void OptifineModBrowser::refresh()
+{
+    getModList();
+}
+
 void OptifineModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
     isUiSet_ = false;

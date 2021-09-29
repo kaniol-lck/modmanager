@@ -42,9 +42,13 @@ private slots:
 
     void on_action_About_Mod_Manager_triggered();
 
-    void on_actionView_Curseforge_triggered();
+    void on_actionVisit_Curseforge_triggered();
 
     void on_actionVisit_Modrinth_triggered();
+
+    void on_actionVisit_OptiFine_triggered();
+
+    void on_actionVisit_ReplayMod_triggered();
 
 private:
     Ui::ModManager *ui;

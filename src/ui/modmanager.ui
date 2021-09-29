@@ -114,8 +114,10 @@ QTreeView::branch {
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="actionView_Curseforge"/>
+    <addaction name="actionVisit_Curseforge"/>
     <addaction name="actionVisit_Modrinth"/>
+    <addaction name="actionVisit_OptiFine"/>
+    <addaction name="actionVisit_ReplayMod"/>
     <addaction name="separator"/>
     <addaction name="action_About_Mod_Manager"/>
    </widget>
@@ -150,7 +152,7 @@ QTreeView::branch {
     <string>&amp;About Mod Manager</string>
    </property>
   </action>
-  <action name="actionView_Curseforge">
+  <action name="actionVisit_Curseforge">
    <property name="icon">
     <iconset resource="../images/image.qrc">
      <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
@@ -166,6 +168,24 @@ QTreeView::branch {
    </property>
    <property name="text">
     <string>Visit Modrinth</string>
+   </property>
+  </action>
+  <action name="actionVisit_OptiFine">
+   <property name="icon">
+    <iconset resource="../images/image.qrc">
+     <normaloff>:/image/optifine.png</normaloff>:/image/optifine.png</iconset>
+   </property>
+   <property name="text">
+    <string>Visit OptiFine</string>
+   </property>
+  </action>
+  <action name="actionVisit_ReplayMod">
+   <property name="icon">
+    <iconset resource="../images/image.qrc">
+     <normaloff>:/image/replay.png</normaloff>:/image/replay.png</iconset>
+   </property>
+   <property name="text">
+    <string>Visit ReplayMod</string>
    </property>
   </action>
  </widget>

@@ -21,6 +21,8 @@ public:
     explicit OptifineModBrowser(QWidget *parent = nullptr);
     ~OptifineModBrowser();
 
+    void refresh();
+
 public slots:
     void searchModByPathInfo(const LocalModPathInfo &info);
 

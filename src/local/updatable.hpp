@@ -66,7 +66,7 @@ public:
                     break;
                 }
             }
-            return versionCheck && (file.loaderTypes().isEmpty() || file.loaderTypes().contains(targetType));
+            return versionCheck && (/*file.loaderTypes().isEmpty() || */file.loaderTypes().contains(targetType));
         });
 
         //non match

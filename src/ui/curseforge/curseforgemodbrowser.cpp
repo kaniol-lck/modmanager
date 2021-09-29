@@ -53,6 +53,11 @@ CurseforgeModBrowser::~CurseforgeModBrowser()
     delete ui;
 }
 
+void CurseforgeModBrowser::refresh()
+{
+    search();
+}
+
 void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
     isUiSet_ = false;

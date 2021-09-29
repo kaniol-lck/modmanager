@@ -10,6 +10,7 @@
 #include "curseforge/curseforgeapi.h"
 #include "util/tutil.hpp"
 #include "util/funcutil.h"
+#include "config.h"
 
 GameVersion GameVersion::Any = GameVersion("");
 
@@ -205,7 +206,10 @@ QList<GameVersion> GameVersion::curseforgeVersionList()
 
 QList<GameVersion> GameVersion::modrinthVersionList()
 {
-    return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangVersionList_;
+    if(Config().getShowModrinthSnapshot())
+        return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangVersionList_;
+    else
+        return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangReleaseVersionList_;
 }
 
 VersionManager *VersionManager::manager()

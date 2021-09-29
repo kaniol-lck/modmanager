@@ -20,6 +20,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->downloadPathText->setText(config.getDownloadPath());
     ui->searchResultCount->setValue(config.getSearchResultCount());
     ui->optifineVersionSource->setCurrentIndex(config.getOptifineSource());
+    ui->showModrinthSnapshot->setChecked(config.getShowModrinthSnapshot());
     ui->versionMatchSelect->setCurrentIndex(config.getVersionMatch());
     ui->updateCheckIntervalSelect->setCurrentIndex(config.getUpdateCheckInterval());
     ui->useCurseforgeUpdate->setChecked(config.getUseCurseforgeUpdate());
@@ -42,6 +43,7 @@ void Preferences::on_Preferences_accepted()
     config.setDownloadPath(ui->downloadPathText->text());
     config.setSearchResultCount(ui->searchResultCount->value());
     config.setOptifineSource(ui->optifineVersionSource->currentIndex());
+    config.setShowModrinthSnapshot(ui->showModrinthSnapshot->isChecked());
     config.setVersionMatch(ui->versionMatchSelect->currentIndex());
     config.setUpdateCheckInterval(ui->updateCheckIntervalSelect->currentIndex());
     config.setUseCurseforgeUpdate(ui->useCurseforgeUpdate->isChecked());

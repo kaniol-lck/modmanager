@@ -21,6 +21,8 @@ public:
     explicit ModrinthModBrowser(QWidget *parent = nullptr);
     ~ModrinthModBrowser();
 
+    void refresh();
+
 signals:
     void downloadPathChanged(LocalModPath *path);
 

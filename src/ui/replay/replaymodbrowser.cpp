@@ -39,6 +39,11 @@ ReplayModBrowser::~ReplayModBrowser()
     delete ui;
 }
 
+void ReplayModBrowser::refresh()
+{
+    getModList();
+}
+
 void ReplayModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
     isUiSet_ = false;

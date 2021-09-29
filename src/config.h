@@ -40,6 +40,7 @@ public:
     getterAndSetter(UpdateCheckInterval, Int, updateCheckIntervalType, EveryDay)
     enum OptifineSourceType{ Official, BMCLAPI };
     getterAndSetter(OptifineSource, Int, optifineSource, Official)
+    getterAndSetter(ShowModrinthSnapshot, Bool, showModrinthSnapshot, false)
 
     //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)

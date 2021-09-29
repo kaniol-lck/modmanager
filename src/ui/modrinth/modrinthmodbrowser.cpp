@@ -52,6 +52,11 @@ ModrinthModBrowser::~ModrinthModBrowser()
     delete ui;
 }
 
+void ModrinthModBrowser::refresh()
+{
+    search();
+}
+
 void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
     isUiSet_ = false;

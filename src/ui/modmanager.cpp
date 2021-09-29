@@ -235,7 +235,28 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
         });
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
-    } else if(item->parent() == localItem_){
+    } else if(item->parent() == exploreItem_){
+        // on one of explore items
+        auto index = item->parent()->indexOfChild(item);
+        connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
+            if(index == 0)
+                curseforgeModBrowser_->refresh();
+            if(index == 1)
+                modrinthModBrowser_->refresh();
+            if(index == 2)
+                optifineModBrowser_->refresh();
+            if(index == 3)
+                replayModBrowser_->refresh();
+        });
+        if(index == 0)
+            menu->addAction(ui->actionVisit_Curseforge);
+        if(index == 1)
+            menu->addAction(ui->actionVisit_Modrinth);
+        if(index == 2)
+            menu->addAction(ui->actionVisit_OptiFine);
+        if(index == 3)
+            menu->addAction(ui->actionVisit_ReplayMod);
+    }else if(item->parent() == localItem_){
         // on one of local items
         auto index = item->parent()->indexOfChild(item);
 
@@ -263,12 +284,11 @@ void ModManager::on_action_About_Mod_Manager_triggered()
 }
 
 
-void ModManager::on_actionView_Curseforge_triggered()
+void ModManager::on_actionVisit_Curseforge_triggered()
 {
     QUrl url("https://www.curseforge.com/minecraft/mc-mods");
     QDesktopServices::openUrl(url);
 }
-
 
 void ModManager::on_actionVisit_Modrinth_triggered()
 {
@@ -276,3 +296,15 @@ void ModManager::on_actionVisit_Modrinth_triggered()
     QDesktopServices::openUrl(url);
 }
 
+void ModManager::on_actionVisit_OptiFine_triggered()
+{
+    QUrl url("https://www.optifine.net");
+    QDesktopServices::openUrl(url);
+}
+
+
+void ModManager::on_actionVisit_ReplayMod_triggered()
+{
+    QUrl url("https://www.replaymod.com");
+    QDesktopServices::openUrl(url);
+}
