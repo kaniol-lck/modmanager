@@ -92,6 +92,8 @@ void Downloader::threadFinished(int /*index*/)
     finishedThreadCount_++;
 //    qDebug() << finishedThreadCount << "/" << THREAD_COUNT;
     if(finishedThreadCount_ == threadCount_){
+        for(auto thread : qAsConst(threads_))
+            thread->stop();
         file_.close();
         file_.rename(file_.fileName().remove(".downloading"));
         setStatus(DownloadStatus::Finished);

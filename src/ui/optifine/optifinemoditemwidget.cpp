@@ -17,15 +17,15 @@ OptifineModItemWidget::OptifineModItemWidget(QWidget *parent, OptifineMod *mod) 
     ui->modIcon->setPixmap(pixmap.scaled(80, 80, Qt::KeepAspectRatio));
     ui->downloadSpeedText->setVisible(false);
     ui->downloadProgress->setVisible(false);
+    ui->downloadButton->setEnabled(false);
 
     ui->displayNameText->setText(mod_->modInfo().name());
     ui->gameVersion->setText("Minecraft " + mod_->modInfo().gameVersion());
-    if(mod_->modInfo().downloadUrl().isEmpty()){
-        ui->downloadButton->setDisabled(true);
-        connect(mod_, &OptifineMod::downloadUrlReady, this, [=]{
-            if(ui->downloadButton->text() != tr("Downloaded")) ui->downloadButton->setEnabled(true);
-        });
-    }
+    mod->acquireDownloadUrl();
+    connect(mod_, &OptifineMod::downloadUrlReady, this, [=]{
+        ui->downloadButton->setEnabled(true);
+        ui->downloadButton->setText(tr("Download"));
+    });
 }
 
 OptifineModItemWidget::~OptifineModItemWidget()
@@ -63,7 +63,8 @@ void OptifineModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
 
-    bool bl;
+    if(mod_->modInfo().downloadUrl().isEmpty()) return;
+    bool bl = false;
     if(downloadPath_)
         bl = hasFile(downloadPath_->info().path(), mod_->modInfo().fileName()); //TODO
     else

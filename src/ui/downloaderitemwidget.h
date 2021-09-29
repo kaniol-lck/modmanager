@@ -20,7 +20,7 @@ public:
     ~DownloaderItemWidget();
 
 private slots:
-    void refreshStatus(Downloader::DownloadStatus status);
+    void refreshStatus();
 
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 

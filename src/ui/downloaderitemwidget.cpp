@@ -32,7 +32,7 @@ DownloaderItemWidget::DownloaderItemWidget(QWidget *parent, Downloader *download
     if(!fileInfo.icon().isNull())
         ui->downloadIcon->setPixmap(fileInfo.icon().scaled(80, 80, Qt::KeepAspectRatio));
 
-    refreshStatus(downloader->status());
+    refreshStatus();
 
     connect(downloader_, &Downloader::sizeUpdated, this, &DownloaderItemWidget::updateSize);
     connect(downloader_, &Downloader::statusChanged, this, &DownloaderItemWidget::refreshStatus);
@@ -48,36 +48,38 @@ DownloaderItemWidget::~DownloaderItemWidget()
     delete ui;
 }
 
-void DownloaderItemWidget::refreshStatus(Downloader::DownloadStatus status)
+void DownloaderItemWidget::refreshStatus()
 {
-    switch (status) {
+    QString text;
+    switch (downloader_->status()) {
     case Downloader::Idol:
-        ui->downloaStatus->setText(tr("Idol"));
+        text = tr("Idol");
         break;
     case Downloader::Perparing:
-        ui->downloaStatus->setText(tr("Perparing"));
+        text = tr("Perparing");
         break;
     case Downloader::Queue:
-        ui->downloaStatus->setText(tr("Queue"));
+        text = tr("Queue");
         break;
     case Downloader::Downloading:
-        ui->downloaStatus->setText(tr("Downloading"));
+        text = tr("Downloading");
         ui->downloadSpeedText->setVisible(true);
 //        ui->downloadProgress->setVisible(true);
         break;
     case Downloader::Paused:
-        ui->downloaStatus->setText(tr("Paused"));
+        text = tr("Paused");
         break;
     case Downloader::Finished:
-        ui->downloaStatus->setText(tr("Finished"));
+        text = tr("Finished");
         ui->downloadSpeedText->setVisible(false);
 //        ui->downloadProgress->setVisible(false);
         break;
     case Downloader::Error:
-        ui->downloaStatus->setText(tr("Error"));
+        text = tr("Error");
         ui->downloadSpeedText->setVisible(false);
         break;
     }
+    ui->downloaStatus->setText(text);
 }
 
 void DownloaderItemWidget::downloadProgress(qint64 bytesReceived, qint64 bytesTotal)

@@ -92,7 +92,6 @@ void OptifineModBrowser::getModList()
             if(!gameVersions.contains(modInfo.gameVersion()))
                 gameVersions << modInfo.gameVersion();
             auto mod = new OptifineMod(this, modInfo);
-            mod->acquireDownloadUrl();
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(0, 100));
             ui->modListWidget->addItem(listItem);
