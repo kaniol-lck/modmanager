@@ -54,17 +54,18 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
 
     ui->downloadProgress->setMaximum(fileInfo_.size());
 
+    ModDownloader *downloader;
     DownloadFileInfo info(fileInfo_);
     if(localMod_)
         info.setIconBytes(localMod_->commonInfo()->iconBytes());
     else
         info.setIconBytes(mod_->modInfo().iconBytes());
     if(downloadPath_)
-        info.setPath(downloadPath_->info().path());
-    else
+        downloader = downloadPath_->downloadNewMod(info);
+    else{
         info.setPath(Config().getDownloadPath());
-
-    auto downloader = DownloadManager::addModDownload(info);
+        downloader = DownloadManager::addModDownload(info);
+    }
     connect(downloader, &ModDownloader::sizeUpdated, this, [=](qint64 size){
         ui->downloadProgress->setMaximum(size);
     });

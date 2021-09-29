@@ -35,7 +35,7 @@ git clone git@github.com:kaniol-lck/modmanager.git
 
 构建：
 
-```sh
+```bash
 qmake && make
 ```
 
@@ -49,7 +49,7 @@ powershell -Command "(Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile insta
 
 构建：
 
-```
+```bash
 qmake && nmake
 ```
 

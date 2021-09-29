@@ -15,7 +15,7 @@ public:
 
     static DownloadManager *manager();
 
-    static ModDownloader *addModDownload(const DownloadFileInfo &info);
+    static ModDownloader *addModDownload(const DownloadFileInfo &info, std::function<void()> finishCallback = []{});
     static ModDownloader *addModUpdate(const DownloadFileInfo &info, std::function<void()> finishCallback);
 
     const QList<Downloader *> &downloadList() const;

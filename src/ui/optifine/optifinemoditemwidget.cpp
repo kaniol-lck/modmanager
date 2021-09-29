@@ -37,13 +37,14 @@ void OptifineModItemWidget::on_downloadButton_clicked()
 {
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
+    ModDownloader *downloader;
     DownloadFileInfo info(mod_->modInfo());
     if(downloadPath_)
-        info.setPath(downloadPath_->info().path());
-    else
+        downloader = downloadPath_->downloadNewMod(info);
+    else{
         info.setPath(Config().getDownloadPath());
-
-    auto downloader = DownloadManager::addModDownload(info);
+        downloader = DownloadManager::addModDownload(info);
+    }
     connect(downloader, &Downloader::sizeUpdated, this, [=](qint64 size){
         ui->downloadProgress->setMaximum(size);
     });

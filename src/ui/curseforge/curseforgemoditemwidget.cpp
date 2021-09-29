@@ -74,14 +74,14 @@ void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
 
+    ModDownloader *downloader;
     DownloadFileInfo info(fileInfo);
     if(downloadPath_)
-        info.setPath(downloadPath_->info().path());
-    else
+        downloader = downloadPath_->downloadNewMod(info);
+    else{
         info.setPath(Config().getDownloadPath());
-    info.setIconBytes(mod_->modInfo().iconBytes());
-
-    auto downloader = DownloadManager::addModDownload(info);
+        downloader = DownloadManager::addModDownload(info);
+    }
 
     ui->downloadProgress->setMaximum(fileInfo.size());
 

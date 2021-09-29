@@ -18,6 +18,8 @@ public:
     explicit LocalModPath(QObject *parent, const LocalModPathInfo &info, bool startup = false);
 
     void loadMods(bool startup = false);
+    void addNormalMod(LocalModFile *file);
+    void addOldMod(LocalModFile *file);
 
     void checkFabric();
 
@@ -34,17 +36,16 @@ public:
     void checkModUpdates(bool force = true);
     void updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList);
 
+    //download new mod
+    ModDownloader *downloadNewMod(DownloadFileInfo &info);
+
     const LocalModPathInfo &info() const;
     void setInfo(const LocalModPathInfo &newInfo);
 
     CurseforgeAPI *curseforgeAPI() const;
-
     ModrinthAPI *modrinthAPI() const;
-
     int updatableCount() const;
-
     const QMap<QString, LocalMod *> &modMap() const;
-
     void deleteAllOld() const;
 
 signals:

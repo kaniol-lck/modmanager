@@ -20,7 +20,7 @@ class IdMapper
         const QString &modrinthId() const;
     private:
         QString modid_;
-        int curseforgeId_;
+        int curseforgeId_ = 0;
         QString modrinthId_;
     };
 public:

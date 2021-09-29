@@ -62,11 +62,12 @@ void DownloadManager::tryDownload()
     }
 }
 
-ModDownloader *DownloadManager::addModDownload(const DownloadFileInfo &info)
+ModDownloader *DownloadManager::addModDownload(const DownloadFileInfo &info, std::function<void()> finishCallback)
 {
     auto manager = DownloadManager::manager();
     auto downloader = new ModDownloader(manager);
     downloader->downloadMod(info);
+    connect(downloader, &Downloader::finished, manager, finishCallback);
     manager->addDownloader(downloader);
     manager->tryDownload();
     return downloader;

@@ -40,43 +40,14 @@ void LocalModPath::loadMods(bool startup)
         provideList_.clear();
 
         //load normal mods (include duplicate)
-        for(const auto &file : qAsConst(modFileList_)){
-            if(auto type = file->type(); type != LocalModFile::Normal && type != LocalModFile::Disabled ) continue;
-            if(file->loaderType() != info_.loaderType()) continue;
-            auto id = file->commonInfo()->id();
-            //duplicate
-            if(modMap_.contains(id)){
-                modMap_[id]->addDuplicateFile(file);
-                continue;
-            }
-            else {
-                //new mod
-                auto mod = new LocalMod(this, file);
-                //connect update signal
-                connect(mod, &LocalMod::updateFinished, this, [=](bool){
-                    emit updatesReady();
-                });
-                connect(mod, &LocalMod::modCacheUpdated, this, [=]{
-                    writeToFile();
-                });
-                modMap_[id] = mod;
-            }
-        }
+        for(const auto &file : qAsConst(modFileList_))
+            addNormalMod(file);
 
         //load old mods
-        for(const auto &file : qAsConst(modFileList_)){
-            if(file->type() != LocalModFile::Old) continue;
-            if(file->loaderType() != info_.loaderType()) continue;
-            auto id = file->commonInfo()->id();
-            //old
-            if(modMap_.contains(id)){
-                modMap_[id]->addOldFile(file);
-                continue;
-            }
-            else
-                ;//TODO: deal with homeless old mods
-        }
+        for(const auto &file : qAsConst(modFileList_))
+            addOldMod(file);
 
+        //restore cached info
         readFromFile();
         emit modListUpdated();
 
@@ -85,9 +56,46 @@ void LocalModPath::loadMods(bool startup)
             checkModUpdates(!startup);
             disconnect(SIGNAL(websitesReady()));
         });
-
         searchOnWebsites();
     });
+}
+
+void LocalModPath::addNormalMod(LocalModFile *file)
+{
+    if(auto type = file->type(); type != LocalModFile::Normal && type != LocalModFile::Disabled ) return;
+    if(file->loaderType() != info_.loaderType()) return;
+    auto id = file->commonInfo()->id();
+    //duplicate
+    if(modMap_.contains(id)){
+        modMap_[id]->addDuplicateFile(file);
+        return;
+    }
+    else {
+        //new mod
+        auto mod = new LocalMod(this, file);
+        //connect update signal
+        connect(mod, &LocalMod::updateFinished, this, [=](bool){
+            emit updatesReady();
+        });
+        connect(mod, &LocalMod::modCacheUpdated, this, [=]{
+            writeToFile();
+        });
+        modMap_[id] = mod;
+    }
+}
+
+void LocalModPath::addOldMod(LocalModFile *file)
+{
+    if(file->type() != LocalModFile::Old) return;
+    if(file->loaderType() != info_.loaderType()) return;
+    auto id = file->commonInfo()->id();
+    //old
+    if(modMap_.contains(id)){
+        modMap_[id]->addOldFile(file);
+        return;
+    }
+    else
+        ;//TODO: deal with homeless old mods
 }
 
 void LocalModPath::checkFabric()
@@ -386,6 +394,21 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> 
                 emit updatesDone(*successCount, *failCount);
         });
     }
+}
+
+ModDownloader *LocalModPath::downloadNewMod(DownloadFileInfo &info)
+{
+    info.setPath(info_.path());
+    return DownloadManager::addModDownload(info, [=]{
+        QFileInfo fileInfo(info_.path(), info.fileName());
+        if(!LocalModFile::availableSuffix.contains(fileInfo.suffix())) return;
+        auto file = new LocalModFile(this, fileInfo.absoluteFilePath());
+        file->loadInfo();
+        modFileList_ << file;
+        addNormalMod(file);
+        addOldMod(file);
+        emit modListUpdated();
+    });
 }
 
 const LocalModPathInfo &LocalModPath::info() const

@@ -35,7 +35,7 @@ git clone git@github.com:kaniol-lck/modmanager.git
 
 Build:
 
-```sh
+```bash
 qmake && make
 ```
 

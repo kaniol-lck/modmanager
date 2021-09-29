@@ -469,32 +469,22 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="64"/>
-        <source>Name</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="73"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="100"/>
         <source>Author:</source>
         <translation>作者：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="169"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="134"/>
         <source>Website</source>
         <translation>网站</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="118"/>
-        <source>Summary: balabalabalabalabalabala</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="139"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="47"/>
         <source>Description</source>
         <translation>描述</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="153"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.ui" line="61"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
@@ -1658,18 +1648,16 @@
         <translation type="vanished">ICON</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="64"/>
         <source>Name</source>
-        <translation>名称</translation>
+        <translation type="vanished">名称</translation>
     </message>
     <message>
         <source>by xxx</source>
         <translation type="vanished">by xxx</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="156"/>
         <source>Summary: balabalabalabalabalabala</source>
-        <translation>Summary: balabalabalabalabalabala</translation>
+        <translation type="vanished">Summary: balabalabalabalabalabala</translation>
     </message>
     <message>
         <source>https://www.curseforge.com</source>
