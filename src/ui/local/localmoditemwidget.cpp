@@ -127,6 +127,7 @@ void LocalModItemWidget::updateInfo()
     }
 
     //enabled
+    auto font = qApp->font();
     if(mod_->isDisabled()){
         ui->disableButton->setChecked(true);
         ui->disableButton->setVisible(true);
@@ -143,6 +144,7 @@ void LocalModItemWidget::updateInfo()
         ui->modVersion->setStyleSheet("");
         ui->updateButton->setEnabled(true);
     }
+    qApp->setFont(font);
     if(mod_->isFeatured()) ui->featuredButton->setVisible(true);
     ui->featuredButton->setChecked(mod_->isFeatured());
 }
