@@ -10,10 +10,9 @@
 #include "ui/modrinth/modrinthmoddialog.h"
 #include "util/tutil.hpp"
 
-LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
-    QWidget(parent),
-    ui(new Ui::LocalModItemWidget),
-    mod_(mod)
+LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) : QWidget(parent),
+                                                                         ui(new Ui::LocalModItemWidget),
+                                                                         mod_(mod)
 {
     //init ui
     ui->setupUi(this);
@@ -73,18 +72,20 @@ void LocalModItemWidget::updateInfo()
     ui->modVersion->setText(mod_->commonInfo()->version());
     auto description = mod_->commonInfo()->description();
     auto index = description.indexOf(".");
-    if(index > 0)
+    if (index > 0)
         description = description.left(index + 1);
     ui->modDescription->setText(description);
-    if(!mod_->commonInfo()->authors().isEmpty())
+    if (!mod_->commonInfo()->authors().isEmpty())
         ui->modAuthors->setText(mod_->commonInfo()->authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
     else
         ui->modAuthors->setText("");
 
-    if(!mod_->commonInfo()->iconBytes().isEmpty()){
+    if (!mod_->commonInfo()->iconBytes().isEmpty())
+    {
         QImage image;
         image.loadFromData(mod_->commonInfo()->iconBytes());
-        if(mod_->modFile()->type() == LocalModFile::Disabled){
+        if (mod_->modFile()->type() == LocalModFile::Disabled)
+        {
             auto alphaChannel = image.convertToFormat(QImage::Format_Alpha8);
             image = image.convertToFormat(QImage::Format_Grayscale8);
             image.setAlphaChannel(alphaChannel);
@@ -92,43 +93,50 @@ void LocalModItemWidget::updateInfo()
         QPixmap pixelmap;
         pixelmap.convertFromImage(image);
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-    } else{
+    }
+    else
+    {
         QPixmap pixelmap(":/image/modmanager.png");
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
     }
 
-    if(mod_->curseforgeMod())
+    if (mod_->curseforgeMod())
         ui->curseforgeButton->setEnabled(true);
-    if(mod_->modrinthMod())
+    if (mod_->modrinthMod())
         ui->modrinthButton->setEnabled(true);
 
     updateReady(mod_->defaultUpdateType());
 
     //rollback
-    if(mod_->oldFiles().isEmpty())
+    if (mod_->oldFiles().isEmpty())
         ui->rollbackButton->setVisible(false);
-    else{
+    else
+    {
         ui->rollbackButton->setVisible(true);
         ui->rollbackButton->setEnabled(true);
         auto menu = new QMenu(this);
-        for(const auto &file : mod_->oldFiles())
-            connect(menu->addAction(file->commonInfo()->version()), &QAction::triggered, this, [=]{
-                ui->rollbackButton->setEnabled(false);
-                mod_->rollback(file);
-            });
+        for (const auto &file : mod_->oldFiles())
+            connect(menu->addAction(file->commonInfo()->version()), &QAction::triggered, this, [=]
+                    {
+                        ui->rollbackButton->setEnabled(false);
+                        mod_->rollback(file);
+                    });
         ui->rollbackButton->setMenu(menu);
     }
 
     //warning
-    if(!mod_->duplicateFiles().isEmpty()){
+    if (!mod_->duplicateFiles().isEmpty())
+    {
         ui->warningButton->setToolTip(tr("Duplicate mod!"));
-    } else {
+    }
+    else
+    {
         ui->warningButton->setVisible(false);
     }
 
     //enabled
-    auto font = qApp->font();
-    if(mod_->isDisabled()){
+    if (mod_->isDisabled())
+    {
         ui->disableButton->setChecked(true);
         ui->disableButton->setVisible(true);
         ui->modName->setStyleSheet("color: #777");
@@ -136,7 +144,9 @@ void LocalModItemWidget::updateInfo()
         ui->modDescription->setStyleSheet("color: #777;");
         ui->modVersion->setStyleSheet("color: #777");
         ui->updateButton->setEnabled(false);
-    }else {
+    }
+    else
+    {
         ui->disableButton->setChecked(false);
         ui->modName->setStyleSheet("");
         ui->modAuthors->setStyleSheet("");
@@ -144,8 +154,8 @@ void LocalModItemWidget::updateInfo()
         ui->modVersion->setStyleSheet("");
         ui->updateButton->setEnabled(true);
     }
-    qApp->setFont(font);
-    if(mod_->isFeatured()) ui->featuredButton->setVisible(true);
+    if (mod_->isFeatured())
+        ui->featuredButton->setVisible(true);
     ui->featuredButton->setChecked(mod_->isFeatured());
 }
 
@@ -156,28 +166,34 @@ void LocalModItemWidget::on_updateButton_clicked()
 
 void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType type)
 {
-    if(type == LocalMod::None) return;
+    if (type == LocalMod::None)
+        return;
     ui->updateButton->setVisible(true);
     ui->updateButton->setEnabled(true);
-    if(type == LocalMod::Curseforge)
+    if (type == LocalMod::Curseforge)
         ui->updateButton->setIcon(QIcon(":/image/curseforge.svg"));
     else if (type == LocalMod::Modrinth)
         ui->updateButton->setIcon(QIcon(":/image/modrinth.svg"));
 
-    if(mod_->updateTypes().size() == 1) return;
+    if (mod_->updateTypes().size() == 1)
+        return;
     auto menu = new QMenu(this);
-    for(auto type2 : mod_->updateTypes()){
-        if(type == type2) continue;
-        if(type2 == LocalMod::Curseforge)
-            connect(menu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
-                ui->updateButton->setIcon(QIcon(":/image/curseforge.svg"));
-                mod_->update(LocalMod::Curseforge);
-            });
-        else if(type2 == LocalMod::Modrinth)
-            connect(menu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth"), &QAction::triggered, this, [=]{
-                ui->updateButton->setIcon(QIcon(":/image/modrinth.svg"));
-                mod_->update(LocalMod::Modrinth);
-            });
+    for (auto type2 : mod_->updateTypes())
+    {
+        if (type == type2)
+            continue;
+        if (type2 == LocalMod::Curseforge)
+            connect(menu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]
+                    {
+                        ui->updateButton->setIcon(QIcon(":/image/curseforge.svg"));
+                        mod_->update(LocalMod::Curseforge);
+                    });
+        else if (type2 == LocalMod::Modrinth)
+            connect(menu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth"), &QAction::triggered, this, [=]
+                    {
+                        ui->updateButton->setIcon(QIcon(":/image/modrinth.svg"));
+                        mod_->update(LocalMod::Modrinth);
+                    });
     }
     ui->updateButton->setMenu(menu);
 }
@@ -228,9 +244,10 @@ void LocalModItemWidget::updateProgress(qint64 bytesReceived, qint64 bytesTotal)
 void LocalModItemWidget::finishUpdate(bool success)
 {
     ui->updateProgress->setVisible(false);
-    if(success)
+    if (success)
         ui->updateButton->setVisible(false);
-    else{
+    else
+    {
         ui->updateButton->setText(tr("Retry Update"));
         ui->updateButton->setEnabled(true);
     }
@@ -239,7 +256,7 @@ void LocalModItemWidget::finishUpdate(bool success)
 void LocalModItemWidget::on_curseforgeButton_clicked()
 {
     auto curseforgeMod = mod_->curseforgeMod();
-    if(!curseforgeMod->modInfo().hasBasicInfo())
+    if (!curseforgeMod->modInfo().hasBasicInfo())
         curseforgeMod->acquireBasicInfo();
     auto dialog = new CurseforgeModDialog(this, curseforgeMod, mod_);
     dialog->show();
@@ -248,7 +265,7 @@ void LocalModItemWidget::on_curseforgeButton_clicked()
 void LocalModItemWidget::on_modrinthButton_clicked()
 {
     auto modrinthMod = mod_->modrinthMod();
-    if(!modrinthMod->modInfo().hasBasicInfo())
+    if (!modrinthMod->modInfo().hasBasicInfo())
         modrinthMod->acquireFullInfo();
     auto dialog = new ModrinthModDialog(this, modrinthMod, mod_);
     dialog->show();
@@ -258,14 +275,13 @@ void LocalModItemWidget::on_warningButton_clicked()
 {
     QString str = tr("Duplicate version of <b>%1</b> was found:").arg(mod_->commonInfo()->name());
     QStringList list(mod_->commonInfo()->version());
-    for(const auto &file : mod_->duplicateFiles())
+    for (const auto &file : mod_->duplicateFiles())
         list << file->commonInfo()->version();
     str += "<ul><li>" + list.join("</li><li>") + "</li></ul>";
     str += tr("Keep one of them and set the others as old mods?");
-    if(QMessageBox::Yes == QMessageBox::question(this, tr("Incompatibility"), str))
+    if (QMessageBox::Yes == QMessageBox::question(this, tr("Incompatibility"), str))
         mod_->duplicateToOld();
 }
-
 
 void LocalModItemWidget::on_disableButton_toggled(bool checked)
 {
@@ -274,11 +290,10 @@ void LocalModItemWidget::on_disableButton_toggled(bool checked)
     ui->disableButton->setEnabled(true);
 }
 
-
 void LocalModItemWidget::on_featuredButton_toggled(bool checked)
 {
     ui->featuredButton->setEnabled(false);
-    ui->featuredButton->setIcon(QIcon::fromTheme(checked? "starred-symbolic" : "non-starred-symbolic"));
+    ui->featuredButton->setIcon(QIcon::fromTheme(checked ? "starred-symbolic" : "non-starred-symbolic"));
     mod_->setFeatured(checked);
     ui->featuredButton->setEnabled(true);
 }
@@ -287,4 +302,3 @@ LocalMod *LocalModItemWidget::mod() const
 {
     return mod_;
 }
-
