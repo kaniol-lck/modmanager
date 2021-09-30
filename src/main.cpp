@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_WIN
     QIcon::setThemeName("breeze-modmanager");
     QFont font("微软雅黑", 12);
-    a.setFont(f);
+    a.setFont(font);
 #endif
     qApp->setWindowIcon(QIcon(":/image/modmanager.png"));
     ModManager w;
