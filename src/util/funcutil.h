@@ -17,9 +17,9 @@ void openFileInFolder(const QString &filePath);
 
 bool hasFile(const QString &path, const QString &fileName);
 bool hasFile(LocalModPath *path, CurseforgeMod *mod);
-bool hasFile(LocalModPath *path, const CurseforgeFileInfo &modInfo);
+bool hasFile(LocalModPath *path, const CurseforgeFileInfo &fileInfo);
 bool hasFile(LocalModPath *path, ModrinthMod *mod);
-bool hasFile(LocalModPath *path, const ModrinthFileInfo &modInfo);
+bool hasFile(LocalModPath *path, const ModrinthFileInfo &fileInfo);
 
 QString capture(const QString &str, const QString &regExp, bool minimal = true, int offset = 0);
 

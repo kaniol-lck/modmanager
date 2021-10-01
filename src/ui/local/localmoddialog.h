@@ -5,6 +5,7 @@
 
 class LocalMod;
 class LocalModFile;
+class FlowLayout;
 
 namespace Ui {
 class LocalModDialog;
@@ -48,6 +49,8 @@ private slots:
 
 private:
     Ui::LocalModDialog *ui;
+    FlowLayout *tagsLayout_;
+    QList<QWidget*> tagWidgets_;
     LocalModFile *file_;
     LocalMod *mod_ = nullptr;
 

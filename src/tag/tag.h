@@ -2,6 +2,7 @@
 #define TAG_H
 
 #include <QJsonObject>
+#include <QHash>
 
 #include "tagcategory.h"
 
@@ -20,13 +21,18 @@ public:
     const QString &name() const;
 
     static const QList<Tag> &typeTags();
-    static const QList<Tag> &functionalityTags();
+    static const QSet<Tag> &functionalityTags();
+    static const QSet<Tag> &customTags();
 
 private:
     TagCategory tagCategory_ = TagCategory::CustomCategory;
     QString name_;
 
-    static QList<Tag> functionalityTags_;
+    static QSet<Tag> functionalityTags_;
+    static QSet<Tag> customTags_;
 };
+
+[[maybe_unused]]
+static uint qHash(const Tag &key, uint seed = 0);
 
 #endif // TAG_H

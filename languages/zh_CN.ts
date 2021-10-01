@@ -963,17 +963,17 @@
         <translation type="vanished">名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="370"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="177"/>
         <source>Curseforge</source>
         <translation>Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="393"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="200"/>
         <source>Modrinth</source>
         <translation>Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="273"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="113"/>
         <source>Version:</source>
         <translation>版本：</translation>
     </message>
@@ -982,100 +982,108 @@
         <translation type="vanished">网站</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="47"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="49"/>
         <source>disable</source>
         <translation>禁用</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="292"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="132"/>
         <source>Roll back to this version</source>
         <translation>回退至这个版本</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="306"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="146"/>
         <source>Delete this version</source>
         <translation>删除这个版本</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="321"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="238"/>
         <source>Author:</source>
         <translation>作者：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="110"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="227"/>
         <source>Infomation</source>
         <translation>信息</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="132"/>
         <source>Websites</source>
-        <translation>网站</translation>
+        <translation type="vanished">网站</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="140"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="293"/>
         <source>Homepage</source>
         <translation>主页</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="147"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="300"/>
         <source>Sources</source>
         <translation>源码</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="154"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="307"/>
         <source>Issues</source>
         <translation>问题</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="116"/>
         <source>Description</source>
-        <translation>描述</translation>
+        <translation type="vanished">描述</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="90"/>
-        <location filename="../src/ui/local/localmoddialog.ui" line="295"/>
-        <location filename="../src/ui/local/localmoddialog.ui" line="309"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="92"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="135"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="149"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="167"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="277"/>
+        <source>Description:</source>
+        <translation>描述：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmoddialog.ui" line="284"/>
+        <source>Websites:</source>
+        <translation>网站：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmoddialog.ui" line="319"/>
         <source>File</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="178"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="330"/>
         <source>File Name:</source>
         <translation>文件名称：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="207"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="359"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="223"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="375"/>
         <source>File Size:</source>
         <translation>文件大小：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="230"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="382"/>
         <source>2.33 MB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="237"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="389"/>
         <source>Created Time:</source>
         <translation>创建时间：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="244"/>
-        <location filename="../src/ui/local/localmoddialog.ui" line="258"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="396"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="410"/>
         <source>TextLabel</source>
         <translation>TextLabel</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.ui" line="251"/>
+        <location filename="../src/ui/local/localmoddialog.ui" line="403"/>
         <source>Modified Time:</source>
         <translation>修改时间：</translation>
     </message>
@@ -1100,37 +1108,37 @@
         <translation type="vanished">本地旧版</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.cpp" line="81"/>
+        <location filename="../src/ui/local/localmoddialog.cpp" line="85"/>
         <source>Local</source>
         <translation>本地</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.cpp" line="83"/>
+        <location filename="../src/ui/local/localmoddialog.cpp" line="87"/>
         <source>Local Old</source>
         <translation>本地旧版</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.cpp" line="87"/>
+        <location filename="../src/ui/local/localmoddialog.cpp" line="91"/>
         <source> (Disabled)</source>
         <translation>（已禁用）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.cpp" line="212"/>
+        <location filename="../src/ui/local/localmoddialog.cpp" line="232"/>
         <source>Rename Failed</source>
         <translation>重命名失败</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.cpp" line="212"/>
+        <location filename="../src/ui/local/localmoddialog.cpp" line="232"/>
         <source>Rename failed!</source>
         <translation>重命名失败了！</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.cpp" line="235"/>
+        <location filename="../src/ui/local/localmoddialog.cpp" line="255"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoddialog.cpp" line="235"/>
+        <location filename="../src/ui/local/localmoddialog.cpp" line="255"/>
         <source>Delete this version?</source>
         <translation>删除这个版本？</translation>
     </message>
@@ -1194,109 +1202,124 @@
         <translation>mod重复！</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="250"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="251"/>
         <source>Updating</source>
         <translation>更新中</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="268"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="269"/>
         <source>Retry Update</source>
         <translation>重试更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="293"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="294"/>
         <source>Duplicate version of &lt;b&gt;%1&lt;/b&gt; was found:</source>
         <translation>&lt;b&gt;%1&lt;/b&gt;存在这些重复版本：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="298"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="299"/>
         <source>Keep one of them and set the others as old mods?</source>
         <translation>保存其中的一项并将其他的作为旧版mod？</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="299"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="300"/>
         <source>Incompatibility</source>
         <translation>不兼容性</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="326"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="327"/>
         <source>Set Alias</source>
         <translation>设置别名</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="328"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="329"/>
         <source>Set mod alias</source>
         <translation>设置mod别名</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="328"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="329"/>
         <source>Alias of &lt;b&gt;%1&lt;/b&gt; mod:</source>
         <translation>&lt;b&gt;%1&lt;/b&gt; mod的别名：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="332"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="333"/>
         <source>Add tag</source>
         <translation>添加标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="334"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="335"/>
         <source>Type tag</source>
         <translation>类型标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="340"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="341"/>
         <source>Functionality tag</source>
         <translation>功能标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="345"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="348"/>
         <source>New functionality tag...</source>
         <translation>新建功能标签...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="347"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="350"/>
         <source>Functionality:</source>
         <translation>功能：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="352"/>
         <source>New translation tag...</source>
-        <translation>新建译名标签...</translation>
+        <translation type="vanished">新建译名标签...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="347"/>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="354"/>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="360"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="350"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="383"/>
         <source>New tag</source>
         <translation>新建标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="360"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="383"/>
         <source>New tag name:</source>
         <translation>新建标签名称:</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="358"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="381"/>
         <source>New custom tag...</source>
         <translation>新建自定义标签...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="354"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="356"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="361"/>
+        <source>Translation tag</source>
+        <translation>译名标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="361"/>
         <source>Translation:</source>
         <translation>译名：</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmoditemwidget.cpp" line="366"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="371"/>
+        <source>Notation tag</source>
+        <translation>注释标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="371"/>
+        <source>Notation:</source>
+        <translation>注释：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="389"/>
         <source>remove tag</source>
         <translation>移除标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="373"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="396"/>
         <source>Star</source>
         <translation>星标</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmoditemwidget.cpp" line="379"/>
+        <location filename="../src/ui/local/localmoditemwidget.cpp" line="402"/>
         <source>Disable</source>
         <translation>禁用</translation>
     </message>
@@ -2151,19 +2174,18 @@
         <translation type="vanished">Rift</translation>
     </message>
     <message>
-        <location filename="../src/tag/tag.cpp" line="53"/>
+        <location filename="../src/tag/tag.cpp" line="57"/>
         <source>Library</source>
         <translation>库</translation>
     </message>
     <message>
-        <location filename="../src/tag/tag.cpp" line="54"/>
+        <location filename="../src/tag/tag.cpp" line="58"/>
         <source>Addon</source>
         <translation>附加</translation>
     </message>
     <message>
-        <location filename="../src/tag/tagcategory.cpp" line="36"/>
         <source>Custom</source>
-        <translation>自定义</translation>
+        <translation type="vanished">自定义</translation>
     </message>
 </context>
 <context>

@@ -2,13 +2,14 @@
 
 #include <QObject>
 
-const TagCategory TagCategory::CurseforgeCategory = TagCategory("curseforge", QColor("#f16436"), TagCategory::Type::CurseforgeCategory);
-const TagCategory TagCategory::ModrinthCategory = TagCategory("modrinth", QColor("#5DA426"), TagCategory::Type::ModrinthCategory);
-const TagCategory TagCategory::OptiFineCategory = TagCategory("optifine", QColor(126, 40, 41), TagCategory::Type::OptiFineCategory);
-const TagCategory TagCategory::TypeCategory = TagCategory("type", QColor(186, 184, 185), TagCategory::Type::TypeCategory);
-const TagCategory TagCategory::TranslationCategory = TagCategory("translation", QColor(47, 95, 127), TagCategory::Type::TranslationCategory);
-const TagCategory TagCategory::FunctionalityCategory = TagCategory("functionality", QColor(79, 152, 249), TagCategory::Type::FunctionalityCategory);
-const TagCategory TagCategory::CustomCategory = TagCategory("custom", QColor(23, 127, 191), TagCategory::Type::CustomCategory);
+const TagCategory TagCategory::CurseforgeCategory = TagCategory("curseforge", QColor("#f16436"));
+const TagCategory TagCategory::ModrinthCategory = TagCategory("modrinth", QColor("#5DA426"));
+const TagCategory TagCategory::OptiFineCategory = TagCategory("optifine", QColor(126, 40, 41));
+const TagCategory TagCategory::TypeCategory = TagCategory("type", QColor(95, 95, 95));
+const TagCategory TagCategory::TranslationCategory = TagCategory("translation", QColor(47, 95, 127));
+const TagCategory TagCategory::FunctionalityCategory = TagCategory("functionality", QColor(79, 152, 249));
+const TagCategory TagCategory::NotationCategory = TagCategory("notation", QColor(23, 127, 191));
+const TagCategory TagCategory::CustomCategory = TagCategory("custom", QColor(127, 63, 23));
 const QList<TagCategory> TagCategory::PresetCategories{
     CurseforgeCategory,
     ModrinthCategory,
@@ -16,37 +17,14 @@ const QList<TagCategory> TagCategory::PresetCategories{
     TypeCategory,
     TranslationCategory,
     FunctionalityCategory,
-    CustomCategory,
+    NotationCategory,
+    CustomCategory
 };
 
-TagCategory::TagCategory(const QString &id, const QColor &color, Type type) :
+TagCategory::TagCategory(const QString &id, const QColor &color) :
     id_(id),
-    color_(color),
-    type_(type)
+    color_(color)
 {}
-
-QString TagCategory::name() const
-{
-    switch (type_) {
-    case Type::CurseforgeCategory:
-        return "Curseforge";
-        break;
-    case Type::ModrinthCategory:
-        break;
-    case Type::OptiFineCategory:
-        break;
-    case Type::TypeCategory:
-        break;
-    case Type::TranslationCategory:
-        break;
-    case Type::FunctionalityCategory:
-        break;
-    case Type::CustomCategory:
-        return QObject::tr("Custom");
-        break;
-    }
-    return id_;
-}
 
 const QColor &TagCategory::color() const
 {
@@ -55,7 +33,7 @@ const QColor &TagCategory::color() const
 
 bool TagCategory::operator==(const TagCategory &other) const
 {
-    return type_ == other.type_;
+    return id_ == other.id_;
 }
 
 TagCategory TagCategory::fromId(const QString &id)

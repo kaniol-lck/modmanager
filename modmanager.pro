@@ -42,6 +42,7 @@ SOURCES += \
     src/replay/replayapi.cpp \
     src/replay/replaymod.cpp \
     src/replay/replaymodinfo.cpp \
+    src/tag/localmodtags.cpp \
     src/tag/tag.cpp \
     src/tag/tagcategory.cpp \
     src/ui/aboutdialog.cpp \
@@ -70,6 +71,7 @@ SOURCES += \
     src/ui/preferences.cpp \
     src/ui/replay/replaymodbrowser.cpp \
     src/ui/replay/replaymoditemwidget.cpp \
+    src/util/flowlayout.cpp \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
     src/util/localmodsortitem.cpp \
@@ -110,6 +112,7 @@ HEADERS += \
     src/replay/replayapi.h \
     src/replay/replaymod.h \
     src/replay/replaymodinfo.h \
+    src/tag/localmodtags.h \
     src/tag/tag.h \
     src/tag/tagcategory.h \
     src/ui/aboutdialog.h \
@@ -137,6 +140,7 @@ HEADERS += \
     src/ui/preferences.h \
     src/ui/replay/replaymodbrowser.h \
     src/ui/replay/replaymoditemwidget.h \
+    src/util/flowlayout.h \
     src/util/funcutil.h \
     src/util/localmodsortitem.h \
     src/util/tutil.hpp \

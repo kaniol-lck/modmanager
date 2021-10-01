@@ -95,6 +95,7 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
         mod->acquireFullInfo();
         connect(mod, &ModrinthMod::fullInfoReady, this, updateFullInfo);
     }
+    if(localMod_) setDownloadPath(localMod_->path());
 }
 
 ModrinthModDialog::~ModrinthModDialog()

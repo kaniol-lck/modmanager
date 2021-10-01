@@ -6,17 +6,7 @@
 class TagCategory
 {
 public:
-    enum class Type{
-        CurseforgeCategory,
-        ModrinthCategory,
-        OptiFineCategory,
-        TypeCategory,
-        TranslationCategory,
-        FunctionalityCategory,
-        CustomCategory
-    };
-    explicit TagCategory(const QString &id, const QColor &color, Type type = Type::CustomCategory);
-    QString name() const;
+    explicit TagCategory(const QString &id, const QColor &color);
     const QColor &color() const;
 
     bool operator==(const TagCategory &other) const;
@@ -29,6 +19,7 @@ public:
     static const TagCategory TypeCategory;
     static const TagCategory TranslationCategory;
     static const TagCategory FunctionalityCategory;
+    static const TagCategory NotationCategory;
     static const TagCategory CustomCategory;
     static const QList<TagCategory> PresetCategories;
 
@@ -37,7 +28,6 @@ public:
 private:
     QString id_;
     QColor color_;
-    Type  type_ = Type::CustomCategory;
 };
 
 #endif // TAGCATEGORY_H

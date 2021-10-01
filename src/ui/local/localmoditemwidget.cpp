@@ -168,8 +168,9 @@ void LocalModItemWidget::updateInfo()
         widget->deleteLater();
     }
     tagWidgets_.clear();
-    for(const auto &tag : mod_->tags()){
+    for(auto &&tag : mod_->tags()){
         auto label = new QLabel(tag.name(), this);
+        label->setToolTip(tag.name());
         label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
         ui->tagsLayout->addWidget(label);
         tagWidgets_ << label;
@@ -338,7 +339,7 @@ void LocalModItemWidget::on_LocalModItemWidget_customContextMenuRequested(const 
         });
     //Functionality category
     auto addFunctionalityTagmenu = addTagmenu->addMenu(tr("Functionality tag"));
-    for(const auto &tag : Tag::functionalityTags())
+    for(auto &&tag : Tag::functionalityTags())
         connect(addFunctionalityTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
             mod_->addTag(tag);
         });
@@ -346,20 +347,40 @@ void LocalModItemWidget::on_LocalModItemWidget_customContextMenuRequested(const 
         addFunctionalityTagmenu->addSeparator();
     connect(addFunctionalityTagmenu->addAction(tr("New functionality tag...")), &QAction::triggered, this, [=]{
         bool ok;
-        auto name = QInputDialog::getText(this, tr("New tag"), tr("Functionality:"), QLineEdit::Normal, mod_->alias(), &ok);
-        if(ok)
+        auto name = QInputDialog::getText(this, tr("New tag"), tr("Functionality:"), QLineEdit::Normal, "", &ok);
+        if(ok && !name.isEmpty())
             mod_->addTag(Tag(name, TagCategory::FunctionalityCategory));
     });
     //TODO: other categories
-    connect(addTagmenu->addAction(tr("New translation tag...")), &QAction::triggered, this, [=]{
+    //Translation category
+    connect(addTagmenu->addAction(tr("Translation tag")), &QAction::triggered, this, [=]{
         bool ok;
-        auto name = QInputDialog::getText(this, tr("New tag"), tr("Translation:"), QLineEdit::Normal, mod_->alias(), &ok);
-        if(ok)
+        QString str;
+        if(auto translationTag = mod_->tagManager().translationTag())
+            str = translationTag->name();
+        auto name = QInputDialog::getText(this, tr("Translation tag"), tr("Translation:"), QLineEdit::Normal, str, &ok);
+        if(ok && !name.isEmpty())
             mod_->addTag(Tag(name, TagCategory::TranslationCategory));
     });
+    //Notation category
+    connect(addTagmenu->addAction(tr("Notation tag")), &QAction::triggered, this, [=]{
+        bool ok;
+        QString str;
+        if(auto notationTag = mod_->tagManager().notationTag())
+            str = notationTag->name();
+        auto name = QInputDialog::getText(this, tr("Notation tag"), tr("Notation:"), QLineEdit::Normal, str, &ok);
+        if(ok && !name.isEmpty())
+            mod_->addTag(Tag(name, TagCategory::NotationCategory));
+    });
+    //Custom category
+    for(auto &&tag : Tag::customTags())
+        connect(addTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
+            mod_->addTag(tag);
+        });
+    addTagmenu->addSeparator();
     connect(addTagmenu->addAction(tr("New custom tag...")), &QAction::triggered, this, [=]{
         bool ok;
-        auto name = QInputDialog::getText(this, tr("New tag"), tr("New tag name:"), QLineEdit::Normal, mod_->alias(), &ok);
+        auto name = QInputDialog::getText(this, tr("New tag"), tr("New tag name:"), QLineEdit::Normal, "", &ok);
         if(ok)
             mod_->addTag(Tag(name));
     });

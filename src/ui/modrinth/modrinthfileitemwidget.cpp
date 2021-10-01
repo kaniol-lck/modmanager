@@ -110,7 +110,7 @@ void ModrinthFileItemWidget::updateLocalInfo()
 {
     auto name = fileInfo_.displayName();
     if(localMod_ && localMod_->modrinthUpdate().currentFileInfo() && localMod_->modrinthUpdate().currentFileInfo()->id() == fileInfo_.id())
-        name.prepend("(<font color=\"#56a\">" + tr("[Current]") + "</font>) ");
+        name.prepend("<font color=\"#56a\">" + tr("[Current]") + "</font> ");
     ui->displayNameText->setText(name);
     //refresh downloaded infos
     setDownloadPath(downloadPath_);
@@ -129,4 +129,3 @@ void ModrinthFileItemWidget::on_ModrinthFileItemWidget_customContextMenuRequeste
     if(!menu->isEmpty())
         menu->exec(mapToGlobal(pos));
 }
-

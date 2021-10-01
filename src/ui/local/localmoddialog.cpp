@@ -12,6 +12,7 @@
 #include "ui/modrinth/modrinthmoddialog.h"
 #include "util/funcutil.h"
 #include "util/websiteicon.h"
+#include "util/flowlayout.h"
 
 LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     QDialog(parent),
@@ -23,6 +24,9 @@ LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     //not use it currently
     ui->disableButton->setVisible(false);
     ui->aliasText->setVisible(false);
+
+    tagsLayout_ = new FlowLayout();
+    ui->tagsVertical->addLayout(tagsLayout_);
 
     //init info
     onCurrentModChanged();
@@ -139,6 +143,22 @@ void LocalModDialog::onCurrentFileChanged()
 
     //if disabled
     ui->disableButton->setChecked(mod_->isDisabled());
+
+
+    //tags
+    QStringList tagTextList;
+    for(auto widget : qAsConst(tagWidgets_)){
+        tagsLayout_->removeWidget(widget);
+        widget->deleteLater();
+    }
+    tagWidgets_.clear();
+    for(auto &&tag : mod_->tags()){
+        auto label = new QLabel(tag.name(), this);
+        label->setToolTip(tag.name());
+        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
+        tagsLayout_->addWidget(label);
+        tagWidgets_ << label;
+    }
 }
 
 void LocalModDialog::on_curseforgeButton_clicked()

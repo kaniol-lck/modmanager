@@ -69,12 +69,13 @@ bool hasFile(LocalModPath *path, CurseforgeMod *mod)
     return false;
 }
 
-bool hasFile(LocalModPath *path, const CurseforgeFileInfo &modInfo)
+bool hasFile(LocalModPath *path, const CurseforgeFileInfo &fileInfo)
 {
     //TODO: old file
-    if(hasFile(path->info().path(), modInfo.fileName())) return true;
+    if(hasFile(path->info().path(), fileInfo.fileName())) return true;
     for(auto localMod : path->modMap())
-        if(localMod->curseforgeMod() && localMod->curseforgeMod()->modInfo().id() == modInfo.id())
+        if(localMod->curseforgeMod() && localMod->curseforgeUpdate().currentFileInfo() &&
+                localMod->curseforgeUpdate().currentFileInfo()->id() == fileInfo.id())
             return true;
     return false;
 }
@@ -87,12 +88,13 @@ bool hasFile(LocalModPath *path, ModrinthMod *mod)
     return false;
 }
 
-bool hasFile(LocalModPath *path, const ModrinthFileInfo &modInfo)
+bool hasFile(LocalModPath *path, const ModrinthFileInfo &fileInfo)
 {
     //TODO: old file
-    if(hasFile(path->info().path(), modInfo.fileName())) return true;
+    if(hasFile(path->info().path(), fileInfo.fileName())) return true;
     for(auto localMod : path->modMap())
-        if(localMod->modrinthMod() && localMod->modrinthMod()->modInfo().id() == modInfo.id())
+        if(localMod->modrinthMod() && localMod->modrinthUpdate().currentFileInfo() &&
+                localMod->modrinthUpdate().currentFileInfo()->id() == fileInfo.id())
             return true;
     return false;
 }

@@ -1,9 +1,11 @@
 #include "tag.h"
 
 #include "util/tutil.hpp"
-#include <QObject>
+#include <QHash>
+#include <QDebug>
 
-QList<Tag> Tag::functionalityTags_;
+QSet<Tag> Tag::functionalityTags_{};
+QSet<Tag> Tag::customTags_{};
 
 Tag::Tag(const QString &name, const TagCategory &tagCategory) :
     tagCategory_(tagCategory),
@@ -11,12 +13,14 @@ Tag::Tag(const QString &name, const TagCategory &tagCategory) :
 {
     if(tagCategory == TagCategory::FunctionalityCategory)
         functionalityTags_ << *this;
+    if(tagCategory == TagCategory::CustomCategory)
+        customTags_ << *this;
 }
 
 bool Tag::operator==(const Tag &other) const
 {
     return name_ == other.name_ &&
-           tagCategory_ == other.tagCategory_;
+            tagCategory_ == other.tagCategory_;
 }
 
 QJsonValue Tag::toJsonValue() const
@@ -56,7 +60,17 @@ const QList<Tag> &Tag::typeTags()
     return typeTags;
 }
 
-const QList<Tag> &Tag::functionalityTags()
+const QSet<Tag> &Tag::functionalityTags()
 {
     return functionalityTags_;
+}
+
+const QSet<Tag> &Tag::customTags()
+{
+    return customTags_;
+}
+
+uint qHash(const Tag &key, uint seed)
+{
+    return qHash(key.name(), seed);
 }

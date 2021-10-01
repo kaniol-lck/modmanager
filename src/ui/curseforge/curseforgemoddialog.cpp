@@ -110,7 +110,6 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
         mod->acquireAllFileList();
         connect(mod, &CurseforgeMod::allFileListReady, this, updateFileList);
     }
-
     if(localMod_) setDownloadPath(localMod_->path());
 }
 
@@ -122,7 +121,6 @@ CurseforgeModDialog::~CurseforgeModDialog()
 void CurseforgeModDialog::setDownloadPath(LocalModPath *newDownloadPath)
 {
     downloadPath_ = newDownloadPath;
-    qDebug() << (downloadPath_? downloadPath_->info().path() : "null");
     emit downloadPathChanged(newDownloadPath);
 }
 
