@@ -30,6 +30,7 @@ public:
     static const TagCategory TranslationCategory;
     static const TagCategory FunctionalityCategory;
     static const TagCategory CustomCategory;
+    static const QList<TagCategory> PresetCategories;
 
     const QString &id() const;
 

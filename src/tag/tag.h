@@ -20,10 +20,13 @@ public:
     const QString &name() const;
 
     static const QList<Tag> &typeTags();
+    static const QList<Tag> &functionalityTags();
 
 private:
     TagCategory tagCategory_ = TagCategory::CustomCategory;
     QString name_;
+
+    static QList<Tag> functionalityTags_;
 };
 
 #endif // TAG_H

@@ -3,10 +3,15 @@
 #include "util/tutil.hpp"
 #include <QObject>
 
+QList<Tag> Tag::functionalityTags_;
+
 Tag::Tag(const QString &name, const TagCategory &tagCategory) :
     tagCategory_(tagCategory),
     name_(name)
-{}
+{
+    if(tagCategory == TagCategory::FunctionalityCategory)
+        functionalityTags_ << *this;
+}
 
 bool Tag::operator==(const Tag &other) const
 {
@@ -28,9 +33,7 @@ Tag Tag::fromVariant(const QVariant &variant)
 {
     if(auto name = variant.toString(); !name.isEmpty())
         return Tag(name);
-    Tag tag;
-    tag.name_ = value(variant, "name").toString();
-    tag.tagCategory_ = TagCategory::fromId(value(variant, "category").toString());
+    Tag tag(value(variant, "name").toString(), TagCategory::fromId(value(variant, "category").toString()));
     return tag;
 }
 
@@ -51,4 +54,9 @@ const QList<Tag> &Tag::typeTags()
         Tag(QObject::tr("Addon"), TagCategory::TypeCategory)
     };
     return typeTags;
+}
+
+const QList<Tag> &Tag::functionalityTags()
+{
+    return functionalityTags_;
 }

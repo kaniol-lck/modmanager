@@ -563,14 +563,8 @@ const QList<Tag> &LocalMod::tags() const
 
 void LocalMod::addTag(const Tag &tag)
 {
+    if(tags_.contains(tag)) return;
     tags_ << tag;
-    emit modCacheUpdated();
-    emit modFileUpdated();
-}
-
-void LocalMod::addTags(const QList<Tag> &tags)
-{
-    tags_ << tags;
     emit modCacheUpdated();
     emit modFileUpdated();
 }

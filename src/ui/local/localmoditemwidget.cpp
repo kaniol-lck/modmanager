@@ -330,15 +330,30 @@ void LocalModItemWidget::on_LocalModItemWidget_customContextMenuRequested(const 
             mod_->setAlias(alias);
     });
     auto addTagmenu = menu->addMenu(tr("Add tag"));
+    //Type category
     auto addTypeTagmenu = addTagmenu->addMenu(tr("Type tag"));
     for(const auto &tag : Tag::typeTags())
         connect(addTypeTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
             mod_->addTag(tag);
         });
+    //Functionality category
+    auto addFunctionalityTagmenu = addTagmenu->addMenu(tr("Functionality tag"));
+    for(const auto &tag : Tag::functionalityTags())
+        connect(addFunctionalityTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
+            mod_->addTag(tag);
+        });
+    if(!addFunctionalityTagmenu->isEmpty())
+        addFunctionalityTagmenu->addSeparator();
+    connect(addFunctionalityTagmenu->addAction(tr("New functionality tag...")), &QAction::triggered, this, [=]{
+        bool ok;
+        auto name = QInputDialog::getText(this, tr("New tag"), tr("Functionality:"), QLineEdit::Normal, mod_->alias(), &ok);
+        if(ok)
+            mod_->addTag(Tag(name, TagCategory::FunctionalityCategory));
+    });
     //TODO: other categories
     connect(addTagmenu->addAction(tr("New translation tag...")), &QAction::triggered, this, [=]{
         bool ok;
-        auto name = QInputDialog::getText(this, tr("New tag"), tr("New tag name:"), QLineEdit::Normal, mod_->alias(), &ok);
+        auto name = QInputDialog::getText(this, tr("New tag"), tr("Translation:"), QLineEdit::Normal, mod_->alias(), &ok);
         if(ok)
             mod_->addTag(Tag(name, TagCategory::TranslationCategory));
     });

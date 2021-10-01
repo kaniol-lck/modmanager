@@ -9,6 +9,15 @@ const TagCategory TagCategory::TypeCategory = TagCategory("type", QColor(186, 18
 const TagCategory TagCategory::TranslationCategory = TagCategory("translation", QColor(47, 95, 127), TagCategory::Type::TranslationCategory);
 const TagCategory TagCategory::FunctionalityCategory = TagCategory("functionality", QColor(79, 152, 249), TagCategory::Type::FunctionalityCategory);
 const TagCategory TagCategory::CustomCategory = TagCategory("custom", QColor(23, 127, 191), TagCategory::Type::CustomCategory);
+const QList<TagCategory> TagCategory::PresetCategories{
+    CurseforgeCategory,
+    ModrinthCategory,
+    OptiFineCategory,
+    TypeCategory,
+    TranslationCategory,
+    FunctionalityCategory,
+    CustomCategory,
+};
 
 TagCategory::TagCategory(const QString &id, const QColor &color, Type type) :
     id_(id),
@@ -51,12 +60,9 @@ bool TagCategory::operator==(const TagCategory &other) const
 
 TagCategory TagCategory::fromId(const QString &id)
 {
-    if(id == CurseforgeCategory.id())
-        return CurseforgeCategory;
-    if(id == TranslationCategory.id())
-        return TranslationCategory;
-    if(id == CustomCategory.id())
-        return CustomCategory;
+    for(auto category : PresetCategories)
+        if(id == category.id())
+            return category;
     return TagCategory(id, Qt::gray);
 }
 

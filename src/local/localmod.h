@@ -103,7 +103,6 @@ public:
 
     const QList<Tag> &tags() const;
     void addTag(const Tag &tag);
-    void addTags(const QList<Tag> &tags);
     void removeTag(const Tag &tag);
     void setTags(const QList<Tag> &newTags);
 
