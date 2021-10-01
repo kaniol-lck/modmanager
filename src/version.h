@@ -1,6 +1,6 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-constexpr auto kVersion = "v1.0.0 beta1";
+constexpr auto kVersion = "v1.0.0 beta2";
 
 #endif // VERSION_H

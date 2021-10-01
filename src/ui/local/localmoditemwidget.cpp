@@ -3,6 +3,7 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
@@ -154,9 +155,26 @@ void LocalModItemWidget::updateInfo()
         ui->modVersion->setStyleSheet("");
         ui->updateButton->setEnabled(true);
     }
+
+    //featured
     if (mod_->isFeatured())
         ui->featuredButton->setVisible(true);
     ui->featuredButton->setChecked(mod_->isFeatured());
+
+    //tags
+    QStringList tagTextList;
+    for(auto widget : qAsConst(tagWidgets_)){
+        ui->tagsLayout->removeWidget(widget);
+        widget->deleteLater();
+    }
+    tagWidgets_.clear();
+    for(const auto &tag : mod_->tags()){
+        auto label = new QLabel(tag, this);
+        //TODO: color
+        label->setStyleSheet("color: #fff; background-color: #48d; border-radius:10px; padding:2px 4px;");
+        ui->tagsLayout->addWidget(label);
+        tagWidgets_ << label;
+    }
 }
 
 void LocalModItemWidget::on_updateButton_clicked()
@@ -302,3 +320,45 @@ LocalMod *LocalModItemWidget::mod() const
 {
     return mod_;
 }
+
+void LocalModItemWidget::on_LocalModItemWidget_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    connect(menu->addAction(tr("Set Alias")), &QAction::triggered, this, [=]{
+        bool ok;
+        auto alias = QInputDialog::getText(this, tr("Set mod alias"), tr("Alias of <b>%1</b> mod:").arg(mod_->commonInfo()->name()), QLineEdit::Normal, mod_->alias(), &ok);
+        if(ok)
+            mod_->setAlias(alias);
+    });
+    auto addTagmenu = menu->addMenu(tr("Add tag"));
+    connect(addTagmenu->addAction(tr("New tag...")), &QAction::triggered, this, [=]{
+        bool ok;
+        auto alias = QInputDialog::getText(this, tr("New tag"), tr("New tag name:"), QLineEdit::Normal, mod_->alias(), &ok);
+        if(ok)
+            mod_->addTag(alias);
+    });
+    //TODO: tag manage
+    if(!mod_->tags().isEmpty()){
+        auto removeTagmenu = menu->addMenu(tr("remove tag"));
+        for(const auto &tag : mod_->tags())
+            connect(removeTagmenu->addAction(tag), &QAction::triggered, this, [=]{
+                mod_->removeTag(tag);
+            });
+    }
+    menu->addSeparator();
+    auto starAction = menu->addAction(tr("Star"));
+    starAction->setCheckable(true);
+    starAction->setChecked(mod_->isFeatured());
+    connect(starAction, &QAction::toggled, this, [=](bool bl){
+        mod_->setFeatured(bl);
+    });
+    auto disableAction = menu->addAction(tr("Disable"));
+    disableAction->setCheckable(true);
+    disableAction->setChecked(mod_->isDisabled());
+    connect(disableAction, &QAction::toggled, this, [=](bool bl){
+        mod_->setEnabled(!bl);
+    });
+    if(!menu->actions().isEmpty())
+        menu->exec(mapToGlobal(pos));
+}
+

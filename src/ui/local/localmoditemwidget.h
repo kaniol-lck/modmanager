@@ -52,8 +52,11 @@ private slots:
 
     void on_featuredButton_toggled(bool checked);
 
+    void on_LocalModItemWidget_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::LocalModItemWidget *ui;
+    QList<QWidget *> tagWidgets_;
     LocalMod *mod_;
 };
 

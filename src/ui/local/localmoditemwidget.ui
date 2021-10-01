@@ -7,8 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>641</width>
-    <height>116</height>
+    <height>122</height>
    </rect>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::CustomContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -130,6 +133,9 @@
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
        </property>
       </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="tagsLayout"/>
      </item>
      <item>
       <spacer name="horizontalSpacer_3">

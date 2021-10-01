@@ -100,6 +100,12 @@ public:
 
     LocalModPath *path() const;
 
+    const QStringList &tags() const;
+    void addTag(const QString &tag);
+    void addTags(const QString &tags);
+    void removeTag(const QString &tag);
+    void setTags(const QStringList &newTags);
+
 signals:
     void modFileUpdated();
     void modCacheUpdated();
@@ -126,6 +132,7 @@ signals:
 private:
     bool isFeatured_ = false;
     QString alias_;
+    QStringList tags_;
 
     //api for update
     CurseforgeAPI *curseforgeAPI_;

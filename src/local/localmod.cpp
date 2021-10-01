@@ -2,6 +2,7 @@
 
 #include <QDir>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <iterator>
 #include <algorithm>
 #include <tuple>
@@ -484,6 +485,12 @@ QJsonObject LocalMod::toJsonObject() const
         object.insert("alias", alias_);
     if(isFeatured_)
         object.insert("featured", isFeatured_);
+    if(!tags_.isEmpty()){
+        QJsonArray tagArray;
+        for(const auto &tag : tags_)
+            tagArray << tag;
+        object.insert("tags", tagArray);
+    }
 
     if(curseforgeMod_){
         QJsonObject curseforgeObject;
@@ -512,6 +519,7 @@ void LocalMod::restore(const QVariant &variant)
 {
     alias_ = value(variant, "alias").toString();
     isFeatured_ = value(variant, "featured").toBool();
+    tags_ = value(variant, "tags").toStringList();
     if(contains(variant, "curseforge")){
         if(contains(value(variant, "curseforge"), "id"))
             setCurseforgeId(value(variant, "curseforge", "id").toInt());
@@ -545,6 +553,39 @@ void LocalMod::setFeatured(bool featured)
 LocalModPath *LocalMod::path() const
 {
     return path_;
+}
+
+const QStringList &LocalMod::tags() const
+{
+    return tags_;
+}
+
+void LocalMod::addTag(const QString &tag)
+{
+    tags_ << tag;
+    emit modCacheUpdated();
+    emit modFileUpdated();
+}
+
+void LocalMod::addTags(const QString &tags)
+{
+    tags_ << tags;
+    emit modCacheUpdated();
+    emit modFileUpdated();
+}
+
+void LocalMod::removeTag(const QString &tag)
+{
+    tags_.removeAll(tag);
+    emit modCacheUpdated();
+    emit modFileUpdated();
+}
+
+void LocalMod::setTags(const QStringList &newTags)
+{
+    tags_ = newTags;
+    emit modCacheUpdated();
+    emit modFileUpdated();
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

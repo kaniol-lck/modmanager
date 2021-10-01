@@ -3,7 +3,6 @@
 
 #include <QMenu>
 #include <QMessageBox>
-#include <QInputDialog>
 #include <QDebug>
 
 #include "local/localmodpath.h"
@@ -221,39 +220,4 @@ void LocalModBrowser::on_updateAllButton_clicked()
 {
     auto dialog = new LocalModUpdateDialog(this, modPath_);
     dialog->exec();
-}
-
-
-void LocalModBrowser::on_modListWidget_customContextMenuRequested(const QPoint &pos)
-{
-    auto menu = new QMenu(this);
-    auto item = ui->modListWidget->itemAt(pos);
-    if(item == nullptr){
-        // in empty area
-    } else{
-        // on one of local items
-        auto widget = qobject_cast<LocalModItemWidget*>(ui->modListWidget->itemWidget(item));
-        auto mod = widget->mod();
-        connect(menu->addAction(tr("Set Alias")), &QAction::triggered, this, [=]{
-            bool ok;
-            auto alias = QInputDialog::getText(this, tr("Set mod alias"), tr("Alias of <b>%1</b> mod:").arg(mod->commonInfo()->name()), QLineEdit::Normal, mod->alias(), &ok);
-            if(ok)
-                mod->setAlias(alias);
-        });
-        menu->addSeparator();
-        auto starAction = menu->addAction(tr("Star"));
-        starAction->setCheckable(true);
-        starAction->setChecked(mod->isFeatured());
-        connect(starAction, &QAction::toggled, this, [=](bool bl){
-            mod->setFeatured(bl);
-        });
-        auto disableAction = menu->addAction(tr("Disable"));
-        disableAction->setCheckable(true);
-        disableAction->setChecked(mod->isDisabled());
-        connect(disableAction, &QAction::toggled, this, [=](bool bl){
-            mod->setEnabled(!bl);
-        });
-    }
-    if(!menu->actions().isEmpty())
-        menu->exec(ui->modListWidget->mapToGlobal(pos));
 }
