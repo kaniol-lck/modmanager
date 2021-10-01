@@ -169,9 +169,8 @@ void LocalModItemWidget::updateInfo()
     }
     tagWidgets_.clear();
     for(const auto &tag : mod_->tags()){
-        auto label = new QLabel(tag, this);
-        //TODO: color
-        label->setStyleSheet("color: #fff; background-color: #48d; border-radius:10px; padding:2px 4px;");
+        auto label = new QLabel(tag.name(), this);
+        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
         ui->tagsLayout->addWidget(label);
         tagWidgets_ << label;
     }
@@ -331,17 +330,29 @@ void LocalModItemWidget::on_LocalModItemWidget_customContextMenuRequested(const 
             mod_->setAlias(alias);
     });
     auto addTagmenu = menu->addMenu(tr("Add tag"));
-    connect(addTagmenu->addAction(tr("New tag...")), &QAction::triggered, this, [=]{
+    auto addTypeTagmenu = addTagmenu->addMenu(tr("Type tag"));
+    for(const auto &tag : Tag::typeTags())
+        connect(addTypeTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
+            mod_->addTag(tag);
+        });
+    //TODO: other categories
+    connect(addTagmenu->addAction(tr("New translation tag...")), &QAction::triggered, this, [=]{
         bool ok;
-        auto alias = QInputDialog::getText(this, tr("New tag"), tr("New tag name:"), QLineEdit::Normal, mod_->alias(), &ok);
+        auto name = QInputDialog::getText(this, tr("New tag"), tr("New tag name:"), QLineEdit::Normal, mod_->alias(), &ok);
         if(ok)
-            mod_->addTag(alias);
+            mod_->addTag(Tag(name, TagCategory::TranslationCategory));
+    });
+    connect(addTagmenu->addAction(tr("New custom tag...")), &QAction::triggered, this, [=]{
+        bool ok;
+        auto name = QInputDialog::getText(this, tr("New tag"), tr("New tag name:"), QLineEdit::Normal, mod_->alias(), &ok);
+        if(ok)
+            mod_->addTag(Tag(name));
     });
     //TODO: tag manage
     if(!mod_->tags().isEmpty()){
         auto removeTagmenu = menu->addMenu(tr("remove tag"));
         for(const auto &tag : mod_->tags())
-            connect(removeTagmenu->addAction(tag), &QAction::triggered, this, [=]{
+            connect(removeTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
                 mod_->removeTag(tag);
             });
     }

@@ -42,6 +42,8 @@ SOURCES += \
     src/replay/replayapi.cpp \
     src/replay/replaymod.cpp \
     src/replay/replaymodinfo.cpp \
+    src/tag/tag.cpp \
+    src/tag/tagcategory.cpp \
     src/ui/aboutdialog.cpp \
     src/ui/browsermanagerdialog.cpp \
     src/ui/curseforge/curseforgefileitemwidget.cpp \
@@ -108,6 +110,8 @@ HEADERS += \
     src/replay/replayapi.h \
     src/replay/replaymod.h \
     src/replay/replaymodinfo.h \
+    src/tag/tag.h \
+    src/tag/tagcategory.h \
     src/ui/aboutdialog.h \
     src/ui/browsermanagerdialog.h \
     src/ui/curseforge/curseforgefileitemwidget.h \

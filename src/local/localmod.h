@@ -8,6 +8,7 @@
 #include "updatable.hpp"
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
+#include "tag/tag.h"
 
 class LocalModPath;
 class CurseforgeMod;
@@ -100,11 +101,11 @@ public:
 
     LocalModPath *path() const;
 
-    const QStringList &tags() const;
-    void addTag(const QString &tag);
-    void addTags(const QString &tags);
-    void removeTag(const QString &tag);
-    void setTags(const QStringList &newTags);
+    const QList<Tag> &tags() const;
+    void addTag(const Tag &tag);
+    void addTags(const QList<Tag> &tags);
+    void removeTag(const Tag &tag);
+    void setTags(const QList<Tag> &newTags);
 
 signals:
     void modFileUpdated();
@@ -132,7 +133,7 @@ signals:
 private:
     bool isFeatured_ = false;
     QString alias_;
-    QStringList tags_;
+    QList<Tag> tags_;
 
     //api for update
     CurseforgeAPI *curseforgeAPI_;
