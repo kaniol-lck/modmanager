@@ -5,7 +5,9 @@
 #include <QMessageBox>
 #include <QDebug>
 
+#include "localmodpathsettingsdialog.h"
 #include "local/localmodpath.h"
+#include "local/localmodpathmanager.h"
 #include "localmoditemwidget.h"
 #include "localmoddialog.h"
 #include "localmodupdatedialog.h"
@@ -41,9 +43,29 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->findnewButton->setMenu(findNewMenu);
 
     auto menu = new QMenu(this);
-    connect(menu->addAction(tr("Batch Rename")), &QAction::triggered, this, [=]{
+//    connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
+//        auto pathInfo = modPath_->info();
+//        auto dialog = new LocalModPathSettingsDialog(this, pathInfo);
+//        connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
+//            modPath_->setInfo(newInfo);
+//            localItem_->child(index)->setText(0, newInfo.displayName());
+//        });
+//        dialog->exec();
+//    });
+    connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
+        modPath_->loadMods();
+    });
+//    connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
+//        if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
+//        LocalModPathManager::removePath(modPath_);
+//    });
+//    menu->addSeparator();
+    connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Batch rename")), &QAction::triggered, this, [=]{
         auto dialog = new BatchRenameDialog(this, modPath_);
-        dialog->show();
+        dialog->exec();
+    });
+    connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete old")), &QAction::triggered, this, [=]{
+        modPath_->deleteAllOld();
     });
     ui->menuButton->setMenu(menu);
 
@@ -209,11 +231,6 @@ void LocalModBrowser::on_checkUpdatesButton_clicked()
 void LocalModBrowser::on_openFolderButton_clicked()
 {
     openFileInFolder(modPath_->info().path());
-}
-
-void LocalModBrowser::on_deleteOldButton_clicked()
-{
-    modPath_->deleteAllOld();
 }
 
 void LocalModBrowser::on_checkButton_clicked()

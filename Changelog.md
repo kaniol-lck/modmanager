@@ -13,6 +13,12 @@ Soon....
 Added **tags** system for local mod management.
 为本地mod管理添加了**标签** 系统。 
 
+Added **Batch Rename** feature, you can customize your mod file name by tags.
+添加了批量重命名功能，现在可以使用标签来个性化你的mod文件名称了。
+
+Some GUI tweaks.
+一些GUI上的小修改。
+
 Fixed Modrinth mod file not presented as "Downloaded" in local mod path tab.
 修复了本地mod浏览的Modrinth对话框中不显示“已下载”的问题
 

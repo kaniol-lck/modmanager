@@ -52,8 +52,6 @@ private slots:
 
     void on_openFolderButton_clicked();
 
-    void on_deleteOldButton_clicked();
-
     void on_checkButton_clicked();
 
     void on_updateAllButton_clicked();

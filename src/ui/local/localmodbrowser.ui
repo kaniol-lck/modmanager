@@ -71,17 +71,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="deleteOldButton">
-       <property name="text">
-        <string>Delete Old</string>
-       </property>
-       <property name="icon">
-        <iconset theme="delete">
-         <normaloff>.</normaloff>.</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="findnewButton">
        <property name="text">
         <string>Find new mods</string>
