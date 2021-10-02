@@ -21,7 +21,6 @@ void LocalModTags::addTag(const Tag &tag)
 
 void LocalModTags::removeTag(const Tag &tag)
 {
-
     auto category = tag.tagCategory();
     if(category == TagCategory::TypeCategory)
         typeTags_.removeAll(tag);

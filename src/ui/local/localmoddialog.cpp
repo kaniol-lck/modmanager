@@ -3,6 +3,7 @@
 
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QMenu>
 #include <QDebug>
 
 #include "local/localmod.h"
@@ -10,6 +11,7 @@
 #include "modrinth/modrinthmod.h"
 #include "ui/curseforge/curseforgemoddialog.h"
 #include "ui/modrinth/modrinthmoddialog.h"
+#include "ui/local/localmodmenu.h"
 #include "util/funcutil.h"
 #include "util/websiteicon.h"
 #include "util/flowlayout.h"
@@ -26,7 +28,7 @@ LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     ui->aliasText->setVisible(false);
 
     tagsLayout_ = new FlowLayout();
-    ui->tagsVertical->addLayout(tagsLayout_);
+    ui->tagsHorizontal->addLayout(tagsLayout_);
 
     //init info
     onCurrentModChanged();
@@ -254,5 +256,15 @@ void LocalModDialog::on_deleteButton_clicked()
 {
     if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this version?"))) return;
     mod_->deleteOld(file_);
+}
+
+void LocalModDialog::on_tagsHorizontal_2_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    auto localModMenu = new LocalModMenu(this, mod_);
+    menu->addMenu(localModMenu->addTagMenu());
+    if(!mod_->tags().isEmpty())
+        menu->addMenu(localModMenu->removeTagmenu());
+    menu->exec(ui->tagsHorizontal_2->mapToGlobal(pos));
 }
 

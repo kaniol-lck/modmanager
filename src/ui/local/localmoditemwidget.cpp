@@ -9,6 +9,7 @@
 #include "modrinth/modrinthmod.h"
 #include "ui/curseforge/curseforgemoddialog.h"
 #include "ui/modrinth/modrinthmoddialog.h"
+#include "ui/local/localmodmenu.h"
 #include "util/tutil.hpp"
 
 LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) : QWidget(parent),
@@ -324,74 +325,16 @@ LocalMod *LocalModItemWidget::mod() const
 void LocalModItemWidget::on_LocalModItemWidget_customContextMenuRequested(const QPoint &pos)
 {
     auto menu = new QMenu(this);
+    auto localModMenu = new LocalModMenu(this, mod_);
     connect(menu->addAction(tr("Set Alias")), &QAction::triggered, this, [=]{
         bool ok;
         auto alias = QInputDialog::getText(this, tr("Set mod alias"), tr("Alias of <b>%1</b> mod:").arg(mod_->commonInfo()->name()), QLineEdit::Normal, mod_->alias(), &ok);
         if(ok)
             mod_->setAlias(alias);
     });
-    auto addTagmenu = menu->addMenu(tr("Add tag"));
-    //Type category
-    auto addTypeTagmenu = addTagmenu->addMenu(tr("Type tag"));
-    for(const auto &tag : Tag::typeTags())
-        connect(addTypeTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
-            mod_->addTag(tag);
-        });
-    //Functionality category
-    auto addFunctionalityTagmenu = addTagmenu->addMenu(tr("Functionality tag"));
-    for(auto &&tag : Tag::functionalityTags())
-        connect(addFunctionalityTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
-            mod_->addTag(tag);
-        });
-    if(!addFunctionalityTagmenu->isEmpty())
-        addFunctionalityTagmenu->addSeparator();
-    connect(addFunctionalityTagmenu->addAction(tr("New functionality tag...")), &QAction::triggered, this, [=]{
-        bool ok;
-        auto name = QInputDialog::getText(this, tr("New tag"), tr("Functionality:"), QLineEdit::Normal, "", &ok);
-        if(ok && !name.isEmpty())
-            mod_->addTag(Tag(name, TagCategory::FunctionalityCategory));
-    });
-    //TODO: other categories
-    //Translation category
-    connect(addTagmenu->addAction(tr("Translation tag")), &QAction::triggered, this, [=]{
-        bool ok;
-        QString str;
-        if(auto translationTag = mod_->tagManager().translationTag())
-            str = translationTag->name();
-        auto name = QInputDialog::getText(this, tr("Translation tag"), tr("Translation:"), QLineEdit::Normal, str, &ok);
-        if(ok && !name.isEmpty())
-            mod_->addTag(Tag(name, TagCategory::TranslationCategory));
-    });
-    //Notation category
-    connect(addTagmenu->addAction(tr("Notation tag")), &QAction::triggered, this, [=]{
-        bool ok;
-        QString str;
-        if(auto notationTag = mod_->tagManager().notationTag())
-            str = notationTag->name();
-        auto name = QInputDialog::getText(this, tr("Notation tag"), tr("Notation:"), QLineEdit::Normal, str, &ok);
-        if(ok && !name.isEmpty())
-            mod_->addTag(Tag(name, TagCategory::NotationCategory));
-    });
-    //Custom category
-    for(auto &&tag : Tag::customTags())
-        connect(addTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
-            mod_->addTag(tag);
-        });
-    addTagmenu->addSeparator();
-    connect(addTagmenu->addAction(tr("New custom tag...")), &QAction::triggered, this, [=]{
-        bool ok;
-        auto name = QInputDialog::getText(this, tr("New tag"), tr("New tag name:"), QLineEdit::Normal, "", &ok);
-        if(ok)
-            mod_->addTag(Tag(name));
-    });
-    //TODO: tag manage
-    if(!mod_->tags().isEmpty()){
-        auto removeTagmenu = menu->addMenu(tr("remove tag"));
-        for(const auto &tag : mod_->tags())
-            connect(removeTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
-                mod_->removeTag(tag);
-            });
-    }
+    menu->addMenu(localModMenu->addTagMenu());
+    if(!mod_->tags().isEmpty())
+        menu->addMenu(localModMenu->removeTagmenu());
     menu->addSeparator();
     auto starAction = menu->addAction(tr("Star"));
     starAction->setCheckable(true);

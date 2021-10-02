@@ -59,6 +59,7 @@ SOURCES += \
     src/ui/local/localmoddialog.cpp \
     src/ui/local/localmoditemwidget.cpp \
     src/main.cpp \
+    src/ui/local/localmodmenu.cpp \
     src/ui/local/localmodpathsettingsdialog.cpp \
     src/ui/local/localmodupdatedialog.cpp \
     src/ui/modmanager.cpp \
@@ -128,6 +129,7 @@ HEADERS += \
     src/ui/local/localmodcheckdialog.h \
     src/ui/local/localmoddialog.h \
     src/ui/local/localmoditemwidget.h \
+    src/ui/local/localmodmenu.h \
     src/ui/local/localmodpathsettingsdialog.h \
     src/ui/local/localmodupdatedialog.h \
     src/ui/modmanager.h \
