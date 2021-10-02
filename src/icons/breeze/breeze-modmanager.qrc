@@ -19,5 +19,7 @@
         <file alias="16x16/action-unavailable-symbolic.svg">16x16/action-unavailable-symbolic.svg</file>
         <file>16x16/starred-symbolic.svg</file>
         <file>16x16/non-starred-symbolic.svg</file>
+        <file>16x16/application-menu.svg</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>

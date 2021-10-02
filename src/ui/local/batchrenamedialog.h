@@ -20,18 +20,13 @@ public:
     ~BatchRenameDialog();
 
 private slots:
+    void updateModList();
     void on_renamePattern_textChanged(const QString &arg1);
-
     void on_BatchRenameDialog_accepted();
-
     void on_toolButton_toggled(bool checked);
-
     void on_toolButton_2_clicked();
-
     void on_toolButton_3_clicked();
-
     void on_toolButton_4_clicked();
-
     void on_toolButton_5_clicked();
 
 private:

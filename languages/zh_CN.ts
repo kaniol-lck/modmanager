@@ -61,6 +61,116 @@
     </message>
 </context>
 <context>
+    <name>BatchRenameDialog</name>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="14"/>
+        <source>Batch Rename</source>
+        <translation>批量重命名</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="41"/>
+        <source>Empty or duplicated file name!</source>
+        <translation>存在空或重复的文件名</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="85"/>
+        <source>oringinal file name</source>
+        <translation>原始文件名称</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="92"/>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="135"/>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="178"/>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="225"/>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="268"/>
+        <source>Add to pattern</source>
+        <translation>添加至命名格式</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="128"/>
+        <source>mod id</source>
+        <translation>mod id</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="171"/>
+        <source>mod name</source>
+        <translation>mod名称</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="218"/>
+        <source>mod version</source>
+        <translation>mod版本</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="261"/>
+        <source>categoried and formatted tag list</source>
+        <translation>分类及格式化的标签列表</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="294"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.ui" line="297"/>
+        <source>Name pattern:</source>
+        <translation>命名格式</translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation type="vanished">？</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="22"/>
+        <source>None</source>
+        <translation>无</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="31"/>
+        <source>All tags</source>
+        <translation>所有标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="32"/>
+        <source>Type tag</source>
+        <translation>类型标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="33"/>
+        <source>Functionality tag</source>
+        <translation>功能标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="34"/>
+        <source>Translation tag</source>
+        <translation>译名标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="35"/>
+        <source>Custom tag</source>
+        <translation>自定义标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="55"/>
+        <source>Mod Name</source>
+        <translation>mod名称</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="56"/>
+        <source>Old File Name</source>
+        <translation>原先的文件名称</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="57"/>
+        <source>New File Name</source>
+        <translation>新文件名称</translation>
+    </message>
+</context>
+<context>
     <name>BrowserManagerDialog</name>
     <message>
         <source>Browser Manager</source>
@@ -688,28 +798,31 @@
         <translation>打开文件夹</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="76"/>
         <source>Delete Old</source>
-        <translation>删除旧版</translation>
+        <translation type="vanished">删除旧版</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="87"/>
         <source>Check</source>
-        <translation>检查</translation>
+        <translation type="vanished">检查</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="98"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="76"/>
         <source>Find new mods</source>
         <translation>寻找新的mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="109"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="87"/>
         <source>Search on mod websites</source>
         <translation>在mod网站上搜索</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="200"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="128"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="98"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="191"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="157"/>
         <source>Update All</source>
         <translation>更新全部</translation>
     </message>
@@ -755,7 +868,7 @@
         <translation type="vanished">在Mod网站上搜索...（%1/%2）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="85"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="114"/>
         <source>Searching on mod websites...</source>
         <translation>在mod网站上搜索中...</translation>
     </message>
@@ -764,50 +877,75 @@
         <translation type="vanished">在mod网站上搜索中...（%1/%2）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="77"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="99"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="132"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="55"/>
+        <source>Refresh</source>
+        <translation>刷新</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="63"/>
+        <source>Batch rename</source>
+        <translation>批量重命名</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="67"/>
+        <source>Delete old</source>
+        <translation>删除旧版</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="68"/>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="68"/>
+        <source>Delete all old file?</source>
+        <translation>删除所有旧版文件？</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="106"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="128"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="161"/>
         <source>%1 mods in total.</source>
         <translation>共计%1个mod。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="91"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="120"/>
         <source>Searching on mod websites... (Searched %1/%2 mods)</source>
         <translation>在mod网站上搜索中...（已搜索%1/%2个mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="100"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="123"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="129"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="152"/>
         <source>Check updates</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="109"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="138"/>
         <source>Checking updates...</source>
         <translation>检查更新中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="115"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="144"/>
         <source>%1 mods need update... (Checked %2/%3 mods)</source>
         <translation>%1个mod需要更新（已检查%2/%3个mod...）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="129"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="158"/>
         <source>%1 mods need update.</source>
         <translation>%1个mod需要更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="153"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="182"/>
         <source>Updating... (Updated %1/%2 mods)</source>
         <translation>更新中...（已更新%1/%2个mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="159"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="188"/>
         <source>%1 mods in %2 has been updated. Enjoy it!</source>
         <translation>%2中的%1个mod已更新。去游戏里体验一下更新吧！</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="161"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="190"/>
         <source>Sadly, %1 mods failed to update.</source>
         <translation>很遗憾，%1个mod更新失败了。</translation>
     </message>
@@ -836,17 +974,17 @@
         <translation type="vanished">已更新%1个mod。去游戏里体验一下更新吧！</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="163"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="192"/>
         <source>You can revert update if find any incompatibility.</source>
         <translation>如果发现有mod不兼容可以及时回退更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="164"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="193"/>
         <source>Update Finished</source>
         <translation>更新完成</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="142"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="171"/>
         <source>Updating...</source>
         <translation>更新中...</translation>
     </message>
@@ -859,7 +997,7 @@
         <translation type="vanished">更新%1个mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="132"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="161"/>
         <source>Good! All mods are up-to-date.</source>
         <translation>太棒了！所有的mod都是最新版。</translation>
     </message>

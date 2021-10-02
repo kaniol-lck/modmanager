@@ -38,13 +38,25 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
     //TODO: customize
     ui->renamePattern->setText("<filename>");
 
+    updateModList();
+    connect(modPath_, &LocalModPath::modListUpdated, this, &BatchRenameDialog::updateModList);
+}
+
+BatchRenameDialog::~BatchRenameDialog()
+{
+    delete ui;
+}
+
+void BatchRenameDialog::updateModList()
+{
+    modList_.clear();
+    fileNameList_.clear();
+    model_.clear();
     model_.setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Mod Name")));
     model_.setHorizontalHeaderItem(OldFileNameColumn, new QStandardItem(tr("Old File Name")));
     model_.setHorizontalHeaderItem(NewFileNameColumn, new QStandardItem(tr("New File Name")));
-
     ui->tableView->horizontalHeader()->setSectionResizeMode(NameColumn, QHeaderView::Fixed);
     ui->tableView->setColumnWidth(NameColumn, 250);
-
     for(const auto &mod : modPath_->modMap()){
         auto enabled = !mod->isDisabled();
 
@@ -76,11 +88,7 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
         fileNameList_ << newFileName;
         model_.appendRow({nameItem, beforeItem, afterItem});
     }
-}
-
-BatchRenameDialog::~BatchRenameDialog()
-{
-    delete ui;
+    on_renamePattern_textChanged(ui->renamePattern->text());
 }
 
 void BatchRenameDialog::on_renamePattern_textChanged(const QString &arg1)

@@ -19,6 +19,8 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
     model_.setHorizontalHeaderItem(AfterColumn, new QStandardItem(tr("New Version")));
     model_.setHorizontalHeaderItem(SourceColumn, new QStandardItem(tr("Update Source")));
 
+    ui->updateTableView->horizontalHeader()->setSectionResizeMode(NameColumn, QHeaderView::Fixed);
+    ui->updateTableView->setColumnWidth(NameColumn, 250);
     ui->updateTableView->horizontalHeader()->setSectionResizeMode(SourceColumn, QHeaderView::Fixed);
     ui->updateTableView->setColumnWidth(SourceColumn, 140);
 
@@ -33,21 +35,21 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
         nameItem->setText(mod->commonInfo()->name());
         nameItem->setCheckable(enabled);
         nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
-        nameItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         nameItem->setEditable(false);
         nameItem->setEnabled(enabled);
 
         auto beforeItem = new QStandardItem();
         beforeItem->setText(names.first);
-        if(enabled) beforeItem->setForeground(Qt::red);
-        beforeItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        if(enabled) beforeItem->setForeground(Qt::darkRed);
+        beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         beforeItem->setEditable(false);
         beforeItem->setEnabled(enabled);
 
         auto afterItem = new QStandardItem();
         afterItem->setText(names.second);
-        if(enabled) afterItem->setForeground(Qt::green);
-        afterItem->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+        if(enabled) afterItem->setForeground(Qt::darkGreen);
+        afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         afterItem->setEditable(false);
         afterItem->setEnabled(enabled);
 

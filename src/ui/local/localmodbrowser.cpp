@@ -65,6 +65,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
         dialog->exec();
     });
     connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete old")), &QAction::triggered, this, [=]{
+        if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete all old file?"))) return;
         modPath_->deleteAllOld();
     });
     ui->menuButton->setMenu(menu);

@@ -67,7 +67,7 @@
            </font>
           </property>
           <property name="text">
-           <string>&lt;filename&gt;</string>
+           <string notr="true">&lt;filename&gt;</string>
           </property>
          </widget>
         </item>
@@ -92,10 +92,11 @@
              <string>Add to pattern</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string notr="true">...</string>
             </property>
             <property name="icon">
-             <iconset theme="list-add"/>
+             <iconset theme="list-add">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -109,7 +110,7 @@
            </font>
           </property>
           <property name="text">
-           <string>&lt;id&gt;</string>
+           <string notr="true">&lt;id&gt;</string>
           </property>
          </widget>
         </item>
@@ -134,10 +135,11 @@
              <string>Add to pattern</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string notr="true">...</string>
             </property>
             <property name="icon">
-             <iconset theme="list-add"/>
+             <iconset theme="list-add">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -151,7 +153,7 @@
            </font>
           </property>
           <property name="text">
-           <string>&lt;name&gt;</string>
+           <string notr="true">&lt;name&gt;</string>
           </property>
          </widget>
         </item>
@@ -176,10 +178,11 @@
              <string>Add to pattern</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string notr="true">...</string>
             </property>
             <property name="icon">
-             <iconset theme="list-add"/>
+             <iconset theme="list-add">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -197,7 +200,7 @@
            </font>
           </property>
           <property name="text">
-           <string>&lt;version&gt;</string>
+           <string notr="true">&lt;version&gt;</string>
           </property>
          </widget>
         </item>
@@ -222,10 +225,11 @@
              <string>Add to pattern</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string notr="true">...</string>
             </property>
             <property name="icon">
-             <iconset theme="list-add"/>
+             <iconset theme="list-add">
+              <normaloff>.</normaloff>.</iconset>
             </property>
            </widget>
           </item>
@@ -239,7 +243,7 @@
            </font>
           </property>
           <property name="text">
-           <string>&lt;tags|...|...&gt;</string>
+           <string notr="true">&lt;tags|...|...&gt;</string>
           </property>
          </widget>
         </item>
@@ -264,10 +268,11 @@
              <string>Add to pattern</string>
             </property>
             <property name="text">
-             <string>...</string>
+             <string notr="true">...</string>
             </property>
             <property name="icon">
-             <iconset theme="list-add"/>
+             <iconset theme="list-add">
+              <normaloff>.</normaloff>.</iconset>
             </property>
             <property name="popupMode">
              <enum>QToolButton::InstantPopup</enum>
@@ -299,7 +304,10 @@
      <item>
       <widget class="QToolButton" name="toolButton">
        <property name="text">
-        <string>?</string>
+        <string notr="true">...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="help-about"/>
        </property>
        <property name="checkable">
         <bool>true</bool>
