@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LocalModUpdateDialog</class>
- <widget class="QDialog" name="LocalModUpdateDialog">
+ <class>BatchRenameDialog</class>
+ <widget class="QDialog" name="BatchRenameDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1035</width>
-    <height>677</height>
+    <width>960</width>
+    <height>689</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Confirm Updates</string>
+   <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
+   <item row="3" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -22,25 +22,10 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
-     <property name="centerButtons">
-      <bool>false</bool>
-     </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QTableView" name="updateTableView">
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QAbstractScrollArea::AdjustToContents</enum>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::AllEditTriggers</set>
-     </property>
+   <item row="2" column="0" colspan="2">
+    <widget class="QTableView" name="tableView">
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
      </property>
@@ -50,19 +35,23 @@
      <property name="showGrid">
       <bool>false</bool>
      </property>
-     <attribute name="horizontalHeaderVisible">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="horizontalHeaderStretchLastSection">
-      <bool>false</bool>
-     </attribute>
      <attribute name="verticalHeaderVisible">
       <bool>false</bool>
      </attribute>
-     <attribute name="verticalHeaderStretchLastSection">
-      <bool>false</bool>
-     </attribute>
     </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Name pattern:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="renamePattern"/>
    </item>
   </layout>
  </widget>
@@ -71,12 +60,12 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>LocalModUpdateDialog</receiver>
+   <receiver>BatchRenameDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>260</x>
-     <y>670</y>
+     <x>350</x>
+     <y>653</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -87,12 +76,12 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>LocalModUpdateDialog</receiver>
+   <receiver>BatchRenameDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>328</x>
-     <y>670</y>
+     <x>418</x>
+     <y>659</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

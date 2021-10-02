@@ -54,6 +54,7 @@ SOURCES += \
     src/gameversion.cpp \
     src/ui/downloadbrowser.cpp \
     src/ui/downloaderitemwidget.cpp \
+    src/ui/local/batchrenamedialog.cpp \
     src/ui/local/localmodbrowser.cpp \
     src/ui/local/localmodcheckdialog.cpp \
     src/ui/local/localmoddialog.cpp \
@@ -125,6 +126,7 @@ HEADERS += \
     src/gameversion.h \
     src/ui/downloadbrowser.h \
     src/ui/downloaderitemwidget.h \
+    src/ui/local/batchrenamedialog.h \
     src/ui/local/localmodbrowser.h \
     src/ui/local/localmodcheckdialog.h \
     src/ui/local/localmoddialog.h \
@@ -161,6 +163,7 @@ FORMS += \
     src/ui/curseforge/curseforgemoditemwidget.ui \
     src/ui/downloadbrowser.ui \
     src/ui/downloaderitemwidget.ui \
+    src/ui/local/batchrenamedialog.ui \
     src/ui/local/localmodbrowser.ui \
     src/ui/local/localmodcheckdialog.ui \
     src/ui/local/localmoddialog.ui \

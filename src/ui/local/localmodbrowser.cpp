@@ -10,6 +10,7 @@
 #include "localmoddialog.h"
 #include "localmodupdatedialog.h"
 #include "localmodcheckdialog.h"
+#include "batchrenamedialog.h"
 #include "config.h"
 #include "util/funcutil.h"
 #include "util/localmodsortitem.h"
@@ -24,22 +25,27 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->updateAllButton->setVisible(false);
     ui->updateAllButton->setEnabled(false);
 
-    ui->checkButton->setVisible(false);
-
-    auto menu = new QMenu(this);
-    connect(menu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
+    auto findNewMenu = new QMenu(this);
+    connect(findNewMenu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
         emit findNewOnCurseforge(modPath_->info());
     });
-    connect(menu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth"), &QAction::triggered, this, [=]{
+    connect(findNewMenu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth"), &QAction::triggered, this, [=]{
         emit findNewOnModrinth(modPath_->info());
     });
-    connect(menu->addAction(QIcon(":/image/optifine.png"), "OptiFine"), &QAction::triggered, this, [=]{
+    connect(findNewMenu->addAction(QIcon(":/image/optifine.png"), "OptiFine"), &QAction::triggered, this, [=]{
         emit findNewOnOptifine(modPath_->info());
     });
-    connect(menu->addAction(QIcon(":/image/replay.png"), "ReplayMod"), &QAction::triggered, this, [=]{
+    connect(findNewMenu->addAction(QIcon(":/image/replay.png"), "ReplayMod"), &QAction::triggered, this, [=]{
         emit findNewOnReplay(modPath_->info());
     });
-    ui->findnewButton->setMenu(menu);
+    ui->findnewButton->setMenu(findNewMenu);
+
+    auto menu = new QMenu(this);
+    connect(menu->addAction(tr("Batch Rename")), &QAction::triggered, this, [=]{
+        auto dialog = new BatchRenameDialog(this, modPath_);
+        dialog->show();
+    });
+    ui->menuButton->setMenu(menu);
 
     updateModList();
 
