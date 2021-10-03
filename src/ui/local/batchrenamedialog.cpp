@@ -5,6 +5,7 @@
 
 #include "local/localmod.h"
 #include "local/localmodpath.h"
+#include "ui/renamehighlighter.h"
 
 BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
     QDialog(parent),
@@ -15,16 +16,18 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
     ui->widget->setVisible(false);
     ui->tableView->setModel(&model_);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->renamePattern->installEventFilter(this);
+    highlighter_ = new RenameHighlighter(ui->renamePattern->document());
 
     auto menu = new QMenu(this);
     auto getSubmenu = [=](const QString &title, const QString &category){
         auto subMenu = new QMenu(title, this);
         connect(subMenu->addAction(tr("None")), &QAction::triggered, this, [=]{
-            ui->renamePattern->insert("<tags|" + category + "|%1>");
+            ui->renamePattern->insertPlainText("<tags|" + category + "|%1>");
         });
         for(const auto &str : { "[%1]", "(%1)", "【%1】" })
         connect(subMenu->addAction(str), &QAction::triggered, this, [=]{
-            ui->renamePattern->insert("<tags|" + category + "|" + str + ">");
+            ui->renamePattern->insertPlainText("<tags|" + category + "|" + str + ">");
         });
         return subMenu;
     };
@@ -36,7 +39,8 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
     ui->addTagsButton->setMenu(menu);
 
     //TODO: customize
-    ui->renamePattern->setText("<filename>");
+    ui->renamePattern->setPlainText("<filename>");
+    //TODO: syntax highlight
 
     updateModList();
     connect(modPath_, &LocalModPath::modListUpdated, this, &BatchRenameDialog::updateModList);
@@ -45,6 +49,17 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
 BatchRenameDialog::~BatchRenameDialog()
 {
     delete ui;
+}
+
+bool BatchRenameDialog::eventFilter(QObject *obj, QEvent *e)
+{
+    if(obj == ui->renamePattern && e->type() == QEvent::KeyPress){
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
+        int keyValue = keyEvent->key();
+        if(keyValue == Qt::Key_Return || keyValue == Qt::Key_Tab)
+            return true;
+    }
+    return QDialog::eventFilter(obj, e);
 }
 
 void BatchRenameDialog::updateModList()
@@ -88,10 +103,47 @@ void BatchRenameDialog::updateModList()
         fileNameList_ << newFileName;
         model_.appendRow({nameItem, beforeItem, afterItem});
     }
-    on_renamePattern_textChanged(ui->renamePattern->text());
+    on_renamePattern_textChanged();
 }
 
-void BatchRenameDialog::on_renamePattern_textChanged(const QString &arg1)
+void BatchRenameDialog::on_BatchRenameDialog_accepted()
+{
+    for(int row = 0; row < model_.rowCount(); row++)
+        if(model_.item(row)->checkState() == Qt::Checked)
+            modList_[row]->modFile()->rename(fileNameList_.at(row));
+}
+
+
+void BatchRenameDialog::on_toolButton_toggled(bool checked)
+{
+    ui->widget->setVisible(checked);
+}
+
+
+void BatchRenameDialog::on_toolButton_2_clicked()
+{
+    ui->renamePattern->insertPlainText("<filename>");
+}
+
+
+void BatchRenameDialog::on_toolButton_3_clicked()
+{
+    ui->renamePattern->insertPlainText("<id>");
+}
+
+
+void BatchRenameDialog::on_toolButton_4_clicked()
+{
+    ui->renamePattern->insertPlainText("<name>");
+}
+
+
+void BatchRenameDialog::on_toolButton_5_clicked()
+{
+    ui->renamePattern->insertPlainText("<version>");
+}
+
+void BatchRenameDialog::on_renamePattern_textChanged()
 {
     auto tagConcat = [=](QList<Tag> tags, QString replacer = ""){
         if(!replacer.contains("%1")) replacer = "[%1]";
@@ -104,7 +156,7 @@ void BatchRenameDialog::on_renamePattern_textChanged(const QString &arg1)
     for(int row = 0; row < model_.rowCount(); row++){
         auto item = model_.item(row, NewFileNameColumn);
         auto mod = modList_.at(row);
-        auto newFileName = arg1;
+        auto newFileName = ui->renamePattern->toPlainText();
         newFileName.replace("<filename>", mod->modFile()->fileInfo().completeBaseName());
         newFileName.replace("<name>", mod->commonInfo()->name());
         newFileName.replace("<id>", mod->commonInfo()->id());
@@ -136,40 +188,3 @@ void BatchRenameDialog::on_renamePattern_textChanged(const QString &arg1)
     ui->buttonBox->setDisabled(!ok);
 }
 
-
-void BatchRenameDialog::on_BatchRenameDialog_accepted()
-{
-    for(int row = 0; row < model_.rowCount(); row++)
-        if(model_.item(row)->checkState() == Qt::Checked)
-            modList_[row]->modFile()->rename(fileNameList_.at(row));
-}
-
-
-void BatchRenameDialog::on_toolButton_toggled(bool checked)
-{
-    ui->widget->setVisible(checked);
-}
-
-
-void BatchRenameDialog::on_toolButton_2_clicked()
-{
-    ui->renamePattern->insert("<filename>");
-}
-
-
-void BatchRenameDialog::on_toolButton_3_clicked()
-{
-    ui->renamePattern->insert("<id>");
-}
-
-
-void BatchRenameDialog::on_toolButton_4_clicked()
-{
-    ui->renamePattern->insert("<name>");
-}
-
-
-void BatchRenameDialog::on_toolButton_5_clicked()
-{
-    ui->renamePattern->insert("<version>");
-}

@@ -71,6 +71,7 @@ SOURCES += \
     src/ui/optifine/optifinemodbrowser.cpp \
     src/ui/optifine/optifinemoditemwidget.cpp \
     src/ui/preferences.cpp \
+    src/ui/renamehighlighter.cpp \
     src/ui/replay/replaymodbrowser.cpp \
     src/ui/replay/replaymoditemwidget.cpp \
     src/util/flowlayout.cpp \
@@ -142,6 +143,7 @@ HEADERS += \
     src/ui/optifine/optifinemodbrowser.h \
     src/ui/optifine/optifinemoditemwidget.h \
     src/ui/preferences.h \
+    src/ui/renamehighlighter.h \
     src/ui/replay/replaymodbrowser.h \
     src/ui/replay/replaymoditemwidget.h \
     src/util/flowlayout.h \

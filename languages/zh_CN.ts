@@ -56,8 +56,8 @@
         <location filename="../src/ui/aboutdialog.ui" line="100"/>
         <source>    Mod Manager is a multi-functional application for managing minecraft mods. You can easily download mods from Curseforge or Modrinth to local or update local mods through this application.
     Hope you can enjoy the convenience brought by this application. If possible, please star it on GitHub and share to friends.</source>
-        <translation>  Mod管理器是一个多功能的用于管理mod的应用。通过该应用，你可以轻松地从Curseforge或Modrinth上下载mod或者更新本地的mod。
-  希望你可以享受到该应用带来的便捷。如果可以的话，请在GitHub上点一个star并分享给你的朋友们。</translation>
+        <translation>    Mod管理器是一个多功能的用于管理mod的应用。通过该应用，你可以轻松地从Curseforge或Modrinth上下载mod或者更新本地的mod。
+    希望你可以享受到该应用带来的便捷。如果可以的话，请在GitHub上点一个star并分享给你的朋友们。</translation>
     </message>
 </context>
 <context>
@@ -70,7 +70,7 @@
     <message>
         <location filename="../src/ui/local/batchrenamedialog.ui" line="41"/>
         <source>Empty or duplicated file name!</source>
-        <translation>存在空或重复的文件名</translation>
+        <translation>存在空或重复的文件名！</translation>
     </message>
     <message>
         <location filename="../src/ui/local/batchrenamedialog.ui" line="85"/>
@@ -118,54 +118,54 @@
     <message>
         <location filename="../src/ui/local/batchrenamedialog.ui" line="297"/>
         <source>Name pattern:</source>
-        <translation>命名格式</translation>
+        <translation>命名格式：</translation>
     </message>
     <message>
         <source>?</source>
         <translation type="vanished">？</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/batchrenamedialog.cpp" line="22"/>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="25"/>
         <source>None</source>
         <translation>无</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/batchrenamedialog.cpp" line="31"/>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="34"/>
         <source>All tags</source>
         <translation>所有标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/batchrenamedialog.cpp" line="32"/>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="35"/>
         <source>Type tag</source>
         <translation>类型标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/batchrenamedialog.cpp" line="33"/>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="36"/>
         <source>Functionality tag</source>
         <translation>功能标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/batchrenamedialog.cpp" line="34"/>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="37"/>
         <source>Translation tag</source>
         <translation>译名标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/batchrenamedialog.cpp" line="35"/>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="38"/>
         <source>Custom tag</source>
         <translation>自定义标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/batchrenamedialog.cpp" line="55"/>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="70"/>
         <source>Mod Name</source>
         <translation>mod名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/batchrenamedialog.cpp" line="56"/>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="71"/>
         <source>Old File Name</source>
         <translation>原先的文件名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/batchrenamedialog.cpp" line="57"/>
+        <location filename="../src/ui/local/batchrenamedialog.cpp" line="72"/>
         <source>New File Name</source>
         <translation>新文件名称</translation>
     </message>

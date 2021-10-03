@@ -299,7 +299,32 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="renamePattern"/>
+      <widget class="QPlainTextEdit" name="renamePattern">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>44</height>
+        </size>
+       </property>
+       <property name="inputMethodHints">
+        <set>Qt::ImhNone</set>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="lineWrapMode">
+        <enum>QPlainTextEdit::NoWrap</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="toolButton">
@@ -307,7 +332,8 @@
         <string notr="true">...</string>
        </property>
        <property name="icon">
-        <iconset theme="help-about"/>
+        <iconset theme="help-about">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
