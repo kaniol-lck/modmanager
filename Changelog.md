@@ -8,13 +8,16 @@ Soon....
 
 ### v1.0.0 beta.2
 
-*WIP*
+*2021.10.03*
 
 Added **tags** system for local mod management.
 为本地mod管理添加了**标签** 系统。 
 
 Added **Batch Rename** feature, you can customize your mod file name by tags.
-添加了批量重命名功能，现在可以使用标签来个性化你的mod文件名称了。
+添加了**批量重命名** 功能，现在可以使用标签来个性化你的mod文件名称了。
+
+Added Traditional Chinese (zh_TW) translation.
+添加了繁体中文（zh_TW）的翻译。
 
 Some GUI tweaks.
 一些GUI上的小修改。

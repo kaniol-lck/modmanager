@@ -59,7 +59,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&amp;Path:</string>
+        <string>Path:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -103,7 +103,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&amp;Version:</string>
+        <string>Version:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -125,7 +125,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&amp;Loader:</string>
+        <string>Loader:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

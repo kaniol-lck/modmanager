@@ -184,7 +184,8 @@ FORMS += \
     src/ui/replay/replaymoditemwidget.ui
 
 TRANSLATIONS += \
-    languages/zh_CN.ts
+    languages/zh_CN.ts \
+    languages/zh_TW.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 

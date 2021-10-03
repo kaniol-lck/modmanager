@@ -125,18 +125,15 @@ void BatchRenameDialog::on_toolButton_2_clicked()
     ui->renamePattern->insertPlainText("<filename>");
 }
 
-
 void BatchRenameDialog::on_toolButton_3_clicked()
 {
     ui->renamePattern->insertPlainText("<id>");
 }
 
-
 void BatchRenameDialog::on_toolButton_4_clicked()
 {
     ui->renamePattern->insertPlainText("<name>");
 }
-
 
 void BatchRenameDialog::on_toolButton_5_clicked()
 {
@@ -187,4 +184,3 @@ void BatchRenameDialog::on_renamePattern_textChanged()
     ui->statusText->setVisible(!ok);
     ui->buttonBox->setDisabled(!ok);
 }
-

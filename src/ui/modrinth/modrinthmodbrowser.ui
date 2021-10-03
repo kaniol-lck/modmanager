@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>876</width>
+    <width>895</width>
     <height>626</height>
    </rect>
   </property>
@@ -193,7 +193,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Game Version: </string>
+        <string>Game Version:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

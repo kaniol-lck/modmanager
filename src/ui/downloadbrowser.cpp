@@ -35,6 +35,6 @@ void DownloadBrowser::addNewDownloaderItem(Downloader *downloader)
 
 void DownloadBrowser::downloadSpeed(qint64 bytesPerSec)
 {
-    auto text = tr("Download Speed: ") + numberConvert(bytesPerSec, "B/s");
+    auto text = tr("Download Speed:") + numberConvert(bytesPerSec, "B/s");
     ui->downloadSpeedText->setText(text);
 }

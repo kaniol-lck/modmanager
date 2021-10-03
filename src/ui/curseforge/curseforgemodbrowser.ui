@@ -25,7 +25,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Game Version: </string>
+        <string>Game Version:</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
