@@ -51,6 +51,9 @@ public:
 signals:
     void infoUpdated();
     void modListUpdated();
+    void loadStarted();
+    void loadProgress(int loadedCount, int totalCount);
+    void loadFinished();
 
     void checkWebsitesStarted();
     void websiteCheckedCountUpdated(int checkedCount);

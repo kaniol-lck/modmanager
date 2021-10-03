@@ -78,8 +78,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
-          asset_name: ${{github.workspace}}/deploy/${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
+          file: ${{github.workspace}}/deploy/${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
+          asset_name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
           tag: ${{ github.ref }}
           overwrite: true
 

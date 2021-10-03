@@ -29,6 +29,10 @@ public slots:
     void updateModList();
 
 private slots:
+    void loadStarted();
+    void loadProgress(int loadedCount, int totalCount);
+    void loadFinished();
+
     void startCheckWebsites();
     void websiteCheckedCountUpdated(int checkedCount);
     void websitesReady();

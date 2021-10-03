@@ -727,7 +727,7 @@
     </message>
     <message>
         <location filename="../src/ui/local/localmodbrowser.ui" line="191"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="157"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="181"/>
         <source>Update All</source>
         <translation>更新全部</translation>
     </message>
@@ -757,7 +757,7 @@
         <translation>大小</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="114"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="138"/>
         <source>Searching on mod websites...</source>
         <translation>在mod网站上搜索中...</translation>
     </message>
@@ -787,70 +787,85 @@
         <translation>删除所有旧版文件？</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="106"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="128"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="161"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="109"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="152"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="185"/>
         <source>%1 mods in total.</source>
         <translation>共计%1个mod。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="120"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="116"/>
+        <source>Loading mod files...</source>
+        <translation>加载mod文件中...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="122"/>
+        <source>Loading mod files.. (Loaded %1/%2 mod files)</source>
+        <translation>加载mod文件中...（已加载%1/%2个mod文件）</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="130"/>
+        <source>All mod files are loaded...</source>
+        <translation>已加载所有mod文件...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="144"/>
         <source>Searching on mod websites... (Searched %1/%2 mods)</source>
         <translation>在mod网站上搜索中...（已搜索%1/%2个mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="129"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="152"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="153"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="176"/>
         <source>Check updates</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="138"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="162"/>
         <source>Checking updates...</source>
         <translation>检查更新中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="144"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="168"/>
         <source>%1 mods need update... (Checked %2/%3 mods)</source>
         <translation>%1个mod需要更新（已检查%2/%3个mod...）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="158"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="182"/>
         <source>%1 mods need update.</source>
         <translation>%1个mod需要更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="182"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="206"/>
         <source>Updating... (Updated %1/%2 mods)</source>
         <translation>更新中...（已更新%1/%2个mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="188"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="212"/>
         <source>%1 mods in %2 has been updated. Enjoy it!</source>
         <translation>%2中的%1个mod已更新。去游戏里体验一下更新吧！</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="190"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="214"/>
         <source>Sadly, %1 mods failed to update.</source>
         <translation>很遗憾，%1个mod更新失败了。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="192"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="216"/>
         <source>You can revert update if find any incompatibility.</source>
         <translation>如果发现有mod不兼容可以及时回退更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="193"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="217"/>
         <source>Update Finished</source>
         <translation>更新完成</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="171"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="195"/>
         <source>Updating...</source>
         <translation>更新中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="161"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="185"/>
         <source>Good! All mods are up-to-date.</source>
         <translation>太棒了！所有的mod都是最新版。</translation>
     </message>

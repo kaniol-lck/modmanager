@@ -28,8 +28,13 @@ void LocalModPath::loadMods(bool startup)
             modFileList_ << new LocalModFile(this, fileInfo.absoluteFilePath());
 
     auto future = QtConcurrent::run([=]{
-        for(auto &file : modFileList_)
+        int count = 0;
+        emit loadStarted();
+        for(auto &file : modFileList_){
             file->loadInfo();
+            emit loadProgress(++count, modFileList_.size());
+        }
+        emit loadFinished();
     });
 
     auto watcher = new QFutureWatcher<void>(this);

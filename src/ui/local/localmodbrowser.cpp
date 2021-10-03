@@ -72,6 +72,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 
     updateModList();
 
+    connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::loadStarted);
+    connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::loadProgress);
+    connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::loadFinished);
     connect(modPath_, &LocalModPath::modListUpdated, this, &LocalModBrowser::updateModList);
     connect(modPath_, &LocalModPath::websiteCheckedCountUpdated, this, &LocalModBrowser::websiteCheckedCountUpdated);
     connect(modPath_, &LocalModPath::checkWebsitesStarted, this, &LocalModBrowser::startCheckWebsites);
@@ -104,6 +107,27 @@ void LocalModBrowser::updateModList()
     }
     ui->modListWidget->sortItems();
     ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()));
+}
+
+void LocalModBrowser::loadStarted()
+{
+    ui->checkUpdatesProgress->setVisible(true);
+    loadProgress(0, 0);
+    ui->statusText->setText(tr("Loading mod files..."));
+}
+
+void LocalModBrowser::loadProgress(int loadedCount, int totalCount)
+{
+    ui->checkUpdatesProgress->setVisible(true);
+    ui->statusText->setText(tr("Loading mod files.. (Loaded %1/%2 mod files)").arg(loadedCount).arg(totalCount));
+    ui->checkUpdatesProgress->setMaximum(totalCount);
+    ui->checkUpdatesProgress->setValue(loadedCount);
+}
+
+void LocalModBrowser::loadFinished()
+{
+    ui->checkUpdatesProgress->setVisible(false);
+    ui->statusText->setText(tr("All mod files are loaded..."));
 }
 
 void LocalModBrowser::startCheckWebsites()
