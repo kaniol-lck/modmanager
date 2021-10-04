@@ -88,3 +88,18 @@ const CurseforgeModInfo &CurseforgeMod::modInfo() const
 {
     return modInfo_;
 }
+
+QList<Tag> CurseforgeMod::tags() const
+{
+    QList<Tag> tags;
+    for(auto &&categoryId : modInfo_.categories()){
+        auto it = std::find_if(CurseforgeAPI::getCategories().cbegin(), CurseforgeAPI::getCategories().cend(), [=](auto &&t){
+            return std::get<0>(t) == categoryId;
+        });
+        if(it != CurseforgeAPI::getCategories().end()){
+            auto [id, name, iconName] = *it;
+            tags << Tag(name, TagCategory::CurseforgeCategory, ":/image/curseforge/" + iconName);
+        }
+    }
+    return tags;
+}

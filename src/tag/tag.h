@@ -10,7 +10,7 @@ class Tag
 {
 public:
     Tag() = default;
-    explicit Tag(const QString &name, const TagCategory &tagCategory = TagCategory::CustomCategory);
+    explicit Tag(const QString &name, const TagCategory &tagCategory = TagCategory::CustomCategory, const QString &iconName = "");
 
     bool operator==(const Tag &other) const;
 
@@ -19,6 +19,7 @@ public:
 
     const TagCategory &tagCategory() const;
     const QString &name() const;
+    const QString &iconName() const;
 
     static const QList<Tag> &typeTags();
     static const QSet<Tag> &functionalityTags();
@@ -27,12 +28,13 @@ public:
 private:
     TagCategory tagCategory_ = TagCategory::CustomCategory;
     QString name_;
+    QString iconName_;
 
     static QSet<Tag> functionalityTags_;
     static QSet<Tag> customTags_;
 };
 
 [[maybe_unused]]
-static uint qHash(const Tag &key, uint seed = 0);
+uint qHash(const Tag &key, uint seed = 0);
 
 #endif // TAG_H

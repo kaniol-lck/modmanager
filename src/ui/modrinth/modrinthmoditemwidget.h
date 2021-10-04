@@ -33,6 +33,7 @@ private slots:
 
 private:
     Ui::ModrinthModItemWidget *ui;
+    QList<QWidget *> tagWidgets_;
     ModrinthMod *mod_;
     LocalModPath *downloadPath_;
 };

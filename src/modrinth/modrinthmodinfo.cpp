@@ -21,8 +21,9 @@ ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
     modInfo.downloadCount_ = value(variant, "downloads").toInt();
     modInfo.iconUrl_ = value(variant, "icon_url").toUrl();
     modInfo.websiteUrl_ = value(variant, "page_url").toUrl();
+    modInfo.categories_ = value(variant, "categories").toStringList();
 
-    for(const auto &v : value(variant, "versions").toList())
+    for(auto &&v : value(variant, "versions").toList())
         modInfo.gameVersions_ << GameVersion(v.toString());
 
     return modInfo;
@@ -42,6 +43,7 @@ ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
     modInfo.downloadCount_ = value(variant, "downloads").toInt();
     modInfo.iconUrl_ = value(variant, "icon_url").toUrl();
     modInfo.versionList_ = value(variant, "versions").toStringList();
+    modInfo.categories_ = value(variant, "categories").toStringList();
 
     return modInfo;
 }
@@ -127,4 +129,9 @@ bool ModrinthModInfo::hasBasicInfo() const
 bool ModrinthModInfo::hasFullInfo() const
 {
     return fullInfo_;
+}
+
+const QStringList &ModrinthModInfo::categories() const
+{
+    return categories_;
 }

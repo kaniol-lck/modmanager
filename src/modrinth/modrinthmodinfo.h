@@ -30,6 +30,7 @@ public:
     const QList<ModrinthFileInfo> &fileList() const;
     QList<ModrinthFileInfo> featuredFileList() const;
     const QList<GameVersion> &gameVersions() const;
+    const QStringList &categories() const;
     const QStringList &versionList() const;
     bool hasBasicInfo() const;
     bool hasFullInfo() const;
@@ -46,6 +47,7 @@ private:
     QUrl websiteUrl_;
     QUrl iconUrl_;
     QByteArray iconBytes_;
+    QStringList categories_;
 
     QStringList versionList_;
     QList<ModrinthFileInfo> fileList_;

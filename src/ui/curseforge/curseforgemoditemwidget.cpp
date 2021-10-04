@@ -49,6 +49,27 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 //            ui->modSummary->setText(translted);
 //    });
     ui->modAuthors->setText(mod->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+
+    //tags
+    QStringList tagTextList;
+    for(auto widget : qAsConst(tagWidgets_)){
+        ui->tagsLayout->removeWidget(widget);
+        widget->deleteLater();
+    }
+    tagWidgets_.clear();
+    for(auto &&tag : mod_->tags()){
+        auto label = new QLabel(this);
+        if(!tag.iconName().isEmpty())
+            label->setText(QString(R"(<img src="%1" height="22" width="22"/>)").arg(tag.iconName()));
+        else
+            label->setText(tag.name());
+        label->setToolTip(tag.name());
+        if(tag.tagCategory() != TagCategory::CurseforgeCategory)
+            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
+        ui->tagsLayout->addWidget(label);
+        tagWidgets_ << label;
+    }
+
     if(defaultFileInfo_.has_value())
         ui->downloadSpeedText->setText(numberConvert(defaultDownload.value().size(), "B") + "\n"
                                        + numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));

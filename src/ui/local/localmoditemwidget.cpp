@@ -82,8 +82,7 @@ void LocalModItemWidget::updateInfo()
     else
         ui->modAuthors->setText("");
 
-    if (!mod_->commonInfo()->iconBytes().isEmpty())
-    {
+    if (!mod_->commonInfo()->iconBytes().isEmpty()){
         QImage image;
         image.loadFromData(mod_->commonInfo()->iconBytes());
         if (mod_->modFile()->type() == LocalModFile::Disabled)
@@ -95,9 +94,7 @@ void LocalModItemWidget::updateInfo()
         QPixmap pixelmap;
         pixelmap.convertFromImage(image);
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-    }
-    else
-    {
+    } else{
         QPixmap pixelmap(":/image/modmanager.png");
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
     }
@@ -112,14 +109,12 @@ void LocalModItemWidget::updateInfo()
     //rollback
     if (mod_->oldFiles().isEmpty())
         ui->rollbackButton->setVisible(false);
-    else
-    {
+    else{
         ui->rollbackButton->setVisible(true);
         ui->rollbackButton->setEnabled(true);
         auto menu = new QMenu(this);
         for (const auto &file : mod_->oldFiles())
-            connect(menu->addAction(file->commonInfo()->version()), &QAction::triggered, this, [=]
-                    {
+            connect(menu->addAction(file->commonInfo()->version()), &QAction::triggered, this, [=]{
                         ui->rollbackButton->setEnabled(false);
                         mod_->rollback(file);
                     });
@@ -127,18 +122,14 @@ void LocalModItemWidget::updateInfo()
     }
 
     //warning
-    if (!mod_->duplicateFiles().isEmpty())
-    {
+    if (!mod_->duplicateFiles().isEmpty()){
         ui->warningButton->setToolTip(tr("Duplicate mod!"));
-    }
-    else
-    {
+    } else{
         ui->warningButton->setVisible(false);
     }
 
     //enabled
-    if (mod_->isDisabled())
-    {
+    if (mod_->isDisabled()){
         ui->disableButton->setChecked(true);
         ui->disableButton->setVisible(true);
         ui->modName->setStyleSheet("color: #777");
@@ -146,9 +137,7 @@ void LocalModItemWidget::updateInfo()
         ui->modDescription->setStyleSheet("color: #777;");
         ui->modVersion->setStyleSheet("color: #777");
         ui->updateButton->setEnabled(false);
-    }
-    else
-    {
+    } else{
         ui->disableButton->setChecked(false);
         ui->modName->setStyleSheet("");
         ui->modAuthors->setStyleSheet("");
@@ -197,8 +186,7 @@ void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType type)
     if (mod_->updateTypes().size() == 1)
         return;
     auto menu = new QMenu(this);
-    for (auto type2 : mod_->updateTypes())
-    {
+    for (auto &&type2 : mod_->updateTypes()){
         if (type == type2)
             continue;
         if (type2 == LocalMod::Curseforge)

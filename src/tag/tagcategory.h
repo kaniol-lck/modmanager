@@ -10,6 +10,7 @@ public:
     const QColor &color() const;
 
     bool operator==(const TagCategory &other) const;
+    bool operator!=(const TagCategory &other) const;
 
     static TagCategory fromId(const QString &id);
 

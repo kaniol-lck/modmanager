@@ -7,9 +7,10 @@
 QSet<Tag> Tag::functionalityTags_{};
 QSet<Tag> Tag::customTags_{};
 
-Tag::Tag(const QString &name, const TagCategory &tagCategory) :
+Tag::Tag(const QString &name, const TagCategory &tagCategory, const QString &iconName) :
     tagCategory_(tagCategory),
-    name_(name)
+    name_(name),
+    iconName_(iconName)
 {
     if(tagCategory == TagCategory::FunctionalityCategory)
         functionalityTags_ << *this;
@@ -68,6 +69,11 @@ const QSet<Tag> &Tag::functionalityTags()
 const QSet<Tag> &Tag::customTags()
 {
     return customTags_;
+}
+
+const QString &Tag::iconName() const
+{
+    return iconName_;
 }
 
 uint qHash(const Tag &key, uint seed)

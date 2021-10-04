@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include "curseforgemodinfo.h"
+#include "tag/tag.h"
 
 class LocalMod;
 class CurseforgeAPI;
@@ -23,6 +24,7 @@ public:
     void acquireAllFileList();
 
     const CurseforgeModInfo &modInfo() const;
+    QList<Tag> tags() const;
 
 signals:
     void basicInfoReady();

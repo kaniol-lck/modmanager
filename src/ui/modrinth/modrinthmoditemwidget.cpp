@@ -23,6 +23,27 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
     ui->modAuthors->setText("by <b>" + mod->modInfo().author() + "</b>");
     ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
 
+    //tags
+    QStringList tagTextList;
+    for(auto widget : qAsConst(tagWidgets_)){
+        ui->tagsLayout->removeWidget(widget);
+        widget->deleteLater();
+    }
+    tagWidgets_.clear();
+    for(auto &&tag : mod_->tags()){
+        auto label = new QLabel(this);
+        if(!tag.iconName().isEmpty())
+            // a bit smaller than curseforge's
+            label->setText(QString(R"(<img src="%1" height="16" width="16"/>)").arg(tag.iconName()));
+        else
+            label->setText(tag.name());
+        label->setToolTip(tag.name());
+        if(tag.tagCategory() != TagCategory::ModrinthCategory)
+            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
+        ui->tagsLayout->addWidget(label);
+        tagWidgets_ << label;
+    }
+
     mod->acquireFileList();
 
     connect(mod, &ModrinthMod::iconReady, this, &ModrinthModItemWidget::updateIcon);

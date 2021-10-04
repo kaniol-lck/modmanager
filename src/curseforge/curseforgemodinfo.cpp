@@ -19,23 +19,24 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     modInfo.websiteUrl_ = value(variant, "websiteUrl").toUrl();
     modInfo.downloadCount_ = value(variant, "downloadCount").toInt();
 
-    for(const auto &str : value(variant, "modLoaders").toStringList())
+    for(auto &&str : value(variant, "modLoaders").toStringList())
         modInfo.loaderTypes_ << ModLoaderType::fromString(str);
 
     //authors
-    auto authorsList = value(variant, "authors").toList();
-    for(const auto &author : qAsConst(authorsList))
+    for(auto &&author : value(variant, "authors").toList())
         modInfo.authors_ << value(author, "name").toString();
 
     //thumbnail image
-    auto attachmentsList = value(variant, "attachments").toList();
-    if(!attachmentsList.isEmpty())
+    if(auto &&attachmentsList = value(variant, "attachments").toList(); !attachmentsList.isEmpty())
         modInfo.iconUrl_ = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
 
     //latest file url
-    auto latestFileList = value(variant, "latestFiles").toList();
-    for(const auto &variant : latestFileList)
-        modInfo.latestFileList_.append(CurseforgeFileInfo::fromVariant(variant));
+    for(auto &&variant : value(variant, "latestFiles").toList())
+        modInfo.latestFileList_ << CurseforgeFileInfo::fromVariant(variant);
+
+    //latest file url
+    for(auto &&variant : value(variant, "categories").toList())
+        modInfo.categories_ << value(variant, "categoryId").toInt();
 
     return modInfo;
 }
@@ -134,4 +135,9 @@ void CurseforgeModInfo::setLatestFiles(const QList<CurseforgeFileInfo> &newLates
 bool CurseforgeModInfo::hasBasicInfo() const
 {
     return basicInfo_;
+}
+
+const QList<int> &CurseforgeModInfo::categories() const
+{
+    return categories_;
 }

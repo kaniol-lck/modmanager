@@ -22,39 +22,24 @@ public:
     static CurseforgeModInfo fromVariant(const QVariant &variant);
 
     int id() const;
-
     const QString &name() const;
-
     const QString &summary() const;
-
     const QUrl &websiteUrl() const;
-
     const QStringList &authors() const;
-
     const QUrl &iconUrl() const;
-
     const QByteArray &iconBytes() const;
-
     const QString &description() const;
-
     int downloadCount() const;
-
     const QList<ModLoaderType::Type> &loaderTypes() const;
-
     bool isFabricMod() const;
-
     bool isForgeMod() const;
-
     bool isRiftMod() const;
-
     const QList<CurseforgeFileInfo> &latestFileList() const;
-
     std::optional<CurseforgeFileInfo> latestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
-
     const QList<CurseforgeFileInfo> &allFileList() const;
+    const QList<int> &categories() const;
 
     void setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles);
-
     bool hasBasicInfo() const;
 
 private:
@@ -70,6 +55,7 @@ private:
     QList<ModLoaderType::Type> loaderTypes_;
     QList<CurseforgeFileInfo> latestFileList_;
     QList<CurseforgeFileInfo> allFileList_;
+    QList<int> categories_;
 
     bool basicInfo_ = false;
 };

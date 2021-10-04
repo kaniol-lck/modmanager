@@ -32,6 +32,21 @@ ModrinthModInfo ModrinthMod::modInfo() const
     return modInfo_;
 }
 
+QList<Tag> ModrinthMod::tags() const
+{
+    QList<Tag> tags;
+    for(auto &&categoryId : modInfo_.categories()){
+        auto it = std::find_if(ModrinthAPI::getCategories().cbegin(), ModrinthAPI::getCategories().cend(), [=](auto &&t){
+            return std::get<1>(t) == categoryId;
+        });
+        if(it != ModrinthAPI::getCategories().end()){
+            auto [name, iconName] = *it;
+            tags << Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName);
+        }
+    }
+    return tags;
+}
+
 void ModrinthMod::acquireAuthor()
 {
     if(modInfo_.authorId_.isEmpty() || gettingAuthor_) return;

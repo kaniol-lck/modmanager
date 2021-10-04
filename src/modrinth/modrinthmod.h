@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include "modrinthmodinfo.h"
+#include "tag/tag.h"
 
 class ModrinthAPI;
 class LocalMod;
@@ -17,6 +18,7 @@ public:
     ModrinthMod(LocalMod *parent, const ModrinthModInfo &info);
 
     ModrinthModInfo modInfo() const;
+    QList<Tag> tags() const;
 
     void acquireAuthor();
     void acquireIcon();

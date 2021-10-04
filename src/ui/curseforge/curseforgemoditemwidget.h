@@ -32,6 +32,7 @@ private slots:
 
 private:
     Ui::CurseforgeModItemWidget *ui;
+    QList<QWidget *> tagWidgets_;
     CurseforgeMod *mod_;
     std::optional<CurseforgeFileInfo> defaultFileInfo_;
     LocalModPath *downloadPath_;

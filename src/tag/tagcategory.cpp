@@ -36,6 +36,11 @@ bool TagCategory::operator==(const TagCategory &other) const
     return id_ == other.id_;
 }
 
+bool TagCategory::operator!=(const TagCategory &other) const
+{
+    return !operator==(other);
+}
+
 TagCategory TagCategory::fromId(const QString &id)
 {
     for(auto category : PresetCategories)
