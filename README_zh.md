@@ -29,7 +29,7 @@ Mod管理器以[GPLv3](LICENSE)许可证发布。
 
 \* Mac OS的Github Actions构建在C++ 17的部分失败了（我也不知道是不是原先用的actions写的有问题）。
 
-### 自行构建
+### 从源码构建
 
 克隆本仓库至本地：
 
@@ -61,4 +61,24 @@ qmake && nmake
 
 ## 使用
 
+（图中的背景是我的桌面，因为工具栏在KDE上是半透明的）
+
+### 探索
+
+你可以从这些网站上浏览并下载mod：
+
+- Curseforge
+- Modrinth
+- OptiFine
+- ReplayMod
+
 ![curseforge_browser](images/curseforge_browser_zh.png)
+
+你可以浏览并管理你的本地mod：
+
+- 更新&回退
+- 为mod添加标签
+- 批量重命名
+- 禁用mod
+
+![local_browser](images/local_browser_zh.png)

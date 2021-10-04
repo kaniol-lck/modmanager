@@ -29,7 +29,7 @@ This repository has deployed [GitHub Actions](https://github.com/kaniol-lck/modm
 
 \* Mac OS Build failed with c++ 17 on GitHub Actions. （HELP WANTED）
 
-### Build Yourself
+### Build From Source
 
 Clone this repository: 
 
@@ -61,4 +61,26 @@ qmake && nmake
 
 ## Usage
 
+(Background in images is my wallpaper, because toolbar is semi-transparent on KDE)
+
+### Explore
+
+You can browse and download mod from:
+
+- Curseforge
+- Modrinth
+- OptiFine
+- ReplayMod
+
 ![curseforge_browser](images/curseforge_browser.png)
+
+### Local
+
+You can browse and manage your local mod:
+
+- update & rollback
+- tag your mods
+- batch rename
+- disable mods
+
+![local_browser](images/local_browser.png)
