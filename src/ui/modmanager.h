@@ -34,11 +34,11 @@ private slots:
 
     void on_actionManage_Browser_triggered();
 
-    void on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *);
+    void currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *);
 
     void on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int);
 
-    void on_browserTreeWidget_customContextMenuRequested(const QPoint &pos);
+    void customContextMenuRequested(const QPoint &pos);
 
     void on_action_About_Mod_Manager_triggered();
 
@@ -52,6 +52,7 @@ private slots:
 
 private:
     Ui::ModManager *ui;
+    QTreeWidget *browserTreeWidget_;
     CurseforgeModBrowser *curseforgeModBrowser_;
     ModrinthModBrowser *modrinthModBrowser_;
     OptifineModBrowser *optifineModBrowser_;

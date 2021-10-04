@@ -6,6 +6,19 @@ Soon....
 
 ## 公开测试 Beta Test
 
+### v1.0.0 beta.3
+
+*WIP*
+
+Added local mod loading progress display.
+添加了本地mod加载进度显示
+
+Browser selector is movable toolbar now.
+浏览选择器是可移动的工具栏了。
+
+Fixed browser selector jump to downloader tab.
+修复了浏览选择器会跳到下载器标签的问题。
+
 ### v1.0.0 beta.2
 
 *2021.10.03*
@@ -23,7 +36,7 @@ Some GUI tweaks.
 一些GUI上的小修改。
 
 Fixed Modrinth mod file not presented as "Downloaded" in local mod path tab.
-修复了本地mod浏览的Modrinth对话框中不显示“已下载”的问题
+修复了本地mod浏览的Modrinth对话框中不显示“已下载”的问题。
 
 ### v1.0.0 beta.1
 

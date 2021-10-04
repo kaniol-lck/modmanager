@@ -36,13 +36,23 @@ ModManager::ModManager(QWidget *parent) :
     ui->splitter->setStretchFactor(0, 2);
     ui->splitter->setStretchFactor(1, 3);
 
+    browserTreeWidget_ = new QTreeWidget(this);
+    browserTreeWidget_->setStyleSheet(R"(QTreeView { background-color: transparent; } QTreeView::branch { image:none; })");
+    browserTreeWidget_->setFrameStyle(QFrame::NoFrame);
+    browserTreeWidget_->setHeaderHidden(true);
+    browserTreeWidget_->setContextMenuPolicy(Qt::CustomContextMenu);
+    browserTreeWidget_->setRootIsDecorated(false);
+    ui->toolBar->addWidget(browserTreeWidget_);
+    connect(browserTreeWidget_, &QTreeWidget::currentItemChanged, this, &ModManager::currentItemChanged);
+    connect(browserTreeWidget_, &QTreeWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
+
     //setup tree widget
     for (const auto &item : {downloadItem_, exploreItem_, localItem_}){
-        item->setForeground(0, Qt::gray);
+        item->setForeground(0, QColor(127, 127, 127));
         item->setFlags(item->flags().setFlag(Qt::ItemIsSelectable, false));
-        ui->browserTreeWidget->addTopLevelItem(item);
+        browserTreeWidget_->addTopLevelItem(item);
     }
-    ui->browserTreeWidget->expandAll();
+    browserTreeWidget_->expandAll();
 
     //Downloader
     auto downloadBrowser = new DownloadBrowser(this);
@@ -84,7 +94,7 @@ ModManager::ModManager(QWidget *parent) :
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModManager::syncPathList);
 
     //default browser
-    ui->browserTreeWidget->setCurrentItem(curseforgeItem);
+    browserTreeWidget_->setCurrentItem(curseforgeItem);
 
     //init versions
     VersionManager::initVersionLists();
@@ -99,7 +109,7 @@ void ModManager::syncPathList()
 {
     //remember selected path
     LocalModPath *selectedPath = nullptr;
-    auto currentItem = ui->browserTreeWidget->currentItem();
+    auto currentItem = browserTreeWidget_->currentItem();
     if(currentItem != nullptr && currentItem->parent() == localItem_){
         auto index = currentItem->parent()->indexOfChild(currentItem);
         selectedPath = pathList_.at(index);
@@ -124,19 +134,19 @@ void ModManager::syncPathList()
 
             connect(localModBrowser, &LocalModBrowser::findNewOnCurseforge, curseforgeModBrowser_, &CurseforgeModBrowser::searchModByPathInfo);
             connect(localModBrowser, &LocalModBrowser::findNewOnCurseforge, this, [=]{
-                ui->browserTreeWidget->setCurrentItem(exploreItem_->child(0));
+                browserTreeWidget_->setCurrentItem(exploreItem_->child(0));
             });
             connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, modrinthModBrowser_, &ModrinthModBrowser::searchModByPathInfo);
             connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, this, [=]{
-                ui->browserTreeWidget->setCurrentItem(exploreItem_->child(1));
+                browserTreeWidget_->setCurrentItem(exploreItem_->child(1));
             });
             connect(localModBrowser, &LocalModBrowser::findNewOnOptifine, optifineModBrowser_, &OptifineModBrowser::searchModByPathInfo);
             connect(localModBrowser, &LocalModBrowser::findNewOnOptifine, this, [=]{
-                ui->browserTreeWidget->setCurrentItem(exploreItem_->child(2));
+                browserTreeWidget_->setCurrentItem(exploreItem_->child(2));
             });
             connect(localModBrowser, &LocalModBrowser::findNewOnReplay, replayModBrowser_, &ReplayModBrowser::searchModByPathInfo);
             connect(localModBrowser, &LocalModBrowser::findNewOnReplay, this, [=]{
-                ui->browserTreeWidget->setCurrentItem(exploreItem_->child(3));
+                browserTreeWidget_->setCurrentItem(exploreItem_->child(3));
             });
         } else{
             //present, move position
@@ -168,7 +178,7 @@ void ModManager::syncPathList()
     if(selectedPath != nullptr){
         auto index = pathList_.indexOf(selectedPath);
         if(index >= 0)
-            ui->browserTreeWidget->setCurrentItem(localItem_->child(index));
+            browserTreeWidget_->setCurrentItem(localItem_->child(index));
     }
 }
 
@@ -196,12 +206,12 @@ void ModManager::on_actionManage_Browser_triggered()
     dialog->show();
 }
 
-void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem */*previous*/)
+void ModManager::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem */*previous*/)
 {
     if(current == nullptr) return;
     auto parent = current->parent();
 //    int currentIndex = ui->stackedWidget->currentIndex();
-    int index = 0;
+    int index = -1;
     //TODO: magic number
     if(parent == downloadItem_)
         index = 0;
@@ -209,7 +219,8 @@ void ModManager::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *curren
         index = 1 + parent->indexOfChild(current);
     else if(parent == localItem_)
         index = 5 + parent->indexOfChild(current);
-    ui->stackedWidget->setCurrentIndex(index);
+    if(index >= 0)
+        ui->stackedWidget->setCurrentIndex(index);
 }
 
 void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
@@ -219,10 +230,10 @@ void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, i
     editLocalPath(index);
 }
 
-void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &pos)
+void ModManager::customContextMenuRequested(const QPoint &pos)
 {
     auto menu = new QMenu(this);
-    auto item = ui->browserTreeWidget->itemAt(pos);
+    auto item = browserTreeWidget_->itemAt(pos);
     if(item == nullptr){
         // in empty area
         connect(menu->addAction(QIcon::fromTheme("list-add"), tr("New Mod Path")), &QAction::triggered, this, [=]{
@@ -274,7 +285,7 @@ void ModManager::on_browserTreeWidget_customContextMenuRequested(const QPoint &p
         menu->addAction(ui->actionManage_Browser);
     }
     if(!menu->actions().isEmpty())
-        menu->exec(ui->browserTreeWidget->mapToGlobal(pos));
+        menu->exec(browserTreeWidget_->mapToGlobal(pos));
 }
 
 void ModManager::on_action_About_Mod_Manager_triggered()
