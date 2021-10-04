@@ -366,6 +366,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
 
 void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList)
 {
+    if(modUpdateList.isEmpty()) return;
     emit updatesStarted();
     auto count = std::make_shared<int>(0);
     auto successCount = std::make_shared<int>(0);

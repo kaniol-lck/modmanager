@@ -177,7 +177,7 @@ void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType type)
     if (type == LocalMod::None)
         return;
     ui->updateButton->setVisible(true);
-    ui->updateButton->setEnabled(true);
+    ui->updateButton->setEnabled(!mod_->isDisabled());
     if (type == LocalMod::Curseforge)
         ui->updateButton->setIcon(QIcon(":/image/curseforge.svg"));
     else if (type == LocalMod::Modrinth)
