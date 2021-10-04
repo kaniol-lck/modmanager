@@ -9,6 +9,7 @@
 #include <QUrl>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QResizeEvent>
 
 #include "ui/aboutdialog.h"
 #include "local/localmodpathmanager.h"
@@ -36,6 +37,11 @@ ModManager::ModManager(QWidget *parent) :
     ui->splitter->setStretchFactor(0, 2);
     ui->splitter->setStretchFactor(1, 3);
 
+    Config config;
+    resize(config.getMainWindowWidth(),
+           config.getMainWindowHeight());
+    addToolBar(static_cast<Qt::ToolBarArea>(config.getTabSelectBarArea()), ui->toolBar);
+
     browserTreeWidget_ = new QTreeWidget(this);
     browserTreeWidget_->setStyleSheet(R"(QTreeView { background-color: transparent; } QTreeView::branch { image:none; })");
     browserTreeWidget_->setFrameStyle(QFrame::NoFrame);
@@ -43,6 +49,7 @@ ModManager::ModManager(QWidget *parent) :
     browserTreeWidget_->setContextMenuPolicy(Qt::CustomContextMenu);
     browserTreeWidget_->setRootIsDecorated(false);
     ui->toolBar->addWidget(browserTreeWidget_);
+
     connect(browserTreeWidget_, &QTreeWidget::currentItemChanged, this, &ModManager::currentItemChanged);
     connect(browserTreeWidget_, &QTreeWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
 
@@ -102,7 +109,15 @@ ModManager::ModManager(QWidget *parent) :
 
 ModManager::~ModManager()
 {
+    Config().setTabSelectBarArea(toolBarArea(ui->toolBar));
     delete ui;
+}
+
+void ModManager::resizeEvent(QResizeEvent *event)
+{
+    Config config;
+    config.setMainWindowWidth(event->size().width());
+    config.setMainWindowHeight(event->size().height());
 }
 
 void ModManager::syncPathList()

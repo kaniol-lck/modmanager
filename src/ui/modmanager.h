@@ -25,31 +25,20 @@ public:
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
 
+    void resizeEvent(QResizeEvent *event);
 private slots:
     void syncPathList();
-
     void editLocalPath(int index);
-
     void on_actionPreferences_triggered();
-
     void on_actionManage_Browser_triggered();
-
     void currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *);
-
     void on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int);
-
     void customContextMenuRequested(const QPoint &pos);
-
     void on_action_About_Mod_Manager_triggered();
-
     void on_actionVisit_Curseforge_triggered();
-
     void on_actionVisit_Modrinth_triggered();
-
     void on_actionVisit_OptiFine_triggered();
-
     void on_actionVisit_ReplayMod_triggered();
-
 private:
     Ui::ModManager *ui;
     QTreeWidget *browserTreeWidget_;

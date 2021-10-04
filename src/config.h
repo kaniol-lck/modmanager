@@ -50,6 +50,11 @@ public:
     getterAndSetter(LocalPathList, List, localPathList, QVariant())
     //Download List
     getterAndSetter(DownloaderList, List, downloaderList, QVariant())
+
+    //others
+    getterAndSetter(TabSelectBarArea, Int, tabSelectBarArea, Qt::LeftToolBarArea)
+    getterAndSetter(MainWindowWidth, Int, mainWindowWidth, 1440);
+    getterAndSetter(MainWindowHeight, Int, mainWindowHeight, 900);
 };
 
 #endif // CONFIG_H
