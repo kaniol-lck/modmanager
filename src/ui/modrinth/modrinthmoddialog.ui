@@ -146,7 +146,7 @@
      </property>
      <property name="font">
       <font>
-       <italic>true</italic>
+       <italic>false</italic>
       </font>
      </property>
      <property name="toolTip">

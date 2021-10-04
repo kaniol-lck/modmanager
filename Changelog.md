@@ -16,6 +16,9 @@ Added local mod loading progress display.
 Browser selector is movable toolbar now.
 浏览选择器是可移动的工具栏了。
 
+Mod summaries of curseforge and modrinth are not in italic font.
+curseforge和Modrinth的mod概述不以斜体显示了。
+
 Fixed browser selector jump to downloader tab.
 修复了浏览选择器会跳到下载器标签的问题。
 

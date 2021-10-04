@@ -2,13 +2,11 @@
 
 <h1>Mod Manager</h1>
 
-![GitHub top language](https://img.shields.io/github/languages/top/kaniol-lck/modmanager) ![C++17](https://img.shields.io/badge/C%2B%2B-17-%2300599C) ![Qt 5.15.2](https://img.shields.io/badge/Qt-5.15.2-%2341CD52) ![GitHub](https://img.shields.io/github/license/kaniol-lck/modmanager) [![CodeFactor](https://www.codefactor.io/repository/github/kaniol-lck/modmanager/badge)](https://www.codefactor.io/repository/github/kaniol-lck/modmanager) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/4f9ae02df7ba432aab449f9d5bdfabeb)](https://www.codacy.com/gh/kaniol-lck/modmanager/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kaniol-lck/modmanager&amp;utm_campaign=Badge_Grade) [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/kaniol-lck/modmanager?include_prereleases)](Changelog.md) [![GitHub all releases](https://img.shields.io/github/downloads/kaniol-lck/modmanager/total)](https://github.com/kaniol-lck/modmanager/releases)
+![GitHub top language](https://img.shields.io/github/languages/top/kaniol-lck/modmanager) ![C++17](https://img.shields.io/badge/C%2B%2B-17-%2300599C) ![Qt 5.15.2](https://img.shields.io/badge/Qt-5.15.2-%2341CD52) ![GitHub](https://img.shields.io/github/license/kaniol-lck/modmanager) [![CodeFactor](https://www.codefactor.io/repository/github/kaniol-lck/modmanager/badge)](https://www.codefactor.io/repository/github/kaniol-lck/modmanager) [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/kaniol-lck/modmanager?include_prereleases)](Changelog.md) [![GitHub all releases](https://img.shields.io/github/downloads/kaniol-lck/modmanager/total)](https://github.com/kaniol-lck/modmanager/releases)
 
 **English** | [中文](README_zh.md)
 
-A Qt-based mod manager for Minecraft.
-
-It should be able to manage, update and download mod.
+A Qt-based mod manager for Minecraft, able to manage, update and download mod.
 
 ## License
 
@@ -63,7 +61,7 @@ qmake && nmake
 
 (Background in images is my wallpaper, because toolbar is semi-transparent on KDE)
 
-### Explore
+### Explore - Download Mod
 
 You can browse and download mod from:
 
@@ -74,7 +72,7 @@ You can browse and download mod from:
 
 ![curseforge_browser](images/curseforge_browser.png)
 
-### Local
+### Local - Manage Mod
 
 You can browse and manage your local mod:
 

@@ -2,13 +2,11 @@
 
 <h1>Mod管理器</h1>
 
-![GitHub top language](https://img.shields.io/github/languages/top/kaniol-lck/modmanager) ![C++17](https://img.shields.io/badge/C%2B%2B-17-%2300599C) ![Qt 5.15.2](https://img.shields.io/badge/Qt-5.15.2-%2341CD52) ![GitHub](https://img.shields.io/github/license/kaniol-lck/modmanager) [![CodeFactor](https://www.codefactor.io/repository/github/kaniol-lck/modmanager/badge)](https://www.codefactor.io/repository/github/kaniol-lck/modmanager) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/4f9ae02df7ba432aab449f9d5bdfabeb)](https://www.codacy.com/gh/kaniol-lck/modmanager/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kaniol-lck/modmanager&amp;utm_campaign=Badge_Grade) [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/kaniol-lck/modmanager?include_prereleases)](Changelog.md) [![GitHub all releases](https://img.shields.io/github/downloads/kaniol-lck/modmanager/total)](https://github.com/kaniol-lck/modmanager/releases)
+![GitHub top language](https://img.shields.io/github/languages/top/kaniol-lck/modmanager) ![C++17](https://img.shields.io/badge/C%2B%2B-17-%2300599C) ![Qt 5.15.2](https://img.shields.io/badge/Qt-5.15.2-%2341CD52) ![GitHub](https://img.shields.io/github/license/kaniol-lck/modmanager) [![CodeFactor](https://www.codefactor.io/repository/github/kaniol-lck/modmanager/badge)](https://www.codefactor.io/repository/github/kaniol-lck/modmanager)  [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/kaniol-lck/modmanager?include_prereleases)](Changelog.md) [![GitHub all releases](https://img.shields.io/github/downloads/kaniol-lck/modmanager/total)](https://github.com/kaniol-lck/modmanager/releases)
 
 [English](README.md) | **中文**
 
-一个基于Qt的Minecraft Mod管理器。
-
-它可以管理、更新与下载Mod。
+一个基于Qt的Minecraft Mod管理器，可以管理、更新与下载Mod。
 
 ## License
 
@@ -63,7 +61,7 @@ qmake && nmake
 
 （图中的背景是我的桌面，因为工具栏在KDE上是半透明的）
 
-### 探索
+### 探索 - 下载Mod
 
 你可以从这些网站上浏览并下载mod：
 
@@ -73,6 +71,8 @@ qmake && nmake
 - ReplayMod
 
 ![curseforge_browser](images/curseforge_browser_zh.png)
+
+### 本地 - 管理Mod
 
 你可以浏览并管理你的本地mod：
 
