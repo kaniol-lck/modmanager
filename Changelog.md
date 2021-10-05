@@ -14,10 +14,13 @@ Add Curseforge/Modrinth categories display.
 添加了Curseforge/Modrinth的类别显示。
 
 Added local mod loading progress display.
-添加了本地mod加载进度显示
+添加了本地mod加载进度显示。
 
 Browser selector is movable toolbar now.
 浏览选择器是可移动的工具栏了。
+
+Tweak GUI of mod list.
+调整了mod列表的GUI。
 
 Resize/reposition of main window will be saved.
 主界面的调整大小和位置会被保存。
