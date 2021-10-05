@@ -47,6 +47,7 @@ SOURCES += \
     src/tag/tagcategory.cpp \
     src/ui/aboutdialog.cpp \
     src/ui/browsermanagerdialog.cpp \
+    src/ui/browserselectorwidget.cpp \
     src/ui/curseforge/curseforgefileitemwidget.cpp \
     src/ui/curseforge/curseforgemodbrowser.cpp \
     src/ui/curseforge/curseforgemoddialog.cpp \
@@ -120,6 +121,7 @@ HEADERS += \
     src/tag/tagcategory.h \
     src/ui/aboutdialog.h \
     src/ui/browsermanagerdialog.h \
+    src/ui/browserselectorwidget.h \
     src/ui/curseforge/curseforgefileitemwidget.h \
     src/ui/curseforge/curseforgemodbrowser.h \
     src/ui/curseforge/curseforgemoddialog.h \
@@ -159,6 +161,7 @@ HEADERS += \
 FORMS += \
     src/ui/aboutdialog.ui \
     src/ui/browsermanagerdialog.ui \
+    src/ui/browserselectorwidget.ui \
     src/ui/curseforge/curseforgefileitemwidget.ui \
     src/ui/curseforge/curseforgemodbrowser.ui \
     src/ui/curseforge/curseforgemoddialog.ui \

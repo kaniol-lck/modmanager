@@ -5,9 +5,11 @@
 #include <QTreeWidgetItem>
 
 #include "local/localmodpathinfo.h"
+#include "browserselectorwidget.h"
 
 class QListWidgetItem;
 class LocalModPath;
+class BrowserSelectorWidget;
 class CurseforgeModBrowser;
 class ModrinthModBrowser;
 class OptifineModBrowser;
@@ -27,12 +29,12 @@ public:
 
     void resizeEvent(QResizeEvent *event);
 private slots:
+    void browserChanged(BrowserSelectorWidget::BrowserCategory category, int index);
+
     void syncPathList();
     void editLocalPath(int index);
     void on_actionPreferences_triggered();
     void on_actionManage_Browser_triggered();
-    void currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *);
-    void on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int);
     void customContextMenuRequested(const QPoint &pos);
     void on_action_About_Mod_Manager_triggered();
     void on_actionVisit_Curseforge_triggered();
@@ -41,16 +43,12 @@ private slots:
     void on_actionVisit_ReplayMod_triggered();
 private:
     Ui::ModManager *ui;
-    QTreeWidget *browserTreeWidget_;
+    BrowserSelectorWidget *browserSelector_;
     CurseforgeModBrowser *curseforgeModBrowser_;
     ModrinthModBrowser *modrinthModBrowser_;
     OptifineModBrowser *optifineModBrowser_;
     ReplayModBrowser *replayModBrowser_;
 
     QList<LocalModPath*> pathList_;
-
-    QTreeWidgetItem *downloadItem_;
-    QTreeWidgetItem *exploreItem_;
-    QTreeWidgetItem *localItem_;
 };
 #endif // MODMANAGER_H

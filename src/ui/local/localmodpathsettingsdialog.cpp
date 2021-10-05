@@ -13,10 +13,7 @@ LocalModPathSettingsDialog::LocalModPathSettingsDialog(QWidget *parent) :
     ui(new Ui::LocalModPathSettingsDialog)
 {
     ui->setupUi(this);
-    info_.setLoaderType(ModLoaderType::Any);
-
-    for(const auto &type : ModLoaderType::local)
-        ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
+    info_.setLoaderType(ModLoaderType::Fabric);
 
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::mojangVersionListUpdated, this, &LocalModPathSettingsDialog::updateVersionList);
@@ -30,7 +27,10 @@ LocalModPathSettingsDialog::LocalModPathSettingsDialog(QWidget *parent, const Lo
     ui->nameText->setText(info.displayName());
     ui->modsDirText->setText(info.path());
     ui->versionSelect->setCurrentText(info.gameVersion());
-    ui->loaderSelect->setCurrentIndex(ModLoaderType::local.indexOf(info.loaderType()));
+    if(info.loaderType() == ModLoaderType::Fabric)
+        ui->fabric_radioButton->setChecked(true);
+    else if(info.loaderType() == ModLoaderType::Forge)
+        ui->forge_radioButton->setChecked(true);
 
     ui->useAutoName->setChecked(info.isAutoName());
     on_useAutoName_toggled(info.isAutoName());
@@ -89,12 +89,6 @@ void LocalModPathSettingsDialog::on_buttonBox_accepted()
     emit settingsUpdated(info_);
 }
 
-void LocalModPathSettingsDialog::on_loaderSelect_currentIndexChanged(const QString &arg1)
-{
-    info_.setLoaderType(ModLoaderType::fromString(arg1));
-    updateAutoName();
-}
-
 void LocalModPathSettingsDialog::updateAutoName()
 {
     if(!ui->useAutoName->isChecked()) return;
@@ -123,5 +117,20 @@ void LocalModPathSettingsDialog::on_useAutoName_toggled(bool checked)
         updateAutoName();
     else
         ui->nameText->setText(customName);
+}
+
+void LocalModPathSettingsDialog::on_fabric_radioButton_toggled(bool checked)
+{
+    if(!checked) return;
+    info_.setLoaderType(ModLoaderType::Fabric);
+    updateAutoName();
+}
+
+
+void LocalModPathSettingsDialog::on_forge_radioButton_toggled(bool checked)
+{
+    if(!checked) return;
+    info_.setLoaderType(ModLoaderType::Forge);
+    updateAutoName();
 }
 

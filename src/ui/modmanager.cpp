@@ -12,6 +12,7 @@
 #include <QResizeEvent>
 
 #include "ui/aboutdialog.h"
+#include "ui/browserselectorwidget.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
 #include "ui/local/localmodbrowser.h"
@@ -29,13 +30,9 @@
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ModManager),
-    downloadItem_(new QTreeWidgetItem({tr("Download")})),
-    exploreItem_(new QTreeWidgetItem({tr("Explore")})),
-    localItem_(new QTreeWidgetItem({tr("Local")}))
+    browserSelector_(new BrowserSelectorWidget(this))
 {
     ui->setupUi(this);
-    ui->splitter->setStretchFactor(0, 2);
-    ui->splitter->setStretchFactor(1, 3);
 
     Config config;
     resize(config.getMainWindowWidth(),
@@ -47,60 +44,46 @@ ModManager::ModManager(QWidget *parent) :
               }\
               QListWidget::item:selected {\
                   border-left: 5px solid #37d;\
+                  color: black;\
                   background-color: #eee;\
               }");
 
-    browserTreeWidget_ = new QTreeWidget(this);
-    browserTreeWidget_->setStyleSheet(R"(QTreeView { background-color: transparent; } QTreeView::branch { image:none; })");
-    browserTreeWidget_->setFrameStyle(QFrame::NoFrame);
-    browserTreeWidget_->setHeaderHidden(true);
-    browserTreeWidget_->setContextMenuPolicy(Qt::CustomContextMenu);
-    browserTreeWidget_->setRootIsDecorated(false);
-    ui->toolBar->addWidget(browserTreeWidget_);
-
-    connect(browserTreeWidget_, &QTreeWidget::currentItemChanged, this, &ModManager::currentItemChanged);
-    connect(browserTreeWidget_, &QTreeWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
-
-    //setup tree widget
-    for (const auto &item : {downloadItem_, exploreItem_, localItem_}){
-        item->setForeground(0, QColor(127, 127, 127));
-        item->setFlags(item->flags().setFlag(Qt::ItemIsSelectable, false));
-        browserTreeWidget_->addTopLevelItem(item);
-    }
-    browserTreeWidget_->expandAll();
+    ui->toolBar->addWidget(browserSelector_);
+    connect(browserSelector_, &BrowserSelectorWidget::browserChanged, this, &ModManager::browserChanged);
+    connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
 
     //Downloader
     auto downloadBrowser = new DownloadBrowser(this);
-    auto downloaderItem = new QTreeWidgetItem(downloadItem_, {tr("Downloader")});
-    downloadItem_->addChild(downloaderItem);
+    auto downloaderItem = new QTreeWidgetItem(browserSelector_->downloadItem(), {tr("Downloader")});
+    browserSelector_->downloadItem()->addChild(downloaderItem);
     downloaderItem->setIcon(0, QIcon::fromTheme("download"));
     ui->stackedWidget->addWidget(downloadBrowser);
 
     //Curseforge
     curseforgeModBrowser_ = new CurseforgeModBrowser(this);
-    auto curseforgeItem = new QTreeWidgetItem(exploreItem_, {"Curseforge"});
-    exploreItem_->addChild(curseforgeItem);
+    auto curseforgeItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Curseforge"});
+    browserSelector_->exploreItem()->addChild(curseforgeItem);
     curseforgeItem->setIcon(0, QIcon(":/image/curseforge.svg"));
     ui->stackedWidget->addWidget(curseforgeModBrowser_);
 
     //Modrinth
     modrinthModBrowser_ = new ModrinthModBrowser(this);
-    auto modrinthItem = new QTreeWidgetItem(exploreItem_, {"Modrinth"});
-    exploreItem_->addChild(modrinthItem);
+    auto modrinthItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Modrinth"});
+    browserSelector_->exploreItem()->addChild(modrinthItem);
     modrinthItem->setIcon(0, QIcon(":/image/modrinth.svg"));
     ui->stackedWidget->addWidget(modrinthModBrowser_);
 
     //Optifine
     optifineModBrowser_ = new OptifineModBrowser(this);
-    auto optifineItem = new QTreeWidgetItem(exploreItem_, {"OptiFine"});
-    exploreItem_->addChild(optifineItem);
+    auto optifineItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"OptiFine"});
+    browserSelector_->exploreItem()->addChild(optifineItem);
     optifineItem->setIcon(0, QIcon(":/image/optifine.png"));
     ui->stackedWidget->addWidget(optifineModBrowser_);
 
     //Replay
     replayModBrowser_ = new ReplayModBrowser(this);
-    auto replayItem = new QTreeWidgetItem(exploreItem_, {"ReplayMod"});
-    exploreItem_->addChild(replayItem);
+    auto replayItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"ReplayMod"});
+    browserSelector_->exploreItem()->addChild(replayItem);
     replayItem->setIcon(0, QIcon(":/image/replay.png"));
     ui->stackedWidget->addWidget(replayModBrowser_);
 
@@ -109,7 +92,7 @@ ModManager::ModManager(QWidget *parent) :
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModManager::syncPathList);
 
     //default browser
-    browserTreeWidget_->setCurrentItem(curseforgeItem);
+    browserSelector_->browserTreeWidget()->setCurrentItem(curseforgeItem);
 
     //init versions
     VersionManager::initVersionLists();
@@ -128,12 +111,26 @@ void ModManager::resizeEvent(QResizeEvent *event)
     config.setMainWindowHeight(event->size().height());
 }
 
+void ModManager::browserChanged(BrowserSelectorWidget::BrowserCategory category, int index)
+{
+    int pageIndex = 0;
+    using bsw = BrowserSelectorWidget;
+    for(auto &&c : { bsw::Download, bsw::Explore, bsw::Local}){
+        if(category == c){
+            pageIndex += index;
+            break;
+        } else
+            pageIndex += browserSelector_->item(c)->childCount();
+    }
+    ui->stackedWidget->setCurrentIndex(pageIndex);
+}
+
 void ModManager::syncPathList()
 {
     //remember selected path
     LocalModPath *selectedPath = nullptr;
-    auto currentItem = browserTreeWidget_->currentItem();
-    if(currentItem != nullptr && currentItem->parent() == localItem_){
+    auto currentItem = browserSelector_->browserTreeWidget()->currentItem();
+    if(currentItem != nullptr && currentItem->parent() == browserSelector_->localItem()){
         auto index = currentItem->parent()->indexOfChild(currentItem);
         selectedPath = pathList_.at(index);
     }
@@ -144,8 +141,8 @@ void ModManager::syncPathList()
         if(i < 0){
             //not present, new one
             pathList_ << path;
-            auto item = new QTreeWidgetItem(localItem_, {path->info().displayName()});
-            localItem_->addChild(item);
+            auto item = new QTreeWidgetItem(browserSelector_->localItem(), {path->info().displayName()});
+            browserSelector_->localItem()->addChild(item);
             if(path->info().loaderType() == ModLoaderType::Fabric)
                 item->setIcon(0, QIcon(":/image/fabric.png"));
             else if(path->info().loaderType() == ModLoaderType::Forge)
@@ -157,25 +154,25 @@ void ModManager::syncPathList()
 
             connect(localModBrowser, &LocalModBrowser::findNewOnCurseforge, curseforgeModBrowser_, &CurseforgeModBrowser::searchModByPathInfo);
             connect(localModBrowser, &LocalModBrowser::findNewOnCurseforge, this, [=]{
-                browserTreeWidget_->setCurrentItem(exploreItem_->child(0));
+                browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->exploreItem()->child(0));
             });
             connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, modrinthModBrowser_, &ModrinthModBrowser::searchModByPathInfo);
             connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, this, [=]{
-                browserTreeWidget_->setCurrentItem(exploreItem_->child(1));
+                browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->exploreItem()->child(1));
             });
             connect(localModBrowser, &LocalModBrowser::findNewOnOptifine, optifineModBrowser_, &OptifineModBrowser::searchModByPathInfo);
             connect(localModBrowser, &LocalModBrowser::findNewOnOptifine, this, [=]{
-                browserTreeWidget_->setCurrentItem(exploreItem_->child(2));
+                browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->exploreItem()->child(2));
             });
             connect(localModBrowser, &LocalModBrowser::findNewOnReplay, replayModBrowser_, &ReplayModBrowser::searchModByPathInfo);
             connect(localModBrowser, &LocalModBrowser::findNewOnReplay, this, [=]{
-                browserTreeWidget_->setCurrentItem(exploreItem_->child(3));
+                browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->exploreItem()->child(3));
             });
         } else{
             //present, move position
             oldCount--;
             pathList_ << pathList_.takeAt(i);
-            localItem_->addChild(localItem_->takeChild(i));
+            browserSelector_->localItem()->addChild(browserSelector_->localItem()->takeChild(i));
             //TODO: magic number
             auto widget = ui->stackedWidget->widget(i + 5);
             ui->stackedWidget->removeWidget(widget);
@@ -188,7 +185,7 @@ void ModManager::syncPathList()
         //TODO: magic number
         auto j = i + 5;
         pathList_.removeAt(i);
-        delete localItem_->takeChild(i);
+        delete browserSelector_->localItem()->takeChild(i);
         auto widget = ui->stackedWidget->widget(j);
         ui->stackedWidget->removeWidget(widget);
         widget->deleteLater();
@@ -201,7 +198,7 @@ void ModManager::syncPathList()
     if(selectedPath != nullptr){
         auto index = pathList_.indexOf(selectedPath);
         if(index >= 0)
-            browserTreeWidget_->setCurrentItem(localItem_->child(index));
+            browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->localItem()->child(index));
     }
 }
 
@@ -211,7 +208,7 @@ void ModManager::editLocalPath(int index)
     auto dialog = new LocalModPathSettingsDialog(this, pathInfo);
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
         LocalModPathManager::pathList().at(index)->setInfo(newInfo);
-        localItem_->child(index)->setText(0, newInfo.displayName());
+        browserSelector_->localItem()->child(index)->setText(0, newInfo.displayName());
     });
     dialog->exec();
 }
@@ -229,34 +226,10 @@ void ModManager::on_actionManage_Browser_triggered()
     dialog->show();
 }
 
-void ModManager::currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem */*previous*/)
-{
-    if(current == nullptr) return;
-    auto parent = current->parent();
-//    int currentIndex = ui->stackedWidget->currentIndex();
-    int index = -1;
-    //TODO: magic number
-    if(parent == downloadItem_)
-        index = 0;
-    else if(parent == exploreItem_)
-        index = 1 + parent->indexOfChild(current);
-    else if(parent == localItem_)
-        index = 5 + parent->indexOfChild(current);
-    if(index >= 0)
-        ui->stackedWidget->setCurrentIndex(index);
-}
-
-void ModManager::on_browserTreeWidget_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
-{
-    if(item->parent() != localItem_) return;
-    auto index = localItem_->indexOfChild(item);
-    editLocalPath(index);
-}
-
 void ModManager::customContextMenuRequested(const QPoint &pos)
 {
     auto menu = new QMenu(this);
-    auto item = browserTreeWidget_->itemAt(pos);
+    auto item = browserSelector_->browserTreeWidget()->itemAt(pos);
     if(item == nullptr){
         // in empty area
         connect(menu->addAction(QIcon::fromTheme("list-add"), tr("New Mod Path")), &QAction::triggered, this, [=]{
@@ -269,7 +242,7 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
         });
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
-    } else if(item->parent() == exploreItem_){
+    } else if(item->parent() == browserSelector_->exploreItem()){
         // on one of explore items
         auto index = item->parent()->indexOfChild(item);
         connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
@@ -290,7 +263,7 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
             menu->addAction(ui->actionVisit_OptiFine);
         if(index == 3)
             menu->addAction(ui->actionVisit_ReplayMod);
-    }else if(item->parent() == localItem_){
+    }else if(item->parent() == browserSelector_->localItem()){
         // on one of local items
         auto index = item->parent()->indexOfChild(item);
 
@@ -308,7 +281,7 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
         menu->addAction(ui->actionManage_Browser);
     }
     if(!menu->actions().isEmpty())
-        menu->exec(browserTreeWidget_->mapToGlobal(pos));
+        menu->exec(browserSelector_->browserTreeWidget()->mapToGlobal(pos));
 }
 
 void ModManager::on_action_About_Mod_Manager_triggered()
@@ -335,7 +308,6 @@ void ModManager::on_actionVisit_OptiFine_triggered()
     QUrl url("https://www.optifine.net");
     QDesktopServices::openUrl(url);
 }
-
 
 void ModManager::on_actionVisit_ReplayMod_triggered()
 {

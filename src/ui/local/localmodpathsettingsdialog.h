@@ -24,19 +24,13 @@ public:
 
 private slots:
     void updateVersionList();
-
     void on_modDirButton_clicked();
-
     void on_buttonBox_accepted();
-
-    void on_loaderSelect_currentIndexChanged(const QString &arg1);
-
     void on_versionSelect_currentIndexChanged(const QString &arg1);
-
     void on_nameText_textEdited(const QString &arg1);
-
     void on_useAutoName_toggled(bool checked);
-
+    void on_fabric_radioButton_toggled(bool checked);
+    void on_forge_radioButton_toggled(bool checked);
 private:
     Ui::LocalModPathSettingsDialog *ui;
     LocalModPathInfo info_;

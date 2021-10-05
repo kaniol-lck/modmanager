@@ -98,7 +98,7 @@ void OptifineModBrowser::getModList()
                 gameVersions << modInfo.gameVersion();
             auto mod = new OptifineMod(this, modInfo);
             auto *listItem = new QListWidgetItem();
-            listItem->setSizeHint(QSize(0, 100));
+            listItem->setSizeHint(QSize(0, 108));
             ui->modListWidget->addItem(listItem);
             auto itemWidget = new OptifineModItemWidget(this, mod);
             itemWidget->setDownloadPath(downloadPath_);
@@ -111,7 +111,7 @@ void OptifineModBrowser::getModList()
         ui->versionSelect->addItems(gameVersions);
 
         auto item = new QListWidgetItem(tr("There is no more mod here..."));
-        item->setSizeHint(QSize(0, 100));
+        item->setSizeHint(QSize(0, 108));
         auto font = qApp->font();
         font.setPointSize(20);
         item->setFont(font);
