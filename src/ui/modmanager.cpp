@@ -42,6 +42,14 @@ ModManager::ModManager(QWidget *parent) :
            config.getMainWindowHeight());
     addToolBar(static_cast<Qt::ToolBarArea>(config.getTabSelectBarArea()), ui->toolBar);
 
+    setStyleSheet("QListWidget::item:hover {\
+                  background-color: #eee;\
+              }\
+              QListWidget::item:selected {\
+                  border-left: 5px solid #37d;\
+                  background-color: #eee;\
+              }");
+
     browserTreeWidget_ = new QTreeWidget(this);
     browserTreeWidget_->setStyleSheet(R"(QTreeView { background-color: transparent; } QTreeView::branch { image:none; })");
     browserTreeWidget_->setFrameStyle(QFrame::NoFrame);

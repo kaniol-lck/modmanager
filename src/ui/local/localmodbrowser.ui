@@ -98,7 +98,8 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset theme="application-menu"/>
+        <iconset theme="application-menu">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="popupMode">
         <enum>QToolButton::InstantPopup</enum>
@@ -111,6 +112,9 @@
     <widget class="QListWidget" name="modListWidget">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="verticalScrollMode">
       <enum>QAbstractItemView::ScrollPerPixel</enum>

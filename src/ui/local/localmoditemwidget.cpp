@@ -21,8 +21,8 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) : QWidget
     ui->updateProgress->setVisible(false);
     ui->updateButton->setVisible(false);
     ui->updateButton->setEnabled(false);
-    ui->curseforgeButton->setEnabled(false);
-    ui->modrinthButton->setEnabled(false);
+    ui->curseforgeButton->setVisible(false);
+    ui->modrinthButton->setVisible(false);
     ui->disableButton->setVisible(false);
     ui->featuredButton->setVisible(false);
 
@@ -100,9 +100,9 @@ void LocalModItemWidget::updateInfo()
     }
 
     if (mod_->curseforgeMod())
-        ui->curseforgeButton->setEnabled(true);
+        ui->curseforgeButton->setVisible(true);
     if (mod_->modrinthMod())
-        ui->modrinthButton->setEnabled(true);
+        ui->modrinthButton->setVisible(true);
 
     updateReady(mod_->defaultUpdateType());
 
@@ -212,7 +212,7 @@ void LocalModItemWidget::startCheckCurseforge()
 
 void LocalModItemWidget::curseforgeReady(bool bl)
 {
-    ui->curseforgeButton->setEnabled(bl);
+    ui->curseforgeButton->setVisible(bl);
 }
 
 void LocalModItemWidget::startCheckCurseforgeUpdate()
@@ -227,7 +227,7 @@ void LocalModItemWidget::startCheckModrinth()
 
 void LocalModItemWidget::modrinthReady(bool bl)
 {
-    ui->modrinthButton->setEnabled(bl);
+    ui->modrinthButton->setVisible(bl);
 }
 
 void LocalModItemWidget::startCheckModrinthUpdate()
