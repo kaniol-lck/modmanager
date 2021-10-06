@@ -16,7 +16,7 @@ BrowserSelectorWidget::BrowserSelectorWidget(QWidget *parent) :
     items_ << new QTreeWidgetItem({tr("Explore")});
     items_ << new QTreeWidgetItem({tr("Local")});
 
-    //setup tree widget
+    //setup tree widgetl
     for (const auto &item : qAsConst(items_)){
         item->setForeground(0, QColor(127, 127, 127));
         item->setFlags(item->flags().setFlag(Qt::ItemIsSelectable, false));
@@ -46,7 +46,7 @@ void BrowserSelectorWidget::on_browserTreeWidget_currentItemChanged(QTreeWidgetI
     if(!current) return;
     auto parent = current->parent();
     if(!parent) return;
-    if(int i = items_.indexOf(parent))
+    if(int i = items_.indexOf(parent); i >= 0)
         emit browserChanged(static_cast<BrowserCategory>(i), parent->indexOfChild(current));
 }
 

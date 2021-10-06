@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>202</width>
+    <width>204</width>
     <height>731</height>
    </rect>
   </property>
@@ -60,10 +60,11 @@ QTreeView::branch {
      <item>
       <widget class="QToolButton" name="addButton">
        <property name="text">
-        <string notr="true">Add</string>
+        <string>Add</string>
        </property>
        <property name="icon">
-        <iconset theme="list-add"/>
+        <iconset theme="list-add">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -82,10 +83,11 @@ QTreeView::branch {
      <item>
       <widget class="QToolButton" name="manageButton">
        <property name="text">
-        <string notr="true">Manage</string>
+        <string>Manage</string>
        </property>
        <property name="icon">
-        <iconset theme="configure"/>
+        <iconset theme="configure">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="iconSize">
         <size>
