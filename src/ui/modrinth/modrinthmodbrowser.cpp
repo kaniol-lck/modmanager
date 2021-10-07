@@ -14,6 +14,7 @@
 #include "modloadertype.h"
 #include "config.h"
 #include "util/funcutil.h"
+#include "util/smoothscrollbar.h"
 
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -21,6 +22,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     api_(new ModrinthAPI(this))
 {
     ui->setupUi(this);
+    ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
 
     for(const auto &type : ModLoaderType::modrinth)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));

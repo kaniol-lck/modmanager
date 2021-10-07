@@ -1,6 +1,7 @@
 #include "optifinemodbrowser.h"
 #include "ui_optifinemodbrowser.h"
 
+#include <QScrollBar>
 #include <QDebug>
 
 #include "optifinemoditemwidget.h"
@@ -13,6 +14,7 @@
 #include "local/localmodpathmanager.h"
 #include "util/funcutil.h"
 #include "config.h"
+#include "util/smoothscrollbar.h"
 
 OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -21,6 +23,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     bmclapi_(new BMCLAPI(this))
 {
     ui->setupUi(this);
+    ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
 
     getModList();
 

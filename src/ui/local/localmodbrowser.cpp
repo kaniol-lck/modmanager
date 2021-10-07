@@ -4,6 +4,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QDebug>
+#include <QScrollBar>
 
 #include "localmodpathsettingsdialog.h"
 #include "local/localmodpath.h"
@@ -16,6 +17,7 @@
 #include "config.h"
 #include "util/funcutil.h"
 #include "util/localmodsortitem.h"
+#include "util/smoothscrollbar.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     QWidget(parent),
@@ -26,6 +28,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->checkUpdatesProgress->setVisible(false);
     ui->updateAllButton->setVisible(false);
     ui->updateAllButton->setEnabled(false);
+    ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
 
     auto findNewMenu = new QMenu(this);
     connect(findNewMenu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{

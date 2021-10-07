@@ -4,6 +4,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QScrollBar>
 
 #include "replaymoditemwidget.h"
 #include "replay/replayapi.h"
@@ -11,6 +12,7 @@
 #include "local/localmodpath.h"
 #include "local/localmodpathmanager.h"
 #include "util/funcutil.h"
+#include "util/smoothscrollbar.h"
 #include "config.h"
 
 ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
@@ -19,6 +21,7 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     api_(new ReplayAPI())
 {
     ui->setupUi(this);
+    ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
 
     for(const auto &type : ModLoaderType::replay)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));

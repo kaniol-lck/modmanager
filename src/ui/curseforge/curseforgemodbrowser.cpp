@@ -15,6 +15,7 @@
 #include "modloadertype.h"
 #include "config.h"
 #include "util/funcutil.h"
+#include "util/smoothscrollbar.h"
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     QWidget(parent),
@@ -22,6 +23,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     api_(new CurseforgeAPI(this))
 {
     ui->setupUi(this);
+    ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
 
     for(const auto &type : ModLoaderType::curseforge)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));

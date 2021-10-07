@@ -119,7 +119,11 @@
     </layout>
    </item>
    <item row="2" column="0" colspan="3">
-    <widget class="QListWidget" name="modListWidget"/>
+    <widget class="QListWidget" name="modListWidget">
+     <property name="verticalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
+    </widget>
    </item>
    <item row="0" column="0" colspan="3">
     <widget class="QLineEdit" name="searchText">

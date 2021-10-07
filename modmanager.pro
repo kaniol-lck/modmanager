@@ -79,6 +79,7 @@ SOURCES += \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
     src/util/localmodsortitem.cpp \
+    src/util/smoothscrollbar.cpp \
     src/util/updatesourcedelegate.cpp \
     src/util/websiteicon.cpp \
     src/util/youdaotranslator.cpp
@@ -151,6 +152,7 @@ HEADERS += \
     src/util/flowlayout.h \
     src/util/funcutil.h \
     src/util/localmodsortitem.h \
+    src/util/smoothscrollbar.h \
     src/util/tutil.hpp \
     src/util/datetimesortitem.h \
     src/util/updatesourcedelegate.h \
