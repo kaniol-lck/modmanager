@@ -82,22 +82,54 @@ void LocalModItemWidget::updateInfo()
     else
         ui->modAuthors->setText("");
 
-    if (!mod_->commonInfo()->iconBytes().isEmpty()){
-        QImage image;
-        image.loadFromData(mod_->commonInfo()->iconBytes());
-        if (mod_->modFile()->type() == LocalModFile::Disabled)
-        {
+    auto setIcon = [=](auto &&image) {
+        QPixmap pixelmap;
+        if (mod_->modFile()->type() == LocalModFile::Disabled){
             auto alphaChannel = image.convertToFormat(QImage::Format_Alpha8);
             image = image.convertToFormat(QImage::Format_Grayscale8);
             image.setAlphaChannel(alphaChannel);
         }
-        QPixmap pixelmap;
         pixelmap.convertFromImage(image);
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-    } else{
-        QPixmap pixelmap(":/image/modmanager.png");
-        ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-    }
+    };
+
+    if(!mod_->commonInfo()->iconBytes().isEmpty()){
+        QImage image;
+        image.loadFromData(mod_->commonInfo()->iconBytes());
+        setIcon(image);
+    }else if(mod_->curseforgeMod()){
+        auto setCurseforgeIcon = [=]{
+            QImage image;
+            image.loadFromData(mod_->curseforgeMod()->modInfo().iconBytes());
+            setIcon(image);
+        };
+        if(!mod_->curseforgeMod()->modInfo().iconBytes().isEmpty())
+            setCurseforgeIcon();
+        else{
+            mod_->curseforgeMod()->acquireBasicInfo();
+            connect(mod_->curseforgeMod(), &CurseforgeMod::basicInfoReady, this, [=]{
+                mod_->curseforgeMod()->acquireIcon();
+                connect(mod_->curseforgeMod(), &CurseforgeMod::iconReady, this, setCurseforgeIcon);
+            });
+        }
+    } else if(mod_->modrinthMod()){
+        auto setModrinthIcon = [=]{
+            QImage image;
+            image.loadFromData(mod_->modrinthMod()->modInfo().iconBytes());
+            setIcon(image);
+        };
+        if(!mod_->modrinthMod()->modInfo().iconBytes().isEmpty())
+            setModrinthIcon();
+        else{
+            mod_->modrinthMod()->acquireFullInfo();
+            connect(mod_->modrinthMod(), &ModrinthMod::fullInfoReady, this, [=]{
+                connect(mod_->modrinthMod(), &ModrinthMod::iconReady, this, setModrinthIcon);
+                mod_->modrinthMod()->acquireIcon();
+            });
+        }
+    } else
+        setIcon(QImage(":/image/modmanager.png"));
+
 
     if (mod_->curseforgeMod())
         ui->curseforgeButton->setVisible(true);

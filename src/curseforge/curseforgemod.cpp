@@ -1,5 +1,7 @@
 #include "curseforgemod.h"
 
+#include <QStandardPaths>
+#include <QNetworkDiskCache>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDebug>
@@ -51,6 +53,10 @@ void CurseforgeMod::acquireIcon()
     gettingIcon_ = true;
     QNetworkRequest request(modInfo_.iconUrl_);
     static QNetworkAccessManager accessManager;
+    static QNetworkDiskCache diskCache;
+    diskCache.setCacheDirectory(QStandardPaths::displayName(QStandardPaths::CacheLocation));
+    accessManager.setCache(&diskCache);
+    request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
     auto reply = accessManager.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
         gettingIcon_ = false;
