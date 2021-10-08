@@ -27,6 +27,22 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="filterButton">
+       <property name="text">
+        <string>Filter</string>
+       </property>
+       <property name="icon">
+        <iconset theme="view-filter"/>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::InstantPopup</enum>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Sort:</string>

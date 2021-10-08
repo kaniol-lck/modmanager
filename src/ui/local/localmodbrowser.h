@@ -10,6 +10,7 @@ class LocalModBrowser;
 }
 
 class LocalModPath;
+class UnclosedMenu;
 
 class LocalModBrowser : public QWidget
 {
@@ -46,23 +47,22 @@ private slots:
     void updatesDoneCountUpdated(int doneCount, int totalCount);
     void updatesDone(int successCount, int failCount);
 
+    void filterList();
+
     void on_modListWidget_doubleClicked(const QModelIndex &index);
-
-    void on_searchText_textEdited(const QString &arg1);
-
     void on_comboBox_currentIndexChanged(int index);
-
     void on_checkUpdatesButton_clicked();
-
     void on_openFolderButton_clicked();
-
     void on_checkButton_clicked();
-
     void on_updateAllButton_clicked();
-
 private:
     Ui::LocalModBrowser *ui;
     LocalModPath *modPath_;
+    UnclosedMenu *filterMenu_;
+    UnclosedMenu *filterWebsiteMenu_;
+    UnclosedMenu *filterTypeTagMenu_;
+    UnclosedMenu *filterFunctionalityTagMenu_;
+    QAction *filterDisableAction_;
     bool isUpdating_ = false;
 };
 

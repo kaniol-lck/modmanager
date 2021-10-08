@@ -80,6 +80,7 @@ SOURCES += \
     src/util/datetimesortitem.cpp \
     src/util/localmodsortitem.cpp \
     src/util/smoothscrollbar.cpp \
+    src/util/unclosedmenu.cpp \
     src/util/updatesourcedelegate.cpp \
     src/util/websiteicon.cpp \
     src/util/youdaotranslator.cpp
@@ -155,6 +156,7 @@ HEADERS += \
     src/util/smoothscrollbar.h \
     src/util/tutil.hpp \
     src/util/datetimesortitem.h \
+    src/util/unclosedmenu.h \
     src/util/updatesourcedelegate.h \
     src/util/websiteicon.h \
     src/util/youdaotranslator.h \

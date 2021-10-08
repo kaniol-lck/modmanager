@@ -137,8 +137,7 @@ void ModManager::syncPathList()
 
     auto oldCount = pathList_.size();
     for(const auto &path : LocalModPathManager::pathList()){
-        auto i = pathList_.indexOf(path);
-        if(i < 0){
+        if(auto i = pathList_.indexOf(path); i < 0){
             //not present, new one
             pathList_ << path;
             auto item = new QTreeWidgetItem(browserSelector_->localItem(), {path->info().displayName()});
