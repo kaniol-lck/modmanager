@@ -10,7 +10,7 @@ class LocalModBrowser;
 }
 
 class LocalModPath;
-class UnclosedMenu;
+class LocalModFilter;
 
 class LocalModBrowser : public QWidget
 {
@@ -58,11 +58,7 @@ private slots:
 private:
     Ui::LocalModBrowser *ui;
     LocalModPath *modPath_;
-    UnclosedMenu *filterMenu_;
-    UnclosedMenu *filterWebsiteMenu_;
-    UnclosedMenu *filterTypeTagMenu_;
-    UnclosedMenu *filterFunctionalityTagMenu_;
-    QAction *filterDisableAction_;
+    LocalModFilter *filter_;
     bool isUpdating_ = false;
 };
 

@@ -19,16 +19,13 @@
 #include "util/localmodsortitem.h"
 #include "util/smoothscrollbar.h"
 #include "util/unclosedmenu.h"
+#include "localmodfilter.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     QWidget(parent),
     ui(new Ui::LocalModBrowser),
     modPath_(modPath),
-    filterMenu_(new UnclosedMenu(this)),
-    filterWebsiteMenu_(new UnclosedMenu(tr("Website source"), this)),
-    filterTypeTagMenu_(new UnclosedMenu(tr("Type tag"), this)),
-    filterFunctionalityTagMenu_(new UnclosedMenu(tr("Functionality tag"), this)),
-    filterDisableAction_(new QAction(tr("Disabled mods"), this))
+    filter_(new LocalModFilter(this))
 {
     ui->setupUi(this);
     ui->checkUpdatesProgress->setVisible(false);
@@ -51,96 +48,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     });
     ui->findnewButton->setMenu(findNewMenu);
 
-    connect(filterMenu_, &UnclosedMenu::aboutToHide, this, &LocalModBrowser::filterList);
-    ui->filterButton->setMenu(filterMenu_);
-    filterDisableAction_->setCheckable(true);
-
-    auto showAllAction = filterMenu_->addAction(tr("Show all"));
-    connect(showAllAction, &QAction::triggered, this, [=]{
-        for(auto &&action : filterWebsiteMenu_->actions())
-            action->setChecked(true);
-        for(auto &&action : filterTypeTagMenu_->actions())
-            action->setChecked(true);
-        for(auto &&action : filterFunctionalityTagMenu_->actions())
-            action->setChecked(true);
-        filterDisableAction_->setChecked(true);
-    });
-    connect(filterMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
-        for(auto &&action : filterWebsiteMenu_->actions())
-            action->setChecked(false);
-        for(auto &&action : filterTypeTagMenu_->actions())
-            action->setChecked(false);
-        for(auto &&action : filterFunctionalityTagMenu_->actions())
-            action->setChecked(false);
-        filterDisableAction_->setChecked(false);
-    });
-    filterMenu_->addSeparator();
-    filterMenu_->addMenu(filterWebsiteMenu_);
-    filterMenu_->addMenu(filterTypeTagMenu_);
-    filterMenu_->addMenu(filterFunctionalityTagMenu_);
-    filterMenu_->addAction(filterDisableAction_);
-
-    connect(filterWebsiteMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
-        for(auto &&action : filterWebsiteMenu_->actions())
-            action->setChecked(true);
-    });
-    connect(filterWebsiteMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
-        for(auto &&action : filterWebsiteMenu_->actions())
-            action->setChecked(false);
-    });
-    filterWebsiteMenu_->addSeparator();
-    filterWebsiteMenu_->addAction(QIcon(":/image/curseforge.svg"), "Curseforge")->setCheckable(true);
-    filterWebsiteMenu_->addAction(QIcon(":/image/modrinth.svg"), "Modrinth")->setCheckable(true);
-    auto noneAction = filterWebsiteMenu_->addAction(tr("None"));
-    noneAction->setCheckable(true);
-    noneAction->setData(true);
-    connect(filterTypeTagMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
-        for(auto &&action : filterTypeTagMenu_->actions())
-            action->setChecked(true);
-    });
-    connect(filterTypeTagMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
-        for(auto &&action : filterTypeTagMenu_->actions())
-            action->setChecked(false);
-    });
-    filterTypeTagMenu_->addSeparator();
-    for(auto &&tag : Tag::typeTags()){
-        auto action = filterTypeTagMenu_->addAction(tag.name());
-        action->setCheckable(true);
-    }
-    noneAction = filterTypeTagMenu_->addAction(tr("None"));
-    noneAction->setCheckable(true);
-    noneAction->setData(true);
-    connect(filterMenu_, &QMenu::aboutToShow, this, [=]{
-        QMap<QString, bool> map;
-        for(auto &&action : filterFunctionalityTagMenu_->actions())
-            map[action->text()] = action->isChecked();
-        filterFunctionalityTagMenu_->clear();
-        connect(filterFunctionalityTagMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
-            for(auto &&action : filterFunctionalityTagMenu_->actions())
-                action->setChecked(true);
-        });
-        connect(filterFunctionalityTagMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
-            for(auto &&action : filterFunctionalityTagMenu_->actions())
-                action->setChecked(false);
-        });
-        filterFunctionalityTagMenu_->addSeparator();
-        for(auto &&tag : Tag::functionalityTags()){
-            auto action = filterFunctionalityTagMenu_->addAction(tag.name());
-            action->setCheckable(true);
-            if(map.contains(tag.name()))
-                action->setChecked(map[tag.name()]);
-            else
-                action->setChecked(true);
-        }
-        auto noneAction = filterFunctionalityTagMenu_->addAction(tr("None"));
-        noneAction->setCheckable(true);
-        if(map.contains(tr("None")))
-            noneAction->setChecked(map[tr("None")]);
-        else
-            noneAction->setChecked(true);
-        noneAction->setData(true);
-    });
-    showAllAction->trigger();
+    connect(filter_->menu(), &UnclosedMenu::menuTriggered, this, &LocalModBrowser::filterList);
+    ui->filterButton->setMenu(filter_->menu());
+    filter_->showAll();
 
     auto menu = new QMenu(this);
 //    connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
@@ -323,63 +233,9 @@ void LocalModBrowser::updatesDone(int successCount, int failCount)
 void LocalModBrowser::filterList()
 {
     for(int i = 0; i < ui->modListWidget->count(); i++){
-        bool show = true;
         auto item = ui->modListWidget->item(i);
         auto mod = dynamic_cast<const LocalModSortItem*>(item)->mod();
-        auto str = ui->searchText->text().toLower();
-        if(!(mod->commonInfo()->name().toLower().contains(str) ||
-                mod->commonInfo()->description().toLower().contains(str)))
-            show = false;
-        if(!filterDisableAction_->isChecked() && mod->isDisabled())
-            show = false;
-        bool showWebsite = false;
-        for(auto &&action : filterWebsiteMenu_->actions()){
-            if(action->text() == "Curseforge" && action->isChecked() && mod->curseforgeMod())
-                showWebsite = true;
-            if(action->text() == "Modrinth" && action->isChecked() && mod->modrinthMod())
-                showWebsite = true;
-            if(action->data().toBool() && action->isChecked() && !mod->curseforgeMod() && !mod->modrinthMod())
-                showWebsite = true;
-        }
-        bool showTypeTag = false;
-        for(auto &&action : filterTypeTagMenu_->actions()){
-            bool hasTag = false;
-            if(!action->isChecked()) continue;
-            if(action->data().toBool() && mod->tagManager().typeTags().isEmpty()){
-                showTypeTag = true;
-                break;
-            }
-            for(auto &&tag : mod->tagManager().typeTags()){
-                if(action->text() == tag.name()){
-                    hasTag = true;
-                    break;
-                }
-            }
-            if(hasTag) {
-                showTypeTag = true;
-                break;
-            }
-        }
-        bool showFunctionalityTag = false;
-        for(auto &&action : filterFunctionalityTagMenu_->actions()){
-            bool hasTag = false;
-            if(!action->isChecked()) continue;
-            if(action->data().toBool() && mod->tagManager().functionalityTags().isEmpty()){
-                showFunctionalityTag = true;
-                break;
-            }
-            for(auto &&tag : mod->tagManager().functionalityTags()){
-                if(action->text() == tag.name()){
-                    hasTag = true;
-                    break;
-                }
-            }
-            if(hasTag) {
-                showFunctionalityTag = true;
-                break;
-            }
-        }
-        item->setHidden(!(show && showWebsite && showTypeTag && showFunctionalityTag));
+        item->setHidden(!filter_->willShow(mod, ui->searchText->text().toLower()));
     }
 }
 

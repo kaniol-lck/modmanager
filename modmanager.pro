@@ -59,6 +59,7 @@ SOURCES += \
     src/ui/local/localmodbrowser.cpp \
     src/ui/local/localmodcheckdialog.cpp \
     src/ui/local/localmoddialog.cpp \
+    src/ui/local/localmodfilter.cpp \
     src/ui/local/localmoditemwidget.cpp \
     src/main.cpp \
     src/ui/local/localmodmenu.cpp \
@@ -135,6 +136,7 @@ HEADERS += \
     src/ui/local/localmodbrowser.h \
     src/ui/local/localmodcheckdialog.h \
     src/ui/local/localmoddialog.h \
+    src/ui/local/localmodfilter.h \
     src/ui/local/localmoditemwidget.h \
     src/ui/local/localmodmenu.h \
     src/ui/local/localmodpathsettingsdialog.h \
