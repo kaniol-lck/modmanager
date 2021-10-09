@@ -27,6 +27,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->starredAtTop->setChecked(config.getStarredAtTop());
     ui->disabedAtBottom->setChecked(config.getDisabedAtBottom());
     ui->versionMatchSelect->setCurrentIndex(config.getVersionMatch());
+    ui->loaderMatchSelect->setCurrentIndex(config.getLoaderMatch());
     ui->updateCheckIntervalSelect->setCurrentIndex(config.getUpdateCheckInterval());
     ui->useCurseforgeUpdate->setChecked(config.getUseCurseforgeUpdate());
     ui->useModrinthUpdate->setChecked(config.getUseModrinthUpdate());
@@ -56,6 +57,7 @@ void Preferences::on_Preferences_accepted()
     config.setStarredAtTop(ui->starredAtTop->isChecked());
     config.setDisabedAtBottom(ui->disabedAtBottom->isChecked());
     config.setVersionMatch(ui->versionMatchSelect->currentIndex());
+    config.setLoaderMatch(ui->loaderMatchSelect->currentIndex());
     config.setUpdateCheckInterval(ui->updateCheckIntervalSelect->currentIndex());
     config.setUseCurseforgeUpdate(ui->useCurseforgeUpdate->isChecked());
     config.setUseModrinthUpdate(ui->useModrinthUpdate->isChecked());

@@ -28,25 +28,27 @@ public:
 
     //General
     getterAndSetter(DownloadPath, String, downloadPath, "")
-    getterAndSetter(CommonPath, String, commonPath, "")
     getterAndSetter(SearchResultCount, Int, searchResultCount, 30)
+    enum OptifineSourceType{ Official, BMCLAPI };
+    getterAndSetter(OptifineSource, Int, optifineSource, Official)
+    getterAndSetter(ShowModrinthSnapshot, Bool, showModrinthSnapshot, false)
+
+    //Local
+    getterAndSetter(CommonPath, String, commonPath, "")
+    enum RightClickTagMenuType{ AllAvailable, CurrentPath };
+    getterAndSetter(RightClickTagMenu, Int, rightClickTagMenu, AllAvailable)
+    getterAndSetter(StarredAtTop, Bool, starredAtTop, true)
+    getterAndSetter(DisabedAtBottom, Bool, disabedAtBottom, true)
     enum VersionMatchType{ MinorVersion, MajorVersion };
     getterAndSetter(VersionMatch, Int, versionMatch, MinorVersion);
+    enum LoaderMatchType{ ExactMatch, IncludeUnmarked };
+    getterAndSetter(LoaderMatch, Int, loaderMatch, IncludeUnmarked);
     getterAndSetter(UseCurseforgeUpdate, Bool, useCurseforgeUpdate, true)
     getterAndSetter(UseModrinthUpdate, Bool, useModrinthUpdate, true)
     enum PostUpdateType{ Delete, Keep, DoNothing };
     getterAndSetter(PostUpdate, Int, postUpdate, Keep)
     enum UpdateCheckIntervalType{ Always, EveryDay, Never };
     getterAndSetter(UpdateCheckInterval, Int, updateCheckIntervalType, EveryDay)
-    enum OptifineSourceType{ Official, BMCLAPI };
-    getterAndSetter(OptifineSource, Int, optifineSource, Official)
-    getterAndSetter(ShowModrinthSnapshot, Bool, showModrinthSnapshot, false)
-
-    //Local
-    enum RightClickTagMenuType{ AllAvailable, CurrentPath };
-    getterAndSetter(RightClickTagMenu, Int, rightClickTagMenu, AllAvailable)
-    getterAndSetter(StarredAtTop, Bool, starredAtTop, true)
-    getterAndSetter(DisabedAtBottom, Bool, disabedAtBottom, true)
 
     //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)

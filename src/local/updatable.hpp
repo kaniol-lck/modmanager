@@ -53,9 +53,10 @@ public:
         QList<FileInfoT> list;
         std::insert_iterator<QList<FileInfoT>> iter(list, list.begin());
         std::copy_if(fileList.cbegin(), fileList.cend(), iter, [=](const auto &file){
-            auto versionCheck = false;
-            for(const auto & version : file.gameVersions()){
-                switch (Config().getVersionMatch()) {
+            bool versionCheck = false;
+            Config config;
+            for(auto &&version : file.gameVersions()){
+                switch (config.getVersionMatch()) {
                 case Config::MinorVersion:
                     if(version == targetVersion)
                         versionCheck = true;
@@ -66,7 +67,13 @@ public:
                     break;
                 }
             }
-            return versionCheck && (/*file.loaderTypes().isEmpty() || */file.loaderTypes().contains(targetType));
+            bool loaderCheck = false;
+            if(file.loaderTypes().contains(targetType))
+                loaderCheck = true;
+            if(!loaderCheck && config.getLoaderMatch() == Config::IncludeUnmarked && file.loaderTypes().isEmpty())
+                loaderCheck = true;
+
+            return versionCheck && loaderCheck;
         });
 
         //non match
