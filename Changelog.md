@@ -16,20 +16,11 @@ Added local mod filters.
 Added caches for mod icon to load faster.
 添加了图标缓存，提升加载速度。
 
-Add Curseforge/Modrinth categories display.
+Added Curseforge/Modrinth categories display.
 添加了Curseforge/Modrinth的类别显示。
 
 Added local mod loading progress display.
 添加了本地mod加载进度显示。
-
-Local mods without icon info will show website icons.
-没有图标的本地mod会显示存在的网络图标。
-
-Browser selector is movable toolbar now.
-浏览选择器是可移动的工具栏了。
-
-Tweak GUI of mod list.
-调整了mod列表的GUI。
 
 Mod lists now have smooth scrolling.
 mod列表现在有平滑滚动了。
@@ -37,8 +28,23 @@ mod列表现在有平滑滚动了。
 Resize/reposition of main window will be saved.
 主界面的调整大小和位置会被保存。
 
-Mod summaries of curseforge and modrinth are not in italic font.
-curseforge和Modrinth的mod概述不以斜体显示了。
+Local mods without icon info will show website icons.
+没有图标的本地mod会显示存在的网络图标。
+
+Browser selector is movable toolbar now.
+浏览选择器是可移动的工具栏了。
+
+Corrected search sort of Curseforge. It differed from website's in fact.
+纠正了Curseforge的搜索排序，它实际上与网站上的排序不同。
+
+Tweaked Curseforge / Forge icon.
+调整了Curseforge和Forge的图标。
+
+Tweaked GUI of mod list.
+调整了mod列表的GUI。
+
+Mod summaries of Curseforge and Modrinth are not in italic font.
+Curseforge和Modrinth的mod概述不以斜体显示了。
 
 Fixed browser selector jump to downloader tab.
 修复了浏览选择器会跳到下载器标签的问题。

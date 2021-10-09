@@ -43,7 +43,7 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
     //mod
     urlQuery.addQueryItem("sectionId", "6");
     //sort, 0 for no sort spec
-    urlQuery.addQueryItem("sort", QString::number(sort));
+    urlQuery.addQueryItem("sort", QString::number(sort + 1));
 
     url.setQuery(urlQuery);
     QNetworkRequest request(url);

@@ -184,12 +184,7 @@
       <widget class="QComboBox" name="sortSelect">
        <item>
         <property name="text">
-         <string>Default</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Date Created</string>
+         <string>Popularity</string>
         </property>
        </item>
        <item>
@@ -204,12 +199,22 @@
        </item>
        <item>
         <property name="text">
-         <string>Popularity</string>
+         <string>Author</string>
         </property>
        </item>
        <item>
         <property name="text">
          <string>Total Downloads</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Category</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Game Version</string>
         </property>
        </item>
       </widget>

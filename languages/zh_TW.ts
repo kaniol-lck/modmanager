@@ -181,32 +181,32 @@
     <message>
         <location filename="../src/ui/browserselectorwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Form</translation>
+        <translation>Form</translation>
     </message>
     <message>
         <location filename="../src/ui/browserselectorwidget.ui" line="63"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>新建</translation>
     </message>
     <message>
         <location filename="../src/ui/browserselectorwidget.ui" line="86"/>
         <source>Manage</source>
-        <translation type="unfinished"></translation>
+        <translation>管理</translation>
     </message>
     <message>
         <location filename="../src/ui/browserselectorwidget.cpp" line="15"/>
         <source>Download</source>
-        <translation type="unfinished">下載</translation>
+        <translation>下載</translation>
     </message>
     <message>
         <location filename="../src/ui/browserselectorwidget.cpp" line="16"/>
         <source>Explore</source>
-        <translation type="unfinished">探索</translation>
+        <translation>探索</translation>
     </message>
     <message>
         <location filename="../src/ui/browserselectorwidget.cpp" line="17"/>
         <source>Local</source>
-        <translation type="unfinished">本地</translation>
+        <translation>本地</translation>
     </message>
 </context>
 <context>
@@ -510,32 +510,45 @@
         <translation>排序：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="187"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="212"/>
+        <source>Category</source>
+        <translation>類別</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="217"/>
+        <source>Game Version</source>
+        <translation>遊戲版本</translation>
+    </message>
+    <message>
         <source>Default</source>
-        <translation>默認</translation>
+        <translation type="vanished">默認</translation>
+    </message>
+    <message>
+        <source>Date Created</source>
+        <translation type="vanished">創建時間</translation>
     </message>
     <message>
         <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="192"/>
-        <source>Date Created</source>
-        <translation>創建時間</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="197"/>
         <source>Last Updated</source>
         <translation>最後更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="202"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="197"/>
         <source>Name</source>
         <translation>名稱</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="207"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="187"/>
         <source>Popularity</source>
         <translation>熱門</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="212"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="202"/>
+        <source>Author</source>
+        <translation>作者</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="207"/>
         <source>Total Downloads</source>
         <translation>下載總量</translation>
     </message>
@@ -746,7 +759,7 @@
     <message>
         <location filename="../src/ui/local/localmodbrowser.ui" line="32"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>篩選</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodbrowser.ui" line="48"/>
@@ -829,17 +842,17 @@
     <message>
         <location filename="../src/ui/local/localmodbrowser.cpp" line="127"/>
         <source>Loading mod files...</source>
-        <translation type="unfinished"></translation>
+        <translation>加載mod文件中...</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodbrowser.cpp" line="133"/>
         <source>Loading mod files.. (Loaded %1/%2 mod files)</source>
-        <translation type="unfinished"></translation>
+        <translation>加載mod文件中...（已加載%1/%2個mod文件）</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodbrowser.cpp" line="141"/>
         <source>All mod files are loaded...</source>
-        <translation type="unfinished"></translation>
+        <translation>已加載所有mod文件...</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodbrowser.cpp" line="149"/>
@@ -1097,22 +1110,22 @@
     <message>
         <location filename="../src/ui/local/localmodfilter.cpp" line="15"/>
         <source>Website source</source>
-        <translation type="unfinished"></translation>
+        <translation>網站來源</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodfilter.cpp" line="16"/>
         <source>Type tag</source>
-        <translation type="unfinished">類型標籤</translation>
+        <translation>類型標籤</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodfilter.cpp" line="17"/>
         <source>Functionality tag</source>
-        <translation type="unfinished">功能標籤</translation>
+        <translation>功能標籤</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodfilter.cpp" line="18"/>
         <source>Disabled mods</source>
-        <translation type="unfinished"></translation>
+        <translation>已禁用mod</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodfilter.cpp" line="19"/>
@@ -1120,7 +1133,7 @@
         <location filename="../src/ui/local/localmodfilter.cpp" line="64"/>
         <location filename="../src/ui/local/localmodfilter.cpp" line="86"/>
         <source>Show all</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示全部</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodfilter.cpp" line="34"/>
@@ -1128,7 +1141,7 @@
         <location filename="../src/ui/local/localmodfilter.cpp" line="68"/>
         <location filename="../src/ui/local/localmodfilter.cpp" line="90"/>
         <source>Hide all</source>
-        <translation type="unfinished"></translation>
+        <translation>隱藏全部</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodfilter.cpp" line="61"/>
@@ -1137,7 +1150,7 @@
         <location filename="../src/ui/local/localmodfilter.cpp" line="106"/>
         <location filename="../src/ui/local/localmodfilter.cpp" line="107"/>
         <source>None</source>
-        <translation type="unfinished">無</translation>
+        <translation>無</translation>
     </message>
 </context>
 <context>
@@ -1360,12 +1373,12 @@
     <message>
         <location filename="../src/ui/local/localmodpathsettingsdialog.ui" line="140"/>
         <source>Fabric</source>
-        <translation type="unfinished">Fabric</translation>
+        <translation>Fabric</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodpathsettingsdialog.ui" line="154"/>
         <source>Forge</source>
-        <translation type="unfinished"></translation>
+        <translation>Forge</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodpathsettingsdialog.cpp" line="55"/>
@@ -1887,7 +1900,7 @@
     <message>
         <location filename="../src/ui/preferences.ui" line="34"/>
         <source>Explore</source>
-        <translation type="unfinished">探索</translation>
+        <translation>探索</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="48"/>
@@ -1927,12 +1940,12 @@
     <message>
         <location filename="../src/ui/preferences.ui" line="133"/>
         <source>Local</source>
-        <translation type="unfinished">本地</translation>
+        <translation>本地</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="204"/>
         <source>Mod List</source>
-        <translation type="unfinished"></translation>
+        <translation>mod列表</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="227"/>
@@ -2012,42 +2025,42 @@
     <message>
         <location filename="../src/ui/preferences.ui" line="181"/>
         <source>Right-click tag menu:</source>
-        <translation type="unfinished"></translation>
+        <translation>右鍵標籤菜單：</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="189"/>
         <source>All available tags</source>
-        <translation type="unfinished"></translation>
+        <translation>所有可用標籤</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="194"/>
         <source>Tags in currentt path</source>
-        <translation type="unfinished"></translation>
+        <translation>當前路徑中的標籤</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="217"/>
         <source>Disabled mods at bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>已禁用的mod置底</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="210"/>
         <source>Starred mods at top</source>
-        <translation type="unfinished"></translation>
+        <translation>星標mod置頂</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="338"/>
         <source>Mod loader match:</source>
-        <translation type="unfinished"></translation>
+        <translation>mod加載器匹配：</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="346"/>
         <source>Exact Match</source>
-        <translation type="unfinished"></translation>
+        <translation>精確匹配</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="351"/>
         <source>Include Unmarked</source>
-        <translation type="unfinished"></translation>
+        <translation>包含未標註的</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="376"/>

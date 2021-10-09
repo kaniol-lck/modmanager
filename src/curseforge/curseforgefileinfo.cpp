@@ -19,8 +19,7 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
     fileInfo.fileDate_ = value(variant, "fileDate").toDateTime();
 
     //I don't know why curseforge put game verison and modloader together
-    auto versionList = value(variant, "gameVersion").toStringList();
-    for(const auto &version : versionList){
+    for(auto &&version : value(variant, "gameVersion").toStringList()){
         if(auto loaderType = ModLoaderType::fromString(version); loaderType != ModLoaderType::Any)
             fileInfo.loaderTypes_ << loaderType;
         else {
@@ -30,6 +29,10 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
                 fileInfo.gameVersions_ << version;
         }
     }
+
+    //fields: addonId id type
+    for(auto &&dependency : value(variant, "dependencies").toList())
+        fileInfo.dependencies_ << value(dependency, "fileId").toInt();
 
     return fileInfo;
 }
@@ -46,7 +49,7 @@ QJsonObject CurseforgeFileInfo::toJsonObject() const
         {"fileDate", fileDate_.toString(Qt::DateFormat::ISODate)}
     };
     QJsonArray versionArray;
-    for(auto type : loaderTypes_)
+    for(const auto &type : loaderTypes_)
         versionArray << ModLoaderType::toString(type);
     for(const auto &version : gameVersions_)
         versionArray << QString(version);

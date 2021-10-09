@@ -37,6 +37,7 @@ private:
     QList<ModLoaderType::Type> loaderTypes_;
     int releaseType_;
     QDateTime fileDate_;
+    QList<IdType> dependencies_;
 };
 
 #endif // CURSEFORGEMODFILEINFO_H

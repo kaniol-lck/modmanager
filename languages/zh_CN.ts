@@ -501,32 +501,35 @@
         <translation>排序：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="187"/>
         <source>Default</source>
-        <translation>默认</translation>
+        <translation type="vanished">默认</translation>
+    </message>
+    <message>
+        <source>Date Created</source>
+        <translation type="vanished">创建时间</translation>
     </message>
     <message>
         <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="192"/>
-        <source>Date Created</source>
-        <translation>创建时间</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="197"/>
         <source>Last Updated</source>
         <translation>最后更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="202"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="197"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="207"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="187"/>
         <source>Popularity</source>
         <translation>热门</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="212"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="202"/>
+        <source>Author</source>
+        <translation>作者</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="207"/>
         <source>Total Downloads</source>
         <translation>下载总量</translation>
     </message>
@@ -554,6 +557,16 @@
         <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="141"/>
         <source>...</source>
         <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="212"/>
+        <source>Category</source>
+        <translation>类别</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="217"/>
+        <source>Game Version</source>
+        <translation>游戏版本</translation>
     </message>
 </context>
 <context>
@@ -1567,7 +1580,7 @@
     <message>
         <location filename="../src/modrinth/modrinthapi.cpp" line="265"/>
         <source>Cursed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursed</translation>
     </message>
 </context>
 <context>
