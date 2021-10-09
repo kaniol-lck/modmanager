@@ -15,11 +15,15 @@ UnclosedMenu::UnclosedMenu(const QString &title, QWidget *parent) :
     connect(this, &QMenu::triggered, this, &UnclosedMenu::menuTriggered);
 }
 
+QAction *UnclosedMenu::addMenu(UnclosedMenu *menu)
+{
+    connect(menu, &UnclosedMenu::menuTriggered, this, &UnclosedMenu::menuTriggered);
+    return QMenu::addMenu(menu);
+}
+
 void UnclosedMenu::mouseReleaseEvent(QMouseEvent *event)
 {
     if(auto action = actionAt(event->pos())){
-        //TODO
-        connect(qobject_cast<UnclosedMenu*>(action->menu()), &UnclosedMenu::menuTriggered, this, &UnclosedMenu::menuTriggered, Qt::UniqueConnection);
         action->activate(QAction::Trigger);
         emit menuTriggered();
     }

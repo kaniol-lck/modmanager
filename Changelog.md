@@ -10,6 +10,9 @@ Soon....
 
 *WIP*
 
+Added local mod filters.
+添加了本地mod筛选。
+
 Added caches for mod icon to load faster.
 添加了图标缓存，提升加载速度。
 

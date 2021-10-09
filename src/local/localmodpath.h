@@ -42,6 +42,8 @@ public:
     const LocalModPathInfo &info() const;
     void setInfo(const LocalModPathInfo &newInfo);
 
+    LocalModTags tagManager();
+
     CurseforgeAPI *curseforgeAPI() const;
     ModrinthAPI *modrinthAPI() const;
     int updatableCount() const;

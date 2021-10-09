@@ -4,6 +4,7 @@
 #include <QInputDialog>
 
 #include "local/localmod.h"
+#include "local/localmodpath.h"
 #include "tag/tag.h"
 
 LocalModMenu::LocalModMenu(QWidget *parent, LocalMod *mod) :
@@ -23,7 +24,8 @@ QMenu *LocalModMenu::addTagMenu() const
         });
     //Functionality category
     auto addFunctionalityTagmenu = menu->addMenu(tr("Functionality tag"));
-    for(auto &&tag : Tag::functionalityTags())
+    auto &&tagManager = mod_->path()->tagManager();
+    for(auto &&tag : tagManager.functionalityTags())// Tag::functionalityTags())
         connect(addFunctionalityTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
             mod_->addTag(tag);
         });

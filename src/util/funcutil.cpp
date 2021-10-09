@@ -55,7 +55,7 @@ void openFileInFolder(const QString &filePath)
 bool hasFile(const QString &path, const QString &fileName)
 {
     //TODO: how to know if is a renamed mod file
-    for(const auto &fileInfo : QDir(path).entryInfoList(QDir::Files))
+    for(auto &&fileInfo : QDir(path).entryInfoList(QDir::Files))
         if(fileInfo.fileName().contains(fileName))
             return true;
     return false;

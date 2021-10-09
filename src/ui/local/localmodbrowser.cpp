@@ -25,7 +25,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     QWidget(parent),
     ui(new Ui::LocalModBrowser),
     modPath_(modPath),
-    filter_(new LocalModFilter(this))
+    filter_(new LocalModFilter(this, modPath_))
 {
     ui->setupUi(this);
     ui->checkUpdatesProgress->setVisible(false);

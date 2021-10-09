@@ -4,6 +4,7 @@
 #include <QObject>
 
 class LocalMod;
+class LocalModPath;
 class UnclosedMenu;
 class QAction;
 
@@ -11,12 +12,13 @@ class LocalModFilter : public QObject
 {
     Q_OBJECT
 public:
-    LocalModFilter(QWidget *parent);
+    LocalModFilter(QWidget *parent, LocalModPath *path);
     UnclosedMenu *menu() const;
     void showAll();
 
     bool willShow(LocalMod *mod, const QString searchText) const;
 private:
+    LocalModPath *path_;
     UnclosedMenu *menu_;
     UnclosedMenu *websiteMenu_;
     UnclosedMenu *typeTagMenu_;

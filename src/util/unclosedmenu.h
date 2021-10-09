@@ -10,6 +10,7 @@ public:
     UnclosedMenu(QWidget *parent = nullptr);
     UnclosedMenu(const QString &title, QWidget *parent = nullptr);
     ~UnclosedMenu() = default;
+    QAction *addMenu(UnclosedMenu *menu);
 signals:
     void menuTriggered();
 protected:

@@ -6,9 +6,11 @@
 #include "tag/tag.h"
 #include "util/unclosedmenu.h"
 #include "local/localmod.h"
+#include "local/localmodpath.h"
 
-LocalModFilter::LocalModFilter(QWidget *parent) :
+LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     QObject(parent),
+    path_(path),
     menu_(new UnclosedMenu(parent)),
     websiteMenu_(new UnclosedMenu(tr("Website source"), parent)),
     typeTagMenu_(new UnclosedMenu(tr("Type tag"), parent)),
@@ -18,6 +20,7 @@ LocalModFilter::LocalModFilter(QWidget *parent) :
 {
     disableAction_->setCheckable(true);
     menu_->addAction(showAllAction_);
+    //show all
     connect(showAllAction_, &QAction::triggered, this, [=]{
         for(auto &&action : websiteMenu_->actions())
             action->setChecked(true);
@@ -27,6 +30,7 @@ LocalModFilter::LocalModFilter(QWidget *parent) :
             action->setChecked(true);
         disableAction_->setChecked(true);
     });
+    //hide all
     connect(menu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
         for(auto &&action : websiteMenu_->actions())
             action->setChecked(false);
@@ -42,6 +46,7 @@ LocalModFilter::LocalModFilter(QWidget *parent) :
     menu_->addMenu(functionalityTagMenu_);
     menu_->addAction(disableAction_);
 
+    //website
     connect(websiteMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
         for(auto &&action : websiteMenu_->actions())
             action->setChecked(true);
@@ -72,6 +77,7 @@ LocalModFilter::LocalModFilter(QWidget *parent) :
     noneAction = typeTagMenu_->addAction(tr("None"));
     noneAction->setCheckable(true);
     noneAction->setData(true);
+    //functionality tag
     connect(menu_, &QMenu::aboutToShow, this, [=]{
         QMap<QString, bool> map;
         for(auto &&action : functionalityTagMenu_->actions())
@@ -86,7 +92,8 @@ LocalModFilter::LocalModFilter(QWidget *parent) :
                 action->setChecked(false);
         });
         functionalityTagMenu_->addSeparator();
-        for(auto &&tag : Tag::functionalityTags()){
+        auto &&tagManager = path_->tagManager();
+        for(auto &&tag : tagManager.functionalityTags()){
             auto action = functionalityTagMenu_->addAction(tag.name());
             action->setCheckable(true);
             if(map.contains(tag.name()))

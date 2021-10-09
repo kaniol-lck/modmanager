@@ -434,6 +434,15 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
         loadMods();
 }
 
+LocalModTags LocalModPath::tagManager()
+{
+    LocalModTags tags;
+    for(auto&& mod : modMap_)
+        for(auto &&tag : mod->tags())
+            tags << tag;
+    return tags;
+}
+
 CurseforgeAPI *LocalModPath::curseforgeAPI() const
 {
     return curseforgeAPI_;
