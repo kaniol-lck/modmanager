@@ -1099,47 +1099,47 @@
 <context>
     <name>LocalModFilter</name>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="13"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="15"/>
         <source>Website source</source>
         <translation>网站来源</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="14"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="16"/>
         <source>Type tag</source>
         <translation>类型标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="15"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="17"/>
         <source>Functionality tag</source>
         <translation>功能标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="16"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="18"/>
         <source>Disabled mods</source>
         <translation>已禁用mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="17"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="45"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="59"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="80"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="19"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="50"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="64"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="86"/>
         <source>Show all</source>
         <translation>显示全部</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="30"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="49"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="63"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="84"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="34"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="54"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="68"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="90"/>
         <source>Hide all</source>
         <translation>隐藏全部</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="56"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="72"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="97"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="99"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="100"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="61"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="77"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="104"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="106"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="107"/>
         <source>None</source>
         <translation>无</translation>
     </message>
@@ -1251,70 +1251,70 @@
 <context>
     <name>LocalModMenu</name>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="17"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="19"/>
         <source>Add tag</source>
         <translation>添加标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="19"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="21"/>
         <source>Type tag</source>
         <translation>类型标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="25"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="27"/>
         <source>Functionality tag</source>
         <translation>功能标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="32"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="35"/>
         <source>New functionality tag...</source>
         <translation>新建功能标签...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="34"/>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="67"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="37"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="70"/>
         <source>New tag</source>
         <translation>新建标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="34"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="37"/>
         <source>Functionality:</source>
         <translation>功能：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="40"/>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="45"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="43"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="48"/>
         <source>Translation tag</source>
         <translation>译名标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="45"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="48"/>
         <source>Translation:</source>
         <translation>译名：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="50"/>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="55"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="53"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="58"/>
         <source>Notation tag</source>
         <translation>注释标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="55"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="58"/>
         <source>Notation:</source>
         <translation>注释：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="65"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="68"/>
         <source>New custom tag...</source>
         <translation>新建自定义标签...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="67"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="70"/>
         <source>New tag name:</source>
         <translation>新建标签名称:</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodmenu.cpp" line="77"/>
+        <location filename="../src/ui/local/localmodmenu.cpp" line="80"/>
         <source>Remove tag</source>
         <translation>移除标签</translation>
     </message>
@@ -1869,174 +1869,213 @@
         <translation>偏好设置</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="34"/>
         <source>General</source>
-        <translation>常规</translation>
+        <translation type="vanished">常规</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="87"/>
+        <location filename="../src/ui/preferences.ui" line="190"/>
         <source>Your common mods folder...</source>
         <translation>你常用的mod文件夹...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="97"/>
-        <location filename="../src/ui/preferences.ui" line="137"/>
+        <location filename="../src/ui/preferences.ui" line="94"/>
+        <location filename="../src/ui/preferences.ui" line="200"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="72"/>
+        <location filename="../src/ui/preferences.ui" line="175"/>
         <source>Common path:</source>
         <translation>常用路径：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="112"/>
+        <location filename="../src/ui/preferences.ui" line="72"/>
         <source>Download path:</source>
         <translation>下载路径：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="127"/>
+        <location filename="../src/ui/preferences.ui" line="34"/>
+        <source>Explore</source>
+        <translation>探索</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="84"/>
         <source>Your mods download folder...</source>
         <translation>你的mod下载文件夹...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="146"/>
+        <location filename="../src/ui/preferences.ui" line="103"/>
         <source>Search result count:</source>
         <translation>搜索结果数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="156"/>
+        <location filename="../src/ui/preferences.ui" line="113"/>
         <source>OptiFine version source:</source>
         <translation>OptiFine版本来源：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="164"/>
+        <location filename="../src/ui/preferences.ui" line="121"/>
         <source>Official Website</source>
         <translation>官方网站</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="169"/>
+        <location filename="../src/ui/preferences.ui" line="126"/>
         <source>BMCLAPI</source>
         <translation>BMCLAPI</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="179"/>
+        <location filename="../src/ui/preferences.ui" line="136"/>
         <source>Show snapshot versions in Modrinth tab</source>
         <translation>在Modrinth选项卡中显示快照版本</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="186"/>
+        <location filename="../src/ui/preferences.ui" line="161"/>
+        <source>Local</source>
+        <translation>本地</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="232"/>
+        <source>Mod List</source>
+        <translation>mod列表</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="255"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="192"/>
+        <location filename="../src/ui/preferences.ui" line="261"/>
         <source>Game version match:</source>
         <translation>游戏版本匹配：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="209"/>
+        <location filename="../src/ui/preferences.ui" line="278"/>
         <source>Minor Version</source>
         <translation>小版本号</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="214"/>
+        <location filename="../src/ui/preferences.ui" line="283"/>
         <source>Major Version</source>
         <translation>大版本号</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="222"/>
+        <location filename="../src/ui/preferences.ui" line="291"/>
         <source>Update check interval:</source>
         <translation>更新检查间隔：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="230"/>
+        <location filename="../src/ui/preferences.ui" line="299"/>
         <source>Always</source>
         <translation>总是</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="235"/>
+        <location filename="../src/ui/preferences.ui" line="304"/>
         <source>Every Day</source>
         <translation>每天</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="240"/>
+        <location filename="../src/ui/preferences.ui" line="309"/>
         <source>Never</source>
         <translation>从不</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="271"/>
+        <location filename="../src/ui/preferences.ui" line="340"/>
         <source>Operation on old files after update:</source>
         <translation>旧文件在更新后：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="279"/>
+        <location filename="../src/ui/preferences.ui" line="348"/>
         <source>Delete Immediately</source>
         <translation>立即删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="284"/>
+        <location filename="../src/ui/preferences.ui" line="353"/>
         <source>Keep Until Confirm</source>
         <translation>保留直至确认</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="289"/>
+        <location filename="../src/ui/preferences.ui" line="358"/>
         <source>Do Nothing</source>
         <translation>不做任何事</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="332"/>
+        <location filename="../src/ui/preferences.ui" line="209"/>
+        <source>Right-click tag menu:</source>
+        <translation>右键标签菜单：</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="217"/>
+        <source>All available tags</source>
+        <translation>所有可用标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="222"/>
+        <source>Tags in currentt path</source>
+        <translation>当前路径中的标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="245"/>
+        <source>Disabled mods at bottom</source>
+        <translation>已禁用的mod置底</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="238"/>
+        <source>Starred mods at top</source>
+        <translation>星标mod置顶</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/preferences.ui" line="397"/>
         <source>Max parallel download count:</source>
         <translation>最大并行下载数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="349"/>
+        <location filename="../src/ui/preferences.ui" line="414"/>
         <source>Download thread count:</source>
         <translation>下载线程数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="248"/>
+        <location filename="../src/ui/preferences.ui" line="317"/>
         <source>Update Source</source>
         <translation>更新来源</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="254"/>
+        <location filename="../src/ui/preferences.ui" line="323"/>
         <source>Curseforge</source>
         <translation>Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="261"/>
+        <location filename="../src/ui/preferences.ui" line="330"/>
         <source>Modrinth</source>
         <translation>Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="318"/>
+        <location filename="../src/ui/preferences.ui" line="383"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="324"/>
+        <location filename="../src/ui/preferences.ui" line="389"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="371"/>
+        <location filename="../src/ui/preferences.ui" line="436"/>
         <source>Proxy</source>
         <translation>代理</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="379"/>
-        <location filename="../src/ui/preferences.ui" line="392"/>
+        <location filename="../src/ui/preferences.ui" line="444"/>
+        <location filename="../src/ui/preferences.ui" line="457"/>
         <source>TextLabel</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.cpp" line="59"/>
+        <location filename="../src/ui/preferences.cpp" line="70"/>
         <source>Select your mod directory...</source>
         <translation>选择你的mod路径...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.cpp" line="66"/>
+        <location filename="../src/ui/preferences.cpp" line="77"/>
         <source>Select default mod download directory...</source>
         <translation>选择默认的mod下载路径...</translation>
     </message>

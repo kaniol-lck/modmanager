@@ -42,6 +42,12 @@ public:
     getterAndSetter(OptifineSource, Int, optifineSource, Official)
     getterAndSetter(ShowModrinthSnapshot, Bool, showModrinthSnapshot, false)
 
+    //Local
+    enum RightClickTagMenuType{ AllAvailable, CurrentPath };
+    getterAndSetter(RightClickTagMenu, Int, rightClickTagMenu, AllAvailable)
+    getterAndSetter(StarredAtTop, Bool, starredAtTop, true)
+    getterAndSetter(DisabedAtBottom, Bool, disabedAtBottom, true)
+
     //Network
     getterAndSetter(ThreadCount, Int, threadCount, 8)
     getterAndSetter(DownloadCount, Int, downloadCount, 16)
