@@ -25,7 +25,7 @@
 #include "ui/browsermanagerdialog.h"
 #include "ui/local/localmodpathsettingsdialog.h"
 #include "gameversion.h"
-#include "config.h"
+#include "config.hpp"
 
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),

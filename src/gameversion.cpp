@@ -10,7 +10,7 @@
 #include "curseforge/curseforgeapi.h"
 #include "util/tutil.hpp"
 #include "util/funcutil.h"
-#include "config.h"
+#include "config.hpp"
 
 GameVersion GameVersion::Any = GameVersion("");
 

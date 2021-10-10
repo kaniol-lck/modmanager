@@ -67,7 +67,7 @@ void ModrinthMod::acquireIcon()
     QNetworkRequest request(modInfo_.iconUrl_);
     static QNetworkAccessManager accessManager;
     static QNetworkDiskCache diskCache;
-    diskCache.setCacheDirectory(QStandardPaths::displayName(QStandardPaths::CacheLocation));
+    diskCache.setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
     accessManager.setCache(&diskCache);
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
     auto reply = accessManager.get(request);

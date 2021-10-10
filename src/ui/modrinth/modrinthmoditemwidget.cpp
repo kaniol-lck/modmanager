@@ -7,7 +7,7 @@
 #include "modrinth/modrinthmod.h"
 #include "download/downloadmanager.h"
 #include "util/funcutil.h"
-#include "config.h"
+#include "config.hpp"
 
 ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) :
     QWidget(parent),

@@ -25,7 +25,9 @@ int main(int argc, char *argv[])
     QFont font("微软雅黑", 10);
     a.setFont(font);
 #endif
-    qApp->setWindowIcon(QIcon(":/image/modmanager.png"));
+    a.setWindowIcon(QIcon(":/image/modmanager.png"));
+    a.setOrganizationName("kaniol");
+    a.setApplicationName("Mod Manager");
     ModManager w;
     w.show();
     return a.exec();

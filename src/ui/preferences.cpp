@@ -3,7 +3,7 @@
 
 #include <QFileDialog>
 
-#include "config.h"
+#include "config.hpp"
 
 Preferences::Preferences(QWidget *parent) :
     QDialog(parent),

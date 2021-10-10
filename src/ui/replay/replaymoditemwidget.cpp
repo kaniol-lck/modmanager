@@ -4,7 +4,7 @@
 #include "local/localmodpath.h"
 #include "replay/replaymod.h"
 #include "util/funcutil.h"
-#include "config.h"
+#include "config.hpp"
 
 ReplayModItemWidget::ReplayModItemWidget(QWidget *parent, ReplayMod *mod) :
     QWidget(parent),

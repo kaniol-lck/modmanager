@@ -6,7 +6,7 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
-#include "config.h"
+#include "config.hpp"
 
 const QString CurseforgeAPI::PREFIX = "https://addons-ecs.forgesvc.net";
 

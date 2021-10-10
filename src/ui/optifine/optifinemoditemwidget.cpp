@@ -5,7 +5,7 @@
 #include "download/downloadmanager.h"
 #include "local/localmodpath.h"
 #include "util/funcutil.h"
-#include "config.h"
+#include "config.hpp"
 
 OptifineModItemWidget::OptifineModItemWidget(QWidget *parent, OptifineMod *mod) :
     QWidget(parent),

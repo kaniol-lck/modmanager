@@ -6,7 +6,7 @@
 #include <QDebug>
 
 #include "gameversion.h"
-#include "config.h"
+#include "config.hpp"
 
 LocalModPathSettingsDialog::LocalModPathSettingsDialog(QWidget *parent) :
     QDialog(parent),

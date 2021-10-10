@@ -6,7 +6,7 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
-#include "config.h"
+#include "config.hpp"
 
 const QString ModrinthAPI::PREFIX = "https://api.modrinth.com";
 

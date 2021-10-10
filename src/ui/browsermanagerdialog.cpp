@@ -6,7 +6,7 @@
 #include "local/localmodpathsettingsdialog.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
-#include "config.h"
+#include "config.hpp"
 
 BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
     QDialog(parent),

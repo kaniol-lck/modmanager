@@ -14,7 +14,7 @@
 #include "localmodupdatedialog.h"
 #include "localmodcheckdialog.h"
 #include "batchrenamedialog.h"
-#include "config.h"
+#include "config.hpp"
 #include "util/funcutil.h"
 #include "util/localmodsortitem.h"
 #include "util/smoothscrollbar.h"

@@ -9,7 +9,7 @@
 #include "curseforge/curseforgeapi.h"
 #include "modrinth/modrinthapi.h"
 #include "util/tutil.hpp"
-#include "config.h"
+#include "config.hpp"
 
 LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info, bool startup) :
     QObject(parent),

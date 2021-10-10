@@ -1,7 +1,7 @@
 #include "localmodsortitem.h"
 
 #include "local/localmod.h"
-#include "config.h"
+#include "config.hpp"
 
 LocalModSortItem::LocalModSortItem(LocalMod *mod) :
     mod_(mod)

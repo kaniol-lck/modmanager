@@ -2,6 +2,9 @@
 #define CONFIG_H
 
 #include <QSettings>
+#include <QTextCodec>
+#include <QStandardPaths>
+#include <QDebug>
 
 #define getterAndSetter(name, type, key, defaultValue) \
     void set##name(const decltype(QVariant().to##type()) &key){\
@@ -9,7 +12,7 @@
     }\
     \
     decltype(QVariant().to##type()) get##name() const{\
-        return value(#key, defaultValue).to##type();\
+        return value(#key, old_.value(#key, defaultValue)).to##type();/*for compatibility*/\
     }
 
 #define getterAndSetter_prefix(name, type, key, prefix, defaultValue) \
@@ -24,10 +27,16 @@
 class Config : private QSettings
 {
 public:
-    explicit Config();
+    explicit Config() :
+        QSettings(),
+        old_("modmanager.ini", QSettings::IniFormat)
+    {
+        setIniCodec(QTextCodec::codecForName("UTF-8"));
+        old_.setIniCodec(QTextCodec::codecForName("UTF-8"));
+    }
 
     //General
-    getterAndSetter(DownloadPath, String, downloadPath, "")
+    getterAndSetter(DownloadPath, String, downloadPath, QStandardPaths::writableLocation(QStandardPaths::DownloadLocation))
     getterAndSetter(SearchResultCount, Int, searchResultCount, 30)
     enum OptifineSourceType{ Official, BMCLAPI };
     getterAndSetter(OptifineSource, Int, optifineSource, Official)
@@ -63,6 +72,8 @@ public:
     getterAndSetter(TabSelectBarArea, Int, tabSelectBarArea, Qt::LeftToolBarArea)
     getterAndSetter(MainWindowWidth, Int, mainWindowWidth, 1440);
     getterAndSetter(MainWindowHeight, Int, mainWindowHeight, 900);
+private:
+    QSettings old_;
 };
 
 #endif // CONFIG_H

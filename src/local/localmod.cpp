@@ -15,7 +15,7 @@
 #include "modrinth/modrinthmod.h"
 #include "download/downloadmanager.h"
 #include "util/tutil.hpp"
-#include "config.h"
+#include "config.hpp"
 
 LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
     QObject(parent),

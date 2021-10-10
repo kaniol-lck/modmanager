@@ -6,7 +6,7 @@
 #include "local/localmod.h"
 #include "local/localmodpath.h"
 #include "tag/tag.h"
-#include "config.h"
+#include "config.hpp"
 
 LocalModMenu::LocalModMenu(QWidget *parent, LocalMod *mod) :
     QObject(parent),

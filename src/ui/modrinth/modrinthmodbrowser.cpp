@@ -12,7 +12,7 @@
 #include "modrinth/modrinthapi.h"
 #include "gameversion.h"
 #include "modloadertype.h"
-#include "config.h"
+#include "config.hpp"
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
 

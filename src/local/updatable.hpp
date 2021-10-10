@@ -6,7 +6,7 @@
 #include <QDebug>
 
 #include "download/downloadmanager.h"
-#include "config.h"
+#include "config.hpp"
 #include "gameversion.h"
 #include "modloadertype.h"
 

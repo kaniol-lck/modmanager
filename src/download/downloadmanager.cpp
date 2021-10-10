@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <QDebug>
 
-#include "config.h"
+#include "config.hpp"
 
 constexpr int TIMER_PER_SEC = 4;
 

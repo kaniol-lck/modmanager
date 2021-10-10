@@ -1,7 +1,7 @@
 #include "localmodpathmanager.h"
 
 #include "localmodpath.h"
-#include "config.h"
+#include "config.hpp"
 
 LocalModPathManager::LocalModPathManager(QObject *parent) : QObject(parent)
 {

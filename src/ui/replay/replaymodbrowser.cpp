@@ -13,7 +13,7 @@
 #include "local/localmodpathmanager.h"
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
-#include "config.h"
+#include "config.hpp"
 
 ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     QWidget(parent),

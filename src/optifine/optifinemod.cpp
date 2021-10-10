@@ -2,7 +2,7 @@
 
 #include "optifineapi.h"
 #include "bmclapi.h"
-#include "config.h"
+#include "config.hpp"
 
 OptifineMod::OptifineMod(QObject *parent) :
     QObject(parent),

@@ -13,7 +13,7 @@
 #include "local/localmodpath.h"
 #include "local/localmodpathmanager.h"
 #include "util/funcutil.h"
-#include "config.h"
+#include "config.hpp"
 #include "util/smoothscrollbar.h"
 
 OptifineModBrowser::OptifineModBrowser(QWidget *parent) :

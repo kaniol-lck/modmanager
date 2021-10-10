@@ -9,7 +9,7 @@
 #include <algorithm>
 
 #include "downloaderthread.h"
-#include "config.h"
+#include "config.hpp"
 #include "util/funcutil.h"
 #include "util/tutil.hpp"
 
