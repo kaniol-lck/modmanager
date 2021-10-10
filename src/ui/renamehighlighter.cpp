@@ -24,7 +24,6 @@ void RenameHighlighter::highlightBlock(const QString &text)
             QTextCharFormat format;
             format.setForeground(Qt::darkGreen);
             QRegularExpressionMatch match = i.next();
-            qDebug() << match.capturedTexts();
             setFormat(match.capturedStart(1), match.capturedLength(1), format);
         }
     }
@@ -37,7 +36,6 @@ void RenameHighlighter::highlightBlock(const QString &text)
             QTextCharFormat format2;
             format2.setForeground(Qt::darkYellow);
             QRegularExpressionMatch match = i.next();
-            qDebug() << match.capturedTexts();
             setFormat(match.capturedStart(1), match.capturedLength(1), format1);
             setFormat(match.capturedStart(3), match.capturedLength(3), format2);
         }

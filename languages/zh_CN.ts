@@ -1128,31 +1128,41 @@
     </message>
     <message>
         <location filename="../src/ui/local/localmodfilter.cpp" line="18"/>
+        <source>Custom tag</source>
+        <translation>自定义标签</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="19"/>
         <source>Disabled mods</source>
         <translation>已禁用mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="19"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="50"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="64"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="86"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="20"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="56"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="70"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="92"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="124"/>
         <source>Show all</source>
         <translation>显示全部</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="34"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="54"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="68"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="90"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="37"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="60"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="74"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="96"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="128"/>
         <source>Hide all</source>
         <translation>隐藏全部</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="61"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="77"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="104"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="106"/>
-        <location filename="../src/ui/local/localmodfilter.cpp" line="107"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="67"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="83"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="110"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="112"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="113"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="142"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="144"/>
+        <location filename="../src/ui/local/localmodfilter.cpp" line="145"/>
         <source>None</source>
         <translation>无</translation>
     </message>

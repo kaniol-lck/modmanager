@@ -8,7 +8,7 @@ Soon....
 
 ### v1.0.0 beta.3
 
-*WIP*
+*2021.10.10*
 
 Added local mod filters.
 添加了本地mod筛选。

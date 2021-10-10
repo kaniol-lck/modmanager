@@ -20,6 +20,7 @@
         <file>16x16/starred-symbolic.svg</file>
         <file>16x16/non-starred-symbolic.svg</file>
         <file>16x16/application-menu.svg</file>
+        <file>16x16/view-filter.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

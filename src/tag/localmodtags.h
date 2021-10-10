@@ -20,14 +20,14 @@ public:
     const QList<Tag> &functionalityTags() const;
     std::optional<Tag> translationTag() const;
     std::optional<Tag> notationTag() const;
-    const QList<Tag> &customtags() const;
+    const QList<Tag> &customTags() const;
 
 private:
     QList<Tag> typeTags_;
     QList<Tag> functionalityTags_;
     std::optional<Tag> translationTag_;
     std::optional<Tag> notationTag_;
-    QList<Tag> customtags_;
+    QList<Tag> customTags_;
 };
 
 #endif // LOCALMODTAGS_H

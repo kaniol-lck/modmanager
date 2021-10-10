@@ -187,7 +187,6 @@ void ModrinthAPI::getVersion(const QString &version, std::function<void (Modrint
 void ModrinthAPI::getAuthor(const QString &authorId, std::function<void (QString)> callback)
 {
     QUrl url = PREFIX + "/api/v1/user/" + authorId;
-    qDebug() << url;
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this,  [=]{

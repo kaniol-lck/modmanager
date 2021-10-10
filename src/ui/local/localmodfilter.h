@@ -23,6 +23,7 @@ private:
     UnclosedMenu *websiteMenu_;
     UnclosedMenu *typeTagMenu_;
     UnclosedMenu *functionalityTagMenu_;
+    UnclosedMenu *customTagMenu_;
     QAction *disableAction_;
     QAction *showAllAction_;
 };

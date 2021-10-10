@@ -15,6 +15,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     websiteMenu_(new UnclosedMenu(tr("Website source"), parent)),
     typeTagMenu_(new UnclosedMenu(tr("Type tag"), parent)),
     functionalityTagMenu_(new UnclosedMenu(tr("Functionality tag"), parent)),
+    customTagMenu_(new UnclosedMenu(tr("Custom tag"), parent)),
     disableAction_(new QAction(tr("Disabled mods"), parent)),
     showAllAction_(new QAction(tr("Show all"), parent))
 {
@@ -28,6 +29,8 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
             action->setChecked(true);
         for(auto &&action : functionalityTagMenu_->actions())
             action->setChecked(true);
+        for(auto &&action : customTagMenu_->actions())
+            action->setChecked(true);
         disableAction_->setChecked(true);
     });
     //hide all
@@ -38,12 +41,15 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
             action->setChecked(false);
         for(auto &&action : functionalityTagMenu_->actions())
             action->setChecked(false);
+        for(auto &&action : customTagMenu_->actions())
+            action->setChecked(false);
         disableAction_->setChecked(false);
     });
     menu_->addSeparator();
     menu_->addMenu(websiteMenu_);
     menu_->addMenu(typeTagMenu_);
     menu_->addMenu(functionalityTagMenu_);
+    menu_->addMenu(customTagMenu_);
     menu_->addAction(disableAction_);
 
     //website
@@ -102,6 +108,38 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
                 action->setChecked(true);
         }
         auto noneAction = functionalityTagMenu_->addAction(tr("None"));
+        noneAction->setCheckable(true);
+        if(map.contains(tr("None")))
+            noneAction->setChecked(map[tr("None")]);
+        else
+            noneAction->setChecked(true);
+        noneAction->setData(true);
+    });
+    //custom tag
+    connect(menu_, &QMenu::aboutToShow, this, [=]{
+        QMap<QString, bool> map;
+        for(auto &&action : customTagMenu_->actions())
+            map[action->text()] = action->isChecked();
+        customTagMenu_->clear();
+        connect(customTagMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
+            for(auto &&action : customTagMenu_->actions())
+                action->setChecked(true);
+        });
+        connect(customTagMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
+            for(auto &&action : customTagMenu_->actions())
+                action->setChecked(false);
+        });
+        customTagMenu_->addSeparator();
+        auto &&tagManager = path_->tagManager();
+        for(auto &&tag : tagManager.customTags()){
+            auto action = customTagMenu_->addAction(tag.name());
+            action->setCheckable(true);
+            if(map.contains(tag.name()))
+                action->setChecked(map[tag.name()]);
+            else
+                action->setChecked(true);
+        }
+        auto noneAction = customTagMenu_->addAction(tr("None"));
         noneAction->setCheckable(true);
         if(map.contains(tr("None")))
             noneAction->setChecked(map[tr("None")]);
@@ -176,5 +214,24 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
-    return show && showWebsite && showTypeTag && showFunctionalityTag;
+    bool showCustomTag = false;
+    for(auto &&action : customTagMenu_->actions()){
+        bool hasTag = false;
+        if(!action->isChecked()) continue;
+        if(action->data().toBool() && mod->tagManager().customTags().isEmpty()){
+            showCustomTag = true;
+            break;
+        }
+        for(auto &&tag : mod->tagManager().customTags()){
+            if(action->text() == tag.name()){
+                hasTag = true;
+                break;
+            }
+        }
+        if(hasTag) {
+            showCustomTag = true;
+            break;
+        }
+    }
+    return show && showWebsite && showTypeTag && showFunctionalityTag && showCustomTag;
 }

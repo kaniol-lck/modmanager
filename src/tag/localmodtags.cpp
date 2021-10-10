@@ -14,8 +14,8 @@ void LocalModTags::addTag(const Tag &tag)
     else if(category == TagCategory::NotationCategory)
         notationTag_.emplace(tag);
     else if(category == TagCategory::CustomCategory){
-        if(!customtags_.contains(tag))
-            customtags_ << tag;
+        if(!customTags_.contains(tag))
+            customTags_ << tag;
     }
 }
 
@@ -31,7 +31,7 @@ void LocalModTags::removeTag(const Tag &tag)
     else if(category == TagCategory::NotationCategory)
         notationTag_.reset();
     else if(category == TagCategory::CustomCategory)
-        customtags_.removeAll(tag);
+        customTags_.removeAll(tag);
 }
 
 LocalModTags &LocalModTags::operator<<(const Tag &tag)
@@ -53,7 +53,7 @@ QList<Tag> LocalModTags::tags(const QList<TagCategory> &categories) const
         } else if(category == TagCategory::NotationCategory){
             if(notationTag_) list << *notationTag_;
         } else if(category == TagCategory::CustomCategory)
-            list << customtags_;
+            list << customTags_;
     }
     return list;
 }
@@ -78,7 +78,7 @@ std::optional<Tag> LocalModTags::notationTag() const
     return notationTag_;
 }
 
-const QList<Tag> &LocalModTags::customtags() const
+const QList<Tag> &LocalModTags::customTags() const
 {
-    return customtags_;
+    return customTags_;
 }
