@@ -109,15 +109,14 @@ void LocalModBrowser::updateModList()
     ui->modListWidget->clear();
     for (const auto &mod: modPath_->modMap()) {
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
-
         auto *item = new LocalModSortItem(mod);
         item->setSizeHint(QSize(0, 108));
-
         ui->modListWidget->addItem(item);
         ui->modListWidget->setItemWidget(item, modItemWidget);
     }
     ui->modListWidget->sortItems();
     ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()));
+    filterList();
 }
 
 void LocalModBrowser::loadStarted()

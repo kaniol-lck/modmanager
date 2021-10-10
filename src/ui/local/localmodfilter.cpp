@@ -83,70 +83,8 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     noneAction = typeTagMenu_->addAction(tr("None"));
     noneAction->setCheckable(true);
     noneAction->setData(true);
-    //functionality tag
-    connect(menu_, &QMenu::aboutToShow, this, [=]{
-        QMap<QString, bool> map;
-        for(auto &&action : functionalityTagMenu_->actions())
-            map[action->text()] = action->isChecked();
-        functionalityTagMenu_->clear();
-        connect(functionalityTagMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
-            for(auto &&action : functionalityTagMenu_->actions())
-                action->setChecked(true);
-        });
-        connect(functionalityTagMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
-            for(auto &&action : functionalityTagMenu_->actions())
-                action->setChecked(false);
-        });
-        functionalityTagMenu_->addSeparator();
-        auto &&tagManager = path_->tagManager();
-        for(auto &&tag : tagManager.functionalityTags()){
-            auto action = functionalityTagMenu_->addAction(tag.name());
-            action->setCheckable(true);
-            if(map.contains(tag.name()))
-                action->setChecked(map[tag.name()]);
-            else
-                action->setChecked(true);
-        }
-        auto noneAction = functionalityTagMenu_->addAction(tr("None"));
-        noneAction->setCheckable(true);
-        if(map.contains(tr("None")))
-            noneAction->setChecked(map[tr("None")]);
-        else
-            noneAction->setChecked(true);
-        noneAction->setData(true);
-    });
-    //custom tag
-    connect(menu_, &QMenu::aboutToShow, this, [=]{
-        QMap<QString, bool> map;
-        for(auto &&action : customTagMenu_->actions())
-            map[action->text()] = action->isChecked();
-        customTagMenu_->clear();
-        connect(customTagMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
-            for(auto &&action : customTagMenu_->actions())
-                action->setChecked(true);
-        });
-        connect(customTagMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
-            for(auto &&action : customTagMenu_->actions())
-                action->setChecked(false);
-        });
-        customTagMenu_->addSeparator();
-        auto &&tagManager = path_->tagManager();
-        for(auto &&tag : tagManager.customTags()){
-            auto action = customTagMenu_->addAction(tag.name());
-            action->setCheckable(true);
-            if(map.contains(tag.name()))
-                action->setChecked(map[tag.name()]);
-            else
-                action->setChecked(true);
-        }
-        auto noneAction = customTagMenu_->addAction(tr("None"));
-        noneAction->setCheckable(true);
-        if(map.contains(tr("None")))
-            noneAction->setChecked(map[tr("None")]);
-        else
-            noneAction->setChecked(true);
-        noneAction->setData(true);
-    });
+
+    connect(menu_, &QMenu::aboutToShow, this, &LocalModFilter::refreshTags);
 }
 
 UnclosedMenu *LocalModFilter::menu() const
@@ -161,6 +99,7 @@ void LocalModFilter::showAll()
 
 bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
 {
+    refreshTags();
     bool show = true;
     if(!(mod->commonInfo()->name().toLower().contains(searchText) ||
             mod->commonInfo()->description().toLower().contains(searchText)))
@@ -234,4 +173,43 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
         }
     }
     return show && showWebsite && showTypeTag && showFunctionalityTag && showCustomTag;
+}
+
+void LocalModFilter::refreshTags() const
+{
+    auto addTags = [=](UnclosedMenu *menu, const QList<Tag> &tags){
+        QMap<QString, bool> map;
+        for(auto &&action : menu->actions())
+            map[action->text()] = action->isChecked();
+        menu->clear();
+        connect(menu->addAction(tr("Show all")), &QAction::triggered, this, [=]{
+            for(auto &&action : menu->actions())
+                action->setChecked(true);
+        });
+        connect(menu->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
+            for(auto &&action : menu->actions())
+                action->setChecked(false);
+        });
+        menu->addSeparator();
+        for(auto &&tag : tags){
+            auto action = menu->addAction(tag.name());
+            action->setCheckable(true);
+            if(map.contains(tag.name()))
+                action->setChecked(map[tag.name()]);
+            else
+                action->setChecked(true);
+        }
+        auto noneAction = menu->addAction(tr("None"));
+        noneAction->setCheckable(true);
+        if(map.contains(tr("None")))
+            noneAction->setChecked(map[tr("None")]);
+        else
+            noneAction->setChecked(true);
+        noneAction->setData(true);
+    };
+    auto &&tagManager = path_->tagManager();
+    //functionality tag
+    addTags(functionalityTagMenu_, tagManager.functionalityTags());
+    //custom tag
+    addTags(customTagMenu_, tagManager.customTags());
 }
