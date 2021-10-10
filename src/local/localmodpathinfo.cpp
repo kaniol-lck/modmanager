@@ -108,6 +108,30 @@ void LocalModPathInfo::setPath(const QString &newPath)
     path_ = newPath;
 }
 
+LocalModPathInfo LocalModPathInfo::deduceFromPath(const QString &path)
+{
+    LocalModPathInfo info;
+    //version
+    info.gameVersion_= GameVersion::deduceFromString(path);
+    //path
+    do{
+        QDir dir(path);
+        QString path;
+        if(dir.dirName() == "mods")
+            path = dir.absolutePath();
+        else if(dir.dirName() == ".minecraft"){
+            if(!dir.cd("mods")) break;
+            path = dir.absolutePath();
+        } else{
+            if(!dir.cd(".minecraft")) break;
+            if(!dir.cd("mods")) break;
+            path = dir.absolutePath();
+        }
+        info.setPath(path);
+    } while(false);
+    return info;
+}
+
 void LocalModPathInfo::setIsAutoName(bool newIsAutoName)
 {
     isAutoName_ = newIsAutoName;

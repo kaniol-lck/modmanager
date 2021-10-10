@@ -6,6 +6,9 @@
 #include <QDebug>
 #include <QDir>
 #include <QProcess>
+#include <QFileDialog>
+#include <QListView>
+#include <QTreeView>
 
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
@@ -107,4 +110,20 @@ QString capture(const QString &str, const QString &regExp, bool minimal, int off
         return re.cap(1);
     else
         return "";
+}
+
+QStringList getExistingDirectories(QWidget *parent, const QString &caption, const QString &dir)
+{
+    QFileDialog fileDialog(parent, caption, dir);
+    fileDialog.setFileMode(QFileDialog::Directory);
+    fileDialog.setOptions(QFileDialog::DontUseNativeDialog | QFileDialog::ShowDirsOnly);
+    if(auto listView = fileDialog.findChild<QListView*>("listView"))
+        listView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    if(auto treeView = fileDialog.findChild<QTreeView*>())
+        treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+    if (fileDialog.exec() == QDialog::Accepted)
+        return fileDialog.selectedFiles();
+    else
+        return {};
 }

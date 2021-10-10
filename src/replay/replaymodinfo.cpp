@@ -11,8 +11,7 @@ ReplayModInfo ReplayModInfo::fromHtml(const QString &html, const QString &gameVe
     info.fileName_ = "replaymod-" + capture(info.name_, "Replay Mod v(.*)$") + ".jar";
     info.urlPath_ = capture(html, R"_(<td><a href="([^"]*)".*>(<.*>)*Download.*</a></td>)_");
     info.gameVersionString_ = gameVersionString;
-    if(auto gv = GameVersion::deduceFromString(gameVersionString); gv)
-        info.gameVersion_ = *gv;
+    info.gameVersion_ = GameVersion::deduceFromString(gameVersionString);
     info.loaderType_ = ModLoaderType::fromString(capture(html, R"_(\(requires <a href=".*">(.*)</a>\))_"));
     info.downloadCount_ = capture(html, R"(<td>(\d+) Downloads</td>)").toInt();
     return info;

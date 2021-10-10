@@ -1,22 +1,36 @@
 #include "browserselectorwidget.h"
 #include "ui_browserselectorwidget.h"
 
+#include <QAction>
+#include <QFileDialog>
+#include <QListView>
+
 #include "ui/local/localmodpathsettingsdialog.h"
 #include "ui/browsermanagerdialog.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
+#include "util/funcutil.h"
 
 BrowserSelectorWidget::BrowserSelectorWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::BrowserSelectorWidget)
 {
     ui->setupUi(this);
+    auto action = new QAction(tr("Add multiple paths"), this);
+    connect(action, &QAction::triggered, this, [=]{
+        for(auto &&path : getExistingDirectories(this, tr("Select paths"), Config().getCommonPath())){
+            auto &&info = LocalModPathInfo::deduceFromPath(path);
+            if(!info.path().isEmpty())
+                LocalModPathManager::addPath(new LocalModPath(this, info, false, true));
+        }
+    });
+    ui->addButton->addAction(action);
 
     items_ << new QTreeWidgetItem({tr("Download")});
     items_ << new QTreeWidgetItem({tr("Explore")});
     items_ << new QTreeWidgetItem({tr("Local")});
 
-    //setup tree widgetl
+    //setup tree widget
     for (const auto &item : qAsConst(items_)){
         item->setForeground(0, QColor(127, 127, 127));
         item->setFlags(item->flags().setFlag(Qt::ItemIsSelectable, false));

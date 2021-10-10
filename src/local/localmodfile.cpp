@@ -13,14 +13,14 @@ LocalModFile::LocalModFile(QObject *parent, const QString &path) :
     fileInfo_(path)
 {}
 
-bool LocalModFile::loadInfo()
+ModLoaderType::Type LocalModFile::loadInfo()
 {
-    if(type() == NotMod) return false;
+    if(type() == NotMod) return ModLoaderType::Any;
     QFile modFile(path_);
 
     //file open error
     if(!modFile.open(QIODevice::ReadOnly))
-        return false;
+        return ModLoaderType::Any;
     QByteArray fileContent = modFile.readAll();
     modFile.close();
 
@@ -38,17 +38,17 @@ bool LocalModFile::loadInfo()
     //load fabric mod
     if(fabricModInfoList_ = FabricModInfo::fromZip(path_); !fabricModInfoList_.isEmpty()){
         loaderType_ = ModLoaderType::Fabric;
-        return true;
+        return ModLoaderType::Fabric;
     }
 
     //load forge mod
     if(forgeModInfoList_ = ForgeModInfo::fromZip(path_); !forgeModInfoList_.isEmpty()){
         loaderType_ = ModLoaderType::Forge;
-        return true;
+        return ModLoaderType::Forge;
     }
 
     //no available mod info
-    return false;
+    return loaderType_;
 }
 
 bool LocalModFile::remove()

@@ -11,28 +11,37 @@
 #include "util/tutil.hpp"
 #include "config.hpp"
 
-LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info, bool startup) :
+LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info, bool startup, bool deduceLoader) :
     QObject(parent),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
     info_(info)
 {
-    loadMods(startup);
+    loadMods(startup, deduceLoader);
 }
 
-void LocalModPath::loadMods(bool startup)
+void LocalModPath::loadMods(bool startup, bool deduceLoader)
 {
     modFileList_.clear();
-    for(const auto &fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
+    for(auto &&fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
         if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
             modFileList_ << new LocalModFile(this, fileInfo.absoluteFilePath());
 
     auto future = QtConcurrent::run([=]{
         int count = 0;
+        QList<int> modCount{ 0, 0, 0 };
         emit loadStarted();
         for(auto &file : modFileList_){
-            file->loadInfo();
+            modCount[file->loadInfo()]++;
             emit loadProgress(++count, modFileList_.size());
+        }
+        if(deduceLoader){
+            if(auto iter = std::max_element(modCount.cbegin(), modCount.cend()); iter != modCount.cend()){
+                auto loaderType = ModLoaderType::local.at(iter - modCount.cbegin());
+                qDebug() << loaderType;
+                info_.setLoaderType(loaderType);
+                emit infoUpdated();
+            }
         }
         emit loadFinished();
     });
@@ -68,7 +77,8 @@ void LocalModPath::loadMods(bool startup)
 void LocalModPath::addNormalMod(LocalModFile *file)
 {
     if(auto type = file->type(); type != LocalModFile::Normal && type != LocalModFile::Disabled ) return;
-    if(file->loaderType() != info_.loaderType()) return;
+    if(file->loaderType() != info_.loaderType() && info_.loaderType() != ModLoaderType::Any) return;
+    if(file->loaderType() == ModLoaderType::Any) return;
     auto id = file->commonInfo()->id();
     //duplicate
     if(modMap_.contains(id)){
@@ -92,7 +102,8 @@ void LocalModPath::addNormalMod(LocalModFile *file)
 void LocalModPath::addOldMod(LocalModFile *file)
 {
     if(file->type() != LocalModFile::Old) return;
-    if(file->loaderType() != info_.loaderType()) return;
+    if(file->loaderType() != info_.loaderType() && info_.loaderType() != ModLoaderType::Any) return;
+    if(file->loaderType() == ModLoaderType::Any) return;
     auto id = file->commonInfo()->id();
     //old
     if(modMap_.contains(id)){

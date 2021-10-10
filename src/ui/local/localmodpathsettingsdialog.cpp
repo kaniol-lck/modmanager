@@ -13,7 +13,9 @@ LocalModPathSettingsDialog::LocalModPathSettingsDialog(QWidget *parent) :
     ui(new Ui::LocalModPathSettingsDialog)
 {
     ui->setupUi(this);
-    info_.setLoaderType(ModLoaderType::Fabric);
+    ui->loaderSelect->clear();
+    for(auto &&loaderType: ModLoaderType::local)
+        ui->loaderSelect->addItem(ModLoaderType::icon(loaderType), ModLoaderType::toString(loaderType));
 
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::mojangVersionListUpdated, this, &LocalModPathSettingsDialog::updateVersionList);
@@ -27,10 +29,10 @@ LocalModPathSettingsDialog::LocalModPathSettingsDialog(QWidget *parent, const Lo
     ui->nameText->setText(info.displayName());
     ui->modsDirText->setText(info.path());
     ui->versionSelect->setCurrentText(info.gameVersion());
-    if(info.loaderType() == ModLoaderType::Fabric)
-        ui->fabric_radioButton->setChecked(true);
-    else if(info.loaderType() == ModLoaderType::Forge)
-        ui->forge_radioButton->setChecked(true);
+    ui->loaderSelect->clear();
+    for(auto &&loaderType: ModLoaderType::local)
+        ui->loaderSelect->addItem(ModLoaderType::icon(loaderType), ModLoaderType::toString(loaderType));
+    ui->loaderSelect->setCurrentIndex(ModLoaderType::local.indexOf(info.loaderType()));
 
     ui->useAutoName->setChecked(info.isAutoName());
     on_useAutoName_toggled(info.isAutoName());
@@ -44,7 +46,8 @@ LocalModPathSettingsDialog::~LocalModPathSettingsDialog()
 void LocalModPathSettingsDialog::updateVersionList()
 {
     ui->versionSelect->clear();
-    for(const auto &version : GameVersion::mojangReleaseVersionList())
+    ui->versionSelect->addItem(tr("Any"));
+    for(auto &&version : GameVersion::mojangReleaseVersionList())
         ui->versionSelect->addItem(version);
 }
 
@@ -56,10 +59,9 @@ void LocalModPathSettingsDialog::on_modDirButton_clicked()
     if(resultStr.isEmpty()) return;
 
     //version
-    auto v = GameVersion::deduceFromString(resultStr);
-    if(v.has_value())
-        ui->versionSelect->setCurrentText(v.value());
-    info_.setGameVersion(ui->versionSelect->currentText());
+    auto version = GameVersion::deduceFromString(resultStr);
+    if(version != GameVersion::Any)
+        ui->versionSelect->setCurrentText(version);
 
     //path
     do{
@@ -96,9 +98,10 @@ void LocalModPathSettingsDialog::updateAutoName()
     ui->nameText->setText(info_.autoName());
 }
 
-void LocalModPathSettingsDialog::on_versionSelect_currentIndexChanged(const QString &arg1)
+void LocalModPathSettingsDialog::on_versionSelect_currentIndexChanged(int index)
 {
-    info_.setGameVersion(arg1);
+    if(index < 0) return;
+    info_.setGameVersion(index? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any);
     updateAutoName();
 }
 
@@ -119,18 +122,10 @@ void LocalModPathSettingsDialog::on_useAutoName_toggled(bool checked)
         ui->nameText->setText(customName);
 }
 
-void LocalModPathSettingsDialog::on_fabric_radioButton_toggled(bool checked)
+void LocalModPathSettingsDialog::on_loaderSelect_currentIndexChanged(int index)
 {
-    if(!checked) return;
-    info_.setLoaderType(ModLoaderType::Fabric);
-    updateAutoName();
-}
-
-
-void LocalModPathSettingsDialog::on_forge_radioButton_toggled(bool checked)
-{
-    if(!checked) return;
-    info_.setLoaderType(ModLoaderType::Forge);
+    if(index < 0) return;
+    info_.setLoaderType(ModLoaderType::local.at(index));
     updateAutoName();
 }
 

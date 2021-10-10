@@ -128,12 +128,12 @@ const QString &GameVersion::getVersionString() const
 
 GameVersion::operator QString() const
 {
-    return versionString_;
+    return toString();
 }
 
 QString GameVersion::toString() const
 {
-    return versionString_;
+    return versionString_.isEmpty()? QObject::tr("Any") : versionString_;
 }
 
 bool GameVersion::operator==(const GameVersion &other) const
@@ -146,7 +146,7 @@ bool GameVersion::operator!=(const GameVersion &another) const
     return versionString_ != another.versionString_;
 }
 
-std::optional<GameVersion> GameVersion::deduceFromString(const QString &string)
+GameVersion GameVersion::deduceFromString(const QString &string)
 {
     QRegExp re(R"((\d+\.\d+(\.\d+)?))");
     if(re.indexIn(string) != -1){
@@ -155,7 +155,7 @@ std::optional<GameVersion> GameVersion::deduceFromString(const QString &string)
         if(mojangReleaseVersionList().contains(str))
             return {GameVersion(str)};
     }
-    return std::nullopt;
+    return GameVersion::Any;
 }
 
 void VersionManager::initMojangVersionList()

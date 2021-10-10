@@ -133,33 +133,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QRadioButton" name="fabric_radioButton">
-         <property name="text">
-          <string>Fabric</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../images/image.qrc">
-           <normaloff>:/image/fabric.png</normaloff>:/image/fabric.png</iconset>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="forge_radioButton">
-         <property name="text">
-          <string>Forge</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../images/image.qrc">
-           <normaloff>:/image/forge.svg</normaloff>:/image/forge.svg</iconset>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QComboBox" name="loaderSelect"/>
      </item>
     </layout>
    </item>
@@ -188,9 +162,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../../images/image.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

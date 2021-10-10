@@ -23,8 +23,8 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
         if(auto loaderType = ModLoaderType::fromString(version); loaderType != ModLoaderType::Any)
             fileInfo.loaderTypes_ << loaderType;
         else {
-            if(auto v = GameVersion::deduceFromString(version); v.has_value())
-                fileInfo.gameVersions_ << v.value();
+            if(auto gameVersion = GameVersion::deduceFromString(version); gameVersion != GameVersion::Any)
+                fileInfo.gameVersions_ << gameVersion;
             else
                 fileInfo.gameVersions_ << version;
         }

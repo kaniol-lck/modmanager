@@ -39,11 +39,13 @@ public:
     const QString &path() const;
     void setPath(const QString &newPath);
 
+    static LocalModPathInfo deduceFromPath(const QString &path);
+
 private:
     QString name_;
     QString path_;
-    GameVersion gameVersion_;
-    ModLoaderType::Type loaderType_;
+    GameVersion gameVersion_ = GameVersion::Any;
+    ModLoaderType::Type loaderType_ = ModLoaderType::Any;
     bool isAutoName_;
 };
 

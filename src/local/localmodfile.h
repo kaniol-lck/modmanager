@@ -14,7 +14,7 @@ class LocalModFile : public QObject
 public:
     explicit LocalModFile(QObject *parent, const QString &path);
 
-    bool loadInfo();
+    ModLoaderType::Type loadInfo();
 
     bool remove();
     bool rename(const QString newBaseName);

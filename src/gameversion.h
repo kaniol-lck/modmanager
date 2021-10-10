@@ -22,7 +22,7 @@ public:
     bool operator==(const GameVersion &other) const;
     bool operator!=(const GameVersion &other) const;
 
-    static std::optional<GameVersion> deduceFromString(const QString &string);
+    static GameVersion deduceFromString(const QString &string);
 
     static GameVersion Any;
 

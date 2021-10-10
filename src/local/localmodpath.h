@@ -15,9 +15,9 @@ class LocalModPath : public QObject
 {
     Q_OBJECT
 public:
-    explicit LocalModPath(QObject *parent, const LocalModPathInfo &info, bool startup = false);
+    explicit LocalModPath(QObject *parent, const LocalModPathInfo &info, bool startup = false, bool deduceLoader = false);
 
-    void loadMods(bool startup = false);
+    void loadMods(bool startup = false, bool deduceLoader = false);
     void addNormalMod(LocalModFile *file);
     void addOldMod(LocalModFile *file);
 
