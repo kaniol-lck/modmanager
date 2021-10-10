@@ -140,7 +140,7 @@ void ModManager::syncPathList()
         if(auto i = pathList_.indexOf(path); i < 0){
             //not present, new one
             pathList_ << path;
-            auto item = new QTreeWidgetItem(browserSelector_->localItem(), {path->info().displayName()});
+            auto item = new QTreeWidgetItem(browserSelector_->localItem(), { path->info().displayName() });
             browserSelector_->localItem()->addChild(item);
             if(path->info().loaderType() == ModLoaderType::Fabric)
                 item->setIcon(0, QIcon(":/image/fabric.png"));
@@ -170,8 +170,12 @@ void ModManager::syncPathList()
         } else{
             //present, move position
             oldCount--;
-            pathList_ << pathList_.takeAt(i);
-            browserSelector_->localItem()->addChild(browserSelector_->localItem()->takeChild(i));
+            auto path = pathList_.takeAt(i);
+            pathList_ << path;
+            auto item = browserSelector_->localItem()->takeChild(i);
+            item->setText(0, path->info().displayName());
+            item->setIcon(0, ModLoaderType::icon(path->info().loaderType()));
+            browserSelector_->localItem()->addChild(item);
             //TODO: magic number
             auto widget = ui->stackedWidget->widget(i + 5);
             ui->stackedWidget->removeWidget(widget);
