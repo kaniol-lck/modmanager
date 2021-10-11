@@ -33,6 +33,7 @@ ModManager::ModManager(QWidget *parent) :
     browserSelector_(new BrowserSelectorWidget(this))
 {
     ui->setupUi(this);
+    LocalModPathManager::load();
 
     Config config;
     resize(config.getMainWindowWidth(),
@@ -142,12 +143,10 @@ void ModManager::syncPathList()
             pathList_ << path;
             auto item = new QTreeWidgetItem(browserSelector_->localItem(), { path->info().displayName() });
             browserSelector_->localItem()->addChild(item);
-            if(path->info().loaderType() == ModLoaderType::Fabric)
-                item->setIcon(0, QIcon(":/image/fabric.png"));
-            else if(path->info().loaderType() == ModLoaderType::Forge)
-                item->setIcon(0, QIcon(":/image/forge.svg"));
-            else
+            if(auto loaderType = path->info().loaderType(); loaderType == ModLoaderType::Any)
                 item->setIcon(0, QIcon::fromTheme("folder"));
+            else
+                item->setIcon(0, ModLoaderType::icon(path->info().loaderType()));
             auto localModBrowser = new LocalModBrowser(this, path);
             ui->stackedWidget->addWidget(localModBrowser);
 
@@ -174,7 +173,10 @@ void ModManager::syncPathList()
             pathList_ << path;
             auto item = browserSelector_->localItem()->takeChild(i);
             item->setText(0, path->info().displayName());
-            item->setIcon(0, ModLoaderType::icon(path->info().loaderType()));
+            if(auto loaderType = path->info().loaderType(); loaderType == ModLoaderType::Any)
+                item->setIcon(0, QIcon::fromTheme("folder"));
+            else
+                item->setIcon(0, ModLoaderType::icon(path->info().loaderType()));
             browserSelector_->localItem()->addChild(item);
             //TODO: magic number
             auto widget = ui->stackedWidget->widget(i + 5);
@@ -239,7 +241,7 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
             auto dialog = new LocalModPathSettingsDialog(this);
             dialog->show();
             connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
-                auto path = new LocalModPath(this, pathInfo);
+                auto path = new LocalModPath(pathInfo);
                 LocalModPathManager::addPath(path);
             });
         });

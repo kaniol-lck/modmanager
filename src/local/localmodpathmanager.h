@@ -22,6 +22,7 @@ public:
     static void insertPath(int i, LocalModPath *path);
     static void setPath(int i, LocalModPath *path);
 
+    static void load();
     static void saveToConfig();
 
 signals:

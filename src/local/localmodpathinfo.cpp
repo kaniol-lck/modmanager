@@ -113,6 +113,7 @@ LocalModPathInfo LocalModPathInfo::deduceFromPath(const QString &path)
     LocalModPathInfo info;
     //version
     info.gameVersion_= GameVersion::deduceFromString(path);
+    info.setPath(path);
     //path
     do{
         QDir dir(path);

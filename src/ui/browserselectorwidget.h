@@ -29,6 +29,7 @@ signals:
     void customContextMenuRequested(const QPoint &pos);
 
 private slots:
+    void addMultiple();
     void on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *);
     void on_addButton_clicked();
     void on_manageButton_clicked();

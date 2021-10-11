@@ -4,14 +4,7 @@
 #include "config.hpp"
 
 LocalModPathManager::LocalModPathManager(QObject *parent) : QObject(parent)
-{
-    Config config;
-    for(auto &&pathInfo : config.getLocalPathList()){
-        auto path = new LocalModPath(this, LocalModPathInfo::fromVariant(pathInfo), true);
-        pathList_ << path;
-        connect(path, &LocalModPath::infoUpdated, this, &LocalModPathManager::updateList);
-    }
-}
+{}
 
 LocalModPathManager *LocalModPathManager::manager()
 {
@@ -63,6 +56,16 @@ void LocalModPathManager::setPath(int i, LocalModPath *path)
 {
     path->setParent(manager());
     manager()->pathList_[i] = path;
+}
+
+void LocalModPathManager::load()
+{
+    Config config;
+    for(auto &&pathInfo : config.getLocalPathList()){
+        auto path = new LocalModPath(LocalModPathInfo::fromVariant(pathInfo), true);
+        manager()->pathList_ << path;
+        connect(path, &LocalModPath::infoUpdated, manager(), &LocalModPathManager::updateList);
+    }
 }
 
 void LocalModPathManager::saveToConfig()

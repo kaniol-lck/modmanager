@@ -58,7 +58,7 @@ void BrowserManagerDialog::on_addButton_clicked()
     auto dialog = new LocalModPathSettingsDialog(this);
     dialog->show();
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
-        auto path = new LocalModPath(this, pathInfo);
+        auto path = new LocalModPath(pathInfo);
         pathList_ << path;
         ui->browserList->addItem(pathInfo.displayName());
         refreshButton();

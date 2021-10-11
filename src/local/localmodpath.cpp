@@ -4,6 +4,7 @@
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 
+#include "localmodpathmanager.h"
 #include "cpp-semver.hpp"
 #include "localmodfile.h"
 #include "curseforge/curseforgeapi.h"
@@ -11,8 +12,8 @@
 #include "util/tutil.hpp"
 #include "config.hpp"
 
-LocalModPath::LocalModPath(QObject *parent, const LocalModPathInfo &info, bool startup, bool deduceLoader) :
-    QObject(parent),
+LocalModPath::LocalModPath(const LocalModPathInfo &info, bool startup, bool deduceLoader) :
+    QObject(LocalModPathManager::manager()),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
     info_(info)
@@ -29,7 +30,7 @@ void LocalModPath::loadMods(bool startup, bool deduceLoader)
 
     auto future = QtConcurrent::run([=]{
         int count = 0;
-        QList<int> modCount{ 0, 0, 0 };
+        QVector<int> modCount(3, 0);
         emit loadStarted();
         for(auto &file : modFileList_){
             modCount[file->loadInfo()]++;
@@ -38,7 +39,6 @@ void LocalModPath::loadMods(bool startup, bool deduceLoader)
         if(deduceLoader){
             if(auto iter = std::max_element(modCount.cbegin(), modCount.cend()); iter != modCount.cend()){
                 auto loaderType = ModLoaderType::local.at(iter - modCount.cbegin());
-                qDebug() << loaderType;
                 info_.setLoaderType(loaderType);
                 emit infoUpdated();
             }
@@ -119,7 +119,7 @@ void LocalModPath::checkFabric()
     //fabric
     if(info_.loaderType() == ModLoaderType::Fabric){
         //depends
-        for(const auto &[fabricMod, modid, version, missingMod] : checkFabricDepends()){
+        for(auto &&[fabricMod, modid, version, missingMod] : checkFabricDepends()){
             QString str;
             if(missingMod.has_value())
                 str += "Missing:\n" + modid + " " + version;

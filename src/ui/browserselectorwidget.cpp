@@ -17,13 +17,7 @@ BrowserSelectorWidget::BrowserSelectorWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     auto action = new QAction(tr("Add multiple paths"), this);
-    connect(action, &QAction::triggered, this, [=]{
-        for(auto &&path : getExistingDirectories(this, tr("Select paths"), Config().getCommonPath())){
-            auto &&info = LocalModPathInfo::deduceFromPath(path);
-            if(!info.path().isEmpty())
-                LocalModPathManager::addPath(new LocalModPath(this, info, false, true));
-        }
-    });
+    connect(action, &QAction::triggered, this, &BrowserSelectorWidget::addMultiple);
     ui->addButton->addAction(action);
 
     items_ << new QTreeWidgetItem({tr("Download")});
@@ -79,12 +73,23 @@ QTreeWidgetItem *BrowserSelectorWidget::localItem()
     return items_[Local];
 }
 
+void BrowserSelectorWidget::addMultiple()
+{
+    for(auto &&path : getExistingDirectories(this, tr("Select paths"), Config().getCommonPath())){
+        auto &&info = LocalModPathInfo::deduceFromPath(path);
+        if(!info.path().isEmpty()){
+            auto path = new LocalModPath(info, false, true);
+            LocalModPathManager::addPath(path);
+        }
+    }
+}
+
 void BrowserSelectorWidget::on_addButton_clicked()
 {
     auto dialog = new LocalModPathSettingsDialog(this);
     dialog->show();
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
-        auto path = new LocalModPath(this, pathInfo);
+        auto path = new LocalModPath(pathInfo);
         LocalModPathManager::addPath(path);
     });
 }
