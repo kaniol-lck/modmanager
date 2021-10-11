@@ -193,7 +193,7 @@ jobs:
           echo winSdkVer=%WindowsSdkVersion% >> %GITHUB_ENV%
           echo vcToolsInstallDir=%VCToolsInstallDir% >> %GITHUB_ENV%
           echo vcToolsRedistDir=%VCToolsRedistDir% >> %GITHUB_ENV%
-      - name: perpare package
+      - name: Perpare package
         shell: pwsh
         run: |
           mkdir deploy && mv release/${{github.event.repository.name}}.exe deploy
@@ -203,12 +203,12 @@ jobs:
           cp openssl/*.dll deploy/
           cp LICENSE* deploy/
           cp *md deploy/
-      - name: copy zlib 32
+      - name: Copy zlib 32
         if: contains(matrix.qt_arch, 'win32_msvc')
         shell: pwsh
         run: |
           cp "C:/Program Files (x86)/zlib/bin/zlib.dll" deploy/
-      - name: copy zlib
+      - name: Copy zlib
         if: contains(matrix.qt_arch, 'win64_msvc')
         shell: pwsh
         run: |
