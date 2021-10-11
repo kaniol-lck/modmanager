@@ -161,6 +161,8 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             ui->modListWidget->addItem(listItem);
             ui->modListWidget->setItemWidget(listItem, modItemWidget);
             auto isShown = loaderType == ModLoaderType::Any || info.loaderTypes().contains(loaderType);
+            if(info.loaderTypes().isEmpty())
+                isShown = true;
             listItem->setHidden(!isShown);
             if(isShown){
                 shownCount++;
@@ -178,7 +180,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             hasMore_ = false;
         }
         isSearching_ = false;
-        if(shownCount != infoList.count() && shownCount < needMore){
+        if(hasMore_ && shownCount != infoList.count() && shownCount < needMore){
             currentIndex_ += 20;
             getModList(currentName_, currentIndex_, needMore - shownCount);
         }
@@ -217,6 +219,8 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
         auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
         auto selectedLoaderType = ModLoaderType::curseforge.at(index);
         auto isShown = selectedLoaderType == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(selectedLoaderType);
+        if(mod->modInfo().loaderTypes().isEmpty())
+            isShown = true;
         item->setHidden(!isShown);
         //hidden -> shown, while not have downloaded thumbnail yet
         if(isHidden && isShown && mod->modInfo().iconBytes().isEmpty())
