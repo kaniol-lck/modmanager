@@ -47,6 +47,7 @@ private:
     QString name_;
     QString summary_;
     QUrl websiteUrl_;
+    QList<QUrl> imageUrls_;
     QStringList authors_;
     QUrl iconUrl_;
     QByteArray iconBytes_;

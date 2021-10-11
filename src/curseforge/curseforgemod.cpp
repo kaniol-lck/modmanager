@@ -105,7 +105,8 @@ QList<Tag> CurseforgeMod::tags() const
         if(it != CurseforgeAPI::getCategories().end()){
             auto [id, name, iconName] = *it;
             tags << Tag(name, TagCategory::CurseforgeCategory, ":/image/curseforge/" + iconName);
-        }
+        } else
+            qDebug() << categoryId;
     }
     return tags;
 }

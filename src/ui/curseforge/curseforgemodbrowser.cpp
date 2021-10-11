@@ -75,7 +75,7 @@ void CurseforgeModBrowser::updateVersionList()
     isUiSet_ = false;
     ui->versionSelect->clear();
     ui->versionSelect->addItem(tr("Any"));
-    for(const auto &version : GameVersion::curseforgeVersionList())
+    for(auto &&version : GameVersion::curseforgeVersionList())
         ui->versionSelect->addItem(version);
     isUiSet_ = true;
 }

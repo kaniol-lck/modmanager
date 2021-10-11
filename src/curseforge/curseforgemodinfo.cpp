@@ -27,8 +27,12 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
         modInfo.authors_ << value(author, "name").toString();
 
     //thumbnail image
-    if(auto &&attachmentsList = value(variant, "attachments").toList(); !attachmentsList.isEmpty())
-        modInfo.iconUrl_ = value(attachmentsList.at(0), "thumbnailUrl").toUrl();
+    for(auto &&attachment : value(variant, "attachments").toList()){
+        if(value(attachment, "isDefault").toBool())
+            modInfo.iconUrl_ = value(attachment, "thumbnailUrl").toUrl();
+        else
+            modInfo.imageUrls_ << value(attachment, "url").toUrl();
+    }
 
     //latest file url
     for(auto &&variant : value(variant, "latestFiles").toList())
