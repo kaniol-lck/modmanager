@@ -14,7 +14,7 @@ on:
 jobs:
   build-on-ubuntu:
     name: Build On Ubuntu
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.13.0
