@@ -1,8 +1,9 @@
 [Desktop Entry]
-Name=ModManager
+Name=Mod Manager
 Comment= A Qt-based mod manager for minecraft.
-Exec=modmanager
+Exec=ModManager
 Type=Application
 Terminal=false
 StartupNotify=true
-Categories=Utility;
+Categories=Game;
+Icon=modmanager

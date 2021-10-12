@@ -197,11 +197,6 @@ TRANSLATIONS += \
 CONFIG += lrelease
 CONFIG += embed_translations
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
-
 #quazip: http://quazip.sourceforge.net/
 include(3rdparty/quazip-0.7.3/quazip.pri)
 
@@ -218,6 +213,9 @@ RESOURCES += \
     src/icons/breeze/breeze-modmanager.qrc \
     src/images/image.qrc
 
+TARGET = ModManager
+TEMPLATE = app
+
 unix {
   isEmpty(PREFIX) {
     PREFIX = /usr
@@ -231,27 +229,30 @@ unix {
     DATADIR = $$PREFIX/share
   }
 
-  INSTALLS += desktop
+  INSTALLS += desktop icon
 
   target.path = $$INSTROOT$$BINDIR
 
   desktop.path = $$DATADIR/applications
   desktop.files += src/ModManager.desktop
+
+  icon.path = $$DATADIR/icons/hicolor/256x256/apps
+  icon.files += src/modmanager.png
 }
+
+INSTALLS += target
 
 CONFIG(debug, debug|release) {
 #    QMAKE_CXXFLAGS_DEBUG += -g3 -O0
     message("Currently in DEBUG mode.")
 } else {
-    DEFINES += QT_NO_DEBUG
-
-    # We want to allow optional debug output in releases
-#    DEFINES += QT_NO_DEBUG_OUTPUT
+    DEFINES += QT_NO_DEBUG QT_NO_DEBUG_OUTPUT
+    CONFIG += release
     message("Currently in RELEASE mode.")
 }
 
 DISTFILES += \
     src/ModManager.desktop \
-    src/modmanager.ico
+    src/modmanager.png
 
 win32: RC_ICONS = src/modmanager.ico
