@@ -3,10 +3,11 @@
 
 #include <QMap>
 #include <QJsonObject>
+#include <QFile>
 
 class IdMapper
 {
-    //TODO: what if fabric and forge has same modid  and different website id;
+    //TODO: what if fabric and forge has same modid and different website id;
     class Id
     {
         friend class IdMapper;
@@ -35,6 +36,7 @@ private:
     void readFromFile();
 
     static constexpr auto kFileName = "modid.json";
+    QFile file_;
     QMap<QString, Id> idMap_;
 };
 

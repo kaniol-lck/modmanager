@@ -1,15 +1,18 @@
 #include "idmapper.h"
 
-#include <QApplication>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDir>
+#include <QStandardPaths>
 
 #include "util/tutil.hpp"
 
 IdMapper::IdMapper()
 {
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation));
+    QDir().mkpath(dir.path());
+    file_.setFileName(dir.absoluteFilePath(kFileName));
     readFromFile();
 }
 
@@ -55,20 +58,16 @@ void IdMapper::writeToFile()
     for(const auto &id : qAsConst(idMap_))
         object.insert(id.modid(), id.toJsonObject());
     QJsonDocument doc(object);
-    QDir dir(qApp->applicationDirPath());
-    QFile file(dir.absoluteFilePath(kFileName));
-    if(!file.open(QIODevice::WriteOnly)) return;
-    file.write(doc.toJson());
-    file.close();
+    if(!file_.open(QIODevice::WriteOnly)) return;
+    file_.write(doc.toJson());
+    file_.close();
 }
 
 void IdMapper::readFromFile()
 {
-    QDir dir(qApp->applicationDirPath());
-    QFile file(dir.absoluteFilePath(kFileName));
-    if(!file.open(QIODevice::ReadOnly)) return;
-    auto bytes = file.readAll();
-    file.close();
+    if(!file_.open(QIODevice::ReadOnly)) return;
+    auto bytes = file_.readAll();
+    file_.close();
 
     //parse json
     QJsonParseError error;

@@ -9,6 +9,7 @@
 
 #include "local/localmodpath.h"
 #include "local/idmapper.h"
+#include "local/knownfile.h"
 #include "curseforge/curseforgeapi.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthapi.h"
@@ -61,8 +62,10 @@ void LocalMod::searchOnWebsite()
 void LocalMod::searchOnCurseforge()
 {
     emit checkCurseforgeStarted();
-    curseforgeAPI_->getIdByFingerprint(modFile_->murmurhash(), [=](int id, auto fileInfo, const auto &fileList){
+    auto &&murmurhash = modFile_->murmurhash();
+    curseforgeAPI_->getIdByFingerprint(murmurhash, [=](int id, auto fileInfo, const auto &fileList){
         IdMapper::addCurseforge(commonInfo()->id(), id);
+        KnownFile::addCurseforge(murmurhash, fileInfo.id());
         CurseforgeModInfo modInfo(id);
         modInfo.setLatestFiles(fileList);
         curseforgeMod_ = new CurseforgeMod(this, modInfo);
@@ -85,8 +88,10 @@ void LocalMod::searchOnCurseforge()
 void LocalMod::searchOnModrinth()
 {
     emit checkModrinthStarted();
-    modrinthAPI_->getVersionFileBySha1(modFile_->sha1(), [=](const auto &fileInfo){
+    auto &&sha1 = modFile_->sha1();
+    modrinthAPI_->getVersionFileBySha1(sha1, [=](const auto &fileInfo){
         IdMapper::addModrinth(commonInfo()->id(), fileInfo.modId());
+        KnownFile::addModrinth(sha1, fileInfo.id());
         ModrinthModInfo modInfo(fileInfo.modId());
         modrinthMod_ = new ModrinthMod(this, modInfo);
         modrinthUpdate_.setCurrentFileInfo(fileInfo);
@@ -455,6 +460,7 @@ void LocalMod::setCurseforgeId(int id)
     if(id == 0) return;
     curseforgeMod_ = new CurseforgeMod(this, id);
     emit curseforgeReady(true);
+    IdMapper::addCurseforge(commonInfo()->id(), id);
 }
 
 void LocalMod::setModrinthId(const QString &id)
@@ -462,6 +468,7 @@ void LocalMod::setModrinthId(const QString &id)
     if(id.isEmpty()) return;
     modrinthMod_ = new ModrinthMod(this, id);
     emit modrinthReady(true);
+    IdMapper::addModrinth(commonInfo()->id(), id);
 }
 
 const QString &LocalMod::alias() const
@@ -519,7 +526,7 @@ void LocalMod::restore(const QVariant &variant)
 {
     alias_ = value(variant, "alias").toString();
     isFeatured_ = value(variant, "featured").toBool();
-    for(const auto &tag : value(variant, "tags").toList())
+    for(auto &&tag : value(variant, "tags").toList())
         tagManager_ << Tag::fromVariant(tag);
     if(contains(variant, "curseforge")){
         if(contains(value(variant, "curseforge"), "id"))

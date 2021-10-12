@@ -46,8 +46,8 @@ jobs:
           ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -verbose=2
       - uses: actions/upload-artifact@v2
         with:
-          name: Mod_Manager-${{ env.VERSION }}-${{ matrix.qt_arch }}.AppImage
-          path: Mod_Manager-${{ env.VERSION }}-${{ matrix.qt_arch }}.AppImage
+          name: Mod_Manager-${{ env.VERSION }}-x86_64.AppImage
+          path: Mod_Manager-${{ env.VERSION }}-x86_64.AppImage
 
   build-on-win-mingw:
     name: Build On Windows Mingw
