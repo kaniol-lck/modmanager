@@ -30,12 +30,14 @@ jobs:
       - name: Set Env
         run: |
           export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
+#          export RELEASE_TEXT=$(grep -Pzo "### ${VERSION}\n(\n|.)+?\n##" Changelog.md | sed '$ d')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: build ubuntu
         run: |
           qmake
           make
       - name: package
+        id: package
         run: |
           sudo apt update
           sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
@@ -46,8 +48,8 @@ jobs:
           ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage -verbose=2
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{github.event.repository.name}}-${VERSION}-${{ matrix.qt_arch }}.AppImage
-          file: ${{github.event.repository.name}}-${VERSION}-x86_64.AppImage
+          name: ${{ steps.package.outputs.artifact }}
+          path: Mod_Manager*.AppImage
 
   build-on-win-mingw:
     name: Build On Windows Mingw
