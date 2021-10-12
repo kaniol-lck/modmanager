@@ -247,7 +247,6 @@ CONFIG(debug, debug|release) {
     message("Currently in DEBUG mode.")
 } else {
     DEFINES += QT_NO_DEBUG QT_NO_DEBUG_OUTPUT
-    CONFIG += release
     message("Currently in RELEASE mode.")
 }
 

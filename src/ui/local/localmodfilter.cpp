@@ -99,7 +99,6 @@ void LocalModFilter::showAll()
 
 bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
 {
-    refreshTags();
     bool show = true;
     if(!(mod->commonInfo()->name().toLower().contains(searchText) ||
             mod->commonInfo()->description().toLower().contains(searchText)))

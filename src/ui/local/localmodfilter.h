@@ -17,7 +17,7 @@ public:
     void showAll();
 
     bool willShow(LocalMod *mod, const QString searchText) const;
-private slots:
+public slots:
     void refreshTags() const;
 private:
     LocalModPath *path_;

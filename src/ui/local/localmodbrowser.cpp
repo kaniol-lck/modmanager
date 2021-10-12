@@ -116,6 +116,7 @@ void LocalModBrowser::updateModList()
     }
     ui->modListWidget->sortItems();
     ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()));
+    filter_->refreshTags();
     filterList();
 }
 
