@@ -30,7 +30,6 @@ jobs:
       - name: Set Env
         run: |
           export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
-#          export RELEASE_TEXT=$(grep -Pzo "### ${VERSION}\n(\n|.)+?\n##" Changelog.md | sed '$ d')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: build ubuntu
         run: |
