@@ -3,6 +3,8 @@
 
 #include <QDir>
 #include <QDesktopServices>
+#include <QAction>
+#include <QClipboard>
 
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
@@ -16,6 +18,11 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     localMod_(localMod)
 {
     ui->setupUi(this);
+    auto action = new QAction(tr("Copy website link"), this);
+    connect(action, &QAction::triggered, this, [=]{
+        QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());
+    });
+    ui->websiteButton->addAction(action);
 
     //update basic info
     auto updateBasicInfo = [=]{

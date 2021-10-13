@@ -67,7 +67,6 @@ void LocalModDialog::onCurrentModChanged()
     ui->versionText->setText(mod_->modFile()->commonInfo()->version());
     for(auto file : mod_->oldFiles())
         ui->versionSelect->addItem(file->commonInfo()->version());
-    //TODO: if this version was deleted
     ui->versionSelect->setCurrentText(file_->commonInfo()->version());
     ui->versionSelect->setVisible(!mod_->oldFiles().empty());
     ui->versionText->setVisible(mod_->oldFiles().empty());
@@ -125,15 +124,54 @@ void LocalModDialog::onCurrentFileChanged()
         homepageIcon->get(file_->commonInfo()->issues());
     }
 
-    if(!mod_->commonInfo()->iconBytes().isEmpty()){
+    auto setIcon = [=](auto &&image) {
         QPixmap pixelmap;
-        pixelmap.loadFromData(file_->commonInfo()->iconBytes());
+        if (mod_->modFile()->type() == LocalModFile::Disabled){
+            auto alphaChannel = image.convertToFormat(QImage::Format_Alpha8);
+            image = image.convertToFormat(QImage::Format_Grayscale8);
+            image.setAlphaChannel(alphaChannel);
+        }
+        pixelmap.convertFromImage(image);
         ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-        ui->modIcon->setCursor(Qt::ArrowCursor);
-    } else {
-        QPixmap pixelmap(":/image/modmanager.png");
-        ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-    }
+    };
+
+    if(!mod_->commonInfo()->iconBytes().isEmpty()){
+        QImage image;
+        image.loadFromData(mod_->commonInfo()->iconBytes());
+        setIcon(image);
+    }else if(mod_->curseforgeMod()){
+        auto setCurseforgeIcon = [=]{
+            QImage image;
+            image.loadFromData(mod_->curseforgeMod()->modInfo().iconBytes());
+            setIcon(image);
+        };
+        if(!mod_->curseforgeMod()->modInfo().iconBytes().isEmpty())
+            setCurseforgeIcon();
+        else{
+            mod_->curseforgeMod()->acquireBasicInfo();
+            connect(mod_->curseforgeMod(), &CurseforgeMod::basicInfoReady, this, [=]{
+                mod_->curseforgeMod()->acquireIcon();
+                connect(mod_->curseforgeMod(), &CurseforgeMod::iconReady, this, setCurseforgeIcon);
+            });
+        }
+    } else if(mod_->modrinthMod()){
+        auto setModrinthIcon = [=]{
+            QImage image;
+            image.loadFromData(mod_->modrinthMod()->modInfo().iconBytes());
+            setIcon(image);
+        };
+        if(!mod_->modrinthMod()->modInfo().iconBytes().isEmpty())
+            setModrinthIcon();
+        else{
+            mod_->modrinthMod()->acquireFullInfo();
+            connect(mod_->modrinthMod(), &ModrinthMod::fullInfoReady, this, [=]{
+                connect(mod_->modrinthMod(), &ModrinthMod::iconReady, this, setModrinthIcon);
+                mod_->modrinthMod()->acquireIcon();
+            });
+        }
+    } else
+        setIcon(QImage(":/image/modmanager.png"));
+
     //file info
     auto fileInfo = file_->fileInfo();
     auto [ baseName, suffix ] = file_->baseNameFullSuffix();

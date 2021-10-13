@@ -4,6 +4,8 @@
 #include <QDesktopServices>
 #include <QTextDocument>
 #include <QDebug>
+#include <QAction>
+#include <QClipboard>
 
 #include "local/localmodpath.h"
 #include "modrinthfileitemwidget.h"
@@ -17,6 +19,11 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
     localMod_(localMod)
 {
     ui->setupUi(this);
+    auto action = new QAction(tr("Copy website link"), this);
+    connect(action, &QAction::triggered, this, [=]{
+        QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());
+    });
+    ui->websiteButton->addAction(action);
 
     auto updateBasicInfo = [=]{
         setWindowTitle(mod->modInfo().name() + tr(" - Modrinth"));
