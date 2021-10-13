@@ -59,6 +59,7 @@
         <file>modrinth/utility.svg</file>
         <file>modrinth/worldgen.svg</file>
         <file>modmanager.png</file>
+        <file>gitlab.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

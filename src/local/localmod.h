@@ -81,14 +81,14 @@ public:
 
     const Updatable<CurseforgeFileInfo> &curseforgeUpdate() const;
     const Updatable<ModrinthFileInfo> &modrinthUpdate() const;
-    void setCurrentCurseforgeFileInfo(const CurseforgeFileInfo &info);
-    void setCurrentModrinthFileInfo(const ModrinthFileInfo &info);
+    void setCurrentCurseforgeFileInfo(const CurseforgeFileInfo &info, bool cache = true);
+    void setCurrentModrinthFileInfo(const ModrinthFileInfo &info, bool cache = true);
     const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &depends() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &conflicts() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &breaks() const;
 
-    void setCurseforgeId(int id);
-    void setModrinthId(const QString &id);
+    void setCurseforgeId(int id, bool cache = true);
+    void setModrinthId(const QString &id, bool cache = true);
 
     const QString &alias() const;
     void setAlias(const QString &newAlias);
@@ -114,6 +114,8 @@ signals:
     void websiteReady(bool bl);
     void checkUpdatesStarted();
     void updateReady(ModWebsiteType type);
+    void searchOnCurseforgeFinished(bool bl);
+    void searchOnModrinthFinished(bool bl);
 
     void curseforgeReady(bool bl);
     void curseforgeUpdateReady(bool bl);

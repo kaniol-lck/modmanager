@@ -18,6 +18,8 @@ void WebsiteIcon::get(QUrl websiteUrl)
         auto hostname = websiteUrl.host();
         if(hostname.contains("github.com"))
             return QIcon(":/image/github.svg");
+        if(hostname.contains("gitlab.com"))
+            return QIcon(":/image/gitlab.svg");
         if(hostname.contains("curseforge.com"))
             return QIcon(":/image/curseforge.svg");
         if(hostname.contains("modrinth.com"))
@@ -45,7 +47,6 @@ void WebsiteIcon::get(QUrl websiteUrl)
             return QIcon();
         }
         auto bytes = reply->readAll();
-        qDebug() << bytes;
         reply->deleteLater();
         return QIcon(bytes);
     });

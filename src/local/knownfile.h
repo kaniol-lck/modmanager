@@ -5,14 +5,21 @@
 #include <QMap>
 #include <QString>
 
+#include "curseforge/curseforgefileinfo.h"
+#include "modrinth/modrinthfileinfo.h"
+
 class KnownFile
 {
 public:
     KnownFile();
-    static void addCurseforge(const QString &murmurhash, int curseforgeFileId);
-    static void addModrinth(const QString &sha1, QString modrinthFileId);
-    const QMap<QString, int> &curseforgeFiles() const;
-    const QMap<QString, QString> &modrinthFiles() const;
+    static void addCurseforge(const QString &murmurhash, const CurseforgeFileInfo &file);
+    static void addModrinth(const QString &sha1, const ModrinthFileInfo &file);
+    static void addUnmatchedCurseforge(const QString &murmurhash);
+    static void addUnmatchedModrinth(const QString &sha1);
+    static const QMap<QString, CurseforgeFileInfo> &curseforgeFiles();
+    static const QMap<QString, ModrinthFileInfo> &modrinthFiles();
+    static const QStringList &unmatchedCurseforgeFiles();
+    static const QStringList &unmatchedModrinthFiles();
 
 private:
     static KnownFile *files();
@@ -21,8 +28,10 @@ private:
 
     static constexpr auto kFileName = "fileid.json";
     QFile file_;
-    QMap<QString, int> curseforgeFiles_;
-    QMap<QString, QString> modrinthFiles_;
+    QMap<QString, CurseforgeFileInfo> curseforgeFiles_;
+    QMap<QString, ModrinthFileInfo> modrinthFiles_;
+    QStringList unmatchedCurseforgeFiles_;
+    QStringList unmatchedModrinthFiles_;
 };
 
 #endif // KNOWNFILE_H

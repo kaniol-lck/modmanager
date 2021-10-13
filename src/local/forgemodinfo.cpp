@@ -123,7 +123,7 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
 
         if(!jsonDocument.isArray()) return {};
 
-        for(const auto &result : jsonDocument.toVariant().toList()){
+        for(auto &&result : jsonDocument.toVariant().toList()){
             ForgeModInfo info;
             info.id_ = value(result, "modid").toString();
             info.name_ = value(result, "name").toString();

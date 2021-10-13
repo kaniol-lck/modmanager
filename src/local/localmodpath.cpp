@@ -332,7 +332,8 @@ void LocalModPath::searchOnWebsites()
     bool isAllCached = true;
     for(const auto &mod : qAsConst(modMap_)){
         //has cache
-        if(!mod->curseforgeMod() && !mod->modrinthMod()){
+        if(!mod->curseforgeMod() || !mod->modrinthMod() ||
+                !mod->curseforgeUpdate().currentFileInfo() || !mod->modrinthUpdate().currentFileInfo()){
             isAllCached = false;
             (*count)++;
             connect(mod, &LocalMod::websiteReady, this, [=]{
