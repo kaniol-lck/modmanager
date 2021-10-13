@@ -86,6 +86,7 @@ private:
     QMultiMap<QString, FabricModInfo> fabricModMap_;
     QStringList provideList_;
     QDateTime latestUpdateCheck_;
+    bool isSearching_ = false;
 };
 
 #endif // LOCALMODPATH_H

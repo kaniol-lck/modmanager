@@ -30,8 +30,15 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     curseforgeAPI_(parent->curseforgeAPI()),
     modrinthAPI_(parent->modrinthAPI()),
     path_(parent),
-    modFile_(file)
-{}
+    modFile_(file),
+    targetVersion_(parent->info().gameVersion()),
+    targetLoaderType_(parent->info().loaderType())
+{
+    connect(parent, &LocalModPath::infoUpdated, this, [=]{
+        targetVersion_ = parent->info().gameVersion();
+        targetLoaderType_ = parent->info().loaderType();
+    });
+}
 
 CurseforgeMod *LocalMod::curseforgeMod() const
 {
@@ -52,9 +59,9 @@ void LocalMod::searchOnWebsite()
         if(--(*count) == 0) emit websiteReady(*hasWeb);
     };
     emit checkWebsiteStarted();
-    connect(this, &LocalMod::searchOnCurseforgeFinished, foo);
+    connect(this, &LocalMod::searchOnCurseforgeFinished, this, foo);
     searchOnCurseforge();
-    connect(this, &LocalMod::searchOnModrinthFinished, foo);
+    connect(this, &LocalMod::searchOnModrinthFinished, this, foo);
     searchOnModrinth();
 }
 
@@ -125,7 +132,7 @@ void LocalMod::searchOnModrinth()
         });
 }
 
-void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType)
+void LocalMod::checkUpdates()
 {
     //clear update cache
     modrinthUpdate_.reset();
@@ -144,19 +151,19 @@ void LocalMod::checkUpdates(const GameVersion &targetVersion, ModLoaderType::Typ
     if(config.getUseCurseforgeUpdate() && curseforgeUpdate_.currentFileInfo()){
         (*count)++;
         connect(this, &LocalMod::curseforgeUpdateReady, foo);
-        checkCurseforgeUpdate(targetVersion, targetType);
+        checkCurseforgeUpdate();
         noSource = false;
     }
     if(config.getUseModrinthUpdate() && modrinthUpdate_.currentFileInfo()){
         (*count)++;
         connect(this, &LocalMod::modrinthUpdateReady, foo);
-        checkModrinthUpdate(targetVersion, targetType);
+        checkModrinthUpdate();
         noSource = false;
     }
     if(noSource) emit updateReady(ModWebsiteType::None);
 }
 
-void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
+void LocalMod::checkCurseforgeUpdate()
 {
     if(!curseforgeMod_){
         emit curseforgeUpdateReady(false);
@@ -167,7 +174,7 @@ void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoader
 
     //update file list
     auto updateFileList = [=]{
-         bool bl = curseforgeUpdate_.findUpdate(curseforgeMod_->modInfo().allFileList(), targetVersion, targetType);
+         bool bl = curseforgeUpdate_.findUpdate(curseforgeMod_->modInfo().allFileList(), targetVersion_, targetLoaderType_);
          emit curseforgeUpdateReady(bl);
     };
 
@@ -180,7 +187,7 @@ void LocalMod::checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoader
 //    }
 }
 
-void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType)
+void LocalMod::checkModrinthUpdate()
 {
     if(!modrinthMod_){
         emit modrinthUpdateReady(false);
@@ -191,7 +198,7 @@ void LocalMod::checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderTy
 
     //update file list
     auto updateFileList = [=]{
-         bool bl = modrinthUpdate_.findUpdate(modrinthMod_->modInfo().fileList(), targetVersion, targetType);
+         bool bl = modrinthUpdate_.findUpdate(modrinthMod_->modInfo().fileList(), targetVersion_, targetLoaderType_);
          emit modrinthUpdateReady(bl);
     };
 
@@ -363,6 +370,13 @@ void LocalMod::rollback(LocalModFile *file)
     modFile_ = file;
     if(disabled) setEnabled(false);
     emit modFileUpdated();
+
+    //reset update info
+    curseforgeUpdate_.reset(true);
+    modrinthUpdate_.reset(true);
+    connect(this, &LocalMod::websiteReady, this, [=]{
+        checkUpdates();
+    });
     searchOnWebsite();
 }
 
@@ -482,8 +496,8 @@ void LocalMod::setCurseforgeId(int id, bool cache)
         emit curseforgeReady(true);
         if(cache)
             IdMapper::addCurseforge(commonInfo()->id(), id);
-    }
-    emit curseforgeReady(false);
+    } else
+        emit curseforgeReady(false);
 }
 
 void LocalMod::setModrinthId(const QString &id, bool cache)
@@ -493,8 +507,8 @@ void LocalMod::setModrinthId(const QString &id, bool cache)
         emit modrinthReady(true);
         if(cache)
             IdMapper::addModrinth(commonInfo()->id(), id);
-    }
-    emit modrinthReady(false);
+    } else
+        emit modrinthReady(false);
 }
 
 const QString &LocalMod::alias() const

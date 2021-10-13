@@ -327,24 +327,20 @@ LocalMod *LocalModPath::findLocalMod(const QString &id)
 void LocalModPath::searchOnWebsites()
 {
     if(modMap_.isEmpty()) return;
+    isSearching_ = true;
     emit checkWebsitesStarted();
-    auto count = std::make_shared<int>(0);
-    bool isAllCached = true;
+    auto count = std::make_shared<int>(modMap_.size());
     for(const auto &mod : qAsConst(modMap_)){
-        //has cache
-        if(!mod->curseforgeMod() || !mod->modrinthMod() ||
-                !mod->curseforgeUpdate().currentFileInfo() || !mod->modrinthUpdate().currentFileInfo()){
-            isAllCached = false;
-            (*count)++;
-            connect(mod, &LocalMod::websiteReady, this, [=]{
-                emit websiteCheckedCountUpdated(modMap_.size() - *count);
-                if(--(*count) == 0)
-                    emit websitesReady();
-            });
-            mod->searchOnWebsite();
-        }
+        connect(mod, &LocalMod::websiteReady, this, [=] {
+            if(!isSearching_) return;
+            emit websiteCheckedCountUpdated(modMap_.size() - *count);
+            if(--(*count) == 0){
+                emit websitesReady();
+                isSearching_ = false;
+            }
+        });
+        mod->searchOnWebsite();
     }
-    if(isAllCached) emit websitesReady();
 }
 
 void LocalModPath::checkModUpdates(bool force) // force = true by default
@@ -370,7 +366,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
                     emit updatesReady();
                 }
             });
-            mod->checkUpdates(info_.gameVersion(), info_.loaderType());
+            mod->checkUpdates();
         }
     } else if(interval != Config::Never){
         //not manual not never i.e. load cache

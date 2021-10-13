@@ -138,12 +138,12 @@ void LocalModDialog::onCurrentFileChanged()
     if(!mod_->commonInfo()->iconBytes().isEmpty()){
         QImage image;
         image.loadFromData(mod_->commonInfo()->iconBytes());
-        setIcon(image);
+        setIcon(std::move(image));
     }else if(mod_->curseforgeMod()){
         auto setCurseforgeIcon = [=]{
             QImage image;
             image.loadFromData(mod_->curseforgeMod()->modInfo().iconBytes());
-            setIcon(image);
+            setIcon(std::move(image));
         };
         if(!mod_->curseforgeMod()->modInfo().iconBytes().isEmpty())
             setCurseforgeIcon();

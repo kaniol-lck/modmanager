@@ -44,9 +44,9 @@ public:
 
     //update
     bool perpareUpdate();
-    void checkUpdates(const GameVersion &targetVersion, ModLoaderType::Type targetType);
-    void checkCurseforgeUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
-    void checkModrinthUpdate(const GameVersion &targetVersion, ModLoaderType::Type targetType);
+    void checkUpdates();
+    void checkCurseforgeUpdate();
+    void checkModrinthUpdate();
 
     ModWebsiteType defaultUpdateType() const;
     QList<ModWebsiteType> updateTypes() const;
@@ -145,6 +145,10 @@ private:
     LocalModFile *modFile_;
     QList<LocalModFile*> oldFiles_;
     QList<LocalModFile*> duplicateFiles_;
+
+    //target for update
+    GameVersion targetVersion_;
+    ModLoaderType::Type targetLoaderType_;
 
     //related on websites
     CurseforgeMod *curseforgeMod_ = nullptr;

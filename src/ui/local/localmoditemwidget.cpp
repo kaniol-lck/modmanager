@@ -12,9 +12,10 @@
 #include "ui/local/localmodmenu.h"
 #include "util/tutil.hpp"
 
-LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) : QWidget(parent),
-                                                                         ui(new Ui::LocalModItemWidget),
-                                                                         mod_(mod)
+LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
+    QWidget(parent),
+    ui(new Ui::LocalModItemWidget),
+    mod_(mod)
 {
     //init ui
     ui->setupUi(this);
@@ -96,12 +97,12 @@ void LocalModItemWidget::updateInfo()
     if(!mod_->commonInfo()->iconBytes().isEmpty()){
         QImage image;
         image.loadFromData(mod_->commonInfo()->iconBytes());
-        setIcon(image);
+        setIcon(std::move(image));
     }else if(mod_->curseforgeMod()){
         auto setCurseforgeIcon = [=]{
             QImage image;
             image.loadFromData(mod_->curseforgeMod()->modInfo().iconBytes());
-            setIcon(image);
+            setIcon(std::move(image));
         };
         if(!mod_->curseforgeMod()->modInfo().iconBytes().isEmpty())
             setCurseforgeIcon();
@@ -206,8 +207,12 @@ void LocalModItemWidget::on_updateButton_clicked()
 
 void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType type)
 {
-    if (type == LocalMod::None)
+    if (type == LocalMod::None){
+        ui->updateButton->setVisible(false);
+        if(ui->updateButton->menu())
+            ui->updateButton->menu()->clear();
         return;
+    }
     ui->updateButton->setVisible(true);
     ui->updateButton->setEnabled(!mod_->isDisabled());
     if (type == LocalMod::Curseforge)
