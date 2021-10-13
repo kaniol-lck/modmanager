@@ -36,18 +36,14 @@ ModLoaderType::Type LocalModFile::loadInfo()
     murmurhash_ = QByteArray::number(MurmurHash2(filteredFileContent.constData(), filteredFileContent.length(), 1));
 
     //load fabric mod
-    if(fabricModInfoList_ = FabricModInfo::fromZip(path_); !fabricModInfoList_.isEmpty()){
+    if(fabricModInfoList_ = FabricModInfo::fromZip(path_); !fabricModInfoList_.isEmpty())
         loaderType_ = ModLoaderType::Fabric;
-        return ModLoaderType::Fabric;
-    }
 
     //load forge mod
-    if(forgeModInfoList_ = ForgeModInfo::fromZip(path_); !forgeModInfoList_.isEmpty()){
+    if(forgeModInfoList_ = ForgeModInfo::fromZip(path_); !forgeModInfoList_.isEmpty())
         loaderType_ = ModLoaderType::Forge;
-        return ModLoaderType::Forge;
-    }
 
-    //no available mod info
+    //for count
     return loaderType_;
 }
 
@@ -218,6 +214,14 @@ ModLoaderType::Type LocalModFile::loaderType() const
     return loaderType_;
 }
 
+QList<ModLoaderType::Type> LocalModFile::loaderTypes() const
+{
+    QList<ModLoaderType::Type> list;
+    if(!fabricModInfoList_.isEmpty()) list << ModLoaderType::Fabric;
+    if(!forgeModInfoList_.isEmpty()) list << ModLoaderType::Forge;
+    return list;
+}
+
 const QList<FabricModInfo> &LocalModFile::fabricModInfoList() const
 {
     return fabricModInfoList_;
@@ -226,4 +230,11 @@ const QList<FabricModInfo> &LocalModFile::fabricModInfoList() const
 const QList<ForgeModInfo> &LocalModFile::forgeModInfoList() const
 {
     return forgeModInfoList_;
+}
+
+void LocalModFile::setLoaderType(ModLoaderType::Type newLoaderType)
+{
+    if(!loaderTypes().contains(newLoaderType)) return;
+    loaderType_ = newLoaderType;
+    emit fileChanged();
 }

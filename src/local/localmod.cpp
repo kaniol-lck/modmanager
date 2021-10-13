@@ -494,7 +494,7 @@ QJsonObject LocalMod::toJsonObject() const
         object.insert("featured", isFeatured_);
     if(!tagManager_.tags().isEmpty()){
         QJsonArray tagArray;
-        for(const auto &tag : tagManager_.tags())
+        for(auto &&tag : tagManager_.tags())
             tagArray << tag.toJsonValue();
         object.insert("tags", tagArray);
     }

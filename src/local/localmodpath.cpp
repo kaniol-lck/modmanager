@@ -43,6 +43,8 @@ void LocalModPath::loadMods(bool startup, bool deduceLoader)
                 emit infoUpdated();
             }
         }
+        for(const auto &file : qAsConst(modFileList_))
+            file->setLoaderType(info_.loaderType());
         emit loadFinished();
     });
 

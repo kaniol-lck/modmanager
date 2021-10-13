@@ -49,6 +49,8 @@ public:
     ForgeModInfo forge() const;
 
     ModLoaderType::Type loaderType() const;
+    QList<ModLoaderType::Type> loaderTypes() const;
+    void setLoaderType(ModLoaderType::Type newLoaderType);
     const QList<FabricModInfo> &fabricModInfoList() const;
     const QList<ForgeModInfo> &forgeModInfoList() const;
 

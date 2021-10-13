@@ -4,6 +4,7 @@
 #include <quazip.h>
 #include <quazipfile.h>
 #include <QJsonDocument>
+#include <QRegularExpression>
 #include <toml.hpp>
 
 #include "util/tutil.hpp"
@@ -39,9 +40,19 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
         QByteArray bytes = zipFile.readAll();
         zipFile.close();
 
+        QString string = bytes;
+
+        auto i = QRegularExpression(R"("[^"]*(?:""[^"]*)*")").globalMatch(bytes);
+        while (i.hasNext()){
+            QRegularExpressionMatch match = i.next();
+            if(!match.captured().contains('\n')) continue;
+            auto str = match.captured().replace('\n', "\\n");
+            string.replace(match.captured(), str);
+        }
+
         toml::parse_result config;
         try {
-            config = toml::parse(bytes.data());
+            config = toml::parse(string.toUtf8().data());
         }  catch (...) {
             qDebug() << zip->getZipName() << "has invalid toml file.";
             return {};
