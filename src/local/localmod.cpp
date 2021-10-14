@@ -69,12 +69,12 @@ void LocalMod::searchOnCurseforge()
 {
     emit checkCurseforgeStarted();
     //id cache
-    if(IdMapper::idMap().contains(commonInfo()->id()))
+    if(!curseforgeMod_ && IdMapper::idMap().contains(commonInfo()->id()))
         if(auto id = IdMapper::get(commonInfo()->id()).curseforgeId())
             setCurseforgeId(id, false);
     auto &&murmurhash = modFile_->murmurhash();
     //file cache
-    if(KnownFile::curseforgeFiles().keys().contains(murmurhash))
+    if(!curseforgeUpdate_.currentFileInfo() && KnownFile::curseforgeFiles().keys().contains(murmurhash))
         setCurrentCurseforgeFileInfo(KnownFile::curseforgeFiles().value(murmurhash), false);
     //do i need web search?
     if(curseforgeMod_ && curseforgeUpdate_.currentFileInfo())
@@ -103,12 +103,12 @@ void LocalMod::searchOnModrinth()
 {
     emit checkModrinthStarted();
     //id cache
-    if(IdMapper::idMap().contains(commonInfo()->id()))
+    if(!modrinthMod_ && IdMapper::idMap().contains(commonInfo()->id()))
         if(auto id = IdMapper::get(commonInfo()->id()).modrinthId(); !id.isEmpty())
             setModrinthId(id, false);
     auto &&sha1 = modFile_->sha1();
     //file cache
-    if(KnownFile::modrinthFiles().keys().contains(sha1))
+    if(!modrinthUpdate_.currentFileInfo() && KnownFile::modrinthFiles().keys().contains(sha1))
         setCurrentModrinthFileInfo(KnownFile::modrinthFiles().value(sha1), false);
     //do i need web search?
     if(modrinthMod_ && modrinthUpdate_.currentFileInfo())

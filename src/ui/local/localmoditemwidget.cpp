@@ -107,11 +107,11 @@ void LocalModItemWidget::updateInfo()
         if(!mod_->curseforgeMod()->modInfo().iconBytes().isEmpty())
             setCurseforgeIcon();
         else{
-            mod_->curseforgeMod()->acquireBasicInfo();
             connect(mod_->curseforgeMod(), &CurseforgeMod::basicInfoReady, this, [=]{
-                mod_->curseforgeMod()->acquireIcon();
                 connect(mod_->curseforgeMod(), &CurseforgeMod::iconReady, this, setCurseforgeIcon);
+                mod_->curseforgeMod()->acquireIcon();
             });
+            mod_->curseforgeMod()->acquireBasicInfo();
         }
     } else if(mod_->modrinthMod()){
         auto setModrinthIcon = [=]{
