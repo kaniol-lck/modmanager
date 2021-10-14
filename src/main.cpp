@@ -20,9 +20,15 @@ int main(int argc, char *argv[])
     }
 
     //setup theme
-#ifdef Q_OS_WIN
+#ifndef Q_OS_UNIX
     QIcon::setThemeName("breeze-modmanager");
+#endif
+#ifdef Q_OS_WIN
     QFont font("微软雅黑", 10);
+    a.setFont(font);
+#endif
+#ifdef Q_OS_MACOS
+    QFont font("PingFang", 12);
     a.setFont(font);
 #endif
     a.setWindowIcon(QIcon(":/image/modmanager.png"));
