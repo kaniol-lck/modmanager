@@ -294,7 +294,6 @@ void ModManager::on_action_About_Mod_Manager_triggered()
     dialog->exec();
 }
 
-
 void ModManager::on_actionVisit_Curseforge_triggered()
 {
     QUrl url("https://www.curseforge.com/minecraft/mc-mods");

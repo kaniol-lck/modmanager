@@ -62,7 +62,7 @@ void LocalModPathManager::load()
 {
     Config config;
     for(auto &&pathInfo : config.getLocalPathList()){
-        auto path = new LocalModPath(LocalModPathInfo::fromVariant(pathInfo), true);
+        auto path = new LocalModPath(LocalModPathInfo::fromVariant(pathInfo), false, true);
         manager()->pathList_ << path;
         connect(path, &LocalModPath::infoUpdated, manager(), &LocalModPathManager::updateList);
     }
