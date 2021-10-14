@@ -5,24 +5,32 @@
 #include <QDebug>
 
 SmoothScrollBar::SmoothScrollBar(QWidget *parent) :
-    QScrollBar(parent),
-    animation_(new QPropertyAnimation(this, "value"))
+    QScrollBar(parent)
 {
-    animation_->setDuration(kTime);
-    animation_->setEasingCurve(QEasingCurve::InOutQuad);
+    timer_.setInterval(1000 / 60);
+    connect(&timer_, &QTimer::timeout, this, &SmoothScrollBar::scollMove);
 }
 
 void SmoothScrollBar::wheelEvent(QWheelEvent *event)
 {
-    auto degree = event->angleDelta().y() * 2;
+    auto degree = event->angleDelta().y();
     if(value() == minimum() && degree > 0) return;
     if(value() == maximum() && degree < 0) return;
-    if(animation_->state() == QAbstractAnimation::Stopped){
-        animation_->setEndValue(value() - degree);
-        animation_->start();
-    } else if(animation_->state() == QAbstractAnimation::Running){
-        animation_->stop();
-        animation_->setEndValue(animation_->endValue().toInt() - degree);
-        animation_->start();
+    speed_ -= degree * 0.03;
+    timer_.start();
+}
+
+void SmoothScrollBar::scollMove()
+{
+    bool postive = speed_ > 0;
+    int f = postive? -1 : 1;
+    speed_ += f * 0.5;
+    auto v = value() + speed_;
+        setValue(v);
+    if(v < minimum() + 0.001 || v > maximum() - 0.001)
+        speed_ = 0;
+    if((postive && speed_ <= 0) || (!postive && speed_ >= 0)){
+        speed_ = 0;
+        timer_.stop();
     }
 }
