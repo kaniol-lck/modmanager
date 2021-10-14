@@ -12,16 +12,16 @@
 #include "util/tutil.hpp"
 #include "config.hpp"
 
-LocalModPath::LocalModPath(const LocalModPathInfo &info, bool startup, bool deduceLoader) :
+LocalModPath::LocalModPath(const LocalModPathInfo &info, bool deduceLoader, bool startup) :
     QObject(LocalModPathManager::manager()),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
     info_(info)
 {
-    loadMods(startup, deduceLoader);
+    loadMods(deduceLoader, startup);
 }
 
-void LocalModPath::loadMods(bool startup, bool deduceLoader)
+void LocalModPath::loadMods(bool deduceLoader, bool startup)
 {
     modFileList_.clear();
     for(auto &&fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
@@ -432,7 +432,7 @@ const LocalModPathInfo &LocalModPath::info() const
     return info_;
 }
 
-void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
+void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader, bool startup)
 {
     if(info_ == newInfo) return;
 
@@ -441,7 +441,7 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo)
 
     //path, game version or loader type change will trigger mod reload
     if(info_.path() != newInfo.path() || info_.gameVersion() != newInfo.gameVersion() || info_.loaderType() != newInfo.loaderType())
-        loadMods();
+        loadMods(deduceLoader, startup);
 }
 
 LocalModTags LocalModPath::tagManager()

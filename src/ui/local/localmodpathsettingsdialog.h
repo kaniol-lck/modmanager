@@ -14,7 +14,7 @@ class LocalModPathSettingsDialog : public QDialog
     Q_OBJECT
 
 signals:
-    void settingsUpdated(LocalModPathInfo info);
+    void settingsUpdated(LocalModPathInfo info, bool autoLoaderType);
 
 public:
     explicit LocalModPathSettingsDialog(QWidget *parent = nullptr);

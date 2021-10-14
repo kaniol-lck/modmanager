@@ -211,8 +211,8 @@ void ModManager::editLocalPath(int index)
 {
     auto pathInfo = LocalModPathManager::pathList().at(index)->info();
     auto dialog = new LocalModPathSettingsDialog(this, pathInfo);
-    connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
-        LocalModPathManager::pathList().at(index)->setInfo(newInfo);
+    connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo, bool autoLoaderType){
+        LocalModPathManager::pathList().at(index)->setInfo(newInfo, autoLoaderType);
         browserSelector_->localItem()->child(index)->setText(0, newInfo.displayName());
     });
     dialog->exec();
@@ -240,8 +240,8 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
         connect(menu->addAction(QIcon::fromTheme("list-add"), tr("New Mod Path")), &QAction::triggered, this, [=]{
             auto dialog = new LocalModPathSettingsDialog(this);
             dialog->show();
-            connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
-                auto path = new LocalModPath(pathInfo);
+            connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
+                auto path = new LocalModPath(pathInfo, autoLoaderType);
                 LocalModPathManager::addPath(path);
             });
         });

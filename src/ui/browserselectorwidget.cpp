@@ -88,8 +88,8 @@ void BrowserSelectorWidget::on_addButton_clicked()
 {
     auto dialog = new LocalModPathSettingsDialog(this);
     dialog->show();
-    connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo){
-        auto path = new LocalModPath(pathInfo);
+    connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
+        auto path = new LocalModPath(pathInfo, autoLoaderType);
         LocalModPathManager::addPath(path);
     });
 }

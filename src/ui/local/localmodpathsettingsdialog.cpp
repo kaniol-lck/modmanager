@@ -88,7 +88,7 @@ void LocalModPathSettingsDialog::on_modDirButton_clicked()
 
 void LocalModPathSettingsDialog::on_buttonBox_accepted()
 {
-    emit settingsUpdated(info_);
+    emit settingsUpdated(info_, ui->autoLoaderType->isCheckable());
 }
 
 void LocalModPathSettingsDialog::updateAutoName()
