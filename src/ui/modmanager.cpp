@@ -40,14 +40,13 @@ ModManager::ModManager(QWidget *parent) :
            config.getMainWindowHeight());
     addToolBar(static_cast<Qt::ToolBarArea>(config.getTabSelectBarArea()), ui->toolBar);
 
-    setStyleSheet("QListWidget::item:hover {\
-                  background-color: #eee;\
-              }\
-              QListWidget::item:selected {\
-                  border-left: 5px solid #37d;\
-                  color: black;\
-                  background-color: #eee;\
-              }");
+    setStyleSheet("QListWidget::item:hover {"
+                  "  border-left: 5px solid #eee;"
+                  "}"
+                  "QListWidget::item:selected {"
+                  "  border-left: 5px solid #37d;"
+                  "  color: black;"
+                  "}");
 
     ui->toolBar->addWidget(browserSelector_);
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, this, &ModManager::browserChanged);
