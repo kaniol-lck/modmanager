@@ -16,6 +16,13 @@ Preferences::Preferences(QWidget *parent) :
     ui->optifineVersionSource->setVisible(false);
 
     Config config;
+    //General
+    ui->smoothScroll->setChecked(config.getSmoothScroll());
+    ui->scrollSpeed->setValue(config.getScrollSpeed());
+    ui->scrollAcceleration->setValue(config.getScrollAcceleration());
+    ui->scrollFriction->setValue(config.getScrollFriction());
+
+    //Explore
     ui->downloadPathText->setText(config.getDownloadPath());
     ui->searchResultCount->setValue(config.getSearchResultCount());
     ui->optifineVersionSource->setCurrentIndex(config.getOptifineSource());
@@ -46,6 +53,13 @@ Preferences::~Preferences()
 void Preferences::on_Preferences_accepted()
 {
     Config config;
+    //General
+    config.setSmoothScroll(ui->smoothScroll->isChecked());
+    config.setScrollSpeed(ui->scrollSpeed->value());
+    config.setScrollAcceleration(ui->scrollAcceleration->value());
+    config.setScrollFriction(ui->scrollFriction->value());
+
+    //Explore
     config.setDownloadPath(ui->downloadPathText->text());
     config.setSearchResultCount(ui->searchResultCount->value());
     config.setOptifineSource(ui->optifineVersionSource->currentIndex());

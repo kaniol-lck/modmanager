@@ -36,6 +36,12 @@ public:
     }
 
     //General
+    getterAndSetter(SmoothScroll, Bool, smoothScroll, true)
+    getterAndSetter(ScrollSpeed, Double, scrollSpeed, 1.0)
+    getterAndSetter(ScrollAcceleration, Double, scrollAcceleration, 0.5)
+    getterAndSetter(ScrollFriction, Double, scrollFriction, 0.5)
+
+    //Explore
     getterAndSetter(DownloadPath, String, downloadPath, QStandardPaths::writableLocation(QStandardPaths::DownloadLocation))
     getterAndSetter(SearchResultCount, Int, searchResultCount, 30)
     enum OptifineSourceType{ Official, BMCLAPI };

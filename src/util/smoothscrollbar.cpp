@@ -1,28 +1,36 @@
 #include "smoothscrollbar.h"
 
 #include <QWheelEvent>
+#include <QDebug>
 
 SmoothScrollBar::SmoothScrollBar(QWidget *parent) :
     QScrollBar(parent)
 {
-    timer_.setInterval(1000 / 60);
+    accTimer_.setInterval(1000 / kRefreshRate);
+    timer_.setInterval(1000 / kRefreshRate);
+    connect(&accTimer_, &QTimer::timeout, this, &SmoothScrollBar::accSpeed);
     connect(&timer_, &QTimer::timeout, this, &SmoothScrollBar::scollMove);
 }
 
 void SmoothScrollBar::wheelEvent(QWheelEvent *event)
 {
-    auto degree = event->angleDelta().y();
-    if(value() == minimum() && degree > 0) return;
-    if(value() == maximum() && degree < 0) return;
-    speed_ -= degree * 0.03;
-    timer_.start();
+    if(config_.getSmoothScroll()){
+        auto degree = event->angleDelta().y();
+        if(value() == minimum() && degree > 0) return;
+        if(value() == maximum() && degree < 0) return;
+        speed_ -= degree * 0.01 * config_.getScrollSpeed();
+        acc_ -= degree * 0.01;
+        timer_.start();
+        accTimer_.start();
+    } else
+        QScrollBar::wheelEvent(event);
 }
 
 void SmoothScrollBar::scollMove()
 {
     bool postive = speed_ > 0;
     int f = postive? -1 : 1;
-    speed_ += f * 0.5;
+    speed_ += f * kRefreshRate * 0.01 * config_.getScrollFriction();
     auto v = value() + speed_;
         setValue(v);
     if(v < minimum() + 0.001 || v > maximum() - 0.001)
@@ -30,5 +38,15 @@ void SmoothScrollBar::scollMove()
     if((postive && speed_ <= 0) || (!postive && speed_ >= 0)){
         speed_ = 0;
         timer_.stop();
+    }
+}
+
+void SmoothScrollBar::accSpeed()
+{
+    speed_ += acc_ * kRefreshRate * 0.01 * config_.getScrollAcceleration();
+    acc_ *= 0.9;
+    if(std::abs(acc_) <= 0.001){
+        acc_ = 0;
+        accTimer_.stop();
     }
 }
