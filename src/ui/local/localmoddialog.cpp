@@ -139,6 +139,8 @@ void LocalModDialog::onCurrentFileChanged()
         QImage image;
         image.loadFromData(mod_->commonInfo()->iconBytes());
         setIcon(std::move(image));
+    }else if(mod_->commonInfo()->id() == "optifine"){
+        setIcon(QImage(":/image/optifine.png"));
     }else if(mod_->curseforgeMod()){
         auto setCurseforgeIcon = [=]{
             QImage image;

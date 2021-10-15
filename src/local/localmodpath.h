@@ -50,6 +50,8 @@ public:
     const QMap<QString, LocalMod *> &modMap() const;
     void deleteAllOld() const;
 
+    LocalMod *optiFineMod() const;
+
 signals:
     void infoUpdated();
     void modListUpdated();
@@ -83,6 +85,7 @@ private:
     LocalModPathInfo info_;
     QList<LocalModFile*> modFileList_;
     QMap<QString, LocalMod*> modMap_;
+    LocalMod *optiFineMod_ = nullptr;
     QMultiMap<QString, FabricModInfo> fabricModMap_;
     QStringList provideList_;
     QDateTime latestUpdateCheck_;

@@ -79,6 +79,22 @@ void LocalModPath::loadMods(bool deduceLoader, bool startup)
 void LocalModPath::addNormalMod(LocalModFile *file)
 {
     if(auto type = file->type(); type != LocalModFile::Normal && type != LocalModFile::Disabled ) return;
+    //load optifine seperately under fabric
+    if(info_.loaderType() == ModLoaderType::Fabric && file->commonInfo()->id() == "optifine"){
+        if(optiFineMod_)
+            optiFineMod_->addDuplicateFile(file);
+        else{
+            optiFineMod_ = new LocalMod(this, file);
+            //connect update signal
+            connect(optiFineMod_, &LocalMod::updateFinished, this, [=](bool){
+                emit updatesReady();
+            });
+            connect(optiFineMod_, &LocalMod::modCacheUpdated, this, [=]{
+                writeToFile();
+            });
+        }
+        return;
+    }
     if(file->loaderType() != info_.loaderType() && info_.loaderType() != ModLoaderType::Any) return;
     if(file->loaderType() == ModLoaderType::Any) return;
     auto id = file->commonInfo()->id();
@@ -86,8 +102,7 @@ void LocalModPath::addNormalMod(LocalModFile *file)
     if(modMap_.contains(id)){
         modMap_[id]->addDuplicateFile(file);
         return;
-    }
-    else {
+    }else {
         //new mod
         auto mod = new LocalMod(this, file);
         //connect update signal
@@ -104,6 +119,13 @@ void LocalModPath::addNormalMod(LocalModFile *file)
 void LocalModPath::addOldMod(LocalModFile *file)
 {
     if(file->type() != LocalModFile::Old) return;
+    //load optifine seperately under fabric
+    if(info_.loaderType() == ModLoaderType::Fabric && file->commonInfo()->id() == "optifine"){
+        if(optiFineMod_)
+            optiFineMod_->addOldFile(file);
+        //TODO: deal with homeless old mods
+        return;
+    }
     if(file->loaderType() != info_.loaderType() && info_.loaderType() != ModLoaderType::Any) return;
     if(file->loaderType() == ModLoaderType::Any) return;
     auto id = file->commonInfo()->id();
@@ -112,8 +134,7 @@ void LocalModPath::addOldMod(LocalModFile *file)
         modMap_[id]->addOldFile(file);
         return;
     }
-    else
-        ;//TODO: deal with homeless old mods
+    //TODO: deal with homeless old mods
 }
 
 void LocalModPath::checkFabric()
@@ -176,6 +197,8 @@ void LocalModPath::writeToFile()
         modsObject.insert(mod->commonInfo()->id(), mod->toJsonObject());
     object.insert("mods", modsObject);
 
+    object.insert("optifine", optiFineMod_->toJsonObject());
+
     QJsonDocument doc(object);
     QDir dir(info_.path());
     QFile file(dir.absoluteFilePath(kFileName));
@@ -208,6 +231,13 @@ void LocalModPath::readFromFile()
     for(auto it = modMap.cbegin(); it != modMap.cend(); it++)
         if(modMap_.contains(it.key()))
             modMap_[it.key()]->restore(*it);
+    if(optiFineMod_ && result.toMap().contains("optifine"))
+        optiFineMod_->restore(value(result, "optifine"));
+}
+
+LocalMod *LocalModPath::optiFineMod() const
+{
+    return optiFineMod_;
 }
 
 QList<std::tuple<FabricModInfo, QString, QString, std::optional<FabricModInfo>>> LocalModPath::checkFabricDepends() const

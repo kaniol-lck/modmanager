@@ -114,6 +114,14 @@ void LocalModBrowser::updateModList()
         ui->modListWidget->addItem(item);
         ui->modListWidget->setItemWidget(item, modItemWidget);
     }
+    if(modPath_->info().loaderType() == ModLoaderType::Fabric)
+        if(auto mod = modPath_->optiFineMod()){
+            auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
+            auto *item = new LocalModSortItem(mod);
+            item->setSizeHint(QSize(0, 108));
+            ui->modListWidget->addItem(item);
+            ui->modListWidget->setItemWidget(item, modItemWidget);
+        }
     ui->modListWidget->sortItems();
     ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()));
     filter_->refreshTags();
