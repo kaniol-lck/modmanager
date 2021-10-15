@@ -17,22 +17,23 @@ QMenu *LocalModMenu::addTagMenu() const
 {
     auto widget = qobject_cast<QWidget*>(parent());
     auto menu = new QMenu(tr("Add tag"), widget);
+    menu->setIcon(QIcon::fromTheme("tag"));
     //Type category
-    auto addTypeTagmenu = menu->addMenu(tr("Type tag"));
+    auto addTypeTagmenu = menu->addMenu(QIcon::fromTheme("tag"), tr("Type tag"));
     for(const auto &tag : Tag::typeTags())
-        connect(addTypeTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
+        connect(addTypeTagmenu->addAction(QIcon::fromTheme("tag"), tag.name()), &QAction::triggered, this, [=]{
             mod_->addTag(tag);
         });
     //Functionality category
-    auto addFunctionalityTagmenu = menu->addMenu(tr("Functionality tag"));
+    auto addFunctionalityTagmenu = menu->addMenu(QIcon::fromTheme("tag"), tr("Functionality tag"));
     auto &&tagManager = mod_->path()->tagManager();
     for(auto &&tag : Config().getRightClickTagMenu()? tagManager.functionalityTags() : Tag::functionalityTags().values())
-        connect(addFunctionalityTagmenu->addAction(tag.name()), &QAction::triggered, this, [=]{
+        connect(addFunctionalityTagmenu->addAction(QIcon::fromTheme("tag"), tag.name()), &QAction::triggered, this, [=]{
             mod_->addTag(tag);
         });
     if(!addFunctionalityTagmenu->isEmpty())
         addFunctionalityTagmenu->addSeparator();
-    connect(addFunctionalityTagmenu->addAction(tr("New functionality tag...")), &QAction::triggered, this, [=]{
+    connect(addFunctionalityTagmenu->addAction(QIcon::fromTheme("tag-new"), tr("New functionality tag...")), &QAction::triggered, this, [=]{
         bool ok;
         auto name = QInputDialog::getText(widget, tr("New tag"), tr("Functionality:"), QLineEdit::Normal, "", &ok);
         if(ok && !name.isEmpty())
@@ -40,7 +41,7 @@ QMenu *LocalModMenu::addTagMenu() const
     });
     //TODO: other categories
     //Translation category
-    connect(menu->addAction(tr("Translation tag")), &QAction::triggered, this, [=]{
+    connect(menu->addAction(QIcon::fromTheme("tag-edit"), tr("Translation tag")), &QAction::triggered, this, [=]{
         bool ok;
         QString str;
         if(auto translationTag = mod_->tagManager().translationTag())
@@ -50,7 +51,7 @@ QMenu *LocalModMenu::addTagMenu() const
             mod_->addTag(Tag(name, TagCategory::TranslationCategory));
     });
     //Notation category
-    connect(menu->addAction(tr("Notation tag")), &QAction::triggered, this, [=]{
+    connect(menu->addAction(QIcon::fromTheme("tag-edit"), tr("Notation tag")), &QAction::triggered, this, [=]{
         bool ok;
         QString str;
         if(auto notationTag = mod_->tagManager().notationTag())
@@ -61,11 +62,11 @@ QMenu *LocalModMenu::addTagMenu() const
     });
     //Custom category
     for(auto &&tag : Tag::customTags())
-        connect(menu->addAction(tag.name()), &QAction::triggered, this, [=]{
+        connect(menu->addAction(QIcon::fromTheme("tag"), tag.name()), &QAction::triggered, this, [=]{
             mod_->addTag(tag);
         });
     menu->addSeparator();
-    connect(menu->addAction(tr("New custom tag...")), &QAction::triggered, this, [=]{
+    connect(menu->addAction(QIcon::fromTheme("tag-new"), tr("New custom tag...")), &QAction::triggered, this, [=]{
         bool ok;
         auto name = QInputDialog::getText(widget, tr("New tag"), tr("New tag name:"), QLineEdit::Normal, "", &ok);
         if(ok)
@@ -78,8 +79,9 @@ QMenu *LocalModMenu::removeTagmenu() const
 {
     auto widget = qobject_cast<QWidget*>(parent());
     auto menu = new QMenu(tr("Remove tag"), widget);
+    menu->setIcon(QIcon::fromTheme("tag-delete"));
     for(const auto &tag : mod_->tags())
-        connect(menu->addAction(tag.name()), &QAction::triggered, this, [=]{
+        connect(menu->addAction(QIcon::fromTheme("tag-delete"), tag.name()), &QAction::triggered, this, [=]{
             mod_->removeTag(tag);
         });
     return menu;

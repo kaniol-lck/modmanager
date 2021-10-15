@@ -351,7 +351,7 @@ void LocalModItemWidget::on_LocalModItemWidget_customContextMenuRequested(const 
 {
     auto menu = new QMenu(this);
     auto localModMenu = new LocalModMenu(this, mod_);
-    connect(menu->addAction(tr("Set Alias")), &QAction::triggered, this, [=]{
+    connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Set Alias")), &QAction::triggered, this, [=]{
         bool ok;
         auto alias = QInputDialog::getText(this, tr("Set mod alias"), tr("Alias of <b>%1</b> mod:").arg(mod_->commonInfo()->name()), QLineEdit::Normal, mod_->alias(), &ok);
         if(ok)
@@ -361,13 +361,13 @@ void LocalModItemWidget::on_LocalModItemWidget_customContextMenuRequested(const 
     if(!mod_->tags().isEmpty())
         menu->addMenu(localModMenu->removeTagmenu());
     menu->addSeparator();
-    auto starAction = menu->addAction(tr("Star"));
+    auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"));
     starAction->setCheckable(true);
     starAction->setChecked(mod_->isFeatured());
     connect(starAction, &QAction::toggled, this, [=](bool bl){
         mod_->setFeatured(bl);
     });
-    auto disableAction = menu->addAction(tr("Disable"));
+    auto disableAction = menu->addAction(QIcon::fromTheme("action-unavailable-symbolic"), tr("Disable"));
     disableAction->setCheckable(true);
     disableAction->setChecked(mod_->isDisabled());
     connect(disableAction, &QAction::toggled, this, [=](bool bl){

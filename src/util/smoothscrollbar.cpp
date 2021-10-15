@@ -1,8 +1,6 @@
 #include "smoothscrollbar.h"
 
-#include <QPropertyAnimation>
 #include <QWheelEvent>
-#include <QDebug>
 
 SmoothScrollBar::SmoothScrollBar(QWidget *parent) :
     QScrollBar(parent)
