@@ -18,8 +18,10 @@ void SmoothScrollBar::wheelEvent(QWheelEvent *event)
         auto degree = event->angleDelta().y();
         if(value() == minimum() && degree > 0) return;
         if(value() == maximum() && degree < 0) return;
-        speed_ -= degree * 0.01 * config_.getScrollSpeed();
-        acc_ -= degree * 0.01;
+        if(abs(speed_) < 500)
+            speed_ -= degree * 0.01 * config_.getScrollSpeed();
+        if(abs(acc_) < 15)
+            acc_ -= degree * 0.01;
         timer_.start();
         accTimer_.start();
     } else
