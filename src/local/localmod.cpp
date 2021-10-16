@@ -279,10 +279,12 @@ ModDownloader *LocalMod::update(ModWebsiteType type)
         auto postUpdate = Config().getPostUpdate();
         if(postUpdate == Config::Delete){
             //remove old file
-            modFile_->remove();
+            if(!modFile_->remove())
+                return false;
             modFile_->deleteLater();
         } else if(postUpdate == Config::Keep){
-            modFile_->addOld();
+            if(!modFile_->addOld())
+                return false;
             oldFiles_ << modFile_;
         }
 

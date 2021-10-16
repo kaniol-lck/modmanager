@@ -79,6 +79,7 @@ void LocalModPath::loadMods(bool deduceLoader, bool startup)
 void LocalModPath::addNormalMod(LocalModFile *file)
 {
     if(auto type = file->type(); type != LocalModFile::Normal && type != LocalModFile::Disabled ) return;
+    if(file->loaderType() == ModLoaderType::Any) return;
     //load optifine seperately under fabric
     if(info_.loaderType() == ModLoaderType::Fabric && file->commonInfo()->id() == "optifine"){
         if(optiFineMod_)
@@ -97,7 +98,6 @@ void LocalModPath::addNormalMod(LocalModFile *file)
         return;
     }
     if(file->loaderType() != info_.loaderType() && info_.loaderType() != ModLoaderType::Any) return;
-    if(file->loaderType() == ModLoaderType::Any) return;
     auto id = file->commonInfo()->id();
     //duplicate
     if(modMap_.contains(id)){
@@ -121,6 +121,7 @@ void LocalModPath::addNormalMod(LocalModFile *file)
 void LocalModPath::addOldMod(LocalModFile *file)
 {
     if(file->type() != LocalModFile::Old) return;
+    if(file->loaderType() == ModLoaderType::Any) return;
     //load optifine seperately under fabric
     if(info_.loaderType() == ModLoaderType::Fabric && file->commonInfo()->id() == "optifine"){
         if(optiFineMod_)
@@ -129,7 +130,6 @@ void LocalModPath::addOldMod(LocalModFile *file)
         return;
     }
     if(file->loaderType() != info_.loaderType() && info_.loaderType() != ModLoaderType::Any) return;
-    if(file->loaderType() == ModLoaderType::Any) return;
     auto id = file->commonInfo()->id();
     //old
     if(modMap_.contains(id)){
