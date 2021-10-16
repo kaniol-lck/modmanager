@@ -78,7 +78,7 @@ void BrowserSelectorWidget::addMultiple()
     for(auto &&path : getExistingDirectories(this, tr("Select paths"), Config().getCommonPath())){
         auto &&info = LocalModPathInfo::deduceFromPath(path);
         if(!info.path().isEmpty()){
-            auto path = new LocalModPath(info, false, true);
+            auto path = new LocalModPath(info, true);
             LocalModPathManager::addPath(path);
         }
     }
