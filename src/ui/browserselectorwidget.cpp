@@ -17,7 +17,7 @@ BrowserSelectorWidget::BrowserSelectorWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     auto action = new QAction(tr("Add multiple paths"), this);
-    connect(action, &QAction::triggered, this, &BrowserSelectorWidget::addMultiple);
+    connect(action, &QAction::triggered, this, &BrowserSelectorWidget::addMultiple, Qt::QueuedConnection);
     ui->addButton->addAction(action);
 
     items_ << new QTreeWidgetItem({tr("Download")});
@@ -75,13 +75,8 @@ QTreeWidgetItem *BrowserSelectorWidget::localItem()
 
 void BrowserSelectorWidget::addMultiple()
 {
-    for(auto &&path : getExistingDirectories(this, tr("Select paths"), Config().getCommonPath())){
-        auto &&info = LocalModPathInfo::deduceFromPath(path);
-        if(!info.path().isEmpty()){
-            auto path = new LocalModPath(info, true);
-            LocalModPathManager::addPath(path);
-        }
-    }
+    auto paths = getExistingDirectories(this, tr("Select paths"), Config().getCommonPath());
+    LocalModPathManager::addPaths(paths);
 }
 
 void BrowserSelectorWidget::on_addButton_clicked()

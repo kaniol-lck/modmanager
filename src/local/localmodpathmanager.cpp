@@ -19,8 +19,10 @@ const QList<LocalModPath *> &LocalModPathManager::pathList()
 
 void LocalModPathManager::setPathList(const QList<LocalModPath *> &newPathList)
 {
-    for(const auto &path : newPathList)
+    for(const auto &path : newPathList){
         path->setParent(manager());
+        connect(path, &LocalModPath::infoUpdated, manager(), &LocalModPathManager::updateList);
+    }
     manager()->pathList_ = newPathList;
     manager()->updateList();
 }
@@ -31,6 +33,15 @@ void LocalModPathManager::addPath(LocalModPath *path)
     connect(path, &LocalModPath::infoUpdated, manager(), &LocalModPathManager::updateList);
     manager()->pathList_ << path;
     manager()->updateList();
+}
+
+void LocalModPathManager::addPaths(const QStringList &paths)
+{
+    for(auto &&pathStr : paths){
+        auto path = new LocalModPath(LocalModPathInfo::deduceFromPath(pathStr), true);
+        manager()->pathList_ << path;
+        connect(path, &LocalModPath::infoUpdated, manager(), &LocalModPathManager::updateList);
+    }
 }
 
 void LocalModPathManager::removePath(LocalModPath *path)

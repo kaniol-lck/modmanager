@@ -17,6 +17,7 @@ public:
     static void setPathList(const QList<LocalModPath *> &newPathList);
 
     static void addPath(LocalModPath *path);
+    static void addPaths(const QStringList &paths);
     static void removePath(LocalModPath *path);
     static void removePathAt(int i);
     static void insertPath(int i, LocalModPath *path);
