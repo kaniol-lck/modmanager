@@ -43,7 +43,7 @@ void SmoothScrollBar::scollMove()
 
 void SmoothScrollBar::accSpeed()
 {
-    speed_ += acc_ * kRefreshRate * 0.01 * config_.getScrollAcceleration();
+    speed_ += acc_ * kRefreshRate * 0.005 * config_.getScrollAcceleration();
     acc_ *= 0.9;
     if(std::abs(acc_) <= 0.001){
         acc_ = 0;

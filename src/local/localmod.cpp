@@ -132,7 +132,7 @@ void LocalMod::searchOnModrinth()
         });
 }
 
-void LocalMod::checkUpdates()
+void LocalMod::checkUpdates(bool force)
 {
     //clear update cache
     modrinthUpdate_.reset();
@@ -151,19 +151,19 @@ void LocalMod::checkUpdates()
     if(config.getUseCurseforgeUpdate() && curseforgeUpdate_.currentFileInfo()){
         (*count)++;
         connect(this, &LocalMod::curseforgeUpdateReady, foo);
-        checkCurseforgeUpdate();
+        checkCurseforgeUpdate(force);
         noSource = false;
     }
     if(config.getUseModrinthUpdate() && modrinthUpdate_.currentFileInfo()){
         (*count)++;
         connect(this, &LocalMod::modrinthUpdateReady, foo);
-        checkModrinthUpdate();
+        checkModrinthUpdate(force);
         noSource = false;
     }
     if(noSource) emit updateReady(ModWebsiteType::None);
 }
 
-void LocalMod::checkCurseforgeUpdate()
+void LocalMod::checkCurseforgeUpdate(bool force)
 {
     if(!curseforgeMod_){
         emit curseforgeUpdateReady(false);
@@ -178,16 +178,14 @@ void LocalMod::checkCurseforgeUpdate()
          emit curseforgeUpdateReady(bl);
     };
 
-    //always acquire
-//    if(!curseforgeMod_->modInfo().allFileList().isEmpty())
-//        updateFileList();
-//    else {
+    if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
         curseforgeMod_->acquireAllFileList();
         connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, updateFileList);
-//    }
+    }else
+        updateFileList();
 }
 
-void LocalMod::checkModrinthUpdate()
+void LocalMod::checkModrinthUpdate(bool force)
 {
     if(!modrinthMod_){
         emit modrinthUpdateReady(false);
@@ -215,8 +213,14 @@ void LocalMod::checkModrinthUpdate()
 //    if(modrinthMod_->modInfo().hasFullInfo())
 //        updateFullInfo();
 //    else {
-        modrinthMod_->acquireFullInfo();
-        connect(modrinthMod_, &ModrinthMod::fullInfoReady, this, updateFullInfo);
+    if(force || modrinthMod_->modInfo().fileList().isEmpty()){
+        if(modrinthMod_->modInfo().hasFullInfo())
+            updateFullInfo();
+        else{
+            modrinthMod_->acquireFullInfo();
+            connect(modrinthMod_, &ModrinthMod::fullInfoReady, this, updateFullInfo);
+        }
+    }
 //    }
 }
 
@@ -375,7 +379,7 @@ void LocalMod::rollback(LocalModFile *file)
     curseforgeUpdate_.reset(true);
     modrinthUpdate_.reset(true);
     connect(this, &LocalMod::websiteReady, this, [=]{
-        checkUpdates();
+        checkUpdates(false);
     });
     searchOnWebsite();
 }

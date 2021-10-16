@@ -44,9 +44,9 @@ public:
 
     //update
     bool perpareUpdate();
-    void checkUpdates();
-    void checkCurseforgeUpdate();
-    void checkModrinthUpdate();
+    void checkUpdates(bool force = true);
+    void checkCurseforgeUpdate(bool force = true);
+    void checkModrinthUpdate(bool force = true);
 
     ModWebsiteType defaultUpdateType() const;
     QList<ModWebsiteType> updateTypes() const;
