@@ -40,6 +40,7 @@ private slots:
 
     void startCheckUpdates();
     void updateCheckedCountUpdated(int updateCount, int checkedCount);
+    void updateUpdatableCount(int count);
     void updatesReady();
 
     void startUpdates();
@@ -59,6 +60,7 @@ private:
     Ui::LocalModBrowser *ui;
     LocalModPath *modPath_;
     LocalModFilter *filter_;
+    bool isChecking_ = false;
     bool isUpdating_ = false;
 };
 

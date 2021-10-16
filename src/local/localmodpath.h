@@ -68,10 +68,12 @@ signals:
     void updatesReady();
 
     void updatesStarted();
+    void updatableCountChanged(int count);
     void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);
     void updatesDoneCountUpdated(int doneCount, int totalCount);
     void updatesDone(int successCount, int failCount);
-
+private slots:
+    void updateUpdatableCount();
 private:
     enum FindResultType{ Environmant, Missing, Mismatch, Match, RangeSemverError, VersionSemverError };
     std::tuple<FindResultType, std::optional<FabricModInfo>> findFabricMod(const QString &modid, const QString &range_str) const;
@@ -89,6 +91,7 @@ private:
     QMultiMap<QString, FabricModInfo> fabricModMap_;
     QStringList provideList_;
     QDateTime latestUpdateCheck_;
+    int updatableCount_ = 0;
     bool isSearching_ = false;
 };
 

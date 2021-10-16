@@ -92,6 +92,7 @@ void LocalModPath::addNormalMod(LocalModFile *file)
             connect(optiFineMod_, &LocalMod::modCacheUpdated, this, [=]{
                 writeToFile();
             });
+            connect(optiFineMod_, &LocalMod::updateReady, this, &LocalModPath::updateUpdatableCount);
         }
         return;
     }
@@ -112,6 +113,7 @@ void LocalModPath::addNormalMod(LocalModFile *file)
         connect(mod, &LocalMod::modCacheUpdated, this, [=]{
             writeToFile();
         });
+        connect(mod, &LocalMod::updateReady, this, &LocalModPath::updateUpdatableCount);
         modMap_[id] = mod;
     }
 }
@@ -239,6 +241,16 @@ void LocalModPath::readFromFile()
 LocalMod *LocalModPath::optiFineMod() const
 {
     return optiFineMod_;
+}
+
+void LocalModPath::updateUpdatableCount()
+{
+    auto count = std::count_if(modMap_.cbegin(), modMap_.cend(), [=](const auto &mod){
+        return !mod->updateTypes().isEmpty();
+    });
+    if(count == updatableCount_) return;
+    updatableCount_ = count;
+    emit updatableCountChanged(count);
 }
 
 QList<std::tuple<FabricModInfo, QString, QString, std::optional<FabricModInfo>>> LocalModPath::checkFabricDepends() const
@@ -401,6 +413,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
         }
     } else if(interval != Config::Never){
         //not manual not never i.e. load cache
+        updateUpdatableCount();
         emit updatesReady();
     }
 }
@@ -496,10 +509,7 @@ ModrinthAPI *LocalModPath::modrinthAPI() const
 
 int LocalModPath::updatableCount() const
 {
-    auto count = std::count_if(modMap_.cbegin(), modMap_.cend(), [=](const auto &mod){
-        return !mod->updateTypes().isEmpty();
-    });
-    return count;
+    return updatableCount_;
 }
 
 const QMap<QString, LocalMod *> &LocalModPath::modMap() const
