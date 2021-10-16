@@ -17,13 +17,16 @@
 #include "download/downloadmanager.h"
 #include "util/tutil.hpp"
 #include "config.hpp"
+#include "util/mmlogger.h"
 
 LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
     QObject(parent),
     curseforgeAPI_(CurseforgeAPI::api()),
     modrinthAPI_(ModrinthAPI::api()),
     modFile_(file)
-{}
+{
+    modFile_->setParent(this);
+}
 
 LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     QObject(parent),
@@ -34,10 +37,16 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     targetVersion_(parent->info().gameVersion()),
     targetLoaderType_(parent->info().loaderType())
 {
+    modFile_->setParent(this);
     connect(parent, &LocalModPath::infoUpdated, this, [=]{
         targetVersion_ = parent->info().gameVersion();
         targetLoaderType_ = parent->info().loaderType();
     });
+}
+
+LocalMod::~LocalMod()
+{
+    MMLogger::dector(this) << commonInfo()->id();
 }
 
 CurseforgeMod *LocalMod::curseforgeMod() const
@@ -345,12 +354,14 @@ ModrinthAPI *LocalMod::modrinthAPI() const
 
 void LocalMod::addOldFile(LocalModFile *oldFile)
 {
+    oldFile->setParent(this);
     oldFiles_ << oldFile;
     emit modFileUpdated();
 }
 
 void LocalMod::addDuplicateFile(LocalModFile *duplicateFile)
 {
+    duplicateFile->setParent(this);
     duplicateFiles_ << duplicateFile;
 }
 
@@ -367,6 +378,7 @@ void LocalMod::duplicateToOld()
 
 void LocalMod::rollback(LocalModFile *file)
 {
+    file->setParent(this);
     auto disabled = isDisabled();
     if(disabled) setEnabled(true);
     file->removeOld();
@@ -390,14 +402,17 @@ void LocalMod::deleteAllOld()
 {
     for(auto &oldFile : qAsConst(oldFiles_))
         oldFile->remove();
-    oldFiles_.clear();
+    clearQObjects(oldFiles_);
     emit modFileUpdated();
 }
 
 void LocalMod::deleteOld(LocalModFile *file)
 {
-    if(file->remove())
+    if(file->remove()){
         oldFiles_.removeOne(file);
+        file->setParent(nullptr);
+        file->deleteLater();
+    }
     emit modFileUpdated();
 }
 

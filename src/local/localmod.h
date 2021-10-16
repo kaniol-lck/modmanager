@@ -24,6 +24,7 @@ public:
 
     explicit LocalMod(QObject *parent, LocalModFile *file);
     explicit LocalMod(LocalModPath *parent, LocalModFile *file);
+    ~LocalMod();
 
     //info
     LocalModFile *modFile() const;

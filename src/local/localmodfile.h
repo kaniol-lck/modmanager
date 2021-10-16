@@ -13,6 +13,7 @@ class LocalModFile : public QObject
     Q_OBJECT
 public:
     explicit LocalModFile(QObject *parent, const QString &path);
+    ~LocalModFile();
 
     ModLoaderType::Type loadInfo();
 

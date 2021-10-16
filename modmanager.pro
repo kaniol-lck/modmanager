@@ -82,6 +82,7 @@ SOURCES += \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
     src/util/localmodsortitem.cpp \
+    src/util/mmlogger.cpp \
     src/util/smoothscrollbar.cpp \
     src/util/unclosedmenu.cpp \
     src/util/updatesourcedelegate.cpp \
@@ -158,6 +159,7 @@ HEADERS += \
     src/util/flowlayout.h \
     src/util/funcutil.h \
     src/util/localmodsortitem.h \
+    src/util/mmlogger.h \
     src/util/smoothscrollbar.h \
     src/util/tutil.hpp \
     src/util/datetimesortitem.h \

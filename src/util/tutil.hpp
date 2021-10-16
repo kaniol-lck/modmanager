@@ -17,3 +17,13 @@ inline bool contains(const Container& c, const QString& s)
 {
     return c.toMap().contains(s);
 }
+
+template<typename Container>
+inline void clearQObjects(Container& c)
+{
+    for(auto &&object : c){
+        object->setParent(nullptr);
+        object->deleteLater();
+    }
+    c.clear();
+}

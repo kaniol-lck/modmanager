@@ -16,6 +16,7 @@ public:
     ModrinthMod(LocalMod *parent, const QString &id);
     ModrinthMod(QObject *parent, const ModrinthModInfo &info);
     ModrinthMod(LocalMod *parent, const ModrinthModInfo &info);
+    ~ModrinthMod();
 
     ModrinthModInfo modInfo() const;
     QList<Tag> tags() const;

@@ -51,6 +51,7 @@ void LocalModPath::loadMods(bool deduceLoader, bool startup)
     auto watcher = new QFutureWatcher<void>(this);
     watcher->setFuture(future);
     connect(watcher, &QFutureWatcher<void>::finished, this, [=]{
+        qDeleteAll(modMap_);
         modMap_.clear();
         fabricModMap_.clear();
         provideList_.clear();

@@ -5,6 +5,8 @@
 #include <MurmurHash2.h>
 #include <QDebug>
 
+#include "util/mmlogger.h"
+
 const QStringList LocalModFile::availableSuffix{ "jar", "old", "disabled"};
 
 LocalModFile::LocalModFile(QObject *parent, const QString &path) :
@@ -12,6 +14,11 @@ LocalModFile::LocalModFile(QObject *parent, const QString &path) :
     path_(path),
     fileInfo_(path)
 {}
+
+LocalModFile::~LocalModFile()
+{
+    MMLogger::dector(this) << path_;
+}
 
 ModLoaderType::Type LocalModFile::loadInfo()
 {

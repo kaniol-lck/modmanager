@@ -11,6 +11,8 @@
 #include "util/funcutil.h"
 #include "download/downloadmanager.h"
 
+#include "util/mmlogger.h"
+
 ModrinthMod::ModrinthMod(LocalMod *parent, const QString &id) :
     QObject(parent),
     api_(parent->modrinthAPI()),
@@ -28,6 +30,11 @@ ModrinthMod::ModrinthMod(LocalMod *parent, const ModrinthModInfo &info) :
     api_(parent->modrinthAPI()),
     modInfo_(info)
 {}
+
+ModrinthMod::~ModrinthMod()
+{
+    MMLogger::dector(this) << modInfo_.id() << modInfo_.name();
+}
 
 ModrinthModInfo ModrinthMod::modInfo() const
 {

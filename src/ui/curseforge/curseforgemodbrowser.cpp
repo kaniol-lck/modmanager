@@ -135,8 +135,6 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
         //new search
         if(currentIndex_ == 0){
             idList_.clear();
-            for(int i = 0; i < ui->modListWidget->count(); i++)
-                ui->modListWidget->itemWidget(ui->modListWidget->item(i))->deleteLater();
             ui->modListWidget->clear();
             hasMore_ = true;
         }
@@ -156,6 +154,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             auto loaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
             auto fileInfo = mod->modInfo().latestFileInfo(version, loaderType);
             auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo);
+            mod->setParent(modItemWidget);
             modItemWidget->setDownloadPath(downloadPath_);
             connect(this, &CurseforgeModBrowser::downloadPathChanged, modItemWidget, &CurseforgeModItemWidget::setDownloadPath);
             ui->modListWidget->addItem(listItem);

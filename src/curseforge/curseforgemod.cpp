@@ -10,6 +10,7 @@
 #include "curseforge/curseforgeapi.h"
 #include "util/tutil.hpp"
 #include "util/funcutil.h"
+#include "util/mmlogger.h"
 
 CurseforgeMod::CurseforgeMod(QObject *parent, int id) :
     QObject(parent),
@@ -34,6 +35,11 @@ CurseforgeMod::CurseforgeMod(LocalMod *parent, const CurseforgeModInfo &info) :
     api_(parent->curseforgeAPI()),
     modInfo_(info)
 {}
+
+CurseforgeMod::~CurseforgeMod()
+{
+    MMLogger::dector(this) << modInfo_.id() << modInfo_.name();
+}
 
 void CurseforgeMod::acquireBasicInfo()
 {
