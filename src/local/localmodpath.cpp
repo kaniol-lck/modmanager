@@ -197,7 +197,8 @@ void LocalModPath::writeToFile()
         modsObject.insert(mod->commonInfo()->id(), mod->toJsonObject());
     object.insert("mods", modsObject);
 
-    object.insert("optifine", optiFineMod_->toJsonObject());
+    if(optiFineMod_)
+        object.insert("optifine", optiFineMod_->toJsonObject());
 
     QJsonDocument doc(object);
     QDir dir(info_.path());
