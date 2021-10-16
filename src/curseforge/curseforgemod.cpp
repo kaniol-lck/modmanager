@@ -38,7 +38,7 @@ CurseforgeMod::CurseforgeMod(LocalMod *parent, const CurseforgeModInfo &info) :
 
 CurseforgeMod::~CurseforgeMod()
 {
-    MMLogger::dector(this) << modInfo_.id() << modInfo_.name();
+    MMLogger::dtor(this) << modInfo_.id() << modInfo_.name();
 }
 
 void CurseforgeMod::acquireBasicInfo()

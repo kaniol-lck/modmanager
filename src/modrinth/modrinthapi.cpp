@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
+#include "util/mmlogger.h"
 #include "config.hpp"
 
 const QString ModrinthAPI::PREFIX = "https://api.modrinth.com";
@@ -69,6 +70,7 @@ void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &v
 
     url.setQuery(urlQuery);
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -101,6 +103,7 @@ void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
     QUrl url = PREFIX + "/api/v1/mod/" + modId;
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -131,6 +134,7 @@ void ModrinthAPI::getVersions(const QString &id, std::function<void (QList<Modri
     QUrl url = PREFIX + "/api/v1/mod/" + modId + "/version";
 
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -161,6 +165,7 @@ void ModrinthAPI::getVersion(const QString &version, std::function<void (Modrint
 {
     QUrl url = PREFIX + "/api/v1/version/" + version;
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -188,6 +193,7 @@ void ModrinthAPI::getAuthor(const QString &authorId, std::function<void (QString
 {
     QUrl url = PREFIX + "/api/v1/user/" + authorId;
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -222,6 +228,7 @@ void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (M
 
     url.setQuery(urlQuery);
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {

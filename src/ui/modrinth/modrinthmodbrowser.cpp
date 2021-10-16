@@ -108,7 +108,7 @@ void ModrinthModBrowser::search()
 
 void ModrinthModBrowser::onSliderChanged(int i)
 {
-    if(hasMore_ && i >= ui->modListWidget->verticalScrollBar()->maximum() - 1000){
+    if(!isSearching_ && hasMore_ && i >= ui->modListWidget->verticalScrollBar()->maximum() - 1000){
         currentIndex_ += Config().getSearchResultCount();
         getModList(currentName_, currentIndex_);
     }

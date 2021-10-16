@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
+#include "util/mmlogger.h"
 #include "config.hpp"
 
 const QString CurseforgeAPI::PREFIX = "https://addons-ecs.forgesvc.net";
@@ -46,8 +47,8 @@ void CurseforgeAPI::searchMods(const GameVersion &version, int index, const QStr
     urlQuery.addQueryItem("sort", QString::number(sort + 1));
 
     url.setQuery(urlQuery);
-    qDebug() << url;
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -79,6 +80,7 @@ void CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    MMLogger::network(this) << url << fingerprint;
     auto reply = accessManager_.post(request, QString("[ %1 ]").arg(fingerprint).toUtf8());
     connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -116,6 +118,7 @@ void CurseforgeAPI::getDescription(int id, std::function<void (QString)> callbac
     QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id) + "/description";
 
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -134,6 +137,7 @@ void CurseforgeAPI::getFileInfo(int id, int FileID, std::function<void (Cursefor
     QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id) + "/file/" + QString::number(FileID);
 
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -161,6 +165,7 @@ void CurseforgeAPI::getFiles(int id, std::function<void (QList<CurseforgeFileInf
     QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id) + "/files";
 
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -191,6 +196,7 @@ void CurseforgeAPI::getInfo(int id, std::function<void (CurseforgeModInfo)> call
     QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id);
 
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError) {
@@ -219,6 +225,7 @@ void CurseforgeAPI::getMinecraftVersionList(std::function<void (QList<GameVersio
     QUrl url = PREFIX + "/api/v2/minecraft/version";
 
     QNetworkRequest request(url);
+    MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError) {

@@ -30,6 +30,8 @@ LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     tagsLayout_ = new FlowLayout();
     ui->tagsHorizontal->addLayout(tagsLayout_);
 
+    connect(mod_, &LocalMod::destroyed, this, &QDialog::close);
+
     //init info
     onCurrentModChanged();
 

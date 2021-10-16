@@ -33,7 +33,7 @@ ModrinthMod::ModrinthMod(LocalMod *parent, const ModrinthModInfo &info) :
 
 ModrinthMod::~ModrinthMod()
 {
-    MMLogger::dector(this) << modInfo_.id() << modInfo_.name();
+    MMLogger::dtor(this) << modInfo_.id() << modInfo_.name();
 }
 
 ModrinthModInfo ModrinthMod::modInfo() const

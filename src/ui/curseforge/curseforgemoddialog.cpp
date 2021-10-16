@@ -24,6 +24,8 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     });
     ui->websiteButton->addAction(action);
 
+    connect(mod_, &CurseforgeMod::destroyed, this, &QDialog::close);
+
     //update basic info
     auto updateBasicInfo = [=]{
         setWindowTitle(mod->modInfo().name() + tr(" - Curseforge"));

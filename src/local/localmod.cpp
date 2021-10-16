@@ -46,7 +46,7 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
 
 LocalMod::~LocalMod()
 {
-    MMLogger::dector(this) << commonInfo()->id();
+    MMLogger::dtor(this) << commonInfo()->id();
 }
 
 CurseforgeMod *LocalMod::curseforgeMod() const

@@ -25,6 +25,8 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
     });
     ui->websiteButton->addAction(action);
 
+    connect(mod_, &ModrinthMod::destroyed, this, &QDialog::close);
+
     auto updateBasicInfo = [=]{
         setWindowTitle(mod->modInfo().name() + tr(" - Modrinth"));
         ui->modName->setText(mod->modInfo().name());

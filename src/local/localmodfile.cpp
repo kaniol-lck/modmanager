@@ -17,7 +17,7 @@ LocalModFile::LocalModFile(QObject *parent, const QString &path) :
 
 LocalModFile::~LocalModFile()
 {
-    MMLogger::dector(this) << path_;
+    MMLogger::dtor(this) << path_;
 }
 
 ModLoaderType::Type LocalModFile::loadInfo()
