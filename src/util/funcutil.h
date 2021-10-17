@@ -25,4 +25,8 @@ QString capture(const QString &str, const QString &regExp, bool minimal = true, 
 
 QStringList getExistingDirectories(QWidget *parent = nullptr, const QString &caption = QString(), const QString &dir = QString());
 
+QString colorCodeFormat(QString str);
+
+QString clearFormat(QString str);
+
 #endif // FUNCUTIL_H

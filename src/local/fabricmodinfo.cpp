@@ -6,7 +6,7 @@
 #include "quazip.h"
 #include "quazipfile.h"
 
-
+#include "util/funcutil.h"
 #include "util/tutil.hpp"
 
 QList<FabricModInfo> FabricModInfo::fromZip(const QString &path)
@@ -45,13 +45,13 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
     QVariant result = jsonDocument.toVariant();
     info.id_ = value(result, "id").toString();
     info.version_ = value(result, "version").toString();
-    info.name_ = value(result, "name").toString();
-    for(const auto &variant : value(result, "authors").toList())
+    info.name_ = colorCodeFormat(value(result, "name").toString());
+    for(auto &&variant : value(result, "authors").toList())
         if(auto author = variant.toString(); !author.isEmpty())
-            info.authors_ << author;
+            info.authors_ << colorCodeFormat(author);
         else
-            info.authors_ << value(variant, "name").toString();
-    info.description_ = value(result, "description").toString();
+            info.authors_ << colorCodeFormat(value(variant, "name").toString());
+    info.description_ = colorCodeFormat(value(result, "description").toString());
 
     if(result.toMap().contains("contact")){
         info.homepage_ = value(result, "contact", "homepage").toString();

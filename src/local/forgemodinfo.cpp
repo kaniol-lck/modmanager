@@ -7,6 +7,7 @@
 #include <QRegularExpression>
 #include <toml.hpp>
 
+#include "util/funcutil.h"
 #include "util/tutil.hpp"
 
 QList<ForgeModInfo> ForgeModInfo::fromZip(const QString &path)
@@ -74,10 +75,13 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
         QUrl issue(config["issueTrackerURL"].value_or(""));
 
         auto split = [=](QString str){
+            QStringList list;
             if(str.isEmpty())
-                return QStringList{};
+                return list;
             else
-                return str.split(", ");
+                for(auto &&author : str.split(", "))
+                    list << colorCodeFormat(author);
+            return list;
         };
 
         QStringList authors = split(config["authors"].value_or(""));
@@ -87,10 +91,10 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
 
             ForgeModInfo info;
             info.id_ = modTable["modId"].value_or("");
-            info.name_ = modTable["displayName"].value_or("");
+            info.name_ = colorCodeFormat(modTable["displayName"].value_or(""));
             info.version_ = modTable["version"].value_or("");
             info.authors_ << authors << split(modTable["authors"].value_or(""));
-            info.description_ = modTable["description"].value_or("");
+            info.description_ = colorCodeFormat(modTable["description"].value_or(""));
             info.iconBytes_ = icon(modTable);
             if(info.iconBytes_.isEmpty())
                 info.iconBytes_ = icon(config);

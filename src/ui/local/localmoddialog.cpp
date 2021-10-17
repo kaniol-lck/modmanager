@@ -88,7 +88,7 @@ void LocalModDialog::onCurrentFileChanged()
         str.append(" - " + tr("Local"));
     else
         str.append(" - " + tr("Local Old"));
-    setWindowTitle(str);
+    setWindowTitle(clearFormat(str));
 
     if(mod_->isDisabled())
         ui->modName->setText(ui->modName->text() + tr(" (Disabled)"));

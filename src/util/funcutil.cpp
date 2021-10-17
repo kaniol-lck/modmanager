@@ -127,3 +127,39 @@ QStringList getExistingDirectories(QWidget *parent, const QString &caption, cons
     else
         return {};
 }
+
+QString colorCodeFormat(QString str)
+{
+    QVector<std::tuple<QString, QString>> replaceList{
+        {"§0", R"(</span><span style="color:#000000">)"},
+        {"§1", R"(</span><span style="color:#0000AA">)"},
+        {"§2", R"(</span><span style="color:#00AA00">)"},
+        {"§3", R"(</span><span style="color:#00AAAA">)"},
+        {"§4", R"(</span><span style="color:#AA0000">)"},
+        {"§5", R"(</span><span style="color:#AA00AA">)"},
+        {"§6", R"(</span><span style="color:#FFAA00">)"},
+        {"§7", R"(</span><span style="color:#AAAAAA">)"},
+        {"§8", R"(</span><span style="color:#555555">)"},
+        {"§9", R"(</span><span style="color:#5555FF">)"},
+        {"§a", R"(</span><span style="color:#55FF55">)"},
+        {"§b", R"(</span><span style="color:#55FFFF">)"},
+        {"§c", R"(</span><span style="color:#FF5555">)"},
+        {"§d", R"(</span><span style="color:#FF55FF">)"},
+        {"§e", R"(</span><span style="color:#FFFF55">)"},
+        {"§f", R"(</span><span style="color:#FFFFFF">)"},
+        {"§g", R"(</span><span style="color:#DDD605">)"},
+        {"§r", R"(</span>)"}
+    };
+    for(auto &&[str1, str2] : replaceList)
+        str.replace(str1, str2);
+    if(auto index = str.indexOf("</span>"); index >= 0 && index < str.indexOf("<span"))
+        str.remove(index, 7); //length of </span>
+    if(auto index = str.lastIndexOf("</span>"); index < str.lastIndexOf("<span"))
+        str.append("</span>");
+    return str;
+}
+
+QString clearFormat(QString str)
+{
+    return str.remove(QRegularExpression("<.*?>"));
+}
