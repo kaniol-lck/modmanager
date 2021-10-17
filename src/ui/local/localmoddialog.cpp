@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QDebug>
+#include <QGraphicsDropShadowEffect>
 
 #include "local/localmod.h"
 #include "curseforge/curseforgemod.h"
@@ -78,9 +79,19 @@ void LocalModDialog::onCurrentModChanged()
 
 void LocalModDialog::onCurrentFileChanged()
 {
+    auto setEffect = [=](QWidget *widget, const QString str){
+        if(str.contains("</span>")){
+            auto *effect = new QGraphicsDropShadowEffect;
+            effect->setBlurRadius(4);
+            effect->setColor(Qt::darkGray);
+            effect->setOffset(1, 1);
+            widget->setGraphicsEffect(effect);
+        } else
+            widget->setGraphicsEffect(nullptr);
+    };
+
     ui->rollbackButton->setVisible(file_ != mod_->modFile());
     ui->deleteButton->setVisible(file_ != mod_->modFile());
-    if(mod_->alias().isEmpty()) ui->modName->setText(file_->commonInfo()->name());
     ui->aliasText->setPlaceholderText(file_->commonInfo()->name());
 
     auto str = ui->modName->text();
@@ -90,10 +101,24 @@ void LocalModDialog::onCurrentFileChanged()
         str.append(" - " + tr("Local Old"));
     setWindowTitle(clearFormat(str));
 
+    //mod name
+    auto displayName = mod_->displayName();
     if(mod_->isDisabled())
-        ui->modName->setText(ui->modName->text() + tr(" (Disabled)"));
-    ui->modAuthors->setText(file_->commonInfo()->authors().join(", "));
-    ui->modDescription->setText(file_->commonInfo()->description());
+        displayName.append(" (Disabled)");
+    setEffect(ui->modName, displayName);
+    ui->modName->setText(displayName);
+    //authors
+    if (!mod_->commonInfo()->authors().isEmpty()){
+        auto authors = mod_->commonInfo()->authors().join("</b>, <b>").prepend("by <b>").append("</b>");
+        setEffect(ui->modAuthors, authors);
+        ui->modAuthors->setText(authors);
+    }
+    else
+        ui->modAuthors->setText("");
+    //description
+    auto description = mod_->commonInfo()->description();
+    setEffect(ui->modDescription, description);
+    ui->modDescription->setText(description);
 
     ui->homepageButton->setEnabled(false);
     ui->sourceButton->setEnabled(false);

@@ -4,6 +4,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QGraphicsDropShadowEffect>
 
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
@@ -71,15 +72,36 @@ void LocalModItemWidget::leaveEvent(QEvent *event)
 
 void LocalModItemWidget::updateInfo()
 {
-    ui->modName->setText(mod_->displayName());
+    auto setEffect = [=](QWidget *widget, const QString str){
+        if(str.contains("</span>")){
+            auto *effect = new QGraphicsDropShadowEffect;
+            effect->setBlurRadius(4);
+            effect->setColor(Qt::darkGray);
+            effect->setOffset(1, 1);
+            widget->setGraphicsEffect(effect);
+        } else
+            widget->setGraphicsEffect(nullptr);
+    };
+
+    //mod name
+    auto displayName = mod_->displayName();
+    setEffect(ui->modName, displayName);
+    ui->modName->setText(displayName);
     ui->modVersion->setText(mod_->commonInfo()->version());
     auto description = mod_->commonInfo()->description();
     auto index = description.indexOf(".");
+    //description
+    //show first statements only
     if (index > 0)
         description = description.left(index + 1);
+    setEffect(ui->modDescription, description);
     ui->modDescription->setText(description);
-    if (!mod_->commonInfo()->authors().isEmpty())
-        ui->modAuthors->setText(mod_->commonInfo()->authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
+    //authors
+    if (!mod_->commonInfo()->authors().isEmpty()){
+        auto authors = mod_->commonInfo()->authors().join("</b>, <b>").prepend("by <b>").append("</b>");
+        setEffect(ui->modAuthors, authors);
+        ui->modAuthors->setText(authors);
+    }
     else
         ui->modAuthors->setText("");
 
