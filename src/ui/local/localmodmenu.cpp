@@ -80,7 +80,7 @@ QMenu *LocalModMenu::removeTagmenu() const
     auto widget = qobject_cast<QWidget*>(parent());
     auto menu = new QMenu(tr("Remove tag"), widget);
     menu->setIcon(QIcon::fromTheme("tag-delete"));
-    for(const auto &tag : mod_->tags())
+    for(auto &&tag : mod_->tagManager().tags(TagCategory::CustomizableCategories))
         connect(menu->addAction(QIcon::fromTheme("tag-delete"), tag.name()), &QAction::triggered, this, [=]{
             mod_->removeTag(tag);
         });

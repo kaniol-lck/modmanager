@@ -22,10 +22,9 @@
 LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
     QObject(parent),
     curseforgeAPI_(CurseforgeAPI::api()),
-    modrinthAPI_(ModrinthAPI::api()),
-    modFile_(file)
+    modrinthAPI_(ModrinthAPI::api())
 {
-    modFile_->setParent(this);
+    setModFile(file);
 }
 
 LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
@@ -33,11 +32,10 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     curseforgeAPI_(parent->curseforgeAPI()),
     modrinthAPI_(parent->modrinthAPI()),
     path_(parent),
-    modFile_(file),
     targetVersion_(parent->info().gameVersion()),
     targetLoaderType_(parent->info().loaderType())
 {
-    modFile_->setParent(this);
+    setModFile(file);
     connect(parent, &LocalModPath::infoUpdated, this, [=]{
         targetVersion_ = parent->info().gameVersion();
         targetLoaderType_ = parent->info().loaderType();
@@ -303,7 +301,7 @@ ModDownloader *LocalMod::update(ModWebsiteType type)
         if(type == Modrinth)
             curseforgeUpdate_.reset(true);
 
-        modFile_ = file;
+        setModFile(file);
         emit modFileUpdated();
 
         return true;
@@ -378,14 +376,13 @@ void LocalMod::duplicateToOld()
 
 void LocalMod::rollback(LocalModFile *file)
 {
-    file->setParent(this);
     auto disabled = isDisabled();
     if(disabled) setEnabled(true);
     file->removeOld();
     oldFiles_.removeAll(file);
     modFile_->addOld();
     oldFiles_ << modFile_;
-    modFile_ = file;
+    setModFile(file);
     if(disabled) setEnabled(false);
     emit modFileUpdated();
 
@@ -555,9 +552,9 @@ QJsonObject LocalMod::toJsonObject() const
         object.insert("alias", alias_);
     if(isFeatured_)
         object.insert("featured", isFeatured_);
-    if(!tagManager_.tags().isEmpty()){
+    if(!tagManager_.tags(TagCategory::CustomizableCategories).isEmpty()){
         QJsonArray tagArray;
-        for(auto &&tag : tagManager_.tags())
+        for(auto &&tag : tagManager_.tags(TagCategory::CustomizableCategories))
             tagArray << tag.toJsonValue();
         object.insert("tags", tagArray);
     }
@@ -648,6 +645,22 @@ void LocalMod::removeTag(const Tag &tag)
 const LocalModTags &LocalMod::tagManager() const
 {
     return tagManager_;
+}
+
+void LocalMod::setModFile(LocalModFile *newModFile)
+{
+    modFile_ = newModFile;
+    modFile_->setParent(this);
+    tagManager_.removeTags({TagCategory::EnvironmentCategory});
+    if(modFile_->loaderType() == ModLoaderType::Fabric){
+        if(auto environment = modFile_->fabric().environment(); environment == "*"){
+            addTag(Tag::clientTag());
+            addTag(Tag::serverTag());
+        }else if(environment == "client")
+            addTag(Tag::clientTag());
+        else if(environment == "server")
+            addTag(Tag::serverTag());
+    }
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

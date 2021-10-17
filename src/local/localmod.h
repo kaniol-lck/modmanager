@@ -107,6 +107,8 @@ public:
     void removeTag(const Tag &tag);
     const LocalModTags &tagManager() const;
 
+    void setModFile(LocalModFile *newModFile);
+
 signals:
     void modFileUpdated();
     void modCacheUpdated();

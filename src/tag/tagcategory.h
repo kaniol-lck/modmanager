@@ -14,6 +14,7 @@ public:
 
     static TagCategory fromId(const QString &id);
 
+    static const TagCategory EnvironmentCategory;
     static const TagCategory CurseforgeCategory;
     static const TagCategory ModrinthCategory;
     static const TagCategory OptiFineCategory;
@@ -23,6 +24,7 @@ public:
     static const TagCategory NotationCategory;
     static const TagCategory CustomCategory;
     static const QList<TagCategory> PresetCategories;
+    static const QList<TagCategory> CustomizableCategories;
 
     const QString &id() const;
 

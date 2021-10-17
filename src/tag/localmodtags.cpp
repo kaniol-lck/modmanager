@@ -3,7 +3,10 @@
 void LocalModTags::addTag(const Tag &tag)
 {
     auto category = tag.tagCategory();
-    if(category == TagCategory::TypeCategory){
+    if(category == TagCategory::EnvironmentCategory){
+        if(!environmentTags_.contains(tag))
+            environmentTags_ << tag;
+    }else if(category == TagCategory::TypeCategory){
         if(!typeTags_.contains(tag))
             typeTags_ << tag;
     }else if(category == TagCategory::FunctionalityCategory){
@@ -34,6 +37,24 @@ void LocalModTags::removeTag(const Tag &tag)
         customTags_.removeAll(tag);
 }
 
+void LocalModTags::removeTags(const QList<TagCategory> &categories)
+{
+    for(const auto &category : categories){
+        if(category == TagCategory::EnvironmentCategory)
+            environmentTags_.clear();
+        if(category == TagCategory::TypeCategory)
+            typeTags_.clear();
+        else if(category == TagCategory::FunctionalityCategory)
+            functionalityTags_.clear();
+        else if(category == TagCategory::TranslationCategory)
+            translationTag_.reset();
+        else if(category == TagCategory::NotationCategory)
+            notationTag_.reset();
+        else if(category == TagCategory::CustomCategory)
+            customTags_.clear();
+    }
+}
+
 LocalModTags &LocalModTags::operator<<(const Tag &tag)
 {
     addTag(tag);
@@ -44,6 +65,8 @@ QList<Tag> LocalModTags::tags(const QList<TagCategory> &categories) const
 {
     QList<Tag> list;
     for(const auto &category : categories){
+        if(category == TagCategory::EnvironmentCategory)
+            list << environmentTags_;
         if(category == TagCategory::TypeCategory)
             list << typeTags_;
         else if(category == TagCategory::FunctionalityCategory)
@@ -81,4 +104,9 @@ std::optional<Tag> LocalModTags::notationTag() const
 const QList<Tag> &LocalModTags::customTags() const
 {
     return customTags_;
+}
+
+const QList<Tag> &LocalModTags::environmentTags() const
+{
+    return environmentTags_;
 }

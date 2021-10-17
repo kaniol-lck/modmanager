@@ -23,11 +23,14 @@ public:
     bool isEmbedded() const;
     void setIsEmbedded(bool newIsEmbedded);
 
+    const QString &environment() const;
+
 private:
     QStringList provides_;
     QMap<QString, QString> depends_;
     QMap<QString, QString> conflicts_;
     QMap<QString, QString> breaks_;
+    QString environment_;
 
     bool isEmbedded_ = true;
     //to mark where comes from

@@ -13,16 +13,18 @@ public:
 
     void addTag(const Tag &tag);
     void removeTag(const Tag &tag);
+    void removeTags(const QList<TagCategory> &categories = TagCategory::PresetCategories);
     LocalModTags &operator<<(const Tag &tag);
 
-    QList<Tag> tags(const QList<TagCategory> &categories = TagCategory::PresetCategories ) const;
+    QList<Tag> tags(const QList<TagCategory> &categories = TagCategory::PresetCategories) const;
+    const QList<Tag> &environmentTags() const;
     const QList<Tag> &typeTags() const;
     const QList<Tag> &functionalityTags() const;
     std::optional<Tag> translationTag() const;
     std::optional<Tag> notationTag() const;
     const QList<Tag> &customTags() const;
-
 private:
+    QList<Tag> environmentTags_;
     QList<Tag> typeTags_;
     QList<Tag> functionalityTags_;
     std::optional<Tag> translationTag_;

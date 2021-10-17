@@ -71,9 +71,28 @@ const QSet<Tag> &Tag::customTags()
     return customTags_;
 }
 
+Tag Tag::clientTag()
+{
+    return enironmentTags().at(0);
+}
+
+Tag Tag::serverTag()
+{
+    return enironmentTags().at(1);
+}
+
 const QString &Tag::iconName() const
 {
     return iconName_;
+}
+
+const QList<Tag> &Tag::enironmentTags()
+{
+    static QList<Tag> enironmentTags{
+        Tag(QObject::tr("Client"), TagCategory::EnvironmentCategory),
+        Tag(QObject::tr("Server"), TagCategory::EnvironmentCategory)
+    };
+    return enironmentTags;
 }
 
 uint qHash(const Tag &key, uint seed)

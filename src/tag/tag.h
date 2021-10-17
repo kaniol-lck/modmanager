@@ -21,9 +21,13 @@ public:
     const QString &name() const;
     const QString &iconName() const;
 
+    static const QList<Tag> &enironmentTags();
     static const QList<Tag> &typeTags();
     static const QSet<Tag> &functionalityTags();
     static const QSet<Tag> &customTags();
+
+    static Tag clientTag();
+    static Tag serverTag();
 
 private:
     TagCategory tagCategory_ = TagCategory::CustomCategory;

@@ -52,6 +52,8 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
         else
             info.authors_ << colorCodeFormat(value(variant, "name").toString());
     info.description_ = colorCodeFormat(value(result, "description").toString());
+    info.environment_ = value(result, "environment").toString();
+    if(info.environment_.isEmpty()) info.environment_ = "*";
 
     if(result.toMap().contains("contact")){
         info.homepage_ = value(result, "contact", "homepage").toString();
@@ -148,4 +150,9 @@ bool FabricModInfo::isEmbedded() const
 void FabricModInfo::setIsEmbedded(bool newIsEmbedded)
 {
     isEmbedded_ = newIsEmbedded;
+}
+
+const QString &FabricModInfo::environment() const
+{
+    return environment_;
 }

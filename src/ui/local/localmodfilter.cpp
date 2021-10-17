@@ -13,6 +13,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     path_(path),
     menu_(new UnclosedMenu(parent)),
     websiteMenu_(new UnclosedMenu(tr("Website source"), parent)),
+    environmentTagMenu_(new UnclosedMenu(tr("Environment tag"), parent)),
     typeTagMenu_(new UnclosedMenu(tr("Type tag"), parent)),
     functionalityTagMenu_(new UnclosedMenu(tr("Functionality tag"), parent)),
     customTagMenu_(new UnclosedMenu(tr("Custom tag"), parent)),
@@ -24,6 +25,8 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     //show all
     connect(showAllAction_, &QAction::triggered, this, [=]{
         for(auto &&action : websiteMenu_->actions())
+            action->setChecked(true);
+        for(auto &&action : environmentTagMenu_->actions())
             action->setChecked(true);
         for(auto &&action : typeTagMenu_->actions())
             action->setChecked(true);
@@ -37,6 +40,8 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     connect(menu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
         for(auto &&action : websiteMenu_->actions())
             action->setChecked(false);
+        for(auto &&action : environmentTagMenu_->actions())
+            action->setChecked(false);
         for(auto &&action : typeTagMenu_->actions())
             action->setChecked(false);
         for(auto &&action : functionalityTagMenu_->actions())
@@ -47,6 +52,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     });
     menu_->addSeparator();
     menu_->addMenu(websiteMenu_);
+    menu_->addMenu(environmentTagMenu_);
     menu_->addMenu(typeTagMenu_);
     menu_->addMenu(functionalityTagMenu_);
     menu_->addMenu(customTagMenu_);
@@ -67,6 +73,24 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     auto noneAction = websiteMenu_->addAction(tr("None"));
     noneAction->setCheckable(true);
     noneAction->setData(true);
+    //environment tag
+    connect(environmentTagMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
+        for(auto &&action : environmentTagMenu_->actions())
+            action->setChecked(true);
+    });
+    connect(environmentTagMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
+        for(auto &&action : environmentTagMenu_->actions())
+            action->setChecked(false);
+    });
+    environmentTagMenu_->addSeparator();
+    for(auto &&tag : Tag::enironmentTags()){
+        auto action = environmentTagMenu_->addAction(tag.name());
+        action->setCheckable(true);
+    }
+    noneAction = environmentTagMenu_->addAction(tr("None"));
+    noneAction->setCheckable(true);
+    noneAction->setData(true);
+    //type tag
     connect(typeTagMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
         for(auto &&action : typeTagMenu_->actions())
             action->setChecked(true);
@@ -113,6 +137,25 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             showWebsite = true;
         if(action->data().toBool() && action->isChecked() && !mod->curseforgeMod() && !mod->modrinthMod())
             showWebsite = true;
+    }
+    bool showEnvironmentTag = false;
+    for(auto &&action : environmentTagMenu_->actions()){
+        bool hasTag = false;
+        if(!action->isChecked()) continue;
+        if(action->data().toBool() && mod->tagManager().environmentTags().isEmpty()){
+            showEnvironmentTag = true;
+            break;
+        }
+        for(auto &&tag : mod->tagManager().environmentTags()){
+            if(action->text() == tag.name()){
+                hasTag = true;
+                break;
+            }
+        }
+        if(hasTag) {
+            showEnvironmentTag = true;
+            break;
+        }
     }
     bool showTypeTag = false;
     for(auto &&action : typeTagMenu_->actions()){
@@ -171,7 +214,7 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
-    return show && showWebsite && showTypeTag && showFunctionalityTag && showCustomTag;
+    return show && showWebsite && showEnvironmentTag && showTypeTag && showFunctionalityTag && showCustomTag;
 }
 
 void LocalModFilter::refreshTags() const

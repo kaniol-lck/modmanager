@@ -23,6 +23,7 @@ private:
     LocalModPath *path_;
     UnclosedMenu *menu_;
     UnclosedMenu *websiteMenu_;
+    UnclosedMenu *environmentTagMenu_;
     UnclosedMenu *typeTagMenu_;
     UnclosedMenu *functionalityTagMenu_;
     UnclosedMenu *customTagMenu_;
