@@ -21,20 +21,25 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info, bool deduceLoader, bool
     loadMods(deduceLoader, startup);
 }
 
+LocalModPath::~LocalModPath()
+{
+    qDeleteAll(modMap_);
+}
+
 void LocalModPath::loadMods(bool deduceLoader, bool startup)
 {
-    modFileList_.clear();
+    QList<LocalModFile*> modFileList;
     for(auto &&fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
         if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
-            modFileList_ << new LocalModFile(this, fileInfo.absoluteFilePath());
+            modFileList << new LocalModFile(nullptr, fileInfo.absoluteFilePath());
 
     auto future = QtConcurrent::run([=]{
         int count = 0;
         QVector<int> modCount(3, 0);
         emit loadStarted();
-        for(auto &file : modFileList_){
+        for(auto &file : modFileList){
             modCount[file->loadInfo()]++;
-            emit loadProgress(++count, modFileList_.size());
+            emit loadProgress(++count, modFileList.size());
         }
         if(deduceLoader){
             if(auto iter = std::max_element(modCount.cbegin(), modCount.cend()); iter != modCount.cend()){
@@ -43,7 +48,7 @@ void LocalModPath::loadMods(bool deduceLoader, bool startup)
                 emit infoUpdated();
             }
         }
-        for(const auto &file : qAsConst(modFileList_))
+        for(const auto &file : qAsConst(modFileList))
             file->setLoaderType(info_.loaderType());
         emit loadFinished();
     });
@@ -57,12 +62,18 @@ void LocalModPath::loadMods(bool deduceLoader, bool startup)
         provideList_.clear();
 
         //load normal mods (include duplicate)
-        for(const auto &file : qAsConst(modFileList_))
+        for(const auto &file : qAsConst(modFileList))
             addNormalMod(file);
 
         //load old mods
-        for(const auto &file : qAsConst(modFileList_))
+        for(const auto &file : qAsConst(modFileList))
             addOldMod(file);
+
+        //delete unused files
+        for(const auto &file : qAsConst(modFileList)){
+            if(!file->parent())
+                file->deleteLater();
+        }
 
         //restore cached info
         readFromFile();
@@ -465,9 +476,10 @@ ModDownloader *LocalModPath::downloadNewMod(DownloadFileInfo &info)
         if(!LocalModFile::availableSuffix.contains(fileInfo.suffix())) return;
         auto file = new LocalModFile(this, fileInfo.absoluteFilePath());
         file->loadInfo();
-        modFileList_ << file;
         addNormalMod(file);
         addOldMod(file);
+        if(!file->parent())
+            file->deleteLater();
         emit modListUpdated();
     });
 }

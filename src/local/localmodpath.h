@@ -16,6 +16,7 @@ class LocalModPath : public QObject
     Q_OBJECT
 public:
     explicit LocalModPath(const LocalModPathInfo &info, bool deduceLoader = false, bool startup = false);
+    ~LocalModPath();
 
     void loadMods(bool deduceLoader = false, bool startup = false);
     void addNormalMod(LocalModFile *file);
@@ -85,7 +86,6 @@ private:
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     LocalModPathInfo info_;
-    QList<LocalModFile*> modFileList_;
     QMap<QString, LocalMod*> modMap_;
     LocalMod *optiFineMod_ = nullptr;
     QMultiMap<QString, FabricModInfo> fabricModMap_;

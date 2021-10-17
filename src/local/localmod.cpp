@@ -481,6 +481,7 @@ const Updatable<ModrinthFileInfo> &LocalMod::modrinthUpdate() const
 
 void LocalMod::setCurrentCurseforgeFileInfo(const CurseforgeFileInfo &info, bool cache)
 {
+    if(info.id() == 0) return;
     curseforgeUpdate_.setCurrentFileInfo(info);
     emit modCacheUpdated();
     if(cache)
@@ -489,6 +490,7 @@ void LocalMod::setCurrentCurseforgeFileInfo(const CurseforgeFileInfo &info, bool
 
 void LocalMod::setCurrentModrinthFileInfo(const ModrinthFileInfo &info, bool cache)
 {
+    if(info.id().isEmpty()) return;
     modrinthUpdate_.setCurrentFileInfo(info);
     emit modCacheUpdated();
     if(cache)

@@ -21,7 +21,6 @@ public:
     static void removePath(LocalModPath *path);
     static void removePathAt(int i);
     static void insertPath(int i, LocalModPath *path);
-    static void setPath(int i, LocalModPath *path);
 
     static void load();
     static void saveToConfig();

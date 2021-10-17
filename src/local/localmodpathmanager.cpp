@@ -46,13 +46,14 @@ void LocalModPathManager::addPaths(const QStringList &paths)
 
 void LocalModPathManager::removePath(LocalModPath *path)
 {
-    manager()->pathList_.removeAll(path);
+    path->deleteLater();
+    manager()->pathList_.removeOne(path);
     manager()->updateList();
 }
 
 void LocalModPathManager::removePathAt(int i)
 {
-    manager()->pathList_.removeAt(i);
+    manager()->pathList_.takeAt(i)->deleteLater();
     manager()->updateList();
 }
 
@@ -61,12 +62,6 @@ void LocalModPathManager::insertPath(int i, LocalModPath *path)
     path->setParent(manager());
     manager()->pathList_.insert(i, path);
     manager()->updateList();
-}
-
-void LocalModPathManager::setPath(int i, LocalModPath *path)
-{
-    path->setParent(manager());
-    manager()->pathList_[i] = path;
 }
 
 void LocalModPathManager::load()
