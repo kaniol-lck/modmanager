@@ -10,6 +10,7 @@
 #include "curseforge/curseforgemod.h"
 #include "curseforgefileitemwidget.h"
 #include "util/datetimesortitem.h"
+#include "util/smoothscrollbar.h"
 
 CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod) :
     QDialog(parent),
@@ -18,6 +19,7 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     localMod_(localMod)
 {
     ui->setupUi(this);
+    ui->fileListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
     auto action = new QAction(tr("Copy website link"), this);
     connect(action, &QAction::triggered, this, [=]{
         QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());

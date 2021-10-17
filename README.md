@@ -16,8 +16,6 @@ Mod Manager is licensed under [GPLv3](LICENSE).
 
 This repository has deployed [GitHub Actions](https://github.com/kaniol-lck/modmanager/actions). If you want to try my new-written bugs, welcome to try it and open some issues.
 
-\* Mac OS Build failed with c++ 17 on GitHub Actions. （HELP WANTED）
-
 ### Build From Source
 
 Clone this repository: 

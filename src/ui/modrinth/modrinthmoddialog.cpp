@@ -11,6 +11,7 @@
 #include "modrinthfileitemwidget.h"
 #include "modrinth/modrinthmod.h"
 #include "util/datetimesortitem.h"
+#include "util/smoothscrollbar.h"
 
 ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod *localMod) :
     QDialog(parent),
@@ -19,6 +20,7 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
     localMod_(localMod)
 {
     ui->setupUi(this);
+    ui->fileListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
     auto action = new QAction(tr("Copy website link"), this);
     connect(action, &QAction::triggered, this, [=]{
         QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());

@@ -6,6 +6,52 @@ Soon....
 
 ## 公开测试 Beta Test
 
+### v1.0.0 beta.4
+
+*WIP*
+
+Added Linux/MacOS app packages.
+添加了Linux和MacOS的打包。
+
+Added mod file website infomation cache, website searches in startup got faster. Mod version switch will recheck update now.
+添加了mod文件网站信息缓存，启动时的网站搜索变得更快了。Mod版本切换后会重新检查更新。
+
+Add mod path loader type auto determination.
+添加了mod路径自动判断加载器类型。
+
+Added multiple path imports.
+添加了多路径批量导入。
+
+Added environmantal client/server tag.
+添加客户端或服务端的环境标签。
+
+Added support to color code format of local mod name, author name and description.
+添加了对本地mod的名称、作者名字和描述的颜色代码格式的支持。
+
+Attempted to improve performance, may introduce some **crashes**.
+试图优化了一些性能，也许会引入一些**崩溃**。
+
+Standardized data storage paths.
+规范化软件数据存储路径。
+
+OptiFine will show in Fabric mod path as well.
+OptiFine也会在Fabric路径中显示了。
+
+Tweaked smooth scrolling, and it's configurable now.
+调整了平滑滚动，而且现在是可配置的。
+
+Fixed some issue in Curseforge/Modrinth searches.
+修复了一些Curseforge/Modrinth搜索上的问题。
+
+Fixed local mod search returns nothing.
+修复了本地mod搜索没有任何结果。
+
+Fixed some forge mod load failures.
+修复了一些Forge mod加载失败的问题。
+
+Other random tweaks and bugfixes.
+以及一些其他的小调整和bug修复。
+
 ### v1.0.0 beta.3
 
 *2021.10.10*

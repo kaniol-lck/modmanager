@@ -15,10 +15,10 @@ class LocalModPath : public QObject
 {
     Q_OBJECT
 public:
-    explicit LocalModPath(const LocalModPathInfo &info, bool deduceLoader = false, bool startup = false);
+    explicit LocalModPath(const LocalModPathInfo &info, bool deduceLoader = false);
     ~LocalModPath();
 
-    void loadMods(bool deduceLoader = false, bool startup = false);
+    void loadMods(bool autoLoaderType = false);
     void addNormalMod(LocalModFile *file);
     void addOldMod(LocalModFile *file);
 
@@ -41,7 +41,7 @@ public:
     ModDownloader *downloadNewMod(DownloadFileInfo &info);
 
     const LocalModPathInfo &info() const;
-    void setInfo(const LocalModPathInfo &newInfo, bool deduceLoader = false, bool startup = false);
+    void setInfo(const LocalModPathInfo &newInfo, bool deduceLoader = false);
 
     LocalModTags tagManager();
 
@@ -92,6 +92,7 @@ private:
     QStringList provideList_;
     QDateTime latestUpdateCheck_;
     int updatableCount_ = 0;
+    bool initialUpdateChecked_ = false;
     bool isSearching_ = false;
 };
 

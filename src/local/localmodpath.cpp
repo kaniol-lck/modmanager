@@ -12,13 +12,19 @@
 #include "util/tutil.hpp"
 #include "config.hpp"
 
-LocalModPath::LocalModPath(const LocalModPathInfo &info, bool deduceLoader, bool startup) :
+LocalModPath::LocalModPath(const LocalModPathInfo &info, bool deduceLoader) :
     QObject(LocalModPathManager::manager()),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
     info_(info)
 {
-    loadMods(deduceLoader, startup);
+    connect(this, &LocalModPath::websitesReady, this, [=]{
+        //new path not from exsiting will check update
+        if(initialUpdateChecked_) return;
+        checkModUpdates(false);
+        initialUpdateChecked_ = true;
+    });
+    loadMods(deduceLoader);
 }
 
 LocalModPath::~LocalModPath()
@@ -26,7 +32,7 @@ LocalModPath::~LocalModPath()
     qDeleteAll(modMap_);
 }
 
-void LocalModPath::loadMods(bool deduceLoader, bool startup)
+void LocalModPath::loadMods(bool autoLoaderType)
 {
     QList<LocalModFile*> modFileList;
     for(auto &&fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
@@ -41,7 +47,7 @@ void LocalModPath::loadMods(bool deduceLoader, bool startup)
             modCount[file->loadInfo()]++;
             emit loadProgress(++count, modFileList.size());
         }
-        if(deduceLoader){
+        if(autoLoaderType){
             if(auto iter = std::max_element(modCount.cbegin(), modCount.cend()); iter != modCount.cend()){
                 auto loaderType = ModLoaderType::local.at(iter - modCount.cbegin());
                 info_.setLoaderType(loaderType);
@@ -78,12 +84,6 @@ void LocalModPath::loadMods(bool deduceLoader, bool startup)
         //restore cached info
         readFromFile();
         emit modListUpdated();
-
-        connect(this, &LocalModPath::websitesReady, this, [=]{
-            //new path not from exsiting will check update
-            checkModUpdates(!startup);
-            disconnect(SIGNAL(websitesReady()));
-        });
         searchOnWebsites();
     });
 }
@@ -106,6 +106,7 @@ void LocalModPath::addNormalMod(LocalModFile *file)
                 writeToFile();
             });
             connect(optiFineMod_, &LocalMod::updateReady, this, &LocalModPath::updateUpdatableCount);
+            connect(optiFineMod_, &LocalMod::updateFinished, this, &LocalModPath::updateUpdatableCount);
         }
         return;
     }
@@ -126,6 +127,7 @@ void LocalModPath::addNormalMod(LocalModFile *file)
             writeToFile();
         });
         connect(mod, &LocalMod::updateReady, this, &LocalModPath::updateUpdatableCount);
+        connect(mod, &LocalMod::updateFinished, this, &LocalModPath::updateUpdatableCount);
         modMap_[id] = mod;
     }
 }
@@ -489,7 +491,7 @@ const LocalModPathInfo &LocalModPath::info() const
     return info_;
 }
 
-void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader, bool startup)
+void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader)
 {
     if(info_ == newInfo) return;
 
@@ -498,7 +500,7 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader, b
 
     //path, game version or loader type change will trigger mod reload
     if(info_.path() != newInfo.path() || info_.gameVersion() != newInfo.gameVersion() || info_.loaderType() != newInfo.loaderType())
-        loadMods(deduceLoader, startup);
+        loadMods(deduceLoader);
 }
 
 LocalModTags LocalModPath::tagManager()

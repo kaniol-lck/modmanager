@@ -16,8 +16,6 @@ Mod管理器以[GPLv3](LICENSE)许可证发布。
 
 本项目已经配置了[GitHub Actions](https://github.com/kaniol-lck/modmanager/actions)，如果你想要尝试最新鲜的bug，可以直接在其中选择下载并帮我捉虫。
 
-\* Mac OS的Github Actions构建在C++ 17的部分失败了（我也不知道是不是原先用的actions写的有问题）。
-
 ### 从源码构建
 
 克隆本仓库至本地：
