@@ -47,7 +47,7 @@ private slots:
 
     void on_deleteButton_clicked();
 
-    void on_tagsHorizontal_2_customContextMenuRequested(const QPoint &pos);
+    void on_tagsWidget_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::LocalModDialog *ui;

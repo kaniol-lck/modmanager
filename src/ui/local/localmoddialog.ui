@@ -411,7 +411,7 @@
     </layout>
    </item>
    <item row="1" column="1">
-    <widget class="QWidget" name="tagsHorizontal_2" native="true">
+    <widget class="QWidget" name="tagsWidget" native="true">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>

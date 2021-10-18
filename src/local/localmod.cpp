@@ -453,7 +453,11 @@ const CommonModInfo *LocalMod::commonInfo() const
 
 QString LocalMod::displayName() const
 {
-    return alias_.isEmpty()? commonInfo()->name() : alias_;
+    if(!alias_.isEmpty())
+        return alias_;
+    if(!commonInfo()->name().isEmpty())
+        return commonInfo()->name();
+    return modFile_->fileInfo().fileName();
 }
 
 const QList<LocalModFile *> &LocalMod::oldFiles() const

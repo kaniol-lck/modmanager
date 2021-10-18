@@ -213,8 +213,8 @@ void LocalModDialog::onCurrentFileChanged()
     //if disabled
     ui->disableButton->setChecked(mod_->isDisabled());
 
-
     //tags
+//    ui->tagsWidget->setVisible(!mod_->tags().isEmpty());
     QStringList tagTextList;
     for(auto widget : qAsConst(tagWidgets_)){
         tagsLayout_->removeWidget(widget);
@@ -325,13 +325,13 @@ void LocalModDialog::on_deleteButton_clicked()
     mod_->deleteOld(file_);
 }
 
-void LocalModDialog::on_tagsHorizontal_2_customContextMenuRequested(const QPoint &pos)
+void LocalModDialog::on_tagsWidget_customContextMenuRequested(const QPoint &pos)
 {
     auto menu = new QMenu(this);
     auto localModMenu = new LocalModMenu(this, mod_);
     menu->addMenu(localModMenu->addTagMenu());
     if(!mod_->tags().isEmpty())
         menu->addMenu(localModMenu->removeTagmenu());
-    menu->exec(ui->tagsHorizontal_2->mapToGlobal(pos));
+    menu->exec(ui->tagsWidget->mapToGlobal(pos));
 }
 
