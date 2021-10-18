@@ -38,7 +38,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     }
 
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
-    connect(ui->searchText, &QLineEdit::editingFinished, this, &CurseforgeModBrowser::search);
+    connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
 
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
@@ -103,6 +103,7 @@ void CurseforgeModBrowser::updateLocalPathList()
 
 void CurseforgeModBrowser::search()
 {
+    if(ui->searchText->text() == currentName_) return;
     currentName_ = ui->searchText->text();
     getModList(currentName_);
 }

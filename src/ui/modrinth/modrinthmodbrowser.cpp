@@ -37,7 +37,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     }
 
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
-    connect(ui->searchText, &QLineEdit::editingFinished, this, &ModrinthModBrowser::search);
+    connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
 
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
@@ -102,6 +102,7 @@ void ModrinthModBrowser::updateLocalPathList()
 
 void ModrinthModBrowser::search()
 {
+    if(ui->searchText->text() == currentName_) return;
     currentName_ = ui->searchText->text();
     getModList(currentName_);
 }
