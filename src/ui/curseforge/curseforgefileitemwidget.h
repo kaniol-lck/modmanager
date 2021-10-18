@@ -23,12 +23,9 @@ public:
 
 public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
-
 private slots:
     void updateLocalInfo();
-
     void on_downloadButton_clicked();
-
     void on_CurseforgeFileItemWidget_customContextMenuRequested(const QPoint &pos);
 
 private:

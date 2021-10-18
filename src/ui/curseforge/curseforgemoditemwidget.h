@@ -24,12 +24,9 @@ public:
 
 public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
-
 private slots:
     void updateIcon();
-
     void downloadFile(const CurseforgeFileInfo &fileInfo);
-
 private:
     Ui::CurseforgeModItemWidget *ui;
     QList<QWidget *> tagWidgets_;

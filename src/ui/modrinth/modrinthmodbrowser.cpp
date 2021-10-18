@@ -150,6 +150,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
             listItem->setSizeHint(QSize(0, 108));
             auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
             auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, mod);
+            mod->setParent(modItemWidget);
             modItemWidget->setDownloadPath(downloadPath_);
             connect(this, &ModrinthModBrowser::downloadPathChanged, modItemWidget, &ModrinthModItemWidget::setDownloadPath);
             ui->modListWidget->addItem(listItem);
@@ -174,10 +175,16 @@ void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index
 {
     auto item = ui->modListWidget->item(index.row());
     if(!item->text().isEmpty()) return;
-    auto widget = ui->modListWidget->itemWidget(item);
-    auto mod = dynamic_cast<ModrinthModItemWidget*>(widget)->mod();
+    auto widget = dynamic_cast<ModrinthModItemWidget*>(ui->modListWidget->itemWidget(item));
+    auto mod = widget->mod();
     auto dialog = new ModrinthModDialog(this, mod);
+    //set parent
+    mod->setParent(dialog);
     dialog->setDownloadPath(downloadPath_);
+    connect(this, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
+    connect(dialog, &ModrinthModDialog::accepted, widget, [=]{
+        mod->setParent(widget);
+    });
     dialog->show();
 }
 

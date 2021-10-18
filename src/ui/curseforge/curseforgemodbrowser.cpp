@@ -191,11 +191,16 @@ void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &ind
 {
     auto item = ui->modListWidget->item(index.row());
     if(!item->text().isEmpty()) return;
-    auto widget = ui->modListWidget->itemWidget(item);
-    auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
+    auto widget = dynamic_cast<CurseforgeModItemWidget*>(ui->modListWidget->itemWidget(item));
+    auto mod = widget->mod();
     auto dialog = new CurseforgeModDialog(this, mod);
+    //set parent
+    mod->setParent(dialog);
     dialog->setDownloadPath(downloadPath_);
     connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
+    connect(dialog, &CurseforgeModDialog::accepted, widget, [=]{
+        mod->setParent(widget);
+    });
     dialog->show();
 }
 
