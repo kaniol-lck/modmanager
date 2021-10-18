@@ -522,6 +522,11 @@ ModrinthAPI *LocalModPath::modrinthAPI() const
     return modrinthAPI_;
 }
 
+int LocalModPath::modCount() const
+{
+    return modMap_.size() + (optiFineMod_? 1 : 0);
+}
+
 int LocalModPath::updatableCount() const
 {
     return updatableCount_;

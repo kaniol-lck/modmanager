@@ -11,6 +11,8 @@ class LocalModBrowser;
 
 class LocalModPath;
 class LocalModFilter;
+class QStatusBar;
+class QProgressBar;
 
 class LocalModBrowser : public QWidget
 {
@@ -30,25 +32,25 @@ public slots:
     void updateModList();
 
 private slots:
-    void loadStarted();
-    void loadProgress(int loadedCount, int totalCount);
-    void loadFinished();
+    void onLoadStarted();
+    void onLoadProgress(int loadedCount, int totalCount);
+    void onLoadFinished();
 
-    void startCheckWebsites();
-    void websiteCheckedCountUpdated(int checkedCount);
-    void websitesReady();
+    void onCheckWebsitesStarted();
+    void onWebsiteCheckedCountUpdated(int checkedCount);
+    void onWebsitesReady();
 
-    void startCheckUpdates();
-    void updateCheckedCountUpdated(int updateCount, int checkedCount);
-    void updateUpdatableCount(int count);
-    void updatesReady();
+    void onCheckUpdatesStarted();
+    void onCheckedCountUpdated(int updateCount, int checkedCount);
+    void onUpdatesReady();
 
-    void startUpdates();
-    void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void updatesDoneCountUpdated(int doneCount, int totalCount);
-    void updatesDone(int successCount, int failCount);
+    void onUpdatesStarted();
+    void onUpdatesProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void onUpdatesDoneCountUpdated(int doneCount, int totalCount);
+    void onUpdatesDone(int successCount, int failCount);
 
     void filterList();
+    void updateStatusText();
 
     void on_modListWidget_doubleClicked(const QModelIndex &index);
     void on_comboBox_currentIndexChanged(int index);
@@ -56,10 +58,15 @@ private slots:
     void on_openFolderButton_clicked();
     void on_checkButton_clicked();
     void on_updateAllButton_clicked();
+    void on_hideUpdatesButton_clicked();
+
 private:
     Ui::LocalModBrowser *ui;
+    QStatusBar *statusBar_;
+    QProgressBar *progressBar_;
     LocalModPath *modPath_;
     LocalModFilter *filter_;
+    int hiddenCount_ = 0;
     bool isChecking_ = false;
     bool isUpdating_ = false;
 };
