@@ -23,9 +23,7 @@ public:
 
 private slots:
     void onUpdateSourceChanged(int row, LocalMod::ModWebsiteType type);
-
     void on_LocalModUpdateDialog_accepted();
-
 private:
     Ui::LocalModUpdateDialog *ui;
     LocalModPath *modPath_;

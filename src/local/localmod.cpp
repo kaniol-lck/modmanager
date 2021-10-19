@@ -265,6 +265,16 @@ QPair<QString, QString> LocalMod::updateNames(ModWebsiteType type) const
         return QPair("", "");
 }
 
+QPair<QString, QString> LocalMod::updateInfos(ModWebsiteType type) const
+{
+    if(type == Curseforge)
+        return curseforgeUpdate_.updateInfos();
+    else if(type == Modrinth)
+        return modrinthUpdate_.updateInfos();
+    else
+        return QPair("", "");
+}
+
 ModDownloader *LocalMod::update(ModWebsiteType type)
 {
     if(type == None) return nullptr;

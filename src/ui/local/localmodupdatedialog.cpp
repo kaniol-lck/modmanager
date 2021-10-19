@@ -30,6 +30,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
         auto type = mod->defaultUpdateType();
         if(type == LocalMod::None) continue;
         auto names = mod->updateNames(type);
+        auto infos = mod->updateInfos(type);
 
         auto nameItem = new QStandardItem();
         nameItem->setText(mod->commonInfo()->name());
@@ -45,6 +46,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
         beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         beforeItem->setEditable(false);
         beforeItem->setEnabled(enabled);
+        beforeItem->setToolTip(infos.first);
 
         auto afterItem = new QStandardItem();
         afterItem->setText(names.second);
@@ -52,6 +54,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
         afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
         afterItem->setEditable(false);
         afterItem->setEnabled(enabled);
+        afterItem->setToolTip(infos.second);
 
         auto sourceItem = new QStandardItem();
         auto pair = UpdateSourceDelegate::sourceItems.at(type);

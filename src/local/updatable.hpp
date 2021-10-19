@@ -41,6 +41,18 @@ public:
         return QPair(currentFileInfo_->displayName(), updateFileInfo_->displayName());
     }
 
+    QPair<QString, QString> updateInfos() const
+    {
+        auto getInfo = [=](const auto &info){
+            return QStringList{
+                        info->displayName(),
+                        info->fileName(),
+                        info->fileDate().toString()
+            }.join("\n");
+        };
+        return QPair(getInfo(currentFileInfo_), getInfo(updateFileInfo_));
+    }
+
     void reset(bool clearCurrent = false){
         updateFileInfo_.reset();
         if(clearCurrent)

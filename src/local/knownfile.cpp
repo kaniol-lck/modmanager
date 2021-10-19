@@ -18,14 +18,14 @@ KnownFile::KnownFile()
 
 void KnownFile::addCurseforge(const QString &murmurhash,  const CurseforgeFileInfo &file)
 {
-    if(murmurhash.isEmpty()) return;
+    if(murmurhash.isEmpty() || !file.id()) return;
     files()->curseforgeFiles_[murmurhash] = file;
     files()->writeToFile();
 }
 
 void KnownFile::addModrinth(const QString &sha1, const ModrinthFileInfo &file)
 {
-    if(sha1.isEmpty()) return;
+    if(sha1.isEmpty() || file.id().isEmpty()) return;
     files()->modrinthFiles_[sha1] = file;
     files()->writeToFile();
 }
@@ -101,12 +101,18 @@ void KnownFile::readFromFile()
     auto result = jsonDocument.toVariant();
     curseforgeFiles_.clear();
     auto &&curseforgeMap = value(result, "curseforge").toMap();
-    for(auto it = curseforgeMap.cbegin(); it != curseforgeMap.cend(); it++)
-        curseforgeFiles_[it.key()] = CurseforgeFileInfo::fromVariant(it.value());
+    for(auto it = curseforgeMap.cbegin(); it != curseforgeMap.cend(); it++){
+        auto &&file = CurseforgeFileInfo::fromVariant(it.value());
+        if(curseforgeFiles_.contains(it.key()) || !file.id()) continue;
+        curseforgeFiles_[it.key()] = file;
+    }
     modrinthFiles_.clear();
     auto &&modrinthMap = value(result, "modrinth").toMap();
-    for(auto it = modrinthMap.cbegin(); it != modrinthMap.cend(); it++)
-        modrinthFiles_[it.key()] = ModrinthFileInfo::fromVariant(it.value().toString());
+    for(auto it = modrinthMap.cbegin(); it != modrinthMap.cend(); it++){
+        auto &&file = ModrinthFileInfo::fromVariant(it.value().toString());
+        if(modrinthFiles_.contains(it.key()) || file.id().isEmpty()) continue;
+        modrinthFiles_[it.key()] = file;
+    }
     curseforgeFiles_.clear();
     unmatchedCurseforgeFiles_ = value(result, "unmatchedCurseforge").toStringList();
     unmatchedModrinthFiles_ = value(result, "unmatchedModrinth").toStringList();
