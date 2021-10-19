@@ -21,6 +21,8 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
 {
     ui->setupUi(this);
     ui->fileListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
+    if(mod_->modInfo().websiteUrl().isEmpty())
+        ui->websiteButton->setVisible(false);
     auto action = new QAction(tr("Copy website link"), this);
     connect(action, &QAction::triggered, this, [=]{
         QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());
