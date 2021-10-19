@@ -231,7 +231,7 @@ void LocalModBrowser::onUpdatesProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 void LocalModBrowser::onUpdatesDoneCountUpdated(int doneCount, int totalCount)
 {
-    ui->updateProgressText->setText(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
+    statusBar_->showMessage(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
 }
 
 void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
@@ -262,14 +262,13 @@ void LocalModBrowser::filterList()
 
 void LocalModBrowser::updateStatusText()
 {
-    auto str = tr("%1 mods in total").arg(modPath_->modCount());
-    if(hiddenCount_)
-        str.append(tr(" (%1 mods hidden)").arg(hiddenCount_));
-    str.append(tr(". "));
-//    if(auto count = modPath_->updatableCount())
-//        str.append(tr("%1 mods need update.").arg(count));
-//    else
-//        str.append(tr("Good! All mods are up-to-date."));
+    auto str = tr("%1 mods in total. ").arg(modPath_->modCount());
+    if(hiddenCount_){
+        if(hiddenCount_ < modPath_->modCount() / 2)
+            str.append(tr("(%1 mods are hidden)").arg(hiddenCount_));
+        else
+            str.append(tr("(%1 mods are shown)").arg(modPath_->modCount() - hiddenCount_));
+    }
     statusBar_->showMessage(str);
 }
 
