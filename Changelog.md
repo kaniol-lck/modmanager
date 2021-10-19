@@ -25,6 +25,9 @@ Added multiple path imports.
 Added environmantal client/server tag.
 添加客户端或服务端的环境标签。
 
+Added option to ignore mod update, you can ignore certain versions not suitable for this path.
+添加了忽略mod更新的选项，你可以忽略一些不适合当前路径的版本。
+
 Added support to color code format of local mod name, author name and description.
 添加了对本地mod的名称、作者名字和描述的颜色代码格式的支持。
 
@@ -40,6 +43,12 @@ OptiFine也会在Fabric路径中显示了。
 Tweaked smooth scrolling, and it's configurable now.
 调整了平滑滚动，而且现在是可配置的。
 
+Tweaked Local mod list pages. They have a status bar to show info and progresses.
+调整了本地mod列表页面，使用状态栏来显示信息和进度条。
+
+Tweaked update dialog, hovering on version name will show some details.
+调整了更新对话框，鼠标悬停在版本名称上会显示一些详细信息。
+
 Fixed some issue in Curseforge/Modrinth searches.
 修复了一些Curseforge/Modrinth搜索上的问题。
 
@@ -48,6 +57,9 @@ Fixed local mod search returns nothing.
 
 Fixed some forge mod load failures.
 修复了一些Forge mod加载失败的问题。
+
+Fixed website button unclickable in modrinth mod dialog. (Hided it!)
+修复了Modrinth中无法点击的网站按钮。（把它隐藏咯）
 
 Other random tweaks and bugfixes.
 以及一些其他的小调整和bug修复。
