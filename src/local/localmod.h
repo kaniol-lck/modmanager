@@ -77,6 +77,9 @@ public:
     bool isDisabled();
     bool setEnabled(bool enabled);
 
+    void ignoreUpdate(ModWebsiteType type);
+    void clearIgnores();
+
     void addDepend(std::tuple<QString, QString, std::optional<FabricModInfo>> modDepend);
     void addConflict(std::tuple<QString, QString, FabricModInfo> modConflict);
     void addBreak(std::tuple<QString, QString, FabricModInfo> modBreak);
@@ -104,6 +107,7 @@ public:
     LocalModPath *path() const;
 
     const QList<Tag> tags() const;
+    const QList<Tag> customizableTags() const;
     void addTag(const Tag &tag);
     void removeTag(const Tag &tag);
     const LocalModTags &tagManager() const;

@@ -229,40 +229,46 @@ void LocalModItemWidget::on_updateButton_clicked()
     mod_->update(mod_->defaultUpdateType());
 }
 
-void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType type)
+void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType defaultType)
 {
-    if (type == LocalMod::None){
+    if (defaultType == LocalMod::None){
         ui->updateButton->setVisible(false);
         if(ui->updateButton->menu())
             ui->updateButton->menu()->clear();
         return;
     }
     ui->updateButton->setVisible(true);
+    ui->updateButton->setText(tr("Update"));
     ui->updateButton->setEnabled(!mod_->isDisabled());
-    if (type == LocalMod::Curseforge)
-        ui->updateButton->setIcon(QIcon(":/image/curseforge.svg"));
-    else if (type == LocalMod::Modrinth)
-        ui->updateButton->setIcon(QIcon(":/image/modrinth.svg"));
 
-    if (mod_->updateTypes().size() == 1)
-        return;
     auto menu = new QMenu(this);
-    for (auto &&type2 : mod_->updateTypes()){
-        if (type == type2)
-            continue;
-        if (type2 == LocalMod::Curseforge)
-            connect(menu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]
-                    {
-                        ui->updateButton->setIcon(QIcon(":/image/curseforge.svg"));
-                        mod_->update(LocalMod::Curseforge);
-                    });
-        else if (type2 == LocalMod::Modrinth)
-            connect(menu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth"), &QAction::triggered, this, [=]
-                    {
-                        ui->updateButton->setIcon(QIcon(":/image/modrinth.svg"));
-                        mod_->update(LocalMod::Modrinth);
-                    });
+    auto ignoreMenu = new QMenu(tr("Ignore update"), this);
+    for(auto &&type : mod_->updateTypes()){
+        if (type == LocalMod::Curseforge){
+            auto name = mod_->curseforgeUpdate().updateFileInfo()->displayName();
+            auto action = menu->addAction(QIcon(":/image/curseforge.svg"), name);
+            action->setToolTip(mod_->updateInfos(type).second);
+            connect(action, &QAction::triggered, this, [=]{
+                mod_->update(type);
+            });
+            connect(ignoreMenu->addAction(QIcon(":/image/curseforge.svg"), name), &QAction::triggered, this, [=]{
+                mod_->ignoreUpdate(type);
+            });
+        }
+        else if (type == LocalMod::Modrinth){
+            auto name = mod_->modrinthUpdate().updateFileInfo()->displayName();
+            auto action = menu->addAction(QIcon(":/image/modrinth.svg"), name);
+            action->setToolTip(mod_->updateInfos(type).second);
+            connect(action, &QAction::triggered, this, [=]{
+                mod_->update(type);
+            });
+            connect(ignoreMenu->addAction(QIcon(":/image/modrinth.svg"), name), &QAction::triggered, this, [=]{
+                mod_->ignoreUpdate(type);
+            });
+        }
     }
+    menu->addSeparator();
+    menu->addMenu(ignoreMenu);
     ui->updateButton->setMenu(menu);
 }
 
@@ -382,9 +388,15 @@ void LocalModItemWidget::on_LocalModItemWidget_customContextMenuRequested(const 
             mod_->setAlias(alias);
     });
     menu->addMenu(localModMenu->addTagMenu());
-    if(!mod_->tags().isEmpty())
+    if(!mod_->customizableTags().isEmpty())
         menu->addMenu(localModMenu->removeTagmenu());
     menu->addSeparator();
+    if(!mod_->curseforgeUpdate().ignores().isEmpty() || !mod_->modrinthUpdate().ignores().isEmpty()){
+        connect(menu->addAction(tr("Clear update ignores")), &QAction::triggered, this, [=]{
+            mod_->clearIgnores();
+        });
+        menu->addSeparator();
+    }
     auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"));
     starAction->setCheckable(true);
     starAction->setChecked(mod_->isFeatured());

@@ -97,11 +97,11 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::onCheckUpdatesStarted);
     connect(modPath_, &LocalModPath::updateCheckedCountUpdated, this, &LocalModBrowser::onCheckedCountUpdated);
     connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::onUpdatesReady);
+    connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::onUpdatableCountChanged);
     connect(modPath_, &LocalModPath::updatesStarted, this, &LocalModBrowser::onUpdatesStarted);
     connect(modPath_, &LocalModPath::updatesProgress, this, &LocalModBrowser::onUpdatesProgress);
     connect(modPath_, &LocalModPath::updatesDoneCountUpdated, this, &LocalModBrowser::onUpdatesDoneCountUpdated);
     connect(modPath_, &LocalModPath::updatesDone, this, &LocalModBrowser::onUpdatesDone);
-    connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::updateStatusText);
     connect(ui->searchText, &QLineEdit::textChanged, this, &LocalModBrowser::filterList);
 }
 
@@ -190,6 +190,7 @@ void LocalModBrowser::onCheckUpdatesStarted()
 
 void LocalModBrowser::onCheckedCountUpdated(int updateCount, int checkedCount)
 {
+    if(!isChecking_) return;
     statusBar_->showMessage(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(modPath_->modMap().size()));
     progressBar_->setValue(checkedCount);
 }
@@ -201,6 +202,13 @@ void LocalModBrowser::onUpdatesReady()
     ui->checkUpdatesButton->setEnabled(true);
     ui->checkUpdatesButton->setText(tr("Check updates"));
     progressBar_->setVisible(false);
+    onUpdatableCountChanged();
+    updateStatusText();
+}
+
+void LocalModBrowser::onUpdatableCountChanged()
+{
+    if(isChecking_) return;
     if(auto count = modPath_->updatableCount(); count){
         ui->updateWidget->setVisible(true);
         ui->updateAllButton->setVisible(true);
@@ -209,9 +217,7 @@ void LocalModBrowser::onUpdatesReady()
         ui->updateProgressText->setText(tr("%1 mods need update.").arg(count));
     } else {
         ui->updateWidget->setVisible(false);
-//        ui->statusText->setText(tr("%1 mods in total.").arg(modPath_->modMap().size()) + " " + tr("Good! All mods are up-to-date."));
     }
-    updateStatusText();
 }
 
 void LocalModBrowser::onUpdatesStarted()

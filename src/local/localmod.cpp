@@ -90,13 +90,12 @@ void LocalMod::searchOnCurseforge()
         emit searchOnCurseforgeFinished(false);
     } else
         curseforgeAPI_->getIdByFingerprint(murmurhash, [=](int id, auto fileInfo, const auto &fileList){
-            qDebug() << murmurhash;
             IdMapper::addCurseforge(commonInfo()->id(), id);
             KnownFile::addCurseforge(murmurhash, fileInfo);
             CurseforgeModInfo modInfo(id);
             modInfo.setLatestFiles(fileList);
             curseforgeMod_ = new CurseforgeMod(this, modInfo);
-            curseforgeUpdate_.setCurrentFileInfo(fileInfo);
+            setCurrentCurseforgeFileInfo(fileInfo);
             emit modCacheUpdated();
             emit curseforgeReady(true);
             emit searchOnCurseforgeFinished(true);
@@ -129,7 +128,7 @@ void LocalMod::searchOnModrinth()
             KnownFile::addModrinth(sha1, fileInfo);
             ModrinthModInfo modInfo(fileInfo.modId());
             modrinthMod_ = new ModrinthMod(this, modInfo);
-            modrinthUpdate_.setCurrentFileInfo(fileInfo);
+            setCurrentModrinthFileInfo(fileInfo);
             emit modCacheUpdated();
             emit modrinthReady(true);
             emit searchOnModrinthFinished(true);
@@ -436,6 +435,24 @@ bool LocalMod::setEnabled(bool enabled)
     return bl;
 }
 
+void LocalMod::ignoreUpdate(ModWebsiteType type)
+{
+    if(type == Curseforge)
+        curseforgeUpdate_.addIgnore();
+    else if(type == Modrinth)
+        modrinthUpdate_.addIgnore();
+    emit modCacheUpdated();
+    emit updateReady(defaultUpdateType());
+}
+
+void LocalMod::clearIgnores()
+{
+    curseforgeUpdate_.clearIgnores();
+    modrinthUpdate_.clearIgnores();
+    emit modCacheUpdated();
+    checkUpdates();
+}
+
 void LocalMod::addDepend(std::tuple<QString, QString, std::optional<FabricModInfo> > modDepend)
 {
     depends_ << modDepend;
@@ -580,6 +597,12 @@ QJsonObject LocalMod::toJsonObject() const
             curseforgeObject.insert("currentFileInfo", curseforgeUpdate_.currentFileInfo()->toJsonObject());
         if(curseforgeUpdate_.updateFileInfo())
             curseforgeObject.insert("updateFileInfo", curseforgeUpdate_.updateFileInfo()->toJsonObject());
+        if(!curseforgeUpdate_.ignores().isEmpty()){
+            QJsonArray ignoreArray;
+            for(auto &&fileId : curseforgeUpdate_.ignores())
+                ignoreArray << fileId;
+            curseforgeObject.insert("ignores", ignoreArray);
+        }
         object.insert("curseforge", curseforgeObject);
     }
 
@@ -590,6 +613,12 @@ QJsonObject LocalMod::toJsonObject() const
             modrinthObject.insert("currentFileInfo", modrinthUpdate_.currentFileInfo()->toJsonObject());
         if(modrinthUpdate_.updateFileInfo())
             modrinthObject.insert("updateFileInfo", modrinthUpdate_.updateFileInfo()->toJsonObject());
+        if(!modrinthUpdate_.ignores().isEmpty()){
+            QJsonArray ignoreArray;
+            for(auto &&fileId : modrinthUpdate_.ignores())
+                ignoreArray << fileId;
+            modrinthObject.insert("ignores", ignoreArray);
+        }
         object.insert("modrinth", modrinthObject);
     }
 
@@ -609,6 +638,9 @@ void LocalMod::restore(const QVariant &variant)
             setCurrentCurseforgeFileInfo(CurseforgeFileInfo::fromVariant(value(variant, "curseforge", "currentFileInfo")));
         if(contains(value(variant, "curseforge"), "updateFileInfo"))
             curseforgeUpdate_.setUpdateFileInfo(CurseforgeFileInfo::fromVariant(value(variant, "curseforge", "updateFileInfo")));
+        if(contains(value(variant, "curseforge"), "ignores"))
+            for(auto &&id : value(variant, "curseforge", "ignores").toList())
+                curseforgeUpdate_.addIgnore(id.toInt());
     }
     if(contains(variant, "modrinth")){
         if(contains(value(variant, "modrinth"), "id"))
@@ -617,6 +649,9 @@ void LocalMod::restore(const QVariant &variant)
             setCurrentModrinthFileInfo(ModrinthFileInfo::fromVariant(value(variant, "modrinth", "currentFileInfo")));
         if(contains(value(variant, "modrinth"), "updateFileInfo"))
             modrinthUpdate_.setUpdateFileInfo(ModrinthFileInfo::fromVariant(value(variant, "modrinth", "updateFileInfo")));
+        if(contains(value(variant, "modrinth"), "ignores"))
+            for(auto &&id : value(variant, "modrinth", "ignores").toList())
+                modrinthUpdate_.addIgnore(id.toString());
     }
 }
 
@@ -640,6 +675,11 @@ LocalModPath *LocalMod::path() const
 const QList<Tag> LocalMod::tags() const
 {
     return tagManager_.tags();
+}
+
+const QList<Tag> LocalMod::customizableTags() const
+{
+    return tagManager_.tags(TagCategory::CustomizableCategories);
 }
 
 void LocalMod::addTag(const Tag &tag)

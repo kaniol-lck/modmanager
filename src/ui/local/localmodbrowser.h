@@ -43,6 +43,7 @@ private slots:
     void onCheckUpdatesStarted();
     void onCheckedCountUpdated(int updateCount, int checkedCount);
     void onUpdatesReady();
+    void onUpdatableCountChanged();
 
     void onUpdatesStarted();
     void onUpdatesProgress(qint64 bytesReceived, qint64 bytesTotal);

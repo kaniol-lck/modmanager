@@ -38,12 +38,14 @@ public:
 
     QPair<QString, QString> updateNames() const
     {
-        return QPair(currentFileInfo_->displayName(), updateFileInfo_->displayName());
+        return QPair(currentFileInfo_? currentFileInfo_->displayName() : "",
+                     updateFileInfo_? updateFileInfo_->displayName() : "");
     }
 
     QPair<QString, QString> updateInfos() const
     {
         auto getInfo = [=](const auto &info){
+            if(!info) return QString();
             return QStringList{
                         info->displayName(),
                         info->fileName(),
@@ -51,6 +53,23 @@ public:
             }.join("\n");
         };
         return QPair(getInfo(currentFileInfo_), getInfo(updateFileInfo_));
+    }
+
+    void addIgnore(){
+        if(!updateFileInfo_) return;
+        auto id = updateFileInfo_->id();
+        updateFileInfo_.reset();
+        ignores_ << id;
+    }
+
+    void addIgnore(const typename FileInfoT::IdType &id){
+        ignores_ << id;
+        if(updateFileInfo_)
+            updateFileInfo_.reset();
+    }
+
+    void clearIgnores(){
+        ignores_.clear();
     }
 
     void reset(bool clearCurrent = false){
@@ -65,6 +84,8 @@ public:
         QList<FileInfoT> list;
         std::insert_iterator<QList<FileInfoT>> iter(list, list.begin());
         std::copy_if(fileList.cbegin(), fileList.cend(), iter, [=](const auto &file){
+            if(ignores_.contains(file.id()))
+                return false;
             bool versionCheck = false;
             Config config;
             for(auto &&version : file.gameVersions()){
@@ -131,9 +152,17 @@ public:
         updateFileInfo_.emplace(newUpdateFileInfo);
     }
 
+    const QList<typename FileInfoT::IdType> &ignores() const
+    {
+        return ignores_;
+    }
+
 private:
     std::optional<FileInfoT> currentFileInfo_;
     std::optional<FileInfoT> updateFileInfo_;
+    QList<typename FileInfoT::IdType> ignores_;
 };
+
+
 
 #endif // UPDATABLE_HPP
