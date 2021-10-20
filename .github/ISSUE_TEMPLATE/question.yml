@@ -1,0 +1,47 @@
+name: Question (提问)
+description: Anything you don't understand (对使用存在困惑)
+title: "[Question] "
+labels: ["question"]
+
+body:
+  - type: markdown
+    attributes:
+      value: "注: 你可以使用中文来填写此issue。"
+
+  - type: dropdown
+    id: OSver
+    attributes:
+      label: Question Type (问题类型)
+      options:
+        - "Usage (使用)"
+        - "Code (代码)"
+        - "Others (其他)"
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Describe the question (描述你的问题)
+      description: |
+        Please tell us the question is with a clear and detailed description, put your screenshots if possible.
+        请清晰而详细地描述你的问题，如果可以的话最好附带截图。
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context (额外说明)
+      description: |
+        Add any other context about the question here.
+        添加其它关于你的问题的说明。
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: know
+    attributes:
+      label: This issue is unique (这个issue是唯一的)
+      options:
+        - label: I have searched the issue tracker and did not find an issue describing my question.
+          required: true

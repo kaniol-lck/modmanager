@@ -58,8 +58,8 @@ Fixed local mod search returns nothing.
 Fixed some forge mod load failures.
 修复了一些Forge mod加载失败的问题。
 
-Fixed website button unclickable in modrinth mod dialog. (Hided it!)
-修复了Modrinth中无法点击的网站按钮。（把它隐藏咯）
+Fixed website button unclickable in modrinth mod dialog.
+修复了Modrinth中无法点击的网站按钮。
 
 Other random tweaks and bugfixes.
 以及一些其他的小调整和bug修复。

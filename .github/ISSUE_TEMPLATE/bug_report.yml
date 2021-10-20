@@ -1,6 +1,6 @@
-name: Bug Report(Bug反馈)
-description: Create a report to help us improve
-title: "[Bug]: "
+name: Bug Report (Bug反馈)
+description: Create a report to help us improve (反馈问题，帮助我们改进)
+title: "[Bug] "
 labels: ["bug"]
 
 body:
@@ -11,18 +11,21 @@ body:
   - type: dropdown
     id: OSver
     attributes:
-      label: OS Version
+      label: OS Version (系统版本)
       options:
         - "Linux"
         - "Windows"
+        - "MacOS"
     validations:
       required: true
 
   - type: input
     id: version
     attributes:
-      label: Version Details(版本信息)
-      description: What version of ModManager do you use(你使用什么版本的ModManager)?
+      label: Version Details (版本信息)
+      description: |
+        What version of ModManager do you use?
+        你使用的ModManager版本为？
       placeholder: modmanager version
     validations:
       required: true
@@ -30,31 +33,37 @@ body:
   - type: textarea
     id: desc
     attributes:
-      label: Describe the bug(问题描述)
-      description: A clear and concise description of what the bug is.(请清晰而简单地描述问题所在)
+      label: Describe the bug (问题描述)
+      description: |
+        What bug have you encountered? If it is a network-related issue, check your connection first. Please tell us what the bug is with a clear and detailed description, put your screenshots if possible.
+        你遇到了什么bug？如果是网络相关的问题，先检查自己的网络连接。请清晰而详细地描述问题所在，如果可以的话最好附带出问题的截图。
     validations:
       required: true
 
   - type: textarea
     id: repproduce
     attributes:
-      label: To Reproduce(复现问题)
-      description: Steps to reproduce the behavior(复现此问题的步骤)
+      label: To Reproduce (复现问题)
+      description: |
+        How do you trigger this bug? Please walk us through it step by step.
+        这个bug是怎么触发的？请详细告诉我们是怎样出现这个情况的。
     validations:
       required: false
 
   - type: textarea
     id: excepted
     attributes:
-      label: Expected behavior(预期行为)
-      description: A clear and concise description of what you expected to happen.(请清晰而简单地描述你希望它本该执行的操作)
+      label: Expected behavior (预期行为)
+      description: |
+        A clear and concise description of what you expected to happen.
+        请清晰而简单地描述你希望它本该执行的操作。
     validations:
       required: false
 
   - type: checkboxes
     id: know
     attributes:
-      label: This issue is unique(这个issue是唯一的)
+      label: This issue is unique (这个issue是唯一的)
       options:
         - label: I have searched the issue tracker and did not find an issue describing my bug.
           required: true
@@ -62,9 +71,9 @@ body:
   - type: textarea
     id: extra
     attributes:
-      label: Additional context(额外说明)
+      label: Additional context (额外说明)
       description: |
-        If applicable, add screenshots to help explain your problem.(如果可以请附上截图)
-        Add any other context about the problem here.(添加其他关于此问题的说明)
+        Add any other context about the problem here.
+        添加其他关于此问题的说明。
     validations:
       required: false

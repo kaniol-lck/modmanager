@@ -1,6 +1,6 @@
-name: Feature request(功能请求)
-description: Suggest an idea for this project
-title: "[Feature]: "
+name: Feature request (功能请求)
+description: Suggest an idea for this project (想要新功能)
+title: "[Feature] "
 labels: ["enhancement"]
 
 body:
@@ -10,24 +10,27 @@ body:
 
   - type: textarea
     attributes:
-      label: What new features do you want(你想要什么新功能)?
-      description: A clear and concise description of what of your requirements(请清晰而简明地描述你的需求).
+      label: What new features do you want? (你想要什么新功能)
+      description: |
+        What new feature or change you want? How it improves? Please tell us the requirements is with a clear and detailed description, put your screenshots if possible.
+        你想要什么新功能或者什么改变？这会带来什么提升？请清晰而详细地描述你的需求，如果可以的话最好附带截图。
     validations:
       required: true
 
   - type: textarea
     id: extra
     attributes:
-      label: Additional context(额外说明)
+      label: Additional context (额外说明)
       description: |
-        Add any other context or screenshots about the feature request here(添加其它关于你的需求的说明或截图).
+        Add any other context about the feature request here.
+        添加其它关于你的需求的说明。
     validations:
       required: false
 
   - type: checkboxes
     id: know
     attributes:
-      label: This issue is unique(这个issue是唯一的)
+      label: This issue is unique (这个issue是唯一的)
       options:
-        - label: I have searched the issue tracker and did not find an issue describing my bug.
+        - label: I have searched the issue tracker and did not find an issue describing my request.
           required: true
