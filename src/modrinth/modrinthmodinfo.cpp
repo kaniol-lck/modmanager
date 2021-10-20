@@ -45,6 +45,8 @@ ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
     modInfo.versionList_ = value(variant, "versions").toStringList();
     modInfo.categories_ = value(variant, "categories").toStringList();
 
+    modInfo.websiteUrl_ = "https://modrinth.com/mod/" + modInfo.modId_;
+
     return modInfo;
 }
 

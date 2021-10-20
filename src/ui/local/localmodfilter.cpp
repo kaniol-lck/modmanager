@@ -125,7 +125,8 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
 {
     bool show = true;
     if(!(mod->commonInfo()->name().toLower().contains(searchText) ||
-            mod->commonInfo()->description().toLower().contains(searchText)))
+         mod->commonInfo()->description().toLower().contains(searchText) ||
+         mod->commonInfo()->id().toLower().contains(searchText)))
         show = false;
     if(!disableAction_->isChecked() && mod->isDisabled())
         show = false;
