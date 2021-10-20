@@ -8,7 +8,7 @@ Soon....
 
 ### v1.0.0 beta.4
 
-*WIP*
+*2021.10.20*
 
 Added Linux/MacOS app packages.
 添加了Linux和MacOS的打包。
@@ -31,8 +31,8 @@ Added option to ignore mod update, you can ignore certain versions not suitable 
 Added support to color code format of local mod name, author name and description.
 添加了对本地mod的名称、作者名字和描述的颜色代码格式的支持。
 
-Attempted to improve performance, may introduce some **crashes**.
-试图优化了一些性能，也许会引入一些**崩溃**。
+Attempted to optimize memory usage, may introduce some **crashes**.
+试图优化了一些内存占用，也许会引入一些**崩溃**。
 
 Standardized data storage paths.
 规范化软件数据存储路径。

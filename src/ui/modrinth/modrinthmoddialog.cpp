@@ -67,10 +67,9 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
     auto updateFullInfo = [=]{
         if(!bl) updateBasicInfo();
         auto text = mod->modInfo().description();
-        QTextDocument doc;
-        doc.setMarkdown(text);
+        text.replace(QRegExp("<br ?/?>"), "\n");
         ui->websiteButton->setVisible(!mod_->modInfo().websiteUrl().isEmpty());
-        ui->modDescription->setHtml(doc.toHtml());
+        ui->modDescription->setMarkdown(text);
         ui->modDescription->setCursor(Qt::ArrowCursor);
 
         //update file list

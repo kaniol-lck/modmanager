@@ -103,7 +103,7 @@ void CurseforgeModBrowser::updateLocalPathList()
 
 void CurseforgeModBrowser::search()
 {
-    if(ui->searchText->text() == currentName_) return;
+//    if(ui->searchText->text() == currentName_) return;
     currentName_ = ui->searchText->text();
     getModList(currentName_);
 }
@@ -190,6 +190,8 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
     auto item = ui->modListWidget->item(index.row());
+    if(item->data(Qt::UserRole + 1).toBool()) return;
+    item->setData(Qt::UserRole + 1, true);
     if(!item->text().isEmpty()) return;
     auto widget = dynamic_cast<CurseforgeModItemWidget*>(ui->modListWidget->itemWidget(item));
     auto mod = widget->mod();
@@ -200,6 +202,7 @@ void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &ind
     connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
     connect(dialog, &CurseforgeModDialog::accepted, widget, [=]{
         mod->setParent(widget);
+        item->setData(Qt::UserRole + 1, false);
     });
     dialog->show();
 }

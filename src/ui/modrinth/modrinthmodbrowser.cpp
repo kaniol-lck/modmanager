@@ -74,7 +74,7 @@ void ModrinthModBrowser::updateVersionList()
     isUiSet_ = false;
     ui->versionSelect->clear();
     ui->versionSelect->addItem(tr("Any"));
-    for(const auto &version : GameVersion::modrinthVersionList())
+    for(auto &&version : GameVersion::modrinthVersionList())
         ui->versionSelect->addItem(version);
     isUiSet_ = true;
 }
@@ -102,7 +102,7 @@ void ModrinthModBrowser::updateLocalPathList()
 
 void ModrinthModBrowser::search()
 {
-    if(ui->searchText->text() == currentName_) return;
+//    if(ui->searchText->text() == currentName_) return;
     currentName_ = ui->searchText->text();
     getModList(currentName_);
 }
