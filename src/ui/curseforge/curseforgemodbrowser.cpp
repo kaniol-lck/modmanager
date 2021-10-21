@@ -200,7 +200,7 @@ void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &ind
     mod->setParent(dialog);
     dialog->setDownloadPath(downloadPath_);
     connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
-    connect(dialog, &CurseforgeModDialog::accepted, widget, [=]{
+    connect(dialog, &CurseforgeModDialog::finished, widget, [=]{
         mod->setParent(widget);
         item->setData(Qt::UserRole + 1, false);
     });

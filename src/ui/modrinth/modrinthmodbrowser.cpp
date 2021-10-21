@@ -174,6 +174,8 @@ void ModrinthModBrowser::getModList(QString name, int index)
 void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
 {
     auto item = ui->modListWidget->item(index.row());
+    if(item->data(Qt::UserRole + 1).toBool()) return;
+    item->setData(Qt::UserRole + 1, true);
     if(!item->text().isEmpty()) return;
     auto widget = dynamic_cast<ModrinthModItemWidget*>(ui->modListWidget->itemWidget(item));
     auto mod = widget->mod();
@@ -182,8 +184,9 @@ void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index
     mod->setParent(dialog);
     dialog->setDownloadPath(downloadPath_);
     connect(this, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
-    connect(dialog, &ModrinthModDialog::accepted, widget, [=]{
+    connect(dialog, &ModrinthModDialog::finished, widget, [=]{
         mod->setParent(widget);
+        item->setData(Qt::UserRole + 1, false);
     });
     dialog->show();
 }
