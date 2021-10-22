@@ -38,7 +38,7 @@ public:
     void updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList);
 
     //download new mod
-    ModDownloader *downloadNewMod(DownloadFileInfo &info);
+    QAria2Downloader *downloadNewMod(DownloadFileInfo &info);
 
     const LocalModPathInfo &info() const;
     void setInfo(const LocalModPathInfo &newInfo, bool deduceLoader = false);

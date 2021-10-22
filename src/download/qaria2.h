@@ -18,6 +18,7 @@ public:
 
     static QAria2 *qaria2();
 
+    QAria2Downloader *downloadNoRedirect(const QUrl &url, const QString &path = QString());
     QAria2Downloader *download(const QUrl &url, const QString &path = QString());
     QAria2Downloader *download(QAria2Downloader *downloader);
 
@@ -37,7 +38,7 @@ signals:
 private:
     //we only use one session
     aria2::Session* session_;
-    aria2::SessionConfig config;
+    aria2::SessionConfig config_;
     aria2::KeyVals options;
     bool isRunning_ = false;
     QMap<aria2::A2Gid, QAria2Downloader*> downloaders_;

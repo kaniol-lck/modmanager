@@ -24,19 +24,13 @@ void QAria2Downloader::update()
     if(!handle_)
         handle_ = aria2::getDownloadHandle(QAria2::qaria2()->session(), gid_);
     if(!handle_) return;
-    status();
-    qDebug() << "progress:" << handle_->getCompletedLength() << handle_->getTotalLength();
-    qDebug() << "speed:" << handle_->getDownloadSpeed() << handle_->getUploadSpeed();
+    if(status_ != aria2::DOWNLOAD_ACTIVE) return;
     emit downloadProgress(handle_->getCompletedLength(), handle_->getTotalLength());
     emit downloadSpeed(handle_->getDownloadSpeed(), handle_->getUploadSpeed());
 }
 
-aria2::DownloadStatus QAria2Downloader::status()
+aria2::DownloadStatus QAria2Downloader::status() const
 {
-    if(handle_ && status_ != handle_->getStatus()){
-        status_ = handle_->getStatus();
-        emit statusChanged(status_);
-    }
     return status_;
 }
 

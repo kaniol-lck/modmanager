@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DownloaderItemWidget</class>
- <widget class="QWidget" name="DownloaderItemWidget">
+ <class>QAria2DownloaderItemWidget</class>
+ <widget class="QWidget" name="QAria2DownloaderItemWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>613</width>
+    <width>501</width>
     <height>92</height>
    </rect>
-  </property>
-  <property name="contextMenuPolicy">
-   <enum>Qt::CustomContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>Form</string>

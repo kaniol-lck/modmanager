@@ -98,24 +98,22 @@ void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
 
-    ModDownloader *downloader;
+    QAria2Downloader *downloader;
     DownloadFileInfo info(fileInfo);
     if(downloadPath_)
         downloader = downloadPath_->downloadNewMod(info);
     else{
         info.setPath(Config().getDownloadPath());
-        downloader = DownloadManager::addModDownload(info);
+        downloader = DownloadManager::manager()->download(info);
     }
-    connect(downloader, &ModDownloader::sizeUpdated, this, [=](qint64 size){
-        ui->downloadProgress->setMaximum(size);
-    });
-    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
         ui->downloadProgress->setValue(bytesReceived);
+        ui->downloadProgress->setMaximum(bytesTotal);
     });
-    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+    connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
         ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
     });
-    connect(downloader, &Downloader::finished, this, [=]{
+    connect(downloader, &AbstractDownloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
         ui->downloadSpeedText->setText(numberConvert(mod_->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
         ui->downloadButton->setText(tr("Downloaded"));

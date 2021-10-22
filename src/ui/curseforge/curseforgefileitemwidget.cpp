@@ -54,7 +54,7 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
 
     ui->downloadProgress->setMaximum(fileInfo_.size());
 
-    ModDownloader *downloader;
+    QAria2Downloader *downloader;
     DownloadFileInfo info(fileInfo_);
     if(localMod_)
         info.setIconBytes(localMod_->commonInfo()->iconBytes());
@@ -62,29 +62,23 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
         info.setIconBytes(mod_->modInfo().iconBytes());
     if(downloadPath_)
         downloader = downloadPath_->downloadNewMod(info);
+    else if(localMod_)
+        downloader = localMod_->downloadOldMod(info);
     else{
         info.setPath(Config().getDownloadPath());
-        downloader = DownloadManager::addModDownload(info);
+        downloader = DownloadManager::manager()->download(info);
     }
 
-    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });
-    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+    connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
         ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
     });
-    connect(downloader, &Downloader::finished, this, [=]{
+    connect(downloader, &AbstractDownloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
         ui->downloadSpeedText->setText(numberConvert(fileInfo_.size(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
-        if(localMod_){
-            auto file = new LocalModFile(this, downloader->file().fileName());
-            if(file->loaderType() == localMod_->modFile()->loaderType()){
-                file->addOld();
-                localMod_->addOldFile(file);
-            } else
-                file->deleteLater();
-        }
     });
 }
 

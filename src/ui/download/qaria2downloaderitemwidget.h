@@ -2,7 +2,8 @@
 #define QARIA2DOWNLOADERITEMWIDGET_H
 
 #include <QWidget>
-#include <aria2/aria2.h>
+
+#include "download/downloadfileinfo.h"
 
 class QAria2Downloader;
 
@@ -15,7 +16,7 @@ class QAria2DownloaderItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit QAria2DownloaderItemWidget(QWidget *parent, QAria2Downloader *downloader);
+    explicit QAria2DownloaderItemWidget(QWidget *parent, QAria2Downloader *downloader, const DownloadFileInfo &info);
     ~QAria2DownloaderItemWidget();
 
 private slots:

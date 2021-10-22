@@ -7,6 +7,7 @@
 #include <QNetworkRequest>
 #include <QSslConfiguration>
 #include <QtConcurrent>
+#include <QDebug>
 
 AbstractDownloader::AbstractDownloader(QObject *parent) :
     QObject(parent)
@@ -18,13 +19,19 @@ AbstractDownloader::AbstractDownloader(QObject *parent, const QUrl &url, const Q
     path_(path)
 {}
 
+AbstractDownloader::~AbstractDownloader()
+{}
+
 void AbstractDownloader::handleRedirect()
 {
-    auto watcher = new QFutureWatcher<void>(this);
+    qDebug() << "from:" << QThread::currentThreadId();
+    auto watcher = new QFutureWatcher<QUrl>(this);
     watcher->setFuture(QtConcurrent::run([=]{
-        url_ = handleRedirect(url_);
+        qDebug() << "to:" << QThread::currentThreadId();
+        return AbstractDownloader::handleRedirect(url_);
     }));
-    connect(watcher, &QFutureWatcher<void>::finished, this, [=]{
+    connect(watcher, &QFutureWatcher<QUrl>::finished, this, [=]{
+        url_ = watcher->result();
         emit redirected(url_);
     });
 }
@@ -40,7 +47,7 @@ QUrl AbstractDownloader::handleRedirect(const QUrl &url)
         sslConfig.setPeerVerifyMode(QSslSocket::VerifyNone);
         request.setSslConfiguration(sslConfig);
 #endif
-        static QNetworkAccessManager accessManager;
+        QNetworkAccessManager accessManager;
         auto reply = accessManager.head(request);
         if(!reply) continue;
         QEventLoop loop;

@@ -19,11 +19,8 @@ SOURCES += \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodinfo.cpp \
     src/download/abstractdownloader.cpp \
-    src/download/downloader.cpp \
-    src/download/downloaderthread.cpp \
     src/download/downloadfileinfo.cpp \
     src/download/downloadmanager.cpp \
-    src/download/moddownloader.cpp \
     src/download/qaria2.cpp \
     src/download/qaria2downloader.cpp \
     src/local/commonmodinfo.cpp \
@@ -60,7 +57,6 @@ SOURCES += \
     src/gameversion.cpp \
     src/ui/download/qaria2downloaderitemwidget.cpp \
     src/ui/download/downloadbrowser.cpp \
-    src/ui/download/downloaderitemwidget.cpp \
     src/ui/local/batchrenamedialog.cpp \
     src/ui/local/localmodbrowser.cpp \
     src/ui/local/localmodcheckdialog.cpp \
@@ -101,11 +97,8 @@ HEADERS += \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodinfo.h \
     src/download/abstractdownloader.h \
-    src/download/downloader.h \
-    src/download/downloaderthread.h \
     src/download/downloadfileinfo.h \
     src/download/downloadmanager.h \
-    src/download/moddownloader.h \
     src/download/qaria2.h \
     src/download/qaria2downloader.h \
     src/local/commonmodinfo.h \
@@ -143,7 +136,6 @@ HEADERS += \
     src/gameversion.h \
     src/ui/download/qaria2downloaderitemwidget.h \
     src/ui/download/downloadbrowser.h \
-    src/ui/download/downloaderitemwidget.h \
     src/ui/local/batchrenamedialog.h \
     src/ui/local/localmodbrowser.h \
     src/ui/local/localmodcheckdialog.h \
@@ -187,7 +179,6 @@ FORMS += \
     src/ui/curseforge/curseforgemoditemwidget.ui \
     src/ui/download/qaria2downloaderitemwidget.ui \
     src/ui/download/downloadbrowser.ui \
-    src/ui/download/downloaderitemwidget.ui \
     src/ui/local/batchrenamedialog.ui \
     src/ui/local/localmodbrowser.ui \
     src/ui/local/localmodcheckdialog.ui \

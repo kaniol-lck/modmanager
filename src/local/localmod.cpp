@@ -227,7 +227,24 @@ void LocalMod::checkModrinthUpdate(bool force)
             connect(modrinthMod_, &ModrinthMod::fullInfoReady, this, updateFullInfo);
         }
     }
-//    }
+    //    }
+}
+
+QAria2Downloader *LocalMod::downloadOldMod(DownloadFileInfo &info)
+{
+    //TODO: something wrong
+    info.setPath(path_->info().path());
+    auto downloader = DownloadManager::manager()->download(info);
+    connect(downloader, &AbstractDownloader::finished, this, [=]{
+        QFileInfo fileInfo(path_->info().path(), info.fileName());
+        if(!LocalModFile::availableSuffix.contains(fileInfo.suffix())) return;
+        auto file = new LocalModFile(this, fileInfo.absoluteFilePath());
+        file->loadInfo();
+        qDebug() << file->addOld();
+        addOldFile(file);
+        emit modFileUpdated();
+    });
+    return downloader;
 }
 
 LocalMod::ModWebsiteType LocalMod::defaultUpdateType() const
@@ -274,7 +291,7 @@ QPair<QString, QString> LocalMod::updateInfos(ModWebsiteType type) const
         return QPair("", "");
 }
 
-ModDownloader *LocalMod::update(ModWebsiteType type)
+QAria2Downloader *LocalMod::update(ModWebsiteType type)
 {
     if(type == None) return nullptr;
     emit updateStarted();
@@ -320,7 +337,7 @@ ModDownloader *LocalMod::update(ModWebsiteType type)
         emit updateFinished(true);
     };
 
-    ModDownloader *downloader;
+    QAria2Downloader *downloader;
 
     if(type == ModWebsiteType::Curseforge){
         if(curseforgeUpdate_.updateFileInfo())
@@ -335,7 +352,7 @@ ModDownloader *LocalMod::update(ModWebsiteType type)
             downloader = modrinthUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback1, callback2);
     }
 
-    connect(downloader, &ModDownloader::downloadProgress, this, &LocalMod::updateProgress);
+    connect(downloader, &AbstractDownloader::downloadProgress, this, &LocalMod::updateProgress);
     return downloader;
 }
 

@@ -2,10 +2,11 @@
 #define DOWNLOADMANAGER_H
 
 #include <QObject>
-#include <functional>
 
 #include "downloadfileinfo.h"
-#include "moddownloader.h"
+
+class QAria2;
+class QAria2Downloader;
 
 class DownloadManager : public QObject
 {
@@ -15,29 +16,14 @@ public:
 
     static DownloadManager *manager();
 
-    static ModDownloader *addModDownload(const DownloadFileInfo &info, std::function<void()> finishCallback = []{});
-    static ModDownloader *addModUpdate(const DownloadFileInfo &info, std::function<void()> finishCallback);
+    QAria2Downloader *download(const DownloadFileInfo &info);
 
-    const QList<Downloader *> &downloadList() const;
-
+    QAria2 *qaria2() const;
 
 signals:
-    void downloaderAdded(Downloader *downloader);
-
-    void downloadSpeed(qint64 bytesPerSec);
-
-public slots:
-    void tryDownload();
-    void saveToConfig();
-
+    void downloaderAdded(DownloadFileInfo info, QAria2Downloader *downloader);
 private:
-    void addDownloader(Downloader *downloader);
-
-    QTimer speedTimer_;
-
-    const int DOWNLOAD_COUNT;
-    QList<Downloader*> downloadList_;
-    QList<qint64> speedList_;
+    QAria2 *qaria2_;
 };
 
 #endif // DOWNLOADMANAGER_H

@@ -54,7 +54,7 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
 
     ui->downloadProgress->setMaximum(fileInfo_.size());
 
-    ModDownloader *downloader;
+    QAria2Downloader *downloader;
     DownloadFileInfo info(fileInfo_);
     if(localMod_)
         info.setIconBytes(localMod_->commonInfo()->iconBytes());
@@ -62,28 +62,23 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
         info.setIconBytes(mod_->modInfo().iconBytes());
     if(downloadPath_)
         downloader = downloadPath_->downloadNewMod(info);
+    else if(localMod_)
+        downloader = localMod_->downloadOldMod(info);
     else{
         info.setPath(Config().getDownloadPath());
-        downloader = DownloadManager::addModDownload(info);
+        downloader = DownloadManager::manager()->download(info);
     }
-    connect(downloader, &ModDownloader::sizeUpdated, this, [=](qint64 size){
-        ui->downloadProgress->setMaximum(size);
-    });
-    connect(downloader, &ModDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
         ui->downloadProgress->setValue(bytesReceived);
+        ui->downloadProgress->setMaximum(bytesTotal);
     });
-    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+    connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
         ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
     });
-    connect(downloader, &Downloader::finished, this, [=]{
+    connect(downloader, &AbstractDownloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
         ui->downloadSpeedText->setText(numberConvert(fileInfo_.size(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));
-        if(localMod_){
-            auto file = new LocalModFile(this, downloader->file().fileName());
-            file->addOld();
-            localMod_->addOldFile(file);
-        }
     });
 }
 

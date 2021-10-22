@@ -448,11 +448,11 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> 
 
         auto downloader = mod->update(updateSource);
 
-        connect(downloader, &Downloader::statusChanged, this, [=](auto status){
-            if(status == Downloader::Queue)
-                *totalSize += downloader->fileInfo().size();
-        });
-        connect(downloader, &ModDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64){
+//        connect(downloader, &AbstractDownloader::statusChanged, this, [=](auto status){
+//            if(status == Downloader::Queue)
+//                *totalSize += downloader->fileInfo().size();
+//        });
+        connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64){
             (*bytesReceivedList)[i] = bytesReceived;
             auto sumReceived = std::accumulate(bytesReceivedList->cbegin(), bytesReceivedList->cend(), 0);
             emit updatesProgress(sumReceived, *totalSize);
@@ -470,10 +470,11 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> 
     }
 }
 
-ModDownloader *LocalModPath::downloadNewMod(DownloadFileInfo &info)
+QAria2Downloader *LocalModPath::downloadNewMod(DownloadFileInfo &info)
 {
     info.setPath(info_.path());
-    return DownloadManager::addModDownload(info, [=]{
+    auto downloader = DownloadManager::manager()->download(info);
+    connect(downloader, &AbstractDownloader::finished, this, [=]{
         QFileInfo fileInfo(info_.path(), info.fileName());
         if(!LocalModFile::availableSuffix.contains(fileInfo.suffix())) return;
         auto file = new LocalModFile(this, fileInfo.absoluteFilePath());
@@ -484,6 +485,7 @@ ModDownloader *LocalModPath::downloadNewMod(DownloadFileInfo &info)
             file->deleteLater();
         emit modListUpdated();
     });
+    return downloader;
 }
 
 const LocalModPathInfo &LocalModPath::info() const

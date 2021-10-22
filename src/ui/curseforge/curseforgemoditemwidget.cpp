@@ -7,7 +7,7 @@
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
 #include "download/downloadmanager.h"
-#include "download/downloader.h"
+#include "download/qaria2downloader.h"
 #include "util/funcutil.h"
 #include "util/youdaotranslator.h"
 
@@ -95,24 +95,24 @@ void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
 
-    ModDownloader *downloader;
+    QAria2Downloader *downloader;
     DownloadFileInfo info(fileInfo);
     if(downloadPath_)
         downloader = downloadPath_->downloadNewMod(info);
     else{
         info.setPath(Config().getDownloadPath());
-        downloader = DownloadManager::addModDownload(info);
+        downloader = DownloadManager::manager()->download(info);
     }
 
     ui->downloadProgress->setMaximum(fileInfo.size());
 
-    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
         ui->downloadProgress->setValue(bytesReceived);
     });
-    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+    connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
         ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
     });
-    connect(downloader, &Downloader::finished, this, [=]{
+    connect(downloader, &AbstractDownloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
         ui->downloadSpeedText->setText(numberConvert(fileInfo.size(), "B"));
         ui->downloadButton->setText(tr("Downloaded"));

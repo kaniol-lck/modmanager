@@ -49,11 +49,13 @@ public:
     void checkCurseforgeUpdate(bool force = true);
     void checkModrinthUpdate(bool force = true);
 
+    QAria2Downloader *downloadOldMod(DownloadFileInfo &info);
+
     ModWebsiteType defaultUpdateType() const;
     QList<ModWebsiteType> updateTypes() const;
     QPair<QString, QString> updateNames(ModWebsiteType type) const;
     QPair<QString, QString> updateInfos(ModWebsiteType type) const;
-    ModDownloader *update(ModWebsiteType type);
+    QAria2Downloader *update(ModWebsiteType type);
 
     qint64 updateSize(ModWebsiteType type) const;
 

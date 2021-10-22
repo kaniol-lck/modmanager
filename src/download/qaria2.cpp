@@ -6,7 +6,7 @@
 
 #include "qaria2downloader.h"
 
-int QAria2::downloadEventCallback(aria2::Session *session, aria2::DownloadEvent event, const aria2::A2Gid gid, void *userData)
+int QAria2::downloadEventCallback(aria2::Session *session[[maybe_unused]], aria2::DownloadEvent event, const aria2::A2Gid gid, void *userData[[maybe_unused]])
 {
     if(!qaria2()->downloaders_.contains(gid)) return 0;
     auto downloader = qaria2()->downloaders_.value(gid);
@@ -18,8 +18,9 @@ int QAria2::downloadEventCallback(aria2::Session *session, aria2::DownloadEvent 
 QAria2::QAria2(QObject *parent) : QObject(parent)
 {
     aria2::libraryInit();
-    config.downloadEventCallback = downloadEventCallback;
-    session_ = aria2::sessionNew(aria2::KeyVals(), config);
+    config_.downloadEventCallback = downloadEventCallback;
+    config_.keepRunning = true;
+    session_ = aria2::sessionNew(aria2::KeyVals(), config_);
 }
 
 QAria2::~QAria2()
@@ -41,6 +42,7 @@ void QAria2::run()  {
     if(isRunning_) return;
     isRunning_ = true;
     emit started();
+    qDebug() << "started" ;
     auto timer = new QTimer;
     //interval between refreshing info
     timer->start(500);
@@ -57,7 +59,7 @@ void QAria2::run()  {
         return aria2::run(session_, aria2::RUN_DEFAULT);
     }));
     connect(watcher, &QFutureWatcher<int>::finished, this, [=]{
-        qDebug() << watcher->result();
+        qDebug() << "finished" << watcher->result();
         disconnect(conn);
         timer->deleteLater();
         isRunning_ = false;
@@ -78,9 +80,21 @@ aria2::Session *QAria2::session() const
     return session_;
 }
 
+QAria2Downloader *QAria2::downloadNoRedirect(const QUrl &url, const QString &path)
+{
+    auto downloader = new QAria2Downloader(url, path);
+    return download(downloader);
+}
+
 QAria2Downloader *QAria2::download(const QUrl &url, const QString &path)
 {
-    return download(new QAria2Downloader(url, path));
+    auto downloader = new QAria2Downloader(url, path);
+    //handle redirect
+    downloader->handleRedirect();
+    connect(downloader, &AbstractDownloader::redirected, this, [=]{
+        download(downloader);
+    });
+    return downloader;
 }
 
 QAria2Downloader *QAria2::download(QAria2Downloader *downloader)

@@ -37,24 +37,22 @@ void OptifineModItemWidget::on_downloadButton_clicked()
 {
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
-    ModDownloader *downloader;
+    QAria2Downloader *downloader;
     DownloadFileInfo info(mod_->modInfo());
     if(downloadPath_)
         downloader = downloadPath_->downloadNewMod(info);
     else{
         info.setPath(Config().getDownloadPath());
-        downloader = DownloadManager::addModDownload(info);
+        downloader = DownloadManager::manager()->download(info);
     }
-    connect(downloader, &Downloader::sizeUpdated, this, [=](qint64 size){
-        ui->downloadProgress->setMaximum(size);
-    });
-    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+    connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
         ui->downloadProgress->setValue(bytesReceived);
+        ui->downloadProgress->setMaximum(bytesTotal);
     });
-    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
+    connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
         ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
     });
-    connect(downloader, &Downloader::finished, this, [=]{
+    connect(downloader, &AbstractDownloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
         ui->downloadButton->setText(tr("Downloaded"));
     });

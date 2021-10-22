@@ -6,6 +6,7 @@
 #include <QDebug>
 
 #include "download/downloadmanager.h"
+#include "download/qaria2downloader.h"
 #include "config.hpp"
 #include "gameversion.h"
 #include "modloadertype.h"
@@ -128,18 +129,20 @@ public:
         return true;
     }
 
-    ModDownloader *update(const QString &path, const QByteArray &iconBytes, std::function<bool (FileInfoT)> callback1, std::function<void ()> callback2)
+    QAria2Downloader *update(const QString &path, const QByteArray &iconBytes, std::function<bool (FileInfoT)> callback1, std::function<void ()> callback2)
     {
         DownloadFileInfo info(*updateFileInfo_);
         info.setPath(path);
         info.setIconBytes(iconBytes);
-        return DownloadManager::addModUpdate(info, [=]{
+        auto downloader = DownloadManager::manager()->download(info);
+        QObject::connect(downloader, &QAria2Downloader::finished, [=]{
             if(callback1(*updateFileInfo_)){
                 currentFileInfo_.emplace(*updateFileInfo_);
                 updateFileInfo_.reset();
                 callback2();
             }
         });
+        return downloader;
     }
 
     void setCurrentFileInfo(FileInfoT newCurrentFileInfo)

@@ -4,18 +4,24 @@
 #include "download/qaria2downloader.h"
 #include "util/funcutil.h"
 
-QAria2DownloaderItemWidget::QAria2DownloaderItemWidget(QWidget *parent, QAria2Downloader *downloader) :
+QAria2DownloaderItemWidget::QAria2DownloaderItemWidget(QWidget *parent, QAria2Downloader *downloader, const DownloadFileInfo &info) :
     QWidget(parent),
     ui(new Ui::QAria2DownloaderItemWidget),
     downloader_(downloader)
 {
     ui->setupUi(this);
 
+    ui->displayNameText->setText(info.displayName());
+    if(!info.icon().isNull())
+        ui->downloadIcon->setPixmap(info.icon().scaled(80, 80, Qt::KeepAspectRatio));
+
+    refreshStatus(downloader->status());
+
     connect(downloader_, &QAria2Downloader::statusChanged, this, &QAria2DownloaderItemWidget::refreshStatus);
     connect(downloader_, &AbstractDownloader::downloadProgress, this, &QAria2DownloaderItemWidget::downloadProgress);
     connect(downloader_, &AbstractDownloader::downloadSpeed, this, &QAria2DownloaderItemWidget::downloadSpeed);
     connect(downloader_, &AbstractDownloader::finished, this, [=]{
-        ui->downloadProgress->setValue(ui->downloadProgress->maximum());
+        ui->downloadProgress->setVisible(false);
     });
 }
 
@@ -54,6 +60,7 @@ void QAria2DownloaderItemWidget::downloadProgress(qint64 bytesReceived, qint64 b
 {
     ui->downloadProgress->setMaximum(bytesTotal);
     ui->downloadProgress->setValue(bytesReceived);
+    ui->downloadSizeText->setText(numberConvert(bytesTotal, "B"));
 }
 
 void QAria2DownloaderItemWidget::downloadSpeed(qint64 download, qint64 upload)

@@ -10,9 +10,11 @@ class AbstractDownloader : public QObject
 public:
     explicit AbstractDownloader(QObject *parent = nullptr);
     explicit AbstractDownloader(QObject *parent, const QUrl &url, const QString &path);
-//    virtual ~AbstractDownloader() = 0;
+    virtual ~AbstractDownloader() = 0;
+
     void handleRedirect();
     static QUrl handleRedirect(const QUrl &url);
+
     const QUrl &url() const;
     const QString &path() const;
 signals:

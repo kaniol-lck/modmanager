@@ -17,7 +17,7 @@ public:
     void deleteDownloadHandle();
     void update();
 
-    aria2::DownloadStatus status();
+    aria2::DownloadStatus status() const;
 
     void setGid(aria2::A2Gid newGid);
 
@@ -28,7 +28,7 @@ private:
 
     aria2::A2Gid gid_;
     aria2::DownloadHandle *handle_ = nullptr;
-    mutable aria2::DownloadStatus status_ = aria2::DOWNLOAD_WAITING;
+    aria2::DownloadStatus status_ = aria2::DOWNLOAD_WAITING;
 };
 
 #endif // QARIA2DOWNLOADER_H

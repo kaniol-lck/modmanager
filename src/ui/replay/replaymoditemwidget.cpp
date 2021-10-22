@@ -63,7 +63,7 @@ void ReplayModItemWidget::on_downloadButton_clicked()
         downloader = downloadPath_->downloadNewMod(info);
     else{
         info.setPath(Config().getDownloadPath());
-        downloader = DownloadBrowser::browser->addDownload(info);
+        downloader = DownloadManager::manager()->download(info);
     }
 //    connect(downloader, &Downloader::sizeUpdated, this, [=](qint64 size){
 //        ui->downloadProgress->setMaximum(size);
