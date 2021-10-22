@@ -20,7 +20,7 @@
 #include "ui/modrinth/modrinthmodbrowser.h"
 #include "ui/optifine/optifinemodbrowser.h"
 #include "ui/replay/replaymodbrowser.h"
-#include "ui/downloadbrowser.h"
+#include "ui/download/downloadbrowser.h"
 #include "ui/preferences.h"
 #include "ui/browsermanagerdialog.h"
 #include "ui/local/localmodpathsettingsdialog.h"

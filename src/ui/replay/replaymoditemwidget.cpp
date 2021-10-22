@@ -1,6 +1,8 @@
 #include "replaymoditemwidget.h"
 #include "ui_replaymoditemwidget.h"
 
+#include "ui/download/downloadbrowser.h"
+#include "download/qaria2downloader.h"
 #include "local/localmodpath.h"
 #include "replay/replaymod.h"
 #include "util/funcutil.h"
@@ -56,23 +58,24 @@ void ReplayModItemWidget::on_downloadButton_clicked()
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
     DownloadFileInfo info(mod_->modInfo());
-    ModDownloader *downloader;
+    AbstractDownloader *downloader;
     if(downloadPath_)
         downloader = downloadPath_->downloadNewMod(info);
     else{
         info.setPath(Config().getDownloadPath());
-        downloader = DownloadManager::addModDownload(info);
+        downloader = DownloadBrowser::browser->addDownload(info);
     }
-    connect(downloader, &Downloader::sizeUpdated, this, [=](qint64 size){
-        ui->downloadProgress->setMaximum(size);
-    });
-    connect(downloader, &Downloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
+//    connect(downloader, &Downloader::sizeUpdated, this, [=](qint64 size){
+//        ui->downloadProgress->setMaximum(size);
+//    });
+    connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
         ui->downloadProgress->setValue(bytesReceived);
+        ui->downloadProgress->setMaximum(bytesTotal);
     });
-    connect(downloader, &ModDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
-        ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
+    connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 download, qint64 upload[[maybe_unused]]){
+        ui->downloadSpeedText->setText(numberConvert(download, "B/s"));
     });
-    connect(downloader, &Downloader::finished, this, [=]{
+    connect(downloader, &AbstractDownloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
         ui->downloadButton->setText(tr("Downloaded"));
     });

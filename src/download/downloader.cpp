@@ -14,7 +14,7 @@
 #include "util/tutil.hpp"
 
 Downloader::Downloader(QObject *parent) :
-    QObject(parent),
+    AbstractDownloader(parent),
     threadCount_(Config().getThreadCount())
 {
     connect(this, &Downloader::waitForRedirect, this, [=]{
@@ -34,7 +34,7 @@ Downloader::Downloader(QObject *parent) :
 }
 
 Downloader::Downloader(QObject *parent, const QVariant &variant) :
-    QObject(parent)
+    AbstractDownloader(parent)
 {
     threadCount_ = value(variant, "threadCount").toInt();
     bytesReceived_.resize(threadCount_);

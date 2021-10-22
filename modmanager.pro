@@ -18,11 +18,14 @@ SOURCES += \
     src/curseforge/curseforgefileinfo.cpp \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodinfo.cpp \
+    src/download/abstractdownloader.cpp \
     src/download/downloader.cpp \
     src/download/downloaderthread.cpp \
     src/download/downloadfileinfo.cpp \
     src/download/downloadmanager.cpp \
     src/download/moddownloader.cpp \
+    src/download/qaria2.cpp \
+    src/download/qaria2downloader.cpp \
     src/local/commonmodinfo.cpp \
     src/local/fabricmodinfo.cpp \
     src/local/forgemodinfo.cpp \
@@ -55,8 +58,9 @@ SOURCES += \
     src/ui/curseforge/curseforgemoddialog.cpp \
     src/ui/curseforge/curseforgemoditemwidget.cpp \
     src/gameversion.cpp \
-    src/ui/downloadbrowser.cpp \
-    src/ui/downloaderitemwidget.cpp \
+    src/ui/download/qaria2downloaderitemwidget.cpp \
+    src/ui/download/downloadbrowser.cpp \
+    src/ui/download/downloaderitemwidget.cpp \
     src/ui/local/batchrenamedialog.cpp \
     src/ui/local/localmodbrowser.cpp \
     src/ui/local/localmodcheckdialog.cpp \
@@ -96,11 +100,14 @@ HEADERS += \
     src/curseforge/curseforgefileinfo.h \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodinfo.h \
+    src/download/abstractdownloader.h \
     src/download/downloader.h \
     src/download/downloaderthread.h \
     src/download/downloadfileinfo.h \
     src/download/downloadmanager.h \
     src/download/moddownloader.h \
+    src/download/qaria2.h \
+    src/download/qaria2downloader.h \
     src/local/commonmodinfo.h \
     src/local/fabricmodinfo.h \
     src/local/forgemodinfo.h \
@@ -134,8 +141,9 @@ HEADERS += \
     src/ui/curseforge/curseforgemoddialog.h \
     src/ui/curseforge/curseforgemoditemwidget.h \
     src/gameversion.h \
-    src/ui/downloadbrowser.h \
-    src/ui/downloaderitemwidget.h \
+    src/ui/download/qaria2downloaderitemwidget.h \
+    src/ui/download/downloadbrowser.h \
+    src/ui/download/downloaderitemwidget.h \
     src/ui/local/batchrenamedialog.h \
     src/ui/local/localmodbrowser.h \
     src/ui/local/localmodcheckdialog.h \
@@ -177,8 +185,9 @@ FORMS += \
     src/ui/curseforge/curseforgemodbrowser.ui \
     src/ui/curseforge/curseforgemoddialog.ui \
     src/ui/curseforge/curseforgemoditemwidget.ui \
-    src/ui/downloadbrowser.ui \
-    src/ui/downloaderitemwidget.ui \
+    src/ui/download/qaria2downloaderitemwidget.ui \
+    src/ui/download/downloadbrowser.ui \
+    src/ui/download/downloaderitemwidget.ui \
     src/ui/local/batchrenamedialog.ui \
     src/ui/local/localmodbrowser.ui \
     src/ui/local/localmodcheckdialog.ui \
@@ -261,3 +270,5 @@ DISTFILES += \
     src/modmanager.png
 
 win32: RC_ICONS = src/modmanager.ico
+
+LIBS += -L/usr/lib -laria2

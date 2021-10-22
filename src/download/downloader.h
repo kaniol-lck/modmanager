@@ -1,7 +1,8 @@
 #ifndef DOWNLOADER_H
 #define DOWNLOADER_H
 
-#include <QObject>
+#include "abstractdownloader.h"
+
 #include <QFile>
 #include <QUrl>
 #include <QVector>
@@ -9,7 +10,7 @@
 
 class DownloaderThread;
 
-class Downloader : public QObject
+class Downloader : public AbstractDownloader
 {
     Q_OBJECT
 public:
@@ -18,6 +19,7 @@ public:
 
     explicit Downloader(QObject *parent = nullptr);
     explicit Downloader(QObject *parent, const QVariant &variant);
+    ~Downloader() = default;
     QVariant toVariant() const;
 
     void addDownload(const QUrl &url, const QString &path = "", const QString &fileName = "");
@@ -34,9 +36,7 @@ public:
 
 signals:
     void statusChanged(DownloadStatus status);
-    void downloadSpeed(qint64 bytesPerSec);
     void finished();
-    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void sizeUpdated(qint64 size);
 
     void waitForRedirect();

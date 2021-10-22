@@ -3,28 +3,35 @@
 
 #include <QWidget>
 
+#include "download/downloadfileinfo.h"
+
 namespace Ui {
 class DownloadBrowser;
 }
 
-class Downloader;
-class DownloadManager;
+class QAria2Downloader;
+class QAria2;
 
 class DownloadBrowser : public QWidget
 {
     Q_OBJECT
-
 public:
     explicit DownloadBrowser(QWidget *parent = nullptr);
     ~DownloadBrowser();
 
+    static DownloadBrowser *browser;
+
+    QAria2Downloader *addDownload(const DownloadFileInfo &info);
+
 public slots:
-    void addNewDownloaderItem(Downloader *downloader);
-    void downloadSpeed(qint64 bytesPerSec);
+    void downloadSpeed(qint64 download, qint64 upload = 0);
+
+private slots:
+    void on_pushButton_clicked();
 
 private:
     Ui::DownloadBrowser *ui;
-    DownloadManager *manager_;
+    QAria2 *qaria2_;
 };
 
 #endif // DOWNLOADBROWSER_H
