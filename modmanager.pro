@@ -268,5 +268,6 @@ unix {
 }
 
 win32 {
+  INCLUDEPATH += C:/msys2/mingw32/include
   LIBS += C:/msys2/mingw32/lib -laria2
 }
