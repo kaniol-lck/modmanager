@@ -1,6 +1,8 @@
 #include "qaria2downloaderitemwidget.h"
 #include "ui_qaria2downloaderitemwidget.h"
 
+#include <QDebug>
+
 #include "download/qaria2downloader.h"
 #include "util/funcutil.h"
 
@@ -9,6 +11,7 @@ QAria2DownloaderItemWidget::QAria2DownloaderItemWidget(QWidget *parent, QAria2Do
     ui(new Ui::QAria2DownloaderItemWidget),
     downloader_(downloader)
 {
+    qDebug() << info.icon();
     ui->setupUi(this);
 
     ui->displayNameText->setText(info.displayName());

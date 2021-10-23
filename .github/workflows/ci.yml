@@ -24,6 +24,8 @@ jobs:
           modules: qtwebengine
       - name: ubuntu install GL library
         run: sudo apt-get install -y libglew-dev libglfw3-dev
+      - name: ubuntu install aria2
+        run: sudo apt-get install -y aria2
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1

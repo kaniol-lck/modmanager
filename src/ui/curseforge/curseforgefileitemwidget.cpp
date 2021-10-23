@@ -56,6 +56,9 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
 
     QAria2Downloader *downloader;
     DownloadFileInfo info(fileInfo_);
+    QPixmap pixelmap;
+    pixelmap.loadFromData(mod_->modInfo().iconBytes());
+    info.setIcon(pixelmap);
     if(localMod_)
         info.setIconBytes(localMod_->commonInfo()->iconBytes());
     else

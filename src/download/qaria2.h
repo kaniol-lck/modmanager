@@ -3,6 +3,7 @@
 
 #include <QMap>
 #include <QObject>
+#include <QTimer>
 #include <QUrl>
 #include <aria2/aria2.h>
 
@@ -26,7 +27,6 @@ public:
     const QMap<aria2::A2Gid, QAria2Downloader *> &downloaders() const;
 
 public slots:
-    void run();
 signals:
     void downloaderAdded(QAria2Downloader *downloader);
     void started();
@@ -40,7 +40,7 @@ private:
     aria2::Session* session_;
     aria2::SessionConfig config_;
     aria2::KeyVals options;
-    bool isRunning_ = false;
+    QTimer timer_;
     QMap<aria2::A2Gid, QAria2Downloader*> downloaders_;
 };
 
