@@ -22,10 +22,13 @@ jobs:
           version: 5.15.2
           cached: "false"
           modules: qtwebengine
-      - name: ubuntu install GL library
-        run: sudo apt-get install -y libglew-dev libglfw3-dev
-      - name: ubuntu install libaria2
-        run: sudo apt-get install -y libaria2-0
+      - name: ubuntu install packages
+        run: |
+          sudo apt update
+          sudo apt-get install -y libglew-dev libglfw3-dev
+          sudo apt-get install -y libaria2-0-dev
+          sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
+          sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx-frontend-qt5 libcurl4-openssl-dev
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
@@ -39,9 +42,6 @@ jobs:
           make
       - name: package
         run: |
-          sudo apt update
-          sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
-          sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx-frontend-qt5 libcurl4-openssl-dev
           make INSTALL_ROOT=appdir -j2 install ; find appdir/
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
           chmod a+x linuxdeployqt-continuous-x86_64.AppImage
@@ -85,6 +85,9 @@ jobs:
         run: |
           Write-Output "${{ env.Qt5_DIR }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           Write-Output "${{ env.Qt5_DIR }}/../../Tools/${{ matrix.qt_tools_mingw_install }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      - uses: msys2/setup-msys2@v2
+        with:
+          install: mingw-w64-i686-aria2
       - name: where is qmake & where is mingw32-make
         shell: pwsh
         run: |

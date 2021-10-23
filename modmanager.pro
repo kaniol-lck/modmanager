@@ -262,4 +262,11 @@ DISTFILES += \
 
 win32: RC_ICONS = src/modmanager.ico
 
-LIBS += -L/usr/lib -laria2
+#dependencies
+unix {
+  LIBS += -L/usr/lib -laria2
+}
+
+win32 {
+  LIBS += C:/msys2/mingw32/lib -laria2
+}
