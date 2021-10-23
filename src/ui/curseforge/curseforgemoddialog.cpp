@@ -19,6 +19,7 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     localMod_(localMod)
 {
     ui->setupUi(this);
+    ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
     auto action = new QAction(tr("Copy website link"), this);
     connect(action, &QAction::triggered, this, [=]{
