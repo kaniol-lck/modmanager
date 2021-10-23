@@ -23,6 +23,7 @@ DownloadFileInfo::DownloadFileInfo(const ModrinthFileInfo &info) :
 DownloadFileInfo::DownloadFileInfo(const OptifineModInfo &info) :
     DownloadFileInfo(info.downloadUrl())
 {
+    title_ = "OptiFine";
     icon_.load(":/image/optifine.png");
     displayName_ = info.name();
     fileName_ = info.fileName();
@@ -32,17 +33,13 @@ DownloadFileInfo::DownloadFileInfo(const OptifineModInfo &info) :
 DownloadFileInfo::DownloadFileInfo(const ReplayModInfo &info) :
     DownloadFileInfo("https://www.replaymod.com" + info.urlPath())
 {
+    title_ = "Replay";
     icon_.load(":/image/replay.png");
     displayName_ = info.name();
     //TODO
     //replay does not actually provide filename info
     fileName_ = info.fileName();
     //replay does not provide size info
-}
-
-const QString &DownloadFileInfo::displayName() const
-{
-    return displayName_;
 }
 
 const QString &DownloadFileInfo::fileName() const
@@ -78,6 +75,21 @@ const QPixmap &DownloadFileInfo::icon() const
 void DownloadFileInfo::setIconBytes(const QByteArray &newIconBytes)
 {
     icon_.loadFromData(newIconBytes);
+}
+
+const QString &DownloadFileInfo::title() const
+{
+    return title_;
+}
+
+const QString &DownloadFileInfo::displayName() const
+{
+    return displayName_;
+}
+
+void DownloadFileInfo::setTitle(const QString &newTitle)
+{
+    title_ = newTitle;
 }
 
 void DownloadFileInfo::setIcon(const QPixmap &newIcon)

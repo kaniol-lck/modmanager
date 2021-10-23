@@ -23,7 +23,7 @@ private slots:
     void refreshStatus(int status);
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadSpeed(qint64 download, qint64 upload);
-
+    void on_pauseButton_clicked();
 private:
     Ui::QAria2DownloaderItemWidget *ui;
     QAria2Downloader *downloader_;

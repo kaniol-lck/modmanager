@@ -10,6 +10,7 @@
 #include "download/qaria2.h"
 #include "download/qaria2downloader.h"
 #include "util/funcutil.h"
+#include "util/smoothscrollbar.h"
 
 DownloadBrowser::DownloadBrowser(QWidget *parent) :
     QWidget(parent),
@@ -17,7 +18,7 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
     manager_(DownloadManager::manager())
 {
     ui->setupUi(this);
-    ui->downloadSpeedText->setText("?");
+    ui->downloaderListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
 
     connect(manager_->qaria2(), &QAria2::started, this, [=]{});
     connect(manager_->qaria2(), &QAria2::finished, this, [=]{

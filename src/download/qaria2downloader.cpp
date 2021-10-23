@@ -65,3 +65,15 @@ void QAria2Downloader::setGid(aria2::A2Gid newGid)
 {
     gid_ = newGid;
 }
+
+void QAria2Downloader::pause()
+{
+    if(status_ != aria2::DOWNLOAD_ACTIVE) return;
+    pauseDownload(QAria2::qaria2()->session(), gid_);
+}
+
+void QAria2Downloader::start()
+{
+    if(status_ != aria2::DOWNLOAD_PAUSED) return;
+    unpauseDownload(QAria2::qaria2()->session(), gid_);
+}

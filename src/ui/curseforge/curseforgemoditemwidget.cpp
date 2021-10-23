@@ -100,6 +100,7 @@ void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
     QPixmap pixelmap;
     pixelmap.loadFromData(mod_->modInfo().iconBytes());
     info.setIcon(pixelmap);
+    info.setTitle(mod_->modInfo().name());
     if(downloadPath_)
         downloader = downloadPath_->downloadNewMod(info);
     else{

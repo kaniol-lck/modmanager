@@ -264,7 +264,7 @@ win32: RC_ICONS = src/modmanager.ico
 
 #dependencies
 unix {
-  LIBS += -L/usr/lib -laria2
+  LIBS += -laria2
 }
 
 win32 {

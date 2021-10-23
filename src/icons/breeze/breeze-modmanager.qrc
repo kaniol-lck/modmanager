@@ -25,6 +25,8 @@
         <file>16x16/tag-edit.svg</file>
         <file>16x16/tag-new.svg</file>
         <file>16x16/tag.svg</file>
+        <file>16x16/media-playback-pause.svg</file>
+        <file>16x16/media-playback-start.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

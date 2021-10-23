@@ -59,6 +59,7 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
     QPixmap pixelmap;
     pixelmap.loadFromData(mod_->modInfo().iconBytes());
     info.setIcon(pixelmap);
+    info.setTitle(mod_->modInfo().name());
     if(localMod_)
         info.setIconBytes(localMod_->commonInfo()->iconBytes());
     else

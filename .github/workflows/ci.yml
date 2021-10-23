@@ -187,6 +187,9 @@ jobs:
       - uses: msys2/setup-msys2@v2
         with:
           install: mingw-w64-i686-aria2
+      - shell: powershell
+        run: |
+          ls C:/msys64
       - name: msvc-build
         id: build
         shell: cmd

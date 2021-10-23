@@ -23,7 +23,6 @@ public:
     DownloadFileInfo(const OptifineModInfo &info);
     DownloadFileInfo(const ReplayModInfo &info);
 
-    const QString &displayName() const;
     const QString &fileName() const;
     const QUrl &url() const;
     qint64 size() const;
@@ -33,9 +32,15 @@ public:
 
     const QPixmap &icon() const;
     void setIcon(const QPixmap &newIcon);
+
+    void setTitle(const QString &newTitle);
     void setIconBytes(const QByteArray &newIconBytes);
 
+    const QString &title() const;
+    const QString &displayName() const;
+
 protected:
+    QString title_;
     QString displayName_;
     QString fileName_;
     QUrl url_;

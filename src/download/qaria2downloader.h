@@ -18,12 +18,13 @@ public:
     void update();
 
     aria2::DownloadStatus status() const;
-
-    void setGid(aria2::A2Gid newGid);
-
+public slots:
+    void pause();
+    void start();
 signals:
     void statusChanged(int);
 private:
+    void setGid(aria2::A2Gid newGid);
     void setEvent(const aria2::DownloadEvent &event);
 
     aria2::A2Gid gid_;
