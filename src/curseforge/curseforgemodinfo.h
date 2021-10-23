@@ -38,6 +38,10 @@ public:
     std::optional<CurseforgeFileInfo> latestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
     const QList<CurseforgeFileInfo> &allFileList() const;
     const QList<int> &categories() const;
+    const QList<QUrl> &imageUrls() const;
+    const QDateTime &dateModified() const;
+    const QDateTime &dateCreated() const;
+    const QDateTime &dateReleased() const;
 
     void setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles);
     bool hasBasicInfo() const;
@@ -57,6 +61,9 @@ private:
     QList<CurseforgeFileInfo> latestFileList_;
     QList<CurseforgeFileInfo> allFileList_;
     QList<int> categories_;
+    QDateTime dateModified_;
+    QDateTime dateCreated_;
+    QDateTime dateReleased_;
 
     bool basicInfo_ = false;
 };

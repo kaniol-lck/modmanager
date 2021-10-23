@@ -32,6 +32,8 @@ public:
     const QList<GameVersion> &gameVersions() const;
     const QStringList &categories() const;
     const QStringList &versionList() const;
+    const QDateTime &dateCreated() const;
+    const QDateTime &dateModified() const;
     bool hasBasicInfo() const;
     bool hasFullInfo() const;
 
@@ -48,6 +50,8 @@ private:
     QUrl iconUrl_;
     QByteArray iconBytes_;
     QStringList categories_;
+    QDateTime dateCreated_;
+    QDateTime dateModified_;
 
     QStringList versionList_;
     QList<ModrinthFileInfo> fileList_;

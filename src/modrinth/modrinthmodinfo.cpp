@@ -22,6 +22,8 @@ ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
     modInfo.iconUrl_ = value(variant, "icon_url").toUrl();
     modInfo.websiteUrl_ = value(variant, "page_url").toUrl();
     modInfo.categories_ = value(variant, "categories").toStringList();
+    modInfo.dateCreated_ = value(variant, "date_created").toDateTime();
+    modInfo.dateModified_ = value(variant, "date_modified").toDateTime();
 
     for(auto &&v : value(variant, "versions").toList())
         modInfo.gameVersions_ << GameVersion(v.toString());
@@ -44,6 +46,8 @@ ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
     modInfo.iconUrl_ = value(variant, "icon_url").toUrl();
     modInfo.versionList_ = value(variant, "versions").toStringList();
     modInfo.categories_ = value(variant, "categories").toStringList();
+    modInfo.dateCreated_ = value(variant, "published").toDateTime();
+    modInfo.dateModified_ = value(variant, "updated").toDateTime();
 
     modInfo.websiteUrl_ = "https://modrinth.com/mod/" + modInfo.modId_;
 
@@ -131,6 +135,16 @@ bool ModrinthModInfo::hasBasicInfo() const
 bool ModrinthModInfo::hasFullInfo() const
 {
     return fullInfo_;
+}
+
+const QDateTime &ModrinthModInfo::dateCreated() const
+{
+    return dateCreated_;
+}
+
+const QDateTime &ModrinthModInfo::dateModified() const
+{
+    return dateModified_;
 }
 
 const QStringList &ModrinthModInfo::categories() const

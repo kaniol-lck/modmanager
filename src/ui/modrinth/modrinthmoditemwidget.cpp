@@ -22,6 +22,13 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
     ui->modSummary->setText(mod->modInfo().summary());
     ui->modAuthors->setText("by <b>" + mod->modInfo().author() + "</b>");
     ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
+    auto foo = [=](const QDateTime &dateTime){
+         return " " + QString::number(dateTime.daysTo(QDateTime::currentDateTime())) + " days ago ";
+    };
+    ui->modUpdateDate->setText(foo(mod->modInfo().dateModified()));
+    ui->modUpdateDate->setToolTip(mod->modInfo().dateModified().toString());
+    ui->modCreateDate->setText(foo(mod->modInfo().dateCreated()));
+    ui->modCreateDate->setToolTip(mod->modInfo().dateCreated().toString());
 
     //tags
     QStringList tagTextList;

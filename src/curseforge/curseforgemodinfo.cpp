@@ -18,6 +18,9 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     modInfo.summary_ = value(variant, "summary").toString();
     modInfo.websiteUrl_ = value(variant, "websiteUrl").toUrl();
     modInfo.downloadCount_ = value(variant, "downloadCount").toInt();
+    modInfo.dateModified_ = value(variant, "dateModified").toDateTime();
+    modInfo.dateCreated_ = value(variant, "dateCreated").toDateTime();
+    modInfo.dateReleased_ = value(variant, "dateReleased").toDateTime();
 
     for(auto &&str : value(variant, "modLoaders").toStringList())
         modInfo.loaderTypes_ << ModLoaderType::fromString(str);
@@ -139,6 +142,26 @@ void CurseforgeModInfo::setLatestFiles(const QList<CurseforgeFileInfo> &newLates
 bool CurseforgeModInfo::hasBasicInfo() const
 {
     return basicInfo_;
+}
+
+const QList<QUrl> &CurseforgeModInfo::imageUrls() const
+{
+    return imageUrls_;
+}
+
+const QDateTime &CurseforgeModInfo::dateModified() const
+{
+    return dateModified_;
+}
+
+const QDateTime &CurseforgeModInfo::dateCreated() const
+{
+    return dateCreated_;
+}
+
+const QDateTime &CurseforgeModInfo::dateReleased() const
+{
+    return dateReleased_;
 }
 
 const QList<int> &CurseforgeModInfo::categories() const
