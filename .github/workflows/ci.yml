@@ -24,8 +24,8 @@ jobs:
           modules: qtwebengine
       - name: ubuntu install GL library
         run: sudo apt-get install -y libglew-dev libglfw3-dev
-      - name: ubuntu install aria2
-        run: sudo apt-get install -y aria2
+      - name: ubuntu install libaria2
+        run: sudo apt-get install -y libaria2-0
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
@@ -181,6 +181,9 @@ jobs:
           if NOT exist "%PROGRAMFILES%"\zlib\include\zconf.h exit 1
           if NOT exist "%PROGRAMFILES%"\zlib\include\zlib.h exit 1
           if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
+      - uses: msys2/setup-msys2@v2
+        with:
+          install: mingw-w64-i686-aria2
       - name: msvc-build
         id: build
         shell: cmd
