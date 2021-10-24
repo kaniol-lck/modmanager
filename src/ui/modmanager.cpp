@@ -51,44 +51,39 @@ ModManager::ModManager(QWidget *parent) :
                   "}");
 
     ui->toolBar->addWidget(browserSelector_);
-    connect(browserSelector_, &BrowserSelectorWidget::browserChanged, this, &ModManager::browserChanged);
+    connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     connect(ui->toolBar, &QToolBar::visibilityChanged, ui->action_Browsers, &QAction::setChecked);
 
     //Downloader
-    auto downloadBrowser = new DownloadBrowser(this);
+    ui->pageSwitcher->addDownloadPage();
     auto downloaderItem = new QTreeWidgetItem(browserSelector_->downloadItem(), {tr("Downloader")});
     browserSelector_->downloadItem()->addChild(downloaderItem);
     downloaderItem->setIcon(0, QIcon::fromTheme("download"));
-    ui->stackedWidget->addWidget(downloadBrowser);
 
     //Curseforge
-    curseforgeModBrowser_ = new CurseforgeModBrowser(this);
+    ui->pageSwitcher->addCurseforgePage();
     auto curseforgeItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Curseforge"});
     browserSelector_->exploreItem()->addChild(curseforgeItem);
     curseforgeItem->setIcon(0, QIcon(":/image/curseforge.svg"));
-    ui->stackedWidget->addWidget(curseforgeModBrowser_);
 
     //Modrinth
-    modrinthModBrowser_ = new ModrinthModBrowser(this);
+    ui->pageSwitcher->addModrinthPage();
     auto modrinthItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Modrinth"});
     browserSelector_->exploreItem()->addChild(modrinthItem);
     modrinthItem->setIcon(0, QIcon(":/image/modrinth.svg"));
-    ui->stackedWidget->addWidget(modrinthModBrowser_);
 
     //Optifine
-    optifineModBrowser_ = new OptifineModBrowser(this);
+    ui->pageSwitcher->addOptiFinePage();
     auto optifineItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"OptiFine"});
     browserSelector_->exploreItem()->addChild(optifineItem);
     optifineItem->setIcon(0, QIcon(":/image/optifine.png"));
-    ui->stackedWidget->addWidget(optifineModBrowser_);
 
     //Replay
-    replayModBrowser_ = new ReplayModBrowser(this);
+    ui->pageSwitcher->addReplayModPage();
     auto replayItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"ReplayMod"});
     browserSelector_->exploreItem()->addChild(replayItem);
     replayItem->setIcon(0, QIcon(":/image/replay.png"));
-    ui->stackedWidget->addWidget(replayModBrowser_);
 
     //Local
     syncPathList();
@@ -114,20 +109,6 @@ void ModManager::resizeEvent(QResizeEvent *event)
     config.setMainWindowHeight(event->size().height());
 }
 
-void ModManager::browserChanged(BrowserSelectorWidget::BrowserCategory category, int index)
-{
-    int pageIndex = 0;
-    using bsw = BrowserSelectorWidget;
-    for(auto &&c : { bsw::Download, bsw::Explore, bsw::Local}){
-        if(category == c){
-            pageIndex += index;
-            break;
-        } else
-            pageIndex += browserSelector_->item(c)->childCount();
-    }
-    ui->stackedWidget->setCurrentIndex(pageIndex);
-}
-
 void ModManager::syncPathList()
 {
     //remember selected path
@@ -149,25 +130,7 @@ void ModManager::syncPathList()
                 item->setIcon(0, QIcon::fromTheme("folder"));
             else
                 item->setIcon(0, ModLoaderType::icon(path->info().loaderType()));
-            auto localModBrowser = new LocalModBrowser(this, path);
-            ui->stackedWidget->addWidget(localModBrowser);
-
-            connect(localModBrowser, &LocalModBrowser::findNewOnCurseforge, curseforgeModBrowser_, &CurseforgeModBrowser::searchModByPathInfo);
-            connect(localModBrowser, &LocalModBrowser::findNewOnCurseforge, this, [=]{
-                browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->exploreItem()->child(0));
-            });
-            connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, modrinthModBrowser_, &ModrinthModBrowser::searchModByPathInfo);
-            connect(localModBrowser, &LocalModBrowser::findNewOnModrinth, this, [=]{
-                browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->exploreItem()->child(1));
-            });
-            connect(localModBrowser, &LocalModBrowser::findNewOnOptifine, optifineModBrowser_, &OptifineModBrowser::searchModByPathInfo);
-            connect(localModBrowser, &LocalModBrowser::findNewOnOptifine, this, [=]{
-                browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->exploreItem()->child(2));
-            });
-            connect(localModBrowser, &LocalModBrowser::findNewOnReplay, replayModBrowser_, &ReplayModBrowser::searchModByPathInfo);
-            connect(localModBrowser, &LocalModBrowser::findNewOnReplay, this, [=]{
-                browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->exploreItem()->child(3));
-            });
+            ui->pageSwitcher->addLocalPage(path);
         } else{
             //present, move position
             oldCount--;
@@ -180,22 +143,16 @@ void ModManager::syncPathList()
             else
                 item->setIcon(0, ModLoaderType::icon(path->info().loaderType()));
             browserSelector_->localItem()->addChild(item);
-            //TODO: magic number
-            auto widget = ui->stackedWidget->widget(i + 5);
-            ui->stackedWidget->removeWidget(widget);
-            ui->stackedWidget->addWidget(widget);
+            auto browser = ui->pageSwitcher->takeLocalModBrowser(i);
+            ui->pageSwitcher->addLocalPage(browser);
         }
     }
     //remove remained mod path
     auto i = oldCount;
     while (i--) {
-        //TODO: magic number
-        auto j = i + 5;
         pathList_.removeAt(i);
         delete browserSelector_->localItem()->takeChild(i);
-        auto widget = ui->stackedWidget->widget(j);
-        ui->stackedWidget->removeWidget(widget);
-        widget->deleteLater();
+        ui->pageSwitcher->removeLocalModBrowser(i);
     }
 
     //they should be same after sync
@@ -253,14 +210,14 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
         // on one of explore items
         auto index = item->parent()->indexOfChild(item);
         connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
-            if(index == 0)
-                curseforgeModBrowser_->refresh();
-            if(index == 1)
-                modrinthModBrowser_->refresh();
-            if(index == 2)
-                optifineModBrowser_->refresh();
-            if(index == 3)
-                replayModBrowser_->refresh();
+//            if(index == 0)
+//                curseforgeModBrowser_->refresh();
+//            if(index == 1)
+//                modrinthModBrowser_->refresh();
+//            if(index == 2)
+//                optifineModBrowser_->refresh();
+//            if(index == 3)
+//                replayModBrowser_->refresh();
         });
         if(index == 0)
             menu->addAction(ui->actionVisit_Curseforge);
@@ -359,12 +316,14 @@ void ModManager::on_menu_Path_aboutToShow()
 void ModManager::on_menuPaths_aboutToShow()
 {
     ui->menuPaths->clear();
+    int index = 0;
     for(auto path : LocalModPathManager::pathList()){
         auto action = new QAction(path->info().displayName());
-        connect(action, &QAction::triggered, [=]{
-            //TODO
+        connect(action, &QAction::triggered, this, [=]{
+            ui->pageSwitcher->setPage(PageSwitcher::Local, index);
         });
         ui->menuPaths->addAction(action);
+        index++;
     }
 }
 

@@ -10,10 +10,6 @@
 class QListWidgetItem;
 class LocalModPath;
 class BrowserSelectorWidget;
-class CurseforgeModBrowser;
-class ModrinthModBrowser;
-class OptifineModBrowser;
-class ReplayModBrowser;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ModManager; }
@@ -29,8 +25,6 @@ public:
 
     void resizeEvent(QResizeEvent *event);
 private slots:
-    void browserChanged(BrowserSelectorWidget::BrowserCategory category, int index);
-
     void syncPathList();
     void editLocalPath(int index);
     void on_actionPreferences_triggered();
@@ -51,10 +45,6 @@ private slots:
 private:
     Ui::ModManager *ui;
     BrowserSelectorWidget *browserSelector_;
-    CurseforgeModBrowser *curseforgeModBrowser_;
-    ModrinthModBrowser *modrinthModBrowser_;
-    OptifineModBrowser *optifineModBrowser_;
-    ReplayModBrowser *replayModBrowser_;
 
     QList<LocalModPath*> pathList_;
 };
