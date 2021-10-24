@@ -185,8 +185,9 @@ jobs:
           if NOT exist "%PROGRAMFILES%"\zlib\include\zlib.h exit 1
           if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
       - uses: msys2/setup-msys2@v2
-        with:
-          install: mingw-w64-x86_64-aria2
+      - shell: msys2 {0}
+        run: |
+          pacman -S mingw-w64-x86_64-aria2
       - shell: powershell
         run: |
           ls C:/msys64/mingw64/include

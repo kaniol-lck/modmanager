@@ -303,7 +303,7 @@ QAria2Downloader *LocalMod::update(ModWebsiteType type)
         auto file = new LocalModFile(this, newPath);
         file->loadInfo();
         //loader type mismatch
-        if(file->loaderType() != modFile_->loaderType()){
+        if(!file->loaderTypes().contains(modFile_->loaderType())){
             emit updateFinished(false);
             return false;
         }
