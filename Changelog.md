@@ -6,6 +6,25 @@ Soon....
 
 ## 公开测试 Beta Test
 
+### v1.0.0 beta.5
+
+*WIP*
+
+Rewrited entire downloader with Aria2, now it's faster and more stable.
+使用Aria2重写了整个下载器，现在更加稳定。
+
+Added mod updated/created time display.
+添加了mod更新创建时间显示。
+
+Added smooth scrolling to mod description.
+为mod描述添加了平滑滚动。
+
+Fixed Curseforge/Modrinth dialog cannot be reopened after closed.
+修复了Curseforge/Modrinth对话框在关闭后无法重新打开的问题。
+
+Fixed update failed when mod file is universal for fabric and forge.
+修复了mod文件是fabric/forge通用时会更新失败的问题。
+
 ### v1.0.0 beta.4
 
 *2021.10.20*
@@ -169,4 +188,3 @@ Details are not listed.
 ### v1.0.0 alpha.1
 
 *2021.09.10*
-
