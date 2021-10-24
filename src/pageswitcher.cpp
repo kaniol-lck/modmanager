@@ -1,5 +1,6 @@
 #include "pageswitcher.h"
 
+#include "ui/explorebrowser.h"
 #include "ui/download/downloadbrowser.h"
 #include "ui/curseforge/curseforgemodbrowser.h"
 #include "ui/modrinth/modrinthmodbrowser.h"
@@ -102,6 +103,16 @@ void PageSwitcher::setPage(int category, int page)
     setCurrentIndex(index);
 }
 
+const QList<ExploreBrowser *> &PageSwitcher::exploreBrowsers() const
+{
+    return exploreBrowsers_;
+}
+
+const QList<LocalModBrowser *> &PageSwitcher::localModBrowsers() const
+{
+    return localModBrowsers_;
+}
+
 DownloadBrowser *PageSwitcher::downloadBrowser() const
 {
     return downloadBrowser_;
@@ -125,6 +136,11 @@ OptifineModBrowser *PageSwitcher::optifineModBrowser() const
 ReplayModBrowser *PageSwitcher::replayModBrowser() const
 {
     return replayModBrowser_;
+}
+
+ExploreBrowser *PageSwitcher::exploreBrowser(int index) const
+{
+    return exploreBrowsers_.at(index);
 }
 
 LocalModBrowser *PageSwitcher::localModBrowser(int index) const

@@ -4,6 +4,7 @@
 #include <QScrollBar>
 #include <QDir>
 #include <QDebug>
+#include <QAction>
 
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
@@ -18,7 +19,7 @@
 #include "util/smoothscrollbar.h"
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
-    QWidget(parent),
+    ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
     ui(new Ui::CurseforgeModBrowser),
     api_(new CurseforgeAPI(this))
 {

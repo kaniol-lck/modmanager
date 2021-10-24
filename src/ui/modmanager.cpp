@@ -180,7 +180,7 @@ void ModManager::editLocalPath(int index)
 void ModManager::on_actionPreferences_triggered()
 {
     auto preferences = new Preferences(this);
-    preferences->show();
+    preferences->exec();
 }
 
 void ModManager::on_actionManage_Browser_triggered()
@@ -210,23 +210,9 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
         // on one of explore items
         auto index = item->parent()->indexOfChild(item);
         connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
-//            if(index == 0)
-//                curseforgeModBrowser_->refresh();
-//            if(index == 1)
-//                modrinthModBrowser_->refresh();
-//            if(index == 2)
-//                optifineModBrowser_->refresh();
-//            if(index == 3)
-//                replayModBrowser_->refresh();
+            ui->pageSwitcher->exploreBrowser(index)->refresh();
         });
-        if(index == 0)
-            menu->addAction(ui->actionVisit_Curseforge);
-        if(index == 1)
-            menu->addAction(ui->actionVisit_Modrinth);
-        if(index == 2)
-            menu->addAction(ui->actionVisit_OptiFine);
-        if(index == 3)
-            menu->addAction(ui->actionVisit_ReplayMod);
+        menu->addAction(ui->pageSwitcher->exploreBrowser(index)->visitWebsiteAction());
     }else if(item->parent() == browserSelector_->localItem()){
         // on one of local items
         auto index = item->parent()->indexOfChild(item);
@@ -254,35 +240,10 @@ void ModManager::on_action_About_Mod_Manager_triggered()
     dialog->exec();
 }
 
-void ModManager::on_actionVisit_Curseforge_triggered()
-{
-    QUrl url("https://www.curseforge.com/minecraft/mc-mods");
-    QDesktopServices::openUrl(url);
-}
-
-void ModManager::on_actionVisit_Modrinth_triggered()
-{
-    QUrl url("https://modrinth.com/mods");
-    QDesktopServices::openUrl(url);
-}
-
-void ModManager::on_actionVisit_OptiFine_triggered()
-{
-    QUrl url("https://www.optifine.net");
-    QDesktopServices::openUrl(url);
-}
-
-void ModManager::on_actionVisit_ReplayMod_triggered()
-{
-    QUrl url("https://www.replaymod.com");
-    QDesktopServices::openUrl(url);
-}
-
 void ModManager::on_action_Browsers_toggled(bool arg1)
 {
     ui->toolBar->setVisible(arg1);
 }
-
 
 void ModManager::on_actionOpen_new_path_dialog_triggered()
 {
@@ -311,6 +272,15 @@ void ModManager::on_actionSelect_Multiple_Directories_triggered()
 void ModManager::on_menu_Path_aboutToShow()
 {
     //TODO
+}
+
+void ModManager::on_menu_Help_aboutToShow()
+{
+    ui->menu_Help->clear();
+    for(auto browser : ui->pageSwitcher->exploreBrowsers())
+        ui->menu_Help->addAction(browser->visitWebsiteAction());
+    ui->menu_Help->addSeparator();
+    ui->menu_Help->addAction(ui->action_About_Mod_Manager);
 }
 
 void ModManager::on_menuPaths_aboutToShow()

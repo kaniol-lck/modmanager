@@ -1,19 +1,17 @@
 #ifndef OPTIFINEMODBROWSER_H
 #define OPTIFINEMODBROWSER_H
 
-#include <QWidget>
+#include "ui/explorebrowser.h"
 
 class OptifineAPI;
 class BMCLAPI;
 class LocalModPath;
 
-#include "local/localmodpathinfo.h"
-
 namespace Ui {
 class OptifineModBrowser;
 }
 
-class OptifineModBrowser : public QWidget
+class OptifineModBrowser : public ExploreBrowser
 {
     Q_OBJECT
 
@@ -21,10 +19,9 @@ public:
     explicit OptifineModBrowser(QWidget *parent = nullptr);
     ~OptifineModBrowser();
 
-    void refresh();
-
 public slots:
-    void searchModByPathInfo(const LocalModPathInfo &info);
+    void refresh() override;
+    void searchModByPathInfo(const LocalModPathInfo &info) override;
 
 signals:
     void downloadPathChanged(LocalModPath *path);

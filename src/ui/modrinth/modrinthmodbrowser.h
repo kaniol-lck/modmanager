@@ -1,9 +1,7 @@
 #ifndef MODRINTHMODBROWSER_H
 #define MODRINTHMODBROWSER_H
 
-#include <QWidget>
-
-#include "local/localmodpathinfo.h"
+#include "ui/explorebrowser.h"
 
 class ModrinthAPI;
 class ModrinthMod;
@@ -13,7 +11,7 @@ namespace Ui {
 class ModrinthModBrowser;
 }
 
-class ModrinthModBrowser : public QWidget
+class ModrinthModBrowser : public ExploreBrowser
 {
     Q_OBJECT
 
@@ -21,13 +19,12 @@ public:
     explicit ModrinthModBrowser(QWidget *parent = nullptr);
     ~ModrinthModBrowser();
 
-    void refresh();
-
 signals:
     void downloadPathChanged(LocalModPath *path);
 
 public slots:
-    void searchModByPathInfo(const LocalModPathInfo &info);
+    void refresh() override;
+    void searchModByPathInfo(const LocalModPathInfo &info) override;
 
 private slots:
     void updateVersionList();

@@ -17,7 +17,7 @@
 #include "util/smoothscrollbar.h"
 
 OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
-    QWidget(parent),
+    ExploreBrowser(parent, QIcon(":/image/optifine.png"), "OptiFine", QUrl("https://www.optifine.net")),
     ui(new Ui::OptifineModBrowser),
     api_(new OptifineAPI(this)),
     bmclapi_(new BMCLAPI(this))

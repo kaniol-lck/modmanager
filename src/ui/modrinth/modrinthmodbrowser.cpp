@@ -17,7 +17,7 @@
 #include "util/smoothscrollbar.h"
 
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
-    QWidget(parent),
+    ExploreBrowser(parent, QIcon(":/image/modrinth.svg"), "Modrinth", QUrl("https://modrinth.com/mods")),
     ui(new Ui::ModrinthModBrowser),
     api_(new ModrinthAPI(this))
 {

@@ -65,10 +65,6 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="actionVisit_Curseforge"/>
-    <addaction name="actionVisit_Modrinth"/>
-    <addaction name="actionVisit_OptiFine"/>
-    <addaction name="actionVisit_ReplayMod"/>
     <addaction name="separator"/>
     <addaction name="action_About_Mod_Manager"/>
    </widget>
@@ -104,8 +100,8 @@
     <addaction name="actionManage_Browser"/>
    </widget>
    <addaction name="menu_Path"/>
-   <addaction name="menuTools"/>
    <addaction name="menu_View"/>
+   <addaction name="menuTools"/>
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="toolBar">

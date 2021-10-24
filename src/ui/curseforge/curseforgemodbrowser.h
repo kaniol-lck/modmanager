@@ -1,9 +1,7 @@
 #ifndef CURSEFORGEMODBROWSER_H
 #define CURSEFORGEMODBROWSER_H
 
-#include <QWidget>
-
-#include "local/localmodpathinfo.h"
+#include "ui/explorebrowser.h"
 
 class CurseforgeAPI;
 class CurseforgeMod;
@@ -13,20 +11,19 @@ namespace Ui {
 class CurseforgeModBrowser;
 }
 
-class CurseforgeModBrowser : public QWidget
+class CurseforgeModBrowser : public ExploreBrowser
 {
     Q_OBJECT
 
 public:
     explicit CurseforgeModBrowser(QWidget *parent = nullptr);
     ~CurseforgeModBrowser();
-
-    void refresh();
 signals:
     void downloadPathChanged(LocalModPath *path);
 
 public slots:
-    void searchModByPathInfo(const LocalModPathInfo &info);
+    void refresh() override;
+    void searchModByPathInfo(const LocalModPathInfo &info) override;
 
 private slots:
     void getModList(QString name, int index = 0, int needMore = 20);

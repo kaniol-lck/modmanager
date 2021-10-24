@@ -58,6 +58,7 @@ SOURCES += \
     src/gameversion.cpp \
     src/ui/download/qaria2downloaderitemwidget.cpp \
     src/ui/download/downloadbrowser.cpp \
+    src/ui/explorebrowser.cpp \
     src/ui/local/batchrenamedialog.cpp \
     src/ui/local/localmodbrowser.cpp \
     src/ui/local/localmodcheckdialog.cpp \
@@ -138,6 +139,7 @@ HEADERS += \
     src/gameversion.h \
     src/ui/download/qaria2downloaderitemwidget.h \
     src/ui/download/downloadbrowser.h \
+    src/ui/explorebrowser.h \
     src/ui/local/batchrenamedialog.h \
     src/ui/local/localmodbrowser.h \
     src/ui/local/localmodcheckdialog.h \

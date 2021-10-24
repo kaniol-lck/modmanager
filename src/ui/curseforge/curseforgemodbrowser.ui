@@ -37,7 +37,7 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QWidget" name="" native="true">
+    <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">

@@ -16,7 +16,7 @@
 #include "config.hpp"
 
 ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
-    QWidget(parent),
+    ExploreBrowser(parent, QIcon(":/image/replay.png"), "ReplayMod", QUrl("https://www.replaymod.com")),
     ui(new Ui::ReplayModBrowser),
     api_(new ReplayAPI())
 {

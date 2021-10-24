@@ -3,6 +3,7 @@
 
 #include <QStackedWidget>
 
+class ExploreBrowser;
 class DownloadBrowser;
 class CurseforgeModBrowser;
 class ModrinthModBrowser;
@@ -34,8 +35,10 @@ public:
     ModrinthModBrowser *modrinthModBrowser() const;
     OptifineModBrowser *optifineModBrowser() const;
     ReplayModBrowser *replayModBrowser() const;
+    const QList<ExploreBrowser *> &exploreBrowsers() const;
+    const QList<LocalModBrowser *> &localModBrowsers() const;
+    ExploreBrowser *exploreBrowser(int index) const;
     LocalModBrowser *localModBrowser(int index) const;
-
 public slots:
     void setPage(int category, int page);
 private:
@@ -46,7 +49,7 @@ private:
     ModrinthModBrowser *modrinthModBrowser_;
     OptifineModBrowser *optifineModBrowser_;
     ReplayModBrowser *replayModBrowser_;
-    QList<QWidget*> exploreBrowsers_;
+    QList<ExploreBrowser *> exploreBrowsers_;
     QList<LocalModBrowser *> localModBrowsers_;
 };
 

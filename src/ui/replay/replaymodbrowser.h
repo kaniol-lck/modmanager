@@ -1,9 +1,7 @@
 #ifndef REPLAYMODBROWSER_H
 #define REPLAYMODBROWSER_H
 
-#include <QWidget>
-
-#include "local/localmodpathinfo.h"
+#include "ui/explorebrowser.h"
 
 class LocalModPath;
 class ReplayAPI;
@@ -12,7 +10,7 @@ namespace Ui {
 class ReplayModBrowser;
 }
 
-class ReplayModBrowser : public QWidget
+class ReplayModBrowser : public ExploreBrowser
 {
     Q_OBJECT
 
@@ -20,10 +18,9 @@ public:
     explicit ReplayModBrowser(QWidget *parent = nullptr);
     ~ReplayModBrowser();
 
-    void refresh();
-
 public slots:
-    void searchModByPathInfo(const LocalModPathInfo &info);
+    void refresh() override;
+    void searchModByPathInfo(const LocalModPathInfo &info) override;
 
 signals:
     void downloadPathChanged(LocalModPath *path);
