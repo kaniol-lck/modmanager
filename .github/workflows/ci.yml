@@ -189,8 +189,7 @@ jobs:
           install: mingw-w64-x86_64-aria2
       - shell: powershell
         run: |
-          ls C:/msys64/mingw64
-          ls C:/msys64/mingw32
+          ls C:/msys64/mingw64/include
       - name: msvc-build
         id: build
         shell: cmd
