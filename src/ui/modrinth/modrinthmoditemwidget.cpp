@@ -28,12 +28,6 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
     ui->modCreateDate->setToolTip(mod->modInfo().dateCreated().toString());
 
     //tags
-    QStringList tagTextList;
-    for(auto widget : qAsConst(tagWidgets_)){
-        ui->tagsLayout->removeWidget(widget);
-        widget->deleteLater();
-    }
-    tagWidgets_.clear();
     for(auto &&tag : mod_->tags()){
         auto label = new QLabel(this);
         if(!tag.iconName().isEmpty())
@@ -45,7 +39,6 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
         if(tag.tagCategory() != TagCategory::ModrinthCategory)
             label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
         ui->tagsLayout->addWidget(label);
-        tagWidgets_ << label;
     }
 
     mod->acquireFileList();

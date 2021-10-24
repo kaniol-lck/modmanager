@@ -126,6 +126,12 @@ const QString &GameVersion::getVersionString() const
     return versionString_;
 }
 
+bool GameVersion::isDev() const
+{
+    return versionString_.contains('w') || versionString_.contains("snapshot", Qt::CaseInsensitive) ||
+            versionString_.contains("pre") || versionString_.contains("rc") || versionString_.contains("rd");
+}
+
 GameVersion::operator QString() const
 {
     return toString();

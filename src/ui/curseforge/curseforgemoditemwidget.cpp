@@ -55,12 +55,6 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     ui->modCreateDate->setToolTip(mod->modInfo().dateCreated().toString());
 
     //tags
-    QStringList tagTextList;
-    for(auto widget : qAsConst(tagWidgets_)){
-        ui->tagsLayout->removeWidget(widget);
-        widget->deleteLater();
-    }
-    tagWidgets_.clear();
     for(auto &&tag : mod_->tags()){
         auto label = new QLabel(this);
         if(!tag.iconName().isEmpty())
@@ -71,7 +65,19 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
         if(tag.tagCategory() != TagCategory::CurseforgeCategory)
             label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
         ui->tagsLayout->addWidget(label);
-        tagWidgets_ << label;
+    }
+
+    //loader type
+    for(auto &&loaderType : mod_->modInfo().loaderTypes()){
+        auto label = new QLabel(this);
+        if(loaderType == ModLoaderType::Fabric)
+            label->setText(QString(R"(<img src=":/image/fabric.png" height="22" width="22"/>)"));
+        else if(loaderType == ModLoaderType::Forge)
+            label->setText(QString(R"(<img src=":/image/forge.svg" height="22" width="22"/>)"));
+        else
+            label->setText(ModLoaderType::toString(loaderType));
+        label->setToolTip(ModLoaderType::toString(loaderType));
+        ui->loadersLayout->addWidget(label);
     }
 
     if(defaultFileInfo_.has_value())

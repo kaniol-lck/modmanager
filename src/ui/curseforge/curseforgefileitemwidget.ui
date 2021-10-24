@@ -17,6 +17,9 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>10</number>
+   </property>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="spacing">
@@ -73,7 +76,7 @@
           <string notr="true">color: rgb(127, 127, 127);</string>
          </property>
          <property name="text">
-          <string>TextLabel</string>
+          <string/>
          </property>
         </widget>
        </item>
@@ -90,31 +93,17 @@
          </property>
         </spacer>
        </item>
+       <item>
+        <layout class="QHBoxLayout" name="versionsLayout"/>
+       </item>
       </layout>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QLabel" name="gameVersionText">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string notr="true"/>
-         </property>
+        <widget class="QLabel" name="fileNameText">
          <property name="text">
-          <string>1.16.5</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <string/>
          </property>
         </widget>
        </item>
@@ -132,28 +121,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="loaderTypeText">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Fabric</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="loadersLayout"/>
        </item>
       </layout>
      </item>

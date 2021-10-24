@@ -24,20 +24,37 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, ModrinthMod *mod
     if(localMod_)
         connect(localMod_, &LocalMod::modCacheUpdated, this, &ModrinthFileItemWidget::updateLocalInfo);
 
+    ui->fileNameText->setText(fileInfo_.fileName());
     ui->fileDateText->setText(tr("%1 ago").arg(timesTo(info.fileDate())));
     ui->fileDateText->setToolTip(info.fileDate().toString());
 
     //game version
-    QString gameversionText;
-    for(const auto &ver : info.gameVersions())
-        gameversionText.append(ver).append(" ");
-    ui->gameVersionText->setText(gameversionText);
+    for(auto &&version : fileInfo_.gameVersions()){
+        auto label = new QLabel(this);
+        label->setText(version);
+        label->setToolTip(version);
+        if(version.isDev())
+            label->setStyleSheet(QString("color: #fff; background-color: #735e82; border-radius:8px; padding:1px 2px;"));
+        else
+            label->setStyleSheet(QString("color: #fff; background-color: #827965; border-radius:8px; padding:1px 2px;"));
+        auto font = label->font();
+        font.setPointSize(9);
+        label->setFont(font);
+        ui->versionsLayout->addWidget(label);
+    }
 
     //loader type
-    QString loaderTypeText;
-    for(const auto &loader : info.loaderTypes())
-        loaderTypeText.append(ModLoaderType::toString(loader)).append(" ");
-    ui->loaderTypeText->setText(loaderTypeText);
+    for(auto &&loaderType : fileInfo_.loaderTypes()){
+        auto label = new QLabel(this);
+        if(loaderType == ModLoaderType::Fabric)
+            label->setText(QString(R"(<img src=":/image/fabric.png" height="22" width="22"/>)"));
+        else if(loaderType == ModLoaderType::Forge)
+            label->setText(QString(R"(<img src=":/image/forge.svg" height="22" width="22"/>)"));
+        else
+            label->setText(ModLoaderType::toString(loaderType));
+        label->setToolTip(ModLoaderType::toString(loaderType));
+        ui->loadersLayout->addWidget(label);
+    }
 
     //size
     ui->downloadSpeedText->setVisible(false);

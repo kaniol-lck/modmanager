@@ -16,6 +16,7 @@ public:
     GameVersion majorVersion() const;
 
     const QString &getVersionString() const;
+    bool isDev() const;
 
     operator QString() const;
     QString toString() const;
