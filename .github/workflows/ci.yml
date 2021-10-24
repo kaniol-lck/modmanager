@@ -14,7 +14,7 @@ on:
 jobs:
   build-on-ubuntu:
     name: Build On Ubuntu
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest # for libaria2-0 available
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.13.0
@@ -184,10 +184,9 @@ jobs:
           if NOT exist "%PROGRAMFILES%"\zlib\include\zconf.h exit 1
           if NOT exist "%PROGRAMFILES%"\zlib\include\zlib.h exit 1
           if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
-      - uses: msys2/setup-msys2@v2
-      - shell: msys2 {0}
+      - shell: powershell
         run: |
-          pacman -S mingw-w64-x86_64-aria2 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
       - shell: powershell
         run: |
           ls C:/msys64/mingw64/include
