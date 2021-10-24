@@ -75,14 +75,14 @@ QTreeWidgetItem *BrowserSelectorWidget::localItem()
 
 void BrowserSelectorWidget::addMultiple()
 {
-    auto paths = getExistingDirectories(this, tr("Select paths"), Config().getCommonPath());
+    auto paths = getExistingDirectories(this, tr("Select your mod directories..."), Config().getCommonPath());
     LocalModPathManager::addPaths(paths);
 }
 
 void BrowserSelectorWidget::on_addButton_clicked()
 {
     auto dialog = new LocalModPathSettingsDialog(this);
-    dialog->show();
+    dialog->exec();
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
         auto path = new LocalModPath(pathInfo, autoLoaderType);
         LocalModPathManager::addPath(path);

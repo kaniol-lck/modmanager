@@ -58,7 +58,6 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
-    <addaction name="actionManage_Browser"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
@@ -73,12 +72,45 @@
     <addaction name="separator"/>
     <addaction name="action_About_Mod_Manager"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Browsers"/>
+   </widget>
+   <widget class="QMenu" name="menu_Path">
+    <property name="title">
+     <string>&amp;Path</string>
+    </property>
+    <widget class="QMenu" name="menu_New_Path">
+     <property name="title">
+      <string>&amp;New Path</string>
+     </property>
+     <addaction name="actionOpen_new_path_dialog"/>
+     <addaction name="separator"/>
+     <addaction name="actionSelect_A_Directory"/>
+     <addaction name="actionSelect_Multiple_Directories"/>
+    </widget>
+    <widget class="QMenu" name="menuPaths">
+     <property name="title">
+      <string>Paths</string>
+     </property>
+    </widget>
+    <addaction name="menu_New_Path"/>
+    <addaction name="menuPaths"/>
+    <addaction name="separator"/>
+    <addaction name="actionReload"/>
+    <addaction name="separator"/>
+    <addaction name="actionManage_Browser"/>
+   </widget>
+   <addaction name="menu_Path"/>
    <addaction name="menuTools"/>
+   <addaction name="menu_View"/>
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Browsers</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftToolBarArea|Qt::RightToolBarArea</set>
@@ -100,6 +132,9 @@
    </property>
    <property name="text">
     <string>Preferences</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="actionManage_Browser">
@@ -154,6 +189,59 @@
    </property>
    <property name="text">
     <string>Visit ReplayMod</string>
+   </property>
+  </action>
+  <action name="action_Browsers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Browsers</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionNew_Paths">
+   <property name="icon">
+    <iconset theme="folder-new"/>
+   </property>
+   <property name="text">
+    <string>New Paths</string>
+   </property>
+  </action>
+  <action name="actionOpen_new_path_dialog">
+   <property name="icon">
+    <iconset theme="folder-new"/>
+   </property>
+   <property name="text">
+    <string>Open new path dialog</string>
+   </property>
+  </action>
+  <action name="actionSelect_A_Directory">
+   <property name="icon">
+    <iconset theme="folder-new"/>
+   </property>
+   <property name="text">
+    <string>Select A Directory...</string>
+   </property>
+  </action>
+  <action name="actionSelect_Multiple_Directories">
+   <property name="icon">
+    <iconset theme="folder-new"/>
+   </property>
+   <property name="text">
+    <string>Select Multiple Directories...</string>
+   </property>
+  </action>
+  <action name="actiona">
+   <property name="text">
+    <string>a</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="text">
+    <string>&amp;Reload/Refresh</string>
    </property>
   </action>
  </widget>

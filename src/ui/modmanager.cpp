@@ -10,6 +10,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QResizeEvent>
+#include <QFileDialog>
 
 #include "ui/aboutdialog.h"
 #include "ui/browserselectorwidget.h"
@@ -26,6 +27,7 @@
 #include "ui/local/localmodpathsettingsdialog.h"
 #include "gameversion.h"
 #include "config.hpp"
+#include "util/funcutil.h"
 
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
@@ -51,6 +53,7 @@ ModManager::ModManager(QWidget *parent) :
     ui->toolBar->addWidget(browserSelector_);
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, this, &ModManager::browserChanged);
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
+    connect(ui->toolBar, &QToolBar::visibilityChanged, ui->action_Browsers, &QAction::setChecked);
 
     //Downloader
     auto downloadBrowser = new DownloadBrowser(this);
@@ -317,3 +320,51 @@ void ModManager::on_actionVisit_ReplayMod_triggered()
     QUrl url("https://www.replaymod.com");
     QDesktopServices::openUrl(url);
 }
+
+void ModManager::on_action_Browsers_toggled(bool arg1)
+{
+    ui->toolBar->setVisible(arg1);
+}
+
+
+void ModManager::on_actionOpen_new_path_dialog_triggered()
+{
+    auto dialog = new LocalModPathSettingsDialog(this);
+    dialog->exec();
+    connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
+        auto path = new LocalModPath(pathInfo, autoLoaderType);
+        LocalModPathManager::addPath(path);
+    });
+}
+
+void ModManager::on_actionSelect_A_Directory_triggered()
+{
+    auto pathStr = QFileDialog::getExistingDirectory(this, tr("Select your mod directory..."), Config().getCommonPath());
+    auto path = new LocalModPath(LocalModPathInfo::deduceFromPath(pathStr), true);
+    LocalModPathManager::addPath(path);
+}
+
+
+void ModManager::on_actionSelect_Multiple_Directories_triggered()
+{
+    auto paths = getExistingDirectories(this, tr("Select your mod directories..."), Config().getCommonPath());
+    LocalModPathManager::addPaths(paths);
+}
+
+void ModManager::on_menu_Path_aboutToShow()
+{
+    //TODO
+}
+
+void ModManager::on_menuPaths_aboutToShow()
+{
+    ui->menuPaths->clear();
+    for(auto path : LocalModPathManager::pathList()){
+        auto action = new QAction(path->info().displayName());
+        connect(action, &QAction::triggered, [=]{
+            //TODO
+        });
+        ui->menuPaths->addAction(action);
+    }
+}
+

@@ -4,6 +4,7 @@
 #include <QtConcurrent>
 #include <QInputDialog>
 #include <QDebug>
+#include <QToolBar>
 
 #include "ui/download/qaria2downloaderitemwidget.h"
 #include "download/downloadmanager.h"

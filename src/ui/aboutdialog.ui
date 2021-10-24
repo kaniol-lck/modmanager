@@ -66,8 +66,10 @@
         <item row="2" column="1">
          <widget class="QLabel" name="label_9">
           <property name="text">
-           <string notr="true">Qt 5.15.2
-Quazip 0.7.3</string>
+           <string notr="true">Qt v5.15.2
+libaria2 v1.36.0
+Quazip 0.7.3
+toml++ v2.5.0</string>
           </property>
          </widget>
         </item>
