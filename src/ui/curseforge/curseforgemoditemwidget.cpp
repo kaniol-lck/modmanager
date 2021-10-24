@@ -49,12 +49,9 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 //            ui->modSummary->setText(translted);
 //    });
     ui->modAuthors->setText(mod->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
-    auto foo = [=](const QDateTime &dateTime){
-         return " " + QString::number(dateTime.daysTo(QDateTime::currentDateTime())) + " days ago ";
-    };
-    ui->modUpdateDate->setText(foo(mod->modInfo().dateModified()));
+    ui->modUpdateDate->setText(tr("%1 ago").arg(timesTo(mod->modInfo().dateModified())));
     ui->modUpdateDate->setToolTip(mod->modInfo().dateModified().toString());
-    ui->modCreateDate->setText(foo(mod->modInfo().dateCreated()));
+    ui->modCreateDate->setText(tr("%1 ago").arg(timesTo(mod->modInfo().dateCreated())));
     ui->modCreateDate->setToolTip(mod->modInfo().dateCreated().toString());
 
     //tags

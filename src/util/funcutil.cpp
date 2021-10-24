@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QListView>
 #include <QTreeView>
+#include <QDateTime>
 
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
@@ -162,4 +163,23 @@ QString colorCodeFormat(QString str)
 QString clearFormat(QString str)
 {
     return str.remove(QRegularExpression("<.*?>"));
+}
+
+QString timesTo(const QDateTime &dateTime)
+{
+    auto currrentTime = QDateTime::currentDateTime();
+    if(auto seconds = dateTime.secsTo(currrentTime); seconds < 60)
+        return QObject::tr("%1 seconds").arg(seconds);
+    else if(auto minutes = seconds / 60; minutes < 60)
+        return QObject::tr("%1 minutes").arg(minutes);
+    else if(auto hours = minutes / 60; hours < 60)
+        return QObject::tr("%1 hours").arg(hours);
+
+    if(auto days = dateTime.daysTo(currrentTime); days < 30)
+        return QObject::tr("%1 days").arg(days);
+    if(auto years = currrentTime.date().year() - dateTime.date().year())
+        return QObject::tr("%1 years").arg(years);
+    if(auto months = currrentTime.date().month() - dateTime.date().month())
+        return QObject::tr("%1 months").arg(months);
+    return "";
 }

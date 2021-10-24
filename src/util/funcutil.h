@@ -29,4 +29,6 @@ QString colorCodeFormat(QString str);
 
 QString clearFormat(QString str);
 
+QString timesTo(const QDateTime &dateTime);
+
 #endif // FUNCUTIL_H

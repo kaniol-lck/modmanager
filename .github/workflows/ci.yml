@@ -186,10 +186,11 @@ jobs:
           if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
       - uses: msys2/setup-msys2@v2
         with:
-          install: mingw-w64-i686-aria2
+          install: mingw-w64-aria2
       - shell: powershell
         run: |
-          ls C:/msys64
+          ls C:/msys64/mingw64
+          ls C:/msys64/mingw32
       - name: msvc-build
         id: build
         shell: cmd
