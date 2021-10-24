@@ -269,5 +269,5 @@ unix {
 
 win32 {
   INCLUDEPATH += C:/msys64/mingw64/include
-  LIBS += C:/msys64/mingw64/lib -laria2
+  LIBS += -L$$quote(C:/msys64/mingw64/lib) -laria2
 }
