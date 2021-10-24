@@ -25,6 +25,9 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
     if(localMod_)
         connect(localMod_, &LocalMod::modCacheUpdated, this, &CurseforgeFileItemWidget::updateLocalInfo);
 
+    ui->fileDateText->setText(tr("%1 ago").arg(timesTo(info.fileDate())));
+    ui->fileDateText->setToolTip(info.fileDate().toString());
+
     //game version
     QString gameversionText;
     for(const auto &ver : fileInfo_.gameVersions())
