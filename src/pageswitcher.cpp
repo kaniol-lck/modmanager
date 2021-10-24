@@ -100,7 +100,19 @@ void PageSwitcher::removeLocalModBrowser(int index)
 void PageSwitcher::setPage(int category, int page)
 {
     auto index = std::accumulate(pageCount_.cbegin(), pageCount_.cbegin() + category, 0) + page;
+    currentCategory_ = category;
+    currentPage_ = page;
     setCurrentIndex(index);
+}
+
+int PageSwitcher::currentCategory() const
+{
+    return currentCategory_;
+}
+
+int PageSwitcher::currentPage() const
+{
+    return currentPage_;
 }
 
 const QList<ExploreBrowser *> &PageSwitcher::exploreBrowsers() const

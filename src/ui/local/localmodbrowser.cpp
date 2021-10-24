@@ -90,6 +90,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::onLoadStarted);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::onLoadFinished);
+    connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::loadFinished);
     connect(modPath_, &LocalModPath::modListUpdated, this, &LocalModBrowser::updateModList);
     connect(modPath_, &LocalModPath::websiteCheckedCountUpdated, this, &LocalModBrowser::onWebsiteCheckedCountUpdated);
     connect(modPath_, &LocalModPath::checkWebsitesStarted, this, &LocalModBrowser::onCheckWebsitesStarted);
@@ -108,6 +109,17 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 LocalModBrowser::~LocalModBrowser()
 {
     delete ui;
+}
+
+bool LocalModBrowser::isLoading() const
+{
+    return modPath_->isLoading();
+}
+
+void LocalModBrowser::reload()
+{
+    if(modPath_->isLoading()) return;
+    modPath_->loadMods();
 }
 
 void LocalModBrowser::updateModList()

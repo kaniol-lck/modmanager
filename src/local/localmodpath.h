@@ -54,6 +54,8 @@ public:
 
     LocalMod *optiFineMod() const;
 
+    bool isLoading() const;
+
 signals:
     void infoUpdated();
     void modListUpdated();
@@ -94,6 +96,7 @@ private:
     QDateTime latestUpdateCheck_;
     int updatableCount_ = 0;
     bool initialUpdateChecked_ = false;
+    bool isLoading_ = false;
     bool isSearching_ = false;
 };
 

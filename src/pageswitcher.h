@@ -39,10 +39,15 @@ public:
     const QList<LocalModBrowser *> &localModBrowsers() const;
     ExploreBrowser *exploreBrowser(int index) const;
     LocalModBrowser *localModBrowser(int index) const;
+    int currentCategory() const;
+    int currentPage() const;
+
 public slots:
     void setPage(int category, int page);
 private:
     QVector<int> pageCount_;
+    int currentCategory_;
+    int currentPage_;
 
     DownloadBrowser *downloadBrowser_;
     CurseforgeModBrowser *curseforgeModBrowser_;

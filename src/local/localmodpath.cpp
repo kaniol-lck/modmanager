@@ -34,6 +34,8 @@ LocalModPath::~LocalModPath()
 
 void LocalModPath::loadMods(bool autoLoaderType)
 {
+    if(isLoading_) return;
+    isLoading_ = true;
     QList<LocalModFile*> modFileList;
     for(auto &&fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
         if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
@@ -85,6 +87,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
         readFromFile();
         emit modListUpdated();
         searchOnWebsites();
+        isLoading_ = false;
     });
 }
 
@@ -250,6 +253,11 @@ void LocalModPath::readFromFile()
             modMap_[it.key()]->restore(*it);
     if(optiFineMod_ && result.toMap().contains("optifine"))
         optiFineMod_->restore(value(result, "optifine"));
+}
+
+bool LocalModPath::isLoading() const
+{
+    return isLoading_;
 }
 
 LocalMod *LocalModPath::optiFineMod() const

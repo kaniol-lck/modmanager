@@ -209,19 +209,27 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
     } else if(item->parent() == browserSelector_->exploreItem()){
         // on one of explore items
         auto index = item->parent()->indexOfChild(item);
+        auto exploreBrowser = ui->pageSwitcher->exploreBrowser(index);
         connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
-            ui->pageSwitcher->exploreBrowser(index)->refresh();
+            exploreBrowser->refresh();
         });
-        menu->addAction(ui->pageSwitcher->exploreBrowser(index)->visitWebsiteAction());
+        menu->addAction(exploreBrowser->visitWebsiteAction());
     }else if(item->parent() == browserSelector_->localItem()){
         // on one of local items
         auto index = item->parent()->indexOfChild(item);
-
+        auto localBrowser = ui->pageSwitcher->localModBrowser(index);
         connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
             editLocalPath(index);
         });
-        connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
-            LocalModPathManager::pathList().at(index)->loadMods();
+        auto reloadAction = menu->addAction(QIcon::fromTheme("view-refresh"), tr("Reload"));
+        if(localBrowser->isLoading()){
+            reloadAction->setEnabled(false);
+            connect(localBrowser, &LocalModBrowser::loadFinished, this, [=]{
+                reloadAction->setEnabled(true);
+            });
+        }
+        connect(reloadAction, &QAction::triggered, this, [=]{
+            localBrowser->reload();
         });
         connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
             if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
@@ -262,7 +270,6 @@ void ModManager::on_actionSelect_A_Directory_triggered()
     LocalModPathManager::addPath(path);
 }
 
-
 void ModManager::on_actionSelect_Multiple_Directories_triggered()
 {
     auto paths = getExistingDirectories(this, tr("Select your mod directories..."), Config().getCommonPath());
@@ -271,7 +278,15 @@ void ModManager::on_actionSelect_Multiple_Directories_triggered()
 
 void ModManager::on_menu_Path_aboutToShow()
 {
-    //TODO
+    if(ui->pageSwitcher->currentCategory() == PageSwitcher::Download)
+        ui->actionReload->setEnabled(false);
+    if(ui->pageSwitcher->currentCategory() == PageSwitcher::Local)
+        if(auto localBrowser = ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentPage()); localBrowser->isLoading()){
+            ui->actionReload->setEnabled(false);
+            connect(localBrowser, &LocalModBrowser::loadFinished, this, [=]{
+                ui->actionReload->setEnabled(true);
+            });
+        }
 }
 
 void ModManager::on_menu_Help_aboutToShow()
@@ -295,5 +310,13 @@ void ModManager::on_menuPaths_aboutToShow()
         ui->menuPaths->addAction(action);
         index++;
     }
+}
+
+void ModManager::on_actionReload_triggered()
+{
+    if(auto category = ui->pageSwitcher->currentCategory(); category == PageSwitcher::Explore)
+        ui->pageSwitcher->exploreBrowser(ui->pageSwitcher->currentPage())->refresh();
+    else if(category == PageSwitcher::Local)
+        ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentPage())->reload();
 }
 

@@ -236,8 +236,14 @@
    </property>
   </action>
   <action name="actionReload">
+   <property name="icon">
+    <iconset theme="view-refresh"/>
+   </property>
    <property name="text">
     <string>&amp;Reload/Refresh</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
  </widget>
