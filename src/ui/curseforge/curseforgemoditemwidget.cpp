@@ -85,6 +85,8 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
                                        + numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
     else
         ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
+
+    updateUi();
 }
 
 CurseforgeModItemWidget::~CurseforgeModItemWidget()
@@ -163,4 +165,12 @@ void CurseforgeModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setText(tr("Download"));
     }
+}
+
+void CurseforgeModItemWidget::updateUi()
+{
+    Config config;
+    ui->modDateTime->setVisible(config.getShowModDateTime());
+    ui->tags->setVisible(config.getShowModCategory());
+    ui->loaderTypes->setVisible(config.getShowModLoaderType());
 }

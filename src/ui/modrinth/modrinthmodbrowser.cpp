@@ -69,6 +69,16 @@ void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
     getModList(currentName_);
 }
 
+void ModrinthModBrowser::updateUi()
+{
+    for(int i = 0; i < ui->modListWidget->count(); i++){
+        auto item = ui->modListWidget->item(i);
+        if(!item->text().isEmpty()) continue;
+        auto widget = ui->modListWidget->itemWidget(item);
+        dynamic_cast<ModrinthModItemWidget*>(widget)->updateUi();
+    }
+}
+
 void ModrinthModBrowser::updateVersionList()
 {
     isUiSet_ = false;

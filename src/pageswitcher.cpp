@@ -105,6 +105,14 @@ void PageSwitcher::setPage(int category, int page)
     setCurrentIndex(index);
 }
 
+void PageSwitcher::updateUi()
+{
+    for(auto browser : qAsConst(exploreBrowsers_))
+        browser->updateUi();
+    for(auto browser : qAsConst(localModBrowsers_))
+        browser->updateUi();
+}
+
 int PageSwitcher::currentCategory() const
 {
     return currentCategory_;
@@ -152,10 +160,14 @@ ReplayModBrowser *PageSwitcher::replayModBrowser() const
 
 ExploreBrowser *PageSwitcher::exploreBrowser(int index) const
 {
+    if(index >= exploreBrowsers_.size())
+        return nullptr;
     return exploreBrowsers_.at(index);
 }
 
 LocalModBrowser *PageSwitcher::localModBrowser(int index) const
 {
+    if(index >= localModBrowsers_.size())
+        return nullptr;
     return localModBrowsers_.at(index);
 }

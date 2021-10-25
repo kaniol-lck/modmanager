@@ -45,6 +45,8 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
 
     connect(mod, &ModrinthMod::iconReady, this, &ModrinthModItemWidget::updateIcon);
     connect(mod, &ModrinthMod::fileListReady, this, &ModrinthModItemWidget::updateFileList);
+
+    updateUi();
 }
 
 ModrinthModItemWidget::~ModrinthModItemWidget()
@@ -148,4 +150,11 @@ void ModrinthModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setText(tr("Download"));
     }
+}
+
+void ModrinthModItemWidget::updateUi()
+{
+    Config config;
+    ui->modDateTime->setVisible(config.getShowModDateTime());
+    ui->tags->setVisible(config.getShowModCategory());
 }

@@ -67,3 +67,26 @@ const QString &TagCategory::id() const
 {
     return id_;
 }
+
+QString TagCategory::name() const
+{
+    if(id_ == "environment")
+        return QObject::tr("Environment Tag");
+    if(id_ == "curseforge")
+        return QObject::tr("Curseforge Tag");
+    if(id_ == "modrinth")
+        return QObject::tr("Modrinth Tag");
+    if(id_ == "optifine")
+        return QObject::tr("Optifine Tag");
+    if(id_ == "type")
+        return QObject::tr("Type Tag");
+    if(id_ == "translation")
+        return QObject::tr("Translation Tag");
+    if(id_ == "functionality")
+        return QObject::tr("Functionality Tag");
+    if(id_ == "notation")
+        return QObject::tr("Notation Tag");
+    if(id_ == "custom")
+        return QObject::tr("Custom Tag");
+    return "";
+}

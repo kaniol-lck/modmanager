@@ -27,6 +27,7 @@ public:
     static const QList<TagCategory> CustomizableCategories;
 
     const QString &id() const;
+    QString name() const;
 
 private:
     QString id_;

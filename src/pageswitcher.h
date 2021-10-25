@@ -44,6 +44,7 @@ public:
 
 public slots:
     void setPage(int category, int page);
+    void updateUi();
 private:
     QVector<int> pageCount_;
     int currentCategory_;

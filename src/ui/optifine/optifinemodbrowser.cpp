@@ -54,6 +54,11 @@ void OptifineModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
     filterList();
 }
 
+void OptifineModBrowser::updateUi()
+{
+
+}
+
 void OptifineModBrowser::updateLocalPathList()
 {
     //remember selected path

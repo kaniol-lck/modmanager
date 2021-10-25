@@ -57,6 +57,11 @@ void ReplayModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
     filterList();
 }
 
+void ReplayModBrowser::updateUi()
+{
+
+}
+
 void ReplayModBrowser::updateLocalPathList()
 {
     //remember selected path

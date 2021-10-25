@@ -24,6 +24,7 @@ signals:
 public slots:
     void refresh() override;
     void searchModByPathInfo(const LocalModPathInfo &info) override;
+    void updateUi() override;
 
 private slots:
     void getModList(QString name, int index = 0, int needMore = 20);

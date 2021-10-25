@@ -72,7 +72,17 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <widget class="QMenu" name="menuTags">
+     <property name="title">
+      <string>Tags</string>
+     </property>
+    </widget>
     <addaction name="action_Browsers"/>
+    <addaction name="separator"/>
+    <addaction name="actionShow_Mod_Date_Time"/>
+    <addaction name="actionShow_Mod_Category"/>
+    <addaction name="actionShow_Mod_Loader_Type"/>
+    <addaction name="menuTags"/>
    </widget>
    <widget class="QMenu" name="menu_Path">
     <property name="title">
@@ -151,42 +161,6 @@
     <string>&amp;About Mod Manager</string>
    </property>
   </action>
-  <action name="actionVisit_Curseforge">
-   <property name="icon">
-    <iconset resource="../images/image.qrc">
-     <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Visit Curseforge</string>
-   </property>
-  </action>
-  <action name="actionVisit_Modrinth">
-   <property name="icon">
-    <iconset resource="../images/image.qrc">
-     <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Visit Modrinth</string>
-   </property>
-  </action>
-  <action name="actionVisit_OptiFine">
-   <property name="icon">
-    <iconset resource="../images/image.qrc">
-     <normaloff>:/image/optifine.png</normaloff>:/image/optifine.png</iconset>
-   </property>
-   <property name="text">
-    <string>Visit OptiFine</string>
-   </property>
-  </action>
-  <action name="actionVisit_ReplayMod">
-   <property name="icon">
-    <iconset resource="../images/image.qrc">
-     <normaloff>:/image/replay.png</normaloff>:/image/replay.png</iconset>
-   </property>
-   <property name="text">
-    <string>Visit ReplayMod</string>
-   </property>
-  </action>
   <action name="action_Browsers">
    <property name="checkable">
     <bool>true</bool>
@@ -200,7 +174,8 @@
   </action>
   <action name="actionNew_Paths">
    <property name="icon">
-    <iconset theme="folder-new"/>
+    <iconset theme="folder-new">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>New Paths</string>
@@ -208,42 +183,74 @@
   </action>
   <action name="actionOpen_new_path_dialog">
    <property name="icon">
-    <iconset theme="folder-new"/>
+    <iconset theme="folder-new">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Open new path dialog</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
+   </property>
   </action>
   <action name="actionSelect_A_Directory">
    <property name="icon">
-    <iconset theme="folder-new"/>
+    <iconset theme="folder-new">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Select A Directory...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
   </action>
   <action name="actionSelect_Multiple_Directories">
    <property name="icon">
-    <iconset theme="folder-new"/>
+    <iconset theme="folder-new">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Select Multiple Directories...</string>
    </property>
-  </action>
-  <action name="actiona">
-   <property name="text">
-    <string>a</string>
+   <property name="shortcut">
+    <string>Ctrl+Alt+N</string>
    </property>
   </action>
   <action name="actionReload">
    <property name="icon">
-    <iconset theme="view-refresh"/>
+    <iconset theme="view-refresh">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Reload/Refresh</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
+   </property>
+  </action>
+  <action name="actionShow_Mod_Date_Time">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Mod Date Time</string>
+   </property>
+  </action>
+  <action name="actionShow_Mod_Category">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Mod Category</string>
+   </property>
+  </action>
+  <action name="actionShow_Mod_Loader_Type">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Mod Loader Type</string>
    </property>
   </action>
  </widget>
@@ -255,8 +262,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../images/image.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

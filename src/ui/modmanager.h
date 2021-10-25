@@ -38,9 +38,11 @@ private slots:
     void on_menu_Path_aboutToShow();
     void on_menu_Help_aboutToShow();
     void on_menuPaths_aboutToShow();
-
+    void on_menuTags_aboutToShow();
     void on_actionReload_triggered();
-
+    void on_actionShow_Mod_Date_Time_toggled(bool arg1);
+    void on_actionShow_Mod_Category_toggled(bool arg1);
+    void on_actionShow_Mod_Loader_Type_toggled(bool arg1);
 private:
     Ui::ModManager *ui;
     BrowserSelectorWidget *browserSelector_;

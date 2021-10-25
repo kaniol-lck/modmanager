@@ -22,6 +22,7 @@ public:
 public slots:
     void refresh() override;
     void searchModByPathInfo(const LocalModPathInfo &info) override;
+    void updateUi() override;
 
 signals:
     void downloadPathChanged(LocalModPath *path);

@@ -24,6 +24,7 @@ public:
 
 public slots:
     void updateInfo();
+    void updateUi();
 
 private slots:
     void on_updateButton_clicked();

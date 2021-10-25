@@ -35,6 +35,7 @@ signals:
 public slots:
     void reload();
     void updateModList();
+    void updateUi();
 
 private slots:
     void onLoadStarted();

@@ -94,6 +94,10 @@ ModManager::ModManager(QWidget *parent) :
 
     //init versions
     VersionManager::initVersionLists();
+
+    ui->actionShow_Mod_Date_Time->setChecked(config.getShowModDateTime());
+    ui->actionShow_Mod_Category->setChecked(config.getShowModCategory());
+    ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
 }
 
 ModManager::~ModManager()
@@ -266,6 +270,7 @@ void ModManager::on_actionOpen_new_path_dialog_triggered()
 void ModManager::on_actionSelect_A_Directory_triggered()
 {
     auto pathStr = QFileDialog::getExistingDirectory(this, tr("Select your mod directory..."), Config().getCommonPath());
+    if(pathStr.isEmpty()) return;
     auto path = new LocalModPath(LocalModPathInfo::deduceFromPath(pathStr), true);
     LocalModPathManager::addPath(path);
 }
@@ -281,7 +286,7 @@ void ModManager::on_menu_Path_aboutToShow()
     if(ui->pageSwitcher->currentCategory() == PageSwitcher::Download)
         ui->actionReload->setEnabled(false);
     if(ui->pageSwitcher->currentCategory() == PageSwitcher::Local)
-        if(auto localBrowser = ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentPage()); localBrowser->isLoading()){
+        if(auto localBrowser = ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentPage()); localBrowser && localBrowser->isLoading()){
             ui->actionReload->setEnabled(false);
             connect(localBrowser, &LocalModBrowser::loadFinished, this, [=]{
                 ui->actionReload->setEnabled(true);
@@ -312,11 +317,57 @@ void ModManager::on_menuPaths_aboutToShow()
     }
 }
 
+void ModManager::on_menuTags_aboutToShow()
+{
+    auto showTagCategories = Config().getShowTagCategories();
+    ui->menuTags->clear();
+    int count = 0;
+    for(const auto &category : TagCategory::PresetCategories){
+        auto action = new QAction(category.name());
+        action->setCheckable(true);
+        if(showTagCategories.contains(category)){
+            action->setChecked(true);
+            count++;
+        }
+        connect(action, &QAction::toggled, this, [=](bool bl){
+            auto list = showTagCategories;
+            if(bl)
+                list.insert(count, category);
+            else
+                list.removeAll(category);
+            Config().setShowTagCategories(list);
+            ui->pageSwitcher->updateUi();
+        });
+        ui->menuTags->addAction(action);
+    }
+}
+
 void ModManager::on_actionReload_triggered()
 {
     if(auto category = ui->pageSwitcher->currentCategory(); category == PageSwitcher::Explore)
         ui->pageSwitcher->exploreBrowser(ui->pageSwitcher->currentPage())->refresh();
     else if(category == PageSwitcher::Local)
         ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentPage())->reload();
+}
+
+
+void ModManager::on_actionShow_Mod_Date_Time_toggled(bool arg1)
+{
+    Config().setShowModDateTime(arg1);
+    ui->pageSwitcher->updateUi();
+}
+
+
+void ModManager::on_actionShow_Mod_Category_toggled(bool arg1)
+{
+    Config().setShowModCategory(arg1);
+    ui->pageSwitcher->updateUi();
+}
+
+
+void ModManager::on_actionShow_Mod_Loader_Type_toggled(bool arg1)
+{
+    Config().setShowModLoaderType(arg1);
+    ui->pageSwitcher->updateUi();
 }
 

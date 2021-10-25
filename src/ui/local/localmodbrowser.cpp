@@ -145,6 +145,15 @@ void LocalModBrowser::updateModList()
     filterList();
 }
 
+void LocalModBrowser::updateUi()
+{
+    for(int i = 0; i < ui->modListWidget->count(); i++){
+        auto item = ui->modListWidget->item(i);
+        auto widget = ui->modListWidget->itemWidget(item);
+        dynamic_cast<LocalModItemWidget*>(widget)->updateUi();
+    }
+}
+
 void LocalModBrowser::onLoadStarted()
 {
     progressBar_->setVisible(true);

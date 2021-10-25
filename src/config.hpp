@@ -6,6 +6,8 @@
 #include <QStandardPaths>
 #include <QDebug>
 
+#include "tag/tagcategory.h"
+
 #define getterAndSetter(name, type, key, defaultValue) \
     void set##name(const decltype(QVariant().to##type()) &key){\
         setValue(#key, key);\
@@ -40,6 +42,27 @@ public:
     getterAndSetter(ScrollSpeed, Double, scrollSpeed, 1.0)
     getterAndSetter(ScrollAcceleration, Double, scrollAcceleration, 1.0)
     getterAndSetter(ScrollFriction, Double, scrollFriction, 1.0)
+    getterAndSetter(ShowModDateTime, Bool, showModDateTime, true)
+    getterAndSetter(ShowModCategory, Bool, showModCategory, true)
+    getterAndSetter(ShowModLoaderType, Bool, showModLoaderType, true)
+
+    void setShowTagCategories(const QList<TagCategory> &categories)
+    {
+        QList<QVariant> list;
+        for(auto category : categories)
+            list << category.id();
+        setValue("showCategories", list);
+    }
+
+    QList<TagCategory> getShowTagCategories()
+    {
+        QList<TagCategory> categories;
+        auto &&variant = value("showCategories", true);
+        if(variant.toBool()) return TagCategory::PresetCategories;
+        for(auto &&category : variant.toList())
+            categories << TagCategory::fromId(category.toString());
+        return categories;
+    }
 
     //Explore
     getterAndSetter(DownloadPath, String, downloadPath, QStandardPaths::writableLocation(QStandardPaths::DownloadLocation))

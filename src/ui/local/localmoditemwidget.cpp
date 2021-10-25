@@ -208,14 +208,18 @@ void LocalModItemWidget::updateInfo()
         ui->featuredButton->setVisible(true);
     ui->featuredButton->setChecked(mod_->isFeatured());
 
+    updateUi();
+}
+
+void LocalModItemWidget::updateUi()
+{
     //tags
-    QStringList tagTextList;
     for(auto widget : qAsConst(tagWidgets_)){
         ui->tagsLayout->removeWidget(widget);
         widget->deleteLater();
     }
     tagWidgets_.clear();
-    for(auto &&tag : mod_->tags()){
+    for(auto &&tag : mod_->tagManager().tags(Config().getShowTagCategories())){
         auto label = new QLabel(tag.name(), this);
         label->setToolTip(tag.name());
         label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
