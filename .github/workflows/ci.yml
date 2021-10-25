@@ -63,11 +63,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - qt_arch: win32_mingw81
-            qt_ver: 5.15.2
-            qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win32_mingw810"
-            qt_tools_mingw_install: mingw810_32
-            openssl_url: "https://github.com/kaniol-lck/openssl1.1.1-prebuilt/releases/download/1.1.1l/openssl-1.1.1l-win32.zip"
+          #- qt_arch: win32_mingw81
+            #qt_ver: 5.15.2
+            #qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win32_mingw810"
+            #qt_tools_mingw_install: mingw810_32
+            #openssl_url: "https://github.com/kaniol-lck/openssl1.1.1-prebuilt/releases/download/1.1.1l/openssl-1.1.1l-win32.zip"
           - qt_arch: win64_mingw81
             qt_ver: 5.15.2
             qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win64_mingw810"
@@ -95,9 +95,6 @@ jobs:
         run: |
           Write-Output "${{ env.Qt5_DIR }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           Write-Output "${{ env.Qt5_DIR }}/../../Tools/${{ matrix.qt_tools_mingw_install }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      - uses: msys2/setup-msys2@v2
-        with:
-          install: mingw-w64-i686-aria2
       - name: where is qmake & where is mingw32-make
         shell: pwsh
         run: |
