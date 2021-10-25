@@ -332,7 +332,7 @@ void ModManager::on_menuTags_aboutToShow()
         connect(action, &QAction::toggled, this, [=](bool bl){
             auto list = showTagCategories;
             if(bl)
-                list.insert(count, category);
+                list.insert(count, category) ;
             else
                 list.removeAll(category);
             Config().setShowTagCategories(list);
