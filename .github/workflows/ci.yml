@@ -63,17 +63,19 @@ jobs:
     strategy:
       matrix:
         include:
-          #- qt_arch: win32_mingw81
-            #qt_ver: 5.15.2
-            #qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win32_mingw810"
-            #qt_tools_mingw_install: mingw810_32
-            #mingw_arch: mingw32
-            #openssl_url: "https://github.com/kaniol-lck/openssl1.1.1-prebuilt/releases/download/1.1.1l/openssl-1.1.1l-win32.zip"
+          - qt_arch: win32_mingw81
+            qt_ver: 5.15.2
+            qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win32_mingw810"
+            qt_tools_mingw_install: mingw810_32
+            mingw_arch: mingw32
+            msys_arch: i686
+            openssl_url: "https://github.com/kaniol-lck/openssl1.1.1-prebuilt/releases/download/1.1.1l/openssl-1.1.1l-win32.zip"
           - qt_arch: win64_mingw81
             qt_ver: 5.15.2
             qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win64_mingw810"
             qt_tools_mingw_install: mingw810_64
             mingw_arch: mingw64
+            msys_arch: x86_64
             openssl_url: "https://github.com/kaniol-lck/openssl1.1.1-prebuilt/releases/download/1.1.1l/openssl-1.1.1l-win64.zip"
     steps:
       - name: Install Qt
@@ -90,7 +92,7 @@ jobs:
       - name: Install aria2
         shell: powershell
         run: |
-          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
       - name: Qt 5 environment configuration
         if: ${{ startsWith( matrix.qt_ver, 5 ) }}
         shell: pwsh
@@ -119,6 +121,15 @@ jobs:
           Expand-Archive -Path openssl-bin.zip -DestinationPath openssl
           cp openssl/*.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libaria2-0.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libiconv-2.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/zlib1.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcares-4.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libstdc++-6.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/
           cp LICENSE* deploy/
           cp *md deploy/
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe

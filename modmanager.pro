@@ -272,6 +272,13 @@ unix {
 }
 
 win32 {
-  INCLUDEPATH += C:/msys64/mingw64/include
-  LIBS += -L$$quote(C:/msys64/mingw64/lib) -laria2
+  contains(QMAKE_TARGET.arch, x86_64) {
+    message("x86_64 build")
+    INCLUDEPATH += C:/msys64/mingw64/include
+    LIBS += -L$$quote(C:/msys64/mingw64/lib) -laria2
+  } else {
+    message("x86 build")
+    INCLUDEPATH += C:/msys64/mingw32/include
+    LIBS += -L$$quote(C:/msys64/mingw32/lib) -laria2
+  }
 }
