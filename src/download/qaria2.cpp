@@ -3,6 +3,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QtConcurrent>
+#include <QMessageBox>
 
 #include "qaria2downloader.h"
 #include "util/mmlogger.h"
@@ -18,7 +19,9 @@ int QAria2::downloadEventCallback(aria2::Session *session[[maybe_unused]], aria2
 
 QAria2::QAria2(QObject *parent) : QObject(parent)
 {
-    aria2::libraryInit();
+    if(auto code = aria2::libraryInit())
+        QMessageBox::warning(0, tr("Aria2 Error"), tr("Aria2 downloader init failed, download function may not work.") +
+                             "\n" + tr("Error code: %1").arg(code));
     config_.downloadEventCallback = downloadEventCallback;
     config_.keepRunning = true;
     session_ = aria2::sessionNew(aria2::KeyVals(), config_);

@@ -161,6 +161,9 @@
          <property name="text">
           <string>Name</string>
          </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+         </property>
          <property name="wordWrap">
           <bool>false</bool>
          </property>
