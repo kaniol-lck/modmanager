@@ -20,18 +20,8 @@ BrowserSelectorWidget::BrowserSelectorWidget(QWidget *parent) :
     connect(action, &QAction::triggered, this, &BrowserSelectorWidget::addMultiple, Qt::QueuedConnection);
     ui->addButton->addAction(action);
 
-    items_ << new QTreeWidgetItem({tr("Download")});
-    items_ << new QTreeWidgetItem({tr("Explore")});
-    items_ << new QTreeWidgetItem({tr("Local")});
-
-    //setup tree widget
-    for (const auto &item : qAsConst(items_)){
-        item->setForeground(0, QColor(127, 127, 127));
-        item->setFlags(item->flags().setFlag(Qt::ItemIsSelectable, false));
-        ui->browserTreeWidget->addTopLevelItem(item);
-    }
-    ui->browserTreeWidget->expandAll();
-    connect(ui->browserTreeWidget, &QTreeWidget::customContextMenuRequested, this, &BrowserSelectorWidget::customContextMenuRequested);
+    connect(ui->browserTreeView, &QTreeView::entered, this, &BrowserSelectorWidget::onItemSelected);
+    connect(ui->browserTreeView, &QTreeView::clicked, this, &BrowserSelectorWidget::onItemSelected);
 }
 
 BrowserSelectorWidget::~BrowserSelectorWidget()
@@ -39,44 +29,22 @@ BrowserSelectorWidget::~BrowserSelectorWidget()
     delete ui;
 }
 
-QTreeWidget *BrowserSelectorWidget::browserTreeWidget()
+void BrowserSelectorWidget::setModel(QAbstractItemModel *model)
 {
-    return ui->browserTreeWidget;
-}
-
-QTreeWidgetItem *BrowserSelectorWidget::item(BrowserCategory category)
-{
-    return items_[category];
-}
-
-void BrowserSelectorWidget::on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *)
-{
-    if(!current) return;
-    auto parent = current->parent();
-    if(!parent) return;
-    if(int i = items_.indexOf(parent); i >= 0)
-        emit browserChanged(static_cast<BrowserCategory>(i), parent->indexOfChild(current));
-}
-
-QTreeWidgetItem *BrowserSelectorWidget::downloadItem()
-{
-    return items_[Download];
-}
-
-QTreeWidgetItem *BrowserSelectorWidget::exploreItem()
-{
-    return items_[Explore];
-}
-
-QTreeWidgetItem *BrowserSelectorWidget::localItem()
-{
-    return items_[Local];
+    ui->browserTreeView->setModel(model);
+    ui->browserTreeView->expandAll();
 }
 
 void BrowserSelectorWidget::addMultiple()
 {
     auto paths = getExistingDirectories(this, tr("Select your mod directories..."), Config().getCommonPath());
     LocalModPathManager::addPaths(paths);
+}
+
+void BrowserSelectorWidget::onItemSelected(const QModelIndex &index)
+{
+    if(auto parent = index.parent(); parent.isValid())
+        emit browserChanged(parent.row(), index.row());
 }
 
 void BrowserSelectorWidget::on_addButton_clicked()
@@ -93,4 +61,10 @@ void BrowserSelectorWidget::on_manageButton_clicked()
 {
     auto dialog = new BrowserManagerDialog(this);
     dialog->show();
+}
+
+void BrowserSelectorWidget::on_browserTreeView_customContextMenuRequested(const QPoint &pos)
+{
+    auto index = ui->browserTreeView->indexAt(pos);
+    emit customContextMenuRequested(index, ui->browserTreeView->mapToGlobal(pos));
 }

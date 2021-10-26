@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include "qaria2.h"
+#include "util/mmlogger.h"
 
 QAria2Downloader::QAria2Downloader(aria2::A2Gid gid) :
     AbstractDownloader(QAria2::qaria2()),
@@ -53,6 +54,7 @@ void QAria2Downloader::setEvent(const aria2::DownloadEvent &event)
         break;
     case aria2::EVENT_ON_DOWNLOAD_ERROR:
         status_ = aria2::DOWNLOAD_ERROR;
+        MMLogger("Download", "error") << handle_->getErrorCode();
         break;
     case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
         status_ = aria2::DOWNLOAD_COMPLETE;

@@ -77,7 +77,7 @@
     </layout>
    </item>
    <item row="0" column="0">
-    <widget class="QTreeWidget" name="browserTreeWidget">
+    <widget class="QTreeView" name="browserTreeView">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
@@ -92,17 +92,18 @@ QTreeView::branch {
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>
-     <attribute name="headerVisible">
-      <bool>false</bool>
+     <property name="headerHidden">
+      <bool>true</bool>
+     </property>
+     <attribute name="headerDefaultSectionSize">
+      <number>35</number>
      </attribute>
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
     </widget>
    </item>
   </layout>

@@ -14,14 +14,10 @@ class Preferences : public QDialog
 public:
     explicit Preferences(QWidget *parent = nullptr);
     ~Preferences();
-
 private slots:
     void on_Preferences_accepted();
-
     void on_commonPathButton_clicked();
-
     void on_downloadPathButton_clicked();
-
 private:
     Ui::Preferences *ui;
 };

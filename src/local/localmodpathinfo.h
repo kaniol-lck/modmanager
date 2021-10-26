@@ -20,6 +20,7 @@ public:
     QVariant toVariant() const;
 
     QString displayName() const;
+    QIcon icon() const;
 
     bool exists() const;
 

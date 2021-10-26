@@ -342,3 +342,8 @@ void LocalModBrowser::on_hideUpdatesButton_clicked()
     ui->updateWidget->setVisible(false);
 }
 
+LocalModPath *LocalModBrowser::modPath() const
+{
+    return modPath_;
+}
+

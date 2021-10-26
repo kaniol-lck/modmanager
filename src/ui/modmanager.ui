@@ -258,7 +258,7 @@
   <customwidget>
    <class>PageSwitcher</class>
    <extends>QStackedWidget</extends>
-   <header>pageswitcher.h</header>
+   <header>ui/pageswitcher.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

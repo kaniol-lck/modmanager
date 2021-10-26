@@ -31,6 +31,9 @@ Preferences::Preferences(QWidget *parent) :
     ui->showModrinth->setChecked(config.getShowModrinth());
     ui->showOptiFine->setChecked(config.getShowOptiFine());
     ui->showReplayMod->setChecked(config.getShowReplayMod());
+    ui->showModDateTime->setChecked(config.getShowModDateTime());
+    ui->showModCategory->setChecked(config.getShowModCategory());
+    ui->showModLoaderType->setChecked(config.getShowModLoaderType());
 
     //Local
     ui->commonPathText->setText(config.getCommonPath());
@@ -57,6 +60,7 @@ Preferences::~Preferences()
 void Preferences::on_Preferences_accepted()
 {
     Config config;
+
     //General
     config.setSmoothScroll(ui->smoothScroll->isChecked());
     config.setScrollSpeed(ui->scrollSpeed->value());
@@ -72,6 +76,9 @@ void Preferences::on_Preferences_accepted()
     config.setShowModrinth(ui->showModrinth->isChecked());
     config.setShowOptiFine(ui->showOptiFine->isChecked());
     config.setShowReplayMod(ui->showReplayMod->isChecked());
+    config.setShowModDateTime(ui->showModDateTime->isChecked());
+    config.setShowModCategory(ui->showModCategory->isChecked());
+    config.setShowModLoaderType(ui->showModLoaderType->isCheckable());
 
     //Local
     config.setCommonPath(ui->commonPathText->text());

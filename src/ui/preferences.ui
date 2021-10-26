@@ -27,7 +27,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
@@ -107,8 +107,8 @@
       <attribute name="title">
        <string>Explore</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_9">
-       <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
         <layout class="QFormLayout" name="formLayout">
          <item row="0" column="0">
           <widget class="QLabel" name="label_8">
@@ -155,7 +155,11 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QSpinBox" name="searchResultCount"/>
+          <widget class="QSpinBox" name="searchResultCount">
+           <property name="maximum">
+            <number>50</number>
+           </property>
+          </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_11">
@@ -187,7 +191,7 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="0">
+       <item>
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
           <string>Pages</string>
@@ -198,12 +202,20 @@
             <property name="text">
              <string>Show Curseforge</string>
             </property>
+            <property name="icon">
+             <iconset resource="../images/image.qrc">
+              <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+            </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QCheckBox" name="showModrinth">
             <property name="text">
              <string>Show Modrinth</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../images/image.qrc">
+              <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
             </property>
            </widget>
           </item>
@@ -212,6 +224,10 @@
             <property name="text">
              <string>Show OptiFine</string>
             </property>
+            <property name="icon">
+             <iconset resource="../images/image.qrc">
+              <normaloff>:/image/optifine.png</normaloff>:/image/optifine.png</iconset>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -219,12 +235,46 @@
             <property name="text">
              <string>Show ReplayMod</string>
             </property>
+            <property name="icon">
+             <iconset resource="../images/image.qrc">
+              <normaloff>:/image/replay.png</normaloff>:/image/replay.png</iconset>
+            </property>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item>
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>Mods</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="showModDateTime">
+            <property name="text">
+             <string>Show date time</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="showModCategory">
+            <property name="text">
+             <string>Show category</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="showModLoaderType">
+            <property name="text">
+             <string>Show loader type</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -405,12 +455,20 @@
                <property name="text">
                 <string>Curseforge</string>
                </property>
+               <property name="icon">
+                <iconset resource="../images/image.qrc">
+                 <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+               </property>
               </widget>
              </item>
              <item row="0" column="1">
               <widget class="QCheckBox" name="useModrinthUpdate">
                <property name="text">
                 <string>Modrinth</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../images/image.qrc">
+                 <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
                </property>
               </widget>
              </item>
@@ -592,7 +650,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../images/image.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

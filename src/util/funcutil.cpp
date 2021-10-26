@@ -172,7 +172,7 @@ QString timesTo(const QDateTime &dateTime)
         return QObject::tr("%1 seconds").arg(seconds);
     else if(auto minutes = seconds / 60; minutes < 60)
         return QObject::tr("%1 minutes").arg(minutes);
-    else if(auto hours = minutes / 60; hours < 60)
+    else if(auto hours = minutes / 60; hours < 24)
         return QObject::tr("%1 hours").arg(hours);
 
     if(auto days = dateTime.daysTo(currrentTime); days < 30)

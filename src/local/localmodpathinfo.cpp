@@ -63,6 +63,14 @@ QString LocalModPathInfo::displayName() const
     return isAutoName_? autoName() : name_;
 }
 
+QIcon LocalModPathInfo::icon() const
+{
+    if(loaderType_ != ModLoaderType::Any)
+        return ModLoaderType::icon(loaderType_);
+    else
+        return QIcon::fromTheme("folder");
+}
+
 bool LocalModPathInfo::exists() const
 {
     return QDir(path_).exists();

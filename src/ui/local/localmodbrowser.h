@@ -24,6 +24,8 @@ public:
 
     bool isLoading() const;
 
+    LocalModPath *modPath() const;
+
 signals:
     void loadFinished();
 

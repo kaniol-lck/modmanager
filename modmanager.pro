@@ -41,7 +41,7 @@ SOURCES += \
     src/optifine/optifineapi.cpp \
     src/optifine/optifinemod.cpp \
     src/optifine/optifinemodinfo.cpp \
-    src/pageswitcher.cpp \
+    src/ui/pageswitcher.cpp \
     src/replay/replayapi.cpp \
     src/replay/replaymod.cpp \
     src/replay/replaymodinfo.cpp \
@@ -122,7 +122,7 @@ HEADERS += \
     src/optifine/optifineapi.h \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \
-    src/pageswitcher.h \
+    src/ui/pageswitcher.h \
     src/replay/replayapi.h \
     src/replay/replaymod.h \
     src/replay/replaymodinfo.h \

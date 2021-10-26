@@ -35,6 +35,9 @@ ModManager::ModManager(QWidget *parent) :
     browserSelector_(new BrowserSelectorWidget(this))
 {
     ui->setupUi(this);
+    browserSelector_->setModel(ui->pageSwitcher->model());
+    connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
+    connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
     Config config;
@@ -51,54 +54,22 @@ ModManager::ModManager(QWidget *parent) :
                   "}");
 
     ui->toolBar->addWidget(browserSelector_);
-    connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
-    connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     connect(ui->toolBar, &QToolBar::visibilityChanged, ui->action_Browsers, &QAction::setChecked);
 
-    //Downloader
+    //Download
     ui->pageSwitcher->addDownloadPage();
-    auto downloaderItem = new QTreeWidgetItem(browserSelector_->downloadItem(), {tr("Downloader")});
-    browserSelector_->downloadItem()->addChild(downloaderItem);
-    downloaderItem->setIcon(0, QIcon::fromTheme("download"));
 
-    //Curseforge
-    if(config.getShowCurseforge()){
-        ui->pageSwitcher->addCurseforgePage();
-        auto curseforgeItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Curseforge"});
-        browserSelector_->exploreItem()->addChild(curseforgeItem);
-        curseforgeItem->setIcon(0, QIcon(":/image/curseforge.svg"));
-    }
-
-    //Modrinth
-    if(config.getShowModrinth()){
-        ui->pageSwitcher->addModrinthPage();
-        auto modrinthItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Modrinth"});
-        browserSelector_->exploreItem()->addChild(modrinthItem);
-        modrinthItem->setIcon(0, QIcon(":/image/modrinth.svg"));
-    }
-
-    //Optifine
-    if(config.getShowOptiFine()){
-        ui->pageSwitcher->addOptiFinePage();
-        auto optifineItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"OptiFine"});
-        browserSelector_->exploreItem()->addChild(optifineItem);
-        optifineItem->setIcon(0, QIcon(":/image/optifine.png"));
-    }
-
-    //Replay
-    if(config.getShowReplayMod()){
-        ui->pageSwitcher->addReplayModPage();
-        auto replayItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"ReplayMod"});
-        browserSelector_->exploreItem()->addChild(replayItem);
-        replayItem->setIcon(0, QIcon(":/image/replay.png"));
-    }
+    //Explore
+    if(config.getShowCurseforge()) ui->pageSwitcher->addCurseforgePage();
+    if(config.getShowModrinth()) ui->pageSwitcher->addModrinthPage();
+    if(config.getShowOptiFine()) ui->pageSwitcher->addOptiFinePage();
+    if(config.getShowReplayMod()) ui->pageSwitcher->addReplayModPage();
 
     //Local
     syncPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModManager::syncPathList);
 
     //default browser
-//    browserSelector_->browserTreeWidget()->setCurrentItem(curseforgeItem);
     if(ui->pageSwitcher->exploreBrowsers().size())
         ui->pageSwitcher->setPage(PageSwitcher::Explore, 0);
 
@@ -126,37 +97,21 @@ void ModManager::resizeEvent(QResizeEvent *event)
 void ModManager::syncPathList()
 {
     //remember selected path
-    LocalModPath *selectedPath = nullptr;
-    auto currentItem = browserSelector_->browserTreeWidget()->currentItem();
-    if(currentItem != nullptr && currentItem->parent() == browserSelector_->localItem()){
-        auto index = currentItem->parent()->indexOfChild(currentItem);
-        selectedPath = pathList_.at(index);
-    }
+    LocalModBrowser *selectedBrowser = nullptr;
+    if(ui->pageSwitcher->currentCategory() == PageSwitcher::Local)
+        selectedBrowser = ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentIndex());
 
     auto oldCount = pathList_.size();
     for(const auto &path : LocalModPathManager::pathList()){
         if(auto i = pathList_.indexOf(path); i < 0){
             //not present, new one
             pathList_ << path;
-            auto item = new QTreeWidgetItem(browserSelector_->localItem(), { path->info().displayName() });
-            browserSelector_->localItem()->addChild(item);
-            if(auto loaderType = path->info().loaderType(); loaderType == ModLoaderType::Any)
-                item->setIcon(0, QIcon::fromTheme("folder"));
-            else
-                item->setIcon(0, ModLoaderType::icon(path->info().loaderType()));
             ui->pageSwitcher->addLocalPage(path);
         } else{
             //present, move position
             oldCount--;
             auto path = pathList_.takeAt(i);
             pathList_ << path;
-            auto item = browserSelector_->localItem()->takeChild(i);
-            item->setText(0, path->info().displayName());
-            if(auto loaderType = path->info().loaderType(); loaderType == ModLoaderType::Any)
-                item->setIcon(0, QIcon::fromTheme("folder"));
-            else
-                item->setIcon(0, ModLoaderType::icon(path->info().loaderType()));
-            browserSelector_->localItem()->addChild(item);
             auto browser = ui->pageSwitcher->takeLocalModBrowser(i);
             ui->pageSwitcher->addLocalPage(browser);
         }
@@ -165,7 +120,6 @@ void ModManager::syncPathList()
     auto i = oldCount;
     while (i--) {
         pathList_.removeAt(i);
-        delete browserSelector_->localItem()->takeChild(i);
         ui->pageSwitcher->removeLocalModBrowser(i);
     }
 
@@ -173,10 +127,9 @@ void ModManager::syncPathList()
     assert(pathList_ == LocalModPathManager::pathList());
 
     //reset selected path
-    if(selectedPath != nullptr){
-        auto index = pathList_.indexOf(selectedPath);
-        if(index >= 0)
-            browserSelector_->browserTreeWidget()->setCurrentItem(browserSelector_->localItem()->child(index));
+    if(!selectedBrowser){
+        if(auto index = ui->pageSwitcher->localModBrowsers().indexOf(selectedBrowser); index >= 0)
+            ui->pageSwitcher->setPage(PageSwitcher::Local, index);
     }
 }
 
@@ -186,7 +139,7 @@ void ModManager::editLocalPath(int index)
     auto dialog = new LocalModPathSettingsDialog(this, pathInfo);
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo, bool autoLoaderType){
         LocalModPathManager::pathList().at(index)->setInfo(newInfo, autoLoaderType);
-        browserSelector_->localItem()->child(index)->setText(0, newInfo.displayName());
+//        browserSelector_->localItem()->child(index)->setText(0, newInfo.displayName());
     });
     dialog->exec();
 }
@@ -195,6 +148,7 @@ void ModManager::on_actionPreferences_triggered()
 {
     auto preferences = new Preferences(this);
     preferences->exec();
+    ui->pageSwitcher->updateUi();
 }
 
 void ModManager::on_actionManage_Browser_triggered()
@@ -204,11 +158,10 @@ void ModManager::on_actionManage_Browser_triggered()
     dialog->show();
 }
 
-void ModManager::customContextMenuRequested(const QPoint &pos)
+void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoint &pos)
 {
     auto menu = new QMenu(this);
-    auto item = browserSelector_->browserTreeWidget()->itemAt(pos);
-    if(item == nullptr){
+    if(!index.isValid()){
         // in empty area
         connect(menu->addAction(QIcon::fromTheme("list-add"), tr("New Mod Path")), &QAction::triggered, this, [=]{
             auto dialog = new LocalModPathSettingsDialog(this);
@@ -220,20 +173,18 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
         });
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
-    } else if(item->parent() == browserSelector_->exploreItem()){
+    } else if(index.parent().row() == PageSwitcher::Explore){
         // on one of explore items
-        auto index = item->parent()->indexOfChild(item);
-        auto exploreBrowser = ui->pageSwitcher->exploreBrowser(index);
+        auto exploreBrowser = ui->pageSwitcher->exploreBrowser(index.row());
         connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
             exploreBrowser->refresh();
         });
         menu->addAction(exploreBrowser->visitWebsiteAction());
-    }else if(item->parent() == browserSelector_->localItem()){
+    }else if(index.parent().row() == PageSwitcher::Local){
         // on one of local items
-        auto index = item->parent()->indexOfChild(item);
-        auto localBrowser = ui->pageSwitcher->localModBrowser(index);
+        auto localBrowser = ui->pageSwitcher->localModBrowser(index.row());
         connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
-            editLocalPath(index);
+            editLocalPath(index.row());
         });
         auto reloadAction = menu->addAction(QIcon::fromTheme("view-refresh"), tr("Reload"));
         if(localBrowser->isLoading()){
@@ -247,13 +198,13 @@ void ModManager::customContextMenuRequested(const QPoint &pos)
         });
         connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
             if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
-            LocalModPathManager::removePathAt(index);
+            LocalModPathManager::removePathAt(index.row());
         });
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
     }
     if(!menu->actions().isEmpty())
-        menu->exec(browserSelector_->browserTreeWidget()->mapToGlobal(pos));
+        menu->exec(pos);
 }
 
 void ModManager::on_action_About_Mod_Manager_triggered()
@@ -360,13 +311,11 @@ void ModManager::on_actionReload_triggered()
         ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentPage())->reload();
 }
 
-
 void ModManager::on_actionShow_Mod_Date_Time_toggled(bool arg1)
 {
     Config().setShowModDateTime(arg1);
     ui->pageSwitcher->updateUi();
 }
-
 
 void ModManager::on_actionShow_Mod_Category_toggled(bool arg1)
 {
@@ -374,10 +323,8 @@ void ModManager::on_actionShow_Mod_Category_toggled(bool arg1)
     ui->pageSwitcher->updateUi();
 }
 
-
 void ModManager::on_actionShow_Mod_Loader_Type_toggled(bool arg1)
 {
     Config().setShowModLoaderType(arg1);
     ui->pageSwitcher->updateUi();
 }
-

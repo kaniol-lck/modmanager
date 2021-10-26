@@ -24,10 +24,8 @@ AbstractDownloader::~AbstractDownloader()
 
 void AbstractDownloader::handleRedirect()
 {
-    qDebug() << "from:" << QThread::currentThreadId();
     auto watcher = new QFutureWatcher<QUrl>(this);
     watcher->setFuture(QtConcurrent::run([=]{
-        qDebug() << "to:" << QThread::currentThreadId();
         return AbstractDownloader::handleRedirect(url_);
     }));
     connect(watcher, &QFutureWatcher<QUrl>::finished, this, [=]{

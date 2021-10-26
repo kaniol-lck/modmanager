@@ -13,30 +13,23 @@ class BrowserSelectorWidget : public QWidget
 {
     Q_OBJECT
 public:
-    enum BrowserCategory{ Download, Explore, Local };
-
-    explicit BrowserSelectorWidget(QWidget *parent = nullptr);
+    explicit BrowserSelectorWidget(QWidget *parent);
     ~BrowserSelectorWidget();
 
-    QTreeWidget *browserTreeWidget();
-    QTreeWidgetItem *item(BrowserCategory category);
-    QTreeWidgetItem *downloadItem();
-    QTreeWidgetItem *exploreItem();
-    QTreeWidgetItem *localItem();
-
+    void setModel(QAbstractItemModel *model);
 signals:
-    void browserChanged(BrowserCategory category, int index);
-    void customContextMenuRequested(const QPoint &pos);
+    void browserChanged(int category, int index);
+    void customContextMenuRequested(QModelIndex index, QPoint pos);
 
 private slots:
     void addMultiple();
-    void on_browserTreeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *);
+    void onItemSelected(const QModelIndex &index);
     void on_addButton_clicked();
     void on_manageButton_clicked();
+    void on_browserTreeView_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::BrowserSelectorWidget *ui;
-
-    QList<QTreeWidgetItem *> items_;
 };
 
 #endif // BROWSERSELECTORWIDGET_H

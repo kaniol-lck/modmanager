@@ -2,6 +2,7 @@
 #define PAGESWITCHER_H
 
 #include <QStackedWidget>
+#include <QStandardItemModel>
 
 class ExploreBrowser;
 class DownloadBrowser;
@@ -41,11 +42,14 @@ public:
     LocalModBrowser *localModBrowser(int index) const;
     int currentCategory() const;
     int currentPage() const;
+    QStandardItemModel *model();
 
 public slots:
     void setPage(int category, int page);
     void updateUi();
 private:
+    QStandardItemModel model_;
+    QList<QStandardItem *> items_;
     QVector<int> pageCount_;
     int currentCategory_;
     int currentPage_;
