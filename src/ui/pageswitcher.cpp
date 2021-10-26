@@ -15,13 +15,13 @@ PageSwitcher::PageSwitcher(QWidget *parent) :
     QStackedWidget(parent),
     pageCount_(3)
 {
-    items_ << new QStandardItem(tr("Download"));
-    items_ << new QStandardItem(tr("Explore"));
-    items_ << new QStandardItem(tr("Local"));
-    for(const auto &item : qAsConst(items_)){
+    model_.appendRow(new QStandardItem(tr("Download")));
+    model_.appendRow(new QStandardItem(tr("Explore")));
+    model_.appendRow(new QStandardItem(tr("Local")));
+    for(int row = 0; row < model_.rowCount(); row++){
+        auto item = model_.item(row);
         item->setForeground(QColor(127, 127, 127));
         item->setFlags(item->flags().setFlag(Qt::ItemIsSelectable, false));
-        model_.appendRow(item);
     };
 }
 
@@ -31,7 +31,7 @@ void PageSwitcher::addDownloadPage()
     addWidget(downloadBrowser_);
     pageCount_[Download]++;
     auto item = new QStandardItem(QIcon::fromTheme("download"), tr("Downloader"));
-    items_[Download]->appendRow(item);
+    model_.item(Download)->appendRow(item);
 }
 
 void PageSwitcher::addCurseforgePage()
@@ -41,7 +41,7 @@ void PageSwitcher::addCurseforgePage()
     addWidget(curseforgeModBrowser_);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/curseforge.svg"), tr("Curseforge"));
-    items_[Explore]->appendRow(item);
+    model_.item(Explore)->appendRow(item);
 }
 
 void PageSwitcher::addModrinthPage()
@@ -51,7 +51,7 @@ void PageSwitcher::addModrinthPage()
     addWidget(modrinthModBrowser_);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/modrinth.svg"), tr("Modrinth"));
-    items_[Explore]->appendRow(item);
+    model_.item(Explore)->appendRow(item);
 }
 
 void PageSwitcher::addOptiFinePage()
@@ -61,7 +61,7 @@ void PageSwitcher::addOptiFinePage()
     addWidget(optifineModBrowser_);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/optifine.png"), tr("OptiFine"));
-    items_[Explore]->appendRow(item);
+    model_.item(Explore)->appendRow(item);
 }
 
 void PageSwitcher::addReplayModPage()
@@ -71,7 +71,7 @@ void PageSwitcher::addReplayModPage()
     addWidget(replayModBrowser_);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/replay.png"), tr("ReplayMod"));
-    items_[Explore]->appendRow(item);
+    model_.item(Explore)->appendRow(item);
 }
 
 void PageSwitcher::addLocalPage(LocalModBrowser *browser)
@@ -80,7 +80,7 @@ void PageSwitcher::addLocalPage(LocalModBrowser *browser)
     addWidget(browser);
     pageCount_[Local]++;
     auto item = new QStandardItem(browser->modPath()->info().icon(), browser->modPath()->info().displayName());
-    items_[Local]->appendRow(item);
+    model_.item(Local)->appendRow(item);
 
     if(curseforgeModBrowser_){
         connect(browser, &LocalModBrowser::findNewOnCurseforge, curseforgeModBrowser_, &CurseforgeModBrowser::searchModByPathInfo);
@@ -119,7 +119,7 @@ LocalModBrowser *PageSwitcher::takeLocalModBrowser(int index)
     auto browser = localModBrowsers_.takeAt(index);
     removeWidget(browser);
     pageCount_[Local]--;
-    items_[Local]->removeRow(index);
+    model_.item(Local)->removeRow(index);
     return browser;
 }
 

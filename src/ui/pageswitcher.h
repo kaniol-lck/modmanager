@@ -49,7 +49,6 @@ public slots:
     void updateUi();
 private:
     QStandardItemModel model_;
-    QList<QStandardItem *> items_;
     QVector<int> pageCount_;
     int currentCategory_;
     int currentPage_;
