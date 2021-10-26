@@ -62,35 +62,45 @@ ModManager::ModManager(QWidget *parent) :
     downloaderItem->setIcon(0, QIcon::fromTheme("download"));
 
     //Curseforge
-    ui->pageSwitcher->addCurseforgePage();
-    auto curseforgeItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Curseforge"});
-    browserSelector_->exploreItem()->addChild(curseforgeItem);
-    curseforgeItem->setIcon(0, QIcon(":/image/curseforge.svg"));
+    if(config.getShowCurseforge()){
+        ui->pageSwitcher->addCurseforgePage();
+        auto curseforgeItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Curseforge"});
+        browserSelector_->exploreItem()->addChild(curseforgeItem);
+        curseforgeItem->setIcon(0, QIcon(":/image/curseforge.svg"));
+    }
 
     //Modrinth
-    ui->pageSwitcher->addModrinthPage();
-    auto modrinthItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Modrinth"});
-    browserSelector_->exploreItem()->addChild(modrinthItem);
-    modrinthItem->setIcon(0, QIcon(":/image/modrinth.svg"));
+    if(config.getShowModrinth()){
+        ui->pageSwitcher->addModrinthPage();
+        auto modrinthItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"Modrinth"});
+        browserSelector_->exploreItem()->addChild(modrinthItem);
+        modrinthItem->setIcon(0, QIcon(":/image/modrinth.svg"));
+    }
 
     //Optifine
-    ui->pageSwitcher->addOptiFinePage();
-    auto optifineItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"OptiFine"});
-    browserSelector_->exploreItem()->addChild(optifineItem);
-    optifineItem->setIcon(0, QIcon(":/image/optifine.png"));
+    if(config.getShowOptiFine()){
+        ui->pageSwitcher->addOptiFinePage();
+        auto optifineItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"OptiFine"});
+        browserSelector_->exploreItem()->addChild(optifineItem);
+        optifineItem->setIcon(0, QIcon(":/image/optifine.png"));
+    }
 
     //Replay
-    ui->pageSwitcher->addReplayModPage();
-    auto replayItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"ReplayMod"});
-    browserSelector_->exploreItem()->addChild(replayItem);
-    replayItem->setIcon(0, QIcon(":/image/replay.png"));
+    if(config.getShowReplayMod()){
+        ui->pageSwitcher->addReplayModPage();
+        auto replayItem = new QTreeWidgetItem(browserSelector_->exploreItem(), {"ReplayMod"});
+        browserSelector_->exploreItem()->addChild(replayItem);
+        replayItem->setIcon(0, QIcon(":/image/replay.png"));
+    }
 
     //Local
     syncPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModManager::syncPathList);
 
     //default browser
-    browserSelector_->browserTreeWidget()->setCurrentItem(curseforgeItem);
+//    browserSelector_->browserTreeWidget()->setCurrentItem(curseforgeItem);
+    if(ui->pageSwitcher->exploreBrowsers().size())
+        ui->pageSwitcher->setPage(PageSwitcher::Explore, 0);
 
     //init versions
     VersionManager::initVersionLists();

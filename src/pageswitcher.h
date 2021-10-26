@@ -50,11 +50,11 @@ private:
     int currentCategory_;
     int currentPage_;
 
-    DownloadBrowser *downloadBrowser_;
-    CurseforgeModBrowser *curseforgeModBrowser_;
-    ModrinthModBrowser *modrinthModBrowser_;
-    OptifineModBrowser *optifineModBrowser_;
-    ReplayModBrowser *replayModBrowser_;
+    DownloadBrowser *downloadBrowser_ = nullptr;
+    CurseforgeModBrowser *curseforgeModBrowser_ = nullptr;
+    ModrinthModBrowser *modrinthModBrowser_ = nullptr;
+    OptifineModBrowser *optifineModBrowser_ = nullptr;
+    ReplayModBrowser *replayModBrowser_ = nullptr;
     QList<ExploreBrowser *> exploreBrowsers_;
     QList<LocalModBrowser *> localModBrowsers_;
 };

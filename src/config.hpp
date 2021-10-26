@@ -70,6 +70,10 @@ public:
     enum OptifineSourceType{ Official, BMCLAPI };
     getterAndSetter(OptifineSource, Int, optifineSource, Official)
     getterAndSetter(ShowModrinthSnapshot, Bool, showModrinthSnapshot, false)
+    getterAndSetter(ShowCurseforge, Bool, ShowCurseforge, true)
+    getterAndSetter(ShowModrinth, Bool, showModrinth, true)
+    getterAndSetter(ShowOptiFine, Bool, showOptiFine, true)
+    getterAndSetter(ShowReplayMod, Bool, showReplayMod, true)
 
     //Local
     getterAndSetter(CommonPath, String, commonPath, "")

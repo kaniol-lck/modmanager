@@ -60,22 +60,30 @@ void PageSwitcher::addLocalPage(LocalModBrowser *browser)
     addWidget(browser);
     pageCount_[Local]++;
 
-    connect(browser, &LocalModBrowser::findNewOnCurseforge, curseforgeModBrowser_, &CurseforgeModBrowser::searchModByPathInfo);
-    connect(browser, &LocalModBrowser::findNewOnCurseforge, this, [=]{
-        setPage(Explore, exploreBrowsers_.indexOf(curseforgeModBrowser_));
-    });
-    connect(browser, &LocalModBrowser::findNewOnModrinth, modrinthModBrowser_, &ModrinthModBrowser::searchModByPathInfo);
-    connect(browser, &LocalModBrowser::findNewOnModrinth, this, [=]{
-        setPage(Explore, exploreBrowsers_.indexOf(modrinthModBrowser_));
-    });
-    connect(browser, &LocalModBrowser::findNewOnOptifine, optifineModBrowser_, &OptifineModBrowser::searchModByPathInfo);
-    connect(browser, &LocalModBrowser::findNewOnOptifine, this, [=]{
-        setPage(Explore, exploreBrowsers_.indexOf(optifineModBrowser_));
-    });
-    connect(browser, &LocalModBrowser::findNewOnReplay, replayModBrowser_, &ReplayModBrowser::searchModByPathInfo);
-    connect(browser, &LocalModBrowser::findNewOnReplay, this, [=]{
-        setPage(Explore, exploreBrowsers_.indexOf(replayModBrowser_));
-    });
+    if(curseforgeModBrowser_){
+        connect(browser, &LocalModBrowser::findNewOnCurseforge, curseforgeModBrowser_, &CurseforgeModBrowser::searchModByPathInfo);
+        connect(browser, &LocalModBrowser::findNewOnCurseforge, this, [=]{
+            setPage(Explore, exploreBrowsers_.indexOf(curseforgeModBrowser_));
+        });
+    }
+    if(modrinthModBrowser_){
+        connect(browser, &LocalModBrowser::findNewOnModrinth, modrinthModBrowser_, &ModrinthModBrowser::searchModByPathInfo);
+        connect(browser, &LocalModBrowser::findNewOnModrinth, this, [=]{
+            setPage(Explore, exploreBrowsers_.indexOf(modrinthModBrowser_));
+        });
+    }
+    if(optifineModBrowser_){
+        connect(browser, &LocalModBrowser::findNewOnOptifine, optifineModBrowser_, &OptifineModBrowser::searchModByPathInfo);
+        connect(browser, &LocalModBrowser::findNewOnOptifine, this, [=]{
+            setPage(Explore, exploreBrowsers_.indexOf(optifineModBrowser_));
+        });
+    }
+    if(replayModBrowser_){
+        connect(browser, &LocalModBrowser::findNewOnReplay, replayModBrowser_, &ReplayModBrowser::searchModByPathInfo);
+        connect(browser, &LocalModBrowser::findNewOnReplay, this, [=]{
+            setPage(Explore, exploreBrowsers_.indexOf(replayModBrowser_));
+        });
+    }
 }
 
 void PageSwitcher::addLocalPage(LocalModPath *path)

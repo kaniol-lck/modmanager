@@ -27,6 +27,10 @@ Preferences::Preferences(QWidget *parent) :
     ui->searchResultCount->setValue(config.getSearchResultCount());
     ui->optifineVersionSource->setCurrentIndex(config.getOptifineSource());
     ui->showModrinthSnapshot->setChecked(config.getShowModrinthSnapshot());
+    ui->showCurseforge->setChecked(config.getShowCurseforge());
+    ui->showModrinth->setChecked(config.getShowModrinth());
+    ui->showOptiFine->setChecked(config.getShowOptiFine());
+    ui->showReplayMod->setChecked(config.getShowReplayMod());
 
     //Local
     ui->commonPathText->setText(config.getCommonPath());
@@ -64,6 +68,10 @@ void Preferences::on_Preferences_accepted()
     config.setSearchResultCount(ui->searchResultCount->value());
     config.setOptifineSource(ui->optifineVersionSource->currentIndex());
     config.setShowModrinthSnapshot(ui->showModrinthSnapshot->isChecked());
+    config.setShowCurseforge(ui->showCurseforge->isChecked());
+    config.setShowModrinth(ui->showModrinth->isChecked());
+    config.setShowOptiFine(ui->showOptiFine->isChecked());
+    config.setShowReplayMod(ui->showReplayMod->isChecked());
 
     //Local
     config.setCommonPath(ui->commonPathText->text());
