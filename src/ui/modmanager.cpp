@@ -179,6 +179,9 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
             exploreBrowser->refresh();
         });
+        connect(menu->addAction(QIcon::fromTheme(""), tr("Hide")), &QAction::triggered, this, [=]{
+            ui->pageSwitcher->removeExplorePage(index.row());
+        });
         menu->addAction(exploreBrowser->visitWebsiteAction());
     }else if(index.parent().row() == PageSwitcher::Local){
         // on one of local items

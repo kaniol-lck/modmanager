@@ -27,7 +27,8 @@ PageSwitcher::PageSwitcher(QWidget *parent) :
 
 void PageSwitcher::addDownloadPage()
 {
-    downloadBrowser_ = new DownloadBrowser(this);
+    if(!downloadBrowser_)
+        downloadBrowser_ = new DownloadBrowser(this);
     addWidget(downloadBrowser_);
     pageCount_[Download]++;
     auto item = new QStandardItem(QIcon::fromTheme("download"), tr("Downloader"));
@@ -36,7 +37,8 @@ void PageSwitcher::addDownloadPage()
 
 void PageSwitcher::addCurseforgePage()
 {
-    curseforgeModBrowser_ = new CurseforgeModBrowser(this);
+    if(!curseforgeModBrowser_)
+        curseforgeModBrowser_ = new CurseforgeModBrowser(this);
     exploreBrowsers_ << curseforgeModBrowser_;
     addWidget(curseforgeModBrowser_);
     pageCount_[Explore]++;
@@ -46,7 +48,8 @@ void PageSwitcher::addCurseforgePage()
 
 void PageSwitcher::addModrinthPage()
 {
-    modrinthModBrowser_ = new ModrinthModBrowser(this);
+    if(!modrinthModBrowser_)
+        modrinthModBrowser_ = new ModrinthModBrowser(this);
     exploreBrowsers_ << modrinthModBrowser_;
     addWidget(modrinthModBrowser_);
     pageCount_[Explore]++;
@@ -56,7 +59,8 @@ void PageSwitcher::addModrinthPage()
 
 void PageSwitcher::addOptiFinePage()
 {
-    optifineModBrowser_ = new OptifineModBrowser(this);
+    if(!optifineModBrowser_)
+        optifineModBrowser_ = new OptifineModBrowser(this);
     exploreBrowsers_ << optifineModBrowser_;
     addWidget(optifineModBrowser_);
     pageCount_[Explore]++;
@@ -66,7 +70,8 @@ void PageSwitcher::addOptiFinePage()
 
 void PageSwitcher::addReplayModPage()
 {
-    replayModBrowser_ = new ReplayModBrowser(this);
+    if(!replayModBrowser_)
+        replayModBrowser_ = new ReplayModBrowser(this);
     exploreBrowsers_ << replayModBrowser_;
     addWidget(replayModBrowser_);
     pageCount_[Explore]++;
@@ -114,6 +119,35 @@ void PageSwitcher::addLocalPage(LocalModPath *path)
     addLocalPage(localModBrowser);
 }
 
+void PageSwitcher::removeExplorePage(int index)
+{
+    if(index < 0) return;
+    removeWidget(exploreBrowsers_.at(index));
+    exploreBrowsers_.removeAt(index);
+    pageCount_[Explore]--;
+    model_.item(Explore)->removeRow(index);
+}
+
+void PageSwitcher::removeCurseforgePage()
+{
+    removeExplorePage(curseforgeModBrowser_);
+}
+
+void PageSwitcher::removeModrinthPage()
+{
+    removeExplorePage(modrinthModBrowser_);
+}
+
+void PageSwitcher::removeOptiFinePage()
+{
+    removeExplorePage(optifineModBrowser_);
+}
+
+void PageSwitcher::removeReplayModPage()
+{
+    removeExplorePage(replayModBrowser_);
+}
+
 LocalModBrowser *PageSwitcher::takeLocalModBrowser(int index)
 {
     auto browser = localModBrowsers_.takeAt(index);
@@ -142,6 +176,13 @@ void PageSwitcher::updateUi()
         browser->updateUi();
     for(auto browser : qAsConst(localModBrowsers_))
         browser->updateUi();
+}
+
+void PageSwitcher::removeExplorePage(ExploreBrowser *exploreBrowser)
+{
+    auto index = exploreBrowsers_.indexOf(exploreBrowser);
+    if(index < 0) return;
+    removeExplorePage(index);
 }
 
 QStandardItemModel *PageSwitcher::model()

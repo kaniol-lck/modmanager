@@ -28,6 +28,12 @@ public:
     void addLocalPage(LocalModBrowser *browser);
     void addLocalPage(LocalModPath *path);
 
+    void removeExplorePage(int index);
+    void removeCurseforgePage();
+    void removeModrinthPage();
+    void removeOptiFinePage();
+    void removeReplayModPage();
+
     LocalModBrowser *takeLocalModBrowser(int index);
     void removeLocalModBrowser(int index);
 
@@ -48,6 +54,7 @@ public slots:
     void setPage(int category, int page);
     void updateUi();
 private:
+    void removeExplorePage(ExploreBrowser *exploreBrowser);
     QStandardItemModel model_;
     QVector<int> pageCount_;
     int currentCategory_;
