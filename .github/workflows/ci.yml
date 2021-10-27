@@ -138,7 +138,7 @@ jobs:
           makensis modmanager${{ matrix.x64_suffix }}.nsi
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}
+          name: ModManager${{ matrix.x64_suffix }}-Installer.exe
           path: ${{github.workspace}}/ModManager-*-Installer.exe
       - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')

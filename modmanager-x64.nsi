@@ -49,7 +49,7 @@ SetCompressor lzma
 
 ; MUI end ------
 
-Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+Name "${PRODUCT_NAME}"
 OutFile "ModManager-${PRODUCT_VERSION}-x64-Installer.exe"
 InstallDir "$PROGRAMFILES\Mod Manager"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
@@ -109,6 +109,7 @@ Section "MainSection" SEC01
   File "deploy\ssl\certs\ca-bundle.crt"
   File "deploy\ssl\certs\ca-bundle.trust.crt"
   SetOutPath "$INSTDIR\ssl"
+  File "deploy\ssl\cert.pem"
   File "deploy\ssl\ct_log_list.cnf"
   File "deploy\ssl\ct_log_list.cnf.dist"
   File "deploy\ssl\openssl.cnf"
@@ -152,6 +153,7 @@ Section Uninstall
   Delete "$INSTDIR\ssl\openssl.cnf"
   Delete "$INSTDIR\ssl\ct_log_list.cnf.dist"
   Delete "$INSTDIR\ssl\ct_log_list.cnf"
+  Delete "$INSTDIR\ssl\cert.pem"
   Delete "$INSTDIR\ssl\certs\ca-bundle.trust.crt"
   Delete "$INSTDIR\ssl\certs\ca-bundle.crt"
   Delete "$INSTDIR\bin\zlib1.dll"
