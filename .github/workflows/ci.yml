@@ -129,9 +129,9 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/bin/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/bin/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/ssl/* deploy/ssl/
+          cp -r C:/msys64/${{ matrix.mingw_arch }}/ssl/ deploy/ssl/
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/bin/${{github.event.repository.name}}.exe
-      - name: Create Installer
+      - name: Create installer
         run:
           makensis modmanager${{ matrix.x64_suffix }}.nsi
       - uses: actions/upload-artifact@v2
