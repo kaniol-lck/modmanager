@@ -70,7 +70,6 @@ jobs:
             mingw_arch: mingw32
             msys_arch: i686
             x64_suffix:
-            openssl_url: "https://github.com/kaniol-lck/openssl1.1.1-prebuilt/releases/download/1.1.1l/openssl-1.1.1l-win32.zip"
           - qt_arch: win64_mingw81
             qt_ver: 5.15.2
             qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win64_mingw810"
@@ -78,7 +77,6 @@ jobs:
             mingw_arch: mingw64
             msys_arch: x86_64
             x64_suffix: -x64
-            openssl_url: "https://github.com/kaniol-lck/openssl1.1.1-prebuilt/releases/download/1.1.1l/openssl-1.1.1l-win64.zip"
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2.13.0
