@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - "*.pro"
+      - "*.nsi"
       - "src/**"
       - ".github/workflows/ci.yml"
   pull_request:
     paths:
       - "*.pro"
+      - "*.nsi"
       - "src/**"
       - ".github/workflows/ci.yml"
 jobs:
