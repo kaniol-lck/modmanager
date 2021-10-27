@@ -147,7 +147,7 @@ jobs:
           asset_name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
           tag: ${{ github.ref }}
           overwrite: true
-
+  # enable them if find a way to build libaria2
   #build-on-win-msvc:
     #name: Build On Windows MSVC
     #runs-on: windows-latest
