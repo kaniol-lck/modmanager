@@ -271,6 +271,10 @@ unix {
   LIBS += -laria2
 }
 
+macx {
+  INCLUDEPATH += /usr/local/include
+}
+
 win32 {
   contains(QMAKE_HOST.arch, x86_64) {
     message("x86_64 build")
