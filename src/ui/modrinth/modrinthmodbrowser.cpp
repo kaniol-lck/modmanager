@@ -71,6 +71,7 @@ void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 
 void ModrinthModBrowser::updateUi()
 {
+    updateVersionList();
     for(int i = 0; i < ui->modListWidget->count(); i++){
         auto item = ui->modListWidget->item(i);
         if(!item->text().isEmpty()) continue;

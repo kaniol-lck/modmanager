@@ -40,7 +40,7 @@ void PageSwitcher::addCurseforgePage()
     if(!curseforgeModBrowser_)
         curseforgeModBrowser_ = new CurseforgeModBrowser(this);
     exploreBrowsers_ << curseforgeModBrowser_;
-    addWidget(curseforgeModBrowser_);
+    insertWidget(pageCount_[Download] + pageCount_[Explore], curseforgeModBrowser_);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/curseforge.svg"), tr("Curseforge"));
     model_.item(Explore)->appendRow(item);
@@ -51,7 +51,7 @@ void PageSwitcher::addModrinthPage()
     if(!modrinthModBrowser_)
         modrinthModBrowser_ = new ModrinthModBrowser(this);
     exploreBrowsers_ << modrinthModBrowser_;
-    addWidget(modrinthModBrowser_);
+    insertWidget(pageCount_[Download] + pageCount_[Explore], modrinthModBrowser_);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/modrinth.svg"), tr("Modrinth"));
     model_.item(Explore)->appendRow(item);
@@ -62,7 +62,7 @@ void PageSwitcher::addOptiFinePage()
     if(!optifineModBrowser_)
         optifineModBrowser_ = new OptifineModBrowser(this);
     exploreBrowsers_ << optifineModBrowser_;
-    addWidget(optifineModBrowser_);
+    insertWidget(pageCount_[Download] + pageCount_[Explore], optifineModBrowser_);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/optifine.png"), tr("OptiFine"));
     model_.item(Explore)->appendRow(item);
@@ -73,7 +73,7 @@ void PageSwitcher::addReplayModPage()
     if(!replayModBrowser_)
         replayModBrowser_ = new ReplayModBrowser(this);
     exploreBrowsers_ << replayModBrowser_;
-    addWidget(replayModBrowser_);
+    insertWidget(pageCount_[Download] + pageCount_[Explore], replayModBrowser_);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/replay.png"), tr("ReplayMod"));
     model_.item(Explore)->appendRow(item);
@@ -176,6 +176,15 @@ void PageSwitcher::updateUi()
         browser->updateUi();
     for(auto browser : qAsConst(localModBrowsers_))
         browser->updateUi();
+    Config config;
+    if(config.getShowCurseforge() && !exploreBrowsers_.contains(curseforgeModBrowser_)) addCurseforgePage();
+    if(!config.getShowCurseforge() && exploreBrowsers_.contains(curseforgeModBrowser_)) removeCurseforgePage();
+    if(config.getShowModrinth() && !exploreBrowsers_.contains(modrinthModBrowser_)) addModrinthPage();
+    if(!config.getShowModrinth() && exploreBrowsers_.contains(modrinthModBrowser_)) removeModrinthPage();
+    if(config.getShowOptiFine() && !exploreBrowsers_.contains(optifineModBrowser_)) addOptiFinePage();
+    if(!config.getShowOptiFine() && exploreBrowsers_.contains(optifineModBrowser_)) removeOptiFinePage();
+    if(config.getShowReplayMod() && !exploreBrowsers_.contains(replayModBrowser_)) addReplayModPage();
+    if(!config.getShowReplayMod() && exploreBrowsers_.contains(replayModBrowser_)) removeReplayModPage();
 }
 
 void PageSwitcher::removeExplorePage(ExploreBrowser *exploreBrowser)

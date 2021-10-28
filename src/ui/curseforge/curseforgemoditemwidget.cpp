@@ -57,6 +57,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     //tags
     for(auto &&tag : mod_->tags()){
         auto label = new QLabel(this);
+        label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
         if(!tag.iconName().isEmpty())
             label->setText(QString(R"(<img src="%1" height="22" width="22"/>)").arg(tag.iconName()));
         else
@@ -70,6 +71,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     //loader type
     for(auto &&loaderType : mod_->modInfo().loaderTypes()){
         auto label = new QLabel(this);
+        label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
         if(loaderType == ModLoaderType::Fabric)
             label->setText(QString(R"(<img src=":/image/fabric.png" height="22" width="22"/>)"));
         else if(loaderType == ModLoaderType::Forge)
