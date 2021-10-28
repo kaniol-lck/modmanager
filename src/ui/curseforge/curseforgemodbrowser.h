@@ -46,6 +46,7 @@ private:
     LocalModPath *downloadPath_;
     QString currentName_;
     int currentIndex_;
+    int currentCategoryId_;
     bool isUiSet_ = false;
     bool hasMore_ = false;
     bool isSearching_ = false;

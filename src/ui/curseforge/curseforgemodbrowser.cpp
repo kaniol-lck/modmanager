@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QDebug>
 #include <QAction>
+#include <QMenu>
 
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
@@ -30,13 +31,50 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
     //categories
-    //TODO: using menu/submenu
-    ui->categorySelect->clear();
-    ui->categorySelect->addItem(tr("Any"));
-    for(const auto &[id, name, iconName] : CurseforgeAPI::getCategories()){
-        QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
-        ui->categorySelect->addItem(icon, name);
+    auto menu = new QMenu;
+    auto anyCategoryAction = menu->addAction(tr("Any"));
+    connect(anyCategoryAction, &QAction::triggered, this, [=]{
+        currentCategoryId_ = 0;
+        ui->categorySelect->setText(tr("Category: %1").arg(tr("Any")));
+    });
+    anyCategoryAction->trigger();
+    menu->addSeparator();
+    QMap<int, QMenu*> submenus;
+    for(auto &&[id, name, iconName, parentId] : CurseforgeAPI::getCategories()){
+        if(parentId == 6){
+            auto submenu = new QMenu(name);
+            submenu->setIcon(QIcon(QString(":/image/curseforge/%1.png").arg(iconName)));
+            submenus[id] = submenu;
+            QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
+            connect(submenu->addAction(icon, name), &QAction::triggered, this, [=, id = id, name = name]{
+                currentCategoryId_ = id;
+                ui->categorySelect->setText(tr("Category: %1").arg(name));
+            });
+        }
     }
+    for(auto &&[id, name, iconName, parentId] : CurseforgeAPI::getCategories()){
+        if(submenus.contains(parentId)){
+            auto submenu = submenus[parentId];
+            if(submenu->actions().size() == 1)
+                submenu->addSeparator();
+            submenus[id] = submenu;
+            QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
+            connect(submenu->addAction(icon, name), &QAction::triggered, this, [=, id = id, name = name]{
+                currentCategoryId_ = id;
+                ui->categorySelect->setText(tr("Category: %1").arg(name));
+            });
+        }
+    }
+    for(auto submenu : qAsConst(submenus)){
+        if(submenu->actions().size() == 1)
+            menu->addActions(submenu->actions());
+        else
+            menu->addMenu(submenu);
+    }
+    connect(menu, &QMenu::triggered, this, [=]{
+        getModList(currentName_);
+    });
+    ui->categorySelect->setMenu(menu);
 
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
@@ -136,8 +174,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
     setCursor(Qt::BusyCursor);
 
     GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
-    auto categoryIndex = ui->categorySelect->currentIndex() - 1;
-    auto category = categoryIndex < 0 ? 0 : std::get<0>(CurseforgeAPI::getCategories()[categoryIndex]);
+    auto category = currentCategoryId_;
     auto sort = ui->sortSelect->currentIndex();
 
     isSearching_ = true;

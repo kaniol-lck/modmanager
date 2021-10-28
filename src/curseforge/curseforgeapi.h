@@ -28,7 +28,7 @@ public:
     void getTimestamp(std::function<void (QString)> callback);
     void getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback);
 
-    static const QList<std::tuple<int, QString, QString>> &getCategories();
+    static const QList<std::tuple<int, QString, QString, int> > &getCategories();
 
 private:
     QNetworkAccessManager accessManager_;

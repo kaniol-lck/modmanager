@@ -263,44 +263,48 @@ jobs:
           #tag: ${{ github.ref }}
           #overwrite: true
 
-  #build-on-osx:
-    #name: Build On OSX
-    #runs-on: ${{ matrix.os }}
-    #strategy:
-      #matrix:
-        #os: [macos-10.15]
-        #qt_ver: [5.15.2]
-        #qt_arch: [clang_64]
-    #steps:
-      #- name: Install Qt
-        #uses: jurplel/install-qt-action@v2.13.0
-        #with:
-          #version: ${{ matrix.qt_ver }}
-          #cached: "false"
-      #- name: Install aria2
-        #run: |
-          #brew install aria2
-      #- uses: actions/checkout@v2
-        #with:
-          #fetch-depth: 1
-      #- name: build macos
-        #run: |
-          #qmake
-          #make
-      #- name: package
-        #run: |
-          #macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
-        #shell: sh
-      #- uses: actions/upload-artifact@v2
-        #with:
-          #name: ModManager_${{ matrix.os }}_${{matrix.qt_ver}}.zip
-          #path: modmanager.app
-      #- name: uploadRelease
-        #if: startsWith(github.event.ref, 'refs/tags/')
-        #uses: svenstaro/upload-release-action@v2
-        #with:
-          #repo_token: ${{ secrets.GITHUB_TOKEN }}
-          #file: modmanager.dmg
-          #asset_name: ModManager_${{ matrix.os }}_${{ matrix.qt_ver }}.dmg
-          #tag: ${{ github.ref }}
-          #overwrite: true
+  build-on-osx:
+    name: Build On OSX
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-10.15]
+        qt_ver: [5.15.2]
+        qt_arch: [clang_64]
+    steps:
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2.13.0
+        with:
+          version: ${{ matrix.qt_ver }}
+          cached: "false"
+      - name: Install libaria2
+        run: |
+          wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
+          unzip *.zip
+          sudo cp lib/* /usr/local/lib/
+          sudo cp include/* /usr/local/include/
+          rm -rf lib/ include/ *.zip
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: build macos
+        run: |
+          qmake
+          make
+      - name: package
+        run: |
+          macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
+        shell: sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ModManager_${{ matrix.os }}_${{matrix.qt_ver}}.dmg
+          path: modmanager.app
+      - name: uploadRelease
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: modmanager.dmg
+          asset_name: ModManager_${{ matrix.os }}_${{ matrix.qt_ver }}.dmg
+          tag: ${{ github.ref }}
+          overwrite: true

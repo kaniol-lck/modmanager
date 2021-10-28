@@ -39,6 +39,69 @@
    <item row="0" column="0">
     <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="searchText">
+          <property name="placeholderText">
+           <string>Search mod on Curseforge...</string>
+          </property>
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Sort:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="sortSelect">
+          <item>
+           <property name="text">
+            <string>Popularity</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Last Updated</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Author</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Total Downloads</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Category</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Game Version</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -59,36 +122,6 @@
         </item>
         <item>
          <widget class="QComboBox" name="versionSelect">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="label_5">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Category:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="categorySelect">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -170,68 +203,18 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="0" colspan="4">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLineEdit" name="searchText">
-          <property name="placeholderText">
-           <string>Search mod on Curseforge...</string>
-          </property>
-          <property name="clearButtonEnabled">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Sort:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="sortSelect">
-          <item>
-           <property name="text">
-            <string>Popularity</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Last Updated</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Author</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Total Downloads</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Category</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Game Version</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-       </layout>
+      <item row="1" column="1">
+       <widget class="QToolButton" name="categorySelect">
+        <property name="text">
+         <string>Category:</string>
+        </property>
+        <property name="popupMode">
+         <enum>QToolButton::InstantPopup</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

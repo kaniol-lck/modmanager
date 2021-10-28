@@ -109,7 +109,7 @@ QList<Tag> CurseforgeMod::tags() const
             return std::get<0>(t) == categoryId;
         });
         if(it != CurseforgeAPI::getCategories().end()){
-            auto [id, name, iconName] = *it;
+            auto [id, name, iconName, parentId] = *it;
             tags << Tag(name, TagCategory::CurseforgeCategory, ":/image/curseforge/" + iconName);
         } else
             qDebug() << categoryId;
