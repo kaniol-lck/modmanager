@@ -45,11 +45,14 @@ void CurseforgeMod::acquireBasicInfo()
 {
     if(gettingBasicInfo_) return;
     gettingBasicInfo_ = true;
-    api_->getInfo(modInfo_.id_, [=](const auto &info){
+    auto conn = api_->getInfo(modInfo_.id_, [=](const auto &info){
         gettingBasicInfo_ = false;
         modInfo_ = info;
         emit basicInfoReady();
         modInfo_.basicInfo_ = true;
+    });
+    connect(this, &QObject::destroyed, this, [=]{
+        disconnect(conn);
     });
 }
 
@@ -78,10 +81,13 @@ void CurseforgeMod::acquireDescription()
 {
     if(gettingDescription_) return;
     gettingDescription_ = true;
-    api_->getDescription(modInfo_.id(), [=](const QString &description){
+    auto conn = api_->getDescription(modInfo_.id(), [=](const QString &description){
         gettingDescription_ = false;
         modInfo_.description_ = description;
         emit descriptionReady();
+    });
+    connect(this, &QObject::destroyed, this, [=]{
+        disconnect(conn);
     });
 }
 
@@ -89,10 +95,13 @@ void CurseforgeMod::acquireAllFileList()
 {
     if(gettingAllFileList_) return;
     gettingAllFileList_ = true;
-    api_->getFiles(modInfo_.id(), [=](const QList<CurseforgeFileInfo> &fileList){
+    auto conn = api_->getFiles(modInfo_.id(), [=](const QList<CurseforgeFileInfo> &fileList){
         gettingAllFileList_ = false;
         modInfo_.allFileList_ = fileList;
         emit allFileListReady();
+    });
+    connect(this, &QObject::destroyed, this, [=]{
+        disconnect(conn);
     });
 }
 

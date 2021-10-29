@@ -227,7 +227,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
     auto sort = ui->sortSelect->currentIndex();
 
     isSearching_ = true;
-    api_->searchMods(gameVersion, index, name, category, sort, [=](const QList<CurseforgeModInfo> &infoList){
+    auto conn = api_->searchMods(gameVersion, index, name, category, sort, [=](const QList<CurseforgeModInfo> &infoList){
         setCursor(Qt::ArrowCursor);
 
         //new search
@@ -280,6 +280,9 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             currentIndex_ += 20;
             getModList(currentName_, currentIndex_, needMore - shownCount);
         }
+    });
+    connect(this, &QObject::destroyed, this, [=]{
+        disconnect(conn);
     });
 }
 

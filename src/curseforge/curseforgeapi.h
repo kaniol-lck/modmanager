@@ -17,16 +17,16 @@ public:
     explicit CurseforgeAPI(QObject *parent = nullptr);
     static CurseforgeAPI *api();
 
-    void searchMods(const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback);
-    void getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback, std::function<void()> noMatch);
-    void getDescription(int id, std::function<void(QString)> callback);
-    void getChangelog(int id, int FileID, std::function<void (QString)> callback);
-    void getDownloadUrl(int id, int FileID, std::function<void (QString)> callback);
-    void getFileInfo(int id, int FileID, std::function<void(CurseforgeFileInfo)> callback);
-    void getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback);
-    void getInfo(int id, std::function<void (CurseforgeModInfo)> callback);
-    void getTimestamp(std::function<void (QString)> callback);
-    void getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback);
+    [[nodiscard]] QMetaObject::Connection searchMods(const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback);
+    [[nodiscard]] QMetaObject::Connection getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback, std::function<void()> noMatch);
+    [[nodiscard]] QMetaObject::Connection getDescription(int id, std::function<void(QString)> callback);
+    [[nodiscard]] QMetaObject::Connection getChangelog(int id, int FileID, std::function<void (QString)> callback);
+    [[nodiscard]] QMetaObject::Connection getDownloadUrl(int id, int FileID, std::function<void (QString)> callback);
+    [[nodiscard]] QMetaObject::Connection getFileInfo(int id, int FileID, std::function<void(CurseforgeFileInfo)> callback);
+    [[nodiscard]] QMetaObject::Connection getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback);
+    [[nodiscard]] QMetaObject::Connection getInfo(int id, std::function<void (CurseforgeModInfo)> callback);
+    [[nodiscard]] QMetaObject::Connection getTimestamp(std::function<void (QString)> callback);
+    [[nodiscard]] QMetaObject::Connection getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback);
 
     static const QList<std::tuple<int, QString, QString, int> > &getCategories();
 

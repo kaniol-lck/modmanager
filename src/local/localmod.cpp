@@ -88,8 +88,8 @@ void LocalMod::searchOnCurseforge()
         emit searchOnCurseforgeFinished(true);
     else if(KnownFile::unmatchedCurseforgeFiles().contains(murmurhash)){
         emit searchOnCurseforgeFinished(false);
-    } else
-        curseforgeAPI_->getIdByFingerprint(murmurhash, [=](int id, auto fileInfo, const auto &fileList){
+    } else{
+        auto conn = curseforgeAPI_->getIdByFingerprint(murmurhash, [=](int id, auto fileInfo, const auto &fileList){
             IdMapper::addCurseforge(commonInfo()->id(), id);
             KnownFile::addCurseforge(murmurhash, fileInfo);
             CurseforgeModInfo modInfo(id);
@@ -102,7 +102,11 @@ void LocalMod::searchOnCurseforge()
         }, [=]{
             KnownFile::addUnmatchedCurseforge(murmurhash);
             emit searchOnCurseforgeFinished(false);
-    });
+        });
+        connect(this, &QObject::destroyed, this, [=]{
+            disconnect(conn);
+        });
+    }
 }
 
 void LocalMod::searchOnModrinth()
@@ -121,8 +125,8 @@ void LocalMod::searchOnModrinth()
         emit searchOnModrinthFinished(true);
     else if(KnownFile::unmatchedModrinthFiles().contains(sha1)){
         emit searchOnModrinthFinished(false);
-    } else
-        modrinthAPI_->getVersionFileBySha1(sha1, [=](const auto &fileInfo){
+    } else{
+        auto conn = modrinthAPI_->getVersionFileBySha1(sha1, [=](const auto &fileInfo){
             qDebug() << sha1;
             IdMapper::addModrinth(commonInfo()->id(), fileInfo.modId());
             KnownFile::addModrinth(sha1, fileInfo);
@@ -136,6 +140,10 @@ void LocalMod::searchOnModrinth()
             KnownFile::addUnmatchedModrinth(sha1);
             emit searchOnModrinthFinished(false);
         });
+        connect(this, &QObject::destroyed, this, [=]{
+            disconnect(conn);
+        });
+    }
 }
 
 void LocalMod::checkUpdates(bool force)

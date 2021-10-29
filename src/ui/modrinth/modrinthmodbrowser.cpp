@@ -292,7 +292,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
     auto type = ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex());
 
     isSearching_ = true;
-    api_->searchMods(name, currentIndex_, currentGameVersions_, type, currentCategoryIds_, sort, [=](const QList<ModrinthModInfo> &infoList){
+    auto conn = api_->searchMods(name, currentIndex_, currentGameVersions_, type, currentCategoryIds_, sort, [=](const QList<ModrinthModInfo> &infoList){
         setCursor(Qt::ArrowCursor);
 
         //new search
@@ -328,6 +328,9 @@ void ModrinthModBrowser::getModList(QString name, int index)
             hasMore_ = false;
         }
         isSearching_ = false;
+    });
+    connect(this, &QObject::destroyed, this, [=]{
+        disconnect(conn);
     });
 }
 

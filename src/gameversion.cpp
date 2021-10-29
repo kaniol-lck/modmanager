@@ -193,10 +193,13 @@ void VersionManager::initMojangVersionList()
 void VersionManager::initCurseforgeVersionList()
 {
     //get version list
-    CurseforgeAPI::api()->getMinecraftVersionList([=](const auto &versionList){
+    auto conn = CurseforgeAPI::api()->getMinecraftVersionList([=](const auto &versionList){
         GameVersion::curseforgeVersionList_ = versionList;
         emit curseforgeVersionListUpdated();
         qDebug() << "curseforge version updated.";
+    });
+    connect(this, &QObject::destroyed, this, [=]{
+        disconnect(conn);
     });
 }
 

@@ -60,10 +60,13 @@ void ModrinthMod::acquireAuthor()
 {
     if(modInfo_.authorId_.isEmpty() || gettingAuthor_) return;
     gettingAuthor_ = true;
-    api_->getAuthor(modInfo_.modId_, [=](const auto &author){
+    auto conn = api_->getAuthor(modInfo_.modId_, [=](const auto &author){
         gettingAuthor_ = false;
         modInfo_.author_ = author;
         emit authorReady();
+    });
+    connect(this, &QObject::destroyed, this, [=]{
+        disconnect(conn);
     });
 }
 
@@ -92,7 +95,7 @@ void ModrinthMod::acquireFullInfo()
 {
     if(gettingFullInfo_) return;
     gettingFullInfo_ = true;
-    api_->getInfo(modInfo_.modId_, [=](const auto &newInfo){
+    auto conn = api_->getInfo(modInfo_.modId_, [=](const auto &newInfo){
         gettingFullInfo_ = false;
         if(modInfo_.basicInfo_){
             modInfo_.description_ = newInfo.description_;
@@ -101,6 +104,9 @@ void ModrinthMod::acquireFullInfo()
             modInfo_ = newInfo;
         emit fullInfoReady();
     });
+    connect(this, &QObject::destroyed, this, [=]{
+        disconnect(conn);
+    });
 }
 
 void ModrinthMod::acquireFileList()
@@ -108,9 +114,12 @@ void ModrinthMod::acquireFileList()
     if(gettingFileList_) return;
     gettingFileList_ = true;
 
-    api_->getVersions(modInfo_.modId_, [=](const auto &files){
+    auto conn = api_->getVersions(modInfo_.modId_, [=](const auto &files){
         gettingFileList_ = false;
         modInfo_.fileList_ = files;
         emit fileListReady();
+    });
+    connect(this, &QObject::destroyed, this, [=]{
+        disconnect(conn);
     });
 }

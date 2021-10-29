@@ -21,7 +21,7 @@ ModrinthAPI *ModrinthAPI::api()
     return &api;
 }
 
-void ModrinthAPI::searchMods(const QString name, int index, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort, std::function<void (QList<ModrinthModInfo>)> callback)
+QMetaObject::Connection ModrinthAPI::searchMods(const QString name, int index, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort, std::function<void (QList<ModrinthModInfo>)> callback)
 {
     QUrl url = PREFIX + "/api/v1/mod";
 
@@ -74,7 +74,7 @@ void ModrinthAPI::searchMods(const QString name, int index, const QList<GameVers
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this,  [=]{
+    return connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             return;
@@ -99,7 +99,7 @@ void ModrinthAPI::searchMods(const QString name, int index, const QList<GameVers
     });
 }
 
-void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo)> callback)
+QMetaObject::Connection ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo)> callback)
 {
     //id: "local-xxxxx" ???
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
@@ -107,7 +107,7 @@ void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this,  [=]{
+    return connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             return;
@@ -129,7 +129,7 @@ void ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo
     });
 }
 
-void ModrinthAPI::getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback)
+QMetaObject::Connection ModrinthAPI::getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback)
 {
     //id: "local-xxxxx" ???
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
@@ -138,7 +138,7 @@ void ModrinthAPI::getVersions(const QString &id, std::function<void (QList<Modri
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this,  [=]{
+    return connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             return;
@@ -163,13 +163,13 @@ void ModrinthAPI::getVersions(const QString &id, std::function<void (QList<Modri
     });
 }
 
-void ModrinthAPI::getVersion(const QString &version, std::function<void (ModrinthFileInfo)> callback)
+QMetaObject::Connection ModrinthAPI::getVersion(const QString &version, std::function<void (ModrinthFileInfo)> callback)
 {
     QUrl url = PREFIX + "/api/v1/version/" + version;
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this,  [=]{
+    return connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             return;
@@ -191,13 +191,13 @@ void ModrinthAPI::getVersion(const QString &version, std::function<void (Modrint
     });
 }
 
-void ModrinthAPI::getAuthor(const QString &authorId, std::function<void (QString)> callback)
+QMetaObject::Connection ModrinthAPI::getAuthor(const QString &authorId, std::function<void (QString)> callback)
 {
     QUrl url = PREFIX + "/api/v1/user/" + authorId;
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this,  [=]{
+    return connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             return;
@@ -219,7 +219,7 @@ void ModrinthAPI::getAuthor(const QString &authorId, std::function<void (QString
     });
 }
 
-void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (ModrinthFileInfo)> callback, std::function<void ()> noMatch)
+QMetaObject::Connection ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (ModrinthFileInfo)> callback, std::function<void ()> noMatch)
 {
     QUrl url = PREFIX + "/api/v1/version_file/" + sha1;
 
@@ -232,7 +232,7 @@ void ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (M
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this,  [=]{
+    return connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             if(reply->error() == QNetworkReply::ContentNotFoundError)
                 noMatch();
