@@ -282,8 +282,12 @@ jobs:
           wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
           unzip *.zip
           sudo cp -r lib/* /usr/local/lib/
-          sudo cp -r include /usr/local/include
+          sudo cp -r include/ /usr/local/include
           rm -rf lib/ include/ *.zip
+      - run: |
+          ls /usr/local/lib
+      - run: |
+          ls /usr/local/include
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1

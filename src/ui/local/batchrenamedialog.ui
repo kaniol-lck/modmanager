@@ -309,7 +309,7 @@
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>44</height>
+         <height>38</height>
         </size>
        </property>
        <property name="inputMethodHints">
@@ -336,6 +336,9 @@
          <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
         <bool>true</bool>
        </property>
       </widget>

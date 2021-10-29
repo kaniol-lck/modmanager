@@ -59,7 +59,7 @@ void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
     isUiSet_ = false;
     currentGameVersion_ = info.gameVersion();
-    ui->versionSelectButton->setText(tr("Game Version: %1").arg(info.gameVersion()));
+    ui->versionSelectButton->setText(info.gameVersion());
     ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
     isUiSet_ = true;
     ui->downloadPathSelect->setCurrentText(info.displayName());
@@ -83,7 +83,7 @@ void CurseforgeModBrowser::updateVersionList()
     auto anyVersionAction = menu->addAction(tr("Any"));
     connect(anyVersionAction, &QAction::triggered, this, [=]{
         currentGameVersion_ = GameVersion::Any;
-        ui->versionSelectButton->setText(tr("Game Version: %1").arg(tr("Any")));
+        ui->versionSelectButton->setText(tr("Any"));
         ui->versionSelectButton->setIcon(QIcon());
     });
     anyVersionAction->trigger();
@@ -99,7 +99,7 @@ void CurseforgeModBrowser::updateVersionList()
         if(version == version.majorVersion())
             connect(submenus[version]->addAction(version), &QAction::triggered, this, [=]{
                 currentGameVersion_ = version;
-                ui->versionSelectButton->setText(tr("Game Version: %1").arg(version));
+                ui->versionSelectButton->setText(version);
             });
     }
     for(auto &&version : GameVersion::curseforgeVersionList()){
@@ -107,10 +107,11 @@ void CurseforgeModBrowser::updateVersionList()
         if(submenus.contains(version.majorVersion())){
             auto submenu = submenus[version.majorVersion()];
             if(submenu->actions().size() == 1)
-                submenu->addSeparator();
+                if(GameVersion version = submenu->actions().at(0)->text(); version == version.majorVersion())
+                    submenu->addSeparator();
             connect(submenu->addAction(version), &QAction::triggered, this, [=]{
                 currentGameVersion_ = version;
-                ui->versionSelectButton->setText(tr("Game Version: %1").arg(version));
+                ui->versionSelectButton->setText(version);
             });
         }
     }
@@ -133,7 +134,7 @@ void CurseforgeModBrowser::updateCategoryList()
     auto anyCategoryAction = menu->addAction(tr("Any"));
     connect(anyCategoryAction, &QAction::triggered, this, [=]{
         currentCategoryId_ = 0;
-        ui->categorySelectButton->setText(tr("Category: %1").arg(tr("Any")));
+        ui->categorySelectButton->setText(tr("Any"));
         ui->categorySelectButton->setIcon(QIcon());
     });
     anyCategoryAction->trigger();
@@ -147,7 +148,7 @@ void CurseforgeModBrowser::updateCategoryList()
             QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
             connect(submenu->addAction(icon, name), &QAction::triggered, this, [=, id = id, name = name]{
                 currentCategoryId_ = id;
-                ui->categorySelectButton->setText(tr("Category: %1").arg(name));
+                ui->categorySelectButton->setText(name);
                 ui->categorySelectButton->setIcon(icon);
             });
         }
@@ -160,7 +161,7 @@ void CurseforgeModBrowser::updateCategoryList()
             QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
             connect(submenu->addAction(icon, name), &QAction::triggered, this, [=, id = id, name = name]{
                 currentCategoryId_ = id;
-                ui->categorySelectButton->setText(tr("Category: %1").arg(name));
+                ui->categorySelectButton->setText(name);
                 ui->categorySelectButton->setIcon(icon);
             });
         }
