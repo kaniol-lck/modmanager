@@ -21,7 +21,7 @@ ModrinthAPI *ModrinthAPI::api()
     return &api;
 }
 
-void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &version, ModLoaderType::Type type, const QString &category, int sort, std::function<void (QList<ModrinthModInfo>)> callback)
+void ModrinthAPI::searchMods(const QString name, int index, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort, std::function<void (QList<ModrinthModInfo>)> callback)
 {
     QUrl url = PREFIX + "/api/v1/mod";
 
@@ -54,16 +54,18 @@ void ModrinthAPI::searchMods(const QString name, int index, const GameVersion &v
 
     QStringList facets;
     //game version
-    if(version != GameVersion::Any)
-        facets << "\"versions:" + version + "\"";
+    for(const auto &version : versions)
+        if(version != GameVersion::Any)
+            facets << "\"versions:" + version + "\"";
 
     //loader type
     if(type != ModLoaderType::Any)
         facets << "\"categories:" + ModLoaderType::toString(type) + "\"";
 
     //loader type
-    if(!category.isEmpty())
-        facets << "\"categories:" + category + "\"";
+    for(const auto &category : categories)
+        if(!category.isEmpty())
+            facets << "\"categories:" + category + "\"";
 
     if(!facets.isEmpty())
         urlQuery.addQueryItem("facets", "[[" + facets.join(",") + "]]");

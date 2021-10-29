@@ -105,8 +105,12 @@ public:
     getterAndSetter(TabSelectBarArea, Int, tabSelectBarArea, Qt::LeftToolBarArea)
     getterAndSetter(MainWindowWidth, Int, mainWindowWidth, 1440);
     getterAndSetter(MainWindowHeight, Int, mainWindowHeight, 900);
+    getterAndSetter(ModrinthMultiVersion, Bool, modrinthMultiVersion, false);
+    getterAndSetter(ModrinthMultiCategory, Bool, modrinthMultiCategory, false);
 private:
     QSettings old_;
 };
 
+#undef getterAndSetter
+#undef getterAndSetter_prefix
 #endif // CONFIG_H

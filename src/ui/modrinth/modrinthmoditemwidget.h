@@ -35,7 +35,7 @@ private slots:
 private:
     Ui::ModrinthModItemWidget *ui;
     ModrinthMod *mod_;
-    LocalModPath *downloadPath_;
+    LocalModPath *downloadPath_ = nullptr;
 };
 
 #endif // MODRINTHMODITEMWIDGET_H

@@ -121,7 +121,7 @@ GameVersion GameVersion::majorVersion() const
     return GameVersion(mainVersionNumber_, majorVersionNumber_);
 }
 
-const QString &GameVersion::getVersionString() const
+const QString &GameVersion::versionString() const
 {
     return versionString_;
 }

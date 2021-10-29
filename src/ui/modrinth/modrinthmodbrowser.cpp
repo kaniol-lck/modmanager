@@ -3,6 +3,7 @@
 
 #include <QScrollBar>
 #include <QDir>
+#include <QMenu>
 
 #include "modrinthmoditemwidget.h"
 #include "modrinthmoddialog.h"
@@ -15,6 +16,7 @@
 #include "config.hpp"
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
+#include "util/unclosedmenu.h"
 
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/modrinth.svg"), "Modrinth", QUrl("https://modrinth.com/mods")),
@@ -27,20 +29,13 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     for(const auto &type : ModLoaderType::modrinth)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
-    //categories
-    //TODO: using menu/submenu
-    ui->categorySelect->clear();
-    ui->categorySelect->addItem(tr("Any"));
-    for(const auto &[name, iconName] : ModrinthAPI::getCategories()){
-        QIcon icon(QString(":/image/modrinth/%1.svg").arg(iconName));
-        ui->categorySelect->addItem(icon, name);
-    }
-
     connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
 
     updateVersionList();
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
+
+    updateCategoryList();
 
     updateLocalPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModrinthModBrowser::updateLocalPathList);
@@ -62,7 +57,8 @@ void ModrinthModBrowser::refresh()
 void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
     isUiSet_ = false;
-    ui->versionSelect->setCurrentText(info.gameVersion());
+    currentGameVersions_ = { info.gameVersion() };
+    ui->versionSelectButton->setText(info.gameVersion());
     ui->loaderSelect->setCurrentIndex(ModLoaderType::modrinth.indexOf(info.loaderType()));
     isUiSet_ = true;
     ui->downloadPathSelect->setCurrentText(info.displayName());
@@ -82,12 +78,170 @@ void ModrinthModBrowser::updateUi()
 
 void ModrinthModBrowser::updateVersionList()
 {
-    isUiSet_ = false;
-    ui->versionSelect->clear();
-    ui->versionSelect->addItem(tr("Any"));
-    for(auto &&version : GameVersion::modrinthVersionList())
-        ui->versionSelect->addItem(version);
-    isUiSet_ = true;
+    auto menu = new UnclosedMenu;
+    menu->setStyleSheet("QMenu { menu-scrollable: 1; }");
+
+    auto multiSelectionAction = menu->addAction(tr("Multi Selection"));
+    multiSelectionAction->setCheckable(true);
+    multiSelectionAction->setChecked(Config().getModrinthMultiVersion());
+    menu->setUnclosed(multiSelectionAction->isChecked());
+    connect(multiSelectionAction, &QAction::toggled, menu, &UnclosedMenu::setUnclosed);
+    connect(multiSelectionAction, &QAction::triggered, this, [=](bool checked){
+        Config().setModrinthMultiVersion(checked);
+    });
+    menu->addSeparator();
+    auto anyVersionAction = menu->addAction(tr("Any"));
+    connect(anyVersionAction, &QAction::triggered, this, [=]{
+        currentGameVersions_.clear();
+        ui->versionSelectButton->setText(tr("Any"));
+        ui->versionSelectButton->setIcon(QIcon());
+    });
+    auto getVersionAction = [=](const GameVersion &version){
+        auto versionAction = new QAction(version);
+        versionAction->setCheckable(multiSelectionAction->isChecked());
+        connect(versionAction, &QAction::triggered, this, [=](bool checked){
+            if(multiSelectionAction->isChecked()){
+                if(checked)
+                    currentGameVersions_ << version;
+                else
+                    currentGameVersions_.removeAll(version);
+            }else {
+                currentGameVersions_.clear();
+                currentGameVersions_ << version;
+                //only search for single selection
+                if(currentCategoryIds_ == lastCategoryIds_) return;
+                lastCategoryIds_ = currentCategoryIds_;
+                getModList(currentName_);
+            }
+            ui->versionSelectButton->setToolTip("");
+            if(auto size = currentGameVersions_.size(); size == 0)
+                ui->versionSelectButton->setText(tr("Any"));
+            else if(size == 1)
+                ui->versionSelectButton->setText(version);
+            else{
+                QStringList list;
+                for(const auto &version : qAsConst(currentGameVersions_))
+                    list << version;
+                ui->versionSelectButton->setText(tr("%1 etc.").arg(version));
+                ui->versionSelectButton->setToolTip(list.join(tr(", ")));
+            }
+        });
+        connect(multiSelectionAction, &QAction::triggered, versionAction, &QAction::setCheckable);
+        connect(anyVersionAction, &QAction::triggered, versionAction, &QAction::setChecked);
+        return versionAction;
+    };
+
+    anyVersionAction->trigger();
+    menu->addSeparator();
+    QMap<QString, QMenu*> submenus;
+    QList<QString> keys; //to keep order
+    for(auto &&version : GameVersion::modrinthVersionList()){
+        if(!submenus.contains(version.majorVersion())){
+            auto submenu = new UnclosedMenu(version.majorVersion());
+            connect(multiSelectionAction, &QAction::triggered, submenu, &UnclosedMenu::setUnclosed);
+            submenus[version.majorVersion()] = submenu;
+            keys << version.majorVersion();
+        }
+        if(version == version.majorVersion())
+            submenus[version]->addAction(getVersionAction(version));
+    }
+    for(auto &&version : GameVersion::curseforgeVersionList()){
+        if(version == version.majorVersion()) continue;
+        if(submenus.contains(version.majorVersion())){
+            auto submenu = submenus[version.majorVersion()];
+            if(submenu->actions().size() == 1)
+                if(GameVersion version = submenu->actions().at(0)->text(); version == version.majorVersion())
+                    submenu->addSeparator();
+            submenu->addAction(getVersionAction(version));
+        }
+    }
+    for(const auto &key : qAsConst(keys)){
+        auto submenu = submenus[key];
+        if(submenu->actions().size() == 1)
+            menu->addActions(submenu->actions());
+        else
+            menu->addMenu(submenu);
+    }
+    connect(menu, &QMenu::aboutToHide, this, [=]{
+        //only search for multi selection
+        if(!multiSelectionAction->isChecked()) return;
+        if(currentGameVersions_ == lastGameVersions_) return;
+        lastGameVersions_ = currentGameVersions_;
+        getModList(currentName_);
+    });
+    ui->versionSelectButton->setMenu(menu);
+}
+
+void ModrinthModBrowser::updateCategoryList()
+{
+    auto menu = new UnclosedMenu;
+    menu->setStyleSheet("QMenu { menu-scrollable: 1; }");
+
+    auto multiSelectionAction = menu->addAction(tr("Multi Selection"));
+    multiSelectionAction->setCheckable(true);
+    multiSelectionAction->setChecked(Config().getModrinthMultiCategory());
+    menu->setUnclosed(multiSelectionAction->isChecked());
+    connect(multiSelectionAction, &QAction::toggled, menu, &UnclosedMenu::setUnclosed);
+    connect(multiSelectionAction, &QAction::toggled, this, [=](bool checked){
+        Config().setModrinthMultiCategory(checked);
+    });
+    menu->addSeparator();
+    auto anyCategoryAction = menu->addAction(tr("Any"));
+    connect(anyCategoryAction, &QAction::triggered, this, [=]{
+        currentCategoryIds_.clear();
+        ui->categorySelectButton->setText(tr("Any"));
+        ui->categorySelectButton->setIcon(QIcon());
+    });
+    anyCategoryAction->trigger();
+    menu->addSeparator();
+    for(auto &&[name, id] : ModrinthAPI::getCategories()){
+        QIcon icon(QString(":/image/modrinth/%1.svg").arg(id));
+        auto categoryAction = menu->addAction(icon, name);
+        connect(categoryAction, &QAction::triggered, this, [=, id = id, name = name](bool checked){
+            if(multiSelectionAction->isChecked()){
+                if(checked)
+                    currentCategoryIds_ << id;
+                else
+                    currentCategoryIds_.removeAll(id);
+            }else {
+                currentCategoryIds_.clear();
+                currentCategoryIds_ << id;
+                //only search for single selection
+                if(currentCategoryIds_ == lastCategoryIds_) return;
+                lastCategoryIds_ = currentCategoryIds_;
+                getModList(currentName_);
+            }
+            ui->categorySelectButton->setIcon(QIcon());
+            ui->categorySelectButton->setToolTip("");
+            if(auto size = currentCategoryIds_.size(); size == 0)
+                ui->categorySelectButton->setText(tr("Any"));
+            else if(size == 1){
+                ui->categorySelectButton->setText(name);
+                ui->categorySelectButton->setIcon(icon);
+            } else{
+                QStringList list;
+                for(const auto &categoryId: qAsConst(currentCategoryIds_)){
+                    auto &&categories = ModrinthAPI::getCategories();
+                    if(auto it = std::find_if(categories.cbegin(), categories.cend(), [=](const auto &val){
+                        return std::get<1>(val) == categoryId;
+                    }); it != categories.cend())
+                        list << std::get<0>(*it);
+                }
+                ui->categorySelectButton->setText(tr("%1 etc.").arg(name));
+                ui->categorySelectButton->setToolTip(list.join(tr(", ")));
+            }
+        });
+        connect(multiSelectionAction, &QAction::triggered, categoryAction, &QAction::setCheckable);
+        connect(anyCategoryAction, &QAction::triggered, categoryAction, &QAction::setChecked);
+    }
+    connect(menu, &QMenu::aboutToHide, this, [=]{
+        //only search for multi selection
+        if(!multiSelectionAction->isChecked()) return;
+        if(currentCategoryIds_ == lastCategoryIds_) return;
+        lastCategoryIds_ = currentCategoryIds_;
+        getModList(currentName_);
+    });
+    ui->categorySelectButton->setMenu(menu);
 }
 
 void ModrinthModBrowser::updateLocalPathList()
@@ -134,15 +288,11 @@ void ModrinthModBrowser::getModList(QString name, int index)
         return;
     setCursor(Qt::BusyCursor);
 
-    GameVersion gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
-    auto categoryIndex = ui->categorySelect->currentIndex() - 1;
-    auto category = categoryIndex < 0 ? "" : std::get<1>(ModrinthAPI::getCategories()[categoryIndex]);
     auto sort = ui->sortSelect->currentIndex();
-    GameVersion version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
     auto type = ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex());
 
     isSearching_ = true;
-    api_->searchMods(name, currentIndex_, version, type, category, sort, [=](const QList<ModrinthModInfo> &infoList){
+    api_->searchMods(name, currentIndex_, currentGameVersions_, type, currentCategoryIds_, sort, [=](const QList<ModrinthModInfo> &infoList){
         setCursor(Qt::ArrowCursor);
 
         //new search
@@ -159,7 +309,6 @@ void ModrinthModBrowser::getModList(QString name, int index)
 
             auto *listItem = new QListWidgetItem();
             listItem->setSizeHint(QSize(0, 108));
-            auto version = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()): GameVersion::Any;
             auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, mod);
             mod->setParent(modItemWidget);
             modItemWidget->setDownloadPath(downloadPath_);

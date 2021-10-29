@@ -29,33 +29,27 @@ public slots:
 
 private slots:
     void updateVersionList();
-
+    void updateCategoryList();
     void updateLocalPathList();
-
     void search();
-
     void onSliderChanged(int i);
-
     void on_modListWidget_doubleClicked(const QModelIndex &index);
-
     void on_sortSelect_currentIndexChanged(int);
-
     void on_versionSelect_currentIndexChanged(int);
-
     void on_loaderSelect_currentIndexChanged(int);
-
     void on_openFolderButton_clicked();
-
     void on_downloadPathSelect_currentIndexChanged(int index);
-
     void on_categorySelect_currentIndexChanged(int);
-
 private:
     Ui::ModrinthModBrowser *ui;
     ModrinthAPI *api_;
-    LocalModPath *downloadPath_;
+    LocalModPath *downloadPath_ = nullptr;
     QString currentName_;
     int currentIndex_;
+    QStringList lastCategoryIds_;
+    QStringList currentCategoryIds_;
+    QList<GameVersion> lastGameVersions_;
+    QList<GameVersion> currentGameVersions_;
     bool isUiSet_ = false;
     bool hasMore_ = false;
     bool isSearching_ = false;

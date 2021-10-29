@@ -23,10 +23,24 @@ QAction *UnclosedMenu::addMenu(UnclosedMenu *menu)
 
 void UnclosedMenu::mouseReleaseEvent(QMouseEvent *event)
 {
+    if(!isUnclosed_){
+        QMenu::mouseReleaseEvent(event);
+        return;
+    }
     if(auto action = actionAt(event->pos())){
         action->activate(QAction::Trigger);
         emit menuTriggered();
     }
     else
         QMenu::mouseReleaseEvent(event);
+}
+
+bool UnclosedMenu::isUnclosed() const
+{
+    return isUnclosed_;
+}
+
+void UnclosedMenu::setUnclosed(bool unclosed)
+{
+    isUnclosed_ = unclosed;
 }

@@ -37,7 +37,7 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QWidget" name="" native="true">
+    <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -58,18 +58,16 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="versionSelect">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <widget class="QToolButton" name="versionSelectButton">
+          <property name="text">
+           <string/>
           </property>
-          <item>
-           <property name="text">
-            <string>Any</string>
-           </property>
-          </item>
+          <property name="popupMode">
+           <enum>QToolButton::InstantPopup</enum>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonTextBesideIcon</enum>
+          </property>
          </widget>
         </item>
        </layout>
@@ -93,12 +91,15 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="categorySelect">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <widget class="QToolButton" name="categorySelectButton">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::InstantPopup</enum>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonTextBesideIcon</enum>
           </property>
          </widget>
         </item>
