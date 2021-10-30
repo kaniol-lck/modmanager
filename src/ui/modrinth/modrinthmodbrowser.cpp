@@ -145,6 +145,7 @@ void ModrinthModBrowser::updateVersionList()
     for(auto &&version : GameVersion::modrinthVersionList()){
         if(!submenus.contains(version.majorVersion())){
             auto submenu = new UnclosedMenu(version.majorVersion());
+            submenu->setUnclosed(multiSelectionAction->isChecked());
             connect(multiSelectionAction, &QAction::triggered, submenu, &UnclosedMenu::setUnclosed);
             submenus[version.majorVersion()] = submenu;
             keys << version.majorVersion();

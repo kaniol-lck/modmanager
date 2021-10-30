@@ -55,7 +55,7 @@ ModManager::ModManager(QWidget *parent) :
                   "}");
 
     ui->toolBar->addWidget(browserSelector_);
-    connect(ui->toolBar, &QToolBar::visibilityChanged, ui->action_Browsers, &QAction::setChecked);
+    connect(ui->toolBar, &QToolBar::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
     //Download
     ui->pageSwitcher->addDownloadPage();
@@ -216,7 +216,7 @@ void ModManager::on_action_About_Mod_Manager_triggered()
     dialog->exec();
 }
 
-void ModManager::on_action_Browsers_toggled(bool arg1)
+void ModManager::on_actionPage_Selector_toggled(bool arg1)
 {
     ui->toolBar->setVisible(arg1);
 }

@@ -77,7 +77,7 @@
       <string>Tags</string>
      </property>
     </widget>
-    <addaction name="action_Browsers"/>
+    <addaction name="actionPage_Selector"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Mod_Authors"/>
     <addaction name="actionShow_Mod_Date_Time"/>
@@ -120,7 +120,7 @@
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>Browsers</string>
+    <string>Page Selector</string>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftToolBarArea|Qt::RightToolBarArea</set>
@@ -165,12 +165,15 @@
     <string>&amp;About Mod Manager</string>
    </property>
   </action>
-  <action name="action_Browsers">
+  <action name="actionPage_Selector">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Browsers</string>
+    <string>Page Selector</string>
+   </property>
+   <property name="toolTip">
+    <string>Page Selector</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
