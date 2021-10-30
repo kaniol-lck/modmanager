@@ -36,6 +36,7 @@ ModManager::ModManager(QWidget *parent) :
     browserSelector_(new BrowserSelectorWidget(this))
 {
     ui->setupUi(this);
+    ui->actionAbout_Qt->setIcon(QIcon(":/qt-project.org/qmessagebox/images/qtlogo-64.png"));
     browserSelector_->setModel(ui->pageSwitcher->model());
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
@@ -260,11 +261,16 @@ void ModManager::on_menu_Path_aboutToShow()
 
 void ModManager::on_menu_Help_aboutToShow()
 {
-    ui->menu_Help->clear();
-    for(auto browser : ui->pageSwitcher->exploreBrowsers())
-        ui->menu_Help->addAction(browser->visitWebsiteAction());
-    ui->menu_Help->addSeparator();
-    ui->menu_Help->addAction(ui->action_About_Mod_Manager);
+    for(auto &&action : ui->menu_Help->actions()){
+        if(action->data().toBool())
+            ui->menu_Help->removeAction(action);
+    }
+    int count = 0;
+    for(auto browser : ui->pageSwitcher->exploreBrowsers()){
+        auto action = browser->visitWebsiteAction();
+        action->setData(true);
+        ui->menu_Help->insertAction(ui->menu_Help->actions().at(count++), action);
+    }
 }
 
 void ModManager::on_menuPaths_aboutToShow()
@@ -346,5 +352,11 @@ void ModManager::on_actionNext_Page_triggered()
 void ModManager::on_actionPrevious_Page_triggered()
 {
     ui->pageSwitcher->previesPage();
+}
+
+
+void ModManager::on_actionAbout_Qt_triggered()
+{
+    QMessageBox::aboutQt(this);
 }
 

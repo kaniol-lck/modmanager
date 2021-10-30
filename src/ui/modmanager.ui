@@ -67,6 +67,7 @@
     </property>
     <addaction name="separator"/>
     <addaction name="action_About_Mod_Manager"/>
+    <addaction name="actionAbout_Qt"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">
@@ -288,6 +289,11 @@
    </property>
    <property name="text">
     <string>Show Mod Authors</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
    </property>
   </action>
  </widget>

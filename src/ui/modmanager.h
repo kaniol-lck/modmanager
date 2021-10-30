@@ -46,7 +46,7 @@ private slots:
     void on_actionShow_Mod_Loader_Type_toggled(bool arg1);
     void on_actionNext_Page_triggered();
     void on_actionPrevious_Page_triggered();
-
+    void on_actionAbout_Qt_triggered();
 private:
     Ui::ModManager *ui;
     BrowserSelectorWidget *browserSelector_;
