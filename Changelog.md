@@ -8,7 +8,7 @@ Soon....
 
 ### v1.0.0 beta.5
 
-*WIP*
+*2021.10.30*
 
 Rewrited entire downloader with Aria2, now it's faster and more stable.
 使用Aria2重写了整个下载器，现在更加稳定。
