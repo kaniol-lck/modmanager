@@ -133,6 +133,10 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/bin/
           cp -r C:/msys64/${{ matrix.mingw_arch }}/ssl deploy/ssl
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/bin/${{github.event.repository.name}}.exe
+      - name: x64 dependencies
+        if: contains(matrix.mingw_arch, 'mingw64')
+        run : |
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_seh-1.dll deploy/bin/
       - name: Create installer
         run:
           makensis modmanager${{ matrix.x64_suffix }}.nsi
