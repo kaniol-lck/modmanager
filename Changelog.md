@@ -13,11 +13,23 @@ Soon....
 Rewrited entire downloader with Aria2, now it's faster and more stable.
 使用Aria2重写了整个下载器，现在更加稳定。
 
-Added mod updated/created time display.
-添加了mod更新创建时间显示。
+Added more mod info display: updated/created time, loader types, they are all togglable.
+添加了更多mod信息显示：更新创建时间、加载器版本，它们都是可选择显示的。
 
 Added smooth scrolling to mod description.
 为mod描述添加了平滑滚动。
+
+Added more actions in menu bars, along with shortcuts.
+向菜单栏中添加了更多操作，以及快捷键。
+
+More advanced version/category selection and multi-selection in modrinth.
+更高级的版本和类别选择，支持Modrinth的多项选择。
+
+All "explore" pages are togglable in prefercences.
+所有“探索”页面在偏好设置中都是可选择显示的。 
+
+Fixed crashes in most cases. It's much more stable now.
+修复了多数情况下的崩溃。现在更加稳定了。
 
 Fixed Curseforge/Modrinth dialog cannot be reopened after closed.
 修复了Curseforge/Modrinth对话框在关闭后无法重新打开的问题。

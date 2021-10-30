@@ -2,7 +2,7 @@
 
 <h1>Mod Manager</h1>
 
-![GitHub top language](https://img.shields.io/github/languages/top/kaniol-lck/modmanager) ![C++17](https://img.shields.io/badge/C%2B%2B-17-%2300599C) ![Qt 5.15.2](https://img.shields.io/badge/Qt-5.15.2-%2341CD52) ![GitHub](https://img.shields.io/github/license/kaniol-lck/modmanager) [![CodeFactor](https://www.codefactor.io/repository/github/kaniol-lck/modmanager/badge)](https://www.codefactor.io/repository/github/kaniol-lck/modmanager) [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/kaniol-lck/modmanager?include_prereleases)](Changelog.md) [![GitHub all releases](https://img.shields.io/github/downloads/kaniol-lck/modmanager/total)](https://github.com/kaniol-lck/modmanager/releases) [![CI](https://github.com/kaniol-lck/modmanager/actions/workflows/ci.yml/badge.svg?event)](https://github.com/kaniol-lck/modmanager/actions/workflows/ci.yml)
+![C++17](https://img.shields.io/badge/C%2B%2B-17-%2300599C) ![Qt 5.15.2](https://img.shields.io/badge/Qt-5.15.2-%2341CD52) ![GitHub](https://img.shields.io/github/license/kaniol-lck/modmanager) [![CodeFactor](https://www.codefactor.io/repository/github/kaniol-lck/modmanager/badge)](https://www.codefactor.io/repository/github/kaniol-lck/modmanager) [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/kaniol-lck/modmanager?include_prereleases)](Changelog.md) [![GitHub all releases](https://img.shields.io/github/downloads/kaniol-lck/modmanager/total)](https://github.com/kaniol-lck/modmanager/releases) [![CI](https://github.com/kaniol-lck/modmanager/actions/workflows/ci.yml/badge.svg?event)](https://github.com/kaniol-lck/modmanager/actions/workflows/ci.yml)
 
 **English** | [中文](README_zh.md)
 
@@ -24,7 +24,32 @@ Clone this repository:
 git clone git@github.com:kaniol-lck/modmanager.git
 ```
 
-#### For GCC/MinGW
+#### Install libaria2
+
+Depends on your OS and package managers:
+
+- Ubuntu (apt-get):
+
+  ```sh
+  apt-get install libaria2-0-dev
+  ```
+
+- Archlinux (aur):
+
+  ```sh
+  yay install aria2
+  ```
+
+- Windows (MSYS2):
+
+  ```sh
+  pacman -S mingw-w64-x86_64-aria2
+  ```
+
+- MacOS
+  See [kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases) , extract files to your system paths.
+
+#### For Clang/GCC/MinGW
 
 Build:
 
@@ -33,6 +58,8 @@ qmake && make
 ```
 
 #### For MSVC
+
+**\* HELP WANTED: I don't know how to use MSVC to build libaria2**
 
 Install zlib if you don't have one. (See [zlib.install](https://github.com/horta/zlib.install))
 
