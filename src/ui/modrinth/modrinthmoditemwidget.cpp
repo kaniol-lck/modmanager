@@ -155,6 +155,7 @@ void ModrinthModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
 void ModrinthModItemWidget::updateUi()
 {
     Config config;
+    ui->modAuthors->setVisible(config.getShowModAuthors());
     ui->modDateTime->setVisible(config.getShowModDateTime());
     ui->tags->setVisible(config.getShowModCategory());
 }

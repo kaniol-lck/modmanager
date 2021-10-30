@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     QIcon::setThemeName("breeze-modmanager");
 #endif
 #ifdef Q_OS_WIN
-    QFont font("微软雅黑", 10);
+    QFont font("微软雅黑", 9);
     a.setFont(font);
 #endif
 #ifdef Q_OS_MACOS

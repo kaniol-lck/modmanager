@@ -57,7 +57,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     //tags
     for(auto &&tag : mod_->tags()){
         auto label = new QLabel(this);
-        label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+        label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
         if(!tag.iconName().isEmpty())
             label->setText(QString(R"(<img src="%1" height="22" width="22"/>)").arg(tag.iconName()));
         else
@@ -172,6 +172,7 @@ void CurseforgeModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
 void CurseforgeModItemWidget::updateUi()
 {
     Config config;
+    ui->modAuthors->setVisible(config.getShowModAuthors());
     ui->modDateTime->setVisible(config.getShowModDateTime());
     ui->tags->setVisible(config.getShowModCategory());
     ui->loaderTypes->setVisible(config.getShowModLoaderType());

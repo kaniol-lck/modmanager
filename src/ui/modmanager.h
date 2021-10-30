@@ -40,11 +40,11 @@ private slots:
     void on_menuPaths_aboutToShow();
     void on_menuTags_aboutToShow();
     void on_actionReload_triggered();
+    void on_actionShow_Mod_Authors_toggled(bool arg1);
     void on_actionShow_Mod_Date_Time_toggled(bool arg1);
     void on_actionShow_Mod_Category_toggled(bool arg1);
     void on_actionShow_Mod_Loader_Type_toggled(bool arg1);
     void on_actionNext_Page_triggered();
-
     void on_actionPrevious_Page_triggered();
 
 private:

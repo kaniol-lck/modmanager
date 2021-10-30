@@ -42,6 +42,7 @@ public:
     getterAndSetter(ScrollSpeed, Double, scrollSpeed, 1.0)
     getterAndSetter(ScrollAcceleration, Double, scrollAcceleration, 1.0)
     getterAndSetter(ScrollFriction, Double, scrollFriction, 1.0)
+    getterAndSetter(ShowModAuthors, Bool, showModAuthors, true)
     getterAndSetter(ShowModDateTime, Bool, showModDateTime, true)
     getterAndSetter(ShowModCategory, Bool, showModCategory, true)
     getterAndSetter(ShowModLoaderType, Bool, showModLoaderType, true)

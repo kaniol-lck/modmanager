@@ -213,13 +213,15 @@ void LocalModItemWidget::updateInfo()
 
 void LocalModItemWidget::updateUi()
 {
+    Config config;
+    ui->modAuthors->setVisible(config.getShowModAuthors());
     //tags
     for(auto widget : qAsConst(tagWidgets_)){
         ui->tagsLayout->removeWidget(widget);
         widget->deleteLater();
     }
     tagWidgets_.clear();
-    for(auto &&tag : mod_->tagManager().tags(Config().getShowTagCategories())){
+    for(auto &&tag : mod_->tagManager().tags(config.getShowTagCategories())){
         auto label = new QLabel(tag.name(), this);
         label->setToolTip(tag.name());
         label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));

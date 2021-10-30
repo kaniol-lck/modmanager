@@ -30,6 +30,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->showModrinth->setChecked(config.getShowModrinth());
     ui->showOptiFine->setChecked(config.getShowOptiFine());
     ui->showReplayMod->setChecked(config.getShowReplayMod());
+    ui->showModAuthors->setChecked(config.getShowModAuthors());
     ui->showModDateTime->setChecked(config.getShowModDateTime());
     ui->showModCategory->setChecked(config.getShowModCategory());
     ui->showModLoaderType->setChecked(config.getShowModLoaderType());
@@ -76,6 +77,7 @@ void Preferences::on_Preferences_accepted()
     config.setShowModrinth(ui->showModrinth->isChecked());
     config.setShowOptiFine(ui->showOptiFine->isChecked());
     config.setShowReplayMod(ui->showReplayMod->isChecked());
+    config.setShowModAuthors(ui->showModAuthors->isChecked());
     config.setShowModDateTime(ui->showModDateTime->isChecked());
     config.setShowModCategory(ui->showModCategory->isChecked());
     config.setShowModLoaderType(ui->showModLoaderType->isCheckable());
@@ -110,4 +112,3 @@ void Preferences::on_downloadPathButton_clicked()
     if(str.isEmpty()) return;
     ui->downloadPathText->setText(str);
 }
-

@@ -77,6 +77,7 @@ ModManager::ModManager(QWidget *parent) :
     //init versions
     VersionManager::initVersionLists();
 
+    ui->actionShow_Mod_Authors->setChecked(config.getShowModAuthors());
     ui->actionShow_Mod_Date_Time->setChecked(config.getShowModDateTime());
     ui->actionShow_Mod_Category->setChecked(config.getShowModCategory());
     ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
@@ -313,6 +314,12 @@ void ModManager::on_actionReload_triggered()
         ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentPage())->reload();
 }
 
+void ModManager::on_actionShow_Mod_Authors_toggled(bool arg1)
+{
+    Config().setShowModAuthors(arg1);
+    ui->pageSwitcher->updateUi();
+}
+
 void ModManager::on_actionShow_Mod_Date_Time_toggled(bool arg1)
 {
     Config().setShowModDateTime(arg1);
@@ -340,3 +347,4 @@ void ModManager::on_actionPrevious_Page_triggered()
 {
     ui->pageSwitcher->previesPage();
 }
+

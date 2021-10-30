@@ -79,6 +79,7 @@
     </widget>
     <addaction name="action_Browsers"/>
     <addaction name="separator"/>
+    <addaction name="actionShow_Mod_Authors"/>
     <addaction name="actionShow_Mod_Date_Time"/>
     <addaction name="actionShow_Mod_Category"/>
     <addaction name="actionShow_Mod_Loader_Type"/>
@@ -276,6 +277,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Tab</string>
+   </property>
+  </action>
+  <action name="actionShow_Mod_Authors">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Mod Authors</string>
    </property>
   </action>
  </widget>
