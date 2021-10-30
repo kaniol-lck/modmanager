@@ -13,12 +13,16 @@ public:
     virtual ~ExploreBrowser() = default;
 
     QAction *visitWebsiteAction() const;
+    const QIcon &icon() const;
+    const QString &name() const;
 public slots:
     virtual void refresh() = 0;
     virtual void searchModByPathInfo(const LocalModPathInfo &info) = 0;
     virtual void updateUi() = 0;
 signals:
 private:
+    QIcon icon_;
+    QString name_;
     QAction *visitWebsiteAction_;
 };
 

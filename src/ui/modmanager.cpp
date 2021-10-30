@@ -25,6 +25,7 @@
 #include "ui/preferences.h"
 #include "ui/browsermanagerdialog.h"
 #include "ui/local/localmodpathsettingsdialog.h"
+#include "download/qaria2.h"
 #include "gameversion.h"
 #include "config.hpp"
 #include "util/funcutil.h"
@@ -149,6 +150,7 @@ void ModManager::on_actionPreferences_triggered()
     auto preferences = new Preferences(this);
     preferences->exec();
     ui->pageSwitcher->updateUi();
+    QAria2::qaria2()->updateOptions();
 }
 
 void ModManager::on_actionManage_Browser_triggered()
@@ -179,11 +181,8 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
             exploreBrowser->refresh();
         });
-        connect(menu->addAction(QIcon::fromTheme(""), tr("Hide")), &QAction::triggered, this, [=]{
-            ui->pageSwitcher->removeExplorePage(index.row());
-        });
         menu->addAction(exploreBrowser->visitWebsiteAction());
-    }else if(index.parent().row() == PageSwitcher::Local){
+    } else if(index.parent().row() == PageSwitcher::Local){
         // on one of local items
         auto localBrowser = ui->pageSwitcher->localModBrowser(index.row());
         connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
@@ -330,4 +329,14 @@ void ModManager::on_actionShow_Mod_Loader_Type_toggled(bool arg1)
 {
     Config().setShowModLoaderType(arg1);
     ui->pageSwitcher->updateUi();
+}
+
+void ModManager::on_actionNext_Page_triggered()
+{
+    ui->pageSwitcher->nextPage();
+}
+
+void ModManager::on_actionPrevious_Page_triggered()
+{
+    ui->pageSwitcher->previesPage();
 }

@@ -10,7 +10,6 @@ Preferences::Preferences(QWidget *parent) :
     ui(new Ui::Preferences)
 {
     ui->setupUi(this);
-    ui->proxyBox->setVisible(false);
     //TODO
     ui->label_11->setVisible(false);
     ui->optifineVersionSource->setVisible(false);
@@ -48,8 +47,9 @@ Preferences::Preferences(QWidget *parent) :
     ui->postUpdate->setCurrentIndex(config.getPostUpdate());
 
     //Network
-    ui->threadCount->setValue(config.getThreadCount());
-    ui->downloadCount->setValue(config.getDownloadCount());
+    ui->aria2timeout->setValue(config.getAria2timeout());
+    ui->aria2maxTries->setValue(config.getAria2timeout());
+    ui->aria2maxConcurrentDownloads->setValue(config.getAria2maxConcurrentDownloads());
 }
 
 Preferences::~Preferences()
@@ -92,8 +92,9 @@ void Preferences::on_Preferences_accepted()
     config.setUseModrinthUpdate(ui->useModrinthUpdate->isChecked());
     config.setPostUpdate(ui->postUpdate->currentIndex());
 
-    config.setThreadCount(ui->threadCount->value());
-    config.setDownloadCount(ui->downloadCount->value());
+    config.setAria2timeout(ui->aria2timeout->value());
+    config.setAria2maxTries(ui->aria2maxTries->value());
+    config.setAria2maxConcurrentDownloads(ui->aria2maxConcurrentDownloads->value());
 }
 
 void Preferences::on_commonPathButton_clicked()

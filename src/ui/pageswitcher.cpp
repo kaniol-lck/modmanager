@@ -25,6 +25,22 @@ PageSwitcher::PageSwitcher(QWidget *parent) :
     };
 }
 
+void PageSwitcher::nextPage()
+{
+    auto index = currentIndex() + 1;
+    if(index >= count())
+        index -= count();
+    setCurrentIndex(index);
+}
+
+void PageSwitcher::previesPage()
+{
+    auto index = currentIndex() - 1;
+    if(index < 0)
+        index += count();
+    setCurrentIndex(index);
+}
+
 void PageSwitcher::addDownloadPage()
 {
     if(!downloadBrowser_)

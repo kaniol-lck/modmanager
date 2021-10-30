@@ -20,6 +20,9 @@ public:
     enum BrowserCategory{ Download, Explore, Local };
     explicit PageSwitcher(QWidget *parent = nullptr);
 
+    void nextPage();
+    void previesPage();
+
     void addDownloadPage();
     void addCurseforgePage();
     void addModrinthPage();

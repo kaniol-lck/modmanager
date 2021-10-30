@@ -7,6 +7,7 @@
 
 #include "qaria2downloader.h"
 #include "util/mmlogger.h"
+#include "config.hpp"
 
 int QAria2::downloadEventCallback(aria2::Session *session[[maybe_unused]], aria2::DownloadEvent event, const aria2::A2Gid gid, void *userData[[maybe_unused]])
 {
@@ -42,6 +43,7 @@ QAria2::QAria2(QObject *parent) : QObject(parent)
         aria2::shutdown(session_);
         MMLogger() << "aria2 shutdown.";
     });
+    updateOptions();
 }
 
 QAria2::~QAria2()
@@ -57,6 +59,16 @@ QAria2 *QAria2::qaria2()
 {
     static QAria2 qaria2;
     return &qaria2;
+}
+
+void QAria2::updateOptions()
+{
+    Config config;
+    aria2::KeyVals options;
+    options.emplace_back("timeout", std::to_string(config.getAria2timeout()));
+    options.emplace_back("max-tries", std::to_string(config.getAria2maxTries()));
+    options.emplace_back("max-concurrent-downloads", std::to_string(config.getAria2maxConcurrentDownloads()));
+    aria2::changeGlobalOption(session_, options);
 }
 
 const QMap<aria2::A2Gid, QAria2Downloader *> &QAria2::downloaders() const

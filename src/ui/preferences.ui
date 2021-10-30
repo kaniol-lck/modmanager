@@ -544,94 +544,47 @@
       <attribute name="title">
        <string>Network</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_7">
+      <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Download</string>
+          <string>Aria2</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4">
+         <layout class="QFormLayout" name="formLayout_3">
           <item row="0" column="0">
-           <layout class="QFormLayout" name="formLayout_3">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Max parallel download count:</string>
-              </property>
-              <property name="buddy">
-               <cstring>downloadCount</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QSpinBox" name="downloadCount">
-              <property name="minimum">
-               <number>1</number>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Download thread count:</string>
-              </property>
-              <property name="buddy">
-               <cstring>threadCount</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QSpinBox" name="threadCount">
-              <property name="minimum">
-               <number>1</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Timeout:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="aria2timeout"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Max tries:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="aria2maxTries"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Max concurrent downloads:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="aria2maxConcurrentDownloads"/>
           </item>
          </layout>
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QGroupBox" name="proxyBox">
-         <property name="title">
-          <string>Proxy</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <layout class="QFormLayout" name="formLayout_4">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="buddy">
-               <cstring>lineEdit</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-              <property name="buddy">
-               <cstring>lineEdit_2</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="lineEdit_2"/>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -661,8 +614,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>254</x>
-     <y>569</y>
+     <x>260</x>
+     <y>666</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -677,8 +630,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>322</x>
-     <y>569</y>
+     <x>328</x>
+     <y>666</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

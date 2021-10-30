@@ -93,8 +93,9 @@ public:
     getterAndSetter(UpdateCheckInterval, Int, updateCheckIntervalType, EveryDay)
 
     //Network
-    getterAndSetter(ThreadCount, Int, threadCount, 8)
-    getterAndSetter(DownloadCount, Int, downloadCount, 16)
+    getterAndSetter(Aria2timeout, Int, aria2timeout, 60)
+    getterAndSetter(Aria2maxTries, Int, aria2maxTries, 5)
+    getterAndSetter(Aria2maxConcurrentDownloads, Int, aria2maxConcurrentDownloads, 5)
 
     //Path List
     getterAndSetter(LocalPathList, List, localPathList, QVariant())

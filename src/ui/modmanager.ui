@@ -83,6 +83,9 @@
     <addaction name="actionShow_Mod_Category"/>
     <addaction name="actionShow_Mod_Loader_Type"/>
     <addaction name="menuTags"/>
+    <addaction name="separator"/>
+    <addaction name="actionNext_Page"/>
+    <addaction name="actionPrevious_Page"/>
    </widget>
    <widget class="QMenu" name="menu_Path">
     <property name="title">
@@ -187,7 +190,10 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Open new path dialog</string>
+    <string>Open New Path Dialog</string>
+   </property>
+   <property name="toolTip">
+    <string>Open New Path Dialog</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+N</string>
@@ -251,6 +257,25 @@
    </property>
    <property name="text">
     <string>Show Mod Loader Type</string>
+   </property>
+  </action>
+  <action name="actionNext_Page">
+   <property name="text">
+    <string>Next Page</string>
+   </property>
+   <property name="toolTip">
+    <string>Next Page</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
+   </property>
+  </action>
+  <action name="actionPrevious_Page">
+   <property name="text">
+    <string>Previous Page</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Tab</string>
    </property>
   </action>
  </widget>
