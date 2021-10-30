@@ -30,7 +30,7 @@ MMLogger MMLogger::dtor(QObject *object)
 
 MMLogger MMLogger::network(const QString &field)
 {
-    return MMLogger("NETWORK", field/*, true*/);
+    return MMLogger("NETWORK", field, true);
 }
 
 MMLogger MMLogger::network(QObject *object)

@@ -67,7 +67,16 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 //        });
 //        dialog->exec();
 //    });
-    connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
+    auto reloadAction = menu->addAction(QIcon::fromTheme("view-refresh"), tr("Reload"));
+    connect(menu, &QMenu::aboutToShow, this, [=]{
+        if(isLoading()){
+            reloadAction->setEnabled(false);
+            connect(this, &LocalModBrowser::loadFinished, this, [=]{
+                reloadAction->setEnabled(true);
+            });
+        }
+    });
+    connect(reloadAction, &QAction::triggered, this, [=]{
         modPath_->loadMods();
     });
 //    connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{

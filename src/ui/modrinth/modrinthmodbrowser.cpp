@@ -88,6 +88,13 @@ void ModrinthModBrowser::updateVersionList()
     connect(multiSelectionAction, &QAction::toggled, menu, &UnclosedMenu::setUnclosed);
     connect(multiSelectionAction, &QAction::triggered, this, [=](bool checked){
         Config().setModrinthMultiVersion(checked);
+        if(!checked && currentGameVersions_.size() > 1){
+            auto version = currentGameVersions_.first();
+            ui->versionSelectButton->setText(version);
+            currentGameVersions_ = { version };
+            lastGameVersions_ = currentGameVersions_;
+            getModList(currentName_);
+        }
     });
     menu->addSeparator();
     auto anyVersionAction = menu->addAction(tr("Any"));
@@ -109,8 +116,8 @@ void ModrinthModBrowser::updateVersionList()
                 currentGameVersions_.clear();
                 currentGameVersions_ << version;
                 //only search for single selection
-                if(currentCategoryIds_ == lastCategoryIds_) return;
-                lastCategoryIds_ = currentCategoryIds_;
+                if(currentGameVersions_ == lastGameVersions_) return;
+                lastGameVersions_ = currentGameVersions_;
                 getModList(currentName_);
             }
             ui->versionSelectButton->setToolTip("");
@@ -184,6 +191,22 @@ void ModrinthModBrowser::updateCategoryList()
     connect(multiSelectionAction, &QAction::toggled, menu, &UnclosedMenu::setUnclosed);
     connect(multiSelectionAction, &QAction::toggled, this, [=](bool checked){
         Config().setModrinthMultiCategory(checked);
+        if(!checked && currentCategoryIds_.size() > 1){
+            auto categoryId = currentCategoryIds_.first();
+            auto &&categories = ModrinthAPI::getCategories();
+            if(auto it = std::find_if(categories.cbegin(), categories.cend(), [=](const auto &val){
+                return std::get<1>(val) == categoryId;
+            }); it != categories.cend()){
+                auto &&[name, id] = *it;
+                ui->categorySelectButton->setText(name);
+                QIcon icon(QString(":/image/modrinth/%1.svg").arg(id));
+                ui->categorySelectButton->setIcon(icon);
+            }
+            currentCategoryIds_.clear();
+            currentCategoryIds_ << categoryId;
+            lastCategoryIds_ = currentCategoryIds_;
+            getModList(currentName_);
+        }
     });
     menu->addSeparator();
     auto anyCategoryAction = menu->addAction(tr("Any"));
@@ -197,6 +220,7 @@ void ModrinthModBrowser::updateCategoryList()
     for(auto &&[name, id] : ModrinthAPI::getCategories()){
         QIcon icon(QString(":/image/modrinth/%1.svg").arg(id));
         auto categoryAction = menu->addAction(icon, name);
+        categoryAction->setCheckable(multiSelectionAction->isChecked());
         connect(categoryAction, &QAction::triggered, this, [=, id = id, name = name](bool checked){
             if(multiSelectionAction->isChecked()){
                 if(checked)
