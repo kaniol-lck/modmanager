@@ -143,14 +143,14 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ModManager${{ matrix.x64_suffix }}-Installer.exe
-          path: ${{github.workspace}}/ModManager-*-Installer.exe
+          path: ${{github.workspace}}/ModManager*-Installer.exe
       - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{github.workspace}}/ModManager-*-Installer.exe
-          asset_name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
+          file: ${{github.workspace}}/ModManager*-Installer.exe
+          asset_name: ModManager${{ matrix.x64_suffix }}-Installer.exe
           tag: ${{ github.ref }}
           overwrite: true
   # enable them if find a way to build libaria2
@@ -306,7 +306,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ModManager_${{ matrix.os }}_${{matrix.qt_ver}}.dmg
-          path: modmanager.app
+          path: modmanager.dmg
       - name: uploadRelease
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2

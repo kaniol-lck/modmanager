@@ -15,7 +15,6 @@
 GameVersion GameVersion::Any = GameVersion("");
 
 QList<GameVersion> GameVersion::mojangVersionList_;
-QList<GameVersion> GameVersion::mojangReleaseVersionList_;
 QList<GameVersion> GameVersion::curseforgeVersionList_;
 
 QList<GameVersion> GameVersion::cachedVersionList_{
@@ -93,9 +92,14 @@ QList<GameVersion> GameVersion::cachedVersionList_{
 };
 
 GameVersion::GameVersion(const QString &string) :
-    versionString_(string)
+    id_(string)
 {
-    auto l = versionString_.split(".");
+    auto l = id_.split(".");
+    if(!std::all_of(l.cbegin(), l.cend(), [=](const QString &str){
+                    bool ok = false;
+                    str.toInt(&ok);
+                    return ok;}))
+        return;
     if(l.size() >= 1)
         mainVersionNumber_ = l.at(0).toInt();
     if(l.size() >= 2)
@@ -113,23 +117,27 @@ GameVersion::GameVersion(int mainVersion, int majorVersion, int minorVersion) :
     list << QString::number(mainVersion) << QString::number(majorVersion);
     if(minorVersion)
         list << QString::number(minorVersion);
-    versionString_ = list.join(".");
+    id_ = list.join(".");
 }
 
 GameVersion GameVersion::majorVersion() const
 {
-    return GameVersion(mainVersionNumber_, majorVersionNumber_);
+    if(!majorVersion_.isEmpty())
+        return majorVersion_;
+    if(mainVersionNumber_ && majorVersionNumber_)
+        return GameVersion(mainVersionNumber_, majorVersionNumber_);
+    return GameVersion::Any;
 }
 
-const QString &GameVersion::versionString() const
+const QString &GameVersion::id() const
 {
-    return versionString_;
+    return id_;
 }
 
 bool GameVersion::isDev() const
 {
-    return versionString_.contains('w') || versionString_.contains("snapshot", Qt::CaseInsensitive) ||
-            versionString_.contains("pre") || versionString_.contains("rc") || versionString_.contains("rd");
+    return id_.contains('w') || id_.contains("snapshot", Qt::CaseInsensitive) ||
+            id_.contains("pre") || id_.contains("rc") || id_.contains("rd");
 }
 
 GameVersion::operator QString() const
@@ -139,17 +147,17 @@ GameVersion::operator QString() const
 
 QString GameVersion::toString() const
 {
-    return versionString_.isEmpty()? QObject::tr("Any") : versionString_;
+    return id_.isEmpty()? QObject::tr("Any") : id_;
 }
 
 bool GameVersion::operator==(const GameVersion &other) const
 {
-    return versionString_ == other.versionString_;
+    return id_ == other.id_;
 }
 
 bool GameVersion::operator!=(const GameVersion &another) const
 {
-    return versionString_ != another.versionString_;
+    return id_ != another.id_;
 }
 
 GameVersion GameVersion::deduceFromString(const QString &string)
@@ -158,10 +166,15 @@ GameVersion GameVersion::deduceFromString(const QString &string)
     if(re.indexIn(string) != -1){
         //2nd cap
         auto str = re.cap(1);
-        if(mojangReleaseVersionList().contains(str))
+        if(mojangVersionList().contains(str))
             return {GameVersion(str)};
     }
     return GameVersion::Any;
+}
+
+QList<GameVersion> GameVersion::mojangVersionList()
+{
+    return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangVersionList_;
 }
 
 void VersionManager::initMojangVersionList()
@@ -178,10 +191,15 @@ void VersionManager::initMojangVersionList()
         auto json = QJsonDocument::fromJson(reply->readAll(), &error);
         if(error.error == QJsonParseError::NoError){
             auto list = value(json.toVariant(), "versions").toList();
+            QString lastMajorVersion;
             for(const auto &entry : qAsConst(list)){
-                GameVersion::mojangVersionList_ << value(entry, "id").toString();
-                if(value(entry, "type").toString() == "release")
-                    GameVersion::mojangReleaseVersionList_ << value(entry, "id").toString();
+                GameVersion version = value(entry, "id").toString();
+                version.type_ = value(entry, "type").toString();
+                if(version.type_ == "release")
+                    lastMajorVersion = version.majorVersion();
+                if(version.type_ == "snapshot")
+                    version.majorVersion_ = lastMajorVersion;
+                GameVersion::mojangVersionList_ << version;
             }
         }
         qDebug() << "mojang version updated.";
@@ -203,11 +221,6 @@ void VersionManager::initCurseforgeVersionList()
     });
 }
 
-QList<GameVersion> GameVersion::mojangReleaseVersionList()
-{
-    return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangReleaseVersionList_;
-}
-
 QList<GameVersion> GameVersion::curseforgeVersionList()
 {
     return curseforgeVersionList_.isEmpty()? cachedVersionList_ : curseforgeVersionList_;
@@ -215,10 +228,12 @@ QList<GameVersion> GameVersion::curseforgeVersionList()
 
 QList<GameVersion> GameVersion::modrinthVersionList()
 {
-    if(Config().getShowModrinthSnapshot())
-        return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangVersionList_;
-    else
-        return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangReleaseVersionList_;
+    return mojangVersionList_.isEmpty()? cachedVersionList_ : mojangVersionList_;
+}
+
+const QString &GameVersion::type() const
+{
+    return type_;
 }
 
 VersionManager *VersionManager::manager()

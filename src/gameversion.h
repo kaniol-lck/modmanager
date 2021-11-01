@@ -15,7 +15,7 @@ public:
 
     GameVersion majorVersion() const;
 
-    const QString &versionString() const;
+    const QString &id() const;
     bool isDev() const;
 
     operator QString() const;
@@ -27,12 +27,16 @@ public:
 
     static GameVersion Any;
 
-    static QList<GameVersion> mojangReleaseVersionList();
+    static QList<GameVersion> mojangVersionList();
     static QList<GameVersion> curseforgeVersionList();
     static QList<GameVersion> modrinthVersionList();
 
+    const QString &type() const;
+
 private:
-    QString versionString_;
+    QString id_;
+    QString type_;
+    QString majorVersion_;
 
     int mainVersionNumber_;
     int majorVersionNumber_;
@@ -40,7 +44,6 @@ private:
 
     static QList<GameVersion> cachedVersionList_;
     static QList<GameVersion> mojangVersionList_;
-    static QList<GameVersion> mojangReleaseVersionList_;
     static QList<GameVersion> curseforgeVersionList_;
 };
 

@@ -47,7 +47,7 @@ void LocalModPathSettingsDialog::updateVersionList()
 {
     ui->versionSelect->clear();
     ui->versionSelect->addItem(tr("Any"));
-    for(auto &&version : GameVersion::mojangReleaseVersionList())
+    for(auto &&version : GameVersion::mojangVersionList())
         ui->versionSelect->addItem(version);
 }
 

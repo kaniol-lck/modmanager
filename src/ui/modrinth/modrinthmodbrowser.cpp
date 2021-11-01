@@ -143,22 +143,31 @@ void ModrinthModBrowser::updateVersionList()
     QMap<QString, QMenu*> submenus;
     QList<QString> keys; //to keep order
     for(auto &&version : GameVersion::modrinthVersionList()){
-        if(!submenus.contains(version.majorVersion())){
-            auto submenu = new UnclosedMenu(version.majorVersion());
-            submenu->setUnclosed(multiSelectionAction->isChecked());
-            connect(multiSelectionAction, &QAction::triggered, submenu, &UnclosedMenu::setUnclosed);
-            submenus[version.majorVersion()] = submenu;
-            keys << version.majorVersion();
-        }
-        if(version == version.majorVersion())
+        QString submenuName;
+        if(auto type = version.type(); !type.isEmpty() && type != "release" && (type != "snapshot" || version.majorVersion() == GameVersion::Any))
+            submenuName = type;
+        if(version.majorVersion() != GameVersion::Any)
+            submenuName = version.majorVersion();
+        if(submenuName.isEmpty() || submenus.contains(submenuName)) continue;
+        auto submenu = new UnclosedMenu(submenuName);
+        submenu->setUnclosed(multiSelectionAction->isChecked());
+        connect(multiSelectionAction, &QAction::triggered, submenu, &UnclosedMenu::setUnclosed);
+        submenus[submenuName] = submenu;
+        keys << submenuName;
+        if(version.id() == submenuName)
             submenus[version]->addAction(getVersionAction(version));
     }
-    for(auto &&version : GameVersion::curseforgeVersionList()){
+    for(auto &&version : GameVersion::modrinthVersionList()){
         if(version == version.majorVersion()) continue;
-        if(submenus.contains(version.majorVersion())){
-            auto submenu = submenus[version.majorVersion()];
+        QString submenuName;
+        if(auto type = version.type(); !type.isEmpty() && type != "release" && (type != "snapshot" || version.majorVersion() == GameVersion::Any))
+            submenuName = type;
+        if(version.majorVersion() != GameVersion::Any)
+            submenuName = version.majorVersion();
+        if(submenus.contains(submenuName)){
+            auto submenu = submenus[submenuName];
             if(submenu->actions().size() == 1)
-                if(GameVersion version = submenu->actions().at(0)->text(); version == version.majorVersion())
+                if(GameVersion version = submenu->actions().at(0)->text(); version.id() == submenuName)
                     submenu->addSeparator();
             submenu->addAction(getVersionAction(version));
         }
