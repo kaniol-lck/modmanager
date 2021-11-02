@@ -38,9 +38,9 @@ private:
     QString type_;
     QString majorVersion_;
 
-    int mainVersionNumber_;
-    int majorVersionNumber_;
-    int minorVersionNumber_;
+    int mainVersionNumber_ = 0;
+    int majorVersionNumber_ = 0;
+    int minorVersionNumber_ = 0;
 
     static QList<GameVersion> cachedVersionList_;
     static QList<GameVersion> mojangVersionList_;

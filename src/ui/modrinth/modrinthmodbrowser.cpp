@@ -83,10 +83,8 @@ void ModrinthModBrowser::updateVersionList()
 
     auto multiSelectionAction = menu->addAction(tr("Multi Selection"));
     multiSelectionAction->setCheckable(true);
-    multiSelectionAction->setChecked(Config().getModrinthMultiVersion());
-    menu->setUnclosed(multiSelectionAction->isChecked());
     connect(multiSelectionAction, &QAction::toggled, menu, &UnclosedMenu::setUnclosed);
-    connect(multiSelectionAction, &QAction::triggered, this, [=](bool checked){
+    connect(multiSelectionAction, &QAction::toggled, this, [=](bool checked){
         Config().setModrinthMultiVersion(checked);
         if(!checked && currentGameVersions_.size() > 1){
             auto version = currentGameVersions_.first();
@@ -94,6 +92,22 @@ void ModrinthModBrowser::updateVersionList()
             currentGameVersions_ = { version };
             lastGameVersions_ = currentGameVersions_;
             getModList(currentName_);
+        }
+    });
+    auto showSnapshotAction = menu->addAction(tr("Show Snapshot"));
+    showSnapshotAction->setCheckable(true);
+    connect(showSnapshotAction, &QAction::toggled, this, [=](bool checked){
+        Config().setShowModrinthSnapshot(checked);
+        for(auto &&action : menu->actions()){
+            if(action->data().toBool())
+                action->setVisible(checked);
+            if(auto &&submenu = action->menu()){
+                for (auto &&subaction : submenu->actions()) {
+                    qDebug() << subaction->text();
+                    if(subaction->data().toBool())
+                        subaction->setVisible(checked);
+                }
+            }
         }
     });
     menu->addSeparator();
@@ -144,12 +158,15 @@ void ModrinthModBrowser::updateVersionList()
     QList<QString> keys; //to keep order
     for(auto &&version : GameVersion::modrinthVersionList()){
         QString submenuName;
-        if(auto type = version.type(); !type.isEmpty() && type != "release" && (type != "snapshot" || version.majorVersion() == GameVersion::Any))
+        QString type = version.type();
+        if(!type.isEmpty() && type != "release" && (type != "snapshot" || version.majorVersion() == GameVersion::Any))
             submenuName = type;
         if(version.majorVersion() != GameVersion::Any)
             submenuName = version.majorVersion();
         if(submenuName.isEmpty() || submenus.contains(submenuName)) continue;
         auto submenu = new UnclosedMenu(submenuName);
+        if(type != "release")
+            submenu->menuAction()->setData(true);
         submenu->setUnclosed(multiSelectionAction->isChecked());
         connect(multiSelectionAction, &QAction::triggered, submenu, &UnclosedMenu::setUnclosed);
         submenus[submenuName] = submenu;
@@ -169,7 +186,10 @@ void ModrinthModBrowser::updateVersionList()
             if(submenu->actions().size() == 1)
                 if(GameVersion version = submenu->actions().at(0)->text(); version.id() == submenuName)
                     submenu->addSeparator();
-            submenu->addAction(getVersionAction(version));
+            auto action = getVersionAction(version);
+            if(version.type() != "release")
+                action->setData(true);
+            submenu->addAction(action);
         }
     }
     for(const auto &key : qAsConst(keys)){
@@ -179,6 +199,8 @@ void ModrinthModBrowser::updateVersionList()
         else
             menu->addMenu(submenu);
     }
+    multiSelectionAction->setChecked(Config().getModrinthMultiVersion());
+    showSnapshotAction->setChecked(Config().getShowModrinthSnapshot());
     connect(menu, &QMenu::aboutToHide, this, [=]{
         //only search for multi selection
         if(!multiSelectionAction->isChecked()) return;
