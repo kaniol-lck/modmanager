@@ -174,11 +174,8 @@ void ModrinthModBrowser::updateVersionList()
         connect(multiSelectionAction, &QAction::triggered, submenu, &UnclosedMenu::setUnclosed);
         submenus[submenuName] = submenu;
         keys << submenuName;
-        if(version.id() == submenuName)
-            submenus[version]->addAction(getVersionAction(version));
     }
     for(auto &&version : GameVersion::modrinthVersionList()){
-        if(version == version.majorVersion()) continue;
         QString submenuName;
         QString type = version.type();
         if(!type.isEmpty() && type != "release"){

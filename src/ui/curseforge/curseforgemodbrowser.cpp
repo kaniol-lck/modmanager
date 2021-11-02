@@ -96,14 +96,8 @@ void CurseforgeModBrowser::updateVersionList()
             submenus[version.majorVersion()] = submenu;
             keys << version.majorVersion();
         }
-        if(version == version.majorVersion())
-            connect(submenus[version]->addAction(version), &QAction::triggered, this, [=]{
-                currentGameVersion_ = version;
-                ui->versionSelectButton->setText(version);
-            });
     }
     for(auto &&version : GameVersion::curseforgeVersionList()){
-        if(version == version.majorVersion()) continue;
         if(submenus.contains(version.majorVersion())){
             auto submenu = submenus[version.majorVersion()];
             if(submenu->actions().size() == 1)

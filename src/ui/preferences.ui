@@ -182,13 +182,6 @@
            </item>
           </widget>
          </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QCheckBox" name="showModrinthSnapshot">
-           <property name="text">
-            <string>Show snapshot versions in Modrinth tab</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
        <item>
