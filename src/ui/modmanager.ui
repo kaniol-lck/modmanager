@@ -119,22 +119,22 @@
    <addaction name="menuTools"/>
    <addaction name="menu_Help"/>
   </widget>
-  <widget class="QToolBar" name="toolBar">
+  <widget class="QDockWidget" name="browserSelectorDock">
+   <property name="features">
+    <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   </property>
    <property name="windowTitle">
     <string>Page Selector</string>
    </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftToolBarArea|Qt::RightToolBarArea</set>
-   </property>
-   <property name="floatable">
-    <bool>false</bool>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>LeftToolBarArea</enum>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
    </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QGridLayout" name="gridLayout_3"/>
+   </widget>
   </widget>
   <action name="actionPreferences">
    <property name="icon">

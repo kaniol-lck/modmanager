@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QResizeEvent>
 #include <QFileDialog>
+#include <QLabel>
 
 #include "ui/aboutdialog.h"
 #include "ui/browserselectorwidget.h"
@@ -45,7 +46,7 @@ ModManager::ModManager(QWidget *parent) :
     Config config;
     resize(config.getMainWindowWidth(),
            config.getMainWindowHeight());
-    addToolBar(static_cast<Qt::ToolBarArea>(config.getTabSelectBarArea()), ui->toolBar);
+//    addToolBar(static_cast<Qt::ToolBarArea>(config.getTabSelectBarArea()), ui->toolBar);
 
     setStyleSheet("QListWidget::item:hover {"
                   "  border-left: 5px solid #eee;"
@@ -55,8 +56,9 @@ ModManager::ModManager(QWidget *parent) :
                   "  color: black;"
                   "}");
 
-    ui->toolBar->addWidget(browserSelector_);
-    connect(ui->toolBar, &QToolBar::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
+    ui->browserSelectorDock->setWidget(browserSelector_);
+    ui->browserSelectorDock->setTitleBarWidget(new QLabel);
+    connect(ui->browserSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
     //Download
     ui->pageSwitcher->addDownloadPage();
@@ -86,7 +88,7 @@ ModManager::ModManager(QWidget *parent) :
 
 ModManager::~ModManager()
 {
-    Config().setTabSelectBarArea(toolBarArea(ui->toolBar));
+//    Config().setTabSelectBarArea(toolBarArea(ui->toolBar));
     delete ui;
 }
 
@@ -219,7 +221,7 @@ void ModManager::on_action_About_Mod_Manager_triggered()
 
 void ModManager::on_actionPage_Selector_toggled(bool arg1)
 {
-    ui->toolBar->setVisible(arg1);
+    ui->browserSelectorDock->setVisible(arg1);
 }
 
 void ModManager::on_actionOpen_new_path_dialog_triggered()
