@@ -208,7 +208,7 @@ CONFIG += lrelease
 CONFIG += embed_translations
 
 #quazip: http://quazip.sourceforge.net/
-include(3rdparty/quazip-0.7.3/quazip.pri)
+#include(3rdparty/quazip-0.7.3/quazip.pri)
 
 #murmurhash: https://github.com/aappleby/smhasher
 include(3rdparty/MurmurHash/murmurhash.pri)
@@ -268,21 +268,27 @@ win32: RC_ICONS = src/modmanager.ico
 
 #dependencies
 unix {
-  LIBS += -L$$quote(/usr/local/lib) -laria2
+  message("unix-like build")
+  LIBS += -L$$quote(/usr/local/lib) -laria2 -lquazip1-qt5
+  INCLUDEPATH += /usr/include/QuaZip-Qt5-1.1/quazip
 }
 
 macx {
+  message("macos build")
   INCLUDEPATH += /usr/local/include
+  INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.1/quazip
 }
 
 win32 {
   contains(QMAKE_HOST.arch, x86_64) {
-    message("x86_64 build")
+    message("win32 x86_64 build")
     INCLUDEPATH += C:/msys64/mingw64/include
-    LIBS += -L$$quote(C:/msys64/mingw64/lib) -laria2
+    INCLUDEPATH += C:/msys64/mingw64/include/quazip5
+    LIBS += -L$$quote(C:/msys64/mingw64/lib) -laria2 -lquazip1-qt5
   } else {
-    message("x86 build")
+    message("win32 x86 build")
     INCLUDEPATH += C:/msys64/mingw32/include
-    LIBS += -L$$quote(C:/msys64/mingw32/lib) -laria2
+    INCLUDEPATH += C:/msys64/mingw32/include/quazip5
+    LIBS += -L$$quote(C:/msys64/mingw32/lib) -laria2 -lquazip1-qt5
   }
 }

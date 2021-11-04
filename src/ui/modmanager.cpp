@@ -1,10 +1,6 @@
 #include "modmanager.h"
 #include "ui_modmanager.h"
 
-#include "quazip.h"
-#include "quazipfile.h"
-#include "MurmurHash2.h"
-
 #include <QDebug>
 #include <QUrl>
 #include <QDesktopServices>

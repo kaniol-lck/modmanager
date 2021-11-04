@@ -1,7 +1,6 @@
 #include "downloadbrowser.h"
 #include "ui_downloadbrowser.h"
 
-#include <QtConcurrent>
 #include <QInputDialog>
 #include <QDebug>
 #include <QToolBar>

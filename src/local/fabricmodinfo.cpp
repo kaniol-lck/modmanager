@@ -3,8 +3,8 @@
 #include <QJsonDocument>
 #include <QCryptographicHash>
 #include <QBuffer>
-#include "quazip.h"
-#include "quazipfile.h"
+#include <quazip.h>
+#include <quazipfile.h>
 
 #include "util/funcutil.h"
 #include "util/tutil.hpp"
