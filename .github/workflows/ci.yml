@@ -28,7 +28,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get install -y libglew-dev libglfw3-dev
-          sudo apt-get install -y libaria2-0-dev
+          sudo apt-get install -y libaria2-0-dev libquazip-dev
           sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
           sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx-frontend-qt5 libcurl4-openssl-dev
       - uses: actions/checkout@v2
@@ -91,10 +91,11 @@ jobs:
         with:
           fetch-depth: 1
           submodules: recursive
-      - name: Install aria2
+      - name: Install dependencies
         shell: powershell
         run: |
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip --noconfirm
       - name: Qt 5 environment configuration
         if: ${{ startsWith( matrix.qt_ver, 5 ) }}
         shell: pwsh
@@ -122,6 +123,7 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-1_1${{ matrix.x64_suffix }}.dll deploy/bin/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssl-1_1${{ matrix.x64_suffix }}.dll deploy/bin/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libaria2-0.dll deploy/bin/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip5.dll deploy/bin/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libiconv-2.dll deploy/bin/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/bin/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/bin/
@@ -137,6 +139,10 @@ jobs:
         if: contains(matrix.mingw_arch, 'mingw64')
         run : |
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_seh-1.dll deploy/bin/
+      - name: x32 dependencies
+        if: contains(matrix.mingw_arch, 'mingw32')
+        run : |
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_dw2-1.dll deploy/bin/
       - name: Create installer
         run:
           makensis modmanager${{ matrix.x64_suffix }}.nsi
@@ -288,10 +294,9 @@ jobs:
           sudo cp -r lib/* /usr/local/lib/
           sudo cp -r include/ /usr/local/include
           rm -rf lib/ include/ *.zip
-      - run: |
-          ls /usr/local/lib
-      - run: |
-          ls /usr/local/include
+      - name: Install dependencies
+        run: |
+          brew install quazip
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
