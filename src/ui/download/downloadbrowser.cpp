@@ -45,7 +45,7 @@ void DownloadBrowser::addNewDownloaderItem(const DownloadFileInfo &info, QAria2D
 
 void DownloadBrowser::downloadSpeed(qint64 download, qint64 upload)
 {
-    auto text = tr("Download Speed:") + numberConvert(download, "B/s") +
-            " " + tr("Upload Speed:") + numberConvert(upload, "B/s");
+    auto text = tr("Download Speed:") + speedConvert(download) +
+            " " + tr("Upload Speed:") + speedConvert(upload);
     ui->downloadSpeedText->setText(text);
 }

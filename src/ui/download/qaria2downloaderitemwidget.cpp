@@ -81,7 +81,7 @@ void QAria2DownloaderItemWidget::downloadProgress(qint64 bytesReceived, qint64 b
 {
     ui->downloadProgress->setMaximum(bytesTotal);
     ui->downloadProgress->setValue(bytesReceived);
-    ui->downloadSizeText->setText(numberConvert(bytesTotal, "B"));
+    ui->downloadSizeText->setText(sizeConvert(bytesTotal));
 }
 
 void QAria2DownloaderItemWidget::downloadSpeed(qint64 download, qint64 upload)
@@ -89,9 +89,9 @@ void QAria2DownloaderItemWidget::downloadSpeed(qint64 download, qint64 upload)
     ui->downloadSpeedText->setVisible(download);
     ui->uploadSpeedText->setVisible(upload);
     if(download)
-        ui->downloadSpeedText->setText(numberConvert(download, "B/s"));
+        ui->downloadSpeedText->setText(speedConvert(download));
     if(upload)
-        ui->uploadSpeedText->setText(numberConvert(upload, "B/s"));
+        ui->uploadSpeedText->setText(speedConvert(upload));
 }
 
 void QAria2DownloaderItemWidget::on_pauseButton_clicked()

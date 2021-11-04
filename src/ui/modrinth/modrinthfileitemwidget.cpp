@@ -96,11 +96,11 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
         ui->downloadProgress->setMaximum(bytesTotal);
     });
     connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
-        ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
+        ui->downloadSpeedText->setText(speedConvert(bytesPerSec));
     });
     connect(downloader, &AbstractDownloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(numberConvert(fileInfo_.size(), "B"));
+        ui->downloadSpeedText->setText(sizeConvert(fileInfo_.size()));
         ui->downloadButton->setText(tr("Downloaded"));
     });
 }

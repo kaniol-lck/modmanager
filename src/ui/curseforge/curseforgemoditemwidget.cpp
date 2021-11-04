@@ -24,7 +24,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     auto menu = new QMenu(this);
 
     if(defaultFileInfo_){
-        auto name = defaultFileInfo_.value().displayName() + " ("+ numberConvert(defaultFileInfo_.value().size(), "B") + ")";
+        auto name = defaultFileInfo_.value().displayName() + " ("+ sizeConvert(defaultFileInfo_.value().size()) + ")";
         connect(menu->addAction(QIcon::fromTheme("starred-symbolic"), name), &QAction::triggered, this, [=]{
             downloadFile(*defaultFileInfo_);
         });
@@ -34,7 +34,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     }
 
     for(const auto &fileInfo : mod->modInfo().latestFileList()){
-        auto name = fileInfo.displayName() + " ("+ numberConvert(fileInfo.size(), "B") + ")";
+        auto name = fileInfo.displayName() + " ("+ sizeConvert(fileInfo.size()) + ")";
         connect(menu->addAction(name), &QAction::triggered, this, [=]{
             downloadFile(fileInfo);
         });
@@ -83,7 +83,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     }
 
     if(defaultFileInfo_.has_value())
-        ui->downloadSpeedText->setText(numberConvert(defaultDownload.value().size(), "B") + "\n"
+        ui->downloadSpeedText->setText(sizeConvert(defaultDownload.value().size()) + "\n"
                                        + numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
     else
         ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
@@ -128,11 +128,11 @@ void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
         ui->downloadProgress->setValue(bytesReceived);
     });
     connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
-        ui->downloadSpeedText->setText(numberConvert(bytesPerSec, "B/s"));
+        ui->downloadSpeedText->setText(speedConvert(bytesPerSec));
     });
     connect(downloader, &AbstractDownloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(numberConvert(fileInfo.size(), "B"));
+        ui->downloadSpeedText->setText(sizeConvert(fileInfo.size()));
         ui->downloadButton->setText(tr("Downloaded"));
     });
 }

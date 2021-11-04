@@ -206,7 +206,7 @@ void LocalModDialog::onCurrentFileChanged()
     auto [ baseName, suffix ] = file_->baseNameFullSuffix();
     ui->fileBaseNameText->setText(baseName);
     ui->fileSuffixText->setText(suffix);
-    ui->sizeText->setText(numberConvert(fileInfo.size(), "B"));
+    ui->sizeText->setText(sizeConvert(fileInfo.size()));
     ui->createdTimeText->setText(fileInfo.fileTime(QFile::FileBirthTime).toString());
     ui->modifiedTimeText->setText(fileInfo.fileTime(QFile::FileModificationTime).toString());
 

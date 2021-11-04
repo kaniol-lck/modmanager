@@ -11,7 +11,9 @@ class LocalModPath;
 class CurseforgeMod;
 class ModrinthMod;
 
-QString numberConvert(int size, const QString &suffix, int prec = 3, int limit = 850);
+QString sizeConvert(qint64 byte, int prec = 3, int limit = 900);
+QString speedConvert(qint64 byte, int prec = 3, int limit = 900);
+QString numberConvert(int size, const QString &suffix, int prec = 3, int limit = 900);
 
 void openFileInFolder(const QString &filePath);
 

@@ -73,7 +73,7 @@ void ReplayModItemWidget::on_downloadButton_clicked()
         ui->downloadProgress->setMaximum(bytesTotal);
     });
     connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 download, qint64 upload[[maybe_unused]]){
-        ui->downloadSpeedText->setText(numberConvert(download, "B/s"));
+        ui->downloadSpeedText->setText(speedConvert(download));
     });
     connect(downloader, &AbstractDownloader::finished, this, [=]{
         ui->downloadProgress->setVisible(false);

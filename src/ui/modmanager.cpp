@@ -56,9 +56,9 @@ ModManager::ModManager(QWidget *parent) :
                   "  color: black;"
                   "}");
 
-    ui->browserSelectorDock->setWidget(browserSelector_);
-    ui->browserSelectorDock->setTitleBarWidget(new QLabel);
-    connect(ui->browserSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
+    ui->pageSelectorDock->setWidget(browserSelector_);
+    ui->pageSelectorDock->setTitleBarWidget(new QLabel);
+    connect(ui->pageSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
     //Download
     ui->pageSwitcher->addDownloadPage();
@@ -221,7 +221,7 @@ void ModManager::on_action_About_Mod_Manager_triggered()
 
 void ModManager::on_actionPage_Selector_toggled(bool arg1)
 {
-    ui->browserSelectorDock->setVisible(arg1);
+    ui->pageSelectorDock->setVisible(arg1);
 }
 
 void ModManager::on_actionOpen_new_path_dialog_triggered()

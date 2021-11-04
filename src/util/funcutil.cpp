@@ -15,6 +15,25 @@
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
 
+QString sizeConvert(qint64 byte, int prec, int limit)
+{
+    if(byte < limit)
+        return QString::number(byte, 'g', prec) + " B";
+    else if(double kbyte = byte / 1024.; kbyte < limit)
+        return QString::number(kbyte, 'g', prec) + " KiB";
+    else if(double mbyte = kbyte / 1024.; mbyte < limit)
+        return QString::number(mbyte, 'g', prec) + " MiB";
+    else if(double gbyte = mbyte / 1024.; gbyte < limit)
+        return QString::number(gbyte, 'g', prec) + " GiB";
+    else
+        return QString::number(gbyte, 'g', prec) + " GiB";
+}
+
+QString speedConvert(qint64 byte, int prec, int limit)
+{
+    return sizeConvert(byte, prec, limit) + "/s";
+}
+
 QString numberConvert(int size, const QString &suffix, int prec, int limit){
     if(size < limit)
         return QString::number(size, 'g', prec) + suffix;
