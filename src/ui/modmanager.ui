@@ -51,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>29</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTools">
@@ -121,7 +121,7 @@
   </widget>
   <widget class="QDockWidget" name="pageSelectorDock">
    <property name="features">
-    <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::NoDockWidgetFeatures</set>
    </property>
    <property name="allowedAreas">
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>

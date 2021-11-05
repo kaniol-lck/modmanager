@@ -284,11 +284,11 @@ win32 {
     message("win32 x86_64 build")
     INCLUDEPATH += C:/msys64/mingw64/include
     INCLUDEPATH += C:/msys64/mingw64/include/quazip5
-    LIBS += -L$$quote(C:/msys64/mingw64/lib) -laria2 -lquazip1-qt5
+    LIBS += -L$$quote(C:/msys64/mingw64/lib) -laria2 -lquazip5
   } else {
     message("win32 x86 build")
     INCLUDEPATH += C:/msys64/mingw32/include
     INCLUDEPATH += C:/msys64/mingw32/include/quazip5
-    LIBS += -L$$quote(C:/msys64/mingw32/lib) -laria2 -lquazip1-qt5
+    LIBS += -L$$quote(C:/msys64/mingw32/lib) -laria2 -lquazip5
   }
 }

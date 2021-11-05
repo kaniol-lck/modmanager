@@ -53,6 +53,9 @@ ModManager::ModManager(QWidget *parent) :
                   "}");
 
     ui->pageSelectorDock->setWidget(browserSelector_);
+    QPalette palette;
+    palette.setColor(QPalette::Window, QColor(255, 255, 255, 127));
+    setPalette(palette);
     ui->pageSelectorDock->setTitleBarWidget(new QLabel);
     connect(ui->pageSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
