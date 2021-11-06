@@ -12,6 +12,11 @@
 #ifdef DE_KDE
 #include <KWindowEffects>
 #endif
+#ifdef Q_OS_WIN
+#include "util/WindowCompositionAttribute.h"
+#include <windowsx.h>
+#include <dwmapi.h>
+#endif
 
 #include "ui/aboutdialog.h"
 #include "ui/browserselectorwidget.h"
@@ -30,6 +35,7 @@
 #include "gameversion.h"
 #include "config.hpp"
 #include "util/funcutil.h"
+#include "ui/windowstitlebar.h"
 
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
@@ -91,6 +97,24 @@ ModManager::ModManager(QWidget *parent) :
 #ifdef DE_KDE
     KWindowEffects::enableBlurBehind(windowHandle());
 #endif
+#ifdef Q_OS_WIN
+//    setAttribute(Qt::WA_TranslucentBackground);
+    setWindowFlags(Qt::FramelessWindowHint);
+    if(auto huser = GetModuleHandle(L"user32.dll"); huser){
+        auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
+        if(setWindowCompositionAttribute){
+            ACCENT_POLICY accent = { ACCENT_ENABLE_BLURBEHIND, 0x1e0, 0x000f0f0f, 0 };
+            WINDOWCOMPOSITIONATTRIBDATA data;
+            data.Attrib = WCA_ACCENT_POLICY;
+            data.pvData = &accent;
+            data.cbData = sizeof(accent);
+            setWindowCompositionAttribute(::HWND(winId()), &data);
+        }
+    }
+    titleBar_ = new WindowsTitleBar(this, windowTitle(), ui->menubar);
+    ui->gridLayout->addWidget(titleBar_);
+    ui->gridLayout->addWidget(ui->pageSwitcher);
+#endif
 }
 
 ModManager::~ModManager()
@@ -114,7 +138,64 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
     auto rect = ui->pageSelectorDock->rect();
     rect.translate(ui->pageSelectorDock->pos());
     p.fillRect(rect, QBrush(QColor(255, 255, 255, 127)));
+#ifdef Q_OS_WIN
+//    if(titleBar_){
+//        auto rect2 = titleBar_->rect();
+//        rect2.translate(titleBar_->pos());
+//        p.fillRect(rect2, QBrush(QColor(255, 255, 255, 127)));
+//    }
+#endif //Q_OS_WIN
 }
+
+#ifdef Q_OS_WIN
+void ModManager::mouseMoveEvent(QMouseEvent *event)
+{
+    if(event->buttons()&Qt::LeftButton)
+        move(event->pos()+pos()-clickPos_);
+}
+
+void ModManager::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button()==Qt::LeftButton)
+        clickPos_=event->pos();
+}
+
+void ModManager::mouseReleaseEvent(QMouseEvent *event)
+{
+    clickPos_ = QPoint();
+}
+
+bool ModManager::nativeEvent(const QByteArray &eventType[[maybe_unused]], void *message, long *result)
+{
+    MSG* msg = (MSG*)message;
+    int boundaryWidth = 4;
+    switch(msg->message){
+    case WM_NCHITTEST:
+        int xPos = GET_X_LPARAM(msg->lParam) - this->frameGeometry().x();
+        int yPos = GET_Y_LPARAM(msg->lParam) - this->frameGeometry().y();
+        if(xPos < boundaryWidth && yPos<boundaryWidth)
+            *result = HTTOPLEFT;
+        else if(xPos >= width()-boundaryWidth&&yPos<boundaryWidth)
+            *result = HTTOPRIGHT;
+        else if(xPos<boundaryWidth&&yPos >= height()-boundaryWidth)
+            *result = HTBOTTOMLEFT;
+        else if(xPos>=width()-boundaryWidth&&yPos>=height()-boundaryWidth)
+            *result = HTBOTTOMRIGHT;
+        else if(xPos < boundaryWidth)
+            *result =  HTLEFT;
+        else if(xPos>=width() - boundaryWidth)
+            *result = HTRIGHT;
+        else if(yPos < boundaryWidth)
+            *result = HTTOP;
+        else if(yPos >= height() - boundaryWidth)
+            *result = HTBOTTOM;
+        else
+           return false;
+        return true;
+    }
+    return false;
+}
+#endif //Q_OS_WIN
 
 void ModManager::syncPathList()
 {

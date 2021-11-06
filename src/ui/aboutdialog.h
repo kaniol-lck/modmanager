@@ -14,7 +14,8 @@ class AboutDialog : public QDialog
 public:
     explicit AboutDialog(QWidget *parent = nullptr);
     ~AboutDialog();
-
+protected:
+    void paintEvent(QPaintEvent *event);
 private slots:
     void on_toolButton_clicked();
 

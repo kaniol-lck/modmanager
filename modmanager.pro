@@ -80,6 +80,7 @@ SOURCES += \
     src/ui/renamehighlighter.cpp \
     src/ui/replay/replaymodbrowser.cpp \
     src/ui/replay/replaymoditemwidget.cpp \
+    src/ui/windowstitlebar.cpp \
     src/util/flowlayout.cpp \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
@@ -160,6 +161,8 @@ HEADERS += \
     src/ui/renamehighlighter.h \
     src/ui/replay/replaymodbrowser.h \
     src/ui/replay/replaymoditemwidget.h \
+    src/ui/windowstitlebar.h \
+    src/util/WindowCompositionAttribute.h \
     src/util/flowlayout.h \
     src/util/funcutil.h \
     src/util/localmodsortitem.h \
@@ -199,7 +202,8 @@ FORMS += \
     src/ui/optifine/optifinemoditemwidget.ui \
     src/ui/preferences.ui \
     src/ui/replay/replaymodbrowser.ui \
-    src/ui/replay/replaymoditemwidget.ui
+    src/ui/replay/replaymoditemwidget.ui \
+    src/ui/windowstitlebar.ui
 
 TRANSLATIONS += \
     languages/zh_CN.ts \
@@ -288,6 +292,7 @@ macx {
 }
 
 win32 {
+  LIBS += -ldwmapi
   contains(QMAKE_HOST.arch, x86_64) {
     message("win32 x86_64 build")
     INCLUDEPATH += C:/msys64/mingw64/include
