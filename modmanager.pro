@@ -271,6 +271,14 @@ unix {
   message("unix-like build")
   LIBS += -L$$quote(/usr/local/lib) -laria2 -lquazip1-qt5
   INCLUDEPATH += /usr/include/QuaZip-Qt5-1.1/quazip
+
+  message(HEADERS)
+  exists(/usr/include/KF5/KWindowSystem){
+    message("under KDE")
+    DEFINES += DE_KDE
+    LIBS += -lKF5WindowSystem
+    INCLUDEPATH += /usr/include/KF5/KWindowSystem
+  }
 }
 
 macx {

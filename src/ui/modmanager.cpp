@@ -8,6 +8,10 @@
 #include <QResizeEvent>
 #include <QFileDialog>
 #include <QLabel>
+#include <QPainter>
+#ifdef DE_KDE
+#include <KWindowEffects>
+#endif
 
 #include "ui/aboutdialog.h"
 #include "ui/browserselectorwidget.h"
@@ -53,9 +57,9 @@ ModManager::ModManager(QWidget *parent) :
                   "}");
 
     ui->pageSelectorDock->setWidget(browserSelector_);
-    QPalette palette;
-    palette.setColor(QPalette::Window, QColor(255, 255, 255, 127));
-    setPalette(palette);
+//    QPalette palette;
+//    palette.setColor(QPalette::Window, QColor(255, 255, 255, 127));
+//    setPalette(palette);
     ui->pageSelectorDock->setTitleBarWidget(new QLabel);
     connect(ui->pageSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
@@ -83,6 +87,10 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionShow_Mod_Date_Time->setChecked(config.getShowModDateTime());
     ui->actionShow_Mod_Category->setChecked(config.getShowModCategory());
     ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
+
+#ifdef DE_KDE
+    KWindowEffects::enableBlurBehind(windowHandle());
+#endif
 }
 
 ModManager::~ModManager()
@@ -96,6 +104,16 @@ void ModManager::resizeEvent(QResizeEvent *event)
     Config config;
     config.setMainWindowWidth(event->size().width());
     config.setMainWindowHeight(event->size().height());
+}
+
+void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
+{
+    if(!ui->pageSelectorDock->isVisible()) return;
+    QPainter p(this);
+    p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    auto rect = ui->pageSelectorDock->rect();
+    rect.translate(ui->pageSelectorDock->pos());
+    p.fillRect(rect, QBrush(QColor(255, 255, 255, 127)));
 }
 
 void ModManager::syncPathList()

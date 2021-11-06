@@ -23,7 +23,9 @@ public:
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
 
-    void resizeEvent(QResizeEvent *event);
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 private slots:
     void syncPathList();
     void editLocalPath(int index);
