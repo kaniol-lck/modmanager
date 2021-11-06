@@ -28,9 +28,6 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 #ifdef Q_OS_WIN
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
 #endif //Q_OS_WIN
 private slots:
@@ -59,7 +56,6 @@ private slots:
 private:
     Ui::ModManager *ui;
     BrowserSelectorWidget *browserSelector_;
-    QPoint clickPos_;
 #ifdef Q_OS_WIN
     WindowsTitleBar *titleBar_;
 #endif //Q_OS_WIN

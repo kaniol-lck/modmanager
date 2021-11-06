@@ -8,6 +8,7 @@
 #include <QResizeEvent>
 #include <QFileDialog>
 #include <QLabel>
+#include <QToolButton>
 #include <QPainter>
 #ifdef DE_KDE
 #include <KWindowEffects>
@@ -99,7 +100,7 @@ ModManager::ModManager(QWidget *parent) :
 #endif
 #ifdef Q_OS_WIN
 //    setAttribute(Qt::WA_TranslucentBackground);
-    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
     if(auto huser = GetModuleHandle(L"user32.dll"); huser){
         auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
         if(setWindowCompositionAttribute){
@@ -114,6 +115,9 @@ ModManager::ModManager(QWidget *parent) :
     titleBar_ = new WindowsTitleBar(this, windowTitle(), ui->menubar);
     ui->gridLayout->addWidget(titleBar_);
     ui->gridLayout->addWidget(ui->pageSwitcher);
+    HWND hwnd = (HWND)winId();
+    DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
+    ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
 #endif
 }
 
@@ -148,29 +152,20 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 }
 
 #ifdef Q_OS_WIN
-void ModManager::mouseMoveEvent(QMouseEvent *event)
-{
-    if(event->buttons()&Qt::LeftButton)
-        move(event->pos()+pos()-clickPos_);
-}
-
-void ModManager::mousePressEvent(QMouseEvent *event)
-{
-    if(event->button()==Qt::LeftButton)
-        clickPos_=event->pos();
-}
-
-void ModManager::mouseReleaseEvent(QMouseEvent *event)
-{
-    clickPos_ = QPoint();
-}
-
 bool ModManager::nativeEvent(const QByteArray &eventType[[maybe_unused]], void *message, long *result)
 {
     MSG* msg = (MSG*)message;
     int boundaryWidth = 4;
     switch(msg->message){
-    case WM_NCHITTEST:
+    case WM_NCCALCSIZE:{
+        NCCALCSIZE_PARAMS& params = *reinterpret_cast<NCCALCSIZE_PARAMS*>(msg->lParam);
+        if (params.rgrc[0].top != 0)
+            params.rgrc[0].top -= 1;
+
+        *result = WVR_REDRAW;
+        return true;
+    }
+    case WM_NCHITTEST:{
         int xPos = GET_X_LPARAM(msg->lParam) - this->frameGeometry().x();
         int yPos = GET_Y_LPARAM(msg->lParam) - this->frameGeometry().y();
         if(xPos < boundaryWidth && yPos<boundaryWidth)
@@ -189,9 +184,22 @@ bool ModManager::nativeEvent(const QByteArray &eventType[[maybe_unused]], void *
             *result = HTTOP;
         else if(yPos >= height() - boundaryWidth)
             *result = HTBOTTOM;
-        else
-           return false;
-        return true;
+        if(*result) return true;
+        if (!titleBar_) return false;
+
+        //support highdpi
+        double dpr = this->devicePixelRatioF();
+        long x = GET_X_LPARAM(msg->lParam);
+        long y = GET_Y_LPARAM(msg->lParam);
+        QPoint pos = titleBar_->mapFromGlobal(QPoint(x/dpr,y/dpr));
+
+        if (!titleBar_->rect().contains(pos)) return false;
+        QWidget* child = titleBar_->childAt(pos);
+        if (!qobject_cast<QToolButton*>(child)){
+            *result = HTCAPTION;
+            return true;
+        }
+    }
     }
     return false;
 }

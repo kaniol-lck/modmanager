@@ -41,6 +41,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
         }
     }
     auto titleBar_ = new WindowsTitleBar(this, windowTitle());
+    titleBar_->setIconVisible(false);
     ui->titleLayout->addWidget(titleBar_);
 #endif
 }

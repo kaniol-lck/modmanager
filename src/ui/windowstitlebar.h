@@ -17,6 +17,7 @@ public:
     explicit WindowsTitleBar(QWidget *parent = nullptr, const QString &title = QString(), QMenuBar *menuBar = nullptr);
     ~WindowsTitleBar();
 
+    void setIconVisible(bool bl);
 protected:
 #ifdef Q_OS_WIN
     void mouseMoveEvent(QMouseEvent *event) override;
