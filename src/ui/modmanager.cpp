@@ -70,6 +70,11 @@ ModManager::ModManager(QWidget *parent) :
     ui->pageSelectorDock->setTitleBarWidget(new QLabel);
     connect(ui->pageSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
+    if(config.getLockPagePanel())
+        ui->pageSelectorDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    else
+        ui->pageSelectorDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+
     //Download
     ui->pageSwitcher->addDownloadPage();
 
@@ -285,6 +290,17 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         });
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
+        menu->addSeparator();
+        if(ui->pageSelectorDock->features() == QDockWidget::NoDockWidgetFeatures)
+            connect(menu->addAction(QIcon::fromTheme("unlock"), tr("Unlock Panel")), &QAction::triggered, this, [=]{
+                ui->pageSelectorDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+                Config().setLockPagePanel(false);
+            });
+        else
+            connect(menu->addAction(QIcon::fromTheme("lock"), tr("Lock Panel")), &QAction::triggered, this, [=]{
+                ui->pageSelectorDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+                Config().setLockPagePanel(true);
+            });
     } else if(index.parent().row() == PageSwitcher::Explore){
         // on one of explore items
         auto exploreBrowser = ui->pageSwitcher->exploreBrowser(index.row());
@@ -322,7 +338,7 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
 void ModManager::on_action_About_Mod_Manager_triggered()
 {
     auto dialog = new AboutDialog(this);
-    dialog->exec();
+    dialog->show();
 }
 
 void ModManager::on_actionPage_Selector_toggled(bool arg1)
@@ -461,7 +477,6 @@ void ModManager::on_actionPrevious_Page_triggered()
 {
     ui->pageSwitcher->previesPage();
 }
-
 
 void ModManager::on_actionAbout_Qt_triggered()
 {

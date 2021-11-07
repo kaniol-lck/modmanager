@@ -4,6 +4,7 @@
 #include <QUrl>
 #include <QDesktopServices>
 #include <QPainter>
+#include <QWindow>
 #ifdef DE_KDE
 #include <KWindowEffects>
 #endif
@@ -22,9 +23,9 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->versionText->setText(kVersion);
-
+    setAttribute(Qt::WA_DeleteOnClose);
 #ifdef DE_KDE
-    KWindowEffects::enableBlurBehind(windowHandle());
+    KWindowEffects::enableBlurBehind(winId());
 #endif
 #ifdef Q_OS_WIN
 //    setAttribute(Qt::WA_TranslucentBackground);
