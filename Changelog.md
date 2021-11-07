@@ -6,6 +6,25 @@ Soon....
 
 ## 公开测试 Beta Test
 
+### v1.0.0 beta.6
+
+*WIP*
+
+Added "Gallery" in Curseforge Mod Dialog to show image info of mods.
+在Curseforge mod对话框中添加了“画廊”来显示mod图片信息。
+
+Added BlurBebind effects for windows to enhanced visual effects.
+在Windows下添加了背景模糊的效果来加强视觉效果。
+
+Tweaked "Page Selector" sidebar.
+调整了“页面选择器”侧边栏。
+
+Fixed snapshot version issue in Modrinth page.
+修复了Modrinth页面中快照版本的问题。
+
+Fixed opening external link in mod description.
+修复了打开mod描述中外部链接的问题。
+
 ### v1.0.0 beta.5
 
 *2021.10.30*
