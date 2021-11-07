@@ -55,13 +55,13 @@ ModManager::ModManager(QWidget *parent) :
            config.getMainWindowHeight());
 //    addToolBar(static_cast<Qt::ToolBarArea>(config.getTabSelectBarArea()), ui->toolBar);
 
-    setStyleSheet("QListWidget::item:hover {"
-                  "  border-left: 5px solid #eee;"
-                  "}"
-                  "QListWidget::item:selected {"
-                  "  border-left: 5px solid #37d;"
-                  "  color: black;"
-                  "}");
+//    setStyleSheet("QListWidget::item:hover {"
+//                  "  border-left: 5px solid #eee;"
+//                  "}"
+//                  "QListWidget::item:selected {"
+//                  "  border-left: 5px solid #37d;"
+//                  "  color: black;"
+//                  "}");
 
     ui->pageSelectorDock->setWidget(browserSelector_);
 //    QPalette palette;
@@ -270,7 +270,7 @@ void ModManager::on_actionPreferences_triggered()
 
 void ModManager::on_actionManage_Browser_triggered()
 {
-    auto dialog = new BrowserManagerDialog(this);
+    auto dialog = new BrowserManagerDialog();
     connect(dialog, &BrowserManagerDialog::accepted, this, &ModManager::syncPathList);
     dialog->show();
 }

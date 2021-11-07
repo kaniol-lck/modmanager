@@ -5,6 +5,7 @@
 #include <QDesktopServices>
 #include <QPainter>
 #include <QWindow>
+#include <QDebug>
 #ifdef DE_KDE
 #include <KWindowEffects>
 #endif
@@ -25,7 +26,9 @@ AboutDialog::AboutDialog(QWidget *parent) :
     ui->versionText->setText(kVersion);
     setAttribute(Qt::WA_DeleteOnClose);
 #ifdef DE_KDE
-    KWindowEffects::enableBlurBehind(winId());
+    //TODO: window not blur in next show
+    KWindowEffects::enableBlurBehind(QWindow::fromWinId(winId()));
+    qDebug() << winId();
 #endif
 #ifdef Q_OS_WIN
 //    setAttribute(Qt::WA_TranslucentBackground);

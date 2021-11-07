@@ -5,12 +5,17 @@
 #include <QDesktopServices>
 #include <QAction>
 #include <QClipboard>
+#include <QNetworkRequest>
+#include <QNetworkAccessManager>
+#include <QNetworkDiskCache>
+#include <QNetworkReply>
 
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
 #include "curseforgefileitemwidget.h"
 #include "util/datetimesortitem.h"
 #include "util/smoothscrollbar.h"
+#include "util/flowlayout.h"
 
 CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod) :
     QDialog(parent),
@@ -95,6 +100,29 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
         ui->modDescription->setCursor(Qt::BusyCursor);
         mod->acquireDescription();
         connect(mod, &CurseforgeMod::descriptionReady, this, updateDescription);
+    }
+
+    //update gallery
+    if(mod->modInfo().imageUrls().isEmpty())
+        ui->tabWidget->removeTab(1);
+    for(const auto &url : mod->modInfo().imageUrls()){
+        auto item = new QListWidgetItem();
+        item->setSizeHint(QSize(280, 280));
+        ui->galleryListWidget->addItem(item);
+        QNetworkRequest request(url);
+        static QNetworkAccessManager accessManager;
+        static QNetworkDiskCache diskCache;
+        diskCache.setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
+        accessManager.setCache(&diskCache);
+        request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+        auto reply = accessManager.get(request);
+        connect(reply, &QNetworkReply::finished, this, [=]{
+            if(reply->error() != QNetworkReply::NoError) return;
+            QPixmap pixmap;
+            pixmap.loadFromData(reply->readAll());
+            item->setIcon(QIcon(pixmap));
+            reply->deleteLater();
+        });
     }
 
     //update file list
