@@ -16,6 +16,13 @@ class CurseforgeModInfo
 {
     friend class CurseforgeMod;
 public:
+    struct Attachment{
+        QString title;
+        QString description;
+        QUrl thumbnailUrl;
+        QUrl url;
+    };
+
     CurseforgeModInfo() = default;
     explicit CurseforgeModInfo(int addonId);
 
@@ -38,7 +45,7 @@ public:
     std::optional<CurseforgeFileInfo> latestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
     const QList<CurseforgeFileInfo> &allFileList() const;
     const QList<int> &categories() const;
-    const QList<QUrl> &imageUrls() const;
+    const QList<Attachment> &images() const;
     const QDateTime &dateModified() const;
     const QDateTime &dateCreated() const;
     const QDateTime &dateReleased() const;
@@ -51,7 +58,7 @@ private:
     QString name_;
     QString summary_;
     QUrl websiteUrl_;
-    QList<QUrl> imageUrls_;
+    QList<Attachment> images_;
     QStringList authors_;
     QUrl iconUrl_;
     QByteArray iconBytes_;

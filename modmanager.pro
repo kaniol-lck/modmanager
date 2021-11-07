@@ -41,6 +41,7 @@ SOURCES += \
     src/optifine/optifineapi.cpp \
     src/optifine/optifinemod.cpp \
     src/optifine/optifinemodinfo.cpp \
+    src/ui/curseforge/curseforgeimagepopup.cpp \
     src/ui/pageswitcher.cpp \
     src/replay/replayapi.cpp \
     src/replay/replaymod.cpp \
@@ -123,6 +124,7 @@ HEADERS += \
     src/optifine/optifineapi.h \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \
+    src/ui/curseforge/curseforgeimagepopup.h \
     src/ui/pageswitcher.h \
     src/replay/replayapi.h \
     src/replay/replaymod.h \
@@ -181,6 +183,7 @@ FORMS += \
     src/ui/browsermanagerdialog.ui \
     src/ui/browserselectorwidget.ui \
     src/ui/curseforge/curseforgefileitemwidget.ui \
+    src/ui/curseforge/curseforgeimagepopup.ui \
     src/ui/curseforge/curseforgemodbrowser.ui \
     src/ui/curseforge/curseforgemoddialog.ui \
     src/ui/curseforge/curseforgemoditemwidget.ui \

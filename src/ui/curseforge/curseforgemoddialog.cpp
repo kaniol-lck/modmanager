@@ -13,6 +13,7 @@
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
 #include "curseforgefileitemwidget.h"
+#include "curseforgeimagepopup.h"
 #include "util/datetimesortitem.h"
 #include "util/smoothscrollbar.h"
 #include "util/flowlayout.h"
@@ -25,6 +26,7 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
 {
     ui->setupUi(this);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->galleryListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
     auto action = new QAction(tr("Copy website link"), this);
     connect(action, &QAction::triggered, this, [=]{
@@ -103,13 +105,18 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     }
 
     //update gallery
-    if(mod->modInfo().imageUrls().isEmpty())
+    if(mod->modInfo().images().isEmpty())
         ui->tabWidget->removeTab(1);
-    for(const auto &url : mod->modInfo().imageUrls()){
+    for(const auto &image : mod->modInfo().images()){
         auto item = new QListWidgetItem();
-        item->setSizeHint(QSize(280, 280));
+        item->setText(image.title);
+        item->setToolTip(image.description);
+        item->setData(Qt::UserRole, image.url);
+        item->setData(Qt::UserRole + 1, image.title);
+        item->setData(Qt::UserRole + 2, image.description);
+        item->setSizeHint(QSize(260, 260));
         ui->galleryListWidget->addItem(item);
-        QNetworkRequest request(url);
+        QNetworkRequest request(image.thumbnailUrl);
         static QNetworkAccessManager accessManager;
         static QNetworkDiskCache diskCache;
         diskCache.setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
@@ -118,9 +125,11 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
         auto reply = accessManager.get(request);
         connect(reply, &QNetworkReply::finished, this, [=]{
             if(reply->error() != QNetworkReply::NoError) return;
+            auto bytes = reply->readAll();
             QPixmap pixmap;
-            pixmap.loadFromData(reply->readAll());
+            pixmap.loadFromData(bytes);
             item->setIcon(QIcon(pixmap));
+            item->setData(Qt::UserRole + 3, bytes);
             reply->deleteLater();
         });
     }
@@ -168,3 +177,15 @@ void CurseforgeModDialog::on_websiteButton_clicked()
 {
     QDesktopServices::openUrl(mod_->modInfo().websiteUrl());
 }
+
+void CurseforgeModDialog::on_galleryListWidget_itemClicked(QListWidgetItem *item)
+{
+    auto popup = new CurseforgeImagePopup(
+                this,
+                item->data(Qt::UserRole).toUrl(),
+                item->data(Qt::UserRole + 1).toString(),
+                item->data(Qt::UserRole + 2).toString(),
+                item->data(Qt::UserRole + 3).toByteArray());
+    popup->exec();
+}
+

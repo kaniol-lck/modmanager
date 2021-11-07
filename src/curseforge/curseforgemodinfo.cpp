@@ -33,8 +33,14 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     for(auto &&attachment : value(variant, "attachments").toList()){
         if(value(attachment, "isDefault").toBool())
             modInfo.iconUrl_ = value(attachment, "thumbnailUrl").toUrl();
-        else
-            modInfo.imageUrls_ << value(attachment, "url").toUrl();
+        else{
+            Attachment image;
+            image.title = value(attachment, "title").toString();
+            image.description = value(attachment, "description").toString();
+            image.url = value(attachment, "url").toUrl();
+            image.thumbnailUrl = value(attachment, "thumbnailUrl").toUrl();
+            modInfo.images_ << image;
+        }
     }
 
     //latest file url
@@ -144,9 +150,9 @@ bool CurseforgeModInfo::hasBasicInfo() const
     return basicInfo_;
 }
 
-const QList<QUrl> &CurseforgeModInfo::imageUrls() const
+const QList<CurseforgeModInfo::Attachment> &CurseforgeModInfo::images() const
 {
-    return imageUrls_;
+    return images_;
 }
 
 const QDateTime &CurseforgeModInfo::dateModified() const

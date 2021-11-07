@@ -6,7 +6,7 @@
 class CurseforgeMod;
 class LocalMod;
 class LocalModPath;
-
+class QListWidgetItem;
 namespace Ui {
 class CurseforgeModDialog;
 }
@@ -27,6 +27,7 @@ public slots:
 
 private slots:
     void on_websiteButton_clicked();
+    void on_galleryListWidget_itemClicked(QListWidgetItem *item);
 
 private:
     Ui::CurseforgeModDialog *ui;
