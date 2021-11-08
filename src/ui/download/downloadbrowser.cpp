@@ -13,7 +13,7 @@
 #include "util/smoothscrollbar.h"
 
 DownloadBrowser::DownloadBrowser(QWidget *parent) :
-    QWidget(parent),
+    Browser(parent),
     ui(new Ui::DownloadBrowser),
     manager_(DownloadManager::manager())
 {

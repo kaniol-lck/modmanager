@@ -1,11 +1,10 @@
 #ifndef EXPLOREBROWSER_H
 #define EXPLOREBROWSER_H
 
-#include <QWidget>
-
+#include "ui/browser.h"
 #include "local/localmodpathinfo.h"
 
-class ExploreBrowser : public QWidget
+class ExploreBrowser : public Browser
 {
     Q_OBJECT
 public:

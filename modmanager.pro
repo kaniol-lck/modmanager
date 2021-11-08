@@ -41,7 +41,9 @@ SOURCES += \
     src/optifine/optifineapi.cpp \
     src/optifine/optifinemod.cpp \
     src/optifine/optifinemodinfo.cpp \
+    src/ui/browser.cpp \
     src/ui/curseforge/curseforgeimagepopup.cpp \
+    src/ui/local/localmodinfowidget.cpp \
     src/ui/pageswitcher.cpp \
     src/replay/replayapi.cpp \
     src/replay/replaymod.cpp \
@@ -124,7 +126,9 @@ HEADERS += \
     src/optifine/optifineapi.h \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \
+    src/ui/browser.h \
     src/ui/curseforge/curseforgeimagepopup.h \
+    src/ui/local/localmodinfowidget.h \
     src/ui/pageswitcher.h \
     src/replay/replayapi.h \
     src/replay/replaymod.h \
@@ -196,6 +200,7 @@ FORMS += \
     src/ui/local/localmoditemwidget.ui \
     src/ui/local/localmodpathsettingsdialog.ui \
     src/ui/local/localmodupdatedialog.ui \
+    src/ui/local/localmodinfowidget.ui \
     src/ui/modmanager.ui \
     src/ui/modrinth/modrinthfileitemwidget.ui \
     src/ui/modrinth/modrinthmodbrowser.ui \

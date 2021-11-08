@@ -1,8 +1,7 @@
 #ifndef DOWNLOADBROWSER_H
 #define DOWNLOADBROWSER_H
 
-#include <QWidget>
-
+#include "ui/browser.h"
 #include "download/downloadfileinfo.h"
 
 namespace Ui {
@@ -13,7 +12,7 @@ class DownloadManager;
 class QAria2Downloader;
 class QAria2;
 
-class DownloadBrowser : public QWidget
+class DownloadBrowser : public Browser
 {
     Q_OBJECT
 

@@ -18,6 +18,8 @@
 #include "util/smoothscrollbar.h"
 #include "util/flowlayout.h"
 
+#include <download/qaria2.h>
+
 CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod) :
     QDialog(parent),
     ui(new Ui::CurseforgeModDialog),
@@ -87,9 +89,8 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
 //            auto fileName = url.fileName();
 //            QFileInfo fileInfo("./image_cache/" + fileName);
 //            if(fileInfo.exists()) continue;
-//            auto downloader = new Downloader(this);
-//            connect(downloader, &Downloader::finished, ui->modDescription, &QTextBrowser::reload);
-//            downloader->download(url, "./image_cache/", fileName);
+//            auto downloader = QAria2::qaria2()->download(url, "./image_cache/");
+//            connect(downloader, &QAria2Downloader::finished, ui->modDescription, &QTextBrowser::reload);
 //            desc.replace(str, "./image_cache/" + fileName);
 //        }
         ui->modDescription->setHtml(desc);

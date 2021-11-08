@@ -4,6 +4,7 @@
 #include <QStackedWidget>
 #include <QStandardItemModel>
 
+class Browser;
 class ExploreBrowser;
 class DownloadBrowser;
 class CurseforgeModBrowser;
@@ -51,6 +52,7 @@ public:
     LocalModBrowser *localModBrowser(int index) const;
     int currentCategory() const;
     int currentPage() const;
+    Browser *currentBrowser() const;
     QStandardItemModel *model();
 
 public slots:
@@ -60,7 +62,7 @@ private:
     void removeExplorePage(ExploreBrowser *exploreBrowser);
     QStandardItemModel model_;
     QVector<int> pageCount_;
-    int currentCategory_;
+    BrowserCategory currentCategory_;
     int currentPage_;
 
     DownloadBrowser *downloadBrowser_ = nullptr;

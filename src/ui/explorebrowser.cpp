@@ -5,7 +5,7 @@
 #include <QUrl>
 
 ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString &name, const QUrl &url) :
-    QWidget(parent),
+    Browser(parent),
     icon_(icon),
     name_(name),
     visitWebsiteAction_(new QAction(icon, tr("Visit %1").arg(name), this))

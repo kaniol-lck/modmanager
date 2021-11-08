@@ -47,6 +47,10 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionAbout_Qt->setIcon(QIcon(":/qt-project.org/qmessagebox/images/qtlogo-64.png"));
     browserSelector_->setModel(ui->pageSwitcher->model());
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
+    connect(browserSelector_, &BrowserSelectorWidget::browserChanged, this, [=]{
+        auto browser = ui->pageSwitcher->currentBrowser();
+        ui->modInfoDock->setWidget(browser->infoWidget());
+    });
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
@@ -141,12 +145,14 @@ void ModManager::resizeEvent(QResizeEvent *event)
 
 void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 {
-    if(!ui->pageSelectorDock->isVisible()) return;
     QPainter p(this);
     p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    auto rect = ui->pageSelectorDock->rect();
-    rect.translate(ui->pageSelectorDock->pos());
-    p.fillRect(rect, QBrush(QColor(255, 255, 255, 127)));
+    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock }){
+        if(!widget->isVisible()) continue;
+        auto rect = widget->rect();
+        rect.translate(widget->pos());
+        p.fillRect(rect, QBrush(QColor(255, 255, 255, 127)));
+    }
 #ifdef Q_OS_WIN
 //    if(titleBar_){
 //        auto rect2 = titleBar_->rect();

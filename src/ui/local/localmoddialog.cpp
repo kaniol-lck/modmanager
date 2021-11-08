@@ -334,4 +334,3 @@ void LocalModDialog::on_tagsWidget_customContextMenuRequested(const QPoint &pos)
         menu->addMenu(localModMenu->removeTagmenu());
     menu->exec(ui->tagsWidget->mapToGlobal(pos));
 }
-

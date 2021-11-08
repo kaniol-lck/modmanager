@@ -8,6 +8,7 @@
 #include <QStatusBar>
 #include <QProgressBar>
 
+#include "localmodinfowidget.h"
 #include "localmodpathsettingsdialog.h"
 #include "local/localmodpath.h"
 #include "local/localmodpathmanager.h"
@@ -24,8 +25,9 @@
 #include "localmodfilter.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
-    QWidget(parent),
+    Browser(parent),
     ui(new Ui::LocalModBrowser),
+    infoWidget_(new LocalModInfoWidget(this)),
     modPath_(modPath),
     filter_(new LocalModFilter(this, modPath_))
 {
@@ -351,8 +353,21 @@ void LocalModBrowser::on_hideUpdatesButton_clicked()
     ui->updateWidget->setVisible(false);
 }
 
+QWidget *LocalModBrowser::infoWidget() const
+{
+    return infoWidget_;
+}
+
 LocalModPath *LocalModBrowser::modPath() const
 {
     return modPath_;
+}
+
+
+void LocalModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+    if(!current) return;
+    auto mod = dynamic_cast<const LocalModSortItem*>(current)->mod();
+    infoWidget_->setMod(mod);
 }
 

@@ -1,10 +1,10 @@
 #ifndef LOCALMODBROWSER_H
 #define LOCALMODBROWSER_H
 
-#include <QWidget>
-
+#include "ui/browser.h"
 #include "local/localmodpathinfo.h"
 
+class QListWidgetItem;
 namespace Ui {
 class LocalModBrowser;
 }
@@ -13,8 +13,8 @@ class LocalModPath;
 class LocalModFilter;
 class QStatusBar;
 class QProgressBar;
-
-class LocalModBrowser : public QWidget
+class LocalModInfoWidget;
+class LocalModBrowser : public Browser
 {
     Q_OBJECT
 
@@ -26,6 +26,7 @@ public:
 
     LocalModPath *modPath() const;
 
+    QWidget *infoWidget() const override;
 signals:
     void loadFinished();
 
@@ -69,8 +70,11 @@ private slots:
     void on_updateAllButton_clicked();
     void on_hideUpdatesButton_clicked();
 
+    void on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
 private:
     Ui::LocalModBrowser *ui;
+    LocalModInfoWidget *infoWidget_;
     QStatusBar *statusBar_;
     QProgressBar *progressBar_;
     LocalModPath *modPath_;

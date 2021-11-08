@@ -215,7 +215,7 @@
          <property name="iconSize">
           <size>
            <width>260</width>
-           <height>260</height>
+           <height>200</height>
           </size>
          </property>
          <property name="movement">
