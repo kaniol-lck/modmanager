@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>405</width>
-    <height>428</height>
+    <width>366</width>
+    <height>344</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,17 +26,24 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <property name="spacing">
-    <number>0</number>
-   </property>
    <item row="0" column="0">
-    <widget class="QStackedWidget" name="stackedWidget">
-     <property name="currentIndex">
-      <number>1</number>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <widget class="QWidget" name="page"/>
-     <widget class="QWidget" name="page_2">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>366</width>
+        <height>344</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QLabel" name="modName">
          <property name="sizePolicy">
@@ -102,6 +109,12 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="minimumSize">
+            <size>
+             <width>39</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="text">
             <string>Curseforge</string>
            </property>
@@ -149,6 +162,12 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>39</width>
+             <height>0</height>
+            </size>
            </property>
            <property name="text">
             <string>Modrinth</string>
@@ -204,7 +223,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>171</height>
+           <height>25</height>
           </size>
          </property>
         </spacer>

@@ -58,6 +58,8 @@ ModManager::ModManager(QWidget *parent) :
     resize(config.getMainWindowWidth(),
            config.getMainWindowHeight());
 //    addToolBar(static_cast<Qt::ToolBarArea>(config.getTabSelectBarArea()), ui->toolBar);
+    addDockWidget(static_cast<Qt::DockWidgetArea>(config.getPageSelectorDockArea()), ui->pageSelectorDock);
+    addDockWidget(static_cast<Qt::DockWidgetArea>(config.getModInfoDockArea()), ui->modInfoDock);
 
 //    setStyleSheet("QListWidget::item:hover {"
 //                  "  border-left: 5px solid #eee;"
@@ -68,17 +70,16 @@ ModManager::ModManager(QWidget *parent) :
 //                  "}");
 
     ui->pageSelectorDock->setWidget(browserSelector_);
-//    QPalette palette;
-//    palette.setColor(QPalette::Window, QColor(255, 255, 255, 127));
-//    setPalette(palette);
     ui->pageSelectorDock->setTitleBarWidget(new QLabel);
+    ui->modInfoDock->setTitleBarWidget(new QLabel);
     connect(ui->pageSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
-    if(config.getLockPagePanel())
-        ui->pageSelectorDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    else
-        ui->pageSelectorDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-
+    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock }){
+        if(config.getLockPanel())
+            widget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        else
+            widget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+    }
     //Download
     ui->pageSwitcher->addDownloadPage();
 
@@ -105,6 +106,7 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
 
 #ifdef DE_KDE
+    //TODO: disable blur under intel graphical card
     KWindowEffects::enableBlurBehind(windowHandle());
 #endif
 #ifdef Q_OS_WIN
@@ -132,7 +134,8 @@ ModManager::ModManager(QWidget *parent) :
 
 ModManager::~ModManager()
 {
-//    Config().setTabSelectBarArea(toolBarArea(ui->toolBar));
+    Config().setPageSelectorDockArea(dockWidgetArea(ui->pageSelectorDock));
+    Config().setModInfoDockArea(dockWidgetArea(ui->modInfoDock));
     delete ui;
 }
 
@@ -143,8 +146,13 @@ void ModManager::resizeEvent(QResizeEvent *event)
     config.setMainWindowHeight(event->size().height());
 }
 
+#if defined (DE_KDE) || defined (Q_OS_WIN)
 void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 {
+#ifdef DE_KDE
+    if(!KWindowEffects::isEffectAvailable(KWindowEffects::BlurBehind))
+        return;
+#endif
     QPainter p(this);
     p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
     for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock }){
@@ -161,6 +169,7 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 //    }
 #endif //Q_OS_WIN
 }
+#endif //defined (DE_KDE) || defined (Q_OS_WIN)
 
 #ifdef Q_OS_WIN
 bool ModManager::nativeEvent(const QByteArray &eventType[[maybe_unused]], void *message, long *result)
@@ -300,12 +309,14 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         if(ui->pageSelectorDock->features() == QDockWidget::NoDockWidgetFeatures)
             connect(menu->addAction(QIcon::fromTheme("unlock"), tr("Unlock Panel")), &QAction::triggered, this, [=]{
                 ui->pageSelectorDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-                Config().setLockPagePanel(false);
+                ui->modInfoDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+                Config().setLockPanel(false);
             });
         else
             connect(menu->addAction(QIcon::fromTheme("lock"), tr("Lock Panel")), &QAction::triggered, this, [=]{
                 ui->pageSelectorDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-                Config().setLockPagePanel(true);
+                ui->modInfoDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+                Config().setLockPanel(true);
             });
     } else if(index.parent().row() == PageSwitcher::Explore){
         // on one of explore items

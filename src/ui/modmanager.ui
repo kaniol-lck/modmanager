@@ -16,6 +16,9 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AnimatedDocks</set>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">
@@ -54,7 +57,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>31</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTools">
@@ -144,7 +147,7 @@
     <set>QDockWidget::NoDockWidgetFeatures</set>
    </property>
    <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+    <set>Qt::AllDockWidgetAreas</set>
    </property>
    <property name="windowTitle">
     <string>Mod Infomation</string>

@@ -15,7 +15,7 @@ LocalModInfoWidget::LocalModInfoWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->tagsWidget->setLayout(new FlowLayout());
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->scrollArea->setVisible(false);
 }
 
 LocalModInfoWidget::~LocalModInfoWidget()
@@ -32,10 +32,7 @@ void LocalModInfoWidget::setMod(LocalMod *mod)
 
 void LocalModInfoWidget::updateInfo()
 {
-    if(mod_)
-        ui->stackedWidget->setCurrentIndex(1);
-    else
-        ui->stackedWidget->setCurrentIndex(0);
+    ui->scrollArea->setVisible(mod_);
     if(!mod_) return;
     auto setEffect = [=](QWidget *widget, const QString str){
         if(str.contains("</span>")){
