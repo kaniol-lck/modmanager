@@ -48,8 +48,10 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
         modInfo.latestFileList_ << CurseforgeFileInfo::fromVariant(variant);
 
     //latest file url
-    for(auto &&variant : value(variant, "categories").toList())
-        modInfo.categories_ << value(variant, "categoryId").toInt();
+    for(auto &&variant : value(variant, "categories").toList()){
+        if(auto id = value(variant, "categoryId").toInt(); !modInfo.categories_.contains(id))
+                modInfo.categories_ << value(variant, "categoryId").toInt();
+    }
 
     return modInfo;
 }

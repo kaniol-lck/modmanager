@@ -41,7 +41,6 @@ CurseforgeImagePopup::CurseforgeImagePopup(QWidget *parent, const QUrl &url, con
         pixmap.loadFromData(reply->readAll());
         ui->image->setPixmap(pixmap);
         reply->deleteLater();
-        show();
     });
 }
 
