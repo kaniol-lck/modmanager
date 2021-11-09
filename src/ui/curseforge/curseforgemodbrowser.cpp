@@ -7,6 +7,7 @@
 #include <QAction>
 #include <QMenu>
 
+#include "curseforgemodinfowidget.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
@@ -22,6 +23,7 @@
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
     ui(new Ui::CurseforgeModBrowser),
+    infoWidget_(new CurseforgeModInfoWidget(this)),
     api_(new CurseforgeAPI(this))
 {
     ui->setupUi(this);
@@ -48,6 +50,11 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
 CurseforgeModBrowser::~CurseforgeModBrowser()
 {
     delete ui;
+}
+
+QWidget *CurseforgeModBrowser::infoWidget() const
+{
+    return infoWidget_;
 }
 
 void CurseforgeModBrowser::refresh()
@@ -344,3 +351,12 @@ void CurseforgeModBrowser::on_openFolderButton_clicked()
         path = Config().getDownloadPath();
     openFileInFolder(path);
 }
+
+void CurseforgeModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])
+{
+    if(!current || !current->text().isEmpty()) return;
+    auto widget = ui->modListWidget->itemWidget(current);
+    auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
+    infoWidget_->setMod(mod);
+}
+

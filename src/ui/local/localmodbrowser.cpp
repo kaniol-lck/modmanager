@@ -364,7 +364,7 @@ LocalModPath *LocalModBrowser::modPath() const
 }
 
 
-void LocalModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+void LocalModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])
 {
     if(!current) return;
     auto mod = dynamic_cast<const LocalModSortItem*>(current)->mod();

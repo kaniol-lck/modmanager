@@ -23,9 +23,7 @@ public:
     ~LocalModBrowser();
 
     bool isLoading() const;
-
     LocalModPath *modPath() const;
-
     QWidget *infoWidget() const override;
 signals:
     void loadFinished();

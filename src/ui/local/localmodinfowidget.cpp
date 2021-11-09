@@ -1,10 +1,9 @@
 #include "localmodinfowidget.h"
 #include "ui_localmodinfowidget.h"
 
-#include "local/localmod.h"
-
 #include <QGraphicsDropShadowEffect>
 
+#include "local/localmod.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
 #include "util/flowlayout.h"
@@ -132,7 +131,7 @@ void LocalModInfoWidget::updateInfo()
         auto label = new QLabel(tag.name(), this);
         label->setToolTip(tag.name());
         label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
-       ui->tagsWidget->layout()->addWidget(label);
+        ui->tagsWidget->layout()->addWidget(label);
         tagWidgets_ << label;
     }
 }

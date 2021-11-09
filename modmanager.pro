@@ -43,6 +43,7 @@ SOURCES += \
     src/optifine/optifinemodinfo.cpp \
     src/ui/browser.cpp \
     src/ui/curseforge/curseforgeimagepopup.cpp \
+    src/ui/curseforge/curseforgemodinfowidget.cpp \
     src/ui/local/localmodinfowidget.cpp \
     src/ui/pageswitcher.cpp \
     src/replay/replayapi.cpp \
@@ -128,6 +129,7 @@ HEADERS += \
     src/optifine/optifinemodinfo.h \
     src/ui/browser.h \
     src/ui/curseforge/curseforgeimagepopup.h \
+    src/ui/curseforge/curseforgemodinfowidget.h \
     src/ui/local/localmodinfowidget.h \
     src/ui/pageswitcher.h \
     src/replay/replayapi.h \
@@ -190,6 +192,7 @@ FORMS += \
     src/ui/curseforge/curseforgeimagepopup.ui \
     src/ui/curseforge/curseforgemodbrowser.ui \
     src/ui/curseforge/curseforgemoddialog.ui \
+    src/ui/curseforge/curseforgemodinfowidget.ui \
     src/ui/curseforge/curseforgemoditemwidget.ui \
     src/ui/download/qaria2downloaderitemwidget.ui \
     src/ui/download/downloadbrowser.ui \

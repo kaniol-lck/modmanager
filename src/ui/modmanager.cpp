@@ -48,8 +48,7 @@ ModManager::ModManager(QWidget *parent) :
     browserSelector_->setModel(ui->pageSwitcher->model());
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, this, [=]{
-        auto browser = ui->pageSwitcher->currentBrowser();
-        ui->modInfoDock->setWidget(browser->infoWidget());
+        ui->modInfoDock->setWidget(ui->pageSwitcher->currentBrowser()->infoWidget());
     });
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
@@ -96,6 +95,8 @@ ModManager::ModManager(QWidget *parent) :
     //default browser
     if(ui->pageSwitcher->exploreBrowsers().size())
         ui->pageSwitcher->setPage(PageSwitcher::Explore, 0);
+
+    ui->modInfoDock->setWidget(ui->pageSwitcher->currentBrowser()->infoWidget());
 
     //init versions
     VersionManager::initVersionLists();
