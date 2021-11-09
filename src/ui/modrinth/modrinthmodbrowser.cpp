@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QMenu>
 
+#include "modrinthmodinfowidget.h"
 #include "modrinthmoditemwidget.h"
 #include "modrinthmoddialog.h"
 #include "local/localmodpathmanager.h"
@@ -21,6 +22,7 @@
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/modrinth.svg"), "Modrinth", QUrl("https://modrinth.com/mods")),
     ui(new Ui::ModrinthModBrowser),
+    infoWidget_(new ModrinthModInfoWidget(this)),
     api_(new ModrinthAPI(this))
 {
     ui->setupUi(this);
@@ -47,6 +49,11 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
 ModrinthModBrowser::~ModrinthModBrowser()
 {
     delete ui;
+}
+
+QWidget *ModrinthModBrowser::infoWidget() const
+{
+    return infoWidget_;
 }
 
 void ModrinthModBrowser::refresh()
@@ -455,4 +462,12 @@ void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 void ModrinthModBrowser::on_categorySelect_currentIndexChanged(int)
 {
     if(isUiSet_) getModList(currentName_);
+}
+
+void ModrinthModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])
+{
+    if(!current || !current->text().isEmpty()) return;
+    auto widget = ui->modListWidget->itemWidget(current);
+    auto mod = dynamic_cast<ModrinthModItemWidget*>(widget)->mod();
+    infoWidget_->setMod(mod);
 }

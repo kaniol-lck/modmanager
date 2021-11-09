@@ -45,6 +45,7 @@ SOURCES += \
     src/ui/curseforge/curseforgeimagepopup.cpp \
     src/ui/curseforge/curseforgemodinfowidget.cpp \
     src/ui/local/localmodinfowidget.cpp \
+    src/ui/modrinth/modrinthmodinfowidget.cpp \
     src/ui/pageswitcher.cpp \
     src/replay/replayapi.cpp \
     src/replay/replaymod.cpp \
@@ -131,6 +132,7 @@ HEADERS += \
     src/ui/curseforge/curseforgeimagepopup.h \
     src/ui/curseforge/curseforgemodinfowidget.h \
     src/ui/local/localmodinfowidget.h \
+    src/ui/modrinth/modrinthmodinfowidget.h \
     src/ui/pageswitcher.h \
     src/replay/replayapi.h \
     src/replay/replaymod.h \
@@ -208,6 +210,7 @@ FORMS += \
     src/ui/modrinth/modrinthfileitemwidget.ui \
     src/ui/modrinth/modrinthmodbrowser.ui \
     src/ui/modrinth/modrinthmoddialog.ui \
+    src/ui/modrinth/modrinthmodinfowidget.ui \
     src/ui/modrinth/modrinthmoditemwidget.ui \
     src/ui/optifine/optifinemodbrowser.ui \
     src/ui/optifine/optifinemoditemwidget.ui \

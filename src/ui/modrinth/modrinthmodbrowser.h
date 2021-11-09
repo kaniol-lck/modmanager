@@ -6,7 +6,9 @@
 class ModrinthAPI;
 class ModrinthMod;
 class LocalModPath;
+class ModrinthModInfoWidget;
 
+class QListWidgetItem;
 namespace Ui {
 class ModrinthModBrowser;
 }
@@ -19,6 +21,7 @@ public:
     explicit ModrinthModBrowser(QWidget *parent = nullptr);
     ~ModrinthModBrowser();
 
+    QWidget *infoWidget() const override;
 signals:
     void downloadPathChanged(LocalModPath *path);
 
@@ -40,8 +43,10 @@ private slots:
     void on_openFolderButton_clicked();
     void on_downloadPathSelect_currentIndexChanged(int index);
     void on_categorySelect_currentIndexChanged(int);
+    void on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 private:
     Ui::ModrinthModBrowser *ui;
+    ModrinthModInfoWidget *infoWidget_;
     ModrinthAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     QString currentName_;

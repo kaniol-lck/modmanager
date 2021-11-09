@@ -2,7 +2,6 @@
 #include "ui_curseforgemodinfowidget.h"
 
 #include "curseforge/curseforgemod.h"
-#include "modrinth/modrinthmod.h"
 #include "util/flowlayout.h"
 
 CurseforgeModInfoWidget::CurseforgeModInfoWidget(QWidget *parent) :

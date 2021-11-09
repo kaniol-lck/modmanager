@@ -359,4 +359,3 @@ void CurseforgeModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *
     auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
     infoWidget_->setMod(mod);
 }
-
