@@ -17,6 +17,12 @@ public:
     ~ModrinthModInfoWidget();
 
     void setMod(ModrinthMod *mod);
+signals:
+    void modChanged();
+private slots:
+    void updateBasicInfo();
+    void updateFullInfo();
+    void updateIcon();
 private:
     Ui::ModrinthModInfoWidget *ui;
     ModrinthMod *mod_ = nullptr;

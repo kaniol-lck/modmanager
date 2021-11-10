@@ -17,6 +17,12 @@ public:
     ~CurseforgeModInfoWidget();
 
     void setMod(CurseforgeMod *mod);
+signals:
+    void modChanged();
+private slots:
+    void updateBasicInfo();
+    void updateThumbnail();
+    void updateDescription();
 private:
     Ui::CurseforgeModInfoWidget *ui;
     CurseforgeMod *mod_ = nullptr;

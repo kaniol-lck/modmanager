@@ -2,7 +2,9 @@
 #include "ui_curseforgemodinfowidget.h"
 
 #include "curseforge/curseforgemod.h"
+#include "util/smoothscrollbar.h"
 #include "util/flowlayout.h"
+#include "util/funcutil.h"
 
 CurseforgeModInfoWidget::CurseforgeModInfoWidget(QWidget *parent) :
     QWidget(parent),
@@ -11,6 +13,9 @@ CurseforgeModInfoWidget::CurseforgeModInfoWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->tagsWidget->setLayout(new FlowLayout());
     ui->scrollArea->setVisible(false);
+    //lag
+//    ui->scrollArea->setVerticalScrollBar(new SmoothScrollBar(this));
+//    ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
 }
 
 CurseforgeModInfoWidget::~CurseforgeModInfoWidget()
@@ -21,6 +26,7 @@ CurseforgeModInfoWidget::~CurseforgeModInfoWidget()
 void CurseforgeModInfoWidget::setMod(CurseforgeMod *mod)
 {
     mod_ = mod;
+    emit modChanged();
 
     ui->scrollArea->setVisible(mod_);
     if(!mod_) return;
@@ -31,93 +37,21 @@ void CurseforgeModInfoWidget::setMod(CurseforgeMod *mod)
 //    });
 //    ui->websiteButton->addAction(action);
 
-
-    //tags
-    for(auto widget : qAsConst(tagWidgets_)){
-        ui->tagsWidget->layout()->removeWidget(widget);
-        widget->deleteLater();
-    }
-    tagWidgets_.clear();
-    for(auto &&tag : mod_->tags()){
-        auto label = new QLabel(this);
-        label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-        if(!tag.iconName().isEmpty())
-            label->setText(QString(R"(<img src="%1" height="22" width="22"/>)").arg(tag.iconName()));
-        else
-            label->setText(tag.name());
-        label->setToolTip(tag.name());
-        if(tag.tagCategory() != TagCategory::CurseforgeCategory)
-            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
-        ui->tagsWidget->layout()->addWidget(label);
-        tagWidgets_ << label;
-    }
-
-    //update basic info
-    auto updateBasicInfo = [=]{
-        setWindowTitle(mod->modInfo().name() + tr(" - Curseforge"));
-        ui->modName->setText(mod->modInfo().name());
-//        ui->modSummary->setText(mod->modInfo().summary());
-//        ui->modAuthors->setText(mod->modInfo().authors().join(", "));
-
-        //update thumbnail
-        //included by basic info
-        auto updateThumbnail = [=]{
-            QPixmap pixelmap;
-            pixelmap.loadFromData(mod_->modInfo().iconBytes());
-            ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-            ui->modIcon->setCursor(Qt::ArrowCursor);
-        };
-
-        if(!mod_->modInfo().iconBytes().isEmpty())
-            updateThumbnail();
-        else {
-            mod->acquireIcon();
-            ui->modIcon->setCursor(Qt::BusyCursor);
-            connect(mod_, &CurseforgeMod::iconReady, this, updateThumbnail);
-        }
-    };
-
-    if(mod_->modInfo().hasBasicInfo())
-        updateBasicInfo();
-    else {
+    //basic info
+    updateBasicInfo();
+    if(!mod->modInfo().hasBasicInfo())
         mod->acquireBasicInfo();
-        connect(mod_, &CurseforgeMod::basicInfoReady, this, updateBasicInfo);
-    }
+    connect(this, &CurseforgeModInfoWidget::modChanged, this, disconnecter(
+                connect(mod_, &CurseforgeMod::basicInfoReady, this, &CurseforgeModInfoWidget::updateBasicInfo)));
 
-    //update description
-    auto updateDescription = [=]{
-        ui->modDescription->setFont(qApp->font());
-        auto desc = mod_->modInfo().description();
-//        QRegExp re(R"(<img.*src=\"(.+)\")");
-//        re.setMinimal(true);
-//        int pos = 0;
-//        QStringList replceList;
-//        while ((pos = re.indexIn(desc, pos)) != -1) {
-//            replceList << re.cap(1);
-//            pos +=  re.matchedLength();
-//        }
-//        QDir().mkdir("image_cache");
-//        for(const auto &str : qAsConst(replceList)){
-//            qDebug() << str;
-//            QUrl url(str);
-//            auto fileName = url.fileName();
-//            QFileInfo fileInfo("./image_cache/" + fileName);
-//            if(fileInfo.exists()) continue;
-//            auto downloader = QAria2::qaria2()->download(url, "./image_cache/");
-//            connect(downloader, &QAria2Downloader::finished, ui->modDescription, &QTextBrowser::reload);
-//            desc.replace(str, "./image_cache/" + fileName);
-//        }
-        ui->modDescription->setHtml(desc);
-        ui->modDescription->setCursor(Qt::ArrowCursor);
-    };
-
-    if(!mod_->modInfo().description().isEmpty())
-        updateDescription();
-    else{
+    //description
+    updateDescription();
+    if(mod->modInfo().description().isEmpty()){
         ui->modDescription->setCursor(Qt::BusyCursor);
         mod->acquireDescription();
-        connect(mod, &CurseforgeMod::descriptionReady, this, updateDescription);
     }
+    connect(this, &CurseforgeModInfoWidget::modChanged, this, disconnecter(
+                connect(mod, &CurseforgeMod::descriptionReady, this, &CurseforgeModInfoWidget::updateDescription)));
 
 //    //update gallery
 //    if(mod->modInfo().images().isEmpty())
@@ -173,5 +107,77 @@ void CurseforgeModInfoWidget::setMod(CurseforgeMod *mod)
 //        ui->fileListWidget->setCursor(Qt::BusyCursor);
 //        mod->acquireAllFileList();
 //        connect(mod, &CurseforgeMod::allFileListReady, this, updateFileList);
-//    }
+    //    }
+}
+
+void CurseforgeModInfoWidget::updateBasicInfo()
+{
+    setWindowTitle(mod_->modInfo().name() + tr(" - Curseforge"));
+    ui->modName->setText(mod_->modInfo().name());
+//        ui->modSummary->setText(mod->modInfo().summary());
+//        ui->modAuthors->setText(mod->modInfo().authors().join(", "));
+
+    //tags
+    for(auto widget : qAsConst(tagWidgets_)){
+        ui->tagsWidget->layout()->removeWidget(widget);
+        widget->deleteLater();
+    }
+    tagWidgets_.clear();
+    for(auto &&tag : mod_->tags()){
+        auto label = new QLabel(this);
+        label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
+        if(!tag.iconName().isEmpty())
+            label->setText(QString(R"(<img src="%1" height="22" width="22"/>)").arg(tag.iconName()));
+        else
+            label->setText(tag.name());
+        label->setToolTip(tag.name());
+        if(tag.tagCategory() != TagCategory::CurseforgeCategory)
+            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
+        ui->tagsWidget->layout()->addWidget(label);
+        tagWidgets_ << label;
+    }
+
+    //update thumbnail
+    updateThumbnail();
+    if(mod_->modInfo().iconBytes().isEmpty()){
+        mod_->acquireIcon();
+        ui->modIcon->setCursor(Qt::BusyCursor);
+    }
+    connect(this, &CurseforgeModInfoWidget::modChanged, this, disconnecter(
+                connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModInfoWidget::updateThumbnail)));
+}
+
+void CurseforgeModInfoWidget::updateThumbnail()
+{
+    QPixmap pixelmap;
+    pixelmap.loadFromData(mod_->modInfo().iconBytes());
+    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+    ui->modIcon->setCursor(Qt::ArrowCursor);
+}
+
+void CurseforgeModInfoWidget::updateDescription()
+{
+    ui->modDescription->setFont(qApp->font());
+    auto desc = mod_->modInfo().description();
+//        QRegExp re(R"(<img.*src=\"(.+)\")");
+//        re.setMinimal(true);
+//        int pos = 0;
+//        QStringList replceList;
+//        while ((pos = re.indexIn(desc, pos)) != -1) {
+//            replceList << re.cap(1);
+//            pos +=  re.matchedLength();
+//        }
+//        QDir().mkdir("image_cache");
+//        for(const auto &str : qAsConst(replceList)){
+//            qDebug() << str;
+//            QUrl url(str);
+//            auto fileName = url.fileName();
+//            QFileInfo fileInfo("./image_cache/" + fileName);
+//            if(fileInfo.exists()) continue;
+//            auto downloader = QAria2::qaria2()->download(url, "./image_cache/");
+//            connect(downloader, &QAria2Downloader::finished, ui->modDescription, &QTextBrowser::reload);
+//            desc.replace(str, "./image_cache/" + fileName);
+//        }
+    ui->modDescription->setHtml(desc);
+    ui->modDescription->setCursor(Qt::ArrowCursor);
 }

@@ -26,6 +26,10 @@ public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
 
 private slots:
+    void updateBasicInfo();
+    void updateFullInfo();
+    void updateFileList();
+    void updateIcon();
     void on_websiteButton_clicked();
 
 private:

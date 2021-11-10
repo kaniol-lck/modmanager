@@ -3,6 +3,7 @@
 
 #include "modrinth/modrinthmod.h"
 #include "util/flowlayout.h"
+#include "util/funcutil.h"
 
 ModrinthModInfoWidget::ModrinthModInfoWidget(QWidget *parent) :
     QWidget(parent),
@@ -21,6 +22,7 @@ ModrinthModInfoWidget::~ModrinthModInfoWidget()
 void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
 {
     mod_ = mod;
+    emit modChanged();
 
     ui->scrollArea->setVisible(mod_);
     if(!mod_) return;
@@ -30,6 +32,43 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
 //        QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());
 //    });
 //    ui->websiteButton->addAction(action);
+
+    updateBasicInfo();
+
+    //update full info
+    updateFullInfo();
+    if(mod_->modInfo().description().isEmpty()){
+        ui->modDescription->setCursor(Qt::BusyCursor);
+        mod_->acquireFullInfo();
+    }
+
+    connect(this, &ModrinthModInfoWidget::modChanged, this, disconnecter(
+                connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthModInfoWidget::updateFullInfo)));
+}
+
+void ModrinthModInfoWidget::updateBasicInfo()
+{
+    setWindowTitle(mod_->modInfo().name() + tr(" - Modrinth"));
+    ui->modName->setText(mod_->modInfo().name());
+//        ui->modSummary->setText(mod->modInfo().summary());
+    if(!mod_->modInfo().author().isEmpty()){
+//            ui->modAuthors->setText(mod->modInfo().author());
+//            ui->modAuthors->setVisible(true);
+//            ui->author_label->setVisible(true);
+    } else{
+//            ui->modAuthors->setVisible(false);
+//            ui->author_label->setVisible(false);
+    }
+
+    //update icon
+    //included by basic info
+    updateIcon();
+    if(mod_->modInfo().iconBytes().isEmpty()){
+        mod_->acquireIcon();
+        ui->modIcon->setCursor(Qt::BusyCursor);
+    }
+    connect(this, &ModrinthModInfoWidget::modChanged, this, disconnecter(
+                connect(mod_, &ModrinthMod::iconReady, this, &ModrinthModInfoWidget::updateIcon)));
 
     //tags
     for(auto widget : qAsConst(tagWidgets_)){
@@ -50,49 +89,16 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
         ui->tagsWidget->layout()->addWidget(label);
         tagWidgets_ << label;
     }
+}
 
-    auto updateBasicInfo = [=]{
-        setWindowTitle(mod->modInfo().name() + tr(" - Modrinth"));
-        ui->modName->setText(mod->modInfo().name());
-//        ui->modSummary->setText(mod->modInfo().summary());
-        if(!mod->modInfo().author().isEmpty()){
-//            ui->modAuthors->setText(mod->modInfo().author());
-//            ui->modAuthors->setVisible(true);
-//            ui->author_label->setVisible(true);
-        } else{
-//            ui->modAuthors->setVisible(false);
-//            ui->author_label->setVisible(false);
-        }
-
-        //update icon
-        //included by basic info
-        auto updateIcon= [=]{
-            QPixmap pixelmap;
-            pixelmap.loadFromData(mod->modInfo().iconBytes());
-            ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-            ui->modIcon->setCursor(Qt::ArrowCursor);
-        };
-
-        if(!mod->modInfo().iconBytes().isEmpty())
-            updateIcon();
-        else {
-            mod->acquireIcon();
-            ui->modIcon->setCursor(Qt::BusyCursor);
-            connect(mod, &ModrinthMod::iconReady, this, updateIcon);
-        }
-    };
-
-    auto bl = mod->modInfo().hasBasicInfo();
-    if(bl) updateBasicInfo();
-
-    //update full info
-    auto updateFullInfo = [=]{
-        if(!bl) updateBasicInfo();
-        auto text = mod->modInfo().description();
-        text.replace(QRegExp("<br ?/?>"), "\n");
+void ModrinthModInfoWidget::updateFullInfo()
+{
+    updateBasicInfo();
+    auto text = mod_->modInfo().description();
+    text.replace(QRegExp("<br ?/?>"), "\n");
 //        ui->websiteButton->setVisible(!mod_->modInfo().websiteUrl().isEmpty());
-        ui->modDescription->setMarkdown(text);
-        ui->modDescription->setCursor(Qt::ArrowCursor);
+    ui->modDescription->setMarkdown(text);
+    ui->modDescription->setCursor(Qt::ArrowCursor);
 
 //        //update file list
 //        auto updateFileList = [=]{
@@ -119,14 +125,12 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
 //            mod->acquireFileList();
 //            connect(mod, &ModrinthMod::fileListReady, this, updateFileList);
 //        }
-    };
+}
 
-    if(!mod->modInfo().description().isEmpty())
-        updateFullInfo();
-    else{
-        ui->modDescription->setCursor(Qt::BusyCursor);
-        mod->acquireFullInfo();
-        //TODO: disconnect when mod changed
-        connect(mod, &ModrinthMod::fullInfoReady, this, updateFullInfo);
-    }
+void ModrinthModInfoWidget::updateIcon()
+{
+    QPixmap pixelmap;
+    pixelmap.loadFromData(mod_->modInfo().iconBytes());
+    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+    ui->modIcon->setCursor(Qt::ArrowCursor);
 }

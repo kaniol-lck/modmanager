@@ -26,6 +26,10 @@ public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
 
 private slots:
+    void updateBasicInfo();
+    void updateThumbnail();
+    void updateDescription();
+    void updateFileList();
     void on_websiteButton_clicked();
     void on_galleryListWidget_itemClicked(QListWidgetItem *item);
 

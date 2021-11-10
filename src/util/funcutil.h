@@ -33,4 +33,6 @@ QString clearFormat(QString str);
 
 QString timesTo(const QDateTime &dateTime);
 
+std::function<void ()> disconnecter(QMetaObject::Connection conn);;
+
 #endif // FUNCUTIL_H

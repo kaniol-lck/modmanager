@@ -202,3 +202,9 @@ QString timesTo(const QDateTime &dateTime)
         return QObject::tr("%1 months").arg(months);
     return "";
 }
+
+std::function<void ()> disconnecter(QMetaObject::Connection conn){
+    return [=]{
+        QObject::disconnect(conn);
+    };
+}
