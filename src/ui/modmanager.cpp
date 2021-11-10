@@ -43,7 +43,10 @@ ModManager::ModManager(QWidget *parent) :
     ui(new Ui::ModManager),
     browserSelector_(new BrowserSelectorWidget(this))
 {
+    Config config;
     ui->setupUi(this);
+    restoreGeometry(config.getGeometry());
+    restoreState(config.getWindowState());
     ui->actionAbout_Qt->setIcon(QIcon(":/qt-project.org/qmessagebox/images/qtlogo-64.png"));
     browserSelector_->setModel(ui->pageSwitcher->model());
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
@@ -53,13 +56,12 @@ ModManager::ModManager(QWidget *parent) :
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
-    Config config;
-    resize(config.getMainWindowWidth(),
-           config.getMainWindowHeight());
-//    addToolBar(static_cast<Qt::ToolBarArea>(config.getTabSelectBarArea()), ui->toolBar);
-    addDockWidget(static_cast<Qt::DockWidgetArea>(config.getPageSelectorDockArea()), ui->pageSelectorDock);
-    addDockWidget(static_cast<Qt::DockWidgetArea>(config.getModInfoDockArea()), ui->modInfoDock);
-
+    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock }){
+        if(config.getLockPanel())
+            widget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        else
+            widget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+    }
 //    setStyleSheet("QListWidget::item:hover {"
 //                  "  border-left: 5px solid #eee;"
 //                  "}"
@@ -73,15 +75,8 @@ ModManager::ModManager(QWidget *parent) :
     ui->modInfoDock->setTitleBarWidget(new QLabel);
     connect(ui->pageSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
-    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock }){
-        if(config.getLockPanel())
-            widget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        else
-            widget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-    }
     //Download
     ui->pageSwitcher->addDownloadPage();
-
     //Explore
     if(config.getShowCurseforge()) ui->pageSwitcher->addCurseforgePage();
     if(config.getShowModrinth()) ui->pageSwitcher->addModrinthPage();
@@ -135,16 +130,14 @@ ModManager::ModManager(QWidget *parent) :
 
 ModManager::~ModManager()
 {
-    Config().setPageSelectorDockArea(dockWidgetArea(ui->pageSelectorDock));
-    Config().setModInfoDockArea(dockWidgetArea(ui->modInfoDock));
     delete ui;
 }
 
-void ModManager::resizeEvent(QResizeEvent *event)
+void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
 {
     Config config;
-    config.setMainWindowWidth(event->size().width());
-    config.setMainWindowHeight(event->size().height());
+    config.setGeometry(saveGeometry());
+    config.setWindowState(saveState());
 }
 
 #if defined (DE_KDE) || defined (Q_OS_WIN)
@@ -500,4 +493,3 @@ void ModManager::on_actionAbout_Qt_triggered()
 {
     QMessageBox::aboutQt(this);
 }
-

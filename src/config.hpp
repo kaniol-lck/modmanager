@@ -104,13 +104,11 @@ public:
     getterAndSetter(DownloaderList, List, downloaderList, QVariant())
 
     //others
-    getterAndSetter(PageSelectorDockArea, Int, pageSelectorDockArea, Qt::LeftToolBarArea)
-    getterAndSetter(ModInfoDockArea, Int, modInfoDockArea, Qt::LeftToolBarArea)
-    getterAndSetter(MainWindowWidth, Int, mainWindowWidth, 1440)
-    getterAndSetter(MainWindowHeight, Int, mainWindowHeight, 900)
     getterAndSetter(ModrinthMultiVersion, Bool, modrinthMultiVersion, false)
     getterAndSetter(ModrinthMultiCategory, Bool, modrinthMultiCategory, false)
     getterAndSetter(LockPanel, Bool, LockPanel, true)
+    getterAndSetter(Geometry, ByteArray, geometry, QByteArray())
+    getterAndSetter(WindowState, ByteArray, windowState, QByteArray())
 private:
     QSettings old_;
 };

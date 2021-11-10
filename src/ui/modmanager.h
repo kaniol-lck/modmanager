@@ -25,7 +25,7 @@ public:
     ~ModManager();
 
 protected:
-    void resizeEvent(QResizeEvent *event) override;
+    void closeEvent(QCloseEvent *event) override;
 #if defined (DE_KDE) || defined (Q_OS_WIN)
     void paintEvent(QPaintEvent *event) override;
 #endif //defined (DE_KDE) || defined (Q_OS_WIN)
