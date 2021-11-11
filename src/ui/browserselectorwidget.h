@@ -17,6 +17,8 @@ public:
     ~BrowserSelectorWidget();
 
     void setModel(QAbstractItemModel *model);
+public slots:
+    void setCurrentIndex(QModelIndex index);
 signals:
     void browserChanged(int category, int index);
     void customContextMenuRequested(QModelIndex index, QPoint pos);

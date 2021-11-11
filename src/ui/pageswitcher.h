@@ -50,20 +50,21 @@ public:
     const QList<LocalModBrowser *> &localModBrowsers() const;
     ExploreBrowser *exploreBrowser(int index) const;
     LocalModBrowser *localModBrowser(int index) const;
+    QPair<int, int> currentCategoryPage() const;
     int currentCategory() const;
     int currentPage() const;
     Browser *currentBrowser() const;
     QStandardItemModel *model();
-
+signals:
+    void pageChanged(QModelIndex modelIndex);
 public slots:
+    void setCurrentIndex(int index);
     void setPage(int category, int page);
     void updateUi();
 private:
     void removeExplorePage(ExploreBrowser *exploreBrowser);
     QStandardItemModel model_;
     QVector<int> pageCount_;
-    BrowserCategory currentCategory_;
-    int currentPage_;
 
     DownloadBrowser *downloadBrowser_ = nullptr;
     CurseforgeModBrowser *curseforgeModBrowser_ = nullptr;

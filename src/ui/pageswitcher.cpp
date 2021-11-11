@@ -181,8 +181,6 @@ void PageSwitcher::removeLocalModBrowser(int index)
 void PageSwitcher::setPage(int category, int page)
 {
     auto index = std::accumulate(pageCount_.cbegin(), pageCount_.cbegin() + category, 0) + page;
-    currentCategory_ = static_cast<BrowserCategory>(category);
-    currentPage_ = page;
     setCurrentIndex(index);
 }
 
@@ -215,29 +213,40 @@ QStandardItemModel *PageSwitcher::model()
     return &model_;
 }
 
+void PageSwitcher::setCurrentIndex(int index)
+{
+    if(index < 0) return;
+    qDebug() << "before" << currentIndex();
+    QStackedWidget::setCurrentIndex(index);
+    auto [currentCategory, currentPage] = currentCategoryPage();
+    emit pageChanged(model_.index(currentPage, 0, model_.index(currentCategory, 0)));
+}
+
 int PageSwitcher::currentCategory() const
 {
-    return currentCategory_;
+    return currentCategoryPage().first;
 }
 
 int PageSwitcher::currentPage() const
 {
-    return currentPage_;
+    return currentCategoryPage().second;
 }
 
 Browser *PageSwitcher::currentBrowser() const
 {
-    switch (currentCategory_) {
+    auto [currentCategory, currentPage] = currentCategoryPage();
+    switch (currentCategory) {
     case PageSwitcher::Download:
         return downloadBrowser_;
         break;
     case PageSwitcher::Explore:
-        return exploreBrowsers_.at(currentPage_);
+        return exploreBrowsers_.at(currentPage);
         break;
     case PageSwitcher::Local:
-        return localModBrowsers_.at(currentPage_);
+        return localModBrowsers_.at(currentPage);
         break;
     }
+    return nullptr;
 }
 
 const QList<ExploreBrowser *> &PageSwitcher::exploreBrowsers() const
@@ -287,4 +296,16 @@ LocalModBrowser *PageSwitcher::localModBrowser(int index) const
     if(index >= localModBrowsers_.size())
         return nullptr;
     return localModBrowsers_.at(index);
+}
+
+QPair<int, int> PageSwitcher::currentCategoryPage() const
+{
+    auto index = currentIndex();
+    for(int category = 0; pageCount_.size(); category ++){
+        if(index < pageCount_[category]){
+            return { category, index };
+        }
+        index -= pageCount_[category];
+    }
+    return { -1, -1 };
 }

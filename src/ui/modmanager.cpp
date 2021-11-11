@@ -50,7 +50,9 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionAbout_Qt->setIcon(QIcon(":/qt-project.org/qmessagebox/images/qtlogo-64.png"));
     browserSelector_->setModel(ui->pageSwitcher->model());
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
-    connect(browserSelector_, &BrowserSelectorWidget::browserChanged, this, [=]{
+    connect(ui->pageSwitcher, &PageSwitcher::pageChanged, browserSelector_, &BrowserSelectorWidget::setCurrentIndex);
+    connect(ui->pageSwitcher, &PageSwitcher::pageChanged, this, [=]{
+        qDebug() << "changed";
         ui->modInfoDock->setWidget(ui->pageSwitcher->currentBrowser()->infoWidget());
     });
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
