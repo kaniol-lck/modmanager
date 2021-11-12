@@ -296,6 +296,7 @@ unix {
   exists(/usr/lib/x86_64-linux-gnu/libquazip5.a) LIBS += -L$$quote(/usr/lib/x86_64-linux-gnu) -lquazip5
   LIBS += -L$$quote(/usr/local/lib) -laria2 -lquazip1-qt5
   INCLUDEPATH += /usr/include/QuaZip-Qt5-1.1/quazip
+  INCLUDEPATH += /usr/include/quazip
 
   message(HEADERS)
   exists(/usr/include/KF5/KWindowSystem){
