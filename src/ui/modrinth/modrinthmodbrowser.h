@@ -7,7 +7,7 @@ class ModrinthAPI;
 class ModrinthMod;
 class LocalModPath;
 class ModrinthModInfoWidget;
-
+class ModrinthFileListWidget;
 class QListWidgetItem;
 namespace Ui {
 class ModrinthModBrowser;
@@ -22,6 +22,7 @@ public:
     ~ModrinthModBrowser();
 
     QWidget *infoWidget() const override;
+    QWidget *fileListWidget() const override;
 signals:
     void downloadPathChanged(LocalModPath *path);
 
@@ -47,6 +48,7 @@ private slots:
 private:
     Ui::ModrinthModBrowser *ui;
     ModrinthModInfoWidget *infoWidget_;
+    ModrinthFileListWidget *fileListWidget_;
     ModrinthAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     QString currentName_;

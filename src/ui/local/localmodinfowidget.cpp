@@ -6,6 +6,7 @@
 #include "local/localmod.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
+#include "util/smoothscrollbar.h"
 #include "util/flowlayout.h"
 
 LocalModInfoWidget::LocalModInfoWidget(QWidget *parent) :
@@ -15,6 +16,7 @@ LocalModInfoWidget::LocalModInfoWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->tagsWidget->setLayout(new FlowLayout());
     ui->scrollArea->setVisible(false);
+    ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
 }
 
 LocalModInfoWidget::~LocalModInfoWidget()

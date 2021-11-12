@@ -15,7 +15,7 @@ CurseforgeModInfoWidget::CurseforgeModInfoWidget(QWidget *parent) :
     ui->scrollArea->setVisible(false);
     //lag
 //    ui->scrollArea->setVerticalScrollBar(new SmoothScrollBar(this));
-//    ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
 }
 
 CurseforgeModInfoWidget::~CurseforgeModInfoWidget()
@@ -82,40 +82,14 @@ void CurseforgeModInfoWidget::setMod(CurseforgeMod *mod)
 //            reply->deleteLater();
 //        });
 //    }
-
-//    //update file list
-//    auto updateFileList = [=]{
-//        ui->fileListWidget->clear();
-//        auto files = mod_->modInfo().allFileList();
-//        for(const auto &fileInfo : files){
-//            auto *listItem = new DateTimeSortItem();
-//            listItem->setData(DateTimeSortItem::Role, fileInfo.fileDate());
-//            listItem->setSizeHint(QSize(500, 90));
-//            auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo, localMod_);
-//            itemWidget->setDownloadPath(downloadPath_);
-//            connect(this, &CurseforgeModDialog::downloadPathChanged, itemWidget, &CurseforgeFileItemWidget::setDownloadPath);
-//            ui->fileListWidget->addItem(listItem);
-//            ui->fileListWidget->setItemWidget(listItem, itemWidget);
-//        }
-//        ui->fileListWidget->sortItems(Qt::DescendingOrder);
-//        ui->fileListWidget->setCursor(Qt::ArrowCursor);
-//    };
-
-//    if(!mod_->modInfo().allFileList().isEmpty())
-//        updateFileList();
-//    else {
-//        ui->fileListWidget->setCursor(Qt::BusyCursor);
-//        mod->acquireAllFileList();
-//        connect(mod, &CurseforgeMod::allFileListReady, this, updateFileList);
-    //    }
 }
 
 void CurseforgeModInfoWidget::updateBasicInfo()
 {
     setWindowTitle(mod_->modInfo().name() + tr(" - Curseforge"));
     ui->modName->setText(mod_->modInfo().name());
-//        ui->modSummary->setText(mod->modInfo().summary());
-//        ui->modAuthors->setText(mod->modInfo().authors().join(", "));
+    ui->modSummary->setText(mod_->modInfo().summary());
+//    ui->modAuthors->setText(mod_->modInfo().authors().join(", "));
 
     //tags
     for(auto widget : qAsConst(tagWidgets_)){

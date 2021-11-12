@@ -7,7 +7,7 @@ class CurseforgeAPI;
 class CurseforgeMod;
 class LocalModPath;
 class CurseforgeModInfoWidget;
-
+class CurseforgeFileListWidget;
 class QListWidgetItem;
 namespace Ui {
 class CurseforgeModBrowser;
@@ -22,6 +22,7 @@ public:
     ~CurseforgeModBrowser();
 
     QWidget *infoWidget() const override;
+    QWidget *fileListWidget() const override;
 signals:
     void downloadPathChanged(LocalModPath *path);
 
@@ -47,6 +48,7 @@ private slots:
 private:
     Ui::CurseforgeModBrowser *ui;
     CurseforgeModInfoWidget *infoWidget_;
+    CurseforgeFileListWidget *fileListWidget_;
     CurseforgeAPI *api_;
     QList<int> idList_;
     LocalModPath *downloadPath_ = nullptr;

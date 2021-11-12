@@ -6,6 +6,7 @@
 #include <QMenu>
 
 #include "modrinthmodinfowidget.h"
+#include "modrinthfilelistwidget.h"
 #include "modrinthmoditemwidget.h"
 #include "modrinthmoddialog.h"
 #include "local/localmodpathmanager.h"
@@ -23,6 +24,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/modrinth.svg"), "Modrinth", QUrl("https://modrinth.com/mods")),
     ui(new Ui::ModrinthModBrowser),
     infoWidget_(new ModrinthModInfoWidget(this)),
+    fileListWidget_(new ModrinthFileListWidget(this)),
     api_(new ModrinthAPI(this))
 {
     ui->setupUi(this);
@@ -54,6 +56,11 @@ ModrinthModBrowser::~ModrinthModBrowser()
 QWidget *ModrinthModBrowser::infoWidget() const
 {
     return infoWidget_;
+}
+
+QWidget *ModrinthModBrowser::fileListWidget() const
+{
+    return fileListWidget_;
 }
 
 void ModrinthModBrowser::refresh()
@@ -470,4 +477,5 @@ void ModrinthModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *cu
     auto widget = ui->modListWidget->itemWidget(current);
     auto mod = dynamic_cast<ModrinthModItemWidget*>(widget)->mod();
     infoWidget_->setMod(mod);
+    fileListWidget_->setMod(mod);
 }

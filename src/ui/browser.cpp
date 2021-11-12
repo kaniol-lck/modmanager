@@ -10,3 +10,8 @@ QWidget *Browser::infoWidget() const
 {
     return nullptr;
 }
+
+QWidget *Browser::fileListWidget() const
+{
+    return nullptr;
+}

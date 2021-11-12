@@ -42,9 +42,11 @@ SOURCES += \
     src/optifine/optifinemod.cpp \
     src/optifine/optifinemodinfo.cpp \
     src/ui/browser.cpp \
+    src/ui/curseforge/curseforgefilelistwidget.cpp \
     src/ui/curseforge/curseforgeimagepopup.cpp \
     src/ui/curseforge/curseforgemodinfowidget.cpp \
     src/ui/local/localmodinfowidget.cpp \
+    src/ui/modrinth/modrinthfilelistwidget.cpp \
     src/ui/modrinth/modrinthmodinfowidget.cpp \
     src/ui/pageswitcher.cpp \
     src/replay/replayapi.cpp \
@@ -129,9 +131,11 @@ HEADERS += \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \
     src/ui/browser.h \
+    src/ui/curseforge/curseforgefilelistwidget.h \
     src/ui/curseforge/curseforgeimagepopup.h \
     src/ui/curseforge/curseforgemodinfowidget.h \
     src/ui/local/localmodinfowidget.h \
+    src/ui/modrinth/modrinthfilelistwidget.h \
     src/ui/modrinth/modrinthmodinfowidget.h \
     src/ui/pageswitcher.h \
     src/replay/replayapi.h \
@@ -191,6 +195,7 @@ FORMS += \
     src/ui/browsermanagerdialog.ui \
     src/ui/browserselectorwidget.ui \
     src/ui/curseforge/curseforgefileitemwidget.ui \
+    src/ui/curseforge/curseforgefilelistwidget.ui \
     src/ui/curseforge/curseforgeimagepopup.ui \
     src/ui/curseforge/curseforgemodbrowser.ui \
     src/ui/curseforge/curseforgemoddialog.ui \
@@ -208,6 +213,7 @@ FORMS += \
     src/ui/local/localmodinfowidget.ui \
     src/ui/modmanager.ui \
     src/ui/modrinth/modrinthfileitemwidget.ui \
+    src/ui/modrinth/modrinthfilelistwidget.ui \
     src/ui/modrinth/modrinthmodbrowser.ui \
     src/ui/modrinth/modrinthmoddialog.ui \
     src/ui/modrinth/modrinthmodinfowidget.ui \

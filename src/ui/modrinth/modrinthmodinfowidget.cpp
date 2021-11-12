@@ -2,6 +2,7 @@
 #include "ui_modrinthmodinfowidget.h"
 
 #include "modrinth/modrinthmod.h"
+#include "util/smoothscrollbar.h"
 #include "util/flowlayout.h"
 #include "util/funcutil.h"
 
@@ -12,6 +13,7 @@ ModrinthModInfoWidget::ModrinthModInfoWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->tagsWidget->setLayout(new FlowLayout());
     ui->scrollArea->setVisible(false);
+    ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
 }
 
 ModrinthModInfoWidget::~ModrinthModInfoWidget()
@@ -50,7 +52,7 @@ void ModrinthModInfoWidget::updateBasicInfo()
 {
     setWindowTitle(mod_->modInfo().name() + tr(" - Modrinth"));
     ui->modName->setText(mod_->modInfo().name());
-//        ui->modSummary->setText(mod->modInfo().summary());
+    ui->modSummary->setText(mod_->modInfo().summary());
     if(!mod_->modInfo().author().isEmpty()){
 //            ui->modAuthors->setText(mod->modInfo().author());
 //            ui->modAuthors->setVisible(true);

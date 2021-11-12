@@ -1,0 +1,35 @@
+#ifndef MODRINTHFILELISTWIDGET_H
+#define MODRINTHFILELISTWIDGET_H
+
+#include <QWidget>
+
+class ModrinthMod;
+class LocalModPath;
+namespace Ui {
+class ModrinthFileListWidget;
+}
+
+class ModrinthFileListWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit ModrinthFileListWidget(QWidget *parent = nullptr);
+    ~ModrinthFileListWidget();
+
+    void setMod(ModrinthMod *mod);
+signals:
+    void modChanged();
+    void downloadPathChanged(LocalModPath *path);
+public slots:
+    void setDownloadPath(LocalModPath *newDownloadPath);
+private slots:
+    void updateFullInfo();
+    void updateFileList();
+private:
+    Ui::ModrinthFileListWidget *ui;
+    ModrinthMod *mod_ = nullptr;
+    LocalModPath *downloadPath_ = nullptr;
+};
+
+#endif // MODRINTHFILELISTWIDGET_H

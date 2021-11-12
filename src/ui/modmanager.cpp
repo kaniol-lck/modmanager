@@ -52,13 +52,14 @@ ModManager::ModManager(QWidget *parent) :
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
     connect(ui->pageSwitcher, &PageSwitcher::pageChanged, browserSelector_, &BrowserSelectorWidget::setCurrentIndex);
     connect(ui->pageSwitcher, &PageSwitcher::pageChanged, this, [=]{
-        qDebug() << "changed";
-        ui->modInfoDock->setWidget(ui->pageSwitcher->currentBrowser()->infoWidget());
+        auto browser = ui->pageSwitcher->currentBrowser();
+        ui->modInfoDock->setWidget(browser->infoWidget());
+        ui->fileListDock->setWidget(browser->fileListWidget());
     });
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
-    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock }){
+    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock, ui->fileListDock }){
         if(config.getLockPanel())
             widget->setFeatures(QDockWidget::NoDockWidgetFeatures);
         else
@@ -75,6 +76,7 @@ ModManager::ModManager(QWidget *parent) :
     ui->pageSelectorDock->setWidget(browserSelector_);
     ui->pageSelectorDock->setTitleBarWidget(new QLabel);
     ui->modInfoDock->setTitleBarWidget(new QLabel);
+    ui->fileListDock->setTitleBarWidget(new QLabel);
     connect(ui->pageSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
     //Download
@@ -93,7 +95,9 @@ ModManager::ModManager(QWidget *parent) :
     if(ui->pageSwitcher->exploreBrowsers().size())
         ui->pageSwitcher->setPage(PageSwitcher::Explore, 0);
 
-    ui->modInfoDock->setWidget(ui->pageSwitcher->currentBrowser()->infoWidget());
+    auto browser = ui->pageSwitcher->currentBrowser();
+    ui->modInfoDock->setWidget(browser->infoWidget());
+    ui->fileListDock->setWidget(browser->fileListWidget());
 
     //init versions
     VersionManager::initVersionLists();
@@ -151,7 +155,7 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 #endif
     QPainter p(this);
     p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock }){
+    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock, ui->fileListDock }){
         if(!widget->isVisible()) continue;
         auto rect = widget->rect();
         rect.translate(widget->pos());
@@ -302,18 +306,7 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
         menu->addSeparator();
-        if(ui->pageSelectorDock->features() == QDockWidget::NoDockWidgetFeatures)
-            connect(menu->addAction(QIcon::fromTheme("unlock"), tr("Unlock Panel")), &QAction::triggered, this, [=]{
-                ui->pageSelectorDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-                ui->modInfoDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-                Config().setLockPanel(false);
-            });
-        else
-            connect(menu->addAction(QIcon::fromTheme("lock"), tr("Lock Panel")), &QAction::triggered, this, [=]{
-                ui->pageSelectorDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-                ui->modInfoDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-                Config().setLockPanel(true);
-            });
+        menu->addAction(lockPanelAction());
     } else if(index.parent().row() == PageSwitcher::Explore){
         // on one of explore items
         auto exploreBrowser = ui->pageSwitcher->exploreBrowser(index.row());
@@ -371,7 +364,7 @@ void ModManager::on_actionOpen_new_path_dialog_triggered()
 
 void ModManager::on_actionSelect_A_Directory_triggered()
 {
-    auto pathStr = QFileDialog::getExistingDirectory(this, tr("Select your mod directory..."), Config().getCommonPath());
+    auto pathStr = QFileDialog::getExistingDirectory(this, tr("Select your mod directory..."), config_.getCommonPath());
     if(pathStr.isEmpty()) return;
     auto path = new LocalModPath(LocalModPathInfo::deduceFromPath(pathStr), true);
     LocalModPathManager::addPath(path);
@@ -379,7 +372,7 @@ void ModManager::on_actionSelect_A_Directory_triggered()
 
 void ModManager::on_actionSelect_Multiple_Directories_triggered()
 {
-    auto paths = getExistingDirectories(this, tr("Select your mod directories..."), Config().getCommonPath());
+    auto paths = getExistingDirectories(this, tr("Select your mod directories..."), config_.getCommonPath());
     LocalModPathManager::addPaths(paths);
 }
 
@@ -426,7 +419,7 @@ void ModManager::on_menuPaths_aboutToShow()
 
 void ModManager::on_menuTags_aboutToShow()
 {
-    auto showTagCategories = Config().getShowTagCategories();
+    auto showTagCategories = config_.getShowTagCategories();
     ui->menuTags->clear();
     int count = 0;
     for(const auto &category : TagCategory::PresetCategories){
@@ -442,7 +435,7 @@ void ModManager::on_menuTags_aboutToShow()
                 list.insert(count, category) ;
             else
                 list.removeAll(category);
-            Config().setShowTagCategories(list);
+            config_.setShowTagCategories(list);
             ui->pageSwitcher->updateUi();
         });
         ui->menuTags->addAction(action);
@@ -459,25 +452,25 @@ void ModManager::on_actionReload_triggered()
 
 void ModManager::on_actionShow_Mod_Authors_toggled(bool arg1)
 {
-    Config().setShowModAuthors(arg1);
+    config_.setShowModAuthors(arg1);
     ui->pageSwitcher->updateUi();
 }
 
 void ModManager::on_actionShow_Mod_Date_Time_toggled(bool arg1)
 {
-    Config().setShowModDateTime(arg1);
+    config_.setShowModDateTime(arg1);
     ui->pageSwitcher->updateUi();
 }
 
 void ModManager::on_actionShow_Mod_Category_toggled(bool arg1)
 {
-    Config().setShowModCategory(arg1);
+    config_.setShowModCategory(arg1);
     ui->pageSwitcher->updateUi();
 }
 
 void ModManager::on_actionShow_Mod_Loader_Type_toggled(bool arg1)
 {
-    Config().setShowModLoaderType(arg1);
+    config_.setShowModLoaderType(arg1);
     ui->pageSwitcher->updateUi();
 }
 
@@ -495,3 +488,41 @@ void ModManager::on_actionAbout_Qt_triggered()
 {
     QMessageBox::aboutQt(this);
 }
+
+void ModManager::on_modInfoDock_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    menu->addAction(lockPanelAction());
+    menu->exec(ui->modInfoDock->mapToGlobal(pos));
+}
+
+void ModManager::on_fileListDock_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    menu->addAction(lockPanelAction());
+    menu->exec(ui->fileListDock->mapToGlobal(pos));
+}
+
+QAction *ModManager::lockPanelAction() const
+{
+    if(config_.getLockPanel()){
+        auto action = new QAction(QIcon::fromTheme("unlock"), tr("Unlock Panel"));
+        connect(action, &QAction::triggered, this, [=]{
+            ui->pageSelectorDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+            ui->modInfoDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+            ui->fileListDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+            config_.setLockPanel(false);
+        });
+        return action;
+    } else{
+        auto action = new QAction(QIcon::fromTheme("lock"), tr("Lock Panel"));
+        connect(action, &QAction::triggered, this, [=]{
+            ui->pageSelectorDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            ui->modInfoDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            ui->fileListDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            config_.setLockPanel(true);
+        });
+        return action;
+    }
+}
+

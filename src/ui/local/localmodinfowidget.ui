@@ -39,8 +39,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>366</width>
-        <height>344</height>
+        <width>345</width>
+        <height>428</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -194,24 +194,15 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="modDescription">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <widget class="QTextBrowser" name="modDescription">
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent;</string>
          </property>
-         <property name="toolTip">
-          <string notr="true"/>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
          </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
+         <property name="textInteractionFlags">
+          <set>Qt::NoTextInteraction</set>
          </property>
         </widget>
        </item>

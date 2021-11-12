@@ -6,6 +6,7 @@
 
 #include "local/localmodpathinfo.h"
 #include "browserselectorwidget.h"
+#include "config.hpp"
 
 class QListWidgetItem;
 class LocalModPath;
@@ -55,13 +56,16 @@ private slots:
     void on_actionNext_Page_triggered();
     void on_actionPrevious_Page_triggered();
     void on_actionAbout_Qt_triggered();
+    void on_modInfoDock_customContextMenuRequested(const QPoint &pos);
+    void on_fileListDock_customContextMenuRequested(const QPoint &pos);
 private:
     Ui::ModManager *ui;
+    mutable Config config_;
     BrowserSelectorWidget *browserSelector_;
 #ifdef Q_OS_WIN
     WindowsTitleBar *titleBar_;
 #endif //Q_OS_WIN
-
     QList<LocalModPath*> pathList_;
+    QAction *lockPanelAction() const;
 };
 #endif // MODMANAGER_H
