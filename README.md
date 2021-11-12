@@ -46,8 +46,8 @@ Depends on your OS and package managers:
   pacman -S mingw-w64-x86_64-aria2
   ```
 
-- MacOS
-  See [kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases) , extract files to your system paths.
+- MacOS:
+  See [kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases/tag/release-1.36.0) for install instructions.
 
 #### For Clang/GCC/MinGW
 

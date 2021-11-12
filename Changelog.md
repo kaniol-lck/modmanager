@@ -10,20 +10,26 @@ Soon....
 
 *WIP*
 
+Added mod info and file list side bar and tweaked "Page Selector" sidebar, they are all configurable.
+添加了mod信息和文件列表侧边栏并调整了“页面选择器”侧边栏，它们都是可自由配置的。
+
 Added "Gallery" in Curseforge Mod Dialog to show image info of mods.
 在Curseforge mod对话框中添加了“画廊”来显示mod图片信息。
 
-Added BlurBebind effects for windows to enhanced visual effects.
-在Windows下添加了背景模糊的效果来加强视觉效果。
+Added BlurBebind effects for windows to enhanced visual effects (optional).
+在Windows下添加了背景模糊的效果来加强视觉效果（可选的）。
 
-Tweaked "Page Selector" sidebar.
-调整了“页面选择器”侧边栏。
+Added frameless ui for windows (optional).
+在Windows下添加了无边框界面（可选的）。
 
 Fixed snapshot version issue in Modrinth page.
-修复了Modrinth页面中快照版本的问题。
+修复了Modrinth页面中快照版本显示。
 
 Fixed opening external link in mod description.
-修复了打开mod描述中外部链接的问题。
+修复了打开mod描述中外部链接的问。
+
+Fixed "Page Selector" selected item unsyced from main ui.
+修复了“页面选择器”选中项与主界面不同步。
 
 ### v1.0.0 beta.5
 

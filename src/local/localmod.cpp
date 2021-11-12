@@ -127,7 +127,6 @@ void LocalMod::searchOnModrinth()
         emit searchOnModrinthFinished(false);
     } else{
         auto conn = modrinthAPI_->getVersionFileBySha1(sha1, [=](const auto &fileInfo){
-            qDebug() << sha1;
             IdMapper::addModrinth(commonInfo()->id(), fileInfo.modId());
             KnownFile::addModrinth(sha1, fileInfo);
             ModrinthModInfo modInfo(fileInfo.modId());

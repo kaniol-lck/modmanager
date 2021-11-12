@@ -34,8 +34,10 @@ IdMapper::Id IdMapper::get(const QString &modid)
 
 void IdMapper::addCurseforge(const QString &modid, int curseforgeId)
 {
-    if(modid.isEmpty())
-        qDebug() << curseforgeId;
+    if(modid.isEmpty()){
+        qDebug() << "empty modid of curseforgeId" << curseforgeId;
+        return;
+    }
     if(!mapper()->idMap_.contains(modid))
         mapper()->idMap_.insert(modid, Id(modid));
     mapper()->idMap_[modid].curseforgeId_ = curseforgeId;
@@ -44,8 +46,10 @@ void IdMapper::addCurseforge(const QString &modid, int curseforgeId)
 
 void IdMapper::addModrinth(const QString &modid, QString modrinthId)
 {
-    if(modid.isEmpty())
-        qDebug() << modrinthId;
+    if(modid.isEmpty()){
+        qDebug() << "empty modid of modrinthId" << modrinthId;
+        return;
+    }
     if(!mapper()->idMap_.contains(modid))
         mapper()->idMap_.insert(modid, Id(modid));
     mapper()->idMap_[modid].modrinthId_ = modrinthId;
