@@ -293,8 +293,11 @@ win32: RC_ICONS = src/modmanager.ico
 #dependencies
 unix {
   message("unix-like build")
-  exists(/usr/lib/x86_64-linux-gnu/libquazip5.a) LIBS += -L$$quote(/usr/lib/x86_64-linux-gnu) -lquazip5
-  exists(/usr/lib/libquazip1-qt5.so) LIBS += -lquazip1-qt5
+  exists(/usr/lib/x86_64-linux-gnu/libquazip5.a) {
+    LIBS += -L$$quote(/usr/lib/x86_64-linux-gnu) -lquazip5
+  } else {
+    LIBS += -lquazip1-qt5
+  }
   LIBS += -L$$quote(/usr/local/lib) -laria2
   INCLUDEPATH += \
       /usr/include/QuaZip-Qt5-1.1/quazip \
