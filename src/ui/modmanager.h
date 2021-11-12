@@ -24,7 +24,7 @@ class ModManager : public QMainWindow
 public:
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
-
+    void updateUi();
 protected:
     void closeEvent(QCloseEvent *event) override;
 #if defined (DE_KDE) || defined (Q_OS_WIN)

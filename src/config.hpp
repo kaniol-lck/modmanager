@@ -109,6 +109,12 @@ public:
     getterAndSetter(LockPanel, Bool, LockPanel, true)
     getterAndSetter(Geometry, ByteArray, geometry, QByteArray())
     getterAndSetter(WindowState, ByteArray, windowState, QByteArray())
+#if defined (DE_KDE)
+    getterAndSetter(EnableBlurBehind, Bool, enableBlurBehind, true)
+#else
+    getterAndSetter(EnableBlurBehind, Bool, enableBlurBehind, false)
+#endif
+    getterAndSetter(UseFramelessWindow, Bool, useFramelessWindow, false)
 private:
     QSettings old_;
 };

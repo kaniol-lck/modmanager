@@ -13,6 +13,12 @@ Preferences::Preferences(QWidget *parent) :
     //TODO
     ui->label_11->setVisible(false);
     ui->optifineVersionSource->setVisible(false);
+#if !defined (DE_KDE) && !defined (Q_OS_WIN)
+    ui->enableBlurBehind->setVisible(false);
+#endif
+#if !defined (Q_OS_WIN)
+    ui->useFramelessWindow->setVisible(false);
+#endif
 
     Config config;
     //General
@@ -20,6 +26,12 @@ Preferences::Preferences(QWidget *parent) :
     ui->scrollSpeed->setValue(config.getScrollSpeed());
     ui->scrollAcceleration->setValue(config.getScrollAcceleration());
     ui->scrollFriction->setValue(config.getScrollFriction());
+    ui->showModAuthors->setChecked(config.getShowModAuthors());
+    ui->showModDateTime->setChecked(config.getShowModDateTime());
+    ui->showModCategory->setChecked(config.getShowModCategory());
+    ui->showModLoaderType->setChecked(config.getShowModLoaderType());
+    ui->enableBlurBehind->setChecked(config.getEnableBlurBehind());
+    ui->useFramelessWindow->setChecked(config.getUseFramelessWindow());
 
     //Explore
     ui->downloadPathText->setText(config.getDownloadPath());
@@ -29,10 +41,6 @@ Preferences::Preferences(QWidget *parent) :
     ui->showModrinth->setChecked(config.getShowModrinth());
     ui->showOptiFine->setChecked(config.getShowOptiFine());
     ui->showReplayMod->setChecked(config.getShowReplayMod());
-    ui->showModAuthors->setChecked(config.getShowModAuthors());
-    ui->showModDateTime->setChecked(config.getShowModDateTime());
-    ui->showModCategory->setChecked(config.getShowModCategory());
-    ui->showModLoaderType->setChecked(config.getShowModLoaderType());
 
     //Local
     ui->commonPathText->setText(config.getCommonPath());
@@ -66,6 +74,12 @@ void Preferences::on_Preferences_accepted()
     config.setScrollSpeed(ui->scrollSpeed->value());
     config.setScrollAcceleration(ui->scrollAcceleration->value());
     config.setScrollFriction(ui->scrollFriction->value());
+    config.setShowModAuthors(ui->showModAuthors->isChecked());
+    config.setShowModDateTime(ui->showModDateTime->isChecked());
+    config.setShowModCategory(ui->showModCategory->isChecked());
+    config.setShowModLoaderType(ui->showModLoaderType->isCheckable());
+    config.setEnableBlurBehind(ui->enableBlurBehind->isChecked());
+    config.setUseFramelessWindow(ui->enableBlurBehind->isChecked());
 
     //Explore
     config.setDownloadPath(ui->downloadPathText->text());
@@ -75,10 +89,6 @@ void Preferences::on_Preferences_accepted()
     config.setShowModrinth(ui->showModrinth->isChecked());
     config.setShowOptiFine(ui->showOptiFine->isChecked());
     config.setShowReplayMod(ui->showReplayMod->isChecked());
-    config.setShowModAuthors(ui->showModAuthors->isChecked());
-    config.setShowModDateTime(ui->showModDateTime->isChecked());
-    config.setShowModCategory(ui->showModCategory->isChecked());
-    config.setShowModLoaderType(ui->showModLoaderType->isCheckable());
 
     //Local
     config.setCommonPath(ui->commonPathText->text());

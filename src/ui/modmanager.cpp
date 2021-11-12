@@ -107,12 +107,23 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionShow_Mod_Category->setChecked(config.getShowModCategory());
     ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
 
+    updateUi();
+}
+
+ModManager::~ModManager()
+{
+    delete ui;
+}
+
+void ModManager::updateUi()
+{
+    ui->pageSwitcher->updateUi();
 #ifdef DE_KDE
     //TODO: disable blur under intel graphical card
-    KWindowEffects::enableBlurBehind(windowHandle());
+    KWindowEffects::enableBlurBehind(windowHandle(), config_.getEnableBlurBehind());
 #endif
 #ifdef Q_OS_WIN
-//    setAttribute(Qt::WA_TranslucentBackground);
+    //    setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
     if(auto huser = GetModuleHandle(L"user32.dll"); huser){
         auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
@@ -134,11 +145,6 @@ ModManager::ModManager(QWidget *parent) :
 #endif
 }
 
-ModManager::~ModManager()
-{
-    delete ui;
-}
-
 void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
 {
     Config config;
@@ -149,6 +155,7 @@ void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
 #if defined (DE_KDE) || defined (Q_OS_WIN)
 void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 {
+    if(!config_.getEnableBlurBehind()) return;
 #ifdef DE_KDE
     if(!KWindowEffects::isEffectAvailable(KWindowEffects::BlurBehind))
         return;
@@ -279,7 +286,7 @@ void ModManager::on_actionPreferences_triggered()
 {
     auto preferences = new Preferences(this);
     preferences->exec();
-    ui->pageSwitcher->updateUi();
+    updateUi();
     QAria2::qaria2()->updateOptions();
 }
 
