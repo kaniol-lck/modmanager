@@ -36,6 +36,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->showModLoaderType->setChecked(config.getShowModLoaderType());
     ui->enableBlurBehind->setChecked(config.getEnableBlurBehind());
     ui->useFramelessWindow->setChecked(config.getUseFramelessWindow());
+    on_useFramelessWindow_toggled(ui->useFramelessWindow->isChecked());
     ui->useCustomStyle->setChecked(config.getUseCustomStyle());
     ui->customStyle->setCurrentText(config.getCustomStyle());
 
@@ -128,3 +129,11 @@ void Preferences::on_downloadPathButton_clicked()
     if(str.isEmpty()) return;
     ui->downloadPathText->setText(str);
 }
+
+void Preferences::on_useFramelessWindow_toggled(bool checked)
+{
+    if(!checked)
+        ui->enableBlurBehind->setChecked(false);
+    ui->enableBlurBehind->setEnabled(checked);
+}
+

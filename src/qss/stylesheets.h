@@ -3,7 +3,8 @@
 #include <QMap>
 
 const QMap<QString, QString> stylesheets{
-    { "Dark", ":/stylesheet/Dark.qss" }
+    { "Dark", ":/stylesheet/Dark.qss" },
+    { "Light", ":/stylesheet/Light.qss" }
 };
 
 #endif // STYLESHEETS_H

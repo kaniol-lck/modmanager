@@ -25,6 +25,8 @@ public:
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
     void updateUi();
+    WindowsTitleBar *titleBar();
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 #if defined (DE_KDE) || defined (Q_OS_WIN)
@@ -62,10 +64,12 @@ private:
     Ui::ModManager *ui;
     mutable Config config_;
     BrowserSelectorWidget *browserSelector_;
-#ifdef Q_OS_WIN
+//#ifdef Q_OS_WIN
     WindowsTitleBar *titleBar_;
-#endif //Q_OS_WIN
+//#endif //Q_OS_WIN
     QList<LocalModPath*> pathList_;
     QAction *lockPanelAction() const;
+    bool useFramelessWindow_;
+    bool enableBlurBehind_;
 };
 #endif // MODMANAGER_H

@@ -45,6 +45,8 @@ ModManager::ModManager(QWidget *parent) :
     browserSelector_(new BrowserSelectorWidget(this))
 {
     Config config;
+    useFramelessWindow_ = config_.getUseFramelessWindow();
+    enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
     restoreGeometry(config.getGeometry());
     restoreState(config.getWindowState());
@@ -75,7 +77,6 @@ ModManager::ModManager(QWidget *parent) :
                   "  background-color: transparent;"
                   "  color: black;"
                   "}");
-
     ui->pageSelectorDock->setWidget(browserSelector_);
     ui->pageSelectorDock->setTitleBarWidget(new QLabel);
     ui->modInfoDock->setTitleBarWidget(new QLabel);
@@ -110,6 +111,13 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionShow_Mod_Category->setChecked(config.getShowModCategory());
     ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
 
+    if(useFramelessWindow_){
+        setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
+        titleBar_ = new WindowsTitleBar(this, windowTitle(), ui->menubar);
+        ui->gridLayout->addWidget(titleBar_);
+        ui->gridLayout->addWidget(ui->pageSwitcher);
+    }
+
     updateUi();
 }
 
@@ -123,7 +131,9 @@ void ModManager::updateUi()
     if(config_.getUseCustomStyle())
         qApp->setStyleSheet("file:///" + stylesheets.value(config_.getCustomStyle()));
     else
-        qApp->setStyleSheet("");
+        qApp->setStyleSheet(".QWidget, QScrollArea {"
+                            "  background-color: transparent;"
+                            "}");
     ui->pageSwitcher->updateUi();
 #ifdef DE_KDE
     //TODO: disable blur under intel graphical card
@@ -131,24 +141,24 @@ void ModManager::updateUi()
 #endif
 #ifdef Q_OS_WIN
     //    setAttribute(Qt::WA_TranslucentBackground);
-    setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
-    if(auto huser = GetModuleHandle(L"user32.dll"); huser){
-        auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
-        if(setWindowCompositionAttribute){
-            ACCENT_POLICY accent = { ACCENT_ENABLE_BLURBEHIND, 0x1e0, 0x000f0f0f, 0 };
-            WINDOWCOMPOSITIONATTRIBDATA data;
-            data.Attrib = WCA_ACCENT_POLICY;
-            data.pvData = &accent;
-            data.cbData = sizeof(accent);
-            setWindowCompositionAttribute(::HWND(winId()), &data);
+    if(enableBlurBehind_){
+        if(auto huser = GetModuleHandle(L"user32.dll"); huser){
+            auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
+            if(setWindowCompositionAttribute){
+                ACCENT_POLICY accent = { ACCENT_ENABLE_BLURBEHIND, 0x1e0, 0x000f0f0f, 0 };
+                WINDOWCOMPOSITIONATTRIBDATA data;
+                data.Attrib = WCA_ACCENT_POLICY;
+                data.pvData = &accent;
+                data.cbData = sizeof(accent);
+                setWindowCompositionAttribute(::HWND(winId()), &data);
+            }
         }
     }
-    titleBar_ = new WindowsTitleBar(this, windowTitle(), ui->menubar);
-    ui->gridLayout->addWidget(titleBar_);
-    ui->gridLayout->addWidget(ui->pageSwitcher);
-    HWND hwnd = (HWND)winId();
-    DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
-    ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
+    if(useFramelessWindow_){
+        HWND hwnd = (HWND)winId();
+        DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
+        ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
+    }
 #endif
 }
 
@@ -162,7 +172,7 @@ void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
 #if defined (DE_KDE) || defined (Q_OS_WIN)
 void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 {
-    if(!config_.getEnableBlurBehind()) return;
+    if(!enableBlurBehind_) return;
 #ifdef DE_KDE
     if(!KWindowEffects::isEffectAvailable(KWindowEffects::BlurBehind))
         return;
@@ -188,6 +198,7 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 #ifdef Q_OS_WIN
 bool ModManager::nativeEvent(const QByteArray &eventType[[maybe_unused]], void *message, long *result)
 {
+    if(!useFramelessWindow_) return false;
     MSG* msg = (MSG*)message;
     int boundaryWidth = 4;
     switch(msg->message){
@@ -233,6 +244,19 @@ bool ModManager::nativeEvent(const QByteArray &eventType[[maybe_unused]], void *
             *result = HTCAPTION;
             return true;
         }
+    }
+    case WM_GETMINMAXINFO: {
+        if (::IsZoomed(msg->hwnd)) {
+            RECT frame = { 0, 0, 0, 0 };
+            AdjustWindowRectEx(&frame, WS_OVERLAPPEDWINDOW, FALSE, 0);
+            frame.left = abs(frame.left);
+            frame.top = abs(frame.bottom);
+            this->setContentsMargins(frame.left, frame.top, frame.right, frame.bottom);
+        } else{
+            this->setContentsMargins(0, 0, 0, 0);
+        }
+        *result = ::DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
+         break;
     }
     }
     return false;
@@ -515,6 +539,11 @@ void ModManager::on_fileListDock_customContextMenuRequested(const QPoint &pos)
     auto menu = new QMenu(this);
     menu->addAction(lockPanelAction());
     menu->exec(ui->fileListDock->mapToGlobal(pos));
+}
+
+WindowsTitleBar *ModManager::titleBar()
+{
+    return titleBar_;
 }
 
 QAction *ModManager::lockPanelAction() const

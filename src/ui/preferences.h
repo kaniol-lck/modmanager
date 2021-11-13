@@ -18,6 +18,8 @@ private slots:
     void on_Preferences_accepted();
     void on_commonPathButton_clicked();
     void on_downloadPathButton_clicked();
+    void on_useFramelessWindow_toggled(bool checked);
+
 private:
     Ui::Preferences *ui;
 };

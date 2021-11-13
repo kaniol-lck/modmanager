@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/stylesheet">
         <file>Dark.qss</file>
+        <file>Light.qss</file>
     </qresource>
 </RCC>
