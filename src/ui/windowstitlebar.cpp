@@ -27,6 +27,7 @@ WindowsTitleBar::WindowsTitleBar(QWidget *parent, const QString &title, QMenuBar
         for(auto &&action : menuBar->actions()){
             auto button = new QToolButton(this);
             button->setAutoRaise(true);
+            button->setProperty("class", "MenuButton");
             button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
             button->setDefaultAction(action);
             button->setPopupMode(QToolButton::InstantPopup);
@@ -59,11 +60,6 @@ void WindowsTitleBar::mousePressEvent(QMouseEvent *event)
 {
     if(event->button()==Qt::LeftButton)
         clickPos_=event->pos();
-}
-
-void WindowsTitleBar::mouseReleaseEvent(QMouseEvent *event)
-{
-    clickPos_ = QPoint();
 }
 #endif //Q_OS_WIN
 

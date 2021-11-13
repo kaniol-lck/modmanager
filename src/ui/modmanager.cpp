@@ -135,31 +135,7 @@ void ModManager::updateUi()
                             "  background-color: transparent;"
                             "}");
     ui->pageSwitcher->updateUi();
-#ifdef DE_KDE
-    //TODO: disable blur under intel graphical card
-    KWindowEffects::enableBlurBehind(windowHandle(), config_.getEnableBlurBehind());
-#endif
-#ifdef Q_OS_WIN
-    //    setAttribute(Qt::WA_TranslucentBackground);
-    if(enableBlurBehind_){
-        if(auto huser = GetModuleHandle(L"user32.dll"); huser){
-            auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
-            if(setWindowCompositionAttribute){
-                ACCENT_POLICY accent = { ACCENT_ENABLE_BLURBEHIND, 0x1e0, 0x000f0f0f, 0 };
-                WINDOWCOMPOSITIONATTRIBDATA data;
-                data.Attrib = WCA_ACCENT_POLICY;
-                data.pvData = &accent;
-                data.cbData = sizeof(accent);
-                setWindowCompositionAttribute(::HWND(winId()), &data);
-            }
-        }
-    }
-    if(useFramelessWindow_){
-        HWND hwnd = (HWND)winId();
-        DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
-        ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
-    }
-#endif
+    updateBlur();
 }
 
 void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
@@ -183,7 +159,7 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
         if(!widget->isVisible()) continue;
         auto rect = widget->rect();
         rect.translate(widget->pos());
-        p.fillRect(rect, QBrush(QColor(255, 255, 255, 127)));
+        p.fillRect(rect, QBrush(QColor(255, 255, 255, 191)));
     }
 #ifdef Q_OS_WIN
 //    if(titleBar_){
@@ -202,6 +178,20 @@ bool ModManager::nativeEvent(const QByteArray &eventType[[maybe_unused]], void *
     MSG* msg = (MSG*)message;
     int boundaryWidth = 4;
     switch(msg->message){
+    case WM_ENTERSIZEMOVE:{
+        if(!isMoving_){
+            isMoving_ = true;
+            updateBlur();
+        }
+        return true;
+    }
+    case WM_EXITSIZEMOVE:{
+        if(isMoving_){
+            isMoving_ = false;
+            updateBlur();
+        }
+        return true;
+    }
     case WM_NCCALCSIZE:{
         NCCALCSIZE_PARAMS& params = *reinterpret_cast<NCCALCSIZE_PARAMS*>(msg->lParam);
         if (params.rgrc[0].top != 0)
@@ -567,5 +557,35 @@ QAction *ModManager::lockPanelAction() const
         });
         return action;
     }
+}
+
+void ModManager::updateBlur() const
+{
+#ifdef DE_KDE
+    //TODO: disable blur under intel graphical card
+    KWindowEffects::enableBlurBehind(windowHandle(), config_.getEnableBlurBehind());
+#endif
+#ifdef Q_OS_WIN
+    //    setAttribute(Qt::WA_TranslucentBackground);
+//    if(enableBlurBehind_){
+        if(auto huser = GetModuleHandle(L"user32.dll"); huser){
+            auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
+            if(setWindowCompositionAttribute){
+                auto acc = config_.getEnableBlurBehind() && !isMoving_? ACCENT_ENABLE_ACRYLICBLURBEHIND : ACCENT_DISABLED;
+                ACCENT_POLICY accent = { acc, 0x1e0, 0x000f0f0f, 0 };
+                WINDOWCOMPOSITIONATTRIBDATA data;
+                data.Attrib = WCA_ACCENT_POLICY;
+                data.pvData = &accent;
+                data.cbData = sizeof(accent);
+                setWindowCompositionAttribute(::HWND(winId()), &data);
+            }
+        }
+//    }
+    if(useFramelessWindow_){
+        HWND hwnd = (HWND)winId();
+        DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
+        ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
+    }
+#endif
 }
 

@@ -68,8 +68,10 @@ private:
     WindowsTitleBar *titleBar_;
 //#endif //Q_OS_WIN
     QList<LocalModPath*> pathList_;
-    QAction *lockPanelAction() const;
     bool useFramelessWindow_;
     bool enableBlurBehind_;
+    bool isMoving_ = false;
+    QAction *lockPanelAction() const;
+    void updateBlur() const;
 };
 #endif // MODMANAGER_H

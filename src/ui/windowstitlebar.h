@@ -22,7 +22,6 @@ protected:
 #ifdef Q_OS_WIN
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
 #endif //Q_OS_WIN
 private slots:
     void on_closeButton_clicked();

@@ -1,22 +1,40 @@
-/*
-Dark Console Style Sheet for QT Applications
-Author: Jaime A. Quiroga P.
-Company: GTRONICK
-Last updated: 24/05/2018, 17:12.
-Available at: https://github.com/GTRONICK/QSS/blob/master/ConsoleStyle.qss
-*/
-QWidget {
-	background-color: #ffffff;
-	border-color: rgb(58, 58, 58);
+QWidget:focus{
+	outline: none;
 }
 
-.QWidget {
+QScrollArea, QScrollArea .QWidget {
 	background-color: transparent;
 	border-color: transparent;
 }
 
+.MenuButton, #maxButton, #minButton, #closeButton{
+	border: none;
+}
+
+.MenuButton:hover {
+	background-color: rgb(165, 165, 165);
+	border: none;
+}
+
+.MenuButton:pressed {
+	background-color: rgb(110, 110, 110);
+	color: whitesmoke;
+	border: none;
+}
+
+#maxButton:hover,#minButton:hover {
+	background-color: rgb(218, 218, 218);
+	border: none;
+}
+
+#closeButton:hover {
+	background-color: red;
+	border: none;
+}
+
 QGroupBox {
-    border: 2px solid rgb(12, 13, 11);
+	background-color: whitesmoke;
+    border: 1px solid rgb(110, 110, 110);
     border-radius: 5px;
     margin-top: 20px;
 }
@@ -27,124 +45,76 @@ QGroupBox::title {
     padding: 10px 15px;
 }
 
-QScrollArea {
-	background-color: transparent;
+QToolButton[autoRaise=false], QPushButton, QComboBox {
+	background-color: whitesmoke;
+	border: 1px solid rgb(110, 110, 110);
+	border-radius: 5px;
+	padding: 4px;
+	padding-right: 10px;
 }
 
-QPlainTextEdit {
-	background-color:rgb(207, 207, 207);
-	color: rgb(12, 13, 11);
-	selection-background-color: rgb(255, 153, 0);
-	selection-color: rgb(0, 0, 0);
+QToolButton[autoRaise=false]:hover, QPushButton:hover, QComboBox:hover {
+	background-color: rgb(204, 204, 204);
+	border: 1px solid rgb(180, 180, 180);
 }
 
-QLabel {
-	background-color: transparent;
-	color: rgb(12, 13, 11);
-	selection-background-color: rgb(255, 153, 0);
-	selection-color: rgb(0, 0, 0);
+QToolButton[autoRaise=false]:pressed, QPushButton:pressed, QComboBox:pressed {
+	background-color: rgb(158, 158, 158);
+	border: 1px solid rgb(219, 219, 219);
 }
 
-QTabWidget::pane {
-    	border-top: 1px solid #000000;
+QToolButton[autoRaise=false][popupMode="2"]::menu-indicator, QPushButton::menu-indicator {
+	subcontrol-origin: padding;
+	subcontrol-position: center right;
 }
 
-QTabBar::tab {
- 	border-style: outset;
-	border-width: 1px;
-	border-top-width: 0px;
-	border-style: solid;
-	color: rgb(105, 105, 105);
-	padding: 10px 40px 10px 40px;
-}
-
-QTabBar::tab:selected, QTabBar::tab:hover {
-   color: rgb(255, 255, 255);
-   background-color: rgb(73, 73, 73);
-   border-radius: 4px;
-}
-
-QTabBar::tab:!selected {
-   margin-bottom: 4px;
-   border-radius: 0px;
-}
-
-QToolButton {
-	background-color: transparent;
-}
-
-QToolButton:hover {
-	border-width: 1px;
-	border-color: #979797;
-}
-
-QToolButton:hover, QToolButton:pressed {
-	background-color: #dfdfdf;
-}
-
-QPushButton {
-    border-style: solid;
-    border-width: 1px;
-    border-color: rgb(109, 109, 109);
-    border-radius: 10px;
-    background-color: #cecece;
-	padding: 2px 10px 2px 10px;
-}
-
-QLineEdit {
-	border-width: 1px; border-radius: 4px;
-	border-color: rgb(58, 58, 58);
-	border-style: inset;
-	padding: 0 8px;
-	color: rgb(255, 255, 255);
-	background-color: rgb(187, 187, 187);
-	selection-background-color: rgb(101, 101, 101);
-	selection-color: rgb(230, 230, 230);
-}
-
-QProgressBar {
-	text-align: center;
-	color: rgb(255, 255, 255);
-	border-width: 1px; 
-	border-radius: 10px;
-	border-color: rgb(58, 58, 58);
-	border-style: inset;
-}
-
-QProgressBar::chunk {
-	background-color: qlineargradient(spread:pad, x1:0.5, y1:0.7, x2:0.5, y2:0.3, stop:0 rgba(0, 200, 0, 255), stop:1 rgba(30, 230, 30, 255));
-	border-radius: 10px;
-}
-
-QMenuBar {
-	background:rgb(0, 0, 0);
-	color: rgb(255, 153, 0);
-}
-
-QMenuBar::item {
-  	spacing: 3px; 
-	padding: 1px 4px;
-  	background: transparent;
-}
-
-QMenuBar::item:selected { 
-  	background:rgb(115, 115, 115);
+QToolButton[autoRaise=true] {
+	padding: 4px;
+	padding-right: 10px;
 }
 
 QMenu {
-	border-width: 1px;
-	border-radius: 6px;
-	border-color: rgb(127, 127, 127);
-	background-color: rgb(255, 255, 255);
-	border-style: outset;
-	padding: 8px;
+	background-color: white;
+	border-radius: 1px;
+	border: 1px outset rgb(151, 151, 151);
+}
+
+QMenu::item {
+	padding: 5px 10px;
+	margin: 2px;
 }
 
 QMenu::item:selected {
 	background:rgb(115, 115, 115);
 	color:rgb(255, 255, 255);
 	border-width: 1px; 
-	border-radius: 4px;
+	border-radius: 1px;
 	border-color: rgb(58, 58, 58);
 	border-style: inset;
+}
+
+QComboBox{
+	border:1px solid gray;
+	border-radius:3px; 
+	padding: 5px; 
+	min-width:40px;
+}
+
+QComboBox::drop-down{
+	subcontrol-origin:padding;
+	subcontrol-position:top right; 
+	border: none;
+} 
+
+QToolButton[autoRaise=false][popupMode="2"]::menu-indicator, QPushButton::menu-indicator, QComboBox::down-arrow {
+    image: url(:/icons/breeze-modmanager/16x16/go-down.svg);
+}
+
+QTreeView::item {
+	min-height: 40px;
+	font-size: 20px;
+}
+
+QTreeView::item::selected {
+	color: black;
 }
