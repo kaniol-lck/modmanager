@@ -130,6 +130,7 @@ HEADERS += \
     src/optifine/optifineapi.h \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \
+    src/qss/stylesheets.h \
     src/ui/browser.h \
     src/ui/curseforge/curseforgefilelistwidget.h \
     src/ui/curseforge/curseforgeimagepopup.h \
@@ -245,7 +246,8 @@ include(3rdparty/tomlplusplus/tomlplusplus.pri)
 
 RESOURCES += \
     src/icons/breeze/breeze-modmanager.qrc \
-    src/images/image.qrc
+    src/images/image.qrc \
+    src/qss/stylesheets.qrc
 
 TARGET = ModManager
 TEMPLATE = app
@@ -286,7 +288,8 @@ CONFIG(debug, debug|release) {
 
 DISTFILES += \
     src/ModManager.desktop \
-    src/modmanager.png
+    src/modmanager.png \
+    src/qss/qdarkstyle-light/style.qss
 
 win32: RC_ICONS = src/modmanager.ico
 

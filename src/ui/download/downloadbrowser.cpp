@@ -19,6 +19,7 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->downloaderListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->downloaderListWidget->setProperty("class", "ModList");
 
     connect(manager_->qaria2(), &QAria2::started, this, [=]{});
     connect(manager_->qaria2(), &QAria2::finished, this, [=]{

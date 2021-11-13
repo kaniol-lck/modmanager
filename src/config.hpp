@@ -115,6 +115,8 @@ public:
     getterAndSetter(EnableBlurBehind, Bool, enableBlurBehind, false)
 #endif
     getterAndSetter(UseFramelessWindow, Bool, useFramelessWindow, false)
+    getterAndSetter(UseCustomStyle, Bool, useCustomStyle, false)
+    getterAndSetter(CustomStyle, String, customStyle, QString())
 private:
     QSettings old_;
 };

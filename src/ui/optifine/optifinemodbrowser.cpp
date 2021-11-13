@@ -24,6 +24,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->modListWidget->setProperty("class", "ModList");
 
     getModList();
 

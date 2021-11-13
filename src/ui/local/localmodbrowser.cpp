@@ -34,6 +34,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->setupUi(this);
 //    ui->updateWidget->setVisible(false);
     ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->modListWidget->setProperty("class", "ModList");
     statusBar_ = new QStatusBar(this);
     progressBar_ = new QProgressBar(statusBar_);
     progressBar_->setVisible(false);

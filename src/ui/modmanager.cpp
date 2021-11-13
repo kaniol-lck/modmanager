@@ -37,6 +37,7 @@
 #include "config.hpp"
 #include "util/funcutil.h"
 #include "ui/windowstitlebar.h"
+#include "qss/stylesheets.h"
 
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
@@ -65,13 +66,15 @@ ModManager::ModManager(QWidget *parent) :
         else
             widget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
     }
-//    setStyleSheet("QListWidget::item:hover {"
-//                  "  border-left: 5px solid #eee;"
-//                  "}"
-//                  "QListWidget::item:selected {"
-//                  "  border-left: 5px solid #37d;"
-//                  "  color: black;"
-//                  "}");
+    setStyleSheet("QListWidget.ModList::item:hover {"
+                  "  border-left: 5px solid #eee;"
+                  "  background-color: transparent;"
+                  "}"
+                  "QListWidget.ModList::item:selected {"
+                  "  border-left: 5px solid #37d;"
+                  "  background-color: transparent;"
+                  "  color: black;"
+                  "}");
 
     ui->pageSelectorDock->setWidget(browserSelector_);
     ui->pageSelectorDock->setTitleBarWidget(new QLabel);
@@ -117,6 +120,10 @@ ModManager::~ModManager()
 
 void ModManager::updateUi()
 {
+    if(config_.getUseCustomStyle())
+        qApp->setStyleSheet("file:///" + stylesheets.value(config_.getCustomStyle()));
+    else
+        qApp->setStyleSheet("");
     ui->pageSwitcher->updateUi();
 #ifdef DE_KDE
     //TODO: disable blur under intel graphical card

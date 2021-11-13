@@ -4,6 +4,7 @@
 #include <QFileDialog>
 
 #include "config.hpp"
+#include "qss/stylesheets.h"
 
 Preferences::Preferences(QWidget *parent) :
     QDialog(parent),
@@ -20,6 +21,9 @@ Preferences::Preferences(QWidget *parent) :
     ui->useFramelessWindow->setVisible(false);
 #endif
 
+    for(auto &&style : stylesheets.keys())
+        ui->customStyle->addItem(style);
+
     Config config;
     //General
     ui->smoothScroll->setChecked(config.getSmoothScroll());
@@ -32,6 +36,8 @@ Preferences::Preferences(QWidget *parent) :
     ui->showModLoaderType->setChecked(config.getShowModLoaderType());
     ui->enableBlurBehind->setChecked(config.getEnableBlurBehind());
     ui->useFramelessWindow->setChecked(config.getUseFramelessWindow());
+    ui->useCustomStyle->setChecked(config.getUseCustomStyle());
+    ui->customStyle->setCurrentText(config.getCustomStyle());
 
     //Explore
     ui->downloadPathText->setText(config.getDownloadPath());
@@ -80,6 +86,8 @@ void Preferences::on_Preferences_accepted()
     config.setShowModLoaderType(ui->showModLoaderType->isCheckable());
     config.setEnableBlurBehind(ui->enableBlurBehind->isChecked());
     config.setUseFramelessWindow(ui->enableBlurBehind->isChecked());
+    config.setUseCustomStyle(ui->useCustomStyle->isChecked());
+    config.setCustomStyle(ui->customStyle->currentText());
 
     //Explore
     config.setDownloadPath(ui->downloadPathText->text());
