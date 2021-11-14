@@ -85,6 +85,8 @@
      </property>
     </widget>
     <addaction name="actionPage_Selector"/>
+    <addaction name="actionMod_Infomation"/>
+    <addaction name="actionFile_List"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Mod_Authors"/>
     <addaction name="actionShow_Mod_Date_Time"/>
@@ -332,6 +334,22 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionMod_Infomation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Mod Infomation</string>
+   </property>
+  </action>
+  <action name="actionFile_List">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>File List</string>
    </property>
   </action>
  </widget>

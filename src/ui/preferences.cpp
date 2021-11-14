@@ -131,8 +131,10 @@ void Preferences::on_downloadPathButton_clicked()
 
 void Preferences::on_useFramelessWindow_toggled(bool checked)
 {
+#ifdef Q_OS_WIN
     if(!checked)
         ui->enableBlurBehind->setChecked(false);
     ui->enableBlurBehind->setEnabled(checked);
+#endif
 }
 

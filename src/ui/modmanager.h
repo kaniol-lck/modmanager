@@ -47,6 +47,7 @@ private slots:
     void on_actionSelect_A_Directory_triggered();
     void on_actionSelect_Multiple_Directories_triggered();
     void on_menu_Path_aboutToShow();
+    void on_menu_View_aboutToShow();
     void on_menu_Help_aboutToShow();
     void on_menuPaths_aboutToShow();
     void on_menuTags_aboutToShow();
@@ -60,6 +61,11 @@ private slots:
     void on_actionAbout_Qt_triggered();
     void on_modInfoDock_customContextMenuRequested(const QPoint &pos);
     void on_fileListDock_customContextMenuRequested(const QPoint &pos);
+
+    void on_actionMod_Infomation_toggled(bool arg1);
+
+    void on_actionFile_List_toggled(bool arg1);
+
 private:
     Ui::ModManager *ui;
     mutable Config config_;

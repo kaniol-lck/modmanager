@@ -27,3 +27,12 @@ QScrollArea, QScrollArea .QWidget {
 	background-color: red;
 	border: none;
 }
+
+QTreeView::item {
+	min-height: 40px;
+	font-size: 20px;
+}
+
+QTreeView::item::selected {
+	color: black;
+}

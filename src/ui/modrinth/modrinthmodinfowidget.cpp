@@ -50,7 +50,6 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
 
 void ModrinthModInfoWidget::updateBasicInfo()
 {
-    setWindowTitle(mod_->modInfo().name() + tr(" - Modrinth"));
     ui->modName->setText(mod_->modInfo().name());
     ui->modSummary->setText(mod_->modInfo().summary());
     if(!mod_->modInfo().author().isEmpty()){

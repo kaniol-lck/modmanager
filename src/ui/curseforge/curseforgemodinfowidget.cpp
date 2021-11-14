@@ -86,7 +86,6 @@ void CurseforgeModInfoWidget::setMod(CurseforgeMod *mod)
 
 void CurseforgeModInfoWidget::updateBasicInfo()
 {
-    setWindowTitle(mod_->modInfo().name() + tr(" - Curseforge"));
     ui->modName->setText(mod_->modInfo().name());
     ui->modSummary->setText(mod_->modInfo().summary());
 //    ui->modAuthors->setText(mod_->modInfo().authors().join(", "));

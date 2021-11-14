@@ -72,7 +72,6 @@ ModManager::ModManager(QWidget *parent) :
     ui->pageSelectorDock->setTitleBarWidget(new QLabel);
     ui->modInfoDock->setTitleBarWidget(new QLabel);
     ui->fileListDock->setTitleBarWidget(new QLabel);
-    connect(ui->pageSelectorDock, &QDockWidget::visibilityChanged, ui->actionPage_Selector, &QAction::setChecked);
 
     //Download
     ui->pageSwitcher->addDownloadPage();
@@ -102,13 +101,14 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionShow_Mod_Category->setChecked(config.getShowModCategory());
     ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
 
+#ifdef Q_OS_WIN
     if(useFramelessWindow_){
         setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
         titleBar_ = new WindowsTitleBar(this, windowTitle(), ui->menubar);
         ui->gridLayout->addWidget(titleBar_);
         ui->gridLayout->addWidget(ui->pageSwitcher);
     }
-
+#endif //Q_OS_WIN
     updateUi();
 }
 
@@ -366,6 +366,16 @@ void ModManager::on_actionPage_Selector_toggled(bool arg1)
     ui->pageSelectorDock->setVisible(arg1);
 }
 
+void ModManager::on_actionMod_Infomation_toggled(bool arg1)
+{
+    ui->modInfoDock->setVisible(arg1);
+}
+
+void ModManager::on_actionFile_List_toggled(bool arg1)
+{
+    ui->fileListDock->setVisible(arg1);
+}
+
 void ModManager::on_actionOpen_new_path_dialog_triggered()
 {
     auto dialog = new LocalModPathSettingsDialog(this);
@@ -401,6 +411,13 @@ void ModManager::on_menu_Path_aboutToShow()
                 ui->actionReload->setEnabled(true);
             });
         }
+}
+
+void ModManager::on_menu_View_aboutToShow()
+{
+    ui->actionPage_Selector->setChecked(ui->pageSelectorDock->isVisible());
+    ui->actionMod_Infomation->setChecked(ui->modInfoDock->isVisible());
+    ui->actionFile_List->setChecked(ui->fileListDock->isVisible());
 }
 
 void ModManager::on_menu_Help_aboutToShow()
@@ -582,4 +599,3 @@ void ModManager::updateBlur() const
     }
 #endif
 }
-
