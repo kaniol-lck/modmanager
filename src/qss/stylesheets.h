@@ -2,9 +2,7 @@
 #define STYLESHEETS_H
 #include <QMap>
 
-const QMap<QString, QString> stylesheets{
-    { "Dark", ":/stylesheet/Dark.qss" },
-    { "Light", ":/stylesheet/Light.qss" }
-};
+const QMap<QString, QString> &styleSheets();
 
+QString styleSheetPath(const QString &name);
 #endif // STYLESHEETS_H

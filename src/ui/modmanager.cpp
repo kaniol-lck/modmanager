@@ -68,15 +68,6 @@ ModManager::ModManager(QWidget *parent) :
         else
             widget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
     }
-    setStyleSheet("QListWidget.ModList::item:hover {"
-                  "  border-left: 5px solid #eee;"
-                  "  background-color: transparent;"
-                  "}"
-                  "QListWidget.ModList::item:selected {"
-                  "  border-left: 5px solid #37d;"
-                  "  background-color: transparent;"
-                  "  color: black;"
-                  "}");
     ui->pageSelectorDock->setWidget(browserSelector_);
     ui->pageSelectorDock->setTitleBarWidget(new QLabel);
     ui->modInfoDock->setTitleBarWidget(new QLabel);
@@ -128,12 +119,7 @@ ModManager::~ModManager()
 
 void ModManager::updateUi()
 {
-    if(config_.getUseCustomStyle())
-        qApp->setStyleSheet("file:///" + stylesheets.value(config_.getCustomStyle()));
-    else
-        qApp->setStyleSheet(".QWidget, QScrollArea {"
-                            "  background-color: transparent;"
-                            "}");
+    qApp->setStyleSheet(styleSheetPath(config_.getCustomStyle()));
     ui->pageSwitcher->updateUi();
     updateBlur();
 }

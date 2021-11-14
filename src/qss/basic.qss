@@ -1,0 +1,29 @@
+QWidget:focus{
+	outline: none;
+}
+
+QScrollArea, QScrollArea .QWidget {
+	background-color: transparent;
+	border-color: transparent;
+}
+
+.ModList::item:hover {
+  border-left: 5px solid #eee;
+  background-color: transparent;
+}
+
+.ModList::item:selected {
+  border-left: 5px solid #37d;
+  background-color: transparent;
+  color: black;
+}
+
+#maxButton:hover,#minButton:hover {
+	background-color: rgb(218, 218, 218);
+	border: none;
+}
+
+#closeButton:hover {
+	background-color: red;
+	border: none;
+}

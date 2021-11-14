@@ -20,9 +20,10 @@ Preferences::Preferences(QWidget *parent) :
 #if !defined (Q_OS_WIN)
     ui->useFramelessWindow->setVisible(false);
 #endif
-
-    for(auto &&style : stylesheets.keys())
-        ui->customStyle->addItem(style);
+    for(auto it = styleSheets().cbegin(); it != styleSheets().cend(); it++){
+        ui->customStyle->addItem(it.value());
+        ui->customStyle->setItemData(ui->customStyle->count() - 1, it.key());
+    }
 
     Config config;
     //General
@@ -37,8 +38,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->enableBlurBehind->setChecked(config.getEnableBlurBehind());
     ui->useFramelessWindow->setChecked(config.getUseFramelessWindow());
     on_useFramelessWindow_toggled(ui->useFramelessWindow->isChecked());
-    ui->useCustomStyle->setChecked(config.getUseCustomStyle());
-    ui->customStyle->setCurrentText(config.getCustomStyle());
+    ui->customStyle->setCurrentText(styleSheets().value(config.getCustomStyle()));
 
     //Explore
     ui->downloadPathText->setText(config.getDownloadPath());
@@ -87,8 +87,7 @@ void Preferences::on_Preferences_accepted()
     config.setShowModLoaderType(ui->showModLoaderType->isCheckable());
     config.setEnableBlurBehind(ui->enableBlurBehind->isChecked());
     config.setUseFramelessWindow(ui->enableBlurBehind->isChecked());
-    config.setUseCustomStyle(ui->useCustomStyle->isChecked());
-    config.setCustomStyle(ui->customStyle->currentText());
+    config.setCustomStyle(ui->customStyle->currentData().toString());
 
     //Explore
     config.setDownloadPath(ui->downloadPathText->text());

@@ -41,6 +41,7 @@ SOURCES += \
     src/optifine/optifineapi.cpp \
     src/optifine/optifinemod.cpp \
     src/optifine/optifinemodinfo.cpp \
+    src/qss/stylesheets.cpp \
     src/ui/browser.cpp \
     src/ui/curseforge/curseforgefilelistwidget.cpp \
     src/ui/curseforge/curseforgeimagepopup.cpp \

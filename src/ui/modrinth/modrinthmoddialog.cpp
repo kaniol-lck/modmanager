@@ -17,6 +17,7 @@
 ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod *localMod) :
     QDialog(parent),
     ui(new Ui::ModrinthModDialog),
+    model_(new QStandardItemModel(this)),
     mod_(mod),
     localMod_(localMod)
 {
