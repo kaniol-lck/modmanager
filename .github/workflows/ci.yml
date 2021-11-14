@@ -39,12 +39,15 @@ jobs:
           export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
           export RELEASE_TEXT=$(grep -Pzo "### ${VERSION}\n(\n|.)+?\n##" Changelog.md | sed '$ d')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          echo "RELEASE_TEXT=${RELEASE_TEXT}" >> $GITHUB_ENV
+          echo "RELEASE_TEXT<<EOF" >> $GITHUB_ENV
+          echo "${RELEASE_TEXT}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
       - name: build ubuntu
         run: |
           qmake
           make
       - name: Release Text
+        if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}

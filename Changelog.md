@@ -8,7 +8,7 @@ Soon....
 
 ### v1.0.0-beta.6
 
-*WIP*
+*2021.11.14*
 
 Added mod info and file list side bar and tweaked "Page Selector" sidebar, they are all configurable.
 添加了mod信息和文件列表侧边栏并调整了“页面选择器”侧边栏，它们都是可自由配置的。
