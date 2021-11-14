@@ -37,7 +37,9 @@ jobs:
       - name: Set Env
         run: |
           export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
+          export RELEASE_TEXT=$(grep -Pzo "### ${VERSION}\n(\n|.)+?\n##" Changelog.md | sed '$ d')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "RELEASE_TEXT=${RELEASE_TEXT}" >> $GITHUB_ENV
       - name: build ubuntu
         run: |
           qmake
@@ -58,6 +60,12 @@ jobs:
         #with:
           #name: Mod_Manager-${{ env.VERSION }}-x86_64.AppImage
           #path: Mod_Manager*.AppImage
+       - name: Release Text
+         uses: svenstaro/upload-release-action@v2
+         with:
+           repo_token: ${{ secrets.GITHUB_TOKEN }}
+           tag: ${{ github.ref }}
+           body: ${{ env.RELEASE_TEXT }}
 
   build-on-win-mingw:
     name: Build On Windows Mingw

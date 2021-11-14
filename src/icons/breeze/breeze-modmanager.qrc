@@ -27,6 +27,8 @@
         <file>16x16/tag.svg</file>
         <file>16x16/media-playback-pause.svg</file>
         <file>16x16/media-playback-start.svg</file>
+        <file>16x16/lock.svg</file>
+        <file>16x16/unlock.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

@@ -6,7 +6,7 @@ Soon....
 
 ## 公开测试 Beta Test
 
-### v1.0.0 beta.6
+### v1.0.0-beta.6
 
 *WIP*
 
@@ -15,6 +15,9 @@ Added mod info and file list side bar and tweaked "Page Selector" sidebar, they 
 
 Added "Gallery" in Curseforge Mod Dialog to show image info of mods.
 在Curseforge mod对话框中添加了“画廊”来显示mod图片信息。
+
+Added ui style(theme) switch.
+添加了UI风格（主题）切换。
 
 Added BlurBebind effects for windows to enhanced visual effects (optional).
 在Windows下添加了背景模糊的效果来加强视觉效果（可选的）。
@@ -28,10 +31,10 @@ Fixed snapshot version issue in Modrinth page.
 Fixed opening external link in mod description.
 修复了打开mod描述中外部链接的问。
 
-Fixed "Page Selector" selected item unsyced from main ui.
+Fixed "Page Selector" selected item unsynced from main ui.
 修复了“页面选择器”选中项与主界面不同步。
 
-### v1.0.0 beta.5
+### v1.0.0-beta.5
 
 *2021.10.30*
 
@@ -62,7 +65,7 @@ Fixed Curseforge/Modrinth dialog cannot be reopened after closed.
 Fixed update failed when mod file is universal for fabric and forge.
 修复了mod文件是fabric/forge通用时会更新失败的问题。
 
-### v1.0.0 beta.4
+### v1.0.0-beta.4
 
 *2021.10.20*
 
@@ -120,7 +123,7 @@ Fixed website button unclickable in modrinth mod dialog.
 Other random tweaks and bugfixes.
 以及一些其他的小调整和bug修复。
 
-### v1.0.0 beta.3
+### v1.0.0-beta.3
 
 *2021.10.10*
 
@@ -163,7 +166,7 @@ Curseforge和Modrinth的mod概述不以斜体显示了。
 Fixed browser selector jump to downloader tab.
 修复了浏览选择器会跳到下载器标签的问题。
 
-### v1.0.0 beta.2
+### v1.0.0-beta.2
 
 *2021.10.03*
 
@@ -182,7 +185,7 @@ Some GUI tweaks.
 Fixed Modrinth mod file not presented as "Downloaded" in local mod path tab.
 修复了本地mod浏览的Modrinth对话框中不显示“已下载”的问题。
 
-### v1.0.0 beta.1
+### v1.0.0-beta.1
 
 *2021.09.30*
 
@@ -194,34 +197,34 @@ First public version. Have a nice day!
 Details are not listed.
 更新内容不列出。
 
-### v1.0.0 alpha.8
+### v1.0.0-alpha.8
 
 *2021.09.29*
 
-### v1.0.0 alpha.7
+### v1.0.0-alpha.7
 
 *2021.09.24*
 
-### v1.0.0 alpha.6
+### v1.0.0-alpha.6
 
 *2021.09.21*
 
-### v1.0.0 alpha.5
+### v1.0.0-alpha.5
 
 *2021.09.17*
 
-### v1.0.0 alpha.4
+### v1.0.0-alpha.4
 
 *2021.09.13*
 
-### v1.0.0 alpha.3
+### v1.0.0-alpha.3
 
 *2021.09.11*
 
-### v1.0.0 alpha.2
+### v1.0.0-alpha.2
 
 *2021.09.10*
 
-### v1.0.0 alpha.1
+### v1.0.0-alpha.1
 
 *2021.09.10*
