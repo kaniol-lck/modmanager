@@ -46,13 +46,13 @@ jobs:
         run: |
           qmake
           make
-      - name: Release Text
-        if: startsWith(github.event.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
-          body: ${{ env.RELEASE_TEXT }}
+      #- name: Release Text
+        #if: startsWith(github.event.ref, 'refs/tags/')
+        #uses: svenstaro/upload-release-action@v2
+        #with:
+          #repo_token: ${{ secrets.GITHUB_TOKEN }}
+          #tag: ${{ github.ref }}
+          #body: ${{ env.RELEASE_TEXT }}
       #- name: package
         #run: |
           #make INSTALL_ROOT=appdir -j2 install ; find appdir/
@@ -166,7 +166,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{github.workspace}}/ModManager*-Installer.exe
+          file: ${{github.workspace}}/ModManager${{ matrix.x64_suffix }}-Installer.exe
           asset_name: ModManager${{ matrix.x64_suffix }}-Installer.exe
           tag: ${{ github.ref }}
           overwrite: true
