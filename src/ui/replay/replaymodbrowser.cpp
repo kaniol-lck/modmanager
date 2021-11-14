@@ -114,9 +114,9 @@ void ReplayModBrowser::getModList()
                 gameVersions << modInfo.gameVersion();
             auto mod = new ReplayMod(this, modInfo);
             auto *listItem = new QListWidgetItem();
-            listItem->setSizeHint(QSize(0, 108));
             ui->modListWidget->addItem(listItem);
             auto itemWidget = new ReplayModItemWidget(this, mod);
+            listItem->setSizeHint(QSize(0, itemWidget->height()));
             itemWidget->setDownloadPath(downloadPath_);
             connect(this, &ReplayModBrowser::downloadPathChanged, itemWidget, &ReplayModItemWidget::setDownloadPath);
             ui->modListWidget->setItemWidget(listItem, itemWidget);

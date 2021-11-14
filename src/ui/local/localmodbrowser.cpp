@@ -140,7 +140,7 @@ void LocalModBrowser::updateModList()
     for (const auto &mod: modPath_->modMap()) {
         auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
         auto *item = new LocalModSortItem(mod);
-        item->setSizeHint(QSize(0, 108));
+        item->setSizeHint(QSize(0, modItemWidget->height()));
         ui->modListWidget->addItem(item);
         ui->modListWidget->setItemWidget(item, modItemWidget);
     }
@@ -148,7 +148,7 @@ void LocalModBrowser::updateModList()
         if(auto mod = modPath_->optiFineMod()){
             auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
             auto *item = new LocalModSortItem(mod);
-            item->setSizeHint(QSize(0, 108));
+            item->setSizeHint(QSize(0, modItemWidget->height()));
             ui->modListWidget->addItem(item);
             ui->modListWidget->setItemWidget(item, modItemWidget);
         }

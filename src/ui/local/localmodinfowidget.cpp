@@ -50,7 +50,7 @@ void LocalModInfoWidget::updateInfo()
     auto displayName = mod_->displayName();
     setEffect(ui->modName, displayName);
     ui->modName->setText(displayName);
-    ui->modVersion->setText(mod_->commonInfo()->version());
+//    ui->modVersion->setText(mod_->commonInfo()->version());
     auto description = mod_->commonInfo()->description();
     auto index = description.indexOf(".");
     //description
@@ -118,10 +118,10 @@ void LocalModInfoWidget::updateInfo()
     } else
         setIcon(QImage(":/image/modmanager.png"));
 
-    if (mod_->curseforgeMod())
-        ui->curseforgeButton->setVisible(true);
-    if (mod_->modrinthMod())
-        ui->modrinthButton->setVisible(true);
+//    if (mod_->curseforgeMod())
+//        ui->curseforgeButton->setVisible(true);
+//    if (mod_->modrinthMod())
+//        ui->modrinthButton->setVisible(true);
 
     //tags
     for(auto widget : qAsConst(tagWidgets_)){

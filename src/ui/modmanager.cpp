@@ -178,20 +178,20 @@ bool ModManager::nativeEvent(const QByteArray &eventType[[maybe_unused]], void *
     MSG* msg = (MSG*)message;
     int boundaryWidth = 4;
     switch(msg->message){
-    case WM_ENTERSIZEMOVE:{
-        if(!isMoving_){
-            isMoving_ = true;
-            updateBlur();
-        }
-        return true;
-    }
-    case WM_EXITSIZEMOVE:{
-        if(isMoving_){
-            isMoving_ = false;
-            updateBlur();
-        }
-        return true;
-    }
+//    case WM_ENTERSIZEMOVE:{
+//        if(!isMoving_){
+//            isMoving_ = true;
+//            updateBlur();
+//        }
+//        return true;
+//    }
+//    case WM_EXITSIZEMOVE:{
+//        if(isMoving_){
+//            isMoving_ = false;
+//            updateBlur();
+//        }
+//        return true;
+//    }
     case WM_NCCALCSIZE:{
         NCCALCSIZE_PARAMS& params = *reinterpret_cast<NCCALCSIZE_PARAMS*>(msg->lParam);
         if (params.rgrc[0].top != 0)
@@ -571,8 +571,16 @@ void ModManager::updateBlur() const
         if(auto huser = GetModuleHandle(L"user32.dll"); huser){
             auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
             if(setWindowCompositionAttribute){
-                auto acc = config_.getEnableBlurBehind() && !isMoving_? ACCENT_ENABLE_ACRYLICBLURBEHIND : ACCENT_DISABLED;
-                ACCENT_POLICY accent = { acc, 0x1e0, 0x000f0f0f, 0 };
+                ACCENT_STATE as;
+                if(config_.getEnableBlurBehind()){
+//                    if(isMoving_)
+                        as = ACCENT_ENABLE_BLURBEHIND;
+//                    else
+//                        as = ACCENT_ENABLE_ACRYLICBLURBEHIND;
+                }
+                else
+                    as = ACCENT_DISABLED;
+                ACCENT_POLICY accent = { as, 0x1e0, 0x000f0f0f, 0 };
                 WINDOWCOMPOSITIONATTRIBDATA data;
                 data.Attrib = WCA_ACCENT_POLICY;
                 data.pvData = &accent;

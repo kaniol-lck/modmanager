@@ -1,6 +1,8 @@
 #include "curseforgefilelistwidget.h"
 #include "ui_curseforgefilelistwidget.h"
 
+#include <QStandardItemModel>
+
 #include "curseforgefileitemwidget.h"
 #include "curseforge/curseforgemod.h"
 #include "local/localmodpath.h"
@@ -10,10 +12,12 @@
 
 CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::CurseforgeFileListWidget)
+    ui(new Ui::CurseforgeFileListWidget),
+    model_(new QStandardItemModel(this))
 {
     ui->setupUi(this);
-    ui->fileListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->fileListView->setModel(model_);
+    ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
 }
 
 CurseforgeFileListWidget::~CurseforgeFileListWidget()
@@ -26,12 +30,12 @@ void CurseforgeFileListWidget::setMod(CurseforgeMod *mod)
     mod_ = mod;
     emit modChanged();
 
-    ui->fileListWidget->setVisible(mod_);
+    ui->fileListView->setVisible(mod_);
     if(!mod_) return;
 
     updateFileList();
     if(mod_->modInfo().allFileList().isEmpty()){
-        ui->fileListWidget->setCursor(Qt::BusyCursor);
+        ui->fileListView->setCursor(Qt::BusyCursor);
         mod->acquireAllFileList();
     }
     connect(this, &CurseforgeFileListWidget::modChanged, this, disconnecter(
@@ -46,18 +50,21 @@ void CurseforgeFileListWidget::setDownloadPath(LocalModPath *newDownloadPath)
 
 void CurseforgeFileListWidget::updateFileList()
 {
-    ui->fileListWidget->clear();
+    ui->fileListView->setVisible(false);
+    model_->clear();
     auto files = mod_->modInfo().allFileList();
     for(const auto &fileInfo : files){
-        auto *listItem = new DateTimeSortItem();
-        listItem->setData(DateTimeSortItem::Role, fileInfo.fileDate());
-        listItem->setSizeHint(QSize(0, 90));
         auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo);
         itemWidget->setDownloadPath(downloadPath_);
         connect(this, &CurseforgeFileListWidget::downloadPathChanged, itemWidget, &CurseforgeFileItemWidget::setDownloadPath);
-        ui->fileListWidget->addItem(listItem);
-        ui->fileListWidget->setItemWidget(listItem, itemWidget);
+        auto item = new QStandardItem;
+        item->setData(fileInfo.fileDate(), Qt::UserRole);
+        item->setSizeHint(QSize(0, itemWidget->height()));
+        model_->appendRow(item);
+        ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
     }
-    ui->fileListWidget->sortItems(Qt::DescendingOrder);
-    ui->fileListWidget->setCursor(Qt::ArrowCursor);
+    ui->fileListView->setVisible(true);
+    model_->setSortRole(Qt::UserRole);
+    model_->sort(0, Qt::DescendingOrder);
+    ui->fileListView->setCursor(Qt::ArrowCursor);
 }

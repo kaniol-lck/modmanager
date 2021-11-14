@@ -107,9 +107,9 @@ void OptifineModBrowser::getModList()
                 gameVersions << modInfo.gameVersion();
             auto mod = new OptifineMod(this, modInfo);
             auto *listItem = new QListWidgetItem();
-            listItem->setSizeHint(QSize(0, 108));
             ui->modListWidget->addItem(listItem);
             auto itemWidget = new OptifineModItemWidget(this, mod);
+            listItem->setSizeHint(QSize(0, itemWidget->height()));
             itemWidget->setDownloadPath(downloadPath_);
             connect(this, &OptifineModBrowser::downloadPathChanged, itemWidget, &OptifineModItemWidget::setDownloadPath);
             ui->modListWidget->setItemWidget(listItem, itemWidget);

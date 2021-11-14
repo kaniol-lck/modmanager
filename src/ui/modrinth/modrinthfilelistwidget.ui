@@ -15,9 +15,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QListWidget" name="fileListWidget">
+    <widget class="QListView" name="fileListView">
      <property name="styleSheet">
-      <string notr="true">QListWidget{
+      <string notr="true">QListView{
   background-color: transparent;
 }</string>
      </property>

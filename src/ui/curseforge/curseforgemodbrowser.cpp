@@ -257,10 +257,10 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 
             auto mod = new CurseforgeMod(this, info);
             auto *listItem = new QListWidgetItem();
-            listItem->setSizeHint(QSize(0, 108));
             auto loaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
             auto fileInfo = mod->modInfo().latestFileInfo(currentGameVersion_, loaderType);
             auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo);
+            listItem->setSizeHint(QSize(0, modItemWidget->height()));
             mod->setParent(modItemWidget);
             modItemWidget->setDownloadPath(downloadPath_);
             connect(this, &CurseforgeModBrowser::downloadPathChanged, modItemWidget, &CurseforgeModItemWidget::setDownloadPath);

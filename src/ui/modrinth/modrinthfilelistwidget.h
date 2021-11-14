@@ -5,6 +5,7 @@
 
 class ModrinthMod;
 class LocalModPath;
+class QStandardItemModel;
 namespace Ui {
 class ModrinthFileListWidget;
 }
@@ -28,6 +29,7 @@ private slots:
     void updateFileList();
 private:
     Ui::ModrinthFileListWidget *ui;
+    QStandardItemModel *model_;
     ModrinthMod *mod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
 };

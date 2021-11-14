@@ -1,6 +1,8 @@
 #include "modrinthfilelistwidget.h"
 #include "ui_modrinthfilelistwidget.h"
 
+#include <QStandardItemModel>
+
 #include "modrinthfileitemwidget.h"
 #include "modrinth/modrinthmod.h"
 #include "local/localmodpath.h"
@@ -10,10 +12,12 @@
 
 ModrinthFileListWidget::ModrinthFileListWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ModrinthFileListWidget)
+    ui(new Ui::ModrinthFileListWidget),
+    model_(new QStandardItemModel(this))
 {
     ui->setupUi(this);
-    ui->fileListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->fileListView->setModel(model_);
+    ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
 }
 
 ModrinthFileListWidget::~ModrinthFileListWidget()
@@ -26,7 +30,7 @@ void ModrinthFileListWidget::setMod(ModrinthMod *mod)
     mod_ = mod;
     emit modChanged();
 
-    ui->fileListWidget->setVisible(mod_);
+    ui->fileListView->setVisible(mod_);
     if(!mod_) return;
 
     //update full info
@@ -50,25 +54,28 @@ void ModrinthFileListWidget::updateFullInfo()
     //update file list
     updateFileList();
     if(mod_->modInfo().fileList().isEmpty()){
-        ui->fileListWidget->setCursor(Qt::BusyCursor);
+        ui->fileListView->setCursor(Qt::BusyCursor);
         mod_->acquireFileList();
     }
 }
 
 void ModrinthFileListWidget::updateFileList()
 {
-    ui->fileListWidget->clear();
+    ui->fileListView->setVisible(false);
+    model_->clear();
     auto files = mod_->modInfo().fileList();
     for(const auto &fileInfo : qAsConst(files)){
-        auto *listItem = new DateTimeSortItem();
-        listItem->setData(DateTimeSortItem::Role, fileInfo.fileDate());
-        listItem->setSizeHint(QSize(0, 90));
         auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo);
         itemWidget->setDownloadPath(downloadPath_);
         connect(this, &ModrinthFileListWidget::downloadPathChanged, itemWidget, &ModrinthFileItemWidget::setDownloadPath);
-        ui->fileListWidget->addItem(listItem);
-        ui->fileListWidget->setItemWidget(listItem, itemWidget);
+        auto item = new QStandardItem;
+        item->setData(fileInfo.fileDate(), Qt::UserRole);
+        item->setSizeHint(QSize(0, itemWidget->height()));
+        model_->appendRow(item);
+        ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
     }
-    ui->fileListWidget->sortItems(Qt::DescendingOrder);
-    ui->fileListWidget->setCursor(Qt::ArrowCursor);
+    ui->fileListView->setVisible(true);
+    model_->setSortRole(Qt::UserRole);
+    model_->sort(0, Qt::DescendingOrder);
+    ui->fileListView->setCursor(Qt::ArrowCursor);
 }

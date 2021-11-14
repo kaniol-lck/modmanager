@@ -6,7 +6,7 @@
 class ModrinthMod;
 class LocalMod;
 class LocalModPath;
-
+class QStandardItemModel;
 namespace Ui {
 class ModrinthModDialog;
 }
@@ -34,6 +34,7 @@ private slots:
 
 private:
     Ui::ModrinthModDialog *ui;
+    QStandardItemModel *model_;
     ModrinthMod *mod_;
     LocalMod *localMod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;

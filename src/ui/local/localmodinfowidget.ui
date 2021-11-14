@@ -40,7 +40,7 @@
         <x>0</x>
         <y>0</y>
         <width>345</width>
-        <height>416</height>
+        <height>394</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -71,32 +71,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="modVersion">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>9</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Version</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0" rowspan="2">
           <widget class="QLabel" name="modIcon">
@@ -120,64 +94,6 @@
            </property>
            <property name="text">
             <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QToolButton" name="modrinthButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>39</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Modrinth</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/image.qrc">
-             <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextBesideIcon</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QToolButton" name="curseforgeButton">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>39</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Curseforge</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/image.qrc">
-             <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
-           </property>
-           <property name="toolButtonStyle">
-            <enum>Qt::ToolButtonTextBesideIcon</enum>
            </property>
           </widget>
          </item>
@@ -225,8 +141,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../../images/image.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

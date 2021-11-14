@@ -37,8 +37,8 @@ DownloadBrowser::~DownloadBrowser()
 void DownloadBrowser::addNewDownloaderItem(const DownloadFileInfo &info, QAria2Downloader *downloader)
 {
     auto *listItem = new QListWidgetItem();
-    listItem->setSizeHint(QSize(0, 108));
     auto widget = new QAria2DownloaderItemWidget(this, downloader, info);
+    listItem->setSizeHint(QSize(0, widget->height()));
     ui->downloaderListWidget->addItem(listItem);
     ui->downloaderListWidget->setItemWidget(listItem, widget);
 }

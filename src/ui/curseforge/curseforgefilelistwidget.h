@@ -5,6 +5,7 @@
 
 class CurseforgeMod;
 class LocalModPath;
+class QStandardItemModel;
 namespace Ui {
 class CurseforgeFileListWidget;
 }
@@ -27,6 +28,7 @@ private slots:
     void updateFileList();
 private:
     Ui::CurseforgeFileListWidget *ui;
+    QStandardItemModel *model_;
     CurseforgeMod *mod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
 };

@@ -7,6 +7,7 @@ class CurseforgeMod;
 class LocalMod;
 class LocalModPath;
 class QListWidgetItem;
+class QStandardItemModel;
 namespace Ui {
 class CurseforgeModDialog;
 }
@@ -35,6 +36,7 @@ private slots:
 
 private:
     Ui::CurseforgeModDialog *ui;
+    QStandardItemModel *model_;
     CurseforgeMod *mod_;
     LocalMod *localMod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;

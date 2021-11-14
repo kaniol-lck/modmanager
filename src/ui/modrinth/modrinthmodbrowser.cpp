@@ -386,8 +386,8 @@ void ModrinthModBrowser::getModList(QString name, int index)
             auto mod = new ModrinthMod(this, info);
 
             auto *listItem = new QListWidgetItem();
-            listItem->setSizeHint(QSize(0, 108));
             auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, mod);
+            listItem->setSizeHint(QSize(0, modItemWidget->height()));
             mod->setParent(modItemWidget);
             modItemWidget->setDownloadPath(downloadPath_);
             connect(this, &ModrinthModBrowser::downloadPathChanged, modItemWidget, &ModrinthModItemWidget::setDownloadPath);
