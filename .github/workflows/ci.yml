@@ -44,6 +44,12 @@ jobs:
         run: |
           qmake
           make
+      - name: Release Text
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          body: ${{ env.RELEASE_TEXT }}
       #- name: package
         #run: |
           #make INSTALL_ROOT=appdir -j2 install ; find appdir/
@@ -60,12 +66,6 @@ jobs:
         #with:
           #name: Mod_Manager-${{ env.VERSION }}-x86_64.AppImage
           #path: Mod_Manager*.AppImage
-       - name: Release Text
-         uses: svenstaro/upload-release-action@v2
-         with:
-           repo_token: ${{ secrets.GITHUB_TOKEN }}
-           tag: ${{ github.ref }}
-           body: ${{ env.RELEASE_TEXT }}
 
   build-on-win-mingw:
     name: Build On Windows Mingw
