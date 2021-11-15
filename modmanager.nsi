@@ -58,64 +58,31 @@ ShowUnInstDetails show
 
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
+  ClearErrors
+  ReadRegStr $0 ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString"
+  IfErrors  done
+
+  MessageBox MB_YESNOCANCEL|MB_ICONQUESTION \
+    "检测到本机已经安装了 ${PRODUCT_NAME}。\
+    $\n$\n是否先卸载已安装的版本？" \
+      /SD IDYES \
+      IDYES uninstall \
+      IDNO done
+  Abort
+
+uninstall:
+  ExecWait $0
+  DetailPrint "uninst.exe returned $0"
+  StrCpy $INSTDIR "$PROGRAMFILES\Mod Manager"
+done:
 FunctionEnd
 
 Section "MainSection" SEC01
-  SetOutPath "$INSTDIR\bin\bearer"
   SetOverwrite try
-  File "deploy\bin\bearer\qgenericbearer.dll"
-  SetOutPath "$INSTDIR\bin\iconengines"
-  File "deploy\bin\iconengines\qsvgicon.dll"
-  SetOutPath "$INSTDIR\bin\imageformats"
-  File "deploy\bin\imageformats\qgif.dll"
-  File "deploy\bin\imageformats\qicns.dll"
-  File "deploy\bin\imageformats\qico.dll"
-  File "deploy\bin\imageformats\qjpeg.dll"
-  File "deploy\bin\imageformats\qsvg.dll"
-  File "deploy\bin\imageformats\qtga.dll"
-  File "deploy\bin\imageformats\qtiff.dll"
-  File "deploy\bin\imageformats\qwbmp.dll"
-  File "deploy\bin\imageformats\qwebp.dll"
-  SetOutPath "$INSTDIR\bin"
-  File "deploy\bin\libquazip5.dll"
-  File "deploy\bin\libaria2-0.dll"
-  File "deploy\bin\libcares-4.dll"
-  File "deploy\bin\libcrypto-1_1.dll"
-  File "deploy\bin\libgcc_s_dw2-1.dll"
-  File "deploy\bin\libiconv-2.dll"
-  File "deploy\bin\libintl-8.dll"
-  File "deploy\bin\liblzma-5.dll"
-  File "deploy\bin\libsqlite3-0.dll"
-  File "deploy\bin\libssh2-1.dll"
-  File "deploy\bin\libssl-1_1.dll"
-  File "deploy\bin\libstdc++-6.dll"
-  File "deploy\bin\libwinpthread-1.dll"
-  File "deploy\bin\libxml2-2.dll"
-  File "deploy\bin\modmanager.exe"
-  CreateDirectory "$SMPROGRAMS\Mod Manager"
+  SetOutPath "$INSTDIR"
+  File /r deploy\*
   CreateShortCut "$SMPROGRAMS\Mod Manager\Mod Manager.lnk" "$INSTDIR\bin\modmanager.exe"
   CreateShortCut "$DESKTOP\Mod Manager.lnk" "$INSTDIR\bin\modmanager.exe"
-  SetOutPath "$INSTDIR\bin\platforms"
-  File "deploy\bin\platforms\qwindows.dll"
-  SetOutPath "$INSTDIR\bin"
-  File "deploy\bin\Qt5Core.dll"
-  File "deploy\bin\Qt5Gui.dll"
-  File "deploy\bin\Qt5Network.dll"
-  File "deploy\bin\Qt5Svg.dll"
-  File "deploy\bin\Qt5Widgets.dll"
-  SetOutPath "$INSTDIR\bin\styles"
-  File "deploy\bin\styles\qwindowsvistastyle.dll"
-  SetOutPath "$INSTDIR\bin"
-  File "deploy\bin\zlib1.dll"
-  SetOutPath "$INSTDIR\ssl\certs"
-  File "deploy\ssl\certs\ca-bundle.crt"
-  File "deploy\ssl\certs\ca-bundle.trust.crt"
-  SetOutPath "$INSTDIR\ssl"
-  File "deploy\ssl\cert.pem"
-  File "deploy\ssl\ct_log_list.cnf"
-  File "deploy\ssl\ct_log_list.cnf.dist"
-  File "deploy\ssl\openssl.cnf"
-  File "deploy\ssl\openssl.cnf.dist"
 SectionEnd
 
 Section -AdditionalIcons
@@ -149,66 +116,13 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
-  Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\ssl\openssl.cnf.dist"
-  Delete "$INSTDIR\ssl\openssl.cnf"
-  Delete "$INSTDIR\ssl\ct_log_list.cnf.dist"
-  Delete "$INSTDIR\ssl\ct_log_list.cnf"
-  Delete "$INSTDIR\ssl\cert.pem"
-  Delete "$INSTDIR\ssl\certs\ca-bundle.trust.crt"
-  Delete "$INSTDIR\ssl\certs\ca-bundle.crt"
-  Delete "$INSTDIR\bin\zlib1.dll"
-  Delete "$INSTDIR\bin\styles\qwindowsvistastyle.dll"
-  Delete "$INSTDIR\bin\Qt5Widgets.dll"
-  Delete "$INSTDIR\bin\Qt5Svg.dll"
-  Delete "$INSTDIR\bin\Qt5Network.dll"
-  Delete "$INSTDIR\bin\Qt5Gui.dll"
-  Delete "$INSTDIR\bin\Qt5Core.dll"
-  Delete "$INSTDIR\bin\platforms\qwindows.dll"
-  Delete "$INSTDIR\bin\modmanager.exe"
-  Delete "$INSTDIR\bin\libxml2-2.dll"
-  Delete "$INSTDIR\bin\libwinpthread-1.dll"
-  Delete "$INSTDIR\bin\libstdc++-6.dll"
-  Delete "$INSTDIR\bin\libssl-1_1.dll"
-  Delete "$INSTDIR\bin\libssh2-1.dll"
-  Delete "$INSTDIR\bin\libsqlite3-0.dll"
-  Delete "$INSTDIR\bin\liblzma-5.dll"
-  Delete "$INSTDIR\bin\libintl-8.dll"
-  Delete "$INSTDIR\bin\libiconv-2.dll"
-  Delete "$INSTDIR\bin\libgcc_s_dw2-1.dll"
-  Delete "$INSTDIR\bin\libcrypto-1_1.dll"
-  Delete "$INSTDIR\bin\libcares-4.dll"
-  Delete "$INSTDIR\bin\libaria2-0.dll"
-  Delete "$INSTDIR\bin\libquazip5.dll"
-  Delete "$INSTDIR\bin\imageformats\qwebp.dll"
-  Delete "$INSTDIR\bin\imageformats\qwbmp.dll"
-  Delete "$INSTDIR\bin\imageformats\qtiff.dll"
-  Delete "$INSTDIR\bin\imageformats\qtga.dll"
-  Delete "$INSTDIR\bin\imageformats\qsvg.dll"
-  Delete "$INSTDIR\bin\imageformats\qjpeg.dll"
-  Delete "$INSTDIR\bin\imageformats\qico.dll"
-  Delete "$INSTDIR\bin\imageformats\qicns.dll"
-  Delete "$INSTDIR\bin\imageformats\qgif.dll"
-  Delete "$INSTDIR\bin\iconengines\qsvgicon.dll"
-  Delete "$INSTDIR\bin\bearer\qgenericbearer.dll"
-
+  RMDir /r "$INSTDIR"
   Delete "$SMPROGRAMS\Mod Manager\Uninstall.lnk"
   Delete "$SMPROGRAMS\Mod Manager\Website.lnk"
   Delete "$DESKTOP\Mod Manager.lnk"
   Delete "$SMPROGRAMS\Mod Manager\Mod Manager.lnk"
-
   RMDir "$SMPROGRAMS\Mod Manager"
-  RMDir "$INSTDIR\ssl\certs"
-  RMDir "$INSTDIR\ssl"
-  RMDir "$INSTDIR\bin\styles"
-  RMDir "$INSTDIR\bin\platforms"
-  RMDir "$INSTDIR\bin\imageformats"
-  RMDir "$INSTDIR\bin\iconengines"
-  RMDir "$INSTDIR\bin\bearer"
-  RMDir "$INSTDIR\bin"
-  RMDir "$INSTDIR"
-
+  
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
