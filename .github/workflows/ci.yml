@@ -160,7 +160,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ModManager${{ matrix.x64_suffix }}-Installer.exe
-          path: ${{github.workspace}}/ModManager-Installer.exe
+          path: ${{github.workspace}}/ModManager*-Installer.exe
       - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
