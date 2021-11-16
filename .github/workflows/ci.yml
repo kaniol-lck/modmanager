@@ -46,6 +46,20 @@ jobs:
         run: |
           qmake
           make
+      - name: package
+        run: |
+          make INSTALL_ROOT=appdir -j2 install ; find appdir/
+          /usr/local/linuxdeployqt-x86_64.AppImage appdir/usr/share/applications/*.desktop \
+            -exclude-libs=libQt5Pdf.so,libQt5Qml.so,libQt5QmlModels.so,libQt5Quick.so,libQt5VirtualKeyboard.so \
+            -bundle-non-qt-libs \
+            --appimage-extract-and-run
+          wget -c -nv https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
+          chmod +x appimagetool-x86_64.AppImage
+          ./appimagetool-x86_64.AppImage appdir --appimage-extract-and-run
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Mod_Manager-${{ env.VERSION }}-x86_64.AppImage
+          path: Mod_Manager*.AppImage
       #- name: Release Text
         #if: startsWith(github.event.ref, 'refs/tags/')
         #uses: svenstaro/upload-release-action@v2
@@ -53,22 +67,6 @@ jobs:
           #repo_token: ${{ secrets.GITHUB_TOKEN }}
           #tag: ${{ github.ref }}
           #body: ${{ env.RELEASE_TEXT }}
-      #- name: package
-        #run: |
-          #make INSTALL_ROOT=appdir -j2 install ; find appdir/
-          #wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-          #chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-          #./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop \
-            #-exclude-libs=libQt5Pdf.so,libQt5Qml.so,libQt5QmlModels.so,libQt5Quick.so,libQt5VirtualKeyboard.so \
-            #-bundle-non-qt-libs \
-            #--appimage-extract-and-run
-          #wget -c -nv https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
-          #chmod +x appimagetool-x86_64.AppImage
-          #./appimagetool-x86_64.AppImage appdir --appimage-extract-and-run
-      #- uses: actions/upload-artifact@v2
-        #with:
-          #name: Mod_Manager-${{ env.VERSION }}-x86_64.AppImage
-          #path: Mod_Manager*.AppImage
 
   build-on-win-mingw:
     name: Build On Windows Mingw
