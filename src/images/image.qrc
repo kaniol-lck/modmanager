@@ -60,6 +60,11 @@
         <file>modrinth/worldgen.svg</file>
         <file>modmanager.png</file>
         <file>gitlab.svg</file>
+        <file>curseforge/fancymenu.png</file>
+        <file>curseforge/[5129]vanilla.png</file>
+        <file>curseforge/[5190]qol.png</file>
+        <file>curseforge/utility.png</file>
+        <file>curseforge/[5189]utility-qol.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

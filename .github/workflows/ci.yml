@@ -49,7 +49,9 @@ jobs:
       - name: package
         run: |
           make INSTALL_ROOT=appdir -j2 install ; find appdir/
-          /usr/local/linuxdeployqt-x86_64.AppImage appdir/usr/share/applications/*.desktop \
+          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+          chmod a+x linuxdeployqt-continuous-x86_64.AppImage
+          ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop \
             -exclude-libs=libQt5Pdf.so,libQt5Qml.so,libQt5QmlModels.so,libQt5Quick.so,libQt5VirtualKeyboard.so \
             -bundle-non-qt-libs \
             --appimage-extract-and-run
