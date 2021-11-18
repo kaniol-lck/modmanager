@@ -36,10 +36,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
 {
     if(isLoading_) return;
     isLoading_ = true;
-    QList<LocalModFile*> modFileList;
-    for(auto &&fileInfo : QDir(info_.path()).entryInfoList(QDir::Files))
-        if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
-            modFileList << new LocalModFile(nullptr, fileInfo.absoluteFilePath());
+    QList<LocalModFile*> &&modFileList = fileList();
 
     auto future = QtConcurrent::run([=]{
         int count = 0;
@@ -253,6 +250,21 @@ void LocalModPath::readFromFile()
             modMap_[it.key()]->restore(*it);
     if(optiFineMod_ && result.toMap().contains("optifine"))
         optiFineMod_->restore(value(result, "optifine"));
+}
+
+QList<LocalModFile *> LocalModPath::fileList(const QStringList &subDirs)
+{
+    QList<LocalModFile *> list;
+    QDir dir(info_.path());
+    for(auto &&name : subDirs)
+        dir.cd(name);
+    for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot))
+        list << fileList(subDirs + QStringList{fileInfo.fileName()});
+    for(auto &&fileInfo : dir.entryInfoList(QDir::Files)){
+        if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
+            list << new LocalModFile(nullptr, fileInfo.absoluteFilePath(), subDirs);
+    }
+    return list;
 }
 
 bool LocalModPath::isLoading() const

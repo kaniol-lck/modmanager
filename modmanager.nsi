@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Mod Manager"
-!define PRODUCT_VERSION "1.0.0-beta.6"
+!define PRODUCT_VERSION "1.0.0-beta.7"
 !define PRODUCT_PUBLISHER "kaniol"
 !define PRODUCT_WEB_SITE "www.github.com/kaniol-lck/modmanager"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\modmanager.exe"

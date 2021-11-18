@@ -13,6 +13,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     path_(path),
     menu_(new UnclosedMenu(parent)),
     websiteMenu_(new UnclosedMenu(tr("Website source"), parent)),
+    subDirTagMenu_(new UnclosedMenu(tr("Sub-directory tag"), parent)),
     environmentTagMenu_(new UnclosedMenu(tr("Environment tag"), parent)),
     typeTagMenu_(new UnclosedMenu(tr("Type tag"), parent)),
     functionalityTagMenu_(new UnclosedMenu(tr("Functionality tag"), parent)),
@@ -25,6 +26,8 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     //show all
     connect(showAllAction_, &QAction::triggered, this, [=]{
         for(auto &&action : websiteMenu_->actions())
+            action->setChecked(true);
+        for(auto &&action : subDirTagMenu_->actions())
             action->setChecked(true);
         for(auto &&action : environmentTagMenu_->actions())
             action->setChecked(true);
@@ -40,6 +43,8 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     connect(menu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
         for(auto &&action : websiteMenu_->actions())
             action->setChecked(false);
+        for(auto &&action : subDirTagMenu_->actions())
+            action->setChecked(false);
         for(auto &&action : environmentTagMenu_->actions())
             action->setChecked(false);
         for(auto &&action : typeTagMenu_->actions())
@@ -52,6 +57,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     });
     menu_->addSeparator();
     menu_->addMenu(websiteMenu_);
+    menu_->addMenu(subDirTagMenu_);
     menu_->addMenu(environmentTagMenu_);
     menu_->addMenu(typeTagMenu_);
     menu_->addMenu(functionalityTagMenu_);
@@ -139,6 +145,27 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
         if(action->data().toBool() && action->isChecked() && !mod->curseforgeMod() && !mod->modrinthMod())
             showWebsite = true;
     }
+    //sub dir tag
+    bool showSubDirTag = false;
+    for(auto &&action : subDirTagMenu_->actions()){
+        bool hasTag = false;
+        if(!action->isChecked()) continue;
+        if(action->data().toBool() && mod->tagManager().subDirTags().isEmpty()){
+            showSubDirTag = true;
+            break;
+        }
+        for(auto &&tag : mod->tagManager().subDirTags()){
+            if(action->text() == tag.name()){
+                hasTag = true;
+                break;
+            }
+        }
+        if(hasTag) {
+            showSubDirTag = true;
+            break;
+        }
+    }
+    //environment tag
     bool showEnvironmentTag = false;
     for(auto &&action : environmentTagMenu_->actions()){
         bool hasTag = false;
@@ -158,6 +185,7 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
+    //type tag
     bool showTypeTag = false;
     for(auto &&action : typeTagMenu_->actions()){
         bool hasTag = false;
@@ -177,6 +205,7 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
+    //functionality tag
     bool showFunctionalityTag = false;
     for(auto &&action : functionalityTagMenu_->actions()){
         bool hasTag = false;
@@ -196,6 +225,7 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
+    //custom tag
     bool showCustomTag = false;
     for(auto &&action : customTagMenu_->actions()){
         bool hasTag = false;
@@ -215,7 +245,7 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
-    return show && showWebsite && showEnvironmentTag && showTypeTag && showFunctionalityTag && showCustomTag;
+    return show && showWebsite && showSubDirTag && showEnvironmentTag && showTypeTag && showFunctionalityTag && showCustomTag;
 }
 
 void LocalModFilter::refreshTags() const
@@ -251,6 +281,8 @@ void LocalModFilter::refreshTags() const
         noneAction->setData(true);
     };
     auto &&tagManager = path_->tagManager();
+    //subDir tag
+    addTags(subDirTagMenu_, tagManager.subDirTags());
     //functionality tag
     addTags(functionalityTagMenu_, tagManager.functionalityTags());
     //custom tag

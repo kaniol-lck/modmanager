@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+const TagCategory TagCategory::SubDirCategory = TagCategory("sub-dir", QColor(34, 161, 181));
 const TagCategory TagCategory::EnvironmentCategory = TagCategory("environment", QColor(124, 143, 93));
 const TagCategory TagCategory::CurseforgeCategory = TagCategory("curseforge", QColor(241, 100, 54));
 const TagCategory TagCategory::ModrinthCategory = TagCategory("modrinth", QColor(93, 164, 38));
@@ -12,6 +13,7 @@ const TagCategory TagCategory::FunctionalityCategory = TagCategory("functionalit
 const TagCategory TagCategory::NotationCategory = TagCategory("notation", QColor(23, 127, 191));
 const TagCategory TagCategory::CustomCategory = TagCategory("custom", QColor(127, 63, 23));
 const QList<TagCategory> TagCategory::PresetCategories{
+    SubDirCategory,
     EnvironmentCategory,
     CurseforgeCategory,
     ModrinthCategory,
@@ -70,6 +72,8 @@ const QString &TagCategory::id() const
 
 QString TagCategory::name() const
 {
+    if(id_ == "sub-dir")
+        return QObject::tr("Sub-Directory Tag");
     if(id_ == "environment")
         return QObject::tr("Environment Tag");
     if(id_ == "curseforge")

@@ -739,6 +739,9 @@ void LocalMod::setModFile(LocalModFile *newModFile)
         else if(environment == "server")
             addTag(Tag::serverTag());
     }
+    tagManager_.removeTags({TagCategory::SubDirCategory});
+    for(auto &&subDir : modFile_->subDirs())
+        addTag(Tag(subDir, TagCategory::SubDirCategory));
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

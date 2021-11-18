@@ -46,16 +46,16 @@ jobs:
         run: |
           qmake
           make
-      - name: package
-        run: |
-          make INSTALL_ROOT=appdir -j2 install ; find appdir/
-          wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
-          chmod +x appimagetool-*.AppImage
-          ./appimagetool-*.AppImage -s deploy appdir/usr/share/applications/*.desktop # Bundle EVERYTHING
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Mod_Manager-${{ env.VERSION }}-x86_64.AppImage
-          path: Mod_Manager*.AppImage
+      #- name: package
+        #run: |
+          #make INSTALL_ROOT=appdir -j2 install ; find appdir/
+          #wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+          #chmod +x appimagetool-*.AppImage
+          #./appimagetool-*.AppImage -s deploy appdir/usr/share/applications/*.desktop # Bundle EVERYTHING
+      #- uses: actions/upload-artifact@v2
+        #with:
+          #name: Mod_Manager-${{ env.VERSION }}-x86_64.AppImage
+          #path: Mod_Manager*.AppImage
       #- name: Release Text
         #if: startsWith(github.event.ref, 'refs/tags/')
         #uses: svenstaro/upload-release-action@v2

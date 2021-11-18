@@ -12,7 +12,8 @@ class LocalModFile : public QObject
 {
     Q_OBJECT
 public:
-    explicit LocalModFile(QObject *parent, const QString &path);
+    //TODO: subdir
+    explicit LocalModFile(QObject *parent, const QString &path, const QStringList &subDirs = QStringList());
     ~LocalModFile();
 
     ModLoaderType::Type loadInfo();
@@ -55,12 +56,15 @@ public:
     const QList<FabricModInfo> &fabricModInfoList() const;
     const QList<ForgeModInfo> &forgeModInfoList() const;
 
+    const QStringList &subDirs() const;
+
 signals:
     void fileChanged();
 
 private:
     //file
     QString path_;
+    QStringList subDirs_;
     QFileInfo fileInfo_;
     QString sha1_;
     QString murmurhash_;

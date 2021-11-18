@@ -9,9 +9,10 @@
 
 const QStringList LocalModFile::availableSuffix{ "jar", "old", "disabled"};
 
-LocalModFile::LocalModFile(QObject *parent, const QString &path) :
+LocalModFile::LocalModFile(QObject *parent, const QString &path, const QStringList &subDirs) :
     QObject(parent),
     path_(path),
+    subDirs_(subDirs),
     fileInfo_(path)
 {}
 
@@ -237,6 +238,11 @@ const QList<FabricModInfo> &LocalModFile::fabricModInfoList() const
 const QList<ForgeModInfo> &LocalModFile::forgeModInfoList() const
 {
     return forgeModInfoList_;
+}
+
+const QStringList &LocalModFile::subDirs() const
+{
+    return subDirs_;
 }
 
 void LocalModFile::setLoaderType(ModLoaderType::Type newLoaderType)

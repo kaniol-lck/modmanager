@@ -98,6 +98,7 @@ private:
     bool initialUpdateChecked_ = false;
     bool isLoading_ = false;
     bool isSearching_ = false;
+    QList<LocalModFile*> fileList(const QStringList &subDirName = QStringList());
 };
 
 #endif // LOCALMODPATH_H

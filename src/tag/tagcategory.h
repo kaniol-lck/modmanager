@@ -14,6 +14,7 @@ public:
 
     static TagCategory fromId(const QString &id);
 
+    static const TagCategory SubDirCategory;
     static const TagCategory EnvironmentCategory;
     static const TagCategory CurseforgeCategory;
     static const TagCategory ModrinthCategory;
