@@ -24,54 +24,55 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
     ui->updateTableView->horizontalHeader()->setSectionResizeMode(SourceColumn, QHeaderView::Fixed);
     ui->updateTableView->setColumnWidth(SourceColumn, 140);
 
-    for(const auto &mod : modPath_->modMap()){
-        auto enabled = !mod->isDisabled();
+    for(auto &&map : modPath_->modMaps())
+        for(const auto &mod : map){
+            auto enabled = !mod->isDisabled();
 
-        auto type = mod->defaultUpdateType();
-        if(type == LocalMod::None) continue;
-        auto names = mod->updateNames(type);
-        auto infos = mod->updateInfos(type);
+            auto type = mod->defaultUpdateType();
+            if(type == LocalMod::None) continue;
+            auto names = mod->updateNames(type);
+            auto infos = mod->updateInfos(type);
 
-        auto nameItem = new QStandardItem();
-        nameItem->setText(mod->commonInfo()->name());
-        nameItem->setCheckable(enabled);
-        nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
-        nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        nameItem->setEditable(false);
-        nameItem->setEnabled(enabled);
+            auto nameItem = new QStandardItem();
+            nameItem->setText(mod->commonInfo()->name());
+            nameItem->setCheckable(enabled);
+            nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
+            nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            nameItem->setEditable(false);
+            nameItem->setEnabled(enabled);
 
-        auto beforeItem = new QStandardItem();
-        beforeItem->setText(names.first);
-        if(enabled) beforeItem->setForeground(Qt::darkRed);
-        beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        beforeItem->setEditable(false);
-        beforeItem->setEnabled(enabled);
-        beforeItem->setToolTip(infos.first);
+            auto beforeItem = new QStandardItem();
+            beforeItem->setText(names.first);
+            if(enabled) beforeItem->setForeground(Qt::darkRed);
+            beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            beforeItem->setEditable(false);
+            beforeItem->setEnabled(enabled);
+            beforeItem->setToolTip(infos.first);
 
-        auto afterItem = new QStandardItem();
-        afterItem->setText(names.second);
-        if(enabled) afterItem->setForeground(Qt::darkGreen);
-        afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        afterItem->setEditable(false);
-        afterItem->setEnabled(enabled);
-        afterItem->setToolTip(infos.second);
+            auto afterItem = new QStandardItem();
+            afterItem->setText(names.second);
+            if(enabled) afterItem->setForeground(Qt::darkGreen);
+            afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            afterItem->setEditable(false);
+            afterItem->setEnabled(enabled);
+            afterItem->setToolTip(infos.second);
 
-        auto sourceItem = new QStandardItem();
-        auto pair = UpdateSourceDelegate::sourceItems.at(type);
-        sourceItem->setText(pair.first);
-        sourceItem->setIcon(QIcon(pair.second));
-        sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        sourceItem->setEnabled(enabled);
-        if(mod->updateTypes().size() == 1)
-            sourceItem->setEnabled(false);
+            auto sourceItem = new QStandardItem();
+            auto pair = UpdateSourceDelegate::sourceItems.at(type);
+            sourceItem->setText(pair.first);
+            sourceItem->setIcon(QIcon(pair.second));
+            sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            sourceItem->setEnabled(enabled);
+            if(mod->updateTypes().size() == 1)
+                sourceItem->setEnabled(false);
 
-        model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
-        modUpdateList_ << QPair(mod, mod->defaultUpdateType());
+            model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
+            modUpdateList_ << QPair(mod, mod->defaultUpdateType());
 
-        auto updateSourceDelegate = new UpdateSourceDelegate(mod->updateTypes());
-        ui->updateTableView->setItemDelegateForRow(model_.rowCount() - 1, updateSourceDelegate);
-        connect(updateSourceDelegate, &UpdateSourceDelegate::updateSourceChanged, this, &LocalModUpdateDialog::onUpdateSourceChanged);
-    }
+            auto updateSourceDelegate = new UpdateSourceDelegate(mod->updateTypes());
+            ui->updateTableView->setItemDelegateForRow(model_.rowCount() - 1, updateSourceDelegate);
+            connect(updateSourceDelegate, &UpdateSourceDelegate::updateSourceChanged, this, &LocalModUpdateDialog::onUpdateSourceChanged);
+        }
 }
 
 LocalModUpdateDialog::~LocalModUpdateDialog()

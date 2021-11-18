@@ -16,6 +16,7 @@ class LocalModPath : public QObject
     Q_OBJECT
 public:
     explicit LocalModPath(const LocalModPathInfo &info, bool deduceLoader = false);
+    explicit LocalModPath(LocalModPath *path, const QString &subDir);
     ~LocalModPath();
 
     void loadMods(bool autoLoaderType = false);
@@ -50,6 +51,7 @@ public:
     int modCount() const;
     int updatableCount() const;
     const QMap<QString, LocalMod *> &modMap() const;
+    QList<QMap<QString, LocalMod *>> modMaps() const;
     void deleteAllOld() const;
 
     LocalMod *optiFineMod() const;
@@ -68,7 +70,7 @@ signals:
     void websitesReady();
 
     void checkUpdatesStarted();
-    void updateCheckedCountUpdated(int updateCount, int checkedCount);
+    void updateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount);
     void updatesReady();
 
     void updatesStarted();
@@ -86,6 +88,8 @@ private:
     void readFromFile();
 
     static constexpr auto kFileName = "mods.json";
+    QStringList relative_;
+    QList<LocalModPath *> subPaths_;
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     LocalModPathInfo info_;
@@ -98,7 +102,6 @@ private:
     bool initialUpdateChecked_ = false;
     bool isLoading_ = false;
     bool isSearching_ = false;
-    QList<LocalModFile*> fileList(const QStringList &subDirName = QStringList());
 };
 
 #endif // LOCALMODPATH_H

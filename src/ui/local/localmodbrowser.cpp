@@ -108,7 +108,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::checkWebsitesStarted, this, &LocalModBrowser::onCheckWebsitesStarted);
     connect(modPath_, &LocalModPath::websitesReady, this, &LocalModBrowser::onWebsitesReady);
     connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::onCheckUpdatesStarted);
-    connect(modPath_, &LocalModPath::updateCheckedCountUpdated, this, &LocalModBrowser::onCheckedCountUpdated);
+    connect(modPath_, &LocalModPath::updateCheckedCountUpdated, this, &LocalModBrowser::onUpdateCheckedCountUpdated);
     connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::onUpdatesReady);
     connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::onUpdatableCountChanged);
     connect(modPath_, &LocalModPath::updatesStarted, this, &LocalModBrowser::onUpdatesStarted);
@@ -137,12 +137,14 @@ void LocalModBrowser::reload()
 void LocalModBrowser::updateModList()
 {
     ui->modListWidget->clear();
-    for (const auto &mod: modPath_->modMap()) {
-        auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
-        auto *item = new LocalModSortItem(mod);
-        item->setSizeHint(QSize(0, modItemWidget->height()));
-        ui->modListWidget->addItem(item);
-        ui->modListWidget->setItemWidget(item, modItemWidget);
+    for(auto &&map : modPath_->modMaps()){
+        for (auto &&mod : map) {
+            auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
+            auto *item = new LocalModSortItem(mod);
+            item->setSizeHint(QSize(0, modItemWidget->height()));
+            ui->modListWidget->addItem(item);
+            ui->modListWidget->setItemWidget(item, modItemWidget);
+        }
     }
     if(modPath_->info().loaderType() == ModLoaderType::Fabric)
         if(auto mod = modPath_->optiFineMod()){
@@ -193,12 +195,12 @@ void LocalModBrowser::onCheckWebsitesStarted()
     onWebsiteCheckedCountUpdated(0);
     progressBar_->setVisible(true);
     ui->checkUpdatesButton->setText(tr("Searching on mod websites..."));
-    progressBar_->setMaximum(modPath_->modMap().size());
+    progressBar_->setMaximum(modPath_->modCount());
 }
 
 void LocalModBrowser::onWebsiteCheckedCountUpdated(int checkedCount)
 {
-    statusBar_->showMessage(tr("Searching on mod websites... (Searched %1/%2 mods)").arg(checkedCount).arg(modPath_->modMap().size()));
+    statusBar_->showMessage(tr("Searching on mod websites... (Searched %1/%2 mods)").arg(checkedCount).arg(modPath_->modCount()));
     progressBar_->setValue(checkedCount);
 }
 
@@ -215,16 +217,16 @@ void LocalModBrowser::onCheckUpdatesStarted()
     isChecking_ = true;
     ui->checkUpdatesButton->setEnabled(false);
     ui->updateWidget->setVisible(false);
-    onCheckedCountUpdated(0, 0);
+    onUpdateCheckedCountUpdated(0, 0, 0);
     progressBar_->setVisible(true);
     ui->checkUpdatesButton->setText(tr("Checking updates..."));
-    progressBar_->setMaximum(modPath_->modMap().size());
+    progressBar_->setMaximum(modPath_->modCount());
 }
 
-void LocalModBrowser::onCheckedCountUpdated(int updateCount, int checkedCount)
+void LocalModBrowser::onUpdateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount)
 {
     if(!isChecking_) return;
-    statusBar_->showMessage(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(modPath_->modMap().size()));
+    statusBar_->showMessage(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(totalCount));
     progressBar_->setValue(checkedCount);
 }
 

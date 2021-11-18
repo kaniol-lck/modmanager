@@ -48,7 +48,7 @@ private slots:
     void onWebsitesReady();
 
     void onCheckUpdatesStarted();
-    void onCheckedCountUpdated(int updateCount, int checkedCount);
+    void onUpdateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount);
     void onUpdatesReady();
     void onUpdatableCountChanged();
 

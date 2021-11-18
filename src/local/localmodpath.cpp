@@ -27,6 +27,23 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info, bool deduceLoader) :
     loadMods(deduceLoader);
 }
 
+LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
+    QObject(path),
+    relative_(path->relative_ + QStringList{subDir}),
+    curseforgeAPI_(path->curseforgeAPI_),
+    modrinthAPI_(path->modrinthAPI_),
+    info_(path->info_)
+{
+    info_.path_.append("/").append(relative_.join("/"));
+    connect(this, &LocalModPath::websitesReady, this, [=]{
+        //new path not from exsiting will check update
+        if(initialUpdateChecked_) return;
+        checkModUpdates(false);
+        initialUpdateChecked_ = true;
+    });
+    loadMods();
+}
+
 LocalModPath::~LocalModPath()
 {
     qDeleteAll(modMap_);
@@ -36,7 +53,13 @@ void LocalModPath::loadMods(bool autoLoaderType)
 {
     if(isLoading_) return;
     isLoading_ = true;
-    QList<LocalModFile*> &&modFileList = fileList();
+    QDir dir(info_.path());
+    for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot))
+        subPaths_ << new LocalModPath(this, fileInfo.fileName());
+    QList<LocalModFile*> modFileList;
+    for(auto &&fileInfo : dir.entryInfoList(QDir::Files))
+        if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
+            modFileList << new LocalModFile(nullptr, fileInfo.absoluteFilePath(), relative_);
 
     auto future = QtConcurrent::run([=]{
         int count = 0;
@@ -252,21 +275,6 @@ void LocalModPath::readFromFile()
         optiFineMod_->restore(value(result, "optifine"));
 }
 
-QList<LocalModFile *> LocalModPath::fileList(const QStringList &subDirs)
-{
-    QList<LocalModFile *> list;
-    QDir dir(info_.path());
-    for(auto &&name : subDirs)
-        dir.cd(name);
-    for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot))
-        list << fileList(subDirs + QStringList{fileInfo.fileName()});
-    for(auto &&fileInfo : dir.entryInfoList(QDir::Files)){
-        if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
-            list << new LocalModFile(nullptr, fileInfo.absoluteFilePath(), subDirs);
-    }
-    return list;
-}
-
 bool LocalModPath::isLoading() const
 {
     return isLoading_;
@@ -406,18 +414,23 @@ void LocalModPath::searchOnWebsites()
     if(modMap_.isEmpty()) return;
     isSearching_ = true;
     emit checkWebsitesStarted();
-    auto count = std::make_shared<int>(modMap_.size());
-    for(const auto &mod : qAsConst(modMap_)){
-        connect(mod, &LocalMod::websiteReady, this, [=] {
-            if(!isSearching_) return;
-            emit websiteCheckedCountUpdated(modMap_.size() - *count);
-            if(--(*count) == 0){
-                emit websitesReady();
-                isSearching_ = false;
-            }
-        });
-        mod->searchOnWebsite();
-    }
+    int count = 0;
+    for(auto &&map : modMaps())
+        count += map.size();
+    auto checkedCount = std::make_shared<int>(0);
+    for(auto &&map : modMaps())
+        for(const auto &mod : map){
+            connect(mod, &LocalMod::websiteReady, this, [=] {
+                (*checkedCount)++;
+                if(!isSearching_) return;
+                emit websiteCheckedCountUpdated(*checkedCount);
+                if(*checkedCount == count){
+                    emit websitesReady();
+                    isSearching_ = false;
+                }
+            });
+            mod->searchOnWebsite();
+        }
 }
 
 void LocalModPath::checkModUpdates(bool force) // force = true by default
@@ -429,21 +442,30 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
     if(force || interval == Config::Always ||
       (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1)){
         emit checkUpdatesStarted();
-        auto count = std::make_shared<int>(0);
+        int count = 0;
+        for(auto &&map : modMaps())
+            count += map.size();
+        auto checkedCount = std::make_shared<int>(0);
         auto updateCount = std::make_shared<int>(0);
-        for(const auto &mod : qAsConst(modMap_)){
-            connect(mod, &LocalMod::updateReady, this, [=](bool bl){
-                (*count)++;
-                if(bl) (*updateCount)++;
-                emit updateCheckedCountUpdated(*updateCount, *count);
-                //done
-                if(*count == modMap_.size()){
-                    latestUpdateCheck_ = QDateTime::currentDateTime();
-                    writeToFile();
-                    emit updatesReady();
-                }
-            });
-            mod->checkUpdates();
+        for(auto &&map : modMaps())
+            for(const auto &mod : map){
+                connect(mod, &LocalMod::updateReady, this, [=](bool bl){
+                    (*checkedCount)++;
+                    if(bl) (*updateCount)++;
+                    emit updateCheckedCountUpdated(*updateCount, *checkedCount, count);
+                    //done
+                    if(*checkedCount == count){
+                        auto currentDateTime = QDateTime::currentDateTime();
+                        for(auto &&path : subPaths_){
+                            path->latestUpdateCheck_ = currentDateTime;
+                            path->writeToFile();
+                        }
+                        latestUpdateCheck_ = currentDateTime;
+                        writeToFile();
+                        emit updatesReady();
+                    }
+                });
+                mod->checkUpdates();
         }
     } else if(interval != Config::Never){
         //not manual not never i.e. load cache
@@ -528,9 +550,10 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader)
 LocalModTags LocalModPath::tagManager()
 {
     LocalModTags tags;
-    for(auto&& mod : modMap_)
-        for(auto &&tag : mod->tags())
-            tags << tag;
+    for(auto &&map : modMaps())
+        for(auto &&mod : map)
+            for(auto &&tag : mod->tags())
+                tags << tag;
     return tags;
 }
 
@@ -546,7 +569,10 @@ ModrinthAPI *LocalModPath::modrinthAPI() const
 
 int LocalModPath::modCount() const
 {
-    return modMap_.size() + (optiFineMod_? 1 : 0);
+    int count = modMap_.size() + (optiFineMod_? 1 : 0);
+    for(auto path : subPaths_)
+        count += path->modCount();
+    return count;
 }
 
 int LocalModPath::updatableCount() const
@@ -557,6 +583,15 @@ int LocalModPath::updatableCount() const
 const QMap<QString, LocalMod *> &LocalModPath::modMap() const
 {
     return modMap_;
+}
+
+QList<QMap<QString, LocalMod *>> LocalModPath::modMaps() const
+{
+    QList<QMap<QString, LocalMod *>> list;
+    list << modMap_;
+    for(auto &&path : subPaths_)
+        list << path->modMaps();
+    return list;
 }
 
 void LocalModPath::deleteAllOld() const

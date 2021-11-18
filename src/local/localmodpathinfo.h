@@ -8,6 +8,7 @@
 
 class LocalModPathInfo
 {
+    friend class LocalModPath;
 public:
     LocalModPathInfo() = default;
     LocalModPathInfo(const QString &dir, const GameVersion &version, ModLoaderType::Type type);

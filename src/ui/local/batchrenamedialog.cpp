@@ -72,37 +72,38 @@ void BatchRenameDialog::updateModList()
     model_.setHorizontalHeaderItem(NewFileNameColumn, new QStandardItem(tr("New File Name")));
     ui->tableView->horizontalHeader()->setSectionResizeMode(NameColumn, QHeaderView::Fixed);
     ui->tableView->setColumnWidth(NameColumn, 250);
-    for(const auto &mod : modPath_->modMap()){
-        auto enabled = !mod->isDisabled();
+    for(auto &&map : modPath_->modMaps())
+        for(const auto &mod : map){
+            auto enabled = !mod->isDisabled();
 
-        auto nameItem = new QStandardItem();
-        nameItem->setText(mod->commonInfo()->name());
-        nameItem->setCheckable(enabled);
-        nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
-        nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        nameItem->setEditable(false);
-        nameItem->setEnabled(enabled);
+            auto nameItem = new QStandardItem();
+            nameItem->setText(mod->commonInfo()->name());
+            nameItem->setCheckable(enabled);
+            nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
+            nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            nameItem->setEditable(false);
+            nameItem->setEnabled(enabled);
 
-        auto oldFilename = mod->modFile()->fileInfo().fileName();
-        auto beforeItem = new QStandardItem();
-        beforeItem->setText(oldFilename);
-        if(enabled) beforeItem->setForeground(Qt::darkRed);
-        beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        beforeItem->setEditable(false);
-        beforeItem->setEnabled(enabled);
+            auto oldFilename = mod->modFile()->fileInfo().fileName();
+            auto beforeItem = new QStandardItem();
+            beforeItem->setText(oldFilename);
+            if(enabled) beforeItem->setForeground(Qt::darkRed);
+            beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            beforeItem->setEditable(false);
+            beforeItem->setEnabled(enabled);
 
-        auto newFileName = oldFilename;
-        auto afterItem = new QStandardItem();
-        afterItem->setText(newFileName);
-        if(enabled) afterItem->setForeground(Qt::darkGreen);
-        afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        afterItem->setEditable(false);
-        afterItem->setEnabled(enabled);
+            auto newFileName = oldFilename;
+            auto afterItem = new QStandardItem();
+            afterItem->setText(newFileName);
+            if(enabled) afterItem->setForeground(Qt::darkGreen);
+            afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            afterItem->setEditable(false);
+            afterItem->setEnabled(enabled);
 
-        modList_ << mod;
-        fileNameList_ << newFileName;
-        model_.appendRow({nameItem, beforeItem, afterItem});
-    }
+            modList_ << mod;
+            fileNameList_ << newFileName;
+            model_.appendRow({nameItem, beforeItem, afterItem});
+        }
     on_renamePattern_textChanged();
 }
 
