@@ -10,6 +10,7 @@
 #include "curseforge/curseforgeapi.h"
 #include "modrinth/modrinthapi.h"
 #include "util/tutil.hpp"
+#include "util/funcutil.h"
 #include "config.hpp"
 
 LocalModPath::LocalModPath(const LocalModPathInfo &info, bool deduceLoader) :
@@ -53,9 +54,12 @@ void LocalModPath::loadMods(bool autoLoaderType)
 {
     if(isLoading_) return;
     isLoading_ = true;
+    isSearching_ = false;
+    isChecking_ = false;
     QDir dir(info_.path());
     for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot))
-        subPaths_ << new LocalModPath(this, fileInfo.fileName());
+        if(auto fileName = fileInfo.fileName(); !subPaths_.contains(fileName))
+            subPaths_.insert(fileName, new LocalModPath(this, fileName));
     QList<LocalModFile*> modFileList;
     for(auto &&fileInfo : dir.entryInfoList(QDir::Files))
         if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
@@ -430,7 +434,7 @@ void LocalModPath::searchOnWebsites()
     auto checkedCount = std::make_shared<int>(0);
     for(auto &&map : modMaps())
         for(const auto &mod : map){
-            connect(mod, &LocalMod::websiteReady, this, [=] {
+            auto conn = connect(mod, &LocalMod::websiteReady, this, [=] {
                 (*checkedCount)++;
                 if(!isSearching_) return;
                 emit websiteCheckedCountUpdated(*checkedCount);
@@ -440,6 +444,8 @@ void LocalModPath::searchOnWebsites()
                 }
             });
             mod->searchOnWebsite();
+            //cancel on reloading
+            connect(this, &LocalModPath::loadStarted, disconnecter(conn));
         }
 }
 
@@ -460,7 +466,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
         auto updateCount = std::make_shared<int>(0);
         for(auto &&map : modMaps())
             for(const auto &mod : map){
-                connect(mod, &LocalMod::updateReady, this, [=](bool bl){
+                auto conn = connect(mod, &LocalMod::updateReady, this, [=](bool bl){
                     (*checkedCount)++;
                     if(bl) (*updateCount)++;
                     emit updateCheckedCountUpdated(*updateCount, *checkedCount, count);
@@ -478,6 +484,8 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
                     }
                 });
                 mod->checkUpdates();
+                //cancel on reloading
+                connect(this, &LocalModPath::loadStarted, disconnecter(conn));
         }
     } else if(interval != Config::Never){
         //not manual not never i.e. load cache

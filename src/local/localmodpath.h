@@ -91,7 +91,7 @@ private:
 
     static constexpr auto kFileName = "mods.json";
     QStringList relative_;
-    QList<LocalModPath *> subPaths_;
+    QMap<QString, LocalModPath *> subPaths_;
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     LocalModPathInfo info_;
