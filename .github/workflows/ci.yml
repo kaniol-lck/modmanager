@@ -51,7 +51,7 @@ jobs:
           make INSTALL_ROOT=appdir -j2 install ; find appdir/
           wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
           chmod +x appimagetool-*.AppImage
-          mkdir -p /home/qt/work/install
+          sudo mkdir -p /home/qt/work/install
           sudo ln -s $QT_PLUGIN_PATH /home/qt/work/install/plugins
           ./appimagetool-*.AppImage -s deploy appdir/usr/share/applications/*.desktop # Bundle EVERYTHING
       - uses: actions/upload-artifact@v2
