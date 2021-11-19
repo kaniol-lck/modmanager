@@ -59,6 +59,7 @@ private slots:
 
     void filterList();
     void updateStatusText();
+    void updateProgressBar();
 
     void on_modListWidget_doubleClicked(const QModelIndex &index);
     void on_comboBox_currentIndexChanged(int index);

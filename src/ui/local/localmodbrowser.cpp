@@ -116,6 +116,16 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::updatesDoneCountUpdated, this, &LocalModBrowser::onUpdatesDoneCountUpdated);
     connect(modPath_, &LocalModPath::updatesDone, this, &LocalModBrowser::onUpdatesDone);
     connect(ui->searchText, &QLineEdit::textChanged, this, &LocalModBrowser::filterList);
+
+    connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
+    connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::checkWebsitesStarted, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::websiteCheckedCountUpdated, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::websitesReady, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::updateProgressBar);
 }
 
 LocalModBrowser::~LocalModBrowser()
@@ -170,14 +180,12 @@ void LocalModBrowser::updateUi()
 
 void LocalModBrowser::onLoadStarted()
 {
-    progressBar_->setVisible(true);
     onLoadProgress(0, 0);
     statusBar_->showMessage(tr("Loading mod files..."));
 }
 
 void LocalModBrowser::onLoadProgress(int loadedCount, int totalCount)
 {
-    progressBar_->setVisible(true);
     statusBar_->showMessage(tr("Loading mod files.. (Loaded %1/%2 mod files)").arg(loadedCount).arg(totalCount));
     progressBar_->setMaximum(totalCount);
     progressBar_->setValue(loadedCount);
@@ -185,7 +193,6 @@ void LocalModBrowser::onLoadProgress(int loadedCount, int totalCount)
 
 void LocalModBrowser::onLoadFinished()
 {
-    progressBar_->setVisible(false);
     updateStatusText();
 }
 
@@ -193,7 +200,6 @@ void LocalModBrowser::onCheckWebsitesStarted()
 {
     ui->checkUpdatesButton->setEnabled(false);
     onWebsiteCheckedCountUpdated(0);
-    progressBar_->setVisible(true);
     ui->checkUpdatesButton->setText(tr("Searching on mod websites..."));
     progressBar_->setMaximum(modPath_->modCount());
 }
@@ -207,7 +213,6 @@ void LocalModBrowser::onWebsiteCheckedCountUpdated(int checkedCount)
 void LocalModBrowser::onWebsitesReady()
 {
     ui->checkUpdatesButton->setEnabled(true);
-    progressBar_->setVisible(false);
     ui->checkUpdatesButton->setText(tr("Check updates"));
     updateStatusText();
 }
@@ -218,7 +223,6 @@ void LocalModBrowser::onCheckUpdatesStarted()
     ui->checkUpdatesButton->setEnabled(false);
     ui->updateWidget->setVisible(false);
     onUpdateCheckedCountUpdated(0, 0, 0);
-    progressBar_->setVisible(true);
     ui->checkUpdatesButton->setText(tr("Checking updates..."));
     progressBar_->setMaximum(modPath_->modCount());
 }
@@ -236,7 +240,6 @@ void LocalModBrowser::onUpdatesReady()
     if(isUpdating_) return;
     ui->checkUpdatesButton->setEnabled(true);
     ui->checkUpdatesButton->setText(tr("Check updates"));
-    progressBar_->setVisible(false);
     onUpdatableCountChanged();
     updateStatusText();
 }
@@ -244,7 +247,7 @@ void LocalModBrowser::onUpdatesReady()
 void LocalModBrowser::onUpdatableCountChanged()
 {
     if(isChecking_) return;
-    if(auto count = modPath_->updatableCount(); count){
+    if(auto count = modPath_->updatableCount()){
         ui->updateWidget->setVisible(true);
         ui->updateAllButton->setVisible(true);
         ui->updateAllButton->setEnabled(true);
@@ -260,7 +263,6 @@ void LocalModBrowser::onUpdatesStarted()
     isUpdating_ = true;
     ui->updateAllButton->setEnabled(false);
     onUpdatesProgress(0, 0);
-    progressBar_->setVisible(true);
     ui->updateAllButton->setText(tr("Updating..."));
 }
 
@@ -311,6 +313,11 @@ void LocalModBrowser::updateStatusText()
             str.append(tr("(%1 mods are shown)").arg(modPath_->modCount() - hiddenCount_));
     }
     statusBar_->showMessage(str);
+}
+
+void LocalModBrowser::updateProgressBar()
+{
+    progressBar_->setVisible(modPath_->isLoading() || modPath_->isSearching() || modPath_->isChecking());
 }
 
 void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)

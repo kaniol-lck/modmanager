@@ -57,6 +57,8 @@ public:
     LocalMod *optiFineMod() const;
 
     bool isLoading() const;
+    bool isSearching() const;
+    bool isChecking() const;
 
 signals:
     void infoUpdated();
@@ -102,6 +104,7 @@ private:
     bool initialUpdateChecked_ = false;
     bool isLoading_ = false;
     bool isSearching_ = false;
+    bool isChecking_ = false;
 };
 
 #endif // LOCALMODPATH_H

@@ -275,6 +275,16 @@ void LocalModPath::readFromFile()
         optiFineMod_->restore(value(result, "optifine"));
 }
 
+bool LocalModPath::isSearching() const
+{
+    return isSearching_;
+}
+
+bool LocalModPath::isChecking() const
+{
+    return isChecking_;
+}
+
 bool LocalModPath::isLoading() const
 {
     return isLoading_;
@@ -425,8 +435,8 @@ void LocalModPath::searchOnWebsites()
                 if(!isSearching_) return;
                 emit websiteCheckedCountUpdated(*checkedCount);
                 if(*checkedCount == count){
-                    emit websitesReady();
                     isSearching_ = false;
+                    emit websitesReady();
                 }
             });
             mod->searchOnWebsite();
@@ -435,7 +445,8 @@ void LocalModPath::searchOnWebsites()
 
 void LocalModPath::checkModUpdates(bool force) // force = true by default
 {
-    if(modMap_.isEmpty()) return;
+    if(modMap_.isEmpty() || isChecking_) return;
+    isChecking_ = true;
     auto interval = Config().getUpdateCheckInterval();
     //check update manually or
     //reach the check interval
@@ -462,6 +473,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
                         }
                         latestUpdateCheck_ = currentDateTime;
                         writeToFile();
+                        isChecking_ = false;
                         emit updatesReady();
                     }
                 });
