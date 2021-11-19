@@ -373,7 +373,6 @@ LocalModPath *LocalModBrowser::modPath() const
     return modPath_;
 }
 
-
 void LocalModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])
 {
     if(!current) return;

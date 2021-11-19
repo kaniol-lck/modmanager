@@ -78,6 +78,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
         }
         for(const auto &file : qAsConst(modFileList))
             file->setLoaderType(info_.loaderType());
+        isLoading_ = false;
         emit loadFinished();
     });
 
@@ -107,7 +108,6 @@ void LocalModPath::loadMods(bool autoLoaderType)
         readFromFile();
         emit modListUpdated();
         searchOnWebsites();
-        isLoading_ = false;
     });
 }
 
@@ -446,12 +446,12 @@ void LocalModPath::searchOnWebsites()
 void LocalModPath::checkModUpdates(bool force) // force = true by default
 {
     if(modMap_.isEmpty() || isChecking_) return;
-    isChecking_ = true;
     auto interval = Config().getUpdateCheckInterval();
     //check update manually or
     //reach the check interval
     if(force || interval == Config::Always ||
       (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1)){
+        isChecking_ = true;
         emit checkUpdatesStarted();
         int count = 0;
         for(auto &&map : modMaps())
