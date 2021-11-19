@@ -22,8 +22,7 @@ void QAria2Downloader::deleteDownloadHandle()
 
 void QAria2Downloader::update()
 {
-    if(!handle_)
-        handle_ = aria2::getDownloadHandle(QAria2::qaria2()->session(), gid_);
+    if(!handle_) handle_ = aria2::getDownloadHandle(QAria2::qaria2()->session(), gid_);
     if(!handle_) return;
     if(status_ != aria2::DOWNLOAD_ACTIVE) return;
     emit downloadProgress(handle_->getCompletedLength(), handle_->getTotalLength());

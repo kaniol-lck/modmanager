@@ -53,11 +53,11 @@ jobs:
           chmod +x appimagetool-*.AppImage
           sudo mkdir -p /home/qt/work/install
           sudo ln -s $QT_PLUGIN_PATH /home/qt/work/install/plugins
-          ./appimagetool-*.AppImage -s deploy appdir/usr/share/applications/*.desktop # Bundle EVERYTHING
+          ./appimagetool-*.AppImage -s deploy appdir/usr/share/applications/*.desktop
       - uses: actions/upload-artifact@v2
         with:
-          name: Mod_Manager-${{ env.VERSION }}-x86_64.AppImage
-          path: Mod_Manager*.AppImage
+          name: ModManager-${{ env.VERSION }}-x86_64.AppImage
+          path: ModManager*.AppImage
       #- name: Release Text
         #if: startsWith(github.event.ref, 'refs/tags/')
         #uses: svenstaro/upload-release-action@v2
