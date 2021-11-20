@@ -32,10 +32,13 @@ private slots:
 
     void downloadFile(const ModrinthFileInfo &fileInfo);
 
+    void on_modSummary_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::ModrinthModItemWidget *ui;
     ModrinthMod *mod_;
     LocalModPath *downloadPath_ = nullptr;
+    bool transltedSummary_ = false;
 };
 
 #endif // MODRINTHMODITEMWIDGET_H

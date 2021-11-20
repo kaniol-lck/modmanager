@@ -48,7 +48,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
         YoudaoTranslator::translator()->translate(mod->modInfo().summary(), [=](const auto &translted){
             if(!translted.isEmpty())
                 ui->modSummary->setText(translted);
-            transltedSummary_ = false;
+            transltedSummary_ = true;
         });
     }
     ui->modAuthors->setText(mod->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));

@@ -10,6 +10,7 @@
 #include <QNetworkDiskCache>
 #include <QNetworkReply>
 #include <QStandardItemModel>
+#include <QMenu>
 
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
@@ -18,8 +19,8 @@
 #include "util/datetimesortitem.h"
 #include "util/smoothscrollbar.h"
 #include "util/flowlayout.h"
-
-#include <download/qaria2.h>
+#include "util/youdaotranslator.h"
+#include "download/qaria2.h"
 
 CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod) :
     QDialog(parent),
@@ -87,6 +88,13 @@ void CurseforgeModDialog::updateBasicInfo()
     setWindowTitle(mod_->modInfo().name() + tr(" - Curseforge"));
     ui->modName->setText(mod_->modInfo().name());
     ui->modSummary->setText(mod_->modInfo().summary());
+    if(Config().getAutoTranslate()){
+        YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const auto &translted){
+            if(!translted.isEmpty())
+                ui->modSummary->setText(translted);
+            transltedSummary_ = true;
+        });
+    }
     ui->modAuthors->setText(mod_->modInfo().authors().join(", "));
 
     //update thumbnail
@@ -199,5 +207,27 @@ void CurseforgeModDialog::on_galleryListWidget_itemClicked(QListWidgetItem *item
                 item->data(Qt::UserRole + 2).toString(),
                 item->data(Qt::UserRole + 3).toByteArray());
     popup->exec();
+}
+
+
+void CurseforgeModDialog::on_modSummary_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    if(!transltedSummary_)
+        menu->addAction(tr("Translate summary"), this, [=]{
+            YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const QString &translated){
+                if(!translated.isEmpty()){
+                    ui->modSummary->setText(translated);
+                transltedSummary_ = true;
+                }
+            });
+        });
+    else{
+        transltedSummary_ = false;
+        menu->addAction(tr("Untranslate summary"), this, [=]{
+            ui->modSummary->setText(mod_->modInfo().summary());
+        });
+    }
+    menu->exec(ui->modSummary->mapToGlobal(pos));
 }
 

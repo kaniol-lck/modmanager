@@ -23,10 +23,13 @@ private slots:
     void updateBasicInfo();
     void updateFullInfo();
     void updateIcon();
+    void on_modSummary_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::ModrinthModInfoWidget *ui;
     ModrinthMod *mod_ = nullptr;
     QList<QWidget*> tagWidgets_;
+    bool transltedSummary_ = false;
 };
 
 #endif // MODRINTHMODINFOWIDGET_H

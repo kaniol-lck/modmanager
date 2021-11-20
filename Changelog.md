@@ -13,6 +13,9 @@ Soon....
 Added support to sub-directories.
 添加了对子文件夹的支持。
 
+Added online translator (Youdao Translator).
+添加了有道生草机在线翻译。 
+
 Updated Curseforge's categories.
 更新了Curseforge的分类。
 

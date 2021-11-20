@@ -7,12 +7,14 @@
 #include <QAction>
 #include <QClipboard>
 #include <QStandardItemModel>
+#include <QMenu>
 
 #include "local/localmodpath.h"
 #include "modrinthfileitemwidget.h"
 #include "modrinth/modrinthmod.h"
 #include "util/datetimesortitem.h"
 #include "util/smoothscrollbar.h"
+#include "util/youdaotranslator.h"
 
 ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod *localMod) :
     QDialog(parent),
@@ -67,6 +69,13 @@ void ModrinthModDialog::updateBasicInfo()
     setWindowTitle(mod_->modInfo().name() + tr(" - Modrinth"));
     ui->modName->setText(mod_->modInfo().name());
     ui->modSummary->setText(mod_->modInfo().summary());
+    if(Config().getAutoTranslate()){
+        YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const auto &translted){
+            if(!translted.isEmpty())
+                ui->modSummary->setText(translted);
+            transltedSummary_ = true;
+        });
+    }
     if(!mod_->modInfo().author().isEmpty()){
         ui->modAuthors->setText(mod_->modInfo().author());
         ui->modAuthors->setVisible(true);
@@ -137,3 +146,25 @@ void ModrinthModDialog::on_websiteButton_clicked()
 {
     QDesktopServices::openUrl(mod_->modInfo().websiteUrl());
 }
+
+void ModrinthModDialog::on_modSummary_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    if(!transltedSummary_)
+        menu->addAction(tr("Translate summary"), this, [=]{
+            YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const QString &translated){
+                if(!translated.isEmpty()){
+                    ui->modSummary->setText(translated);
+                transltedSummary_ = true;
+                }
+            });
+        });
+    else{
+        transltedSummary_ = false;
+        menu->addAction(tr("Untranslate summary"), this, [=]{
+            ui->modSummary->setText(mod_->modInfo().summary());
+        });
+    }
+    menu->exec(ui->modSummary->mapToGlobal(pos));
+}
+

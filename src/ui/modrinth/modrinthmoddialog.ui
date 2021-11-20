@@ -116,6 +116,9 @@
          <italic>false</italic>
         </font>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
        <property name="toolTip">
         <string notr="true"/>
        </property>

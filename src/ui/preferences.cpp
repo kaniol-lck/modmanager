@@ -131,7 +131,7 @@ void Preferences::on_downloadPathButton_clicked()
     ui->downloadPathText->setText(str);
 }
 
-void Preferences::on_useFramelessWindow_toggled(bool checked)
+void Preferences::on_useFramelessWindow_toggled(bool checked[[maybe_unused]])
 {
 #ifdef Q_OS_WIN
     if(!checked)

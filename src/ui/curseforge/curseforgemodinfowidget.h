@@ -23,10 +23,13 @@ private slots:
     void updateBasicInfo();
     void updateThumbnail();
     void updateDescription();
+    void on_modSummary_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::CurseforgeModInfoWidget *ui;
     CurseforgeMod *mod_ = nullptr;
     QList<QWidget*> tagWidgets_;
+    bool transltedSummary_ = false;
 };
 
 #endif // CURSEFORGEMODINFOWIDGET_H

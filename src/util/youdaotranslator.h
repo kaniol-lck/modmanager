@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <QNetworkDiskCache>
 
 class YoudaoTranslator : public QObject
 {
@@ -14,6 +15,7 @@ public:
     void translate(const QString &str, std::function<void (QString)> callback);
 private:
     QNetworkAccessManager accessManager_;
+    QNetworkDiskCache diskCache_;
 };
 
 #endif // YOUDAOTRANSLATOR_H
