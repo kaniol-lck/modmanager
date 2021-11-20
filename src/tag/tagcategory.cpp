@@ -3,6 +3,7 @@
 #include <QObject>
 
 const TagCategory TagCategory::SubDirCategory = TagCategory("sub-dir", QColor(34, 161, 181));
+const TagCategory TagCategory::FileNameCategory = TagCategory("filename", QColor(181, 76, 132));
 const TagCategory TagCategory::EnvironmentCategory = TagCategory("environment", QColor(124, 143, 93));
 const TagCategory TagCategory::CurseforgeCategory = TagCategory("curseforge", QColor(241, 100, 54));
 const TagCategory TagCategory::ModrinthCategory = TagCategory("modrinth", QColor(93, 164, 38));
@@ -12,8 +13,10 @@ const TagCategory TagCategory::TranslationCategory = TagCategory("translation", 
 const TagCategory TagCategory::FunctionalityCategory = TagCategory("functionality", QColor(79, 152, 249));
 const TagCategory TagCategory::NotationCategory = TagCategory("notation", QColor(23, 127, 191));
 const TagCategory TagCategory::CustomCategory = TagCategory("custom", QColor(127, 63, 23));
+
 const QList<TagCategory> TagCategory::PresetCategories{
     SubDirCategory,
+    FileNameCategory,
     EnvironmentCategory,
     CurseforgeCategory,
     ModrinthCategory,
@@ -74,6 +77,8 @@ QString TagCategory::name() const
 {
     if(id_ == "sub-dir")
         return QObject::tr("Sub-Directory Tag");
+    if(id_ == "filename")
+        return QObject::tr("File Name Tag");
     if(id_ == "environment")
         return QObject::tr("Environment Tag");
     if(id_ == "curseforge")

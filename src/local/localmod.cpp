@@ -729,7 +729,7 @@ void LocalMod::setModFile(LocalModFile *newModFile)
 {
     modFile_ = newModFile;
     modFile_->setParent(this);
-    tagManager_.removeTags({TagCategory::EnvironmentCategory});
+    tagManager_.removeTags({TagCategory::EnvironmentCategory, TagCategory::SubDirCategory, TagCategory::FileNameCategory });
     if(modFile_->loaderType() == ModLoaderType::Fabric){
         if(auto environment = modFile_->fabric().environment(); environment == "*"){
             addTag(Tag::clientTag());
@@ -739,9 +739,15 @@ void LocalMod::setModFile(LocalModFile *newModFile)
         else if(environment == "server")
             addTag(Tag::serverTag());
     }
-    tagManager_.removeTags({TagCategory::SubDirCategory});
     for(auto &&subDir : modFile_->subDirs())
         addTag(Tag(subDir, TagCategory::SubDirCategory));
+    for(auto str : { R"(\[(.*?)\])", R"(\((.*?)\))", R"(【(.*?)】)" }){
+        auto i = QRegularExpression(str).globalMatch(modFile_->fileInfo().fileName());
+        while(i.hasNext()) {
+            QRegularExpressionMatch match = i.next();
+            addTag(Tag(match.captured(1), TagCategory::FileNameCategory));
+        }
+    }
 }
 
 ModrinthMod *LocalMod::modrinthMod() const

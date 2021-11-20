@@ -6,6 +6,9 @@ void LocalModTags::addTag(const Tag &tag)
     if(category == TagCategory::SubDirCategory){
         if(!subDirTags_.contains(tag))
             subDirTags_ << tag;
+    }else if(category == TagCategory::FileNameCategory){
+        if(!fileNameTags_.contains(tag))
+            fileNameTags_ << tag;
     }else if(category == TagCategory::EnvironmentCategory){
         if(!environmentTags_.contains(tag))
             environmentTags_ << tag;
@@ -45,6 +48,8 @@ void LocalModTags::removeTags(const QList<TagCategory> &categories)
     for(const auto &category : categories){
         if(category == TagCategory::SubDirCategory)
             subDirTags_.clear();
+        if(category == TagCategory::FileNameCategory)
+            fileNameTags_.clear();
         if(category == TagCategory::EnvironmentCategory)
             environmentTags_.clear();
         if(category == TagCategory::TypeCategory)
@@ -72,6 +77,8 @@ QList<Tag> LocalModTags::tags(const QList<TagCategory> &categories) const
     for(const auto &category : categories){
         if(category == TagCategory::SubDirCategory)
             list << subDirTags_;
+        if(category == TagCategory::FileNameCategory)
+            list << fileNameTags_;
         if(category == TagCategory::EnvironmentCategory)
             list << environmentTags_;
         if(category == TagCategory::TypeCategory)
@@ -111,6 +118,11 @@ std::optional<Tag> LocalModTags::notationTag() const
 const QList<Tag> &LocalModTags::customTags() const
 {
     return customTags_;
+}
+
+const QList<Tag> &LocalModTags::fileNameTags() const
+{
+    return fileNameTags_;
 }
 
 const QList<Tag> &LocalModTags::subDirTags() const
