@@ -57,9 +57,15 @@ void LocalModPath::loadMods(bool autoLoaderType)
     isSearching_ = false;
     isChecking_ = false;
     QDir dir(info_.path());
-    for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot))
-        if(auto fileName = fileInfo.fileName(); !subPaths_.contains(fileName))
+    for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot)){
+        bool containsMod = false;
+        for(auto &&fileInfo2 : fileInfo.dir().entryInfoList(QDir::Files))
+            if((containsMod = LocalModFile::availableSuffix.contains(fileInfo2.suffix())))
+                break;
+        qDebug() << "containsMod" << containsMod;
+        if(auto fileName = fileInfo.fileName(); !subPaths_.contains(fileName) && containsMod)
             subPaths_.insert(fileName, new LocalModPath(this, fileName));
+    }
     QList<LocalModFile*> modFileList;
     for(auto &&fileInfo : dir.entryInfoList(QDir::Files))
         if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
