@@ -6,6 +6,22 @@ Soon....
 
 ## 公开测试 Beta Test
 
+### v1.0.0-beta.7
+
+*WIP*
+
+Added support to sub-directories.
+添加了对子文件夹的支持。
+
+Updated Curseforge's categories.
+更新了Curseforge的分类。
+
+Fixed progress bar in local mod page disappeared in some circumstances.
+修复了本地mod页面中进度条在一些情况下消失的问题。
+
+Fixed some issues caused by reloading local mods.
+修复了重新加载本地mod时出现的一些问题。
+
 ### v1.0.0-beta.6
 
 *2021.11.14*

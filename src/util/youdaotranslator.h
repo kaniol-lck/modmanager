@@ -2,7 +2,6 @@
 #define YOUDAOTRANSLATOR_H
 
 #include <QObject>
-#include <functional>
 #include <QNetworkAccessManager>
 
 class YoudaoTranslator : public QObject

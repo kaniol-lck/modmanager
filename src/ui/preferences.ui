@@ -116,6 +116,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="autoTranslate">
+         <property name="text">
+          <string>Auto Translate</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QCheckBox" name="useFramelessWindow">
          <property name="text">
           <string>Use frameless window</string>

@@ -28,11 +28,14 @@ public slots:
 private slots:
     void updateIcon();
     void downloadFile(const CurseforgeFileInfo &fileInfo);
+    void on_modSummary_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::CurseforgeModItemWidget *ui;
     CurseforgeMod *mod_;
     std::optional<CurseforgeFileInfo> defaultFileInfo_;
     LocalModPath *downloadPath_;
+    bool transltedSummary_ = false;
 };
 
 #endif // CURSEFORGEMODITEMWIDGET_H

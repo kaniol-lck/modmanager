@@ -44,10 +44,13 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 
     ui->modName->setText(mod->modInfo().name());
     ui->modSummary->setText(mod->modInfo().summary());
-//    YoudaoTranslator::translator()->translate(mod->modInfo().summary(), [=](const auto &translted){
-//        if(!translted.isEmpty())
-//            ui->modSummary->setText(translted);
-//    });
+    if(Config().getAutoTranslate()){
+        YoudaoTranslator::translator()->translate(mod->modInfo().summary(), [=](const auto &translted){
+            if(!translted.isEmpty())
+                ui->modSummary->setText(translted);
+            transltedSummary_ = false;
+        });
+    }
     ui->modAuthors->setText(mod->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
     ui->modUpdateDate->setText(tr("%1 ago").arg(timesTo(mod->modInfo().dateModified())));
     ui->modUpdateDate->setToolTip(mod->modInfo().dateModified().toString());
@@ -177,3 +180,25 @@ void CurseforgeModItemWidget::updateUi()
     ui->tags->setVisible(config.getShowModCategory());
     ui->loaderTypes->setVisible(config.getShowModLoaderType());
 }
+
+void CurseforgeModItemWidget::on_modSummary_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    if(!transltedSummary_)
+        menu->addAction(tr("Translate summary"), this, [=]{
+            YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const QString &translated){
+                if(!translated.isEmpty()){
+                    ui->modSummary->setText(translated);
+                transltedSummary_ = true;
+                }
+            });
+        });
+    else{
+        transltedSummary_ = false;
+        menu->addAction(tr("Untranslate summary"), this, [=]{
+            ui->modSummary->setText(mod_->modInfo().summary());
+        });
+    }
+    menu->exec(ui->modSummary->mapToGlobal(pos));
+}
+

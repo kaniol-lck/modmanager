@@ -39,6 +39,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->useFramelessWindow->setChecked(config.getUseFramelessWindow());
     on_useFramelessWindow_toggled(ui->useFramelessWindow->isChecked());
     ui->customStyle->setCurrentText(styleSheets().value(config.getCustomStyle()));
+    ui->autoTranslate->setChecked(config.getAutoTranslate());
 
     //Explore
     ui->downloadPathText->setText(config.getDownloadPath());
@@ -88,6 +89,7 @@ void Preferences::on_Preferences_accepted()
     config.setEnableBlurBehind(ui->enableBlurBehind->isChecked());
     config.setUseFramelessWindow(ui->enableBlurBehind->isChecked());
     config.setCustomStyle(ui->customStyle->currentData().toString());
+    config.setAutoTranslate(ui->autoTranslate->isChecked());
 
     //Explore
     config.setDownloadPath(ui->downloadPathText->text());

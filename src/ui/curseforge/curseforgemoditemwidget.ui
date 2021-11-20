@@ -356,11 +356,11 @@
          <italic>false</italic>
         </font>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::CustomContextMenu</enum>
+       </property>
        <property name="toolTip">
         <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Summary: balabalabalabalabalabala</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

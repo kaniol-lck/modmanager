@@ -35,8 +35,9 @@ void YoudaoTranslator::translate(const QString &str, std::function<void (QString
             return;
         }
         auto result = jsonDocument.toVariant();
-
-        auto translated = value(value(result, "translateResult").toList().first().toList().first(), "tgt").toString();
+        QString translated;
+        for(auto &&entry : value(result, "translateResult").toList().first().toList())
+            translated += value(entry, "tgt").toString();
 
         callback(translated);
         reply->deleteLater();
