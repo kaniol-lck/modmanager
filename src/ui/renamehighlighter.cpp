@@ -18,7 +18,7 @@ void RenameHighlighter::highlightBlock(const QString &text)
         QRegularExpressionMatch match = i.next();
         setFormat(match.capturedStart(), match.capturedLength(), format);
     }
-    for(auto &&str : QStringList{ "filename", "id", "version", "name", "tags" }){
+    for(auto &&str : QStringList{ "filename", "id", "version", "name", "tags", "replace" }){
         i = QRegularExpression("<(" + str + ")(\\||>)").globalMatch(text);
         while (i.hasNext()){
             QTextCharFormat format;

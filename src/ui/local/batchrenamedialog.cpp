@@ -192,6 +192,18 @@ void BatchRenameDialog::on_renamePattern_textChanged()
             }
             newFileName.replace("<filename|" + match.captured(1) + ">", replacedStr);
         }
+        //replace
+        it = QRegularExpression(R"(<replace\|(.+?)>)").globalMatch(newFileName);
+        while (it.hasNext()) {
+            auto match = it.next();
+            auto stringList = match.captured(1).split("|");
+            if(stringList.size() != 3) continue;
+            auto replacedStr = stringList.at(0);
+            auto replacee = stringList.at(1);
+            auto replacer = stringList.at(2);
+            replacedStr.replace(QRegularExpression(replacee), replacer);
+            newFileName.replace("<replace|" + match.captured(1) + ">", replacedStr);
+        }
 
         if(newFileName.isEmpty()) ok = false;
         fileNameList_[row] = newFileName;
