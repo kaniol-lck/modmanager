@@ -17,6 +17,7 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
     ui->tableView->setModel(&model_);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->renamePattern->installEventFilter(this);
+    ui->renamePattern->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
     highlighter_ = new RenameHighlighter(ui->renamePattern->document());
 
     auto menu = new QMenu(this);
@@ -114,12 +115,10 @@ void BatchRenameDialog::on_BatchRenameDialog_accepted()
             modList_[row]->modFile()->rename(fileNameList_.at(row));
 }
 
-
 void BatchRenameDialog::on_toolButton_toggled(bool checked)
 {
     ui->widget->setVisible(checked);
 }
-
 
 void BatchRenameDialog::on_toolButton_2_clicked()
 {
@@ -160,12 +159,11 @@ void BatchRenameDialog::on_renamePattern_textChanged()
         newFileName.replace("<id>", mod->commonInfo()->id());
         newFileName.replace("<version>", mod->commonInfo()->version());
         newFileName.replace("<tags>", tagConcat(mod->tags()));
-        QRegExp rx(R"(<tags\|(.+)>)");
-        rx.setMinimal(true);
-        int pos = 0;
-        auto str = newFileName;
-        while ((pos = rx.indexIn(str, pos)) != -1) {
-            auto stringList = rx.cap(1).split("|");
+        //tags
+        auto it = QRegularExpression(R"(<tags\|(.+?)>)").globalMatch(newFileName);
+        while (it.hasNext()) {
+            auto match = it.next();
+            auto stringList = match.captured(1).split("|");
             if(stringList.size() == 0) continue;
             QList<TagCategory> categories;
             if(stringList.first().isEmpty())
@@ -173,14 +171,33 @@ void BatchRenameDialog::on_renamePattern_textChanged()
             else
                 categories << TagCategory::fromId(stringList.first());
             QString replacer = stringList.size() >= 2? stringList.at(1) : "";
-            newFileName.replace("<tags|" + rx.cap(1) + ">", tagConcat(mod->tagManager().tags(categories), replacer));
-            pos += rx.matchedLength();
+            newFileName.replace("<tags|" + match.captured(1) + ">", tagConcat(mod->tagManager().tags(categories), replacer));
         }
+        //filename capture-replace
+        it = QRegularExpression(R"(<filename\|(.+?)>)").globalMatch(newFileName);
+        while (it.hasNext()) {
+            auto match = it.next();
+            auto stringList = match.captured(1).split("|");
+            if(stringList.size() == 0) continue;
+            auto reStr = stringList.first();
+            if(reStr.isEmpty()) continue;
+            QString replacer = stringList.size() >= 2? stringList.at(1) : "";
+            QString replacedStr;
+            auto it2 = QRegularExpression(reStr).globalMatch(mod->modFile()->fileInfo().completeBaseName());
+            while(it2.hasNext()){
+                auto match2 = it2.next();
+                auto str = match2.captured();
+                str.replace(QRegularExpression(reStr), replacer);
+                replacedStr += str;
+            }
+            newFileName.replace("<filename|" + match.captured(1) + ">", replacedStr);
+        }
+
         if(newFileName.isEmpty()) ok = false;
         fileNameList_[row] = newFileName;
         item->setText(newFileName + "." + mod->modFile()->fileInfo().suffix());
     }
-    if(auto list = fileNameList_; list.removeDuplicates())
+    if(ok && QStringList(fileNameList_).removeDuplicates())
         ok = false;
     ui->statusText->setVisible(!ok);
     ui->buttonBox->setDisabled(!ok);
