@@ -18,6 +18,7 @@ ModrinthFileListWidget::ModrinthFileListWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->fileListView->setModel(model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthFileListWidget::onSliderChanged);
 }
 
 ModrinthFileListWidget::~ModrinthFileListWidget()
@@ -61,21 +62,44 @@ void ModrinthFileListWidget::updateFullInfo()
 
 void ModrinthFileListWidget::updateFileList()
 {
-    ui->fileListView->setVisible(false);
     model_->clear();
-    auto files = mod_->modInfo().fileList();
-    for(const auto &fileInfo : qAsConst(files)){
+    int height = 0;
+    for(auto &&fileInfo : mod_->modInfo().fileList()){
+        //load no more than kLoadSize mods
+        auto item = new QStandardItem;
+        model_->appendRow(item);
+        item->setData(fileInfo.fileDate(), Qt::UserRole);
+    }
+    model_->setSortRole(Qt::UserRole);
+    model_->sort(0, Qt::DescendingOrder);
+    for(int i = 0; i < model_->rowCount(); i++){
+        //load no more than kLoadSize mods
+        if(i == kLoadSize) break;
+        auto &&fileInfo = mod_->modInfo().fileList().at(i);
         auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo);
         itemWidget->setDownloadPath(downloadPath_);
         connect(this, &ModrinthFileListWidget::downloadPathChanged, itemWidget, &ModrinthFileItemWidget::setDownloadPath);
-        auto item = new QStandardItem;
-        item->setData(fileInfo.fileDate(), Qt::UserRole);
-        item->setSizeHint(QSize(0, itemWidget->height()));
-        model_->appendRow(item);
-        ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
+        ui->fileListView->setIndexWidget(model_->indexFromItem(model_->item(i)), itemWidget);
+        height = itemWidget->height();
     }
-    ui->fileListView->setVisible(true);
-    model_->setSortRole(Qt::UserRole);
-    model_->sort(0, Qt::DescendingOrder);
+    for(int i = 0; i < model_->rowCount(); i++){
+        auto item = model_->item(i);
+        item->setSizeHint(QSize(0, height));
+    }
     ui->fileListView->setCursor(Qt::ArrowCursor);
+}
+
+void ModrinthFileListWidget::onSliderChanged(int i[[maybe_unused]])
+{
+    if(model_->rowCount() < kLoadSize) return;
+    if(auto index = model_->index(kLoadSize, 0); ui->fileListView->indexWidget(index)) return;
+    for(int i = kLoadSize; i < model_->rowCount(); i++){
+        auto &&fileInfo = mod_->modInfo().fileList().at(i);
+        auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo);
+        itemWidget->setDownloadPath(downloadPath_);
+        connect(this, &ModrinthFileListWidget::downloadPathChanged, itemWidget, &ModrinthFileItemWidget::setDownloadPath);
+        auto item = model_->item(i);
+        ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
+        item->setSizeHint(QSize(0, itemWidget->height()));
+    }
 }

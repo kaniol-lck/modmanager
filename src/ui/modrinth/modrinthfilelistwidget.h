@@ -27,11 +27,13 @@ public slots:
 private slots:
     void updateFullInfo();
     void updateFileList();
+    void onSliderChanged(int i);
 private:
     Ui::ModrinthFileListWidget *ui;
     QStandardItemModel *model_;
     ModrinthMod *mod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
+    static constexpr int kLoadSize = 10;
 };
 
 #endif // MODRINTHFILELISTWIDGET_H

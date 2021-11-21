@@ -26,11 +26,13 @@ public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
 private slots:
     void updateFileList();
+    void onSliderChanged(int i);
 private:
     Ui::CurseforgeFileListWidget *ui;
     QStandardItemModel *model_;
     CurseforgeMod *mod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
+    static constexpr int kLoadSize = 10;
 };
 
 #endif // CURSEFORGEFILELISTWIDGET_H
