@@ -2,7 +2,7 @@
 
 void LocalModTags::addTag(const Tag &tag)
 {
-    auto category = tag.tagCategory();
+    auto category = tag.category();
     if(category == TagCategory::SubDirCategory){
         if(!subDirTags_.contains(tag))
             subDirTags_ << tag;
@@ -30,7 +30,7 @@ void LocalModTags::addTag(const Tag &tag)
 
 void LocalModTags::removeTag(const Tag &tag)
 {
-    auto category = tag.tagCategory();
+    auto category = tag.category();
     if(category == TagCategory::TypeCategory)
         typeTags_.removeAll(tag);
     else if(category == TagCategory::FunctionalityCategory)

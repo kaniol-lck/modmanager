@@ -43,9 +43,9 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
             label->setText(QString(R"(<img src="%1" height="16" width="16"/>)").arg(tag.iconName()));
         else
             label->setText(tag.name());
-        label->setToolTip(tag.name());
-        if(tag.tagCategory() != TagCategory::ModrinthCategory)
-            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
+        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
+        if(tag.category() != TagCategory::ModrinthCategory)
+            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
         ui->tagsLayout->addWidget(label);
     }
 

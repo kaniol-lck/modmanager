@@ -223,8 +223,8 @@ void LocalModItemWidget::updateUi()
     tagWidgets_.clear();
     for(auto &&tag : mod_->tagManager().tags(config.getShowTagCategories())){
         auto label = new QLabel(tag.name(), this);
-        label->setToolTip(tag.name());
-        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
+        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
+        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
         ui->tagsLayout->addWidget(label);
         tagWidgets_ << label;
     }

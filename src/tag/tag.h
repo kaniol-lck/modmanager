@@ -17,7 +17,7 @@ public:
     QJsonValue toJsonValue() const;
     static Tag fromVariant(const QVariant &variant);
 
-    const TagCategory &tagCategory() const;
+    const TagCategory &category() const;
     const QString &name() const;
     const QString &iconName() const;
 

@@ -42,7 +42,7 @@ Tag Tag::fromVariant(const QVariant &variant)
     return tag;
 }
 
-const TagCategory &Tag::tagCategory() const
+const TagCategory &Tag::category() const
 {
     return tagCategory_;
 }

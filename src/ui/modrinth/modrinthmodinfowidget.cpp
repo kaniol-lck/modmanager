@@ -91,12 +91,11 @@ void ModrinthModInfoWidget::updateBasicInfo()
         auto label = new QLabel(this);
         label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
         if(!tag.iconName().isEmpty())
-            label->setText(QString(R"(<img src="%1" height="22" width="22"/>)").arg(tag.iconName()));
+            label->setText(QString(R"(<img src="%1" height="16" width="16"/> %2)").arg(tag.iconName(), tag.name()));
         else
             label->setText(tag.name());
-        label->setToolTip(tag.name());
-        if(tag.tagCategory() != TagCategory::CurseforgeCategory)
-            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.tagCategory().color().name()));
+        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
+        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
         ui->tagsWidget->layout()->addWidget(label);
         tagWidgets_ << label;
     }
