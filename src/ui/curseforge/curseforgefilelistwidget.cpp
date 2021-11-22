@@ -49,6 +49,18 @@ void CurseforgeFileListWidget::setDownloadPath(LocalModPath *newDownloadPath)
     emit downloadPathChanged(newDownloadPath);
 }
 
+void CurseforgeFileListWidget::updateUi()
+{
+//    for(int i = 0; i < model_->rowCount(); i++){
+//        qDebug() << i;
+//        auto index = model_->index(kLoadSize, 0);
+//        if(auto widget = ui->fileListView->indexWidget(index)){
+//            qobject_cast<CurseforgeFileItemWidget*>(widget)->updateUi();
+//            qDebug() << "update:" << i;
+//        }
+//    }
+}
+
 void CurseforgeFileListWidget::updateFileList()
 {
     model_->clear();

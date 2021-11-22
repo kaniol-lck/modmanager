@@ -11,7 +11,7 @@ public:
     virtual ~Browser() = 0;
 
     virtual QWidget *infoWidget() const;
-    virtual QWidget *fileListWidget() const ;
+    virtual QWidget *fileListWidget() const;
 };
 
 #endif // BROWSER_H

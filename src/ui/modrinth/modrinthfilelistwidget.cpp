@@ -50,6 +50,11 @@ void ModrinthFileListWidget::setDownloadPath(LocalModPath *newDownloadPath)
     emit downloadPathChanged(newDownloadPath);
 }
 
+void ModrinthFileListWidget::updateUi()
+{
+
+}
+
 void ModrinthFileListWidget::updateFullInfo()
 {
     //update file list

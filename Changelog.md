@@ -49,7 +49,10 @@ Updated Curseforge's categories.
 更新了Curseforge的分类。
 
 Tweaked styles of Curseforge/Modrinth tags.
-调整了Curseforge/Modrinth标签的样式
+调整了Curseforge/Modrinth标签的样式。
+
+Mod file release type and game version are togglable.
+mod发布类型和游戏版本是可勾选的。
 
 Improved performance while loading file list in Curseforge/Modrinth.
 优化了加载Curseforge/Modrinth文件列表时的性能。

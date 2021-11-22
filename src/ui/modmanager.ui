@@ -92,6 +92,8 @@
     <addaction name="actionShow_Mod_Date_Time"/>
     <addaction name="actionShow_Mod_Category"/>
     <addaction name="actionShow_Mod_Loader_Type"/>
+    <addaction name="actionShow_Mod_Release_Type"/>
+    <addaction name="actionShow_Mod_Game_Version"/>
     <addaction name="menuTags"/>
     <addaction name="separator"/>
     <addaction name="actionNext_Page"/>
@@ -350,6 +352,22 @@
    </property>
    <property name="text">
     <string>File List</string>
+   </property>
+  </action>
+  <action name="actionShow_Mod_Release_Type">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Mod Release Type</string>
+   </property>
+  </action>
+  <action name="actionShow_Mod_Game_Version">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Mod Game Version</string>
    </property>
   </action>
  </widget>

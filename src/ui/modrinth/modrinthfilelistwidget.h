@@ -24,6 +24,7 @@ signals:
     void downloadPathChanged(LocalModPath *path);
 public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
+    void updateUi();
 private slots:
     void updateFullInfo();
     void updateFileList();

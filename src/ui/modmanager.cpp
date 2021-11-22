@@ -418,6 +418,13 @@ void ModManager::on_menu_View_aboutToShow()
     ui->actionPage_Selector->setChecked(ui->pageSelectorDock->isVisible());
     ui->actionMod_Infomation->setChecked(ui->modInfoDock->isVisible());
     ui->actionFile_List->setChecked(ui->fileListDock->isVisible());
+
+    ui->actionShow_Mod_Authors->setChecked(config_.getShowModAuthors());
+    ui->actionShow_Mod_Category->setChecked(config_.getShowModCategory());
+    ui->actionShow_Mod_Date_Time->setChecked(config_.getShowModDateTime());
+    ui->actionShow_Mod_Game_Version->setChecked(config_.getShowModGameVersion());
+    ui->actionShow_Mod_Loader_Type->setChecked(config_.getShowModLoaderType());
+    ui->actionShow_Mod_Release_Type->setChecked(config_.getShowModReleaseType());
 }
 
 void ModManager::on_menu_Help_aboutToShow()
@@ -502,6 +509,19 @@ void ModManager::on_actionShow_Mod_Category_toggled(bool arg1)
 void ModManager::on_actionShow_Mod_Loader_Type_toggled(bool arg1)
 {
     config_.setShowModLoaderType(arg1);
+    ui->pageSwitcher->updateUi();
+}
+
+void ModManager::on_actionShow_Mod_Release_Type_toggled(bool arg1)
+{
+    config_.setShowModReleaseType(arg1);
+    ui->pageSwitcher->updateUi();
+}
+
+
+void ModManager::on_actionShow_Mod_Game_Version_toggled(bool arg1)
+{
+    config_.setShowModGameVersion(arg1);
     ui->pageSwitcher->updateUi();
 }
 

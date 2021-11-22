@@ -91,13 +91,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QCheckBox" name="showModLoaderType">
-            <property name="text">
-             <string>Show loader type</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="showModDateTime">
             <property name="text">
@@ -105,10 +98,31 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="showModLoaderType">
+            <property name="text">
+             <string>Show loader type</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QCheckBox" name="showModAuthors">
             <property name="text">
              <string>Show authors</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="showModReleaseType">
+            <property name="text">
+             <string>Show Release Type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QCheckBox" name="showModGameVersion">
+            <property name="text">
+             <string>Show Game Version</string>
             </property>
            </widget>
           </item>

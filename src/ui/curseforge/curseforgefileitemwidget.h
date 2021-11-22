@@ -23,6 +23,7 @@ public:
 
 public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
+    void updateUi();
 private slots:
     void updateLocalInfo();
     void on_downloadButton_clicked();

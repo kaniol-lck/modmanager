@@ -35,6 +35,8 @@ Preferences::Preferences(QWidget *parent) :
     ui->showModDateTime->setChecked(config.getShowModDateTime());
     ui->showModCategory->setChecked(config.getShowModCategory());
     ui->showModLoaderType->setChecked(config.getShowModLoaderType());
+    ui->showModReleaseType->setChecked(config.getShowModReleaseType());
+    ui->showModGameVersion->setChecked(config.getShowModGameVersion());
     ui->enableBlurBehind->setChecked(config.getEnableBlurBehind());
     ui->useFramelessWindow->setChecked(config.getUseFramelessWindow());
     on_useFramelessWindow_toggled(ui->useFramelessWindow->isChecked());
@@ -85,7 +87,9 @@ void Preferences::on_Preferences_accepted()
     config.setShowModAuthors(ui->showModAuthors->isChecked());
     config.setShowModDateTime(ui->showModDateTime->isChecked());
     config.setShowModCategory(ui->showModCategory->isChecked());
-    config.setShowModLoaderType(ui->showModLoaderType->isCheckable());
+    config.setShowModLoaderType(ui->showModLoaderType->isChecked());
+    config.setShowModReleaseType(ui->showModReleaseType->isChecked());
+    config.setShowModGameVersion(ui->showModGameVersion->isChecked());
     config.setEnableBlurBehind(ui->enableBlurBehind->isChecked());
     config.setUseFramelessWindow(ui->enableBlurBehind->isChecked());
     config.setCustomStyle(ui->customStyle->currentData().toString());

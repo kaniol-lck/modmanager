@@ -71,6 +71,8 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
 
     //size
     ui->downloadSpeedText->setText(sizeConvert(fileInfo_.size()));
+
+    updateUi();
 }
 
 CurseforgeFileItemWidget::~CurseforgeFileItemWidget()
@@ -135,6 +137,15 @@ void CurseforgeFileItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setText(tr("Download"));
     }
+}
+
+void CurseforgeFileItemWidget::updateUi()
+{
+    Config config;
+    ui->fileDateTime->setVisible(config.getShowModDateTime());
+    ui->loaderTypes->setVisible(config.getShowModLoaderType());
+    ui->gameVersions->setVisible(config.getShowModGameVersion());
+    ui->releaseType->setVisible(config.getShowModReleaseType());
 }
 
 void CurseforgeFileItemWidget::updateLocalInfo()

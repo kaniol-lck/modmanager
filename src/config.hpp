@@ -46,6 +46,8 @@ public:
     getterAndSetter(ShowModDateTime, Bool, showModDateTime, true)
     getterAndSetter(ShowModCategory, Bool, showModCategory, true)
     getterAndSetter(ShowModLoaderType, Bool, showModLoaderType, true)
+    getterAndSetter(ShowModReleaseType, Bool, showModReleaseType, true)
+    getterAndSetter(ShowModGameVersion, Bool, showModGameVersion, true)
     getterAndSetter(AutoTranslate, Bool, autoTranslate, false)
 
     void setShowTagCategories(const QList<TagCategory> &categories)

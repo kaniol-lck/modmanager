@@ -56,16 +56,15 @@ private slots:
     void on_actionShow_Mod_Date_Time_toggled(bool arg1);
     void on_actionShow_Mod_Category_toggled(bool arg1);
     void on_actionShow_Mod_Loader_Type_toggled(bool arg1);
+    void on_actionShow_Mod_Release_Type_toggled(bool arg1);
+    void on_actionShow_Mod_Game_Version_toggled(bool arg1);
     void on_actionNext_Page_triggered();
     void on_actionPrevious_Page_triggered();
     void on_actionAbout_Qt_triggered();
     void on_modInfoDock_customContextMenuRequested(const QPoint &pos);
     void on_fileListDock_customContextMenuRequested(const QPoint &pos);
-
     void on_actionMod_Infomation_toggled(bool arg1);
-
     void on_actionFile_List_toggled(bool arg1);
-
 private:
     Ui::ModManager *ui;
     mutable Config config_;
