@@ -174,23 +174,23 @@ void BatchRenameDialog::on_renamePattern_textChanged()
             newFileName.replace("<tags|" + match.captured(1) + ">", tagConcat(mod->tagManager().tags(categories), replacer));
         }
         //filename capture-replace
-        it = QRegularExpression(R"(<filename\|(.+?)>)").globalMatch(newFileName);
+        it = QRegularExpression(R"(<capture\|(.+?)>)").globalMatch(newFileName);
         while (it.hasNext()) {
             auto match = it.next();
             auto stringList = match.captured(1).split("|");
-            if(stringList.size() == 0) continue;
-            auto reStr = stringList.first();
-            if(reStr.isEmpty()) continue;
-            QString replacer = stringList.size() >= 2? stringList.at(1) : "";
-            QString replacedStr;
-            auto it2 = QRegularExpression(reStr).globalMatch(mod->modFile()->fileInfo().completeBaseName());
+            if(stringList.size() < 2) continue;
+            auto replacedStr = stringList.at(0);
+            auto replacee = stringList.at(1);
+            auto replacer = stringList.size() > 2? stringList.at(2) : "\\1";
+            auto it2 = QRegularExpression(replacee).globalMatch(replacedStr);
+            QString result;
             while(it2.hasNext()){
                 auto match2 = it2.next();
                 auto str = match2.captured();
-                str.replace(QRegularExpression(reStr), replacer);
-                replacedStr += str;
+                str.replace(QRegularExpression(replacee), replacer);
+                result += str;
             }
-            newFileName.replace("<filename|" + match.captured(1) + ">", replacedStr);
+            newFileName.replace("<capture|" + match.captured(1) + ">", result);
         }
         //replace
         it = QRegularExpression(R"(<replace\|(.+?)>)").globalMatch(newFileName);
