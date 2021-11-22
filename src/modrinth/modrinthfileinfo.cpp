@@ -12,7 +12,7 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
     fileInfo.id_ = value(variant, "id").toString();
     fileInfo.modId_ = value(variant, "mod_id").toString();
     fileInfo.displayName_ = value(variant, "name").toString();
-    fileInfo.releaseType_ = value(variant, "version_type").toInt();
+    fileInfo.releaseType_ = value(variant, "version_type").toString();
     fileInfo.fileDate_ = value(variant, "date_published").toDateTime();
     fileInfo.isFeatured_ = value(variant, "featured").toBool();
 
@@ -95,7 +95,7 @@ const QList<ModLoaderType::Type> &ModrinthFileInfo::loaderTypes() const
     return loaderTypes_;
 }
 
-int ModrinthFileInfo::releaseType() const
+const QString &ModrinthFileInfo::releaseType() const
 {
     return releaseType_;
 }

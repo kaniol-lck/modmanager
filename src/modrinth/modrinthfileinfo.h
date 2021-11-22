@@ -25,7 +25,10 @@ public:
     qint64 size() const;
     const QList<GameVersion> &gameVersions() const;
     const QList<ModLoaderType::Type> &loaderTypes() const;
-    int releaseType() const;
+    static constexpr auto Release = "release";
+    static constexpr auto Beta = "beta";
+    static constexpr auto Alpha = "alpha";
+    const QString &releaseType() const;
     const QDateTime &fileDate() const;
     bool isFeatured() const;
     bool isPrimary() const;
@@ -39,7 +42,7 @@ private:
     qint64 size_;
     QList<GameVersion> gameVersions_;
     QList<ModLoaderType::Type> loaderTypes_;
-    int releaseType_;
+    QString releaseType_;
     QDateTime fileDate_;
     bool isFeatured_;
     bool isPrimary_;

@@ -32,7 +32,7 @@ private:
     QStandardItemModel *model_;
     CurseforgeMod *mod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
-    static constexpr int kLoadSize = 10;
+    static constexpr int kLoadSize = 15;
 };
 
 #endif // CURSEFORGEFILELISTWIDGET_H

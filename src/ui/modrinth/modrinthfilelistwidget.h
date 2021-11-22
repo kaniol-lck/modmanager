@@ -33,7 +33,7 @@ private:
     QStandardItemModel *model_;
     ModrinthMod *mod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
-    static constexpr int kLoadSize = 10;
+    static constexpr int kLoadSize = 15;
 };
 
 #endif // MODRINTHFILELISTWIDGET_H

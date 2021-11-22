@@ -24,6 +24,12 @@ public:
     qint64 size() const;
     const QList<GameVersion> &gameVersions() const;
     const QList<ModLoaderType::Type> &loaderTypes() const;
+
+    enum ReleaseType{
+        Release = 1,
+        Beta,
+        Alpha
+    };
     int releaseType() const;
     const QDateTime &fileDate() const;
 

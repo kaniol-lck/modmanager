@@ -25,6 +25,18 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
     if(localMod_)
         connect(localMod_, &LocalMod::modCacheUpdated, this, &CurseforgeFileItemWidget::updateLocalInfo);
 
+    if(fileInfo_.releaseType() == CurseforgeFileInfo::Release){
+        ui->releaseType->setText(tr("Release"));
+        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #14b866; border-radius:2px; padding:1px 2px;"));
+    } else if(fileInfo_.releaseType() == CurseforgeFileInfo::Beta){
+        ui->releaseType->setText(tr("Beta"));
+        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #0e9bd8; border-radius:2px; padding:1px 2px;"));
+    }  else if(fileInfo_.releaseType() == CurseforgeFileInfo::Alpha){
+        ui->releaseType->setText(tr("Alpha"));
+        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #d3cae8; border-radius:2px; padding:1px 2px;"));
+    } else{
+        ui->releaseType->setText(QString::number(fileInfo_.releaseType()));
+    }
     ui->fileNameText->setText(fileInfo_.fileName());
     ui->fileDateText->setText(tr("%1 ago").arg(timesTo(info.fileDate())));
     ui->fileDateText->setToolTip(info.fileDate().toString());
