@@ -4,13 +4,11 @@
 #include <QDialog>
 #include <QStandardItemModel>
 
+class LocalModPath;
+class LocalMod;
 namespace Ui {
 class BatchRenameDialog;
 }
-
-class LocalModPath;
-class LocalMod;
-class RenameHighlighter;
 
 class BatchRenameDialog : public QDialog
 {
@@ -20,8 +18,6 @@ public:
     explicit BatchRenameDialog(QWidget *parent, LocalModPath *modPath);
     ~BatchRenameDialog();
 
-    bool eventFilter(QObject *obj, QEvent *e);
-
 private slots:
     void updateModList();
     void on_BatchRenameDialog_accepted();
@@ -30,16 +26,13 @@ private slots:
     void on_toolButton_3_clicked();
     void on_toolButton_4_clicked();
     void on_toolButton_5_clicked();
-
     void on_renamePattern_textChanged();
-
 private:
     Ui::BatchRenameDialog *ui;
     LocalModPath *modPath_;
     QList<LocalMod*> modList_;
     QStringList fileNameList_;
     QStandardItemModel model_;
-    RenameHighlighter *highlighter_;
 };
 
 #endif // BATCHRENAMEDIALOG_H

@@ -6,7 +6,12 @@
 
 #include "tag/tagcategory.h"
 
-RenameHighlighter::RenameHighlighter(QTextDocument *parent) : QSyntaxHighlighter(parent)
+RenameHighlighter::RenameHighlighter(QObject *parent) :
+    QSyntaxHighlighter(parent)
+{}
+
+RenameHighlighter::RenameHighlighter(QTextDocument *parent) :
+    QSyntaxHighlighter(parent)
 {}
 
 void RenameHighlighter::highlightBlock(const QString &text)
@@ -14,7 +19,7 @@ void RenameHighlighter::highlightBlock(const QString &text)
     QRegularExpressionMatchIterator i;
     //tag category arg
     for(const auto &category : TagCategory::PresetCategories){
-        i = QRegularExpression("<tags\\|(" + category.id() + ")?(\\|(.+?))?>").globalMatch(text);
+        i = QRegularExpression("<tags\\|(" + category.id() + ")?(\\|(.*?))?>").globalMatch(text);
         while (i.hasNext()){
             QTextCharFormat format1;
             format1.setForeground(Qt::darkCyan);

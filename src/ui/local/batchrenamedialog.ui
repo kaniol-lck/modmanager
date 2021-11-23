@@ -299,7 +299,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPlainTextEdit" name="renamePattern">
+      <widget class="RenamePatternEdit" name="renamePattern">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -347,6 +347,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>RenamePatternEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>ui/renamepatternedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

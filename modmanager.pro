@@ -86,6 +86,7 @@ SOURCES += \
     src/ui/optifine/optifinemoditemwidget.cpp \
     src/ui/preferences.cpp \
     src/ui/renamehighlighter.cpp \
+    src/ui/renamepatternedit.cpp \
     src/ui/replay/replaymodbrowser.cpp \
     src/ui/replay/replaymoditemwidget.cpp \
     src/ui/windowstitlebar.cpp \
@@ -175,6 +176,7 @@ HEADERS += \
     src/ui/optifine/optifinemoditemwidget.h \
     src/ui/preferences.h \
     src/ui/renamehighlighter.h \
+    src/ui/renamepatternedit.h \
     src/ui/replay/replaymodbrowser.h \
     src/ui/replay/replaymoditemwidget.h \
     src/ui/windowstitlebar.h \

@@ -2,6 +2,9 @@
 #include "ui_batchrenamedialog.h"
 
 #include <QMenu>
+#include <QCompleter>
+#include <QScrollBar>
+#include <QStringListModel>
 
 #include "local/localmod.h"
 #include "local/localmodpath.h"
@@ -18,7 +21,6 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->renamePattern->installEventFilter(this);
     ui->renamePattern->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
-    highlighter_ = new RenameHighlighter(ui->renamePattern->document());
 
     auto menu = new QMenu(this);
     auto getSubmenu = [=](const QString &title, const QString &category){
@@ -50,17 +52,6 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
 BatchRenameDialog::~BatchRenameDialog()
 {
     delete ui;
-}
-
-bool BatchRenameDialog::eventFilter(QObject *obj, QEvent *e)
-{
-    if(obj == ui->renamePattern && e->type() == QEvent::KeyPress){
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(e);
-        int keyValue = keyEvent->key();
-        if(keyValue == Qt::Key_Return || keyValue == Qt::Key_Tab)
-            return true;
-    }
-    return QDialog::eventFilter(obj, e);
 }
 
 void BatchRenameDialog::updateModList()
