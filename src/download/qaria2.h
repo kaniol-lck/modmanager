@@ -19,8 +19,6 @@ public:
 
     static QAria2 *qaria2();
 
-    void updateOptions();
-
     QAria2Downloader *downloadNoRedirect(const QUrl &url, const QString &path = QString());
     QAria2Downloader *download(const QUrl &url, const QString &path = QString());
     QAria2Downloader *download(QAria2Downloader *downloader);
@@ -29,6 +27,7 @@ public:
     const QMap<aria2::A2Gid, QAria2Downloader *> &downloaders() const;
 
 public slots:
+    void updateOptions();
 signals:
     void downloaderAdded(QAria2Downloader *downloader);
     void started();

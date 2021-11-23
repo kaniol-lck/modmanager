@@ -293,8 +293,8 @@ void ModManager::on_actionPreferences_triggered()
 {
     auto preferences = new Preferences(this);
     preferences->exec();
-    updateUi();
-    QAria2::qaria2()->updateOptions();
+    connect(preferences, &Preferences::accepted, this, &ModManager::updateUi, Qt::UniqueConnection);
+    connect(preferences, &Preferences::accepted, QAria2::qaria2(), &QAria2::updateOptions, Qt::UniqueConnection);
 }
 
 void ModManager::on_actionManage_Browser_triggered()

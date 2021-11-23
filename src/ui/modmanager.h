@@ -24,7 +24,6 @@ class ModManager : public QMainWindow
 public:
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
-    void updateUi();
     WindowsTitleBar *titleBar();
 
 protected:
@@ -35,6 +34,8 @@ protected:
 #ifdef Q_OS_WIN
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
 #endif //Q_OS_WIN
+public slots:
+    void updateUi();
 private slots:
     void syncPathList();
     void editLocalPath(int index);

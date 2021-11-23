@@ -63,6 +63,9 @@ Fixed progress bar in local mod page disappeared in some circumstances.
 Fixed some issues caused by reloading local mods.
 修复了重新加载本地mod时出现的一些问题。
 
+Fixed unnecesssary ui updates when not accept preference changes.
+修复了未接受偏好设置变更时产生的不必要更新。
+
 ### v1.0.0-beta.6
 
 *2021.11.14*
