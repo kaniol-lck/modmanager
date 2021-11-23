@@ -55,9 +55,6 @@ void RenamePatternEdit::keyPressEvent(QKeyEvent *e)
     }
     QPlainTextEdit::keyPressEvent(e);
 
-//    static QString eow("~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-="); // end of word
-//    const bool isSyntax = eow.contains(e->text());
-
     const bool ctrlOrShift = e->modifiers().testFlag(Qt::ControlModifier) ||
                              e->modifiers().testFlag(Qt::ShiftModifier);
     if (ctrlOrShift && e->text().isEmpty())
@@ -65,17 +62,13 @@ void RenamePatternEdit::keyPressEvent(QKeyEvent *e)
 
     QString completionPrefix = textUnderCursor();
 
-//    if (!isSyntax && (e->text().isEmpty()|| eow.contains(e->text().right(1)))) {
-//        completer_->popup()->hide();
-//        return;
-//    }
-
     if (completionPrefix != completer_->completionPrefix()) {
         completer_->setCompletionPrefix(completionPrefix);
         completer_->popup()->setCurrentIndex(completer_->completionModel()->index(0, 0));
     }
     QRect cr = cursorRect();
-    cr.setWidth(200);
+    cr.setWidth(qMax(200, completer_->popup()->sizeHintForColumn(0)
+                + completer_->popup()->verticalScrollBar()->sizeHint().width()));
     completer_->complete(cr);
 }
 
@@ -105,7 +98,6 @@ QString RenamePatternEdit::textUnderCursor() const
     tc.select(QTextCursor::WordUnderCursor);
     auto str =  tc.selectedText();
     tc.clearSelection();
-//    tc.movePosition(QTextCursor::WordLeft,QTextCursor::MoveAnchor, 1);
     tc.select(QTextCursor::WordUnderCursor);
     tc.movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
     auto str2 = tc.selectedText();

@@ -12,6 +12,10 @@
 
 Mod管理器以[GPLv3](LICENSE)许可证发布。
 
+## 安装
+
+见[Release](https://github.com/kaniol-lck/modmanager/releases)。
+
 ## 构建
 
 本项目已经配置了[GitHub Actions](https://github.com/kaniol-lck/modmanager/actions)，如果你想要尝试最新鲜的bug，可以直接在其中选择下载并帮我捉虫。
@@ -24,53 +28,46 @@ Mod管理器以[GPLv3](LICENSE)许可证发布。
 git clone git@github.com:kaniol-lck/modmanager.git
 ```
 
-#### 安装libaria2
+#### 安装依赖库
 
-取决于你的系统：
+该项目有以下外部依赖库：
+
+- Qt（5.15.2或也许其他版本）
+- quazip
+- libaria2
+
+具体安装方式取决于你的系统与包管理器：
 
 - Ubuntu:
 
   ```sh
-  apt-get install libaria2-0-dev
+  apt-get install libaria2-0-dev libquazip5-dev
   ```
 
 - Archlinux:
 
   ```sh
-  yay install aria2
+  pacman -S aria2 quazip
   ```
 
 - Windows (MSYS2):
 
   ```sh
-  pacman -S mingw-w64-x86_64-aria2
+  pacman -S mingw-w64-x86_64-aria2 mingw-w64-x86_64-quazip
   ```
 
 - MacOS
-  见[kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases)，将其中的文件解压至系统路径
+  
+  ```sh
+  brew install quazip
+  ```
+  libaria2：请在[kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases/tag/release-1.36.0) 查看安装说明
+  
 
-#### 对于Clang/GCC/MinGW
-
-构建：
+#### 编译
 
 ```bash
 qmake && make
-```
-
-#### 对于MSVC
-
-**\* HELP WANTED: 我不知道怎么使用MSVC构建libaria2**
-
-安装zlib（详见[zlib.install](https://github.com/horta/zlib.install)）：
-
-```bash
-powershell -Command "(Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat)"; ./install_zlib.bat; del install_zlib.bat
-```
-
-构建：
-
-```bash
-qmake && nmake
 ```
 
 ## 使用

@@ -12,6 +12,10 @@ A Qt-based mod manager for Minecraft, able to manage, update and download mod.
 
 Mod Manager is licensed under [GPLv3](LICENSE).
 
+## Installation
+
+See [Release](https://github.com/kaniol-lck/modmanager/releases).
+
 ## Build
 
 This repository has deployed [GitHub Actions](https://github.com/kaniol-lck/modmanager/actions). If you want to try my new-written bugs, welcome to try it and open some issues.
@@ -24,53 +28,46 @@ Clone this repository:
 git clone git@github.com:kaniol-lck/modmanager.git
 ```
 
-#### Install libaria2
+#### Install dependencies
+
+This project has these external dependencies:
+
+- Qt (5.15.2 or maybe other versions)
+- quazip
+- libaria2
 
 Depends on your OS and package managers:
 
 - Ubuntu (apt-get):
 
   ```sh
-  apt-get install libaria2-0-dev
+  apt-get install libaria2-0-dev libquazip5-dev
   ```
 
-- Archlinux (aur):
+- Archlinux:
 
   ```sh
-  yay install aria2
+  pacman -S aria2 quazip
   ```
 
 - Windows (MSYS2):
 
   ```sh
-  pacman -S mingw-w64-x86_64-aria2
+  pacman -S mingw-w64-x86_64-aria2 mingw-w64-x86_64-quazip
   ```
 
 - MacOS:
-  See [kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases/tag/release-1.36.0) for install instructions.
+  
+  ```sh
+  brew install quazip
+  ```
+  libaria2: see [kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases/tag/release-1.36.0) for install instructions.
+  
 
-#### For Clang/GCC/MinGW
-
-Build:
+#### Compile
 
 ```bash
 qmake && make
-```
-
-#### For MSVC
-
-**\* HELP WANTED: I don't know how to use MSVC to build libaria2**
-
-Install zlib if you don't have one. (See [zlib.install](https://github.com/horta/zlib.install))
-
-```bash
-powershell -Command "(Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat)"; ./install_zlib.bat; del install_zlib.bat
-```
-
-Build:
-
-```bash
-qmake && nmake
 ```
 
 ## Usage
