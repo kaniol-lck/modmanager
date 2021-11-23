@@ -85,10 +85,17 @@ public:
         QList<FileInfoT> list;
         std::insert_iterator<QList<FileInfoT>> iter(list, list.begin());
         std::copy_if(fileList.cbegin(), fileList.cend(), iter, [=](const auto &file){
+            Config config;
             if(ignores_.contains(file.id()))
                 return false;
+            bool releaseTypeCheck = false;
+            if(file.releaseType() == FileInfoT::Release)
+                releaseTypeCheck = true;
+            if(config.getUseBetaUpdate() && file.releaseType() == FileInfoT::Beta)
+                releaseTypeCheck = true;
+            if(config.getUseAlphaUpdate() && file.releaseType() == FileInfoT::Beta)
+                releaseTypeCheck = true;
             bool versionCheck = false;
-            Config config;
             for(auto &&version : file.gameVersions()){
                 switch (config.getVersionMatch()) {
                 case Config::MinorVersion:
@@ -107,7 +114,7 @@ public:
             if(!loaderCheck && config.getLoaderMatch() == Config::IncludeUnmarked && file.loaderTypes().isEmpty())
                 loaderCheck = true;
 
-            return versionCheck && loaderCheck;
+            return releaseTypeCheck && versionCheck && loaderCheck;
         });
 
         //non match

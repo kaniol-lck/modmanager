@@ -39,8 +39,8 @@ Added two patterns for batch rename:
 
   例如：文件名称为`[1.15+][tool]modid-version.jar`时，`<replace|<filename>|\[(.+?)\]|(\1)>`会获得`(1.15+)(tools)modid-version.jar`的结果，将文件名中所有的方括号替换为圆括号。
 
-Added mod file release type (release/beta/alpha) display.
-添加了mod文件发布类型（正式版/测试版/不稳定测试版）显示。
+Added mod file release type (release/beta/alpha) display. You can choose update source of release type.
+添加了mod文件发布类型（正式版/测试版/不稳定测试版）显示。你可以选择更新检查时是否使用该发布类型。
 
 Added online translator (Youdao Translator) for mod summaries.
 添加了有道生草机在线翻译mod简介。

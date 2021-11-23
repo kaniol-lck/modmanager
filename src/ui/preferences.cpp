@@ -62,6 +62,8 @@ Preferences::Preferences(QWidget *parent) :
     ui->updateCheckIntervalSelect->setCurrentIndex(config.getUpdateCheckInterval());
     ui->useCurseforgeUpdate->setChecked(config.getUseCurseforgeUpdate());
     ui->useModrinthUpdate->setChecked(config.getUseModrinthUpdate());
+    ui->useBetaUpdate->setChecked(config.getUseBetaUpdate());
+    ui->useAlphaUpdate->setChecked(config.getUseAlphaUpdate());
     ui->postUpdate->setCurrentIndex(config.getPostUpdate());
 
     //Network
@@ -114,6 +116,8 @@ void Preferences::on_Preferences_accepted()
     config.setUpdateCheckInterval(ui->updateCheckIntervalSelect->currentIndex());
     config.setUseCurseforgeUpdate(ui->useCurseforgeUpdate->isChecked());
     config.setUseModrinthUpdate(ui->useModrinthUpdate->isChecked());
+    config.setUseBetaUpdate(ui->useBetaUpdate->isChecked());
+    config.setUseAlphaUpdate(ui->useAlphaUpdate->isChecked());
     config.setPostUpdate(ui->postUpdate->currentIndex());
 
     config.setAria2timeout(ui->aria2timeout->value());

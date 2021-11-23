@@ -90,6 +90,8 @@ public:
     enum LoaderMatchType{ ExactMatch, IncludeUnmarked };
     getterAndSetter(LoaderMatch, Int, loaderMatch, IncludeUnmarked);
     getterAndSetter(UseCurseforgeUpdate, Bool, useCurseforgeUpdate, true)
+    getterAndSetter(UseBetaUpdate, Bool, useBetaUpdate, true)
+    getterAndSetter(UseAlphaUpdate, Bool, useAlphaUpdate, true)
     getterAndSetter(UseModrinthUpdate, Bool, useModrinthUpdate, true)
     enum PostUpdateType{ Delete, Keep, DoNothing };
     getterAndSetter(PostUpdate, Int, postUpdate, Keep)
