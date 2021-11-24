@@ -306,6 +306,7 @@ unix {
   }
   LIBS += -L$$quote(/usr/local/lib) -laria2
   INCLUDEPATH += \
+      /usr/include/QuaZip-Qt5-1.2/quazip \
       /usr/include/QuaZip-Qt5-1.1/quazip \
       /usr/include/quazip
 
