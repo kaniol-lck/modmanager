@@ -141,6 +141,7 @@ QMetaObject::Connection ModrinthAPI::getVersions(const QString &id, std::functio
     return connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
+            callback({});
             return;
         }
 

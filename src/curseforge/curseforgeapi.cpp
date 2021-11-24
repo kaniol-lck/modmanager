@@ -170,6 +170,7 @@ QMetaObject::Connection CurseforgeAPI::getFiles(int id, std::function<void (QLis
     return connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
+            callback({});
             return;
         }
 
