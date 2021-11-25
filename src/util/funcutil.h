@@ -6,7 +6,6 @@
 #include "curseforge/curseforgemodinfo.h"
 #include "modrinth/modrinthmodinfo.h"
 
-class QNetworkAccessManager;
 class LocalModPath;
 class CurseforgeMod;
 class ModrinthMod;

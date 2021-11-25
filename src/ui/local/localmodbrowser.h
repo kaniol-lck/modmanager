@@ -49,7 +49,7 @@ private slots:
 
     void onCheckUpdatesStarted();
     void onUpdateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount);
-    void onUpdatesReady();
+    void onUpdatesReady(int failedCount = 0);
     void onUpdatableCountChanged();
 
     void onUpdatesStarted();

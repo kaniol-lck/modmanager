@@ -161,7 +161,7 @@ void LocalModItemWidget::updateInfo()
     if (mod_->modrinthMod())
         ui->modrinthButton->setVisible(true);
 
-    updateReady(mod_->defaultUpdateType());
+    updateReady(mod_->updateTypes());
 
     //rollback
     if (mod_->oldFiles().isEmpty())
@@ -235,9 +235,9 @@ void LocalModItemWidget::on_updateButton_clicked()
     mod_->update(mod_->defaultUpdateType());
 }
 
-void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType defaultType)
+void LocalModItemWidget::updateReady(QList<LocalMod::ModWebsiteType> types)
 {
-    if (defaultType == LocalMod::None){
+    if (types.isEmpty()){
         ui->updateButton->setVisible(false);
         if(ui->updateButton->menu())
             ui->updateButton->menu()->clear();
@@ -249,7 +249,7 @@ void LocalModItemWidget::updateReady(LocalMod::ModWebsiteType defaultType)
 
     auto menu = new QMenu(this);
     auto ignoreMenu = new QMenu(tr("Ignore update"), this);
-    for(auto &&type : mod_->updateTypes()){
+    for(auto &&type : types){
         if (type == LocalMod::Curseforge){
             auto name = mod_->curseforgeUpdate().updateFileInfo()->displayName();
             auto action = menu->addAction(QIcon(":/image/curseforge.svg"), name);

@@ -73,7 +73,7 @@ signals:
 
     void checkUpdatesStarted();
     void updateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount);
-    void updatesReady();
+    void updatesReady(int failedCount = 0);
 
     void updatesStarted();
     void updatableCountChanged(int count);

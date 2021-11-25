@@ -102,6 +102,7 @@ public:
     getterAndSetter(Aria2timeout, Int, aria2timeout, 60)
     getterAndSetter(Aria2maxTries, Int, aria2maxTries, 5)
     getterAndSetter(Aria2maxConcurrentDownloads, Int, aria2maxConcurrentDownloads, 5)
+    getterAndSetter(NetworkRequestTimeout, Int, networkRequestTimeout, 60000)
 
     //Path List
     getterAndSetter(LocalPathList, List, localPathList, QVariant())

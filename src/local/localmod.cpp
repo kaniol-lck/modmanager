@@ -155,70 +155,70 @@ void LocalMod::checkUpdates(bool force)
 
     Config config;
     auto count = std::make_shared<int>(0);
-    auto foo = [=](bool){
+    auto success = std::make_shared<bool>(false);
+    auto foo = [=](bool hasUpdate[[maybe_unused]], bool success2){
+        if(success2) *success = true;
         if(--(*count) == 0){
-            emit updateReady(defaultUpdateType());
+            emit updateReady(updateTypes(), *success);
         }
     };
     bool noSource = true;
-    if(config.getUseCurseforgeUpdate() && curseforgeUpdate_.currentFileInfo()){
+    if(config.getUseCurseforgeUpdate() && curseforgeMod_ && curseforgeUpdate_.currentFileInfo()){
         (*count)++;
-        connect(this, &LocalMod::curseforgeUpdateReady, foo);
         checkCurseforgeUpdate(force);
+        connect(this, &LocalMod::curseforgeUpdateReady, foo);
         noSource = false;
     }
-    if(config.getUseModrinthUpdate() && modrinthUpdate_.currentFileInfo()){
+    if(config.getUseModrinthUpdate() && modrinthMod_ && modrinthUpdate_.currentFileInfo()){
         (*count)++;
-        connect(this, &LocalMod::modrinthUpdateReady, foo);
         checkModrinthUpdate(force);
         noSource = false;
     }
-    if(noSource) emit updateReady(ModWebsiteType::None);
+    if(noSource) emit updateReady({});
 }
 
 void LocalMod::checkCurseforgeUpdate(bool force)
 {
     if(!curseforgeMod_){
-        emit curseforgeUpdateReady(false);
+        emit curseforgeUpdateReady(false, false);
         return;
     }
 
     emit checkCurseforgeUpdateStarted();
 
     //update file list
-    auto updateFileList = [=]{
-         bool bl = curseforgeUpdate_.findUpdate(curseforgeMod_->modInfo().allFileList(), targetVersion_, targetLoaderType_);
-         emit curseforgeUpdateReady(bl);
-    };
-
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
-        curseforgeMod_->acquireAllFileList();
-        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, updateFileList);
-    }else
-        updateFileList();
+        curseforgeMod_->acquireAllFileList([=](const QList<CurseforgeFileInfo> &fileList){
+            bool bl = curseforgeUpdate_.findUpdate(fileList, targetVersion_, targetLoaderType_);
+            emit curseforgeUpdateReady(bl);
+        }, [=]{
+            emit curseforgeUpdateReady(false, false);
+        });
+    }else{
+        bool bl = curseforgeUpdate_.findUpdate(curseforgeMod_->modInfo().allFileList(), targetVersion_, targetLoaderType_);
+        emit curseforgeUpdateReady(bl);
+    }
 }
 
 void LocalMod::checkModrinthUpdate(bool force)
 {
     if(!modrinthMod_){
-        emit modrinthUpdateReady(false);
+        emit modrinthUpdateReady(false, false);
         return;
     }
 
     emit checkModrinthUpdateStarted();
-
-    //update file list
-    auto updateFileList = [=]{
-         bool bl = modrinthUpdate_.findUpdate(modrinthMod_->modInfo().fileList(), targetVersion_, targetLoaderType_);
-         emit modrinthUpdateReady(bl);
-    };
-
     auto updateFullInfo = [=]{
-        if(!modrinthMod_->modInfo().fileList().isEmpty())
-            updateFileList();
-        else {
-            modrinthMod_->acquireFileList();
-            connect(modrinthMod_, &ModrinthMod::fileListReady, this, updateFileList);
+        if(!modrinthMod_->modInfo().fileList().isEmpty()){
+            bool bl = modrinthUpdate_.findUpdate(modrinthMod_->modInfo().fileList(), targetVersion_, targetLoaderType_);
+            emit modrinthUpdateReady(bl);
+        }else {
+            modrinthMod_->acquireFileList([=](const QList<ModrinthFileInfo> &fileList){
+                bool bl = modrinthUpdate_.findUpdate(fileList, targetVersion_, targetLoaderType_);
+                emit modrinthUpdateReady(bl);
+            }, [=]{
+                emit modrinthUpdateReady(false, false);
+            });
         }
     };
 
@@ -466,7 +466,7 @@ void LocalMod::ignoreUpdate(ModWebsiteType type)
     else if(type == Modrinth)
         modrinthUpdate_.addIgnore();
     emit modCacheUpdated();
-    emit updateReady(defaultUpdateType());
+    emit updateReady(updateTypes());
 }
 
 void LocalMod::clearIgnores()

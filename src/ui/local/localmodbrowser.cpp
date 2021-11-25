@@ -234,7 +234,7 @@ void LocalModBrowser::onUpdateCheckedCountUpdated(int updateCount, int checkedCo
     progressBar_->setValue(checkedCount);
 }
 
-void LocalModBrowser::onUpdatesReady()
+void LocalModBrowser::onUpdatesReady(int failedCount)
 {
     isChecking_ = false;
     if(isUpdating_) return;
@@ -242,6 +242,8 @@ void LocalModBrowser::onUpdatesReady()
     ui->checkUpdatesButton->setText(tr("Check updates"));
     onUpdatableCountChanged();
     updateStatusText();
+    if(failedCount)
+        QMessageBox::information(this, tr("Update Checking Imcompleted"), tr("%1 mods failed checking update because of network.").arg(failedCount));
 }
 
 void LocalModBrowser::onUpdatableCountChanged()

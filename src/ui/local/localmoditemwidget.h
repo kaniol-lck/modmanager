@@ -29,7 +29,7 @@ public slots:
 private slots:
     void on_updateButton_clicked();
 
-    void updateReady(LocalMod::ModWebsiteType type);
+    void updateReady(QList<LocalMod::ModWebsiteType> types);
 
     void startCheckCurseforge();
     void curseforgeReady(bool bl);

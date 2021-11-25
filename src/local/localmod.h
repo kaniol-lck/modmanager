@@ -123,14 +123,14 @@ signals:
     void checkWebsiteStarted();
     void websiteReady(bool bl);
     void checkUpdatesStarted();
-    void updateReady(ModWebsiteType type);
+    void updateReady(QList<ModWebsiteType> types, bool success = true);
     void searchOnCurseforgeFinished(bool bl);
     void searchOnModrinthFinished(bool bl);
 
     void curseforgeReady(bool bl);
-    void curseforgeUpdateReady(bool bl);
+    void curseforgeUpdateReady(bool hasUpdate, bool success = true);
     void modrinthReady(bool bl);
-    void modrinthUpdateReady(bool bl);
+    void modrinthUpdateReady(bool hasUpdate, bool success = true);
 
     void checkCurseforgeStarted();
     void checkCurseforgeUpdateStarted();

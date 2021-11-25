@@ -21,7 +21,7 @@ public:
 
     [[nodiscard]] QMetaObject::Connection searchMods(const QString name, int index, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort, std::function<void (QList<ModrinthModInfo>)> callback);
     [[nodiscard]] QMetaObject::Connection getInfo(const QString &id, std::function<void (ModrinthModInfo)> callback);
-    [[nodiscard]] QMetaObject::Connection getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback);
+    [[nodiscard]] QMetaObject::Connection getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback, std::function<void ()> failed = []{});
     [[nodiscard]] QMetaObject::Connection getVersion(const QString &version, std::function<void (ModrinthFileInfo)> callback);
     [[nodiscard]] QMetaObject::Connection getAuthor(const QString &authorId, std::function<void (QString)> callback);
     [[nodiscard]] QMetaObject::Connection getVersionFileBySha1(const QString sha1, std::function<void (ModrinthFileInfo)> callback, std::function<void ()> noMatch);

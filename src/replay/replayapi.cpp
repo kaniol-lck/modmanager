@@ -4,11 +4,14 @@
 #include <QUrlQuery>
 
 #include "util/funcutil.h"
+#include "config.hpp"
 
 const QString ReplayAPI::PREFIX = "https://www.replaymod.com";
 
 ReplayAPI::ReplayAPI(QObject *parent) : QObject(parent)
-{}
+{
+    accessManager_.setTransferTimeout(Config().getNetworkRequestTimeout());
+}
 
 ReplayAPI *ReplayAPI::api()
 {

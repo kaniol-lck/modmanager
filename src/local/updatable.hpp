@@ -79,7 +79,7 @@ public:
             currentFileInfo_.reset();
     }
 
-    bool findUpdate(QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
+    bool findUpdate(const QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
     {
         //select mod file for matched game versions and mod loader type
         QList<FileInfoT> list;

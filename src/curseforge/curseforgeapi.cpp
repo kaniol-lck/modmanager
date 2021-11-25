@@ -13,7 +13,9 @@ const QString CurseforgeAPI::PREFIX = "https://addons-ecs.forgesvc.net";
 
 CurseforgeAPI::CurseforgeAPI(QObject *parent) :
     QObject(parent)
-{}
+{
+    accessManager_.setTransferTimeout(Config().getNetworkRequestTimeout());
+}
 
 CurseforgeAPI *CurseforgeAPI::api()
 {
@@ -160,7 +162,7 @@ QMetaObject::Connection CurseforgeAPI::getFileInfo(int id, int FileID, std::func
     });
 }
 
-QMetaObject::Connection CurseforgeAPI::getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback)
+QMetaObject::Connection CurseforgeAPI::getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback, std::function<void ()> failed)
 {
     QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id) + "/files";
 
@@ -170,7 +172,7 @@ QMetaObject::Connection CurseforgeAPI::getFiles(int id, std::function<void (QLis
     return connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
-            callback({});
+            failed();
             return;
         }
 

@@ -70,6 +70,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->aria2timeout->setValue(config.getAria2timeout());
     ui->aria2maxTries->setValue(config.getAria2timeout());
     ui->aria2maxConcurrentDownloads->setValue(config.getAria2maxConcurrentDownloads());
+    ui->networkRequestTimeout->setValue(config.getNetworkRequestTimeout() / 1000);
 }
 
 Preferences::~Preferences()
@@ -123,6 +124,7 @@ void Preferences::on_Preferences_accepted()
     config.setAria2timeout(ui->aria2timeout->value());
     config.setAria2maxTries(ui->aria2maxTries->value());
     config.setAria2maxConcurrentDownloads(ui->aria2maxConcurrentDownloads->value());
+    config.setNetworkRequestTimeout(ui->networkRequestTimeout->value() * 1000);
 }
 
 void Preferences::on_commonPathButton_clicked()

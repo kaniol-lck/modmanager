@@ -13,7 +13,9 @@ const QString ModrinthAPI::PREFIX = "https://api.modrinth.com";
 
 ModrinthAPI::ModrinthAPI(QObject *parent) :
     QObject(parent)
-{}
+{
+    accessManager_.setTransferTimeout(Config().getNetworkRequestTimeout());
+}
 
 ModrinthAPI *ModrinthAPI::api()
 {
@@ -129,7 +131,7 @@ QMetaObject::Connection ModrinthAPI::getInfo(const QString &id, std::function<vo
     });
 }
 
-QMetaObject::Connection ModrinthAPI::getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback)
+QMetaObject::Connection ModrinthAPI::getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback, std::function<void ()> failed)
 {
     //id: "local-xxxxx" ???
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
@@ -141,7 +143,7 @@ QMetaObject::Connection ModrinthAPI::getVersions(const QString &id, std::functio
     return connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
-            callback({});
+            failed();
             return;
         }
 

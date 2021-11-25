@@ -470,11 +470,15 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
             count += map.size();
         auto checkedCount = std::make_shared<int>(0);
         auto updateCount = std::make_shared<int>(0);
+        auto failedCount = std::make_shared<int>(0);
         for(auto &&map : modMaps())
             for(const auto &mod : map){
-                auto conn = connect(mod, &LocalMod::updateReady, this, [=](bool bl){
+                //cancel on reloading
+                connect(this, &LocalModPath::loadStarted, disconnecter(
+                            connect(mod, &LocalMod::updateReady, this, [=](QList<LocalMod::ModWebsiteType> types, bool success){
                     (*checkedCount)++;
-                    if(bl) (*updateCount)++;
+                    if(!types.isEmpty()) (*updateCount)++;
+                    if(!success) (*failedCount) ++;
                     emit updateCheckedCountUpdated(*updateCount, *checkedCount, count);
                     //done
                     if(*checkedCount == count){
@@ -486,12 +490,10 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
                         latestUpdateCheck_ = currentDateTime;
                         writeToFile();
                         isChecking_ = false;
-                        emit updatesReady();
+                        emit updatesReady(*failedCount);
                     }
-                });
+                })));
                 mod->checkUpdates();
-                //cancel on reloading
-                connect(this, &LocalModPath::loadStarted, disconnecter(conn));
         }
     } else if(interval != Config::Never){
         //not manual not never i.e. load cache

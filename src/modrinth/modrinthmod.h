@@ -24,7 +24,7 @@ public:
     void acquireAuthor();
     void acquireIcon();
     void acquireFullInfo();
-    void acquireFileList();
+    void acquireFileList(std::function<void (QList<ModrinthFileInfo>)> callback = [](QList<ModrinthFileInfo>){}, std::function<void ()> failed = []{});
 
 signals:
     void authorReady();

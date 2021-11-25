@@ -23,7 +23,7 @@ public:
     [[nodiscard]] QMetaObject::Connection getChangelog(int id, int FileID, std::function<void (QString)> callback);
     [[nodiscard]] QMetaObject::Connection getDownloadUrl(int id, int FileID, std::function<void (QString)> callback);
     [[nodiscard]] QMetaObject::Connection getFileInfo(int id, int FileID, std::function<void(CurseforgeFileInfo)> callback);
-    [[nodiscard]] QMetaObject::Connection getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback);
+    [[nodiscard]] QMetaObject::Connection getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback, std::function<void ()> failed = []{});
     [[nodiscard]] QMetaObject::Connection getInfo(int id, std::function<void (CurseforgeModInfo)> callback);
     [[nodiscard]] QMetaObject::Connection getTimestamp(std::function<void (QString)> callback);
     [[nodiscard]] QMetaObject::Connection getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback);
