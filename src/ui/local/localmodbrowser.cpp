@@ -31,6 +31,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui(new Ui::LocalModBrowser),
     model_(new QStandardItemModel(this)),
     infoWidget_(new LocalModInfoWidget(this)),
+    statusBar_(new QStatusBar(this)),
     viewSwitcher_(new QButtonGroup(this)),
     modPath_(modPath),
     filter_(new LocalModFilter(this, modPath_))
@@ -40,14 +41,15 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     //setup mod list
 //    ui->updateWidget->setVisible(false);
     ui->modListView->setModel(model_);
+    ui->modIconListView->setModel(model_);
     ui->modTreeView->setModel(model_);
     ui->modTreeView->hideColumn(0);
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
+    ui->modIconListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modTreeView->setVerticalScrollBar(new SmoothScrollBar(this));
 
     //setup status bar
-    statusBar_ = new QStatusBar(this);
     progressBar_ = new QProgressBar(statusBar_);
     progressBar_->setVisible(false);
     statusBar_->addPermanentWidget(progressBar_);
@@ -58,7 +60,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     frame->setFrameShape(QFrame::StyledPanel);
     frame->setFrameShadow(QFrame::Raised);
     int id = 0;
-    for (auto icon : { "view-list-details", "view-list-text" }) {
+    for (auto icon : { "view-list-details", "view-list-icons", "view-list-text" }) {
         auto button = new QToolButton(this);
         button->setCheckable(true);
         button->setAutoRaise(true);
@@ -70,7 +72,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->mainLayout->addWidget(statusBar_);
 
     viewSwitcher_->button(0)->setChecked(true);
-    connect(viewSwitcher_, &QButtonGroup::idClicked, this, &LocalModBrowser::onViewSwitched);
+    connect(viewSwitcher_, &QButtonGroup::idClicked, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
     auto findNewMenu = new QMenu(this);
     connect(findNewMenu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
@@ -147,14 +149,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::updatesDoneCountUpdated, this, &LocalModBrowser::onUpdatesDoneCountUpdated);
     connect(modPath_, &LocalModPath::updatesDone, this, &LocalModBrowser::onUpdatesDone);
 
-    connect(ui->searchText, &QLineEdit::textChanged, this, &LocalModBrowser::filterList);
-    connect(ui->modListView, &QListView::entered, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modListView, &QListView::clicked, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modTreeView, &QTreeView::entered, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modTreeView, &QTreeView::clicked, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
-    connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
-
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::updateProgressBar);
@@ -164,6 +158,19 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::updateProgressBar);
+
+    connect(ui->searchText, &QLineEdit::textChanged, this, &LocalModBrowser::filterList);
+
+    connect(ui->modListView, &QListView::entered, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modListView, &QListView::clicked, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modIconListView, &QListView::entered, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modIconListView, &QListView::clicked, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modTreeView, &QTreeView::entered, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modTreeView, &QTreeView::clicked, this, &LocalModBrowser::onItemSelected);
+
+    connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
+    connect(ui->modIconListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
+    connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
 }
 
 LocalModBrowser::~LocalModBrowser()
@@ -209,6 +216,7 @@ void LocalModBrowser::updateModList()
             items.first()->setSizeHint(QSize(0, modItemWidget->height()));
         }
     model_->sort(NameColumn);
+    ui->modIconListView->setModelColumn(NameColumn);
     ui->modTreeView->hideColumn(ModColumn);
     filter_->refreshTags();
     filterList();
@@ -344,6 +352,7 @@ void LocalModBrowser::filterList()
         auto mod = item->data().value<LocalMod*>();
         auto hidden = !filter_->willShow(mod, ui->searchText->text().toLower());
         ui->modListView->setRowHidden(i, hidden);
+        ui->modIconListView->setRowHidden(i, hidden);
         ui->modTreeView->setRowHidden(i, ui->modTreeView->rootIndex(), hidden);
         if(hidden) hiddenCount_++;
     }
@@ -435,19 +444,23 @@ void LocalModBrowser::onItemDoubleClicked(const QModelIndex &index)
     dialog->show();
 }
 
-void LocalModBrowser::onViewSwitched(int id)
-{
-    ui->stackedWidget->setCurrentIndex(id);
-}
-
 QList<QStandardItem *> LocalModBrowser::itemsFromMod(LocalMod *mod)
 {
     auto item = new QStandardItem;
     item->setData(QVariant::fromValue(mod));
     auto nameItem = new QStandardItem(mod->displayName());
+    QPixmap pixmap;
+    if(mod->commonInfo()->iconBytes().isEmpty())
+        pixmap.load(":/image/modmanager.png");
+    else
+        pixmap.loadFromData(mod->commonInfo()->iconBytes());
+    nameItem->setIcon(QIcon(pixmap.scaled(96, 96)));
     auto idItem = new QStandardItem(mod->commonInfo()->id());
     auto versionItem = new QStandardItem(mod->commonInfo()->version());
     auto descItem = new QStandardItem(mod->commonInfo()->description());
+    connect(mod, &LocalMod::modFileUpdated, this, [=]{
+        //TODO:
+    });
     return { item, nameItem, idItem, versionItem, descItem };
 }
 

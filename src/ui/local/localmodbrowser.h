@@ -78,7 +78,6 @@ private slots:
     void on_modListView_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void onItemSelected(const QModelIndex &index);
     void onItemDoubleClicked(const QModelIndex &index);
-    void onViewSwitched(int id);
 private:
     Ui::LocalModBrowser *ui;
     QStandardItemModel *model_;
@@ -91,7 +90,7 @@ private:
     int hiddenCount_ = 0;
     bool isChecking_ = false;
     bool isUpdating_ = false;
-    static QList<QStandardItem*> itemsFromMod(LocalMod* mod);
+    QList<QStandardItem*> itemsFromMod(LocalMod* mod);
 };
 
 #endif // LOCALMODBROWSER_H
