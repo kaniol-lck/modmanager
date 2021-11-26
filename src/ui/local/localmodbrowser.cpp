@@ -8,6 +8,7 @@
 #include <QStatusBar>
 #include <QProgressBar>
 #include <QStandardItemModel>
+#include <QTreeView>
 
 #include "localmodinfowidget.h"
 #include "localmodpathsettingsdialog.h"
@@ -39,11 +40,11 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     //setup mod list
 //    ui->updateWidget->setVisible(false);
     ui->modListView->setModel(model_);
-    ui->modTableView->setModel(model_);
-    ui->modTableView->hideColumn(0);
+    ui->modTreeView->setModel(model_);
+    ui->modTreeView->hideColumn(0);
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
-    ui->modTableView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->modTreeView->setVerticalScrollBar(new SmoothScrollBar(this));
 
     //setup status bar
     statusBar_ = new QStatusBar(this);
@@ -57,7 +58,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     frame->setFrameShape(QFrame::StyledPanel);
     frame->setFrameShadow(QFrame::Raised);
     int id = 0;
-    for (auto icon : { "view-list-details", "table" }) {
+    for (auto icon : { "view-list-details", "view-list-text" }) {
         auto button = new QToolButton(this);
         button->setAutoRaise(true);
         button->setIcon(QIcon::fromTheme(icon));
@@ -147,10 +148,10 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(ui->searchText, &QLineEdit::textChanged, this, &LocalModBrowser::filterList);
     connect(ui->modListView, &QListView::entered, this, &LocalModBrowser::onItemSelected);
     connect(ui->modListView, &QListView::clicked, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modTableView, &QTableView::entered, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modTableView, &QTableView::clicked, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modTreeView, &QTreeView::entered, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modTreeView, &QTreeView::clicked, this, &LocalModBrowser::onItemSelected);
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
-    connect(ui->modTableView, &QTableView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
+    connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
 
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
@@ -205,18 +206,17 @@ void LocalModBrowser::updateModList()
             items.first()->setSizeHint(QSize(0, modItemWidget->height()));
         }
     model_->sort(NameColumn);
-    ui->modTableView->hideColumn(ModColumn);
+    ui->modTreeView->hideColumn(ModColumn);
     filter_->refreshTags();
     filterList();
 }
 
 void LocalModBrowser::updateUi()
 {
-//    for(int i = 0; i < ui->modListView->count(); i++){
-//        auto item = ui->modListView->item(i);
-//        auto widget = ui->modListView->itemWidget(item);
-//        dynamic_cast<LocalModItemWidget*>(widget)->updateUi();
-//    }
+    for(int i = 0; i < model_->rowCount(); i++){
+        auto widget = ui->modListView->indexWidget(model_->index(i, 0));
+        dynamic_cast<LocalModItemWidget*>(widget)->updateUi();
+    }
 }
 
 void LocalModBrowser::onLoadStarted()

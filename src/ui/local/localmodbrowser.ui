@@ -79,12 +79,15 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="QTableView" name="modTableView">
+        <widget class="QTreeView" name="modTreeView">
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
@@ -95,9 +98,9 @@
          <property name="horizontalScrollMode">
           <enum>QAbstractItemView::ScrollPerPixel</enum>
          </property>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
+         <property name="uniformRowHeights">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
       </layout>

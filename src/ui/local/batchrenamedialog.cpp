@@ -17,8 +17,8 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
 {
     ui->setupUi(this);
     ui->widget->setVisible(false);
-    ui->tableView->setModel(&model_);
-    ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->renameTreeView->setModel(&model_);
+    ui->renameTreeView->header()->setSectionResizeMode(QHeaderView::Stretch);
     ui->renamePattern->installEventFilter(this);
     ui->renamePattern->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
@@ -62,8 +62,8 @@ void BatchRenameDialog::updateModList()
     model_.setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Mod Name")));
     model_.setHorizontalHeaderItem(OldFileNameColumn, new QStandardItem(tr("Old File Name")));
     model_.setHorizontalHeaderItem(NewFileNameColumn, new QStandardItem(tr("New File Name")));
-    ui->tableView->horizontalHeader()->setSectionResizeMode(NameColumn, QHeaderView::Fixed);
-    ui->tableView->setColumnWidth(NameColumn, 250);
+    ui->renameTreeView->header()->setSectionResizeMode(NameColumn, QHeaderView::Fixed);
+    ui->renameTreeView->setColumnWidth(NameColumn, 250);
     for(auto &&map : modPath_->modMaps())
         for(const auto &mod : map){
             auto enabled = !mod->isDisabled();

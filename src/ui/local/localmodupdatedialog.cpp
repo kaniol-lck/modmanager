@@ -11,18 +11,18 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
     modPath_(modPath)
 {
     ui->setupUi(this);
-    ui->updateTableView->setModel(&model_);
-    ui->updateTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->updateTreeView->setModel(&model_);
+    ui->updateTreeView->header()->setSectionResizeMode(QHeaderView::Stretch);
 
     model_.setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Mod Name")));
     model_.setHorizontalHeaderItem(BeforeColumn, new QStandardItem(tr("Old Version")));
     model_.setHorizontalHeaderItem(AfterColumn, new QStandardItem(tr("New Version")));
     model_.setHorizontalHeaderItem(SourceColumn, new QStandardItem(tr("Update Source")));
 
-    ui->updateTableView->horizontalHeader()->setSectionResizeMode(NameColumn, QHeaderView::Fixed);
-    ui->updateTableView->setColumnWidth(NameColumn, 250);
-    ui->updateTableView->horizontalHeader()->setSectionResizeMode(SourceColumn, QHeaderView::Fixed);
-    ui->updateTableView->setColumnWidth(SourceColumn, 140);
+    ui->updateTreeView->header()->setSectionResizeMode(NameColumn, QHeaderView::Fixed);
+    ui->updateTreeView->setColumnWidth(NameColumn, 250);
+    ui->updateTreeView->header()->setSectionResizeMode(SourceColumn, QHeaderView::Fixed);
+    ui->updateTreeView->setColumnWidth(SourceColumn, 140);
 
     for(auto &&map : modPath_->modMaps())
         for(const auto &mod : map){
@@ -64,13 +64,13 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
             sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
             sourceItem->setEnabled(enabled);
             if(mod->updateTypes().size() == 1)
-                sourceItem->setEnabled(false);
+                sourceItem->setForeground(Qt::gray);
 
             model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
             modUpdateList_ << QPair(mod, mod->defaultUpdateType());
 
             auto updateSourceDelegate = new UpdateSourceDelegate(mod->updateTypes());
-            ui->updateTableView->setItemDelegateForRow(model_.rowCount() - 1, updateSourceDelegate);
+            ui->updateTreeView->setItemDelegateForRow(model_.rowCount() - 1, updateSourceDelegate);
             connect(updateSourceDelegate, &UpdateSourceDelegate::updateSourceChanged, this, &LocalModUpdateDialog::onUpdateSourceChanged);
         }
 }

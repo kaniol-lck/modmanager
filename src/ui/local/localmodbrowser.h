@@ -5,6 +5,7 @@
 #include "local/localmodpathinfo.h"
 
 #include <QButtonGroup>
+#include <QModelIndex>
 
 class QListWidgetItem;
 
@@ -40,7 +41,6 @@ signals:
     void findNewOnModrinth(LocalModPathInfo info);
     void findNewOnOptifine(LocalModPathInfo info);
     void findNewOnReplay(LocalModPathInfo info);
-
 public slots:
     void reload();
     void updateModList();
