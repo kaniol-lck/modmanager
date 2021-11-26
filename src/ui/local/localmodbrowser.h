@@ -75,7 +75,6 @@ private slots:
     void on_checkButton_clicked();
     void on_updateAllButton_clicked();
     void on_hideUpdatesButton_clicked();
-    void on_modListView_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
     void onItemSelected(const QModelIndex &index);
     void onItemDoubleClicked(const QModelIndex &index);
 private:

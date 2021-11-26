@@ -422,13 +422,6 @@ LocalModPath *LocalModBrowser::modPath() const
     return modPath_;
 }
 
-void LocalModBrowser::on_modListView_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])
-{
-    if(!current) return;
-    auto mod = dynamic_cast<const LocalModSortItem*>(current)->mod();
-    infoWidget_->setMod(mod);
-}
-
 void LocalModBrowser::onItemSelected(const QModelIndex &index)
 {
     auto item = model_->itemFromIndex(index.siblingAtColumn(ModColumn));
