@@ -172,6 +172,7 @@ void LocalMod::checkUpdates(bool force)
     if(config.getUseModrinthUpdate() && modrinthMod_ && modrinthUpdate_.currentFileInfo()){
         (*count)++;
         checkModrinthUpdate(force);
+        connect(this, &LocalMod::modrinthUpdateReady, foo);
         noSource = false;
     }
     if(noSource) emit updateReady({});
