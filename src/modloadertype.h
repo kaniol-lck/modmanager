@@ -24,6 +24,5 @@ const QList<Type> modrinth{ Any, Fabric, Forge };
 const QList<Type> replay{ Any, Fabric, Forge };
 const QList<Type> local{ Any, Fabric, Forge };
 
-};
-
+}
 #endif // MODLOADERTYPE_H

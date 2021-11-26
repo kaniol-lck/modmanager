@@ -38,6 +38,7 @@ SOURCES += \
     src/modrinth/modrinthfileinfo.cpp \
     src/modrinth/modrinthmod.cpp \
     src/modrinth/modrinthmodinfo.cpp \
+    src/modwebsitetype.cpp \
     src/optifine/optifineapi.cpp \
     src/optifine/optifinemod.cpp \
     src/optifine/optifinemodinfo.cpp \
@@ -97,7 +98,6 @@ SOURCES += \
     src/util/mmlogger.cpp \
     src/util/smoothscrollbar.cpp \
     src/util/unclosedmenu.cpp \
-    src/util/updatesourcedelegate.cpp \
     src/util/websiteicon.cpp \
     src/util/youdaotranslator.cpp
 
@@ -129,6 +129,7 @@ HEADERS += \
     src/modrinth/modrinthfileinfo.h \
     src/modrinth/modrinthmod.h \
     src/modrinth/modrinthmodinfo.h \
+    src/modwebsitetype.h \
     src/optifine/optifineapi.h \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \
@@ -189,7 +190,6 @@ HEADERS += \
     src/util/tutil.hpp \
     src/util/datetimesortitem.h \
     src/util/unclosedmenu.h \
-    src/util/updatesourcedelegate.h \
     src/util/websiteicon.h \
     src/util/youdaotranslator.h \
     src/version.h

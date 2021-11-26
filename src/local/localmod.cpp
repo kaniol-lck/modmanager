@@ -254,13 +254,13 @@ QAria2Downloader *LocalMod::downloadOldMod(DownloadFileInfo &info)
     return downloader;
 }
 
-LocalMod::ModWebsiteType LocalMod::defaultUpdateType() const
+ModWebsiteType LocalMod::defaultUpdateType() const
 {
     auto list = updateTypes();
     return list.isEmpty()? ModWebsiteType::None : list.first();
 }
 
-QList<LocalMod::ModWebsiteType> LocalMod::updateTypes() const
+QList<ModWebsiteType> LocalMod::updateTypes() const
 {
     bool bl1(curseforgeUpdate_.updateFileInfo());
     bool bl2(modrinthUpdate_.updateFileInfo());

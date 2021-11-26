@@ -9,6 +9,7 @@
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
 #include "tag/localmodtags.h"
+#include "modwebsitetype.h"
 
 class LocalModPath;
 class CurseforgeMod;
@@ -20,8 +21,6 @@ class LocalMod : public QObject
 {
     Q_OBJECT
 public:
-    enum ModWebsiteType{ None, Curseforge, Modrinth};
-
     explicit LocalMod(QObject *parent, LocalModFile *file);
     explicit LocalMod(LocalModPath *parent, LocalModFile *file);
     ~LocalMod();

@@ -475,7 +475,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
             for(const auto &mod : map){
                 //cancel on reloading
                 connect(this, &LocalModPath::loadStarted, disconnecter(
-                            connect(mod, &LocalMod::updateReady, this, [=](QList<LocalMod::ModWebsiteType> types, bool success){
+                            connect(mod, &LocalMod::updateReady, this, [=](QList<ModWebsiteType> types, bool success){
                     (*checkedCount)++;
                     if(!types.isEmpty()) (*updateCount)++;
                     if(!success) (*failedCount) ++;
@@ -502,7 +502,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
     }
 }
 
-void LocalModPath::updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList)
+void LocalModPath::updateMods(QList<QPair<LocalMod *, ModWebsiteType> > modUpdateList)
 {
     if(modUpdateList.isEmpty()) return;
     emit updatesStarted();

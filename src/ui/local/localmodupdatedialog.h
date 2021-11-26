@@ -22,12 +22,11 @@ public:
     ~LocalModUpdateDialog();
 
 private slots:
-    void onUpdateSourceChanged(int row, LocalMod::ModWebsiteType type);
     void on_LocalModUpdateDialog_accepted();
 private:
     Ui::LocalModUpdateDialog *ui;
     LocalModPath *modPath_;
-    QList<QPair<LocalMod*, LocalMod::ModWebsiteType>> modUpdateList_;
+    QList<LocalMod*> modList_;
     QStandardItemModel model_;
 };
 

@@ -235,7 +235,7 @@ void LocalModItemWidget::on_updateButton_clicked()
     mod_->update(mod_->defaultUpdateType());
 }
 
-void LocalModItemWidget::updateReady(QList<LocalMod::ModWebsiteType> types)
+void LocalModItemWidget::updateReady(QList<ModWebsiteType> types)
 {
     if (types.isEmpty()){
         ui->updateButton->setVisible(false);
@@ -250,7 +250,7 @@ void LocalModItemWidget::updateReady(QList<LocalMod::ModWebsiteType> types)
     auto menu = new QMenu(this);
     auto ignoreMenu = new QMenu(tr("Ignore update"), this);
     for(auto &&type : types){
-        if (type == LocalMod::Curseforge){
+        if (type == ModWebsiteType::Curseforge){
             auto name = mod_->curseforgeUpdate().updateFileInfo()->displayName();
             auto action = menu->addAction(QIcon(":/image/curseforge.svg"), name);
             action->setToolTip(mod_->updateInfos(type).second);
@@ -261,7 +261,7 @@ void LocalModItemWidget::updateReady(QList<LocalMod::ModWebsiteType> types)
                 mod_->ignoreUpdate(type);
             });
         }
-        else if (type == LocalMod::Modrinth){
+        else if (type == ModWebsiteType::Modrinth){
             auto name = mod_->modrinthUpdate().updateFileInfo()->displayName();
             auto action = menu->addAction(QIcon(":/image/modrinth.svg"), name);
             action->setToolTip(mod_->updateInfos(type).second);

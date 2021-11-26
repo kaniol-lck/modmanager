@@ -36,7 +36,7 @@ public:
 
     void searchOnWebsites();
     void checkModUpdates(bool force = true);
-    void updateMods(QList<QPair<LocalMod *, LocalMod::ModWebsiteType> > modUpdateList);
+    void updateMods(QList<QPair<LocalMod *, ModWebsiteType> > modUpdateList);
 
     //download new mod
     QAria2Downloader *downloadNewMod(DownloadFileInfo &info);

@@ -3,7 +3,8 @@
 
 #include "local/localmodpath.h"
 #include "local/localmod.h"
-#include "util/updatesourcedelegate.h"
+
+#include <QComboBox>
 
 LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPath) :
     QDialog(parent),
@@ -29,7 +30,8 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
             auto enabled = !mod->isDisabled();
 
             auto type = mod->defaultUpdateType();
-            if(type == LocalMod::None) continue;
+            auto types = mod->updateTypes();
+            if(type == ModWebsiteType::None) continue;
             auto names = mod->updateNames(type);
             auto infos = mod->updateInfos(type);
 
@@ -58,20 +60,29 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
             afterItem->setToolTip(infos.second);
 
             auto sourceItem = new QStandardItem();
-            auto pair = UpdateSourceDelegate::sourceItems.at(type);
-            sourceItem->setText(pair.first);
-            sourceItem->setIcon(QIcon(pair.second));
-            sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            sourceItem->setData(type);
+            if(types.size() == 1){
+                sourceItem->setText(ModWebsite::toString(type));
+                sourceItem->setIcon(ModWebsite::icon(type));
+                sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+            }
             sourceItem->setEnabled(enabled);
             if(mod->updateTypes().size() == 1)
                 sourceItem->setForeground(Qt::gray);
 
             model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
-            modUpdateList_ << QPair(mod, mod->defaultUpdateType());
+            modList_ << mod;
 
-            auto updateSourceDelegate = new UpdateSourceDelegate(mod->updateTypes());
-            ui->updateTreeView->setItemDelegateForRow(model_.rowCount() - 1, updateSourceDelegate);
-            connect(updateSourceDelegate, &UpdateSourceDelegate::updateSourceChanged, this, &LocalModUpdateDialog::onUpdateSourceChanged);
+            if(types.size() > 1){
+                auto comboBox = new QComboBox(this);
+                ui->updateTreeView->setIndexWidget(model_.indexFromItem(sourceItem), comboBox);
+                for(auto &&type : types){
+                    comboBox->addItem(ModWebsite::icon(type), ModWebsite::toString(type));
+                }
+                connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
+                    sourceItem->setData(types.at(index));
+                });
+            }
         }
 }
 
@@ -80,23 +91,11 @@ LocalModUpdateDialog::~LocalModUpdateDialog()
     delete ui;
 }
 
-void LocalModUpdateDialog::onUpdateSourceChanged(int row, LocalMod::ModWebsiteType type)
-{
-    modUpdateList_[row].second = type;
-    auto mod = modUpdateList_[row].first;
-    auto names = mod->updateNames(type);
-
-    auto beforeItem = model_.item(row, BeforeColumn);
-    auto afterItem = model_.item(row, AfterColumn);
-    beforeItem->setText(names.first);
-    afterItem->setText(names.second);
-}
-
 void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
 {
-    QList<QPair<LocalMod *, LocalMod::ModWebsiteType>> modUpdateList;
+    QList<QPair<LocalMod *, ModWebsiteType>> modUpdateList;
     for(int row = 0; row < model_.rowCount(); row++)
         if(model_.item(row)->checkState() == Qt::Checked)
-            modUpdateList << modUpdateList_.at(row);
+            modUpdateList << QPair<LocalMod *, ModWebsiteType>(modList_.at(row), static_cast<ModWebsiteType>(model_.item(row, SourceColumn)->data().toInt()));
     modPath_->updateMods(modUpdateList);
 }

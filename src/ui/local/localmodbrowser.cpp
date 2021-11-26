@@ -60,6 +60,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     int id = 0;
     for (auto icon : { "view-list-details", "view-list-text" }) {
         auto button = new QToolButton(this);
+        button->setCheckable(true);
         button->setAutoRaise(true);
         button->setIcon(QIcon::fromTheme(icon));
         viewSwitcher_->addButton(button, id++);
@@ -68,6 +69,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     statusBar_->addPermanentWidget(frame);
     ui->mainLayout->addWidget(statusBar_);
 
+    viewSwitcher_->button(0)->setChecked(true);
     connect(viewSwitcher_, &QButtonGroup::idClicked, this, &LocalModBrowser::onViewSwitched);
 
     auto findNewMenu = new QMenu(this);
@@ -197,6 +199,7 @@ void LocalModBrowser::updateModList()
             items.first()->setSizeHint(QSize(0, modItemWidget->height()));
         }
     }
+    //TODO: optfine in sub dir
     if(modPath_->info().loaderType() == ModLoaderType::Fabric)
         if(auto mod = modPath_->optiFineMod()){
             auto items = itemsFromMod(mod);
@@ -335,15 +338,16 @@ void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
 
 void LocalModBrowser::filterList()
 {
-//    hiddenCount_ = 0;
-//    for(int i = 0; i < ui->modListView->count(); i++){
-//        auto item = ui->modListView->item(i);
-//        auto mod = dynamic_cast<const LocalModSortItem*>(item)->mod();
-//        auto hidden = !filter_->willShow(mod, ui->searchText->text().toLower());
-//        item->setHidden(hidden);
-//        if(hidden) hiddenCount_++;
-//    }
-//    updateStatusText();
+    hiddenCount_ = 0;
+    for(int i = 0; i < model_->rowCount(); i++){
+        auto item = model_->item(i);
+        auto mod = item->data().value<LocalMod*>();
+        auto hidden = !filter_->willShow(mod, ui->searchText->text().toLower());
+        ui->modListView->setRowHidden(i, hidden);
+        ui->modTreeView->setRowHidden(i, ui->modTreeView->rootIndex(), hidden);
+        if(hidden) hiddenCount_++;
+    }
+    updateStatusText();
 }
 
 void LocalModBrowser::updateStatusText()
