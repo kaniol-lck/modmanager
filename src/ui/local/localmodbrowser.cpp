@@ -8,7 +8,6 @@
 #include <QStatusBar>
 #include <QProgressBar>
 #include <QStandardItemModel>
-#include <shadow.h>
 
 #include "localmodinfowidget.h"
 #include "localmodpathsettingsdialog.h"
