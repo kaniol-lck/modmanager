@@ -20,7 +20,7 @@ BrowserSelectorWidget::BrowserSelectorWidget(QWidget *parent) :
     connect(action, &QAction::triggered, this, &BrowserSelectorWidget::addMultiple, Qt::QueuedConnection);
     ui->addButton->addAction(action);
 
-//    connect(ui->browserTreeView, &QTreeView::entered, this, &BrowserSelectorWidget::onItemSelected);
+    connect(ui->browserTreeView, &QTreeView::entered, this, &BrowserSelectorWidget::onItemSelected);
     connect(ui->browserTreeView, &QTreeView::clicked, this, &BrowserSelectorWidget::onItemSelected);
 }
 

@@ -4,7 +4,15 @@
 #include "ui/browser.h"
 #include "local/localmodpathinfo.h"
 
+#include <QButtonGroup>
+
 class QListWidgetItem;
+
+class QStandardItemModel;
+
+class LocalMod;
+
+class QStandardItem;
 namespace Ui {
 class LocalModBrowser;
 }
@@ -17,7 +25,7 @@ class LocalModInfoWidget;
 class LocalModBrowser : public Browser
 {
     Q_OBJECT
-
+    enum { ModColumn, NameColumn, IdColumn, VersionColumn, DescriptionColumn};
 public:
     explicit LocalModBrowser(QWidget *parent, LocalModPath *modPath);
     ~LocalModBrowser();
@@ -61,26 +69,29 @@ private slots:
     void updateStatusText();
     void updateProgressBar();
 
-    void on_modListWidget_doubleClicked(const QModelIndex &index);
     void on_comboBox_currentIndexChanged(int index);
     void on_checkUpdatesButton_clicked();
     void on_openFolderButton_clicked();
     void on_checkButton_clicked();
     void on_updateAllButton_clicked();
     void on_hideUpdatesButton_clicked();
-
-    void on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
+    void on_modListView_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void onItemSelected(const QModelIndex &index);
+    void onItemDoubleClicked(const QModelIndex &index);
+    void onViewSwitched(int id);
 private:
     Ui::LocalModBrowser *ui;
+    QStandardItemModel *model_;
     LocalModInfoWidget *infoWidget_;
     QStatusBar *statusBar_;
     QProgressBar *progressBar_;
+    QButtonGroup *viewSwitcher_;
     LocalModPath *modPath_;
     LocalModFilter *filter_;
     int hiddenCount_ = 0;
     bool isChecking_ = false;
     bool isUpdating_ = false;
+    static QList<QStandardItem*> itemsFromMod(LocalMod* mod);
 };
 
 #endif // LOCALMODBROWSER_H

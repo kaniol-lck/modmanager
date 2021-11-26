@@ -7,6 +7,8 @@
 #include <QScrollBar>
 #include <QStatusBar>
 #include <QProgressBar>
+#include <QStandardItemModel>
+#include <shadow.h>
 
 #include "localmodinfowidget.h"
 #include "localmodpathsettingsdialog.h"
@@ -27,19 +29,46 @@
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
     ui(new Ui::LocalModBrowser),
+    model_(new QStandardItemModel(this)),
     infoWidget_(new LocalModInfoWidget(this)),
+    viewSwitcher_(new QButtonGroup(this)),
     modPath_(modPath),
     filter_(new LocalModFilter(this, modPath_))
 {
     ui->setupUi(this);
+
+    //setup mod list
 //    ui->updateWidget->setVisible(false);
-    ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->modListWidget->setProperty("class", "ModList");
+    ui->modListView->setModel(model_);
+    ui->modTableView->setModel(model_);
+    ui->modTableView->hideColumn(0);
+    ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->modListView->setProperty("class", "ModList");
+    ui->modTableView->setVerticalScrollBar(new SmoothScrollBar(this));
+
+    //setup status bar
     statusBar_ = new QStatusBar(this);
     progressBar_ = new QProgressBar(statusBar_);
     progressBar_->setVisible(false);
     statusBar_->addPermanentWidget(progressBar_);
+    auto frame = new QFrame(this);
+    frame->setLayout(new QHBoxLayout);
+    frame->layout()->setSpacing(0);
+    frame->layout()->setMargin(0);
+    frame->setFrameShape(QFrame::StyledPanel);
+    frame->setFrameShadow(QFrame::Raised);
+    int id = 0;
+    for (auto icon : { "view-list-details", "table" }) {
+        auto button = new QToolButton(this);
+        button->setAutoRaise(true);
+        button->setIcon(QIcon::fromTheme(icon));
+        viewSwitcher_->addButton(button, id++);
+        frame->layout()->addWidget(button);
+    }
+    statusBar_->addPermanentWidget(frame);
     ui->mainLayout->addWidget(statusBar_);
+
+    connect(viewSwitcher_, &QButtonGroup::idClicked, this, &LocalModBrowser::onViewSwitched);
 
     auto findNewMenu = new QMenu(this);
     connect(findNewMenu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
@@ -115,7 +144,14 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::updatesProgress, this, &LocalModBrowser::onUpdatesProgress);
     connect(modPath_, &LocalModPath::updatesDoneCountUpdated, this, &LocalModBrowser::onUpdatesDoneCountUpdated);
     connect(modPath_, &LocalModPath::updatesDone, this, &LocalModBrowser::onUpdatesDone);
+
     connect(ui->searchText, &QLineEdit::textChanged, this, &LocalModBrowser::filterList);
+    connect(ui->modListView, &QListView::entered, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modListView, &QListView::clicked, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modTableView, &QTableView::entered, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modTableView, &QTableView::clicked, this, &LocalModBrowser::onItemSelected);
+    connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
+    connect(ui->modTableView, &QTableView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
 
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
@@ -146,36 +182,42 @@ void LocalModBrowser::reload()
 
 void LocalModBrowser::updateModList()
 {
-    ui->modListWidget->clear();
+    model_->clear();
+    model_->setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Mod Name")));
+    model_->setHorizontalHeaderItem(IdColumn, new QStandardItem(tr("ID")));
+    model_->setHorizontalHeaderItem(VersionColumn, new QStandardItem(tr("Version")));
+    model_->setHorizontalHeaderItem(DescriptionColumn, new QStandardItem(tr("Description")));
+
     for(auto &&map : modPath_->modMaps()){
         for (auto &&mod : map) {
-            auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
-            auto *item = new LocalModSortItem(mod);
-            item->setSizeHint(QSize(0, modItemWidget->height()));
-            ui->modListWidget->addItem(item);
-            ui->modListWidget->setItemWidget(item, modItemWidget);
+            auto items = itemsFromMod(mod);
+            model_->appendRow(items);
+            auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
+            ui->modListView->setIndexWidget(model_->indexFromItem(items.first()), modItemWidget);
+            items.first()->setSizeHint(QSize(0, modItemWidget->height()));
         }
     }
     if(modPath_->info().loaderType() == ModLoaderType::Fabric)
         if(auto mod = modPath_->optiFineMod()){
-            auto modItemWidget = new LocalModItemWidget(ui->modListWidget, mod);
-            auto *item = new LocalModSortItem(mod);
-            item->setSizeHint(QSize(0, modItemWidget->height()));
-            ui->modListWidget->addItem(item);
-            ui->modListWidget->setItemWidget(item, modItemWidget);
+            auto items = itemsFromMod(mod);
+            model_->appendRow(items);
+            auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
+            ui->modListView->setIndexWidget(model_->indexFromItem(items.first()), modItemWidget);
+            items.first()->setSizeHint(QSize(0, modItemWidget->height()));
         }
-    ui->modListWidget->sortItems();
+    model_->sort(NameColumn);
+    ui->modTableView->hideColumn(ModColumn);
     filter_->refreshTags();
     filterList();
 }
 
 void LocalModBrowser::updateUi()
 {
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        auto widget = ui->modListWidget->itemWidget(item);
-        dynamic_cast<LocalModItemWidget*>(widget)->updateUi();
-    }
+//    for(int i = 0; i < ui->modListView->count(); i++){
+//        auto item = ui->modListView->item(i);
+//        auto widget = ui->modListView->itemWidget(item);
+//        dynamic_cast<LocalModItemWidget*>(widget)->updateUi();
+//    }
 }
 
 void LocalModBrowser::onLoadStarted()
@@ -294,15 +336,15 @@ void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
 
 void LocalModBrowser::filterList()
 {
-    hiddenCount_ = 0;
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        auto mod = dynamic_cast<const LocalModSortItem*>(item)->mod();
-        auto hidden = !filter_->willShow(mod, ui->searchText->text().toLower());
-        item->setHidden(hidden);
-        if(hidden) hiddenCount_++;
-    }
-    updateStatusText();
+//    hiddenCount_ = 0;
+//    for(int i = 0; i < ui->modListView->count(); i++){
+//        auto item = ui->modListView->item(i);
+//        auto mod = dynamic_cast<const LocalModSortItem*>(item)->mod();
+//        auto hidden = !filter_->willShow(mod, ui->searchText->text().toLower());
+//        item->setHidden(hidden);
+//        if(hidden) hiddenCount_++;
+//    }
+//    updateStatusText();
 }
 
 void LocalModBrowser::updateStatusText()
@@ -322,20 +364,13 @@ void LocalModBrowser::updateProgressBar()
     progressBar_->setVisible(modPath_->isLoading() || modPath_->isSearching() || modPath_->isChecking());
 }
 
-void LocalModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
-{
-    auto mod = dynamic_cast<const LocalModSortItem*>(ui->modListWidget->item(index.row()))->mod();
-    auto dialog = new LocalModDialog(this, mod);
-    dialog->show();
-}
-
 void LocalModBrowser::on_comboBox_currentIndexChanged(int index)
 {
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = dynamic_cast<LocalModSortItem*>(ui->modListWidget->item(i));
-        item->setSortRule(static_cast<LocalModSortItem::SortRule>(index));
-    }
-    ui->modListWidget->sortItems();
+//    for(int i = 0; i < ui->modListView->count(); i++){
+//        auto item = dynamic_cast<LocalModSortItem*>(ui->modListView->item(i));
+//        item->setSortRule(static_cast<LocalModSortItem::SortRule>(index));
+//    }
+//    ui->modListView->sortItems();
 }
 
 void LocalModBrowser::on_checkUpdatesButton_clicked()
@@ -375,10 +410,41 @@ LocalModPath *LocalModBrowser::modPath() const
     return modPath_;
 }
 
-void LocalModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])
+void LocalModBrowser::on_modListView_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])
 {
     if(!current) return;
     auto mod = dynamic_cast<const LocalModSortItem*>(current)->mod();
     infoWidget_->setMod(mod);
+}
+
+void LocalModBrowser::onItemSelected(const QModelIndex &index)
+{
+    auto item = model_->itemFromIndex(index.siblingAtColumn(ModColumn));
+    auto mod = item->data().value<LocalMod*>();
+    infoWidget_->setMod(mod);
+}
+
+void LocalModBrowser::onItemDoubleClicked(const QModelIndex &index)
+{
+    auto item = model_->itemFromIndex(index.siblingAtColumn(ModColumn));
+    auto mod = item->data().value<LocalMod*>();
+    auto dialog = new LocalModDialog(this, mod);
+    dialog->show();
+}
+
+void LocalModBrowser::onViewSwitched(int id)
+{
+    ui->stackedWidget->setCurrentIndex(id);
+}
+
+QList<QStandardItem *> LocalModBrowser::itemsFromMod(LocalMod *mod)
+{
+    auto item = new QStandardItem;
+    item->setData(QVariant::fromValue(mod));
+    auto nameItem = new QStandardItem(mod->displayName());
+    auto idItem = new QStandardItem(mod->commonInfo()->id());
+    auto versionItem = new QStandardItem(mod->commonInfo()->version());
+    auto descItem = new QStandardItem(mod->commonInfo()->description());
+    return { item, nameItem, idItem, versionItem, descItem };
 }
 
