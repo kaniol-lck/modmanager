@@ -66,11 +66,7 @@ void LocalModInfoWidget::updateInfo()
     ui->modName->setText(displayName);
 //    ui->modVersion->setText(mod_->commonInfo()->version());
     auto description = mod_->commonInfo()->description();
-    auto index = description.indexOf(".");
     //description
-    //show first statements only
-    if (index > 0)
-        description = description.left(index + 1);
     setEffect(ui->modDescription, description);
     ui->modDescription->setText(description);
 //        //authors
