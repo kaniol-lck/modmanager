@@ -8,7 +8,13 @@ Soon....
 
 ### v1.0.0-beta.7
 
-*WIP*
+*2021.11.27*
+
+Added icon view and table view for local mod list.
+为本地mod列表添加了图标和表格视图。
+
+Added local mod file list, you can switch mod version from here.
+添加了本地mod文件列表，你可以在这里切换mod版本。
 
 Added support to sub-directories.
 添加了对子文件夹的支持。
@@ -51,6 +57,9 @@ Added online translator (Youdao Translator) for mod summaries.
 Updated Curseforge's categories.
 更新了Curseforge的分类。
 
+Tweaked style of tables in update/batch-rename dialog. Tweaked combo box item in update dialog.
+调整了更新与批量重命名对话框中的表格样式。调整了更新对话框中的下拉框项目。
+
 Tweaked styles of Curseforge/Modrinth tags.
 调整了Curseforge/Modrinth标签的样式。
 
@@ -60,6 +69,12 @@ mod发布类型和游戏版本是可勾选的。
 Improved performance while loading file list in Curseforge/Modrinth.
 优化了加载Curseforge/Modrinth文件列表时的性能。
 
+Using system icon theme is configurable now.
+使用系统图标主题是可配置的了。
+
+Fixed add new path button not working.
+修复了添加新路径按钮不工作的问题。
+
 Fixed progress bar in local mod page disappeared in some circumstances.
 修复了本地mod页面中进度条在一些情况下消失的问题。
 
@@ -68,6 +83,15 @@ Fixed some issues caused by reloading local mods.
 
 Fixed unnecesssary ui updates when not accept preference changes.
 修复了未接受偏好设置变更时产生的不必要更新。
+
+Fixed(?) update checking stucked. Added retwork request timeout setting.
+修复了（？）更新检查卡住。添加了网络请求超时设置项。
+
+Removed combo box for local mod sorting , because you can sort it simply by clicking on table's header.
+移除了本地mod排序的下拉框，因为现在只需要点击表格的表头就可以排序了 。
+
+Removed period trim of mod description.
+移除了mod描述在句号处的裁剪。
 
 ### v1.0.0-beta.6
 

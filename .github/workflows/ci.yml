@@ -60,13 +60,16 @@ jobs:
         with:
           name: ModManager-${{ env.VERSION }}-x86_64.AppImage
           path: Mod_Manager*.AppImage
-      #- name: Release Text
-        #if: startsWith(github.event.ref, 'refs/tags/')
-        #uses: svenstaro/upload-release-action@v2
-        #with:
-          #repo_token: ${{ secrets.GITHUB_TOKEN }}
-          #tag: ${{ github.ref }}
-          #body: ${{ env.RELEASE_TEXT }}
+      - name: uploadRelease
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: Mod_Manager*.AppImage
+          asset_name: ModManager-${{ env.VERSION }}-x86_64.AppImage
+          tag: ${{ github.ref }}
+          body: ${{ env.RELEASE_TEXT }}
+          overwrite: true
 
   build-on-win-mingw:
     name: Build On Windows Mingw
@@ -168,7 +171,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{github.workspace}}/ModManager${{ matrix.x64_suffix }}-Installer.exe
+          file: ModManager${{ matrix.x64_suffix }}-Installer.exe
           asset_name: ModManager${{ matrix.x64_suffix }}-Installer.exe
           tag: ${{ github.ref }}
           overwrite: true
