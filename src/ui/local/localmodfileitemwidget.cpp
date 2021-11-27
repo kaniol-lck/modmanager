@@ -1,9 +1,10 @@
 #include "localmodfileitemwidget.h"
 #include "ui_localmodfileitemwidget.h"
 
-#include "local/localmodfile.h"
-
 #include <QGraphicsDropShadowEffect>
+
+#include "local/localmodfile.h"
+#include "config.hpp"
 
 LocalModFileItemWidget::LocalModFileItemWidget(QWidget *parent, LocalModFile *file) :
     QWidget(parent),
@@ -44,13 +45,13 @@ void LocalModFileItemWidget::onFileChanged()
     setEffect(ui->modName, name);
     ui->modName->setText(name);
     ui->modVersion->setText(file_->commonInfo()->version());
+    ui->modAuthors->setVisible(Config().getShowModAuthors());
     //authors
     if (!file_->commonInfo()->authors().isEmpty()){
         auto authors = file_->commonInfo()->authors().join("</b>, <b>").prepend("by <b>").append("</b>");
         setEffect(ui->modAuthors, authors);
         ui->modAuthors->setText(authors);
-    }
-    else
+    }else
         ui->modAuthors->setText("");
     auto description = file_->commonInfo()->description();
     ui->modDescription->setText(description);

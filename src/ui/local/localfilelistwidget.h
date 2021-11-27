@@ -26,6 +26,7 @@ signals:
     void modChanged();
 private slots:
     void idClicked(int id);
+    void onModFileUpdated();
 private:
     Ui::LocalFileListWidget *ui;
     QStandardItemModel *model_;

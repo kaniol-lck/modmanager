@@ -8,6 +8,7 @@
 #include "localmodfileitemwidget.h"
 #include "local/localmod.h"
 #include "util/smoothscrollbar.h"
+#include "util/funcutil.h"
 
 LocalFileListWidget::LocalFileListWidget(QWidget *parent) :
     QWidget(parent),
@@ -35,18 +36,9 @@ void LocalFileListWidget::setMod(LocalMod *mod)
     ui->fileListView->setVisible(mod_);
     if(!mod_) return;
 
-    //update file list
-    model_->clear();
-    for(auto &&button : buttons_->buttons())
-        buttons_->removeButton(button);
-    int id = 0;
-    addModFile(mod_->modFile(), id++, true);
-    for(auto file : mod_->oldFiles())
-        addModFile(file, id++);
-    for(auto file : mod_->duplicateFiles())
-        addModFile(file, id++);
-    model_->setSortRole(Qt::UserRole);
-    model_->sort(0, Qt::DescendingOrder);
+    onModFileUpdated();
+    connect(this, &LocalFileListWidget::modChanged, this, disconnecter(
+                connect(mod_, &LocalMod::modFileUpdated, this, &LocalFileListWidget::onModFileUpdated)));
 }
 
 void LocalFileListWidget::idClicked(int id)
@@ -59,6 +51,22 @@ void LocalFileListWidget::idClicked(int id)
                 mod_->rollback(file);
         }
     }
+}
+
+void LocalFileListWidget::onModFileUpdated()
+{
+    //update file list
+    model_->clear();
+    for(auto &&button : buttons_->buttons())
+        buttons_->removeButton(button);
+    int id = 0;
+    addModFile(mod_->modFile(), id++, true);
+    for(auto file : mod_->oldFiles())
+        addModFile(file, id++);
+    for(auto file : mod_->duplicateFiles())
+        addModFile(file, id++);
+    model_->setSortRole(Qt::UserRole);
+    model_->sort(0, Qt::DescendingOrder);
 }
 
 void LocalFileListWidget::addModFile(LocalModFile *file, int id, bool checked)
