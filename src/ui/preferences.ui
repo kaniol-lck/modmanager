@@ -158,14 +158,14 @@
               <item row="2" column="0">
                <widget class="QCheckBox" name="showModReleaseType">
                 <property name="text">
-                 <string>Show Release Type</string>
+                 <string>Show release type</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="1">
                <widget class="QCheckBox" name="showModGameVersion">
                 <property name="text">
-                 <string>Show Game Version</string>
+                 <string>Show game version</string>
                 </property>
                </widget>
               </item>
@@ -208,7 +208,7 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label_4">
                <property name="text">
-                <string>UI Style:</string>
+                <string>UI style:</string>
                </property>
               </widget>
              </item>
@@ -816,7 +816,7 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label_17">
                <property name="text">
-                <string>Network Request Timeout:</string>
+                <string>Network request timeout:</string>
                </property>
               </widget>
              </item>

@@ -204,8 +204,8 @@ void LocalModBrowser::updateModList()
     model_->setHorizontalHeaderItem(VersionColumn, new QStandardItem(tr("Version")));
     model_->setHorizontalHeaderItem(FileDateColumn, new QStandardItem(tr("Last Modified")));
     model_->setHorizontalHeaderItem(FileSizeColumn, new QStandardItem(tr("File Size")));
-    model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(tr("Curseforge Id")));
-    model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(tr("Modrinth Id")));
+    model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(tr("Curseforge ID")));
+    model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(tr("Modrinth ID")));
     model_->setHorizontalHeaderItem(DescriptionColumn, new QStandardItem(tr("Description")));
 
     for(auto &&map : modPath_->modMaps()){
