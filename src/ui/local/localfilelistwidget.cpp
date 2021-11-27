@@ -47,8 +47,10 @@ void LocalFileListWidget::idClicked(int id)
         auto item = model_->item(i);
         if(item->data(Qt::UserRole + 2).toInt() == id){
             auto file = item->data().value<LocalModFile*>();
-            if(mod_->oldFiles().contains(file))
+            if(mod_->oldFiles().contains(file)){
                 mod_->rollback(file);
+            }
+            return;
         }
     }
 }
