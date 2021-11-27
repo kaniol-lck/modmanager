@@ -28,6 +28,7 @@
 #include "util/unclosedmenu.h"
 #include "localmodfilter.h"
 #include "localmodmenu.h"
+#include "local/localmoditem.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
@@ -199,11 +200,15 @@ void LocalModBrowser::updateModList()
     model_->setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Mod Name")));
     model_->setHorizontalHeaderItem(IdColumn, new QStandardItem(tr("ID")));
     model_->setHorizontalHeaderItem(VersionColumn, new QStandardItem(tr("Version")));
+    model_->setHorizontalHeaderItem(FileDateColumn, new QStandardItem(tr("Last Modified")));
+    model_->setHorizontalHeaderItem(FileSizeColumn, new QStandardItem(tr("File Size")));
+    model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(tr("Curseforge Id")));
+    model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(tr("Modrinth Id")));
     model_->setHorizontalHeaderItem(DescriptionColumn, new QStandardItem(tr("Description")));
 
     for(auto &&map : modPath_->modMaps()){
         for (auto &&mod : map) {
-            auto items = itemsFromMod(mod);
+            auto items = LocalModItem::itemsFromMod(mod);
             model_->appendRow(items);
             auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
             ui->modListView->setIndexWidget(model_->indexFromItem(items.first()), modItemWidget);
@@ -213,7 +218,7 @@ void LocalModBrowser::updateModList()
     //TODO: optfine in sub dir
     if(modPath_->info().loaderType() == ModLoaderType::Fabric)
         if(auto mod = modPath_->optiFineMod()){
-            auto items = itemsFromMod(mod);
+            auto items = LocalModItem::itemsFromMod(mod);
             model_->appendRow(items);
             auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
             ui->modListView->setIndexWidget(model_->indexFromItem(items.first()), modItemWidget);
@@ -482,30 +487,6 @@ void LocalModBrowser::onItemDoubleClicked(const QModelIndex &index)
     auto mod = item->data().value<LocalMod*>();
     auto dialog = new LocalModDialog(this, mod);
     dialog->show();
-}
-
-QList<QStandardItem *> LocalModBrowser::itemsFromMod(LocalMod *mod)
-{
-    auto item = new QStandardItem;
-    item->setData(QVariant::fromValue(mod));
-    auto nameItem = new QStandardItem;
-    auto idItem = new QStandardItem;
-    auto versionItem = new QStandardItem;
-    auto descItem = new QStandardItem;
-    auto onModChanged = [=]{
-        nameItem->setText(mod->displayName());
-        idItem->setText(mod->commonInfo()->id());
-        versionItem->setText(mod->commonInfo()->version());
-        descItem->setText(mod->commonInfo()->description());
-    };
-    auto onIconChanged = [=]{
-        nameItem->setIcon(mod->icon().scaled(96, 96));
-    };
-    onModChanged();
-    onIconChanged();
-    connect(mod, &LocalMod::modFileUpdated, this, onModChanged);
-    connect(mod, &LocalMod::modIconUpdated, this, onIconChanged);
-    return { item, nameItem, idItem, versionItem, descItem };
 }
 
 void LocalModBrowser::on_modListView_customContextMenuRequested(const QPoint &pos)

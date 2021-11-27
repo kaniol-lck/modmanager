@@ -24,8 +24,8 @@ class LocalModBrowser;
 class LocalModBrowser : public Browser
 {
     Q_OBJECT
-    enum { ModColumn, NameColumn, IdColumn, VersionColumn, DescriptionColumn};
 public:
+    enum { ModColumn, NameColumn, IdColumn, VersionColumn, FileDateColumn, FileSizeColumn, CurseforgeIdColumn, ModrinthIdColumn, DescriptionColumn };
     explicit LocalModBrowser(QWidget *parent, LocalModPath *modPath);
     ~LocalModBrowser();
 
@@ -94,7 +94,6 @@ private:
     int hiddenCount_ = 0;
     bool isChecking_ = false;
     bool isUpdating_ = false;
-    QList<QStandardItem*> itemsFromMod(LocalMod* mod);
 };
 
 #endif // LOCALMODBROWSER_H
