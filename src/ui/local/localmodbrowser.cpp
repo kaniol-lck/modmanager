@@ -429,15 +429,6 @@ QMenu *LocalModBrowser::onCustomContextMenuRequested(const QModelIndex &index)
     return menu;
 }
 
-void LocalModBrowser::on_comboBox_currentIndexChanged(int index)
-{
-//    for(int i = 0; i < ui->modListView->count(); i++){
-//        auto item = dynamic_cast<LocalModSortItem*>(ui->modListView->item(i));
-//        item->setSortRule(static_cast<LocalModSortItem::SortRule>(index));
-//    }
-//    ui->modListView->sortItems();
-}
-
 void LocalModBrowser::on_checkUpdatesButton_clicked()
 {
     if(isChecking_)

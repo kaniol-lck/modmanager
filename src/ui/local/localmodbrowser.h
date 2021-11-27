@@ -70,7 +70,6 @@ private slots:
     void updateProgressBar();
     QMenu *onCustomContextMenuRequested(const QModelIndex &index);
 
-    void on_comboBox_currentIndexChanged(int index);
     void on_checkUpdatesButton_clicked();
     void on_openFolderButton_clicked();
     void on_checkButton_clicked();

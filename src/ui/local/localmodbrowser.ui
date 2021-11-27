@@ -275,32 +275,6 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Sort:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="comboBox">
-          <item>
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Date</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Size</string>
-           </property>
-          </item>
-         </widget>
-        </item>
        </layout>
       </item>
       <item row="1" column="0">
