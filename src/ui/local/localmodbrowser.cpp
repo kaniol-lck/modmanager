@@ -12,6 +12,7 @@
 #include <QInputDialog>
 
 #include "localmodinfowidget.h"
+#include "localfilelistwidget.h"
 #include "localmodpathsettingsdialog.h"
 #include "local/localmodpath.h"
 #include "local/localmodpathmanager.h"
@@ -33,6 +34,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui(new Ui::LocalModBrowser),
     model_(new QStandardItemModel(this)),
     infoWidget_(new LocalModInfoWidget(this)),
+    fileListWidget_(new LocalFileListWidget(this)),
     statusBar_(new QStatusBar(this)),
     viewSwitcher_(new QButtonGroup(this)),
     modPath_(modPath),
@@ -456,6 +458,11 @@ QWidget *LocalModBrowser::infoWidget() const
     return infoWidget_;
 }
 
+QWidget *LocalModBrowser::fileListWidget() const
+{
+    return fileListWidget_;
+}
+
 LocalModPath *LocalModBrowser::modPath() const
 {
     return modPath_;
@@ -466,6 +473,7 @@ void LocalModBrowser::onItemSelected(const QModelIndex &index)
     auto item = model_->itemFromIndex(index.siblingAtColumn(ModColumn));
     auto mod = item->data().value<LocalMod*>();
     infoWidget_->setMod(mod);
+    fileListWidget_->setMod(mod);
 }
 
 void LocalModBrowser::onItemDoubleClicked(const QModelIndex &index)

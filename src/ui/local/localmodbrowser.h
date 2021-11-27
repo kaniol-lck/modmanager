@@ -8,23 +8,19 @@
 #include <QModelIndex>
 
 class QListWidgetItem;
-
 class QStandardItemModel;
-
 class LocalMod;
-
 class QStandardItem;
-
 class QMenu;
-namespace Ui {
-class LocalModBrowser;
-}
-
 class LocalModPath;
 class LocalModFilter;
 class QStatusBar;
 class QProgressBar;
 class LocalModInfoWidget;
+class LocalFileListWidget;
+namespace Ui {
+class LocalModBrowser;
+}
 class LocalModBrowser : public Browser
 {
     Q_OBJECT
@@ -36,6 +32,7 @@ public:
     bool isLoading() const;
     LocalModPath *modPath() const;
     QWidget *infoWidget() const override;
+    QWidget *fileListWidget() const override;
 signals:
     void loadFinished();
 
@@ -80,16 +77,15 @@ private slots:
     void on_hideUpdatesButton_clicked();
     void onItemSelected(const QModelIndex &index);
     void onItemDoubleClicked(const QModelIndex &index);
-    void on_modIconListView_customContextMenuRequested(const QPoint &pos);
-
     void on_modListView_customContextMenuRequested(const QPoint &pos);
-
+    void on_modIconListView_customContextMenuRequested(const QPoint &pos);
     void on_modTreeView_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::LocalModBrowser *ui;
     QStandardItemModel *model_;
     LocalModInfoWidget *infoWidget_;
+    LocalFileListWidget *fileListWidget_;
     QStatusBar *statusBar_;
     QProgressBar *progressBar_;
     QButtonGroup *viewSwitcher_;

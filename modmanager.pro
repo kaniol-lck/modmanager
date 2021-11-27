@@ -47,6 +47,8 @@ SOURCES += \
     src/ui/curseforge/curseforgefilelistwidget.cpp \
     src/ui/curseforge/curseforgeimagepopup.cpp \
     src/ui/curseforge/curseforgemodinfowidget.cpp \
+    src/ui/local/localfilelistwidget.cpp \
+    src/ui/local/localmodfileitemwidget.cpp \
     src/ui/local/localmodinfowidget.cpp \
     src/ui/modrinth/modrinthfilelistwidget.cpp \
     src/ui/modrinth/modrinthmodinfowidget.cpp \
@@ -138,6 +140,8 @@ HEADERS += \
     src/ui/curseforge/curseforgefilelistwidget.h \
     src/ui/curseforge/curseforgeimagepopup.h \
     src/ui/curseforge/curseforgemodinfowidget.h \
+    src/ui/local/localfilelistwidget.h \
+    src/ui/local/localmodfileitemwidget.h \
     src/ui/local/localmodinfowidget.h \
     src/ui/modrinth/modrinthfilelistwidget.h \
     src/ui/modrinth/modrinthmodinfowidget.h \
@@ -208,9 +212,11 @@ FORMS += \
     src/ui/download/qaria2downloaderitemwidget.ui \
     src/ui/download/downloadbrowser.ui \
     src/ui/local/batchrenamedialog.ui \
+    src/ui/local/localfilelistwidget.ui \
     src/ui/local/localmodbrowser.ui \
     src/ui/local/localmodcheckdialog.ui \
     src/ui/local/localmoddialog.ui \
+    src/ui/local/localmodfileitemwidget.ui \
     src/ui/local/localmoditemwidget.ui \
     src/ui/local/localmodpathsettingsdialog.ui \
     src/ui/local/localmodupdatedialog.ui \
