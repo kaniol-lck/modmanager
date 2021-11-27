@@ -9,6 +9,7 @@
 #include <QProgressBar>
 #include <QStandardItemModel>
 #include <QTreeView>
+#include <QInputDialog>
 
 #include "localmodinfowidget.h"
 #include "localmodpathsettingsdialog.h"
@@ -25,6 +26,7 @@
 #include "util/smoothscrollbar.h"
 #include "util/unclosedmenu.h"
 #include "localmodfilter.h"
+#include "localmodmenu.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
@@ -376,6 +378,43 @@ void LocalModBrowser::updateProgressBar()
     progressBar_->setVisible(modPath_->isLoading() || modPath_->isSearching() || modPath_->isChecking());
 }
 
+QMenu *LocalModBrowser::onCustomContextMenuRequested(const QModelIndex &index)
+{
+    if(!index.isValid()) return nullptr;
+    auto menu = new QMenu(this);
+    auto mod = model_->itemFromIndex(index.siblingAtColumn(ModColumn))->data().value<LocalMod*>();
+    auto localModMenu = new LocalModMenu(this, mod);
+    connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Set Alias")), &QAction::triggered, this, [=]{
+        bool ok;
+        auto alias = QInputDialog::getText(this, tr("Set mod alias"), tr("Alias of <b>%1</b> mod:").arg(mod->commonInfo()->name()), QLineEdit::Normal, mod->alias(), &ok);
+        if(ok)
+            mod->setAlias(alias);
+    });
+    menu->addMenu(localModMenu->addTagMenu());
+    if(!mod->customizableTags().isEmpty())
+        menu->addMenu(localModMenu->removeTagmenu());
+    menu->addSeparator();
+    if(!mod->curseforgeUpdate().ignores().isEmpty() || !mod->modrinthUpdate().ignores().isEmpty()){
+        connect(menu->addAction(tr("Clear update ignores")), &QAction::triggered, this, [=]{
+            mod->clearIgnores();
+        });
+        menu->addSeparator();
+    }
+    auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"));
+    starAction->setCheckable(true);
+    starAction->setChecked(mod->isFeatured());
+    connect(starAction, &QAction::toggled, this, [=](bool bl){
+        mod->setFeatured(bl);
+    });
+    auto disableAction = menu->addAction(QIcon::fromTheme("action-unavailable-symbolic"), tr("Disable"));
+    disableAction->setCheckable(true);
+    disableAction->setChecked(mod->isDisabled());
+    connect(disableAction, &QAction::toggled, this, [=](bool bl){
+        mod->setEnabled(!bl);
+    });
+    return menu;
+}
+
 void LocalModBrowser::on_comboBox_currentIndexChanged(int index)
 {
 //    for(int i = 0; i < ui->modListView->count(); i++){
@@ -461,3 +500,23 @@ QList<QStandardItem *> LocalModBrowser::itemsFromMod(LocalMod *mod)
     return { item, nameItem, idItem, versionItem, descItem };
 }
 
+void LocalModBrowser::on_modListView_customContextMenuRequested(const QPoint &pos)
+{
+    auto index = ui->modListView->indexAt(pos);
+    if(auto menu = onCustomContextMenuRequested(index); menu && !menu->actions().empty())
+        menu->exec(ui->modListView->mapToGlobal(pos));
+}
+
+void LocalModBrowser::on_modIconListView_customContextMenuRequested(const QPoint &pos)
+{
+    auto index = ui->modIconListView->indexAt(pos);
+    if(auto menu = onCustomContextMenuRequested(index); menu && !menu->actions().empty())
+        menu->exec(ui->modIconListView->mapToGlobal(pos));
+}
+
+void LocalModBrowser::on_modTreeView_customContextMenuRequested(const QPoint &pos)
+{
+    auto index = ui->modTreeView->indexAt(pos);
+    if(auto menu = onCustomContextMenuRequested(index); menu && !menu->actions().empty())
+        menu->exec(ui->modTreeView->mapToGlobal(pos));
+}

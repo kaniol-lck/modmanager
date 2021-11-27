@@ -14,6 +14,8 @@ class QStandardItemModel;
 class LocalMod;
 
 class QStandardItem;
+
+class QMenu;
 namespace Ui {
 class LocalModBrowser;
 }
@@ -68,6 +70,7 @@ private slots:
     void filterList();
     void updateStatusText();
     void updateProgressBar();
+    QMenu *onCustomContextMenuRequested(const QModelIndex &index);
 
     void on_comboBox_currentIndexChanged(int index);
     void on_checkUpdatesButton_clicked();
@@ -77,6 +80,12 @@ private slots:
     void on_hideUpdatesButton_clicked();
     void onItemSelected(const QModelIndex &index);
     void onItemDoubleClicked(const QModelIndex &index);
+    void on_modIconListView_customContextMenuRequested(const QPoint &pos);
+
+    void on_modListView_customContextMenuRequested(const QPoint &pos);
+
+    void on_modTreeView_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::LocalModBrowser *ui;
     QStandardItemModel *model_;

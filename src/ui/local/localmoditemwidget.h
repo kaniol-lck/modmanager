@@ -44,16 +44,10 @@ private slots:
     void finishUpdate(bool success);
 
     void on_curseforgeButton_clicked();
-
     void on_modrinthButton_clicked();
-
     void on_warningButton_clicked();
-
     void on_disableButton_toggled(bool checked);
-
     void on_featuredButton_toggled(bool checked);
-
-    void on_LocalModItemWidget_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::LocalModItemWidget *ui;

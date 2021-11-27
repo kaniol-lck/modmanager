@@ -54,6 +54,9 @@
        </property>
        <item row="0" column="0">
         <widget class="QListView" name="modListView">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
          <property name="verticalScrollMode">
           <enum>QAbstractItemView::ScrollPerPixel</enum>
          </property>
@@ -80,6 +83,9 @@
        </property>
        <item row="0" column="0">
         <widget class="QListView" name="modIconListView">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
@@ -97,6 +103,9 @@
          </property>
          <property name="resizeMode">
           <enum>QListView::Adjust</enum>
+         </property>
+         <property name="spacing">
+          <number>10</number>
          </property>
          <property name="viewMode">
           <enum>QListView::IconMode</enum>
@@ -127,6 +136,9 @@
        </property>
        <item row="0" column="0">
         <widget class="QTreeView" name="modTreeView">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
