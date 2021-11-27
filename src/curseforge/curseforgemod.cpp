@@ -91,9 +91,9 @@ void CurseforgeMod::acquireDescription()
     });
 }
 
-void CurseforgeMod::acquireAllFileList(std::function<void (QList<CurseforgeFileInfo>)> callback, std::function<void ()> failed)
+QMetaObject::Connection CurseforgeMod::acquireAllFileList(std::function<void (QList<CurseforgeFileInfo>)> callback, std::function<void ()> failed)
 {
-    if(gettingAllFileList_) return;
+    if(gettingAllFileList_) return {};
     gettingAllFileList_ = true;
     auto conn = api_->getFiles(modInfo_.id(), [=](const QList<CurseforgeFileInfo> &fileList){
         gettingAllFileList_ = false;
@@ -104,6 +104,7 @@ void CurseforgeMod::acquireAllFileList(std::function<void (QList<CurseforgeFileI
     connect(this, &QObject::destroyed, this, [=]{
         disconnect(conn);
     });
+    return conn;
 }
 
 const CurseforgeModInfo &CurseforgeMod::modInfo() const

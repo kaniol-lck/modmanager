@@ -36,6 +36,7 @@ public:
 
     void searchOnWebsites();
     void checkModUpdates(bool force = true);
+    void cancelChecking();
     void updateMods(QList<QPair<LocalMod *, ModWebsiteType> > modUpdateList);
 
     //download new mod
@@ -66,6 +67,7 @@ signals:
     void loadStarted();
     void loadProgress(int loadedCount, int totalCount);
     void loadFinished();
+    void checkCancelled();
 
     void checkWebsitesStarted();
     void websiteCheckedCountUpdated(int checkedCount);

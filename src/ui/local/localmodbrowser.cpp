@@ -146,6 +146,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::checkWebsitesStarted, this, &LocalModBrowser::onCheckWebsitesStarted);
     connect(modPath_, &LocalModPath::websitesReady, this, &LocalModBrowser::onWebsitesReady);
     connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::onCheckUpdatesStarted);
+    connect(modPath_, &LocalModPath::checkCancelled, this, &LocalModBrowser::onCheckCancelled);
     connect(modPath_, &LocalModPath::updateCheckedCountUpdated, this, &LocalModBrowser::onUpdateCheckedCountUpdated);
     connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::onUpdatesReady);
     connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::onUpdatableCountChanged);
@@ -161,6 +162,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::websiteCheckedCountUpdated, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::websitesReady, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::checkCancelled, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::updateProgressBar);
 
@@ -281,11 +283,16 @@ void LocalModBrowser::onWebsitesReady()
 void LocalModBrowser::onCheckUpdatesStarted()
 {
     isChecking_ = true;
-    ui->checkUpdatesButton->setEnabled(false);
+//    ui->checkUpdatesButton->setEnabled(false);
     ui->updateWidget->setVisible(false);
     onUpdateCheckedCountUpdated(0, 0, 0);
-    ui->checkUpdatesButton->setText(tr("Checking updates..."));
+    ui->checkUpdatesButton->setText(tr("Cancel Checking"));
     progressBar_->setMaximum(modPath_->modCount());
+}
+
+void LocalModBrowser::onCheckCancelled()
+{
+    onUpdatesReady();
 }
 
 void LocalModBrowser::onUpdateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount)
@@ -299,7 +306,7 @@ void LocalModBrowser::onUpdatesReady(int failedCount)
 {
     isChecking_ = false;
     if(isUpdating_) return;
-    ui->checkUpdatesButton->setEnabled(true);
+//    ui->checkUpdatesButton->setEnabled(true);
     ui->checkUpdatesButton->setText(tr("Check updates"));
     onUpdatableCountChanged();
     updateStatusText();
@@ -433,7 +440,10 @@ void LocalModBrowser::on_comboBox_currentIndexChanged(int index)
 
 void LocalModBrowser::on_checkUpdatesButton_clicked()
 {
-    modPath_->checkModUpdates();
+    if(isChecking_)
+        modPath_->cancelChecking();
+    else
+        modPath_->checkModUpdates();
 }
 
 void LocalModBrowser::on_openFolderButton_clicked()

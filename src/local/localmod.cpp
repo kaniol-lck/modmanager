@@ -18,6 +18,7 @@
 #include "util/tutil.hpp"
 #include "config.hpp"
 #include "util/mmlogger.h"
+#include "util/funcutil.h"
 
 LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
     QObject(parent),
@@ -166,16 +167,23 @@ void LocalMod::checkUpdates(bool force)
     if(config.getUseCurseforgeUpdate() && curseforgeMod_ && curseforgeUpdate_.currentFileInfo()){
         (*count)++;
         checkCurseforgeUpdate(force);
-        connect(this, &LocalMod::curseforgeUpdateReady, foo);
+        connect(this, &LocalMod::checkCancelled, disconnecter(
+                    connect(this, &LocalMod::curseforgeUpdateReady, foo)));
         noSource = false;
     }
     if(config.getUseModrinthUpdate() && modrinthMod_ && modrinthUpdate_.currentFileInfo()){
         (*count)++;
         checkModrinthUpdate(force);
-        connect(this, &LocalMod::modrinthUpdateReady, foo);
+        connect(this, &LocalMod::checkCancelled, disconnecter(
+                    connect(this, &LocalMod::modrinthUpdateReady, foo)));
         noSource = false;
     }
     if(noSource) emit updateReady({});
+}
+
+void LocalMod::cancelChecking()
+{
+    emit checkCancelled();
 }
 
 void LocalMod::checkCurseforgeUpdate(bool force)
@@ -189,12 +197,13 @@ void LocalMod::checkCurseforgeUpdate(bool force)
 
     //update file list
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
-        curseforgeMod_->acquireAllFileList([=](const QList<CurseforgeFileInfo> &fileList){
+        connect(this, &LocalMod::checkCancelled, disconnecter(
+                    curseforgeMod_->acquireAllFileList([=](const QList<CurseforgeFileInfo> &fileList){
             bool bl = curseforgeUpdate_.findUpdate(fileList, targetVersion_, targetLoaderType_);
             emit curseforgeUpdateReady(bl);
         }, [=]{
             emit curseforgeUpdateReady(false, false);
-        });
+        })));
     }else{
         bool bl = curseforgeUpdate_.findUpdate(curseforgeMod_->modInfo().allFileList(), targetVersion_, targetLoaderType_);
         emit curseforgeUpdateReady(bl);
@@ -214,12 +223,13 @@ void LocalMod::checkModrinthUpdate(bool force)
             bool bl = modrinthUpdate_.findUpdate(modrinthMod_->modInfo().fileList(), targetVersion_, targetLoaderType_);
             emit modrinthUpdateReady(bl);
         }else {
-            modrinthMod_->acquireFileList([=](const QList<ModrinthFileInfo> &fileList){
+            connect(this, &LocalMod::checkCancelled, disconnecter(
+                        modrinthMod_->acquireFileList([=](const QList<ModrinthFileInfo> &fileList){
                 bool bl = modrinthUpdate_.findUpdate(fileList, targetVersion_, targetLoaderType_);
                 emit modrinthUpdateReady(bl);
             }, [=]{
                 emit modrinthUpdateReady(false, false);
-            });
+            })));
         }
     };
 

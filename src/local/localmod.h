@@ -45,6 +45,7 @@ public:
     //update
     bool perpareUpdate();
     void checkUpdates(bool force = true);
+    void cancelChecking();
     void checkCurseforgeUpdate(bool force = true);
     void checkModrinthUpdate(bool force = true);
 
@@ -125,6 +126,7 @@ signals:
     void checkWebsiteStarted();
     void websiteReady(bool bl);
     void checkUpdatesStarted();
+    void checkCancelled();
     void updateReady(QList<ModWebsiteType> types, bool success = true);
     void searchOnCurseforgeFinished(bool bl);
     void searchOnModrinthFinished(bool bl);

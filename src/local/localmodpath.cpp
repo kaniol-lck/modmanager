@@ -473,9 +473,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
         auto failedCount = std::make_shared<int>(0);
         for(auto &&map : modMaps())
             for(const auto &mod : map){
-                //cancel on reloading
-                connect(this, &LocalModPath::loadStarted, disconnecter(
-                            connect(mod, &LocalMod::updateReady, this, [=](QList<ModWebsiteType> types, bool success){
+                auto conn = connect(mod, &LocalMod::updateReady, this, [=](QList<ModWebsiteType> types, bool success){
                     (*checkedCount)++;
                     if(!types.isEmpty()) (*updateCount)++;
                     if(!success) (*failedCount) ++;
@@ -492,7 +490,13 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
                         isChecking_ = false;
                         emit updatesReady(*failedCount);
                     }
-                })));
+                });
+                //cancel on reloading
+                connect(this, &LocalModPath::loadStarted, disconnecter(conn));
+                connect(this, &LocalModPath::checkCancelled, [=]{
+                    mod->cancelChecking();
+                    disconnect(conn);
+                });
                 mod->checkUpdates();
         }
     } else if(interval != Config::Never){
@@ -500,6 +504,12 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
         updateUpdatableCount();
         emit updatesReady();
     }
+}
+
+void LocalModPath::cancelChecking()
+{
+    isChecking_ = false;
+    emit checkCancelled();
 }
 
 void LocalModPath::updateMods(QList<QPair<LocalMod *, ModWebsiteType> > modUpdateList)
