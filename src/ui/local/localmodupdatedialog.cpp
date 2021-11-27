@@ -40,14 +40,12 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
             nameItem->setCheckable(enabled);
             nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
             nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            nameItem->setEditable(false);
             nameItem->setEnabled(enabled);
 
             auto beforeItem = new QStandardItem();
             beforeItem->setText(names.first);
             if(enabled) beforeItem->setForeground(Qt::darkRed);
             beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            beforeItem->setEditable(false);
             beforeItem->setEnabled(enabled);
             beforeItem->setToolTip(infos.first);
 
@@ -55,7 +53,6 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
             afterItem->setText(names.second);
             if(enabled) afterItem->setForeground(Qt::darkGreen);
             afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            afterItem->setEditable(false);
             afterItem->setEnabled(enabled);
             afterItem->setToolTip(infos.second);
 
@@ -67,8 +64,6 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
                 sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
             }
             sourceItem->setEnabled(enabled);
-            if(mod->updateTypes().size() == 1)
-                sourceItem->setForeground(Qt::gray);
 
             model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
             modList_ << mod;
@@ -80,7 +75,11 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
                     comboBox->addItem(ModWebsite::icon(type), ModWebsite::toString(type));
                 }
                 connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
-                    sourceItem->setData(types.at(index));
+                    auto type = types.at(index);
+                    sourceItem->setData(type);
+                    auto names = mod->updateNames(type);
+                    beforeItem->setText(names.first);
+                    afterItem->setText(names.second);
                 });
             }
         }
