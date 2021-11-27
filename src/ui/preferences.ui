@@ -175,7 +175,7 @@
            <item>
             <widget class="QCheckBox" name="autoTranslate">
              <property name="text">
-              <string>Auto Translate</string>
+              <string>Auto translate</string>
              </property>
             </widget>
            </item>
@@ -189,7 +189,14 @@
            <item>
             <widget class="QCheckBox" name="enableBlurBehind">
              <property name="text">
-              <string>Enable Blur Behind</string>
+              <string>Enable blur behind</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="useSystemIconTheme">
+             <property name="text">
+              <string>Use system icon theme</string>
              </property>
             </widget>
            </item>

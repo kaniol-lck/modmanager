@@ -29,6 +29,9 @@
         <file>16x16/media-playback-start.svg</file>
         <file>16x16/lock.svg</file>
         <file>16x16/unlock.svg</file>
+        <file>16x16/view-list-details.svg</file>
+        <file>16x16/view-list-icons.svg</file>
+        <file>16x16/view-list-text.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

@@ -42,6 +42,7 @@ Preferences::Preferences(QWidget *parent) :
     on_useFramelessWindow_toggled(ui->useFramelessWindow->isChecked());
     ui->customStyle->setCurrentText(styleSheets().value(config.getCustomStyle()));
     ui->autoTranslate->setChecked(config.getAutoTranslate());
+    ui->useSystemIconTheme->setChecked(config.getUseSystemIconTheme());
 
     //Explore
     ui->downloadPathText->setText(config.getDownloadPath());
@@ -97,6 +98,7 @@ void Preferences::on_Preferences_accepted()
     config.setUseFramelessWindow(ui->enableBlurBehind->isChecked());
     config.setCustomStyle(ui->customStyle->currentData().toString());
     config.setAutoTranslate(ui->autoTranslate->isChecked());
+    config.setUseSystemIconTheme(ui->useSystemIconTheme->isChecked());
 
     //Explore
     config.setDownloadPath(ui->downloadPathText->text());

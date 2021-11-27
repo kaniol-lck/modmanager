@@ -7,6 +7,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setWindowIcon(QIcon(":/image/modmanager.png"));
+    a.setOrganizationName("kaniol");
+    a.setApplicationName("Mod Manager");
 
     //setup translator
     QTranslator translator;
@@ -20,9 +23,9 @@ int main(int argc, char *argv[])
     }
 
     //setup theme
-#ifndef Q_OS_UNIX
-    QIcon::setThemeName("breeze-modmanager");
-#endif
+    if(!Config().getUseSystemIconTheme())
+        QIcon::setThemeName("breeze-modmanager");
+
 #ifdef Q_OS_WIN
     QFont font("微软雅黑", 9);
     a.setFont(font);
@@ -31,9 +34,6 @@ int main(int argc, char *argv[])
     QFont font("PingFang", 12);
     a.setFont(font);
 #endif
-    a.setWindowIcon(QIcon(":/image/modmanager.png"));
-    a.setOrganizationName("kaniol");
-    a.setApplicationName("Mod Manager");
     ModManager w;
     w.show();
     return a.exec();
