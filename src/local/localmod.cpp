@@ -455,8 +455,10 @@ bool LocalMod::isDisabled()
 bool LocalMod::setEnabled(bool enabled)
 {
     auto bl = modFile_->setEnabled(enabled);
-    if(bl)
+    if(bl){
         emit modFileUpdated();
+        updateIcon();
+    }
     return bl;
 }
 
@@ -572,6 +574,7 @@ void LocalMod::setCurseforgeId(int id, bool cache)
         emit curseforgeReady(true);
         if(cache)
             IdMapper::addCurseforge(commonInfo()->id(), id);
+        updateIcon();
     } else
         emit curseforgeReady(false);
 }
@@ -583,6 +586,7 @@ void LocalMod::setModrinthId(const QString &id, bool cache)
         emit modrinthReady(true);
         if(cache)
             IdMapper::addModrinth(commonInfo()->id(), id);
+        updateIcon();
     } else
         emit modrinthReady(false);
 }
@@ -748,6 +752,65 @@ void LocalMod::setModFile(LocalModFile *newModFile)
             QRegularExpressionMatch match = i.next();
             addTag(Tag(match.captured(1), TagCategory::FileNameCategory));
         }
+    }
+    updateIcon();
+}
+
+const QPixmap &LocalMod::icon() const
+{
+    return icon_;
+}
+
+void LocalMod::updateIcon()
+{
+    auto applyIcon = [=]{
+        if(isDisabled()){
+            QImage image(icon_.toImage());
+            auto alphaChannel = image.convertToFormat(QImage::Format_Alpha8);
+            image = image.convertToFormat(QImage::Format_Grayscale8);
+            image.setAlphaChannel(alphaChannel);
+            icon_.convertFromImage(image);
+        }
+        emit modIconUpdated();
+    };
+
+    if(!commonInfo()->iconBytes().isEmpty()){
+        icon_.loadFromData(commonInfo()->iconBytes());
+        applyIcon();
+    }else if(commonInfo()->id() == "optifine") {
+        icon_.load(":/image/optifine.png");
+        applyIcon();
+    }else if(curseforgeMod_){
+        auto setCurseforgeIcon = [=]{
+            icon_.loadFromData(curseforgeMod_->modInfo().iconBytes());
+            applyIcon();
+        };
+        if(!curseforgeMod_->modInfo().iconBytes().isEmpty())
+            setCurseforgeIcon();
+        else{
+            connect(curseforgeMod_, &CurseforgeMod::basicInfoReady, this, [=]{
+                connect(curseforgeMod_, &CurseforgeMod::iconReady, this, setCurseforgeIcon);
+                curseforgeMod_->acquireIcon();
+            });
+            curseforgeMod_->acquireBasicInfo();
+        }
+    } else if(modrinthMod_){
+        auto setModrinthIcon = [=]{
+            icon_.loadFromData(modrinthMod_->modInfo().iconBytes());
+            applyIcon();
+        };
+        if(!modrinthMod_->modInfo().iconBytes().isEmpty())
+            setModrinthIcon();
+        else{
+            modrinthMod_->acquireFullInfo();
+            connect(modrinthMod_, &ModrinthMod::fullInfoReady, this, [=]{
+                connect(modrinthMod_, &ModrinthMod::iconReady, this, setModrinthIcon);
+                modrinthMod_->acquireIcon();
+            });
+        }
+    } else{
+        icon_.load(":/image/modmanager.png");
+        applyIcon();
     }
 }
 

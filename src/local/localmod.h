@@ -115,8 +115,11 @@ public:
 
     void setModFile(LocalModFile *newModFile);
 
+    const QPixmap &icon() const;
+
 signals:
     void modFileUpdated();
+    void modIconUpdated();
     void modCacheUpdated();
 
     void checkWebsiteStarted();
@@ -144,6 +147,7 @@ private:
     bool isFeatured_ = false;
     QString alias_;
     LocalModTags tagManager_;
+    QPixmap icon_;
 
     //api for update
     CurseforgeAPI *curseforgeAPI_;
@@ -170,6 +174,8 @@ private:
     QList<std::tuple<QString, QString, std::optional<FabricModInfo>>> depends_;
     QList<std::tuple<QString, QString, FabricModInfo>> conflicts_;
     QList<std::tuple<QString, QString, FabricModInfo>> breaks_;
+
+    void updateIcon();
 };
 
 #endif // LOCALMOD_H

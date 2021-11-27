@@ -445,20 +445,19 @@ QList<QStandardItem *> LocalModBrowser::itemsFromMod(LocalMod *mod)
     auto idItem = new QStandardItem;
     auto versionItem = new QStandardItem;
     auto descItem = new QStandardItem;
-    QPixmap pixmap;
-    if(mod->commonInfo()->iconBytes().isEmpty())
-        pixmap.load(":/image/modmanager.png");
-    else
-        pixmap.loadFromData(mod->commonInfo()->iconBytes());
-    nameItem->setIcon(QIcon(pixmap.scaled(96, 96)));
     auto onModChanged = [=]{
         nameItem->setText(mod->displayName());
         idItem->setText(mod->commonInfo()->id());
         versionItem->setText(mod->commonInfo()->version());
         descItem->setText(mod->commonInfo()->description());
     };
+    auto onIconChanged = [=]{
+        nameItem->setIcon(mod->icon().scaled(96, 96));
+    };
     onModChanged();
+    onIconChanged();
     connect(mod, &LocalMod::modFileUpdated, this, onModChanged);
+    connect(mod, &LocalMod::modIconUpdated, this, onIconChanged);
     return { item, nameItem, idItem, versionItem, descItem };
 }
 

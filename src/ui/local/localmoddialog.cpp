@@ -36,6 +36,12 @@ LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     //init info
     onCurrentModChanged();
 
+    auto onIconChanged = [=]{
+        ui->modIcon->setPixmap(mod_->icon().scaled(80, 80));
+    };
+    onIconChanged();
+    connect(mod_, &LocalMod::modIconUpdated, this, onIconChanged);
+
     //signals / slots
     connect(mod_, &LocalMod::curseforgeReady, this, [=](bool bl){
         ui->curseforgeButton->setEnabled(bl);
@@ -150,56 +156,6 @@ void LocalModDialog::onCurrentFileChanged()
         });
         homepageIcon->get(file_->commonInfo()->issues());
     }
-
-    auto setIcon = [=](auto &&image) {
-        QPixmap pixelmap;
-        if (mod_->modFile()->type() == LocalModFile::Disabled){
-            auto alphaChannel = image.convertToFormat(QImage::Format_Alpha8);
-            image = image.convertToFormat(QImage::Format_Grayscale8);
-            image.setAlphaChannel(alphaChannel);
-        }
-        pixelmap.convertFromImage(image);
-        ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-    };
-
-    if(!mod_->commonInfo()->iconBytes().isEmpty()){
-        QImage image;
-        image.loadFromData(mod_->commonInfo()->iconBytes());
-        setIcon(std::move(image));
-    }else if(mod_->commonInfo()->id() == "optifine"){
-        setIcon(QImage(":/image/optifine.png"));
-    }else if(mod_->curseforgeMod()){
-        auto setCurseforgeIcon = [=]{
-            QImage image;
-            image.loadFromData(mod_->curseforgeMod()->modInfo().iconBytes());
-            setIcon(std::move(image));
-        };
-        if(!mod_->curseforgeMod()->modInfo().iconBytes().isEmpty())
-            setCurseforgeIcon();
-        else{
-            mod_->curseforgeMod()->acquireBasicInfo();
-            connect(mod_->curseforgeMod(), &CurseforgeMod::basicInfoReady, this, [=]{
-                mod_->curseforgeMod()->acquireIcon();
-                connect(mod_->curseforgeMod(), &CurseforgeMod::iconReady, this, setCurseforgeIcon);
-            });
-        }
-    } else if(mod_->modrinthMod()){
-        auto setModrinthIcon = [=]{
-            QImage image;
-            image.loadFromData(mod_->modrinthMod()->modInfo().iconBytes());
-            setIcon(image);
-        };
-        if(!mod_->modrinthMod()->modInfo().iconBytes().isEmpty())
-            setModrinthIcon();
-        else{
-            mod_->modrinthMod()->acquireFullInfo();
-            connect(mod_->modrinthMod(), &ModrinthMod::fullInfoReady, this, [=]{
-                connect(mod_->modrinthMod(), &ModrinthMod::iconReady, this, setModrinthIcon);
-                mod_->modrinthMod()->acquireIcon();
-            });
-        }
-    } else
-        setIcon(QImage(":/image/modmanager.png"));
 
     //file info
     auto fileInfo = file_->fileInfo();

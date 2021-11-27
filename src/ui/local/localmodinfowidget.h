@@ -17,6 +17,8 @@ public:
     ~LocalModInfoWidget();
 
     void setMod(LocalMod *mod);
+signals:
+    void modChanged();
 private slots:
     void updateInfo();
 private:

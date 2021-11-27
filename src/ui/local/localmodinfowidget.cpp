@@ -8,6 +8,7 @@
 #include "modrinth/modrinthmod.h"
 #include "util/smoothscrollbar.h"
 #include "util/flowlayout.h"
+#include "util/funcutil.h"
 
 LocalModInfoWidget::LocalModInfoWidget(QWidget *parent) :
     QWidget(parent),
@@ -27,8 +28,21 @@ LocalModInfoWidget::~LocalModInfoWidget()
 void LocalModInfoWidget::setMod(LocalMod *mod)
 {
     mod_ = mod;
+    emit modChanged();
+
+    ui->scrollArea->setVisible(mod_);
+    if(!mod_) return;
+
     updateInfo();
-    connect(mod_, &LocalMod::modFileUpdated, this, &LocalModInfoWidget::updateInfo);
+    connect(this, &LocalModInfoWidget::modChanged, this, disconnecter(
+                connect(mod_, &LocalMod::modFileUpdated, this, &LocalModInfoWidget::updateInfo)));
+
+    auto onIconChanged = [=]{
+        ui->modIcon->setPixmap(mod_->icon().scaled(80, 80));
+    };
+    onIconChanged();
+    connect(this, &LocalModInfoWidget::modChanged, this, disconnecter(
+                connect(mod_, &LocalMod::modIconUpdated, this, onIconChanged)));
 }
 
 void LocalModInfoWidget::updateInfo()
@@ -67,56 +81,6 @@ void LocalModInfoWidget::updateInfo()
 //        }
 //        else
 //            ui->modAuthors->setText("");
-
-    auto setIcon = [=](auto &&image) {
-        QPixmap pixelmap;
-        if (mod_->modFile()->type() == LocalModFile::Disabled){
-            auto alphaChannel = image.convertToFormat(QImage::Format_Alpha8);
-            image = image.convertToFormat(QImage::Format_Grayscale8);
-            image.setAlphaChannel(alphaChannel);
-        }
-        pixelmap.convertFromImage(image);
-        ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
-    };
-
-    if(!mod_->commonInfo()->iconBytes().isEmpty()){
-        QImage image;
-        image.loadFromData(mod_->commonInfo()->iconBytes());
-        setIcon(std::move(image));
-    }else if(mod_->commonInfo()->id() == "optifine"){
-        setIcon(QImage(":/image/optifine.png"));
-    }else if(mod_->curseforgeMod()){
-        auto setCurseforgeIcon = [=]{
-            QImage image;
-            image.loadFromData(mod_->curseforgeMod()->modInfo().iconBytes());
-            setIcon(std::move(image));
-        };
-        if(!mod_->curseforgeMod()->modInfo().iconBytes().isEmpty())
-            setCurseforgeIcon();
-        else{
-            connect(mod_->curseforgeMod(), &CurseforgeMod::basicInfoReady, this, [=]{
-                connect(mod_->curseforgeMod(), &CurseforgeMod::iconReady, this, setCurseforgeIcon);
-                mod_->curseforgeMod()->acquireIcon();
-            });
-            mod_->curseforgeMod()->acquireBasicInfo();
-        }
-    } else if(mod_->modrinthMod()){
-        auto setModrinthIcon = [=]{
-            QImage image;
-            image.loadFromData(mod_->modrinthMod()->modInfo().iconBytes());
-            setIcon(image);
-        };
-        if(!mod_->modrinthMod()->modInfo().iconBytes().isEmpty())
-            setModrinthIcon();
-        else{
-            mod_->modrinthMod()->acquireFullInfo();
-            connect(mod_->modrinthMod(), &ModrinthMod::fullInfoReady, this, [=]{
-                connect(mod_->modrinthMod(), &ModrinthMod::iconReady, this, setModrinthIcon);
-                mod_->modrinthMod()->acquireIcon();
-            });
-        }
-    } else
-        setIcon(QImage(":/image/modmanager.png"));
 
 //    if (mod_->curseforgeMod())
 //        ui->curseforgeButton->setVisible(true);
