@@ -5,6 +5,7 @@
 
 
 class LocalModFile;
+class QRadioButton;
 namespace Ui {
 class LocalModFileItemWidget;
 }
@@ -16,6 +17,8 @@ class LocalModFileItemWidget : public QWidget
 public:
     explicit LocalModFileItemWidget(QWidget *parent, LocalModFile *file);
     ~LocalModFileItemWidget();
+
+    QRadioButton *button();
 private slots:
     void onFileChanged();
 private:

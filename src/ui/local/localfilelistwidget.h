@@ -7,6 +7,8 @@ class LocalMod;
 class QStandardItemModel;
 
 class LocalModFile;
+
+class QButtonGroup;
 namespace Ui {
 class LocalFileListWidget;
 }
@@ -22,11 +24,14 @@ public:
     void setMod(LocalMod *mod);
 signals:
     void modChanged();
+private slots:
+    void idClicked(int id);
 private:
     Ui::LocalFileListWidget *ui;
     QStandardItemModel *model_;
     LocalMod *mod_ = nullptr;
-    void addModFile(LocalModFile *file);
+    QButtonGroup *buttons_;
+    void addModFile(LocalModFile *file, int id, bool checked = false);
 };
 
 #endif // LOCALFILELISTWIDGET_H

@@ -20,6 +20,11 @@ LocalModFileItemWidget::~LocalModFileItemWidget()
     delete ui;
 }
 
+QRadioButton *LocalModFileItemWidget::button()
+{
+    return ui->radioButton;
+}
+
 void LocalModFileItemWidget::onFileChanged()
 {
     auto setEffect = [=](QWidget *widget, const QString str){
