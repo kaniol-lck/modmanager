@@ -311,11 +311,11 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         // in empty area
         connect(menu->addAction(QIcon::fromTheme("list-add"), tr("New Mod Path")), &QAction::triggered, this, [=]{
             auto dialog = new LocalModPathSettingsDialog(this);
-            dialog->show();
             connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
                 auto path = new LocalModPath(pathInfo, autoLoaderType);
                 LocalModPathManager::addPath(path);
             });
+            dialog->exec();
         });
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
@@ -379,11 +379,11 @@ void ModManager::on_actionFile_List_toggled(bool arg1)
 void ModManager::on_actionOpen_new_path_dialog_triggered()
 {
     auto dialog = new LocalModPathSettingsDialog(this);
-    dialog->exec();
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
         auto path = new LocalModPath(pathInfo, autoLoaderType);
         LocalModPathManager::addPath(path);
     });
+    dialog->exec();
 }
 
 void ModManager::on_actionSelect_A_Directory_triggered()

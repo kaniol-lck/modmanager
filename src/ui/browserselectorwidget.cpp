@@ -55,11 +55,12 @@ void BrowserSelectorWidget::onItemSelected(const QModelIndex &index)
 void BrowserSelectorWidget::on_addButton_clicked()
 {
     auto dialog = new LocalModPathSettingsDialog(this);
-    dialog->exec();
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
+        qDebug() << "?";
         auto path = new LocalModPath(pathInfo, autoLoaderType);
         LocalModPathManager::addPath(path);
     });
+    dialog->exec();
 }
 
 void BrowserSelectorWidget::on_manageButton_clicked()
