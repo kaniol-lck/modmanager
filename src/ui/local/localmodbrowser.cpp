@@ -137,6 +137,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 
     updateModList();
 
+    connect(ui->modListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &LocalModBrowser::updateIndexWidget);
+
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::onLoadStarted);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::onLoadFinished);
@@ -212,9 +214,7 @@ void LocalModBrowser::updateModList()
         for (auto &&mod : map) {
             auto items = LocalModItem::itemsFromMod(mod);
             model_->appendRow(items);
-            auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
-            ui->modListView->setIndexWidget(model_->indexFromItem(items.first()), modItemWidget);
-            items.first()->setSizeHint(QSize(0, modItemWidget->height()));
+            items.first()->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
         }
     }
     //TODO: optfine in sub dir
@@ -222,9 +222,7 @@ void LocalModBrowser::updateModList()
         if(auto mod = modPath_->optiFineMod()){
             auto items = LocalModItem::itemsFromMod(mod);
             model_->appendRow(items);
-            auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
-            ui->modListView->setIndexWidget(model_->indexFromItem(items.first()), modItemWidget);
-            items.first()->setSizeHint(QSize(0, modItemWidget->height()));
+            items.first()->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
         }
     model_->sort(NameColumn);
     ui->modIconListView->setModelColumn(NameColumn);
@@ -372,6 +370,7 @@ void LocalModBrowser::filterList()
         ui->modTreeView->setRowHidden(i, ui->modTreeView->rootIndex(), hidden);
         if(hidden) hiddenCount_++;
     }
+    updateIndexWidget();
     updateStatusText();
 }
 
@@ -427,6 +426,24 @@ QMenu *LocalModBrowser::onCustomContextMenuRequested(const QModelIndex &index)
         mod->setEnabled(!bl);
     });
     return menu;
+}
+
+void LocalModBrowser::updateIndexWidget()
+{
+    auto beginRow = ui->modListView->indexAt(QPoint(0, 0)).row();
+    if(beginRow < 0) return;
+    auto endRow = ui->modListView->indexAt(QPoint(0, ui->modListView->height())).row();
+    //extra 2
+    endRow += 2;
+    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
+        auto index = model_->index(row, 0);
+        if(ui->modListView->indexWidget(index)) continue;
+//        qDebug() << "new widget at row" << row;
+        auto item = model_->item(row);
+        auto mod = item->data().value<LocalMod*>();
+        auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
+        ui->modListView->setIndexWidget(index, modItemWidget);
+    }
 }
 
 void LocalModBrowser::on_checkUpdatesButton_clicked()

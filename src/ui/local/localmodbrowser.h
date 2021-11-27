@@ -69,6 +69,7 @@ private slots:
     void updateStatusText();
     void updateProgressBar();
     QMenu *onCustomContextMenuRequested(const QModelIndex &index);
+    void updateIndexWidget();
 
     void on_checkUpdatesButton_clicked();
     void on_openFolderButton_clicked();
