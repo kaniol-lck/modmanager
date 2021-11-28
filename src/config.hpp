@@ -129,6 +129,7 @@ public:
 #endif
     getterAndSetter(UseFramelessWindow, Bool, useFramelessWindow, false)
     getterAndSetter(CustomStyle, String, customStyle, "light")
+    getterAndSetter(LocalModsHeaderSections, List, localModsHeaderSections, QVariant())
 private:
     QSettings old_;
 };

@@ -141,6 +141,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 
     ui->modTreeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->modTreeView->header(), &QHeaderView::customContextMenuRequested, this, &LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested);
+    connect(ui->modTreeView->header(), &QHeaderView::sectionMoved, this, &LocalModBrowser::updateSections);
 
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::onLoadStarted);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
@@ -218,6 +219,19 @@ void LocalModBrowser::updateModList()
     model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(QIcon(":/image/modrinth.svg"), tr("Modrinth ID")));
     model_->setHorizontalHeaderItem(ModrinthFileIdColumn, new QStandardItem(QIcon(":/image/modrinth.svg"), tr("Modrinth File ID")));
     model_->setHorizontalHeaderItem(DescriptionColumn, new QStandardItem(tr("Description")));
+    auto list = Config().getLocalModsHeaderSections();
+    auto &&header = ui->modTreeView->header();
+    if(!list.isEmpty()){
+        ui->modTreeView->header()->blockSignals(true);
+        for(int i = 0; i < header->count() - 1; i++){
+            if(i < list.size()){
+                header->moveSection(header->visualIndex(list.at(i).toInt()), i + 1);
+            }
+            else
+                header->hideSection(header->visualIndex(i + 1));
+        }
+        ui->modTreeView->header()->blockSignals(false);
+    }
 
     auto addMod = [=](LocalMod *mod){
         auto items = LocalModItem::itemsFromMod(mod);
@@ -558,15 +572,35 @@ void LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested(const QPoint
 {
     auto menu = new QMenu(this);
     for(int column = ModColumn + 1; column < model_->columnCount(); column++){
+        if(column == NameColumn) continue;
         auto item = model_->horizontalHeaderItem(column);
         auto action = menu->addAction(item->icon(), item->text());
         action->setCheckable(true);
         action->setChecked(!ui->modTreeView->isColumnHidden(column));
         connect(action, &QAction::toggled, this, [=](bool checked){
             ui->modTreeView->setColumnHidden(column, !checked);
+            updateSections();
         });
     }
+    menu->addSeparator();
+    menu->addAction(tr("Reset"), this, [=]{
+        for(int column = 1; column < model_->columnCount(); column++){
+            auto &&header = ui->modTreeView->header();
+            header->moveSection(header->visualIndex(column), column);
+            ui->modTreeView->setColumnHidden(column, false);
+        }
+        Config().setLocalModsHeaderSections(QList<QVariant>());
+    });
     menu->exec(ui->modTreeView->mapToGlobal(pos));
+}
+
+void LocalModBrowser::updateSections()
+{
+    auto &&header = ui->modTreeView->header();
+    QList<QVariant> list;
+    for(auto i = 1; i < header->count(); i++)
+        if(!header->isSectionHidden(i)) list << header->logicalIndex(i);
+    Config().setLocalModsHeaderSections(list);
 }
 
 void LocalModBrowser::paintEvent(QPaintEvent *event)
