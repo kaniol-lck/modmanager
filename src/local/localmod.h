@@ -77,7 +77,7 @@ public:
     void deleteOld(LocalModFile *file);
 
     bool isDisabled();
-    bool setEnabled(bool enabled);
+    bool isEnabled();
 
     void ignoreUpdate(ModWebsiteType type);
     void clearIgnores();
@@ -104,7 +104,6 @@ public:
     void restore(const QVariant &variant);
 
     bool isFeatured() const;
-    void setFeatured(bool featured);
 
     LocalModPath *path() const;
 
@@ -117,6 +116,10 @@ public:
     void setModFile(LocalModFile *newModFile);
 
     const QPixmap &icon() const;
+
+public slots:
+    bool setEnabled(bool enabled);
+    void setFeatured(bool featured);
 
 signals:
     void modFileUpdated();

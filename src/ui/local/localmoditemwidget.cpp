@@ -144,7 +144,6 @@ void LocalModItemWidget::updateInfo()
         ui->updateButton->setEnabled(false);
         displayName = clearFormat(displayName);
         description = clearFormat(description);
-        qDebug() << description;
     } else{
         ui->disableButton->setChecked(false);
         ui->modName->setStyleSheet("");

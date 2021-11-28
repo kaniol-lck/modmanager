@@ -462,6 +462,11 @@ bool LocalMod::isDisabled()
     return modFile_->type() == LocalModFile::Disabled;
 }
 
+bool LocalMod::isEnabled()
+{
+    return !isDisabled();
+}
+
 bool LocalMod::setEnabled(bool enabled)
 {
     auto bl = modFile_->setEnabled(enabled);

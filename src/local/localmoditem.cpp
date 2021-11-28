@@ -37,16 +37,21 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod)
     auto nameItem = new LocalModItem(mod);
     auto idItem = new LocalModItem(mod);
     auto versionItem = new LocalModItem(mod);
+    auto enableItem= new LocalModItem(mod);
+    auto starItem = new LocalModItem(mod);
     auto descItem = new LocalModItem(mod);
     auto curseforgeIdItem = new LocalModItem(mod);
     auto modrinthIdItem = new LocalModItem(mod);
     auto fileDateItem = new LocalModItem(mod);
     auto fileSizeItem = new LocalModItem(mod);
+    QList<QStandardItem *> list = { item, nameItem, idItem, versionItem, enableItem, starItem, fileDateItem, fileSizeItem, curseforgeIdItem, modrinthIdItem, descItem };
     auto onModChanged = [=]{
         nameItem->setText(clearFormat(mod->displayName()));
         idItem->setText(mod->commonInfo()->id());
         versionItem->setText(mod->commonInfo()->version());
         descItem->setText(mod->commonInfo()->description());
+        for(auto &&item : list)
+            item->setForeground(mod->isDisabled()? Qt::gray : Qt::black);
         if(mod->curseforgeMod()){
             curseforgeIdItem->setText(QString::number(mod->curseforgeMod()->modInfo().id()));
         }
@@ -65,5 +70,5 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod)
     onIconChanged();
     QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
     QObject::connect(mod, &LocalMod::modIconUpdated, onIconChanged);
-    return { item, nameItem, idItem, versionItem, fileDateItem, fileSizeItem, curseforgeIdItem, modrinthIdItem, descItem };
+    return list;
 }

@@ -10,6 +10,7 @@
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QInputDialog>
+#include <QCheckBox>
 
 #include "localmodinfowidget.h"
 #include "localfilelistwidget.h"
@@ -204,6 +205,8 @@ void LocalModBrowser::updateModList()
     model_->setHorizontalHeaderItem(VersionColumn, new QStandardItem(tr("Version")));
     model_->setHorizontalHeaderItem(FileDateColumn, new QStandardItem(tr("Last Modified")));
     model_->setHorizontalHeaderItem(FileSizeColumn, new QStandardItem(tr("File Size")));
+    model_->setHorizontalHeaderItem(EnableColumn, new QStandardItem(QIcon::fromTheme("action-unavailable-symbolic"), ""));
+    model_->setHorizontalHeaderItem(StarColumn, new QStandardItem(QIcon::fromTheme("starred-symbolic"), ""));
     model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(tr("Curseforge ID")));
     model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(tr("Modrinth ID")));
     model_->setHorizontalHeaderItem(DescriptionColumn, new QStandardItem(tr("Description")));
@@ -213,6 +216,22 @@ void LocalModBrowser::updateModList()
             auto items = LocalModItem::itemsFromMod(mod);
             model_->appendRow(items);
             items.first()->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
+            auto enableBox = new QCheckBox(this);
+            ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(EnableColumn)), enableBox);
+            connect(enableBox, &QCheckBox::toggled, mod, &LocalMod::setEnabled);
+            auto starButton = new QToolButton(this);
+            starButton->setAutoRaise(true);
+            ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(StarColumn)), starButton);
+            connect(starButton, &QToolButton::clicked, this, [=]{
+                auto checked = starButton->icon().name() != "starred-symbolic";
+                mod->setFeatured(checked);
+            });
+            auto onModChanged = [=]{
+                enableBox->setChecked(mod->isEnabled());
+                starButton->setIcon(QIcon::fromTheme(mod->isFeatured() ? "starred-symbolic" : "non-starred-symbolic"));
+            };
+            onModChanged();
+            QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
         }
     }
     //TODO: optfine in sub dir
@@ -225,6 +244,8 @@ void LocalModBrowser::updateModList()
     model_->sort(NameColumn);
     ui->modIconListView->setModelColumn(NameColumn);
     ui->modTreeView->hideColumn(ModColumn);
+    for(auto &&column : { EnableColumn, StarColumn })
+        ui->modTreeView->resizeColumnToContents(column);
     filter_->refreshTags();
     filterList();
 }
