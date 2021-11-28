@@ -478,12 +478,6 @@ void LocalModBrowser::on_openFolderButton_clicked()
     openFileInFolder(modPath_->info().path());
 }
 
-void LocalModBrowser::on_checkButton_clicked()
-{
-    auto dialog = new LocalModCheckDialog(this, modPath_);
-    dialog->exec();
-}
-
 void LocalModBrowser::on_updateAllButton_clicked()
 {
     auto dialog = new LocalModUpdateDialog(this, modPath_);

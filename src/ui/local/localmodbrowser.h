@@ -73,7 +73,6 @@ private slots:
 
     void on_checkUpdatesButton_clicked();
     void on_openFolderButton_clicked();
-    void on_checkButton_clicked();
     void on_updateAllButton_clicked();
     void on_hideUpdatesButton_clicked();
     void onItemSelected(const QModelIndex &index);

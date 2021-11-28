@@ -316,11 +316,6 @@ void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &ind
     dialog->show();
 }
 
-void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
-{
-    if(isUiSet_) getModList(currentName_);
-}
-
 void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
 {
     for(int i = 0; i < ui->modListWidget->count(); i++){

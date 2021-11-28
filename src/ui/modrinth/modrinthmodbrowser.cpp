@@ -437,11 +437,6 @@ void ModrinthModBrowser::on_sortSelect_currentIndexChanged(int)
     if(isUiSet_) getModList(currentName_);
 }
 
-void ModrinthModBrowser::on_versionSelect_currentIndexChanged(int)
-{
-    if(isUiSet_) getModList(currentName_);
-}
-
 void ModrinthModBrowser::on_loaderSelect_currentIndexChanged(int)
 {
     if(isUiSet_) getModList(currentName_);
@@ -465,11 +460,6 @@ void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     else
         downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
     emit downloadPathChanged(downloadPath_);
-}
-
-void ModrinthModBrowser::on_categorySelect_currentIndexChanged(int)
-{
-    if(isUiSet_) getModList(currentName_);
 }
 
 void ModrinthModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])

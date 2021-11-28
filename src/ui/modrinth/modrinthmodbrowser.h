@@ -39,11 +39,9 @@ private slots:
     void onSliderChanged(int i);
     void on_modListWidget_doubleClicked(const QModelIndex &index);
     void on_sortSelect_currentIndexChanged(int);
-    void on_versionSelect_currentIndexChanged(int);
     void on_loaderSelect_currentIndexChanged(int);
     void on_openFolderButton_clicked();
     void on_downloadPathSelect_currentIndexChanged(int index);
-    void on_categorySelect_currentIndexChanged(int);
     void on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 private:
     Ui::ModrinthModBrowser *ui;
