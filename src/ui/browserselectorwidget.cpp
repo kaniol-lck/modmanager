@@ -56,8 +56,8 @@ void BrowserSelectorWidget::on_addButton_clicked()
 {
     auto dialog = new LocalModPathSettingsDialog(this);
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
-        qDebug() << "?";
-        auto path = new LocalModPath(pathInfo, autoLoaderType);
+        auto path = new LocalModPath(pathInfo);
+        path->loadMods(autoLoaderType);
         LocalModPathManager::addPath(path);
     });
     dialog->exec();

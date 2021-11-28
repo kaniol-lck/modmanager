@@ -119,7 +119,7 @@ void ModrinthModDialog::updateFileList()
     model_->clear();
     auto files = mod_->modInfo().fileList();
     for(const auto &fileInfo : qAsConst(files)){
-        auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo);
+        auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo, localMod_);
         itemWidget->setDownloadPath(downloadPath_);
         connect(this, &ModrinthModDialog::downloadPathChanged, itemWidget, &ModrinthFileItemWidget::setDownloadPath);
         auto item = new QStandardItem;

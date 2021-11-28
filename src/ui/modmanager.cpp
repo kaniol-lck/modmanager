@@ -312,7 +312,8 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         connect(menu->addAction(QIcon::fromTheme("list-add"), tr("New Mod Path")), &QAction::triggered, this, [=]{
             auto dialog = new LocalModPathSettingsDialog(this);
             connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
-                auto path = new LocalModPath(pathInfo, autoLoaderType);
+                auto path = new LocalModPath(pathInfo);
+                path->loadMods(autoLoaderType);
                 LocalModPathManager::addPath(path);
             });
             dialog->exec();
@@ -380,7 +381,8 @@ void ModManager::on_actionOpen_new_path_dialog_triggered()
 {
     auto dialog = new LocalModPathSettingsDialog(this);
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &pathInfo, bool autoLoaderType){
-        auto path = new LocalModPath(pathInfo, autoLoaderType);
+        auto path = new LocalModPath(pathInfo);
+        path->loadMods(autoLoaderType);
         LocalModPathManager::addPath(path);
     });
     dialog->exec();
@@ -390,7 +392,8 @@ void ModManager::on_actionSelect_A_Directory_triggered()
 {
     auto pathStr = QFileDialog::getExistingDirectory(this, tr("Select your mod directory..."), config_.getCommonPath());
     if(pathStr.isEmpty()) return;
-    auto path = new LocalModPath(LocalModPathInfo::deduceFromPath(pathStr), true);
+    auto path = new LocalModPath(LocalModPathInfo::deduceFromPath(pathStr));
+    path->loadMods(true);
     LocalModPathManager::addPath(path);
 }
 

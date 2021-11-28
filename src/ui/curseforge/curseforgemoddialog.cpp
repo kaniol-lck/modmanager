@@ -178,7 +178,7 @@ void CurseforgeModDialog::updateFileList()
     model_->clear();
     auto files = mod_->modInfo().allFileList();
     for(const auto &fileInfo : files){
-        auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo);
+        auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo, localMod_);
         itemWidget->setDownloadPath(downloadPath_);
         connect(this, &CurseforgeModDialog::downloadPathChanged, itemWidget, &CurseforgeFileItemWidget::setDownloadPath);
         auto item = new QStandardItem;

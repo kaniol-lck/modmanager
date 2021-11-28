@@ -153,4 +153,3 @@ void Preferences::on_useFramelessWindow_toggled(bool checked[[maybe_unused]])
     ui->enableBlurBehind->setEnabled(checked);
 #endif
 }
-

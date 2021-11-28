@@ -15,7 +15,7 @@ class LocalModPath : public QObject
 {
     Q_OBJECT
 public:
-    explicit LocalModPath(const LocalModPathInfo &info, bool deduceLoader = false);
+    explicit LocalModPath(const LocalModPathInfo &info);
     ~LocalModPath();
 
     void loadMods(bool autoLoaderType = false);

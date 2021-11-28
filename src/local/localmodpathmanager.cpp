@@ -38,7 +38,8 @@ void LocalModPathManager::addPath(LocalModPath *path)
 void LocalModPathManager::addPaths(const QStringList &paths)
 {
     for(auto &&pathStr : paths){
-        auto path = new LocalModPath(LocalModPathInfo::deduceFromPath(pathStr), true);
+        auto path = new LocalModPath(LocalModPathInfo::deduceFromPath(pathStr));
+        path->loadMods(true);
         manager()->pathList_ << path;
         connect(path, &LocalModPath::infoUpdated, manager(), &LocalModPathManager::updateList);
     }
@@ -69,6 +70,8 @@ void LocalModPathManager::load()
     Config config;
     for(auto &&pathInfo : config.getLocalPathList()){
         auto path = new LocalModPath(LocalModPathInfo::fromVariant(pathInfo));
+        if(config.getLoadModsOnStartup())
+            path->loadMods();
         manager()->pathList_ << path;
         connect(path, &LocalModPath::infoUpdated, manager(), &LocalModPathManager::updateList);
     }

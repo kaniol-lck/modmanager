@@ -13,7 +13,7 @@
 #include "util/funcutil.h"
 #include "config.hpp"
 
-LocalModPath::LocalModPath(const LocalModPathInfo &info, bool deduceLoader) :
+LocalModPath::LocalModPath(const LocalModPathInfo &info) :
     QObject(LocalModPathManager::manager()),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
@@ -25,8 +25,6 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info, bool deduceLoader) :
         checkModUpdates(false);
         initialUpdateChecked_ = true;
     });
-    if(Config().getLoadModsOnStartup())
-        loadMods(deduceLoader);
 }
 
 LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
@@ -43,7 +41,6 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
         checkModUpdates(false);
         initialUpdateChecked_ = true;
     });
-    loadMods();
 }
 
 bool LocalModPath::loaded() const
@@ -70,8 +67,11 @@ void LocalModPath::loadMods(bool autoLoaderType)
             if((containsMod = LocalModFile::availableSuffix.contains(fileInfo2.suffix())))
                 break;
         qDebug() << "containsMod" << containsMod;
-        if(auto fileName = fileInfo.fileName(); !subPaths_.contains(fileName) && containsMod)
-            subPaths_.insert(fileName, new LocalModPath(this, fileName));
+        if(auto fileName = fileInfo.fileName(); !subPaths_.contains(fileName) && containsMod){
+            auto subPath = new LocalModPath(this, fileName);
+            subPaths_.insert(fileName, subPath);
+            subPath->loadMods();
+        }
     }
     QList<LocalModFile*> modFileList;
     for(auto &&fileInfo : dir.entryInfoList(QDir::Files))
