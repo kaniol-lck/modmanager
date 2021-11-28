@@ -27,6 +27,8 @@ bool LocalModItem::operator<(const QStandardItem &other) const
         return data(FileDateRole).toDateTime() < other.data(FileDateRole).toDateTime();
     if(column() == LocalModBrowser::FileSizeColumn)
         return data(FileSizeRole).toInt() < other.data(FileSizeRole).toInt();
+    if(column() == LocalModBrowser::TagsColumn)
+        return data(TagsRole).toString() < other.data(TagsRole).toString();;
     return QStandardItem::operator<(other);
 }
 
@@ -39,12 +41,13 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod)
     auto versionItem = new LocalModItem(mod);
     auto enableItem= new LocalModItem(mod);
     auto starItem = new LocalModItem(mod);
+    auto tagsItem = new LocalModItem(mod);
     auto descItem = new LocalModItem(mod);
     auto curseforgeIdItem = new LocalModItem(mod);
     auto modrinthIdItem = new LocalModItem(mod);
     auto fileDateItem = new LocalModItem(mod);
     auto fileSizeItem = new LocalModItem(mod);
-    QList<QStandardItem *> list = { item, nameItem, idItem, versionItem, enableItem, starItem, fileDateItem, fileSizeItem, curseforgeIdItem, modrinthIdItem, descItem };
+    QList<QStandardItem *> list = { item, nameItem, idItem, versionItem, enableItem, starItem, tagsItem, fileDateItem, fileSizeItem, curseforgeIdItem, modrinthIdItem, descItem };
     auto onModChanged = [=]{
         nameItem->setText(clearFormat(mod->displayName()));
         idItem->setText(mod->commonInfo()->id());
@@ -62,6 +65,10 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod)
         fileDateItem->setData(mod->modFile()->fileInfo().lastModified(), FileDateRole);
         fileSizeItem->setText(sizeConvert(mod->modFile()->fileInfo().size()));
         fileSizeItem->setData(mod->modFile()->fileInfo().size(), FileSizeRole);
+        QString tagsStr;
+        for(auto &&tag : mod->tagManager().tags())
+            tagsStr += tag.name() + " ";
+        tagsItem->setData(tagsStr, TagsRole);
     };
     auto onIconChanged = [=]{
         nameItem->setIcon(mod->icon().scaled(96, 96));

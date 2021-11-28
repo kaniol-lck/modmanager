@@ -28,6 +28,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui->modrinthButton->setVisible(false);
     ui->disableButton->setVisible(false);
     ui->featuredButton->setVisible(false);
+    ui->tagsWidget->setMod(mod_);
 
     this->setAttribute(Qt::WA_Hover, true);
 
@@ -170,18 +171,7 @@ void LocalModItemWidget::updateUi()
     Config config;
     ui->modAuthors->setVisible(config.getShowModAuthors());
     //tags
-    for(auto widget : qAsConst(tagWidgets_)){
-        ui->tagsLayout->removeWidget(widget);
-        widget->deleteLater();
-    }
-    tagWidgets_.clear();
-    for(auto &&tag : mod_->tagManager().tags(config.getShowTagCategories())){
-        auto label = new QLabel(tag.name(), this);
-        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
-        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
-        ui->tagsLayout->addWidget(label);
-        tagWidgets_ << label;
-    }
+    ui->tagsWidget->updateUi();
 }
 
 void LocalModItemWidget::on_updateButton_clicked()

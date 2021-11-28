@@ -93,6 +93,7 @@ SOURCES += \
     src/ui/renamepatternedit.cpp \
     src/ui/replay/replaymodbrowser.cpp \
     src/ui/replay/replaymoditemwidget.cpp \
+    src/ui/tagswidget.cpp \
     src/ui/windowstitlebar.cpp \
     src/util/flowlayout.cpp \
     src/util/funcutil.cpp \
@@ -186,6 +187,7 @@ HEADERS += \
     src/ui/renamepatternedit.h \
     src/ui/replay/replaymodbrowser.h \
     src/ui/replay/replaymoditemwidget.h \
+    src/ui/tagswidget.h \
     src/ui/windowstitlebar.h \
     src/util/WindowCompositionAttribute.h \
     src/util/flowlayout.h \
@@ -235,6 +237,7 @@ FORMS += \
     src/ui/preferences.ui \
     src/ui/replay/replaymodbrowser.ui \
     src/ui/replay/replaymoditemwidget.ui \
+    src/ui/tagswidget.ui \
     src/ui/windowstitlebar.ui
 
 TRANSLATIONS += \

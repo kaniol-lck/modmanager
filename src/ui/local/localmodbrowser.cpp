@@ -22,6 +22,7 @@
 #include "localmodupdatedialog.h"
 #include "localmodcheckdialog.h"
 #include "batchrenamedialog.h"
+#include "ui/tagswidget.h"
 #include "config.hpp"
 #include "util/funcutil.h"
 #include "util/localmodsortitem.h"
@@ -207,39 +208,45 @@ void LocalModBrowser::updateModList()
     model_->setHorizontalHeaderItem(FileSizeColumn, new QStandardItem(tr("File Size")));
     model_->setHorizontalHeaderItem(EnableColumn, new QStandardItem(QIcon::fromTheme("action-unavailable-symbolic"), ""));
     model_->setHorizontalHeaderItem(StarColumn, new QStandardItem(QIcon::fromTheme("starred-symbolic"), ""));
+    model_->setHorizontalHeaderItem(TagsColumn, new QStandardItem(tr("Tags")));
     model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(tr("Curseforge ID")));
     model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(tr("Modrinth ID")));
     model_->setHorizontalHeaderItem(DescriptionColumn, new QStandardItem(tr("Description")));
 
+    auto addMod = [=](LocalMod *mod){
+        auto items = LocalModItem::itemsFromMod(mod);
+        model_->appendRow(items);
+        items.first()->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
+        auto enableBox = new QCheckBox(this);
+        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(EnableColumn)), enableBox);
+        connect(enableBox, &QCheckBox::toggled, mod, &LocalMod::setEnabled);
+        auto starButton = new QToolButton(this);
+        starButton->setAutoRaise(true);
+        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(StarColumn)), starButton);
+        auto tagsWidget = new TagsWidget(this);
+        tagsWidget->setMod(mod);
+        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(TagsColumn)), tagsWidget);
+        connect(starButton, &QToolButton::clicked, this, [=]{
+            auto checked = starButton->icon().name() != "starred-symbolic";
+            mod->setFeatured(checked);
+        });
+        auto onModChanged = [=]{
+            enableBox->setChecked(mod->isEnabled());
+            starButton->setIcon(QIcon::fromTheme(mod->isFeatured() ? "starred-symbolic" : "non-starred-symbolic"));
+        };
+        onModChanged();
+        QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
+    };
+
     for(auto &&map : modPath_->modMaps()){
         for (auto &&mod : map) {
-            auto items = LocalModItem::itemsFromMod(mod);
-            model_->appendRow(items);
-            items.first()->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
-            auto enableBox = new QCheckBox(this);
-            ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(EnableColumn)), enableBox);
-            connect(enableBox, &QCheckBox::toggled, mod, &LocalMod::setEnabled);
-            auto starButton = new QToolButton(this);
-            starButton->setAutoRaise(true);
-            ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(StarColumn)), starButton);
-            connect(starButton, &QToolButton::clicked, this, [=]{
-                auto checked = starButton->icon().name() != "starred-symbolic";
-                mod->setFeatured(checked);
-            });
-            auto onModChanged = [=]{
-                enableBox->setChecked(mod->isEnabled());
-                starButton->setIcon(QIcon::fromTheme(mod->isFeatured() ? "starred-symbolic" : "non-starred-symbolic"));
-            };
-            onModChanged();
-            QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
+            addMod(mod);
         }
     }
     //TODO: optfine in sub dir
     if(modPath_->info().loaderType() == ModLoaderType::Fabric)
         if(auto mod = modPath_->optiFineMod()){
-            auto items = LocalModItem::itemsFromMod(mod);
-            model_->appendRow(items);
-            items.first()->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
+            addMod(mod);
         }
     model_->sort(NameColumn);
     ui->modIconListView->setModelColumn(NameColumn);

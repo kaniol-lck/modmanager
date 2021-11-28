@@ -51,7 +51,6 @@ private slots:
 
 private:
     Ui::LocalModItemWidget *ui;
-    QList<QWidget *> tagWidgets_;
     LocalMod *mod_;
 };
 

@@ -9,6 +9,7 @@ class LocalModItem : public QStandardItem
     //custom sorters
     static constexpr int FileDateRole = Qt::UserRole + 147;
     static constexpr int FileSizeRole = Qt::UserRole + 148;
+    static constexpr int TagsRole = Qt::UserRole + 149;
 public:
     LocalModItem(LocalMod *mod = nullptr);
     bool operator<(const QStandardItem &other) const override;
