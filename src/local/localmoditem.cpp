@@ -43,7 +43,7 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod)
     auto fileDateItem = new LocalModItem(mod);
     auto fileSizeItem = new LocalModItem(mod);
     auto onModChanged = [=]{
-        nameItem->setText(mod->displayName());
+        nameItem->setText(clearFormat(mod->displayName()));
         idItem->setText(mod->commonInfo()->id());
         versionItem->setText(mod->commonInfo()->version());
         descItem->setText(mod->commonInfo()->description());
