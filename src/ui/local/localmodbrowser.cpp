@@ -139,6 +139,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 
     updateModList();
 
+    ui->modTreeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->modTreeView->header(), &QHeaderView::customContextMenuRequested, this, &LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested);
+
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::onLoadStarted);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::onLoadFinished);
@@ -207,13 +210,13 @@ void LocalModBrowser::updateModList()
     model_->setHorizontalHeaderItem(FileDateColumn, new QStandardItem(tr("Last Modified")));
     model_->setHorizontalHeaderItem(FileSizeColumn, new QStandardItem(tr("File Size")));
     model_->setHorizontalHeaderItem(FileNameColumn, new QStandardItem(tr("File Name")));
-    model_->setHorizontalHeaderItem(EnableColumn, new QStandardItem(QIcon::fromTheme("action-unavailable-symbolic"), ""));
-    model_->setHorizontalHeaderItem(StarColumn, new QStandardItem(QIcon::fromTheme("starred-symbolic"), ""));
-    model_->setHorizontalHeaderItem(TagsColumn, new QStandardItem(tr("Tags")));
-    model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(tr("Curseforge ID")));
-    model_->setHorizontalHeaderItem(CurseforgeFileIdColumn, new QStandardItem(tr("Curseforge File ID")));
-    model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(tr("Modrinth ID")));
-    model_->setHorizontalHeaderItem(ModrinthFileIdColumn, new QStandardItem(tr("Modrinth File ID")));
+    model_->setHorizontalHeaderItem(EnableColumn, new QStandardItem(QIcon::fromTheme("action-unavailable-symbolic"), tr("Enable")));
+    model_->setHorizontalHeaderItem(StarColumn, new QStandardItem(QIcon::fromTheme("starred-symbolic"), "Star"));
+    model_->setHorizontalHeaderItem(TagsColumn, new QStandardItem(QIcon::fromTheme("tag"), tr("Tags")));
+    model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(QIcon(":/image/curseforge.svg"), tr("Curseforge ID")));
+    model_->setHorizontalHeaderItem(CurseforgeFileIdColumn, new QStandardItem(QIcon(":/image/curseforge.svg"), tr("Curseforge File ID")));
+    model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(QIcon(":/image/modrinth.svg"), tr("Modrinth ID")));
+    model_->setHorizontalHeaderItem(ModrinthFileIdColumn, new QStandardItem(QIcon(":/image/modrinth.svg"), tr("Modrinth File ID")));
     model_->setHorizontalHeaderItem(DescriptionColumn, new QStandardItem(tr("Description")));
 
     auto addMod = [=](LocalMod *mod){
@@ -254,7 +257,7 @@ void LocalModBrowser::updateModList()
     model_->sort(NameColumn);
     ui->modIconListView->setModelColumn(NameColumn);
     ui->modTreeView->hideColumn(ModColumn);
-    for(auto &&column : { EnableColumn, StarColumn })
+    for(auto &&column : { EnableColumn, StarColumn, FileNameColumn })
         ui->modTreeView->resizeColumnToContents(column);
     filter_->refreshTags();
     filterList();
@@ -548,7 +551,22 @@ void LocalModBrowser::on_modTreeView_customContextMenuRequested(const QPoint &po
 {
     auto index = ui->modTreeView->indexAt(pos);
     if(auto menu = onCustomContextMenuRequested(index); menu && !menu->actions().empty())
-        menu->exec(ui->modTreeView->mapToGlobal(pos));
+        menu->exec(ui->modTreeView->mapToGlobal(pos + QPoint(0, ui->modTreeView->header()->height())));
+}
+
+void LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    for(int column = ModColumn + 1; column < model_->columnCount(); column++){
+        auto item = model_->horizontalHeaderItem(column);
+        auto action = menu->addAction(item->icon(), item->text());
+        action->setCheckable(true);
+        action->setChecked(!ui->modTreeView->isColumnHidden(column));
+        connect(action, &QAction::toggled, this, [=](bool checked){
+            ui->modTreeView->setColumnHidden(column, !checked);
+        });
+    }
+    menu->exec(ui->modTreeView->mapToGlobal(pos));
 }
 
 void LocalModBrowser::paintEvent(QPaintEvent *event)

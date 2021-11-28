@@ -80,6 +80,7 @@ private slots:
     void on_modListView_customContextMenuRequested(const QPoint &pos);
     void on_modIconListView_customContextMenuRequested(const QPoint &pos);
     void on_modTreeView_customContextMenuRequested(const QPoint &pos);
+    void onModTreeViewHeaderCustomContextMenuRequested(const QPoint &pos);
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
