@@ -12,6 +12,7 @@
 #include "ui/modrinth/modrinthmoddialog.h"
 #include "ui/local/localmodmenu.h"
 #include "util/tutil.hpp"
+#include "util/funcutil.h"
 
 LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     QWidget(parent),
@@ -91,13 +92,9 @@ void LocalModItemWidget::updateInfo()
 
     //mod name
     auto displayName = mod_->displayName();
-    setEffect(ui->modName, displayName);
-    ui->modName->setText(displayName);
-    ui->modVersion->setText(mod_->commonInfo()->version());
-    auto description = mod_->commonInfo()->description();
     //description
-    setEffect(ui->modDescription, description);
-    ui->modDescription->setText(description);
+    auto description = mod_->commonInfo()->description();
+    ui->modVersion->setText(mod_->commonInfo()->version());
     //authors
     if (!mod_->commonInfo()->authors().isEmpty()){
         auto authors = mod_->commonInfo()->authors().join("</b>, <b>").prepend("by <b>").append("</b>");
@@ -145,6 +142,9 @@ void LocalModItemWidget::updateInfo()
         ui->modDescription->setStyleSheet("color: #777;");
         ui->modVersion->setStyleSheet("color: #777");
         ui->updateButton->setEnabled(false);
+        displayName = clearFormat(displayName);
+        description = clearFormat(description);
+        qDebug() << description;
     } else{
         ui->disableButton->setChecked(false);
         ui->modName->setStyleSheet("");
@@ -153,6 +153,10 @@ void LocalModItemWidget::updateInfo()
         ui->modVersion->setStyleSheet("");
         ui->updateButton->setEnabled(true);
     }
+    setEffect(ui->modName, displayName);
+    ui->modName->setText(displayName);
+    setEffect(ui->modDescription, description);
+    ui->modDescription->setText(description);
 
     //featured
     if (mod_->isFeatured())
