@@ -206,11 +206,14 @@ void LocalModBrowser::updateModList()
     model_->setHorizontalHeaderItem(VersionColumn, new QStandardItem(tr("Version")));
     model_->setHorizontalHeaderItem(FileDateColumn, new QStandardItem(tr("Last Modified")));
     model_->setHorizontalHeaderItem(FileSizeColumn, new QStandardItem(tr("File Size")));
+    model_->setHorizontalHeaderItem(FileNameColumn, new QStandardItem(tr("File Name")));
     model_->setHorizontalHeaderItem(EnableColumn, new QStandardItem(QIcon::fromTheme("action-unavailable-symbolic"), ""));
     model_->setHorizontalHeaderItem(StarColumn, new QStandardItem(QIcon::fromTheme("starred-symbolic"), ""));
     model_->setHorizontalHeaderItem(TagsColumn, new QStandardItem(tr("Tags")));
     model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(tr("Curseforge ID")));
+    model_->setHorizontalHeaderItem(CurseforgeFileIdColumn, new QStandardItem(tr("Curseforge File ID")));
     model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(tr("Modrinth ID")));
+    model_->setHorizontalHeaderItem(ModrinthFileIdColumn, new QStandardItem(tr("Modrinth File ID")));
     model_->setHorizontalHeaderItem(DescriptionColumn, new QStandardItem(tr("Description")));
 
     auto addMod = [=](LocalMod *mod){

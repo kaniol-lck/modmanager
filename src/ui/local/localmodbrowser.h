@@ -25,7 +25,7 @@ class LocalModBrowser : public Browser
 {
     Q_OBJECT
 public:
-    enum { ModColumn, NameColumn, IdColumn, VersionColumn, EnableColumn, StarColumn, TagsColumn, FileDateColumn, FileSizeColumn, CurseforgeIdColumn, ModrinthIdColumn, DescriptionColumn };
+    enum { ModColumn, NameColumn, IdColumn, VersionColumn, EnableColumn, StarColumn, TagsColumn, FileDateColumn, FileSizeColumn, FileNameColumn, CurseforgeIdColumn, CurseforgeFileIdColumn, ModrinthIdColumn, ModrinthFileIdColumn, DescriptionColumn };
     explicit LocalModBrowser(QWidget *parent, LocalModPath *modPath);
     ~LocalModBrowser();
 
