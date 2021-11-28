@@ -28,13 +28,14 @@ public slots:
 private slots:
     void updateFullInfo();
     void updateFileList();
-    void onSliderChanged(int i);
+    void updateIndexWidget();
+protected:
+    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::ModrinthFileListWidget *ui;
     QStandardItemModel *model_;
     ModrinthMod *mod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
-    static constexpr int kLoadSize = 15;
 };
 
 #endif // MODRINTHFILELISTWIDGET_H

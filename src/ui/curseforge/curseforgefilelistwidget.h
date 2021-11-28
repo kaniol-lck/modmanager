@@ -27,13 +27,14 @@ public slots:
     void updateUi();
 private slots:
     void updateFileList();
-    void onSliderChanged(int i);
+    void updateIndexWidget();
+protected:
+    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::CurseforgeFileListWidget *ui;
     QStandardItemModel *model_;
     CurseforgeMod *mod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
-    static constexpr int kLoadSize = 15;
 };
 
 #endif // CURSEFORGEFILELISTWIDGET_H
