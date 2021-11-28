@@ -137,8 +137,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 
     updateModList();
 
-    connect(ui->modListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &LocalModBrowser::updateIndexWidget);
-
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::onLoadStarted);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::onLoadFinished);
@@ -234,8 +232,8 @@ void LocalModBrowser::updateModList()
 void LocalModBrowser::updateUi()
 {
     for(int i = 0; i < model_->rowCount(); i++){
-        auto widget = ui->modListView->indexWidget(model_->index(i, 0));
-        dynamic_cast<LocalModItemWidget*>(widget)->updateUi();
+        if(auto widget = ui->modListView->indexWidget(model_->index(i, 0)))
+            dynamic_cast<LocalModItemWidget*>(widget)->updateUi();
     }
 }
 
@@ -526,4 +524,10 @@ void LocalModBrowser::on_modTreeView_customContextMenuRequested(const QPoint &po
     auto index = ui->modTreeView->indexAt(pos);
     if(auto menu = onCustomContextMenuRequested(index); menu && !menu->actions().empty())
         menu->exec(ui->modTreeView->mapToGlobal(pos));
+}
+
+void LocalModBrowser::paintEvent(QPaintEvent *event)
+{
+    updateIndexWidget();
+    QWidget::paintEvent(event);
 }
