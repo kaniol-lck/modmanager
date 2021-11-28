@@ -528,6 +528,8 @@ void LocalModBrowser::on_modTreeView_customContextMenuRequested(const QPoint &po
 
 void LocalModBrowser::paintEvent(QPaintEvent *event)
 {
+    if(!modPath_->loaded())
+        modPath_->loadMods();
     updateIndexWidget();
     QWidget::paintEvent(event);
 }

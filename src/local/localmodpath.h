@@ -16,7 +16,6 @@ class LocalModPath : public QObject
     Q_OBJECT
 public:
     explicit LocalModPath(const LocalModPathInfo &info, bool deduceLoader = false);
-    explicit LocalModPath(LocalModPath *path, const QString &subDir);
     ~LocalModPath();
 
     void loadMods(bool autoLoaderType = false);
@@ -61,6 +60,8 @@ public:
     bool isSearching() const;
     bool isChecking() const;
 
+    bool loaded() const;
+
 signals:
     void infoUpdated();
     void modListUpdated();
@@ -90,6 +91,7 @@ private:
 
     void writeToFile();
     void readFromFile();
+    explicit LocalModPath(LocalModPath *path, const QString &subDir);
 
     static constexpr auto kFileName = "mods.json";
     QStringList relative_;
@@ -103,6 +105,7 @@ private:
     QStringList provideList_;
     QDateTime latestUpdateCheck_;
     int updatableCount_ = 0;
+    bool loaded_ = false;
     bool initialUpdateChecked_ = false;
     bool isLoading_ = false;
     bool isSearching_ = false;

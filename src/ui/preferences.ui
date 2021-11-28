@@ -27,7 +27,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
@@ -453,7 +453,7 @@
             <x>0</x>
             <y>0</y>
             <width>559</width>
-            <height>608</height>
+            <height>642</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -518,6 +518,13 @@
                  <string>Tags in currentt path</string>
                 </property>
                </item>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="2">
+              <widget class="QCheckBox" name="loadModsOnStartup">
+               <property name="text">
+                <string>Load mods on startup</string>
+               </property>
               </widget>
              </item>
             </layout>

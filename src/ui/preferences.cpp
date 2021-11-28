@@ -56,6 +56,7 @@ Preferences::Preferences(QWidget *parent) :
     //Local
     ui->commonPathText->setText(config.getCommonPath());
     ui->rightClickTagMenu->setCurrentIndex(config.getRightClickTagMenu());
+    ui->loadModsOnStartup->setChecked(config.getLoadModsOnStartup());
     ui->starredAtTop->setChecked(config.getStarredAtTop());
     ui->disabedAtBottom->setChecked(config.getDisabedAtBottom());
     ui->versionMatchSelect->setCurrentIndex(config.getVersionMatch());
@@ -112,6 +113,7 @@ void Preferences::on_Preferences_accepted()
     //Local
     config.setCommonPath(ui->commonPathText->text());
     config.setRightClickTagMenu(ui->rightClickTagMenu->currentIndex());
+    config.setLoadModsOnStartup(ui->loadModsOnStartup->isChecked());
     config.setStarredAtTop(ui->starredAtTop->isChecked());
     config.setDisabedAtBottom(ui->disabedAtBottom->isChecked());
     config.setVersionMatch(ui->versionMatchSelect->currentIndex());

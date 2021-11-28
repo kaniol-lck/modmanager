@@ -89,6 +89,7 @@ public:
     getterAndSetter(CommonPath, String, commonPath, "")
     enum RightClickTagMenuType{ AllAvailable, CurrentPath };
     getterAndSetter(RightClickTagMenu, Int, rightClickTagMenu, AllAvailable)
+    getterAndSetter(LoadModsOnStartup, Bool, loadModsOnStartup, false)
     getterAndSetter(StarredAtTop, Bool, starredAtTop, true)
     getterAndSetter(DisabedAtBottom, Bool, disabedAtBottom, true)
     enum VersionMatchType{ MinorVersion, MajorVersion };

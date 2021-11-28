@@ -25,7 +25,8 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info, bool deduceLoader) :
         checkModUpdates(false);
         initialUpdateChecked_ = true;
     });
-    loadMods(deduceLoader);
+    if(Config().getLoadModsOnStartup())
+        loadMods(deduceLoader);
 }
 
 LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
@@ -45,6 +46,11 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     loadMods();
 }
 
+bool LocalModPath::loaded() const
+{
+    return loaded_;
+}
+
 LocalModPath::~LocalModPath()
 {
     qDeleteAll(modMap_);
@@ -54,6 +60,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
 {
     if(isLoading_) return;
     isLoading_ = true;
+    loaded_ = true;
     isSearching_ = false;
     isChecking_ = false;
     QDir dir(info_.path());
