@@ -16,12 +16,12 @@ OptifineAPI *OptifineAPI::api()
     return &api;
 }
 
-void OptifineAPI::getModList(std::function<void (QList<OptifineModInfo>)> callback)
+QMetaObject::Connection OptifineAPI::getModList(std::function<void (QList<OptifineModInfo>)> callback)
 {
     QUrl url = PREFIX + "/downloads";
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this, [=]{
+    return connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError){
             qDebug() << reply->errorString();
             return;
@@ -47,7 +47,7 @@ void OptifineAPI::getModList(std::function<void (QList<OptifineModInfo>)> callba
     });
 }
 
-void OptifineAPI::getDownloadUrl(const QString &fileName, std::function<void (QUrl)> callback)
+QMetaObject::Connection OptifineAPI::getDownloadUrl(const QString &fileName, std::function<void (QUrl)> callback)
 {
     QUrl url = PREFIX + "/adloadx";
     QUrlQuery urlQuery;
@@ -55,7 +55,7 @@ void OptifineAPI::getDownloadUrl(const QString &fileName, std::function<void (QU
     url.setQuery(urlQuery);
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this, [=]{
+    return connect(reply, &QNetworkReply::finished, this, [=]{
         if(reply->error() != QNetworkReply::NoError){
             qDebug() << reply->errorString();
             return;

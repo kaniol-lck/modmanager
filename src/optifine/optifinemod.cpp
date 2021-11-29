@@ -3,6 +3,7 @@
 #include "optifineapi.h"
 #include "bmclapi.h"
 #include "config.hpp"
+#include "util/funcutil.h"
 
 OptifineMod::OptifineMod(QObject *parent) :
     QObject(parent),
@@ -17,6 +18,11 @@ OptifineMod::OptifineMod(QObject *parent, const OptifineModInfo &info) :
     modInfo_(info)
 {}
 
+OptifineMod::~OptifineMod()
+{
+    qDebug() << "killed";
+}
+
 void OptifineMod::acquireDownloadUrl()
 {
     if(gettingDownloadUrl_) return;
@@ -28,7 +34,8 @@ void OptifineMod::acquireDownloadUrl()
     };
     auto source = Config().getOptifineSource();
     if(source == Config::OptifineSourceType::Official)
-        api_->getDownloadUrl(modInfo_.fileName(), callback);
+        connect(this, &QObject::destroyed, disconnecter(
+                    api_->getDownloadUrl(modInfo_.fileName(), callback)));
     else if(source == Config::OptifineSourceType::BMCLAPI)
         bmclapi_->getOptifineDownloadUrl(modInfo_, callback);
 }

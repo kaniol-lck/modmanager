@@ -7,6 +7,8 @@ class OptifineAPI;
 class BMCLAPI;
 class LocalModPath;
 
+
+class QStandardItemModel;
 namespace Ui {
 class OptifineModBrowser;
 }
@@ -30,21 +32,21 @@ signals:
 private slots:
     void updateLocalPathList();
     void filterList();
-
     void on_openFolderButton_clicked();
-
     void on_downloadPathSelect_currentIndexChanged(int index);
-
     void on_getOptiFabric_clicked();
-
     void on_getOptiForge_clicked();
-
+    void updateIndexWidget();
+protected:
+    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::OptifineModBrowser *ui;
+    QStandardItemModel *model_;
     OptifineAPI *api_;
     BMCLAPI *bmclapi_;
     LocalModPath *downloadPath_ = nullptr;
     bool isUiSet_ = false;
+    bool inited_ = false;
 
     void getModList();
 };

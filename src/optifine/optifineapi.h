@@ -18,8 +18,8 @@ public:
     explicit OptifineAPI(QObject *parent = nullptr);
     static OptifineAPI *api();
 
-    void getModList(std::function<void (QList<OptifineModInfo>)> callback);
-    void getDownloadUrl(const QString &fileName, std::function<void (QUrl)> callback);
+    [[nodiscard]] QMetaObject::Connection getModList(std::function<void (QList<OptifineModInfo>)> callback);
+    [[nodiscard]] QMetaObject::Connection getDownloadUrl(const QString &fileName, std::function<void (QUrl)> callback);
 
 private:
     QNetworkAccessManager accessManager_;

@@ -14,6 +14,7 @@ class OptifineMod : public QObject
 public:
     explicit OptifineMod(QObject *parent = nullptr);
     explicit OptifineMod(QObject *parent, const OptifineModInfo &info);
+    ~OptifineMod();
 
     void acquireDownloadUrl();
 
