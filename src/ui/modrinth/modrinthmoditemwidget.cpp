@@ -35,6 +35,8 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
     ui->modCreateDate->setText(tr("%1 ago").arg(timesTo(mod->modInfo().dateCreated())));
     ui->modCreateDate->setToolTip(mod->modInfo().dateCreated().toString());
 
+    if(!mod_->modInfo().iconBytes().isEmpty())
+        updateIcon();
     //tags
     for(auto &&tag : mod_->tags()){
         auto label = new QLabel(this);

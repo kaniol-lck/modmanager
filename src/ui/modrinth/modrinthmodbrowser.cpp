@@ -4,6 +4,7 @@
 #include <QScrollBar>
 #include <QDir>
 #include <QMenu>
+#include <QStandardItem>
 
 #include "modrinthmodinfowidget.h"
 #include "modrinthfilelistwidget.h"
@@ -23,18 +24,20 @@
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/modrinth.svg"), "Modrinth", QUrl("https://modrinth.com/mods")),
     ui(new Ui::ModrinthModBrowser),
+    model_(new QStandardItemModel(this)),
     infoWidget_(new ModrinthModInfoWidget(this)),
     fileListWidget_(new ModrinthFileListWidget(this)),
     api_(new ModrinthAPI(this))
 {
     ui->setupUi(this);
-    ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->modListWidget->setProperty("class", "ModList");
+    ui->modListView->setModel(model_);
+    ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->modListView->setProperty("class", "ModList");
 
     for(const auto &type : ModLoaderType::modrinth)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
-    connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
+    connect(ui->modListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
 
     updateVersionList();
@@ -45,13 +48,21 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     updateLocalPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModrinthModBrowser::updateLocalPathList);
 
-    getModList(currentName_);
     isUiSet_ = true;
+
+    connect(ui->modListView, &QListView::entered, this, &ModrinthModBrowser::onItemSelected);
+    connect(ui->modListView, &QListView::clicked, this, &ModrinthModBrowser::onItemSelected);
 }
 
 ModrinthModBrowser::~ModrinthModBrowser()
 {
     delete ui;
+    for(auto row = 0; row < model_->rowCount(); row++){
+        auto item = model_->item(row);
+        auto mod = item->data().value<ModrinthMod*>();
+        if(mod && !mod->parent())
+            mod->deleteLater();
+    }
 }
 
 QWidget *ModrinthModBrowser::infoWidget() const
@@ -82,12 +93,9 @@ void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 
 void ModrinthModBrowser::updateUi()
 {
-    updateVersionList();
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        if(!item->text().isEmpty()) continue;
-        auto widget = ui->modListWidget->itemWidget(item);
-        dynamic_cast<ModrinthModItemWidget*>(widget)->updateUi();
+    for(int i = 0; i < model_->rowCount(); i++){
+        if(auto widget = ui->modListView->indexWidget(model_->index(i, 0)))
+            dynamic_cast<ModrinthModItemWidget*>(widget)->updateUi();
     }
 }
 
@@ -352,7 +360,7 @@ void ModrinthModBrowser::search()
 
 void ModrinthModBrowser::onSliderChanged(int i)
 {
-    if(!isSearching_ && hasMore_ && i >= ui->modListWidget->verticalScrollBar()->maximum() - 1000){
+    if(!isSearching_ && hasMore_ && i >= ui->modListView->verticalScrollBar()->maximum() - 1000){
         currentIndex_ += Config().getSearchResultCount();
         getModList(currentName_, currentIndex_);
     }
@@ -375,34 +383,34 @@ void ModrinthModBrowser::getModList(QString name, int index)
 
         //new search
         if(currentIndex_ == 0){
-            for(int i = 0; i < ui->modListWidget->count(); i++)
-                ui->modListWidget->itemWidget(ui->modListWidget->item(i))->deleteLater();
-            ui->modListWidget->clear();
+            for(auto row = 0; row < model_->rowCount(); row++){
+                auto item = model_->item(row);
+                auto mod = item->data().value<ModrinthMod*>();
+                if(mod && !mod->parent())
+                    mod->deleteLater();
+            }
+            model_->clear();
             hasMore_ = true;
         }
 
         //show them
         for(const auto &info : qAsConst(infoList)){
-            auto mod = new ModrinthMod(this, info);
-
-            auto *listItem = new QListWidgetItem();
-            auto modItemWidget = new ModrinthModItemWidget(ui->modListWidget, mod);
-            listItem->setSizeHint(QSize(0, modItemWidget->height()));
-            mod->setParent(modItemWidget);
-            modItemWidget->setDownloadPath(downloadPath_);
-            connect(this, &ModrinthModBrowser::downloadPathChanged, modItemWidget, &ModrinthModItemWidget::setDownloadPath);
-            ui->modListWidget->addItem(listItem);
-            ui->modListWidget->setItemWidget(listItem, modItemWidget);
+            auto mod = new ModrinthMod((QObject*)nullptr, info);
+            auto *item = new QStandardItem();
+            item->setData(QVariant::fromValue(mod));
+            item->setSizeHint(QSize(0, 100));
+            model_->appendRow(item);
             mod->acquireIcon();
+            mod->acquireFileList();
         }
         if(infoList.size() < Config().getSearchResultCount()){
-            auto item = new QListWidgetItem(tr("There is no more mod here..."));
+            auto item = new QStandardItem(tr("There is no more mod here..."));
             item->setSizeHint(QSize(0, 108));
             auto font = qApp->font();
             font.setPointSize(20);
             item->setFont(font);
             item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            ui->modListWidget->addItem(item);
+            model_->appendRow(item);
             hasMore_ = false;
         }
         isSearching_ = false;
@@ -412,24 +420,21 @@ void ModrinthModBrowser::getModList(QString name, int index)
     });
 }
 
-void ModrinthModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
+void ModrinthModBrowser::on_modListView_doubleClicked(const QModelIndex &index)
 {
-    auto item = ui->modListWidget->item(index.row());
-    if(item->data(Qt::UserRole + 1).toBool()) return;
-    item->setData(Qt::UserRole + 1, true);
-    if(!item->text().isEmpty()) return;
-    auto widget = dynamic_cast<ModrinthModItemWidget*>(ui->modListWidget->itemWidget(item));
-    auto mod = widget->mod();
-    auto dialog = new ModrinthModDialog(this, mod);
-    //set parent
-    mod->setParent(dialog);
-    dialog->setDownloadPath(downloadPath_);
-    connect(this, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
-    connect(dialog, &ModrinthModDialog::finished, widget, [=]{
-        mod->setParent(widget);
-        item->setData(Qt::UserRole + 1, false);
-    });
-    dialog->show();
+    auto item = model_->itemFromIndex(index);
+    auto mod = item->data().value<ModrinthMod*>();
+    if(mod && !mod->parent()){
+        auto dialog = new ModrinthModDialog(this, mod);
+        //set parent
+        mod->setParent(dialog);
+        dialog->setDownloadPath(downloadPath_);
+        connect(this, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
+        connect(dialog, &ModrinthModDialog::finished, this, [=]{
+            mod->setParent(nullptr);
+        });
+        dialog->show();
+    }
 }
 
 void ModrinthModBrowser::on_sortSelect_currentIndexChanged(int)
@@ -462,11 +467,43 @@ void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     emit downloadPathChanged(downloadPath_);
 }
 
-void ModrinthModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])
+void ModrinthModBrowser::onItemSelected(const QModelIndex &index)
 {
-    if(!current || !current->text().isEmpty()) return;
-    auto widget = ui->modListWidget->itemWidget(current);
-    auto mod = dynamic_cast<ModrinthModItemWidget*>(widget)->mod();
-    infoWidget_->setMod(mod);
-    fileListWidget_->setMod(mod);
+    auto item = model_->itemFromIndex(index);
+    auto mod = item->data().value<ModrinthMod*>();
+    if(mod){
+        infoWidget_->setMod(mod);
+        fileListWidget_->setMod(mod);
+    }
+}
+
+void ModrinthModBrowser::updateIndexWidget()
+{
+    auto beginRow = ui->modListView->indexAt(QPoint(0, 0)).row();
+    if(beginRow < 0) return;
+    auto endRow = ui->modListView->indexAt(QPoint(0, ui->modListView->height())).row();
+    //extra 2
+    endRow += 2;
+    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
+        auto index = model_->index(row, 0);
+        if(ui->modListView->indexWidget(index)) continue;
+        auto item = model_->item(row);
+        auto mod = item->data().value<ModrinthMod*>();
+        if(mod){
+            auto modItemWidget = new ModrinthModItemWidget(ui->modListView, mod);
+            modItemWidget->setDownloadPath(downloadPath_);
+            connect(this, &ModrinthModBrowser::downloadPathChanged, modItemWidget, &ModrinthModItemWidget::setDownloadPath);
+            ui->modListView->setIndexWidget(index, modItemWidget);
+        }
+    }
+}
+
+void ModrinthModBrowser::paintEvent(QPaintEvent *event)
+{
+    if(!inited_){
+        inited_ = true;
+        getModList(currentName_);
+    }
+    updateIndexWidget();
+    QWidget::paintEvent(event);
 }

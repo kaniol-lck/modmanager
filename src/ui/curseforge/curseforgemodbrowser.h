@@ -64,7 +64,7 @@ private:
     bool isUiSet_ = false;
     bool hasMore_ = false;
     bool isSearching_ = false;
-    bool inited = false;
+    bool inited_ = false;
 };
 
 #endif // CURSEFORGEMODBROWSER_H

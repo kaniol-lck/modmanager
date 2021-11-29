@@ -319,7 +319,6 @@ void CurseforgeModBrowser::on_modListView_doubleClicked(const QModelIndex &index
         connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
         connect(dialog, &CurseforgeModDialog::finished, this, [=]{
             mod->setParent(nullptr);
-            item->setData(Qt::UserRole + 1, false);
         });
         dialog->show();
     }
@@ -397,8 +396,8 @@ void CurseforgeModBrowser::updateIndexWidget()
 
 void CurseforgeModBrowser::paintEvent(QPaintEvent *event)
 {
-    if(!inited){
-        inited = true;
+    if(!inited_){
+        inited_ = true;
         getModList(currentName_);
     }
     updateIndexWidget();

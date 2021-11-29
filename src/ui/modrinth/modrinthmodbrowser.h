@@ -9,6 +9,8 @@ class LocalModPath;
 class ModrinthModInfoWidget;
 class ModrinthFileListWidget;
 class QListWidgetItem;
+
+class QStandardItemModel;
 namespace Ui {
 class ModrinthModBrowser;
 }
@@ -37,14 +39,18 @@ private slots:
     void updateLocalPathList();
     void search();
     void onSliderChanged(int i);
-    void on_modListWidget_doubleClicked(const QModelIndex &index);
+    void on_modListView_doubleClicked(const QModelIndex &index);
     void on_sortSelect_currentIndexChanged(int);
     void on_loaderSelect_currentIndexChanged(int);
     void on_openFolderButton_clicked();
     void on_downloadPathSelect_currentIndexChanged(int index);
-    void on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+    void onItemSelected(const QModelIndex &index);
+    void updateIndexWidget();
+protected:
+    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::ModrinthModBrowser *ui;
+    QStandardItemModel *model_;
     ModrinthModInfoWidget *infoWidget_;
     ModrinthFileListWidget *fileListWidget_;
     ModrinthAPI *api_;
@@ -58,6 +64,7 @@ private:
     bool isUiSet_ = false;
     bool hasMore_ = false;
     bool isSearching_ = false;
+    bool inited_ = false;
 
     void getModList(QString name, int index = 0);
 };
