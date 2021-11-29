@@ -60,7 +60,7 @@ public:
     bool isSearching() const;
     bool isChecking() const;
 
-    bool loaded() const;
+    bool modsLoaded() const;
 
 signals:
     void infoUpdated();

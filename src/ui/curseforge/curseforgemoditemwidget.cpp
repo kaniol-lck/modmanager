@@ -19,6 +19,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
+    updateIcon();
     connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModItemWidget::updateIcon);
 
     auto menu = new QMenu(this);

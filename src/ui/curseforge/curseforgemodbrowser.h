@@ -9,6 +9,8 @@ class LocalModPath;
 class CurseforgeModInfoWidget;
 class CurseforgeFileListWidget;
 class QListWidgetItem;
+
+class QStandardItemModel;
 namespace Ui {
 class CurseforgeModBrowser;
 }
@@ -38,14 +40,17 @@ private slots:
     void updateLocalPathList();
     void search();
     void onSliderChanged(int i);
-    void on_modListWidget_doubleClicked(const QModelIndex &index);
+    void on_modListView_doubleClicked(const QModelIndex &index);
     void on_loaderSelect_currentIndexChanged(int index);
     void on_downloadPathSelect_currentIndexChanged(int index);
     void on_openFolderButton_clicked();
-    void on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
+    void onItemSelected(const QModelIndex &index);
+    void updateIndexWidget();
+protected:
+    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::CurseforgeModBrowser *ui;
+    QStandardItemModel *model_;
     CurseforgeModInfoWidget *infoWidget_;
     CurseforgeFileListWidget *fileListWidget_;
     CurseforgeAPI *api_;
@@ -55,9 +60,11 @@ private:
     int currentIndex_;
     int currentCategoryId_;
     GameVersion currentGameVersion_;
+    ModLoaderType::Type currentLoaderType_ = ModLoaderType::Any;
     bool isUiSet_ = false;
     bool hasMore_ = false;
     bool isSearching_ = false;
+    bool inited = false;
 };
 
 #endif // CURSEFORGEMODBROWSER_H

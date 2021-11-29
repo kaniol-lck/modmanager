@@ -137,7 +137,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     });
     ui->menuButton->setMenu(menu);
 
-    updateModList();
+    if(modPath_->modsLoaded())
+        updateModList();
 
     ui->modTreeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->modTreeView->header(), &QHeaderView::customContextMenuRequested, this, &LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested);
@@ -415,7 +416,6 @@ void LocalModBrowser::filterList()
         ui->modTreeView->setRowHidden(i, ui->modTreeView->rootIndex(), hidden);
         if(hidden) hiddenCount_++;
     }
-    updateIndexWidget();
     updateStatusText();
 }
 
@@ -604,7 +604,7 @@ void LocalModBrowser::saveSections()
 
 void LocalModBrowser::paintEvent(QPaintEvent *event)
 {
-    if(!modPath_->loaded())
+    if(!modPath_->modsLoaded())
         modPath_->loadMods();
     updateIndexWidget();
     QWidget::paintEvent(event);

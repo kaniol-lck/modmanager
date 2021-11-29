@@ -43,7 +43,7 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     });
 }
 
-bool LocalModPath::loaded() const
+bool LocalModPath::modsLoaded() const
 {
     return loaded_;
 }

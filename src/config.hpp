@@ -2,7 +2,6 @@
 #define CONFIG_H
 
 #include <QSettings>
-#include <QTextCodec>
 #include <QStandardPaths>
 #include <QDebug>
 
@@ -33,8 +32,8 @@ public:
         QSettings(),
         old_("modmanager.ini", QSettings::IniFormat)
     {
-        setIniCodec(QTextCodec::codecForName("UTF-8"));
-        old_.setIniCodec(QTextCodec::codecForName("UTF-8"));
+        setIniCodec("UTF-8");
+        old_.setIniCodec("UTF-8");
     }
 
     //General

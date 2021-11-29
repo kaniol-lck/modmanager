@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QAction>
 #include <QMenu>
+#include <QStandardItem>
 
 #include "curseforgemodinfowidget.h"
 #include "curseforgefilelistwidget.h"
@@ -24,18 +25,20 @@
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
     ui(new Ui::CurseforgeModBrowser),
+    model_(new QStandardItemModel(this)),
     infoWidget_(new CurseforgeModInfoWidget(this)),
     fileListWidget_(new CurseforgeFileListWidget(this)),
     api_(new CurseforgeAPI(this))
 {
     ui->setupUi(this);
-    ui->modListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->modListWidget->setProperty("class", "ModList");
+    ui->modListView->setModel(model_);
+    ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->modListView->setProperty("class", "ModList");
 
     for(const auto &type : ModLoaderType::curseforge)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
-    connect(ui->modListWidget->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
+    connect(ui->modListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
 
     updateVersionList();
@@ -46,14 +49,22 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     updateLocalPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &CurseforgeModBrowser::updateLocalPathList);
 
-    getModList(currentName_);
     isUiSet_ = true;
     connect(this, &CurseforgeModBrowser::downloadPathChanged, fileListWidget_, &CurseforgeFileListWidget::setDownloadPath);
+
+    connect(ui->modListView, &QListView::entered, this, &CurseforgeModBrowser::onItemSelected);
+    connect(ui->modListView, &QListView::clicked, this, &CurseforgeModBrowser::onItemSelected);
 }
 
 CurseforgeModBrowser::~CurseforgeModBrowser()
 {
     delete ui;
+    for(auto row = 0; row < model_->rowCount(); row++){
+        auto item = model_->item(row);
+        auto mod = item->data().value<CurseforgeMod*>();
+        if(mod && !mod->parent())
+            mod->deleteLater();
+    }
 }
 
 QWidget *CurseforgeModBrowser::infoWidget() const
@@ -76,6 +87,7 @@ void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
     isUiSet_ = false;
     currentGameVersion_ = info.gameVersion();
     ui->versionSelectButton->setText(info.gameVersion());
+    currentLoaderType_ = info.loaderType();
     ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
     isUiSet_ = true;
     ui->downloadPathSelect->setCurrentText(info.displayName());
@@ -84,11 +96,9 @@ void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 
 void CurseforgeModBrowser::updateUi()
 {
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        if(!item->text().isEmpty()) continue;
-        auto widget = ui->modListWidget->itemWidget(item);
-        dynamic_cast<CurseforgeModItemWidget*>(widget)->updateUi();
+    for(int i = 0; i < model_->rowCount(); i++){
+        if(auto widget = ui->modListView->indexWidget(model_->index(i, 0)))
+            dynamic_cast<CurseforgeModItemWidget*>(widget)->updateUi();
     }
 }
 
@@ -218,7 +228,7 @@ void CurseforgeModBrowser::search()
 
 void CurseforgeModBrowser::onSliderChanged(int i)
 {
-    if(!isSearching_ && hasMore_ && i >= ui->modListWidget->verticalScrollBar()->maximum() - 1000){
+    if(!isSearching_ && hasMore_ && i >= ui->modListView->verticalScrollBar()->maximum() - 1000){
         currentIndex_ += Config().getSearchResultCount();
         getModList(currentName_, currentIndex_);
     }
@@ -243,7 +253,13 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
         //new search
         if(currentIndex_ == 0){
             idList_.clear();
-            ui->modListWidget->clear();
+            for(auto row = 0; row < model_->rowCount(); row++){
+                auto item = model_->item(row);
+                auto mod = item->data().value<CurseforgeMod*>();
+                if(mod && !mod->parent())
+                    mod->deleteLater();
+            }
+            model_->clear();
             hasMore_ = true;
         }
 
@@ -255,34 +271,29 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
                 continue;
             idList_ << info.id();
 
-            auto mod = new CurseforgeMod(this, info);
-            auto *listItem = new QListWidgetItem();
-            auto loaderType = ModLoaderType::curseforge.at(ui->loaderSelect->currentIndex());
-            auto fileInfo = mod->modInfo().latestFileInfo(currentGameVersion_, loaderType);
-            auto modItemWidget = new CurseforgeModItemWidget(ui->modListWidget, mod, fileInfo);
-            listItem->setSizeHint(QSize(0, modItemWidget->height()));
-            mod->setParent(modItemWidget);
-            modItemWidget->setDownloadPath(downloadPath_);
-            connect(this, &CurseforgeModBrowser::downloadPathChanged, modItemWidget, &CurseforgeModItemWidget::setDownloadPath);
-            ui->modListWidget->addItem(listItem);
-            ui->modListWidget->setItemWidget(listItem, modItemWidget);
-            auto isShown = loaderType == ModLoaderType::Any || info.loaderTypes().contains(loaderType);
+            auto mod = new CurseforgeMod((QObject*)nullptr, info);
+            auto *item = new QStandardItem();
+            item->setData(QVariant::fromValue(mod));
+            auto fileInfo = mod->modInfo().latestFileInfo(currentGameVersion_, currentLoaderType_);
+            item->setSizeHint(QSize(0, 100));
+            model_->appendRow(item);
+            auto isShown = currentLoaderType_ == ModLoaderType::Any || info.loaderTypes().contains(currentLoaderType_);
             if(info.loaderTypes().isEmpty())
                 isShown = true;
-            listItem->setHidden(!isShown);
+            ui->modListView->setRowHidden(item->row(), !isShown);
             if(isShown){
                 shownCount++;
                 mod->acquireIcon();
             }
         }
         if(infoList.size() < Config().getSearchResultCount()){
-            auto item = new QListWidgetItem(tr("There is no more mod here..."));
+            auto item = new QStandardItem(tr("There is no more mod here..."));
             item->setSizeHint(QSize(0, 108));
             auto font = qApp->font();
             font.setPointSize(20);
             item->setFont(font);
             item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            ui->modListWidget->addItem(item);
+            model_->appendRow(item);
             hasMore_ = false;
         }
         isSearching_ = false;
@@ -296,39 +307,35 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
     });
 }
 
-void CurseforgeModBrowser::on_modListWidget_doubleClicked(const QModelIndex &index)
+void CurseforgeModBrowser::on_modListView_doubleClicked(const QModelIndex &index)
 {
-    auto item = ui->modListWidget->item(index.row());
-    if(item->data(Qt::UserRole + 1).toBool()) return;
-    item->setData(Qt::UserRole + 1, true);
-    if(!item->text().isEmpty()) return;
-    auto widget = dynamic_cast<CurseforgeModItemWidget*>(ui->modListWidget->itemWidget(item));
-    auto mod = widget->mod();
-    auto dialog = new CurseforgeModDialog(this, mod);
-    //set parent
-    mod->setParent(dialog);
-    dialog->setDownloadPath(downloadPath_);
-    connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
-    connect(dialog, &CurseforgeModDialog::finished, widget, [=]{
-        mod->setParent(widget);
-        item->setData(Qt::UserRole + 1, false);
-    });
-    dialog->show();
+    auto item = model_->itemFromIndex(index);
+    auto mod = item->data().value<CurseforgeMod*>();
+    if(mod && !mod->parent()){
+        auto dialog = new CurseforgeModDialog(this, mod);
+        //set parent
+        mod->setParent(dialog);
+        dialog->setDownloadPath(downloadPath_);
+        connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
+        connect(dialog, &CurseforgeModDialog::finished, this, [=]{
+            mod->setParent(nullptr);
+            item->setData(Qt::UserRole + 1, false);
+        });
+        dialog->show();
+    }
 }
 
 void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
 {
-    for(int i = 0; i < ui->modListWidget->count(); i++){
-        auto item = ui->modListWidget->item(i);
-        if(!item->text().isEmpty()) continue;
-        auto isHidden = item->isHidden();
-        auto widget = ui->modListWidget->itemWidget(item);
-        auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
-        auto selectedLoaderType = ModLoaderType::curseforge.at(index);
-        auto isShown = selectedLoaderType == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(selectedLoaderType);
+    currentLoaderType_ = ModLoaderType::curseforge.at(index);
+    for(int row = 0; row < model_->rowCount(); row++){
+        auto item = model_->item(row);
+        auto mod = item->data().value<CurseforgeMod*>();
+        auto isShown = currentLoaderType_ == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(currentLoaderType_);
         if(mod->modInfo().loaderTypes().isEmpty())
             isShown = true;
-        item->setHidden(!isShown);
+        bool isHidden = ui->modListView->isRowHidden(row);
+        ui->modListView->setRowHidden(row, !isShown);
         //hidden -> shown, while not have downloaded thumbnail yet
         if(isHidden && isShown && mod->modInfo().iconBytes().isEmpty())
             mod->acquireIcon();
@@ -356,11 +363,44 @@ void CurseforgeModBrowser::on_openFolderButton_clicked()
     openFileInFolder(path);
 }
 
-void CurseforgeModBrowser::on_modListWidget_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous[[maybe_unused]])
+void CurseforgeModBrowser::onItemSelected(const QModelIndex &index)
 {
-    if(!current || !current->text().isEmpty()) return;
-    auto widget = ui->modListWidget->itemWidget(current);
-    auto mod = dynamic_cast<CurseforgeModItemWidget*>(widget)->mod();
-    infoWidget_->setMod(mod);
-    fileListWidget_->setMod(mod);
+    auto item = model_->itemFromIndex(index);
+    auto mod = item->data().value<CurseforgeMod*>();
+    if(mod){
+        infoWidget_->setMod(mod);
+        fileListWidget_->setMod(mod);
+    }
+}
+
+void CurseforgeModBrowser::updateIndexWidget()
+{
+    auto beginRow = ui->modListView->indexAt(QPoint(0, 0)).row();
+    if(beginRow < 0) return;
+    auto endRow = ui->modListView->indexAt(QPoint(0, ui->modListView->height())).row();
+    //extra 2
+    endRow += 2;
+    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
+        auto index = model_->index(row, 0);
+        if(ui->modListView->indexWidget(index)) continue;
+        auto item = model_->item(row);
+        auto mod = item->data().value<CurseforgeMod*>();
+        if(mod){
+            auto fileInfo = mod->modInfo().latestFileInfo(currentGameVersion_, currentLoaderType_);
+            auto modItemWidget = new CurseforgeModItemWidget(ui->modListView, mod, fileInfo);
+            modItemWidget->setDownloadPath(downloadPath_);
+            connect(this, &CurseforgeModBrowser::downloadPathChanged, modItemWidget, &CurseforgeModItemWidget::setDownloadPath);
+            ui->modListView->setIndexWidget(index, modItemWidget);
+        }
+    }
+}
+
+void CurseforgeModBrowser::paintEvent(QPaintEvent *event)
+{
+    if(!inited){
+        inited = true;
+        getModList(currentName_);
+    }
+    updateIndexWidget();
+    QWidget::paintEvent(event);
 }
