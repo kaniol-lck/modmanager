@@ -6,6 +6,8 @@
 class LocalModPath;
 class ReplayAPI;
 
+
+class QStandardItemModel;
 namespace Ui {
 class ReplayModBrowser;
 }
@@ -29,16 +31,18 @@ signals:
 private slots:
     void updateLocalPathList();
     void filterList();
-
     void on_openFolderButton_clicked();
-
     void on_downloadPathSelect_currentIndexChanged(int index);
-
+    void updateIndexWidget();
+protected:
+    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::ReplayModBrowser *ui;
+    QStandardItemModel *model_;
     ReplayAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     bool isUiSet_ = false;
+    bool inited_ = false;
 
     void getModList();
 };
