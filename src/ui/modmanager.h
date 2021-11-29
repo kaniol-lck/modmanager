@@ -37,6 +37,7 @@ protected:
 public slots:
     void updateUi();
 private slots:
+    void updateDockWidgets();
     void syncPathList();
     void editLocalPath(int index);
     void on_actionPreferences_triggered();

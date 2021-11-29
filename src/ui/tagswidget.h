@@ -16,6 +16,8 @@ public:
 
     void setMod(LocalMod* mod);
     void updateUi();
+protected:
+    void wheelEvent(QWheelEvent *event) override;
 private:
     Ui::TagsWidget *ui;
     QList<QWidget *> tagWidgets_;

@@ -54,11 +54,7 @@ ModManager::ModManager(QWidget *parent) :
     browserSelector_->setModel(ui->pageSwitcher->model());
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
     connect(ui->pageSwitcher, &PageSwitcher::pageChanged, browserSelector_, &BrowserSelectorWidget::setCurrentIndex);
-    connect(ui->pageSwitcher, &PageSwitcher::pageChanged, this, [=]{
-        auto browser = ui->pageSwitcher->currentBrowser();
-        ui->modInfoDock->setWidget(browser->infoWidget());
-        ui->fileListDock->setWidget(browser->fileListWidget());
-    });
+    connect(ui->pageSwitcher, &PageSwitcher::pageChanged, this, &ModManager::updateDockWidgets);
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
@@ -89,10 +85,6 @@ ModManager::ModManager(QWidget *parent) :
     if(ui->pageSwitcher->exploreBrowsers().size())
         ui->pageSwitcher->setPage(PageSwitcher::Explore, 0);
 
-    auto browser = ui->pageSwitcher->currentBrowser();
-    ui->modInfoDock->setWidget(browser->infoWidget());
-    ui->fileListDock->setWidget(browser->fileListWidget());
-
     //init versions
     VersionManager::initVersionLists();
 
@@ -122,6 +114,13 @@ void ModManager::updateUi()
     qApp->setStyleSheet(styleSheetPath(config_.getCustomStyle()));
     ui->pageSwitcher->updateUi();
     updateBlur();
+}
+
+void ModManager::updateDockWidgets()
+{
+    auto browser = ui->pageSwitcher->currentBrowser();
+    ui->modInfoDock->setWidget(browser->infoWidget());
+    ui->fileListDock->setWidget(browser->fileListWidget());
 }
 
 void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])

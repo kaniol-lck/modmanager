@@ -6,6 +6,9 @@
 
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QScrollBar>
+#include <QScrollArea>
+#include <QWheelEvent>
 
 TagsWidget::TagsWidget(QWidget *parent, LocalMod* mod) :
     QWidget(parent),
@@ -13,6 +16,7 @@ TagsWidget::TagsWidget(QWidget *parent, LocalMod* mod) :
     mod_(mod)
 {
     ui->setupUi(this);
+    ui->scrollArea->verticalScrollBar()->setEnabled(false);
     updateUi();
     if(mod_) connect(mod, &LocalMod::modFileUpdated, this, &TagsWidget::updateUi);
 }
@@ -41,4 +45,11 @@ void TagsWidget::updateUi()
         ui->tagsLayout->addWidget(label);
         tagWidgets_ << label;
     }
+}
+
+void TagsWidget::wheelEvent(QWheelEvent *event)
+{
+    auto &&scrollBar = ui->scrollArea->horizontalScrollBar();
+    scrollBar->setValue(scrollBar->value() - event->angleDelta().y() * 0.2);
+    event->accept();
 }
