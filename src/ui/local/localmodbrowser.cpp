@@ -141,7 +141,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 
     ui->modTreeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->modTreeView->header(), &QHeaderView::customContextMenuRequested, this, &LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested);
-    connect(ui->modTreeView->header(), &QHeaderView::sectionMoved, this, &LocalModBrowser::updateSections);
+    connect(ui->modTreeView->header(), &QHeaderView::sectionMoved, this, &LocalModBrowser::saveSections);
 
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::onLoadStarted);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
@@ -224,11 +224,10 @@ void LocalModBrowser::updateModList()
     if(!list.isEmpty()){
         ui->modTreeView->header()->blockSignals(true);
         for(int i = 0; i < header->count() - 1; i++){
-            if(i < list.size()){
+            if(i < list.size())
                 header->moveSection(header->visualIndex(list.at(i).toInt()), i + 1);
-            }
             else
-                header->hideSection(header->visualIndex(i + 1));
+                header->setSectionHidden(header->logicalIndex(i + 1), true);
         }
         ui->modTreeView->header()->blockSignals(false);
     }
@@ -271,8 +270,8 @@ void LocalModBrowser::updateModList()
     model_->sort(NameColumn);
     ui->modIconListView->setModelColumn(NameColumn);
     ui->modTreeView->hideColumn(ModColumn);
-    for(auto &&column : { EnableColumn, StarColumn, FileNameColumn })
-        ui->modTreeView->resizeColumnToContents(column);
+    for(auto &&column : { EnableColumn, StarColumn })
+        ui->modTreeView->setColumnWidth(column, 0);
     filter_->refreshTags();
     filterList();
 }
@@ -579,7 +578,7 @@ void LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested(const QPoint
         action->setChecked(!ui->modTreeView->isColumnHidden(column));
         connect(action, &QAction::toggled, this, [=](bool checked){
             ui->modTreeView->setColumnHidden(column, !checked);
-            updateSections();
+            saveSections();
         });
     }
     menu->addSeparator();
@@ -594,7 +593,7 @@ void LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested(const QPoint
     menu->exec(ui->modTreeView->mapToGlobal(pos));
 }
 
-void LocalModBrowser::updateSections()
+void LocalModBrowser::saveSections()
 {
     auto &&header = ui->modTreeView->header();
     QList<QVariant> list;
