@@ -747,7 +747,9 @@ const LocalModTags &LocalMod::tagManager() const
 
 void LocalMod::setModFile(LocalModFile *newModFile)
 {
+    if(modFile_) disconnect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
     modFile_ = newModFile;
+    if(modFile_) connect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
     modFile_->setParent(this);
     tagManager_.removeTags({TagCategory::EnvironmentCategory, TagCategory::SubDirCategory, TagCategory::FileNameCategory });
     if(modFile_->loaderType() == ModLoaderType::Fabric){

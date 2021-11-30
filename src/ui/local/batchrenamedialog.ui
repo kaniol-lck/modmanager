@@ -327,6 +327,19 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QToolButton" name="historyButton">
+       <property name="icon">
+        <iconset theme="edit-undo-history"/>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::InstantPopup</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="2" column="0">

@@ -38,6 +38,17 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, QList<LocalMod *> mods) :
     menu->addMenu(getSubmenu(tr("Custom tag"), "custom"));
     ui->addTagsButton->setMenu(menu);
 
+    auto historyMenu = new QMenu(this);
+    auto list = Config().getRenamePatternHistory();
+    historyMenu->addSection(tr("Rename Histories"));
+    for(auto &&v : list){
+        auto str = v.toString();
+        historyMenu->addAction(str, this, [=]{
+            ui->renamePattern->setPlainText(str);
+        });
+    }
+    ui->historyButton->setMenu(historyMenu);
+
     ui->renamePattern->setPlainText("<filename>");
     setMods(mods);
 }
@@ -107,6 +118,13 @@ void BatchRenameDialog::setMods(QList<LocalMod *> mods)
 
 void BatchRenameDialog::on_BatchRenameDialog_accepted()
 {
+    Config config;
+    auto list = config.getRenamePatternHistory();
+    auto str = ui->renamePattern->toPlainText();
+    if(list.contains(str))
+        list.removeAll(str);
+    list.prepend(str);
+    config.setRenamePatternHistory(list);
     for(int row = 0; row < model_.rowCount(); row++)
         if(model_.item(row)->checkState() == Qt::Checked)
             modList_[row]->modFile()->rename(fileNameList_.at(row));

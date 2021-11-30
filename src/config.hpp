@@ -130,6 +130,7 @@ public:
     getterAndSetter(UseFramelessWindow, Bool, useFramelessWindow, false)
     getterAndSetter(CustomStyle, String, customStyle, "light")
     getterAndSetter(LocalModsHeaderSections, List, localModsHeaderSections, QVariant())
+    getterAndSetter(RenamePatternHistory, List, renamePatternHistory, QVariant())
 private:
     QSettings old_;
 };

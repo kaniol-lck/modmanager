@@ -159,8 +159,8 @@ private:
     ModrinthAPI *modrinthAPI_;
 
     //files
-    LocalModPath *path_;
-    LocalModFile *modFile_;
+    LocalModPath *path_ = nullptr;
+    LocalModFile *modFile_ = nullptr;
     QList<LocalModFile*> oldFiles_;
     QList<LocalModFile*> duplicateFiles_;
 

@@ -111,6 +111,5 @@ QString RenamePatternEdit::textUnderCursor() const
         else if(str2.right(1) == "<")
             str.prepend(str2.right(1));
     }
-    qDebug() << "result:" << str;
     return str;
 }
