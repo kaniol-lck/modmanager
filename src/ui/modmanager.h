@@ -37,7 +37,7 @@ protected:
 public slots:
     void updateUi();
 private slots:
-    void updateDockWidgets();
+    void updateBrowsers();
     void syncPathList();
     void editLocalPath(int index);
     void on_actionPreferences_triggered();
@@ -48,6 +48,8 @@ private slots:
     void on_actionOpen_new_path_dialog_triggered();
     void on_actionSelect_A_Directory_triggered();
     void on_actionSelect_Multiple_Directories_triggered();
+    void on_menu_Mod_aboutToShow();
+    void on_menu_Mod_aboutToHide();
     void on_menu_Path_aboutToShow();
     void on_menu_View_aboutToShow();
     void on_menu_Help_aboutToShow();

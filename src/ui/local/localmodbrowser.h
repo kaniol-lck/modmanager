@@ -34,6 +34,8 @@ public:
     LocalModPath *modPath() const;
     QWidget *infoWidget() const override;
     QWidget *fileListWidget() const override;
+
+    QList<QAction *> modActions() const override;
 signals:
     void loadFinished();
 
@@ -72,7 +74,6 @@ private slots:
     void updateIndexWidget();
 
     void on_checkUpdatesButton_clicked();
-    void on_openFolderButton_clicked();
     void on_updateAllButton_clicked();
     void on_hideUpdatesButton_clicked();
     void onItemSelected(const QModelIndex &index);
@@ -82,6 +83,16 @@ private slots:
     void on_modTreeView_customContextMenuRequested(const QPoint &pos);
     void onModTreeViewHeaderCustomContextMenuRequested(const QPoint &pos);
     void saveSections();
+    void on_actionOpen_Folder_triggered();
+    void on_actionBatch_Rename_triggered();
+    void on_actionDelete_Old_Files_In_Path_triggered();
+    void on_actionReload_Mods_triggered();
+    void on_actionToggle_Enable_triggered();
+    void on_actionToggle_Star_triggered();
+    void on_actionRename_Selected_Mods_triggered();
+    void onModMenuAboutToHide() override;
+    void onModMenuAboutToShow() override;
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
@@ -97,7 +108,9 @@ private:
     int hiddenCount_ = 0;
     bool isChecking_ = false;
     bool isUpdating_ = false;
-    QList<LocalMod *> selectedMods(QAbstractItemView *view);
+
+    QAbstractItemView *currentView();
+    QList<LocalMod *> selectedMods(QAbstractItemView *view = nullptr);
     QMenu *getMenu(QList<LocalMod *> mods);
 };
 

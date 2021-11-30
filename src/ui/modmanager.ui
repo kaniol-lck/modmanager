@@ -124,6 +124,12 @@
     <addaction name="separator"/>
     <addaction name="actionManage_Browser"/>
    </widget>
+   <widget class="QMenu" name="menu_Mod">
+    <property name="title">
+     <string>Mod</string>
+    </property>
+   </widget>
+   <addaction name="menu_Mod"/>
    <addaction name="menu_Path"/>
    <addaction name="menu_View"/>
    <addaction name="menuTools"/>

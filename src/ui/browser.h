@@ -12,6 +12,9 @@ public:
 
     virtual QWidget *infoWidget() const;
     virtual QWidget *fileListWidget() const;
+    virtual QList<QAction *> modActions() const;
+    virtual void onModMenuAboutToShow();
+    virtual void onModMenuAboutToHide();
 };
 
 #endif // BROWSER_H

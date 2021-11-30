@@ -44,7 +44,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     filter_(new LocalModFilter(this, modPath_))
 {
     ui->setupUi(this);
-
     //setup mod list
 //    ui->updateWidget->setVisible(false);
     ui->modListView->setModel(model_);
@@ -78,10 +77,14 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     statusBar_->addPermanentWidget(frame);
     ui->mainLayout->addWidget(statusBar_);
 
+    ui->actionReload_Mods->setEnabled(!modPath_->isLoading());
+
     viewSwitcher_->button(0)->setChecked(true);
     connect(viewSwitcher_, &QButtonGroup::idClicked, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
     auto findNewMenu = new QMenu(this);
+    ui->actionFind_New_Mods->setMenu(findNewMenu);
+    findNewMenu->setIcon(QIcon::fromTheme("search"));
     connect(findNewMenu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
         emit findNewOnCurseforge(modPath_->info());
     });
@@ -94,7 +97,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(findNewMenu->addAction(QIcon(":/image/replay.png"), "ReplayMod"), &QAction::triggered, this, [=]{
         emit findNewOnReplay(modPath_->info());
     });
-    ui->findnewButton->setMenu(findNewMenu);
+    ui->openFolderButton->setDefaultAction(ui->actionOpen_Folder);
+    ui->findnewButton->setDefaultAction(ui->actionFind_New_Mods);
+    ui->findnewButton->setPopupMode(QToolButton::InstantPopup);
 
     connect(filter_->menu(), &UnclosedMenu::menuTriggered, this, &LocalModBrowser::filterList);
     ui->filterButton->setMenu(filter_->menu());
@@ -110,32 +115,36 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 //        });
 //        dialog->exec();
 //    });
-    auto reloadAction = menu->addAction(QIcon::fromTheme("view-refresh"), tr("Reload"));
-    connect(menu, &QMenu::aboutToShow, this, [=]{
-        if(isLoading()){
-            reloadAction->setEnabled(false);
-            connect(this, &LocalModBrowser::loadFinished, this, [=]{
-                reloadAction->setEnabled(true);
-            });
-        }
-    });
-    connect(reloadAction, &QAction::triggered, this, [=]{
-        modPath_->loadMods();
-    });
 //    connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
 //        if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
 //        LocalModPathManager::removePath(modPath_);
 //    });
 //    menu->addSeparator();
-    connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Batch rename")), &QAction::triggered, this, [=]{
-        auto dialog = new BatchRenameDialog(this, modPath_);
-        dialog->exec();
-    });
-    connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete old")), &QAction::triggered, this, [=]{
-        if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete all old file?"))) return;
-        modPath_->deleteAllOld();
-    });
+    menu->addAction(ui->actionReload_Mods);
+    menu->addAction(ui->actionBatch_Rename);
+    menu->addAction(ui->actionDelete_Old_Files_In_Path);
     ui->menuButton->setMenu(menu);
+
+    auto renameToMenu = new QMenu(this);
+    ui->actionRename_to->setMenu(renameToMenu);
+    connect(renameToMenu, &QMenu::aboutToShow, this, [=]{
+        renameToMenu->clear();
+        Config config;
+        auto list = config.getRenamePatternHistory();
+        for(auto &&v : list){
+            auto str = v.toString();
+            renameToMenu->addAction(str, this, [=]{
+                ModFileRenamer renamer(str);
+                renamer.renameMods(selectedMods());
+                Config config;
+                auto list = config.getRenamePatternHistory();
+                if(list.contains(str))
+                    list.removeAll(str);
+                list.prepend(str);
+                config.setRenamePatternHistory(list);
+            });
+        }
+    });
 
     if(modPath_->modsLoaded())
         updateModList();
@@ -287,6 +296,7 @@ void LocalModBrowser::updateUi()
 
 void LocalModBrowser::onLoadStarted()
 {
+    ui->actionReload_Mods->setEnabled(false);
     onLoadProgress(0, 0);
     statusBar_->showMessage(tr("Loading mod files..."));
 }
@@ -300,6 +310,7 @@ void LocalModBrowser::onLoadProgress(int loadedCount, int totalCount)
 
 void LocalModBrowser::onLoadFinished()
 {
+    ui->actionReload_Mods->setEnabled(true);
     updateStatusText();
 }
 
@@ -459,60 +470,26 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
             });
             menu->addSeparator();
         }
-        //star
-        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"), this, [=](bool bl){
-            mod->setFeatured(bl);
-        });
-        starAction->setCheckable(true);
-        starAction->setChecked(mod->isFeatured());
-        //enable
-        auto enableAction = menu->addAction(tr("Enable"), this, [=](bool bl){
-            mod->setEnabled(bl);
-        });
-        enableAction->setCheckable(true);
-        enableAction->setChecked(mod->isEnabled());
-    } else if(mods.count() > 1){
-        //multi mods
-        //fast batch rename
-        Config config;
-        auto list = config.getRenamePatternHistory();
-        if(!list.isEmpty()){
-            auto renameMenu = menu->addMenu(QIcon::fromTheme("entry-edit"), tr("Fast batch rename"));
-            for(auto &&v : list){
-                auto str = v.toString();
-                renameMenu->addAction(str, this, [=]{
-                    ModFileRenamer renamer(str);
-                    renamer.renameMods(mods);
-                });
-            }
-        }
-        //batch rename
-        menu->addAction(QIcon::fromTheme("entry-edit"), tr("Batch rename"), this, [=]{
-            auto dialog = new BatchRenameDialog(this, mods);
-            dialog->exec();
-        });
-        menu->addSeparator();
-        //star
-        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"), [=](bool bl){
-            for(auto &&mod : mods)
-                mod->setFeatured(bl);
-        });
-        starAction->setCheckable(true);
-        bool isStarred = false;
-        for(auto &&mod : mods)
-            if(mod->isFeatured()) isStarred = true;
-        starAction->setChecked(isStarred);
-        //enable
-        auto enableAction = menu->addAction(tr("Enable"), this, [=](bool bl){
-            for(auto &&mod : mods)
-                mod->setEnabled(bl);
-        });
-        enableAction->setCheckable(true);
-        bool isEnabled = false;
-        for(auto &&mod : mods)
-            if(mod->isEnabled()) isEnabled = true;
-        enableAction->setChecked(isEnabled);
+//        //star
+//        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"), this, [=](bool bl){
+//            mod->setFeatured(bl);
+//        });
+//        starAction->setCheckable(true);
+//        starAction->setChecked(mod->isFeatured());
+//        //enable
+//        auto enableAction = menu->addAction(tr("Enable"), this, [=](bool bl){
+//            mod->setEnabled(bl);
+//        });
+//        enableAction->setCheckable(true);
+//        enableAction->setChecked(mod->isEnabled());
     }
+    //multi mods
+    //batch rename
+    menu->addAction(ui->actionRename_Selected_Mods);
+    menu->addAction(ui->actionRename_to);
+    menu->addSeparator();
+    menu->addAction(ui->actionToggle_Enable);
+    menu->addAction(ui->actionToggle_Star);
     return menu;
 }
 
@@ -542,11 +519,6 @@ void LocalModBrowser::on_checkUpdatesButton_clicked()
         modPath_->checkModUpdates();
 }
 
-void LocalModBrowser::on_openFolderButton_clicked()
-{
-    openFileInFolder(modPath_->info().path());
-}
-
 void LocalModBrowser::on_updateAllButton_clicked()
 {
     auto dialog = new LocalModUpdateDialog(this, modPath_);
@@ -566,6 +538,16 @@ QWidget *LocalModBrowser::infoWidget() const
 QWidget *LocalModBrowser::fileListWidget() const
 {
     return fileListWidget_;
+}
+
+QList<QAction *> LocalModBrowser::modActions() const
+{
+    return {
+        ui->actionToggle_Enable,
+                ui->actionToggle_Star,
+                ui->actionRename_Selected_Mods,
+                ui->actionRename_to
+    };
 }
 
 LocalModPath *LocalModBrowser::modPath() const
@@ -653,10 +635,92 @@ void LocalModBrowser::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 }
 
+QAbstractItemView *LocalModBrowser::currentView()
+{
+    switch(ui->stackedWidget->currentIndex()) {
+    case 0:
+        return ui->modListView;
+    case 1:
+        return ui->modIconListView;
+    case 2:
+        return ui->modTreeView;
+    default:
+        return nullptr;
+    }
+}
+
 QList<LocalMod *> LocalModBrowser::selectedMods(QAbstractItemView *view)
 {
+    if(!view) view = currentView();
+    if(!view) return {};
     QList<LocalMod *> list;
     for(auto &&index : view->selectionModel()->selectedRows())
         list << model_->itemFromIndex(index)->data().value<LocalMod*>();
     return list;
 }
+
+void LocalModBrowser::on_actionOpen_Folder_triggered()
+{
+    openFileInFolder(modPath_->info().path());
+}
+
+void LocalModBrowser::on_actionBatch_Rename_triggered()
+{
+    auto dialog = new BatchRenameDialog(this, modPath_);
+    dialog->exec();
+}
+
+void LocalModBrowser::on_actionDelete_Old_Files_In_Path_triggered()
+{
+    if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete all old file?"))) return;
+    modPath_->deleteAllOld();
+}
+
+void LocalModBrowser::on_actionReload_Mods_triggered()
+{
+    if(!modPath_->isLoading())
+        modPath_->loadMods();
+}
+
+void LocalModBrowser::on_actionToggle_Enable_triggered()
+{
+    auto mods = selectedMods();
+    bool isEnabled = false;
+    for(auto &&mod : mods)
+        if(mod->isEnabled()) isEnabled = true;
+    for(auto &&mod : mods)
+        mod->setEnabled(!isEnabled);
+}
+
+void LocalModBrowser::on_actionToggle_Star_triggered()
+{
+    auto mods = selectedMods();
+    bool isStarred = false;
+    for(auto &&mod : mods)
+        if(mod->isFeatured()) isStarred = true;
+    for(auto &&mod : mods)
+        mod->setFeatured(!isStarred);
+}
+
+void LocalModBrowser::on_actionRename_Selected_Mods_triggered()
+{
+    auto mods = selectedMods();
+    auto dialog = new BatchRenameDialog(this, mods);
+    dialog->exec();
+}
+
+void LocalModBrowser::onModMenuAboutToHide()
+{
+    ui->actionToggle_Enable->setEnabled(true);
+    ui->actionToggle_Star->setEnabled(true);
+    ui->actionRename_Selected_Mods->setEnabled(true);
+}
+
+void LocalModBrowser::onModMenuAboutToShow()
+{
+    bool modSelected = !selectedMods().isEmpty();
+    ui->actionToggle_Enable->setEnabled(modSelected);
+    ui->actionToggle_Star->setEnabled(modSelected);
+    ui->actionRename_Selected_Mods->setEnabled(modSelected);
+}
+

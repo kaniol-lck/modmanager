@@ -15,3 +15,14 @@ QWidget *Browser::fileListWidget() const
 {
     return nullptr;
 }
+
+QList<QAction *> Browser::modActions() const
+{
+    return {};
+}
+
+void Browser::onModMenuAboutToShow()
+{}
+
+void Browser::onModMenuAboutToHide()
+{}

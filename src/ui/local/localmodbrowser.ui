@@ -292,35 +292,48 @@
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QPushButton" name="openFolderButton">
-          <property name="text">
-           <string>Open Folder</string>
+         <widget class="QToolButton" name="openFolderButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <property name="icon">
-           <iconset theme="folder">
-            <normaloff>.</normaloff>.</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="findnewButton">
-          <property name="text">
-           <string>Find new mods</string>
-          </property>
-          <property name="icon">
-           <iconset theme="search">
-            <normaloff>.</normaloff>.</iconset>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonTextBesideIcon</enum>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="checkUpdatesButton">
+         <widget class="QToolButton" name="findnewButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonTextBesideIcon</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="checkUpdatesButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Search on mod websites</string>
           </property>
           <property name="icon">
            <iconset theme="update-none">
             <normaloff>.</normaloff>.</iconset>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonTextBesideIcon</enum>
           </property>
          </widget>
         </item>
@@ -344,6 +357,90 @@
     </widget>
    </item>
   </layout>
+  <action name="actionReload_Mods">
+   <property name="icon">
+    <iconset theme="view-refresh">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Reload Mods</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="actionOpen_Folder">
+   <property name="icon">
+    <iconset theme="folder">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Open Folder</string>
+   </property>
+  </action>
+  <action name="actionBatch_Rename">
+   <property name="icon">
+    <iconset theme="entry-edit">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Batch Rename</string>
+   </property>
+  </action>
+  <action name="actionDelete_Old_Files_In_Path">
+   <property name="icon">
+    <iconset theme="delete">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Old Files In Path</string>
+   </property>
+  </action>
+  <action name="actionFind_New_Mods">
+   <property name="icon">
+    <iconset theme="search">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Find New Mods</string>
+   </property>
+  </action>
+  <action name="actionToggle_Enable">
+   <property name="text">
+    <string>Toggle Enable</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionToggle_Star">
+   <property name="text">
+    <string>Toggle Star</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionRename_Selected_Mods">
+   <property name="icon">
+    <iconset theme="entry-edit">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Rename Selected Mods</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionRename_to">
+   <property name="icon">
+    <iconset theme="entry-edit"/>
+   </property>
+   <property name="text">
+    <string>Rename to...</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

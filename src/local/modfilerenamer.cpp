@@ -82,11 +82,12 @@ QString ModFileRenamer::newBaseFileName(LocalMod *mod)
 
 void ModFileRenamer::renameMod(LocalMod *mod)
 {
-    mod->modFile()->rename(newBaseFileName(mod));
+    if(auto fileName = newBaseFileName(mod); !fileName.isEmpty())
+        mod->modFile()->rename(newBaseFileName(mod));
 }
 
 void ModFileRenamer::renameMods(QList<LocalMod *> mods)
 {
     for(auto mod : mods)
-        mod->modFile()->rename(newBaseFileName(mod));
+        renameMod(mod);
 }

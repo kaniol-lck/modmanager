@@ -54,7 +54,7 @@ ModManager::ModManager(QWidget *parent) :
     browserSelector_->setModel(ui->pageSwitcher->model());
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
     connect(ui->pageSwitcher, &PageSwitcher::pageChanged, browserSelector_, &BrowserSelectorWidget::setCurrentIndex);
-    connect(ui->pageSwitcher, &PageSwitcher::pageChanged, this, &ModManager::updateDockWidgets);
+    connect(ui->pageSwitcher, &PageSwitcher::pageChanged, this, &ModManager::updateBrowsers);
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
@@ -116,11 +116,13 @@ void ModManager::updateUi()
     updateBlur();
 }
 
-void ModManager::updateDockWidgets()
+void ModManager::updateBrowsers()
 {
     auto browser = ui->pageSwitcher->currentBrowser();
     ui->modInfoDock->setWidget(browser->infoWidget());
     ui->fileListDock->setWidget(browser->fileListWidget());
+    ui->menu_Mod->addActions(browser->modActions());
+    ui->menu_Mod->setEnabled(!browser->modActions().isEmpty());
 }
 
 void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
@@ -400,6 +402,16 @@ void ModManager::on_actionSelect_Multiple_Directories_triggered()
 {
     auto paths = getExistingDirectories(this, tr("Select your mod directories..."), config_.getCommonPath());
     LocalModPathManager::addPaths(paths);
+}
+
+void ModManager::on_menu_Mod_aboutToShow()
+{
+    ui->pageSwitcher->currentBrowser()->onModMenuAboutToShow();
+}
+
+void ModManager::on_menu_Mod_aboutToHide()
+{
+    ui->pageSwitcher->currentBrowser()->onModMenuAboutToHide();
 }
 
 void ModManager::on_menu_Path_aboutToShow()
