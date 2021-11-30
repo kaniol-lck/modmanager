@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QStandardItemModel>
 
+#include "local/modfilerenamer.h"
+
 class LocalModPath;
 class LocalMod;
 namespace Ui {
@@ -30,6 +32,7 @@ private slots:
     void on_renamePattern_textChanged();
 private:
     Ui::BatchRenameDialog *ui;
+    ModFileRenamer renamer_;
 //    LocalModPath *modPath_;
     QList<LocalMod*> modList_;
     QStringList fileNameList_;

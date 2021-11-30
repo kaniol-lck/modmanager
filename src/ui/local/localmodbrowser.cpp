@@ -473,6 +473,19 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
         enableAction->setChecked(mod->isEnabled());
     } else if(mods.count() > 1){
         //multi mods
+        //fast batch rename
+        Config config;
+        auto list = config.getRenamePatternHistory();
+        if(!list.isEmpty()){
+            auto renameMenu = menu->addMenu(QIcon::fromTheme("entry-edit"), tr("Fast batch rename"));
+            for(auto &&v : list){
+                auto str = v.toString();
+                renameMenu->addAction(str, this, [=]{
+                    ModFileRenamer renamer(str);
+                    renamer.renameMods(mods);
+                });
+            }
+        }
         //batch rename
         menu->addAction(QIcon::fromTheme("entry-edit"), tr("Batch rename"), this, [=]{
             auto dialog = new BatchRenameDialog(this, mods);
