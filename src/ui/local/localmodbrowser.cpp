@@ -212,7 +212,7 @@ void LocalModBrowser::updateModList()
     model_->setHorizontalHeaderItem(FileDateColumn, new QStandardItem(tr("Last Modified")));
     model_->setHorizontalHeaderItem(FileSizeColumn, new QStandardItem(tr("File Size")));
     model_->setHorizontalHeaderItem(FileNameColumn, new QStandardItem(tr("File Name")));
-    model_->setHorizontalHeaderItem(EnableColumn, new QStandardItem(QIcon::fromTheme("action-unavailable-symbolic"), tr("Enable")));
+    model_->setHorizontalHeaderItem(EnableColumn, new QStandardItem(tr("Enable")));
     model_->setHorizontalHeaderItem(StarColumn, new QStandardItem(QIcon::fromTheme("starred-symbolic"), "Star"));
     model_->setHorizontalHeaderItem(TagsColumn, new QStandardItem(QIcon::fromTheme("tag"), tr("Tags")));
     model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(QIcon(":/image/curseforge.svg"), tr("Curseforge ID")));
@@ -436,40 +436,62 @@ void LocalModBrowser::updateProgressBar()
     progressBar_->setVisible(modPath_->isLoading() || modPath_->isSearching() || modPath_->isChecking());
 }
 
-QMenu *LocalModBrowser::onCustomContextMenuRequested(const QModelIndex &index)
+QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
 {
-    if(!index.isValid()) return nullptr;
     auto menu = new QMenu(this);
-    auto mod = model_->itemFromIndex(index.siblingAtColumn(ModColumn))->data().value<LocalMod*>();
-    auto localModMenu = new LocalModMenu(this, mod);
-    connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Set Alias")), &QAction::triggered, this, [=]{
-        bool ok;
-        auto alias = QInputDialog::getText(this, tr("Set mod alias"), tr("Alias of <b>%1</b> mod:").arg(mod->commonInfo()->name()), QLineEdit::Normal, mod->alias(), &ok);
-        if(ok)
-            mod->setAlias(alias);
-    });
-    menu->addMenu(localModMenu->addTagMenu());
-    if(!mod->customizableTags().isEmpty())
-        menu->addMenu(localModMenu->removeTagmenu());
-    menu->addSeparator();
-    if(!mod->curseforgeUpdate().ignores().isEmpty() || !mod->modrinthUpdate().ignores().isEmpty()){
-        connect(menu->addAction(tr("Clear update ignores")), &QAction::triggered, this, [=]{
-            mod->clearIgnores();
+    if(mods.count() == 1){
+        auto mod = mods.first();
+        auto localModMenu = new LocalModMenu(this, mod);
+        connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Set Alias")), &QAction::triggered, this, [=]{
+            bool ok;
+            auto alias = QInputDialog::getText(this, tr("Set mod alias"), tr("Alias of <b>%1</b> mod:").arg(mod->commonInfo()->name()), QLineEdit::Normal, mod->alias(), &ok);
+            if(ok)
+                mod->setAlias(alias);
         });
+        menu->addMenu(localModMenu->addTagMenu());
+        if(!mod->customizableTags().isEmpty())
+            menu->addMenu(localModMenu->removeTagmenu());
         menu->addSeparator();
+        if(!mod->curseforgeUpdate().ignores().isEmpty() || !mod->modrinthUpdate().ignores().isEmpty()){
+            connect(menu->addAction(tr("Clear update ignores")), &QAction::triggered, this, [=]{
+                mod->clearIgnores();
+            });
+            menu->addSeparator();
+        }
+        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"));
+        starAction->setCheckable(true);
+        starAction->setChecked(mod->isFeatured());
+        connect(starAction, &QAction::toggled, this, [=](bool bl){
+            mod->setFeatured(bl);
+        });
+        auto EnableAction = menu->addAction(tr("Enable"));
+        EnableAction->setCheckable(true);
+        EnableAction->setChecked(mod->isEnabled());
+        connect(EnableAction, &QAction::toggled, this, [=](bool bl){
+            mod->setEnabled(bl);
+        });
+    } else{
+        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"));
+        starAction->setCheckable(true);
+        bool isStarred = false;
+        for(auto &&mod : mods)
+            if(mod->isFeatured()) isStarred = true;
+        starAction->setChecked(isStarred);
+        connect(starAction, &QAction::toggled, this, [=](bool bl){
+            for(auto &&mod : mods)
+                mod->setFeatured(bl);
+        });
+        auto EnableAction = menu->addAction(tr("Enable"));
+        EnableAction->setCheckable(true);
+        bool isEnabled = false;
+        for(auto &&mod : mods)
+            if(mod->isEnabled()) isEnabled = true;
+        EnableAction->setChecked(isEnabled);
+        connect(EnableAction, &QAction::toggled, this, [=](bool bl){
+            for(auto &&mod : mods)
+                mod->setEnabled(bl);
+        });
     }
-    auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"));
-    starAction->setCheckable(true);
-    starAction->setChecked(mod->isFeatured());
-    connect(starAction, &QAction::toggled, this, [=](bool bl){
-        mod->setFeatured(bl);
-    });
-    auto disableAction = menu->addAction(QIcon::fromTheme("action-unavailable-symbolic"), tr("Disable"));
-    disableAction->setCheckable(true);
-    disableAction->setChecked(mod->isDisabled());
-    connect(disableAction, &QAction::toggled, this, [=](bool bl){
-        mod->setEnabled(!bl);
-    });
     return menu;
 }
 
@@ -548,22 +570,22 @@ void LocalModBrowser::onItemDoubleClicked(const QModelIndex &index)
 
 void LocalModBrowser::on_modListView_customContextMenuRequested(const QPoint &pos)
 {
-    auto index = ui->modListView->indexAt(pos);
-    if(auto menu = onCustomContextMenuRequested(index); menu && !menu->actions().empty())
+    auto mods = selectedMods(ui->modListView);
+    if(auto menu = getMenu(mods); menu && !menu->actions().empty())
         menu->exec(ui->modListView->mapToGlobal(pos));
 }
 
 void LocalModBrowser::on_modIconListView_customContextMenuRequested(const QPoint &pos)
 {
-    auto index = ui->modIconListView->indexAt(pos);
-    if(auto menu = onCustomContextMenuRequested(index); menu && !menu->actions().empty())
+    auto mods = selectedMods(ui->modIconListView);
+    if(auto menu = getMenu(mods); menu && !menu->actions().empty())
         menu->exec(ui->modIconListView->mapToGlobal(pos));
 }
 
 void LocalModBrowser::on_modTreeView_customContextMenuRequested(const QPoint &pos)
 {
-    auto index = ui->modTreeView->indexAt(pos);
-    if(auto menu = onCustomContextMenuRequested(index); menu && !menu->actions().empty())
+    auto mods = selectedMods(ui->modTreeView);
+    if(auto menu = getMenu(mods); menu && !menu->actions().empty())
         menu->exec(ui->modTreeView->mapToGlobal(pos + QPoint(0, ui->modTreeView->header()->height())));
 }
 
@@ -608,4 +630,12 @@ void LocalModBrowser::paintEvent(QPaintEvent *event)
         modPath_->loadMods();
     updateIndexWidget();
     QWidget::paintEvent(event);
+}
+
+QList<LocalMod *> LocalModBrowser::selectedMods(QAbstractItemView *view)
+{
+    QList<LocalMod *> list;
+    for(auto &&index : view->selectionModel()->selectedRows())
+        list << model_->itemFromIndex(index)->data().value<LocalMod*>();
+    return list;
 }

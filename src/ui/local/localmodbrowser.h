@@ -18,6 +18,7 @@ class QStatusBar;
 class QProgressBar;
 class LocalModInfoWidget;
 class LocalFileListWidget;
+class QAbstractItemView;
 namespace Ui {
 class LocalModBrowser;
 }
@@ -68,7 +69,6 @@ private slots:
     void filterList();
     void updateStatusText();
     void updateProgressBar();
-    QMenu *onCustomContextMenuRequested(const QModelIndex &index);
     void updateIndexWidget();
 
     void on_checkUpdatesButton_clicked();
@@ -97,6 +97,8 @@ private:
     int hiddenCount_ = 0;
     bool isChecking_ = false;
     bool isUpdating_ = false;
+    QList<LocalMod *> selectedMods(QAbstractItemView *view);
+    QMenu *getMenu(QList<LocalMod *> mods);
 };
 
 #endif // LOCALMODBROWSER_H
