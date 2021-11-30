@@ -38,22 +38,22 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     for(const auto &type : ModLoaderType::curseforge)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
+    updateVersionList();
+    updateCategoryList();
+    updateLocalPathList();
+
     connect(ui->modListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
-
-    updateVersionList();
     connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
-
-    updateCategoryList();
-
-    updateLocalPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &CurseforgeModBrowser::updateLocalPathList);
-
-    isUiSet_ = true;
     connect(this, &CurseforgeModBrowser::downloadPathChanged, fileListWidget_, &CurseforgeFileListWidget::setDownloadPath);
-
     connect(ui->modListView, &QListView::entered, this, &CurseforgeModBrowser::onItemSelected);
     connect(ui->modListView, &QListView::clicked, this, &CurseforgeModBrowser::onItemSelected);
+
+    if(Config().getSearchModsOnStartup()){
+        inited_ = true;
+        getModList(currentName_);
+    }
 }
 
 CurseforgeModBrowser::~CurseforgeModBrowser()
@@ -84,13 +84,13 @@ void CurseforgeModBrowser::refresh()
 
 void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
-    isUiSet_ = false;
     currentGameVersion_ = info.gameVersion();
     ui->versionSelectButton->setText(info.gameVersion());
     currentLoaderType_ = info.loaderType();
     ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
-    isUiSet_ = true;
+    ui->downloadPathSelect->blockSignals(true);
     ui->downloadPathSelect->setCurrentText(info.displayName());
+    ui->downloadPathSelect->blockSignals(false);
     getModList(currentName_);
 }
 
@@ -200,6 +200,7 @@ void CurseforgeModBrowser::updateCategoryList()
 
 void CurseforgeModBrowser::updateLocalPathList()
 {
+    ui->downloadPathSelect->blockSignals(true);
     //remember selected path
     LocalModPath *selectedPath = nullptr;
     auto index = ui->downloadPathSelect->currentIndex();
@@ -217,6 +218,7 @@ void CurseforgeModBrowser::updateLocalPathList()
         if(index >= 0)
             ui->downloadPathSelect->setCurrentIndex(index);
     }
+    ui->downloadPathSelect->blockSignals(false);
 }
 
 void CurseforgeModBrowser::search()
@@ -343,7 +345,7 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
 
 void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
-    if(!isUiSet_ || index < 0 || index >= ui->downloadPathSelect->count()) return;
+    if(index < 0 || index >= ui->downloadPathSelect->count()) return;
     if(index == 0)
         downloadPath_ = nullptr;
     else
@@ -403,3 +405,9 @@ void CurseforgeModBrowser::paintEvent(QPaintEvent *event)
     updateIndexWidget();
     QWidget::paintEvent(event);
 }
+
+void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
+{
+    getModList(currentName_);
+}
+

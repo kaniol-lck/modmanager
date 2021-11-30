@@ -45,7 +45,6 @@ private:
     OptifineAPI *api_;
     BMCLAPI *bmclapi_;
     LocalModPath *downloadPath_ = nullptr;
-    bool isUiSet_ = false;
     bool inited_ = false;
 
     void getModList();

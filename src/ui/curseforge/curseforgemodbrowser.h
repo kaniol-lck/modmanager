@@ -46,6 +46,8 @@ private slots:
     void on_openFolderButton_clicked();
     void onItemSelected(const QModelIndex &index);
     void updateIndexWidget();
+    void on_sortSelect_currentIndexChanged(int);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
@@ -61,7 +63,6 @@ private:
     int currentCategoryId_;
     GameVersion currentGameVersion_;
     ModLoaderType::Type currentLoaderType_ = ModLoaderType::Any;
-    bool isUiSet_ = false;
     bool hasMore_ = false;
     bool isSearching_ = false;
     bool inited_ = false;

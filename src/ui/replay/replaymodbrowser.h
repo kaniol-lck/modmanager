@@ -41,7 +41,6 @@ private:
     QStandardItemModel *model_;
     ReplayAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
-    bool isUiSet_ = false;
     bool inited_ = false;
 
     void getModList();

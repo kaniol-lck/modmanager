@@ -61,7 +61,6 @@ private:
     QStringList currentCategoryIds_;
     QList<GameVersion> lastGameVersions_;
     QList<GameVersion> currentGameVersions_;
-    bool isUiSet_ = false;
     bool hasMore_ = false;
     bool isSearching_ = false;
     bool inited_ = false;

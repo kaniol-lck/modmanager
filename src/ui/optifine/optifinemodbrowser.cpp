@@ -34,30 +34,34 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     connect(ui->showPreview, &QCheckBox::stateChanged, this, &OptifineModBrowser::filterList);
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &OptifineModBrowser::filterList);
     connect(ui->searchText, &QLineEdit::textChanged, this, &OptifineModBrowser::filterList);
-    isUiSet_ = true;
+
+    if(Config().getSearchModsOnStartup()){
+        inited_ = true;
+        getModList();
+    }
 }
 
 OptifineModBrowser::~OptifineModBrowser()
 {
-    delete ui;
-}
-
-void OptifineModBrowser::refresh()
-{
-    getModList();
     for(auto row = 0; row < model_->rowCount(); row++){
         auto item = model_->item(row);
         auto mod = item->data().value<OptifineMod*>();
         if(mod && !mod->parent())
             mod->deleteLater();
     }
+    delete ui;
+}
+
+void OptifineModBrowser::refresh()
+{
+    getModList();
 }
 
 void OptifineModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
-    isUiSet_ = false;
+    ui->versionSelect->blockSignals(true);
     ui->versionSelect->setCurrentText(info.gameVersion());
-    isUiSet_ = true;
+    ui->versionSelect->blockSignals(false);
     ui->downloadPathSelect->setCurrentText(info.displayName());
     filterList();
 }
@@ -157,7 +161,7 @@ void OptifineModBrowser::on_openFolderButton_clicked()
 
 void OptifineModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
-    if(!isUiSet_ || index < 0 || index >= ui->downloadPathSelect->count()) return;
+    if(index < 0 || index >= ui->downloadPathSelect->count()) return;
     if(index == 0)
         downloadPath_ = nullptr;
     else

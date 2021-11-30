@@ -47,6 +47,7 @@ Preferences::Preferences(QWidget *parent) :
     //Explore
     ui->downloadPathText->setText(config.getDownloadPath());
     ui->searchResultCount->setValue(config.getSearchResultCount());
+    ui->searchModsOnStartup->setChecked(config.getSearchModsOnStartup());
     ui->optifineVersionSource->setCurrentIndex(config.getOptifineSource());
     ui->showCurseforge->setChecked(config.getShowCurseforge());
     ui->showModrinth->setChecked(config.getShowModrinth());
@@ -104,6 +105,7 @@ void Preferences::on_Preferences_accepted()
     //Explore
     config.setDownloadPath(ui->downloadPathText->text());
     config.setSearchResultCount(ui->searchResultCount->value());
+    config.setSearchModsOnStartup(ui->searchModsOnStartup->isChecked());
     config.setOptifineSource(ui->optifineVersionSource->currentIndex());
     config.setShowCurseforge(ui->showCurseforge->isChecked());
     config.setShowModrinth(ui->showModrinth->isChecked());

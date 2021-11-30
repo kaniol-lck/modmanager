@@ -75,6 +75,7 @@ public:
 
     //Explore
     getterAndSetter(DownloadPath, String, downloadPath, QStandardPaths::writableLocation(QStandardPaths::DownloadLocation))
+    getterAndSetter(SearchModsOnStartup, Bool, searchModsOnStartup, true)
     getterAndSetter(SearchResultCount, Int, searchResultCount, 30)
     enum OptifineSourceType{ Official, BMCLAPI };
     getterAndSetter(OptifineSource, Int, optifineSource, Official)

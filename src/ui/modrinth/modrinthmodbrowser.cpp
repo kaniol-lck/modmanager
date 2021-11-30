@@ -37,21 +37,22 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     for(const auto &type : ModLoaderType::modrinth)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
+    updateVersionList();
+    updateCategoryList();
+    updateLocalPathList();
+
     connect(ui->modListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
-
-    updateVersionList();
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
-
-    updateCategoryList();
-
-    updateLocalPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModrinthModBrowser::updateLocalPathList);
-
-    isUiSet_ = true;
-
     connect(ui->modListView, &QListView::entered, this, &ModrinthModBrowser::onItemSelected);
     connect(ui->modListView, &QListView::clicked, this, &ModrinthModBrowser::onItemSelected);
+    connect(this, &ModrinthModBrowser::downloadPathChanged, fileListWidget_, &ModrinthFileListWidget::setDownloadPath);
+
+    if(Config().getSearchModsOnStartup()){
+        inited_ = true;
+        getModList(currentName_);
+    }
 }
 
 ModrinthModBrowser::~ModrinthModBrowser()
@@ -82,11 +83,11 @@ void ModrinthModBrowser::refresh()
 
 void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
-    isUiSet_ = false;
     currentGameVersions_ = { info.gameVersion() };
     ui->versionSelectButton->setText(info.gameVersion());
+    ui->loaderSelect->blockSignals(true);
     ui->loaderSelect->setCurrentIndex(ModLoaderType::modrinth.indexOf(info.loaderType()));
-    isUiSet_ = true;
+    ui->loaderSelect->blockSignals(false);
     ui->downloadPathSelect->setCurrentText(info.displayName());
     getModList(currentName_);
 }
@@ -439,12 +440,12 @@ void ModrinthModBrowser::on_modListView_doubleClicked(const QModelIndex &index)
 
 void ModrinthModBrowser::on_sortSelect_currentIndexChanged(int)
 {
-    if(isUiSet_) getModList(currentName_);
+    getModList(currentName_);
 }
 
 void ModrinthModBrowser::on_loaderSelect_currentIndexChanged(int)
 {
-    if(isUiSet_) getModList(currentName_);
+    getModList(currentName_);
 }
 
 void ModrinthModBrowser::on_openFolderButton_clicked()
@@ -459,7 +460,7 @@ void ModrinthModBrowser::on_openFolderButton_clicked()
 
 void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
-    if(!isUiSet_ || index < 0 || index >= ui->downloadPathSelect->count()) return;
+    if(index < 0 || index >= ui->downloadPathSelect->count()) return;
     if(index == 0)
         downloadPath_ = nullptr;
     else

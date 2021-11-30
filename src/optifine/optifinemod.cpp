@@ -18,11 +18,6 @@ OptifineMod::OptifineMod(QObject *parent, const OptifineModInfo &info) :
     modInfo_(info)
 {}
 
-OptifineMod::~OptifineMod()
-{
-    qDebug() << "killed";
-}
-
 void OptifineMod::acquireDownloadUrl()
 {
     if(gettingDownloadUrl_) return;

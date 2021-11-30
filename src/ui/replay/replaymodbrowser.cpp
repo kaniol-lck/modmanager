@@ -36,7 +36,11 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
     connect(ui->loaderSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
     connect(ui->searchText, &QLineEdit::textChanged, this, &ReplayModBrowser::filterList);
-    isUiSet_ = true;
+
+    if(Config().getSearchModsOnStartup()){
+        inited_ = true;
+        getModList();
+    }
 }
 
 ReplayModBrowser::~ReplayModBrowser()
@@ -51,10 +55,8 @@ void ReplayModBrowser::refresh()
 
 void ReplayModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
-    isUiSet_ = false;
     ui->versionSelect->setCurrentText(info.gameVersion());
     ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
-    isUiSet_ = true;
     ui->downloadPathSelect->setCurrentText(info.displayName());
     filterList();
 }
@@ -97,7 +99,7 @@ void ReplayModBrowser::on_openFolderButton_clicked()
 
 void ReplayModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
-    if(!isUiSet_ || index < 0 || index >= ui->downloadPathSelect->count()) return;
+    if(index < 0 || index >= ui->downloadPathSelect->count()) return;
     if(index == 0)
         downloadPath_ = nullptr;
     else
