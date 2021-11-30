@@ -406,16 +406,22 @@
    </property>
   </action>
   <action name="actionToggle_Enable">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Toggle Enable</string>
+    <string>Enable</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
    </property>
   </action>
   <action name="actionToggle_Star">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Toggle Star</string>
+    <string>Star</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>

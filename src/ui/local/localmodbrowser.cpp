@@ -135,7 +135,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
             auto str = v.toString();
             renameToMenu->addAction(str, this, [=]{
                 ModFileRenamer renamer(str);
-                renamer.renameMods(selectedMods());
+                renamer.renameMods(selectedMods_);
                 Config config;
                 auto list = config.getRenamePatternHistory();
                 if(list.contains(str))
@@ -148,6 +148,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 
     if(modPath_->modsLoaded())
         updateModList();
+
+    onSelectedModsChanged();
 
     ui->modTreeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->modTreeView->header(), &QHeaderView::customContextMenuRequested, this, &LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested);
@@ -194,6 +196,12 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modIconListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
+
+    connect(ui->stackedWidget, &QStackedWidget::currentChanged, this, &LocalModBrowser::updateSelectedMods);
+    connect(ui->modListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &LocalModBrowser::updateSelectedMods);
+    connect(ui->modIconListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &LocalModBrowser::updateSelectedMods);
+    connect(ui->modTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &LocalModBrowser::updateSelectedMods);
+    connect(this, &LocalModBrowser::selectedModsChanged, this, &LocalModBrowser::onSelectedModsChanged);
 }
 
 LocalModBrowser::~LocalModBrowser()
@@ -470,18 +478,6 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
             });
             menu->addSeparator();
         }
-//        //star
-//        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"), this, [=](bool bl){
-//            mod->setFeatured(bl);
-//        });
-//        starAction->setCheckable(true);
-//        starAction->setChecked(mod->isFeatured());
-//        //enable
-//        auto enableAction = menu->addAction(tr("Enable"), this, [=](bool bl){
-//            mod->setEnabled(bl);
-//        });
-//        enableAction->setCheckable(true);
-//        enableAction->setChecked(mod->isEnabled());
     }
     //multi mods
     //batch rename
@@ -682,45 +678,46 @@ void LocalModBrowser::on_actionReload_Mods_triggered()
         modPath_->loadMods();
 }
 
-void LocalModBrowser::on_actionToggle_Enable_triggered()
+void LocalModBrowser::on_actionToggle_Enable_triggered(bool checked)
 {
-    auto mods = selectedMods();
-    bool isEnabled = false;
-    for(auto &&mod : mods)
-        if(mod->isEnabled()) isEnabled = true;
-    for(auto &&mod : mods)
-        mod->setEnabled(!isEnabled);
+    for(auto &&mod : selectedMods_)
+        mod->setEnabled(checked);
 }
 
-void LocalModBrowser::on_actionToggle_Star_triggered()
+void LocalModBrowser::on_actionToggle_Star_triggered(bool checked)
 {
-    auto mods = selectedMods();
-    bool isStarred = false;
-    for(auto &&mod : mods)
-        if(mod->isFeatured()) isStarred = true;
-    for(auto &&mod : mods)
-        mod->setFeatured(!isStarred);
+    for(auto &&mod : selectedMods_)
+        mod->setFeatured(checked);
 }
 
 void LocalModBrowser::on_actionRename_Selected_Mods_triggered()
 {
-    auto mods = selectedMods();
-    auto dialog = new BatchRenameDialog(this, mods);
+    auto dialog = new BatchRenameDialog(this, selectedMods_);
     dialog->exec();
 }
 
-void LocalModBrowser::onModMenuAboutToHide()
+void LocalModBrowser::updateSelectedMods()
 {
-    ui->actionToggle_Enable->setEnabled(true);
-    ui->actionToggle_Star->setEnabled(true);
-    ui->actionRename_Selected_Mods->setEnabled(true);
+    if(auto mods = selectedMods(); selectedMods_ != mods){
+        selectedMods_ = mods;
+        emit selectedModsChanged();
+    }
 }
 
-void LocalModBrowser::onModMenuAboutToShow()
+void LocalModBrowser::onSelectedModsChanged()
 {
-    bool modSelected = !selectedMods().isEmpty();
-    ui->actionToggle_Enable->setEnabled(modSelected);
-    ui->actionToggle_Star->setEnabled(modSelected);
-    ui->actionRename_Selected_Mods->setEnabled(modSelected);
-}
+    bool noMod = selectedMods_.isEmpty();
+    ui->actionToggle_Enable->setEnabled(!noMod);
+    ui->actionToggle_Star->setEnabled(!noMod);
+    ui->actionRename_Selected_Mods->setEnabled(!noMod);
+    ui->actionRename_to->setEnabled(!noMod);
 
+    bool isEnabled = false;
+    for(auto &&mod : selectedMods_)
+        if(mod->isEnabled()) isEnabled = true;
+    ui->actionToggle_Enable->setChecked(isEnabled);
+    bool isStarred = false;
+    for(auto &&mod : selectedMods_)
+        if(mod->isFeatured()) isStarred = true;
+    ui->actionToggle_Star->setChecked(isStarred);
+}

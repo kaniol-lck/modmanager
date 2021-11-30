@@ -38,6 +38,7 @@ public:
     QList<QAction *> modActions() const override;
 signals:
     void loadFinished();
+    void selectedModsChanged();
 
     void findNewOnCurseforge(LocalModPathInfo info);
     void findNewOnModrinth(LocalModPathInfo info);
@@ -87,12 +88,11 @@ private slots:
     void on_actionBatch_Rename_triggered();
     void on_actionDelete_Old_Files_In_Path_triggered();
     void on_actionReload_Mods_triggered();
-    void on_actionToggle_Enable_triggered();
-    void on_actionToggle_Star_triggered();
+    void on_actionToggle_Enable_triggered(bool checked);
+    void on_actionToggle_Star_triggered(bool checked);
     void on_actionRename_Selected_Mods_triggered();
-    void onModMenuAboutToHide() override;
-    void onModMenuAboutToShow() override;
-
+    void updateSelectedMods();
+    void onSelectedModsChanged();
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
@@ -105,6 +105,7 @@ private:
     QButtonGroup *viewSwitcher_;
     LocalModPath *modPath_;
     LocalModFilter *filter_;
+    QList<LocalMod*> selectedMods_;
     int hiddenCount_ = 0;
     bool isChecking_ = false;
     bool isUpdating_ = false;
