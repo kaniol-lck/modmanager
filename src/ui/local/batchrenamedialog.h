@@ -15,11 +15,12 @@ class BatchRenameDialog : public QDialog
     Q_OBJECT
     enum { NameColumn, OldFileNameColumn, NewFileNameColumn};
 public:
+    explicit BatchRenameDialog(QWidget *parent = nullptr, QList<LocalMod *> mods = {});
     explicit BatchRenameDialog(QWidget *parent, LocalModPath *modPath);
     ~BatchRenameDialog();
-
+public slots:
+    void setMods(QList<LocalMod *> mods);
 private slots:
-    void updateModList();
     void on_BatchRenameDialog_accepted();
     void on_toolButton_toggled(bool checked);
     void on_toolButton_2_clicked();
@@ -29,7 +30,7 @@ private slots:
     void on_renamePattern_textChanged();
 private:
     Ui::BatchRenameDialog *ui;
-    LocalModPath *modPath_;
+//    LocalModPath *modPath_;
     QList<LocalMod*> modList_;
     QStringList fileNameList_;
     QStandardItemModel model_;

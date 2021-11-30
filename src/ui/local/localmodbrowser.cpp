@@ -440,9 +440,10 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
 {
     auto menu = new QMenu(this);
     if(mods.count() == 1){
+        //single mod
         auto mod = mods.first();
         auto localModMenu = new LocalModMenu(this, mod);
-        connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Set Alias")), &QAction::triggered, this, [=]{
+        menu->addAction(QIcon::fromTheme("entry-edit"), tr("Set Alias"), this, [=]{
             bool ok;
             auto alias = QInputDialog::getText(this, tr("Set mod alias"), tr("Alias of <b>%1</b> mod:").arg(mod->commonInfo()->name()), QLineEdit::Normal, mod->alias(), &ok);
             if(ok)
@@ -453,44 +454,51 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
             menu->addMenu(localModMenu->removeTagmenu());
         menu->addSeparator();
         if(!mod->curseforgeUpdate().ignores().isEmpty() || !mod->modrinthUpdate().ignores().isEmpty()){
-            connect(menu->addAction(tr("Clear update ignores")), &QAction::triggered, this, [=]{
+            menu->addAction(tr("Clear update ignores"), this, [=]{
                 mod->clearIgnores();
             });
             menu->addSeparator();
         }
-        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"));
-        starAction->setCheckable(true);
-        starAction->setChecked(mod->isFeatured());
-        connect(starAction, &QAction::toggled, this, [=](bool bl){
+        //star
+        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"), this, [=](bool bl){
             mod->setFeatured(bl);
         });
-        auto EnableAction = menu->addAction(tr("Enable"));
-        EnableAction->setCheckable(true);
-        EnableAction->setChecked(mod->isEnabled());
-        connect(EnableAction, &QAction::toggled, this, [=](bool bl){
+        starAction->setCheckable(true);
+        starAction->setChecked(mod->isFeatured());
+        //enable
+        auto enableAction = menu->addAction(tr("Enable"), this, [=](bool bl){
             mod->setEnabled(bl);
         });
-    } else{
-        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"));
+        enableAction->setCheckable(true);
+        enableAction->setChecked(mod->isEnabled());
+    } else if(mods.count() > 1){
+        //multi mods
+        //batch rename
+        menu->addAction(QIcon::fromTheme("entry-edit"), tr("Batch rename"), this, [=]{
+            auto dialog = new BatchRenameDialog(this, mods);
+            dialog->exec();
+        });
+        menu->addSeparator();
+        //star
+        auto starAction = menu->addAction(QIcon::fromTheme("non-starred-symbolic"), tr("Star"), [=](bool bl){
+            for(auto &&mod : mods)
+                mod->setFeatured(bl);
+        });
         starAction->setCheckable(true);
         bool isStarred = false;
         for(auto &&mod : mods)
             if(mod->isFeatured()) isStarred = true;
         starAction->setChecked(isStarred);
-        connect(starAction, &QAction::toggled, this, [=](bool bl){
-            for(auto &&mod : mods)
-                mod->setFeatured(bl);
-        });
-        auto EnableAction = menu->addAction(tr("Enable"));
-        EnableAction->setCheckable(true);
-        bool isEnabled = false;
-        for(auto &&mod : mods)
-            if(mod->isEnabled()) isEnabled = true;
-        EnableAction->setChecked(isEnabled);
-        connect(EnableAction, &QAction::toggled, this, [=](bool bl){
+        //enable
+        auto enableAction = menu->addAction(tr("Enable"), this, [=](bool bl){
             for(auto &&mod : mods)
                 mod->setEnabled(bl);
         });
+        enableAction->setCheckable(true);
+        bool isEnabled = false;
+        for(auto &&mod : mods)
+            if(mod->isEnabled()) isEnabled = true;
+        enableAction->setChecked(isEnabled);
     }
     return menu;
 }

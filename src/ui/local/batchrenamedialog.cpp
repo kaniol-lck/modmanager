@@ -10,17 +10,14 @@
 #include "local/localmodpath.h"
 #include "ui/renamehighlighter.h"
 
-BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
+BatchRenameDialog::BatchRenameDialog(QWidget *parent, QList<LocalMod *> mods) :
     QDialog(parent),
-    ui(new Ui::BatchRenameDialog),
-    modPath_(modPath)
+    ui(new Ui::BatchRenameDialog)
 {
     ui->setupUi(this);
     ui->widget->setVisible(false);
     ui->renameTreeView->setModel(&model_);
     ui->renameTreeView->header()->setSectionResizeMode(QHeaderView::Stretch);
-    ui->renamePattern->installEventFilter(this);
-    ui->renamePattern->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
 
     auto menu = new QMenu(this);
     auto getSubmenu = [=](const QString &title, const QString &category){
@@ -41,12 +38,22 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
     menu->addMenu(getSubmenu(tr("Custom tag"), "custom"));
     ui->addTagsButton->setMenu(menu);
 
-    //TODO: customize
     ui->renamePattern->setPlainText("<filename>");
-    //TODO: syntax highlight
+    setMods(mods);
+}
 
+BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
+    BatchRenameDialog(parent)
+{
+    auto updateModList = [=]{
+        QList<LocalMod *> mods;
+        for(auto &&map : modPath->modMaps())
+            for(const auto &mod : map)
+                mods << mod;
+        setMods(mods);
+    };
     updateModList();
-    connect(modPath_, &LocalModPath::modListUpdated, this, &BatchRenameDialog::updateModList);
+    connect(modPath, &LocalModPath::modListUpdated, this, updateModList);
 }
 
 BatchRenameDialog::~BatchRenameDialog()
@@ -54,7 +61,7 @@ BatchRenameDialog::~BatchRenameDialog()
     delete ui;
 }
 
-void BatchRenameDialog::updateModList()
+void BatchRenameDialog::setMods(QList<LocalMod *> mods)
 {
     modList_.clear();
     fileNameList_.clear();
@@ -64,38 +71,37 @@ void BatchRenameDialog::updateModList()
     model_.setHorizontalHeaderItem(NewFileNameColumn, new QStandardItem(tr("New File Name")));
     ui->renameTreeView->header()->setSectionResizeMode(NameColumn, QHeaderView::Fixed);
     ui->renameTreeView->setColumnWidth(NameColumn, 250);
-    for(auto &&map : modPath_->modMaps())
-        for(const auto &mod : map){
-            auto enabled = !mod->isDisabled();
+    for(const auto &mod : mods){
+        auto enabled = !mod->isDisabled();
 
-            auto nameItem = new QStandardItem();
-            nameItem->setText(mod->commonInfo()->name());
-            nameItem->setCheckable(enabled);
-            nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
-            nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            nameItem->setEditable(false);
-            nameItem->setEnabled(enabled);
+        auto nameItem = new QStandardItem();
+        nameItem->setText(mod->commonInfo()->name());
+        nameItem->setCheckable(enabled);
+        nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
+        nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        nameItem->setEditable(false);
+        nameItem->setEnabled(enabled);
 
-            auto oldFilename = mod->modFile()->fileInfo().fileName();
-            auto beforeItem = new QStandardItem();
-            beforeItem->setText(oldFilename);
-            if(enabled) beforeItem->setForeground(Qt::darkRed);
-            beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            beforeItem->setEditable(false);
-            beforeItem->setEnabled(enabled);
+        auto oldFilename = mod->modFile()->fileInfo().fileName();
+        auto beforeItem = new QStandardItem();
+        beforeItem->setText(oldFilename);
+        if(enabled) beforeItem->setForeground(Qt::darkRed);
+        beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        beforeItem->setEditable(false);
+        beforeItem->setEnabled(enabled);
 
-            auto newFileName = oldFilename;
-            auto afterItem = new QStandardItem();
-            afterItem->setText(newFileName);
-            if(enabled) afterItem->setForeground(Qt::darkGreen);
-            afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            afterItem->setEditable(false);
-            afterItem->setEnabled(enabled);
+        auto newFileName = oldFilename;
+        auto afterItem = new QStandardItem();
+        afterItem->setText(newFileName);
+        if(enabled) afterItem->setForeground(Qt::darkGreen);
+        afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        afterItem->setEditable(false);
+        afterItem->setEnabled(enabled);
 
-            modList_ << mod;
-            fileNameList_ << newFileName;
-            model_.appendRow({nameItem, beforeItem, afterItem});
-        }
+        modList_ << mod;
+        fileNameList_ << newFileName;
+        model_.appendRow({nameItem, beforeItem, afterItem});
+    }
     on_renamePattern_textChanged();
 }
 
