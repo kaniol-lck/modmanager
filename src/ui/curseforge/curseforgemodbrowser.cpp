@@ -12,6 +12,7 @@
 #include "curseforgefilelistwidget.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
+#include "local/localmod.h"
 #include "curseforge/curseforgemod.h"
 #include "curseforge/curseforgeapi.h"
 #include "curseforgemoditemwidget.h"
@@ -22,14 +23,17 @@
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
 
-CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
+CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
     ui(new Ui::CurseforgeModBrowser),
     model_(new QStandardItemModel(this)),
     infoWidget_(new CurseforgeModInfoWidget(this)),
     fileListWidget_(new CurseforgeFileListWidget(this)),
-    api_(new CurseforgeAPI(this))
+    api_(new CurseforgeAPI(this)),
+    localMod_(mod)
 {
+    infoWidget_->hide();
+    fileListWidget_->hide();
     ui->setupUi(this);
     ui->modListView->setModel(model_);
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
@@ -50,6 +54,11 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     connect(ui->modListView, &QListView::entered, this, &CurseforgeModBrowser::onItemSelected);
     connect(ui->modListView, &QListView::clicked, this, &CurseforgeModBrowser::onItemSelected);
     connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &CurseforgeModBrowser::updateIndexWidget);
+
+    if(localMod_){
+        currentName_ = localMod_->commonInfo()->id();
+        ui->searchText->setText(currentName_);
+    }
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;
@@ -304,6 +313,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             currentIndex_ += 20;
             getModList(currentName_, currentIndex_, needMore - shownCount);
         }
+        updateIndexWidget();
     });
     connect(this, &QObject::destroyed, this, [=]{
         disconnect(conn);

@@ -11,6 +11,7 @@ class CurseforgeFileListWidget;
 class QListWidgetItem;
 
 class QStandardItemModel;
+class LocalMod;
 namespace Ui {
 class CurseforgeModBrowser;
 }
@@ -20,7 +21,7 @@ class CurseforgeModBrowser : public ExploreBrowser
     Q_OBJECT
 
 public:
-    explicit CurseforgeModBrowser(QWidget *parent = nullptr);
+    explicit CurseforgeModBrowser(QWidget *parent = nullptr, LocalMod *mod = nullptr);
     ~CurseforgeModBrowser();
 
     QWidget *infoWidget() const override;
@@ -58,6 +59,8 @@ private:
     CurseforgeAPI *api_;
     QList<int> idList_;
     LocalModPath *downloadPath_ = nullptr;
+    //open as dialog to search mod
+    LocalMod *localMod_;
     QString currentName_;
     int currentIndex_;
     int currentCategoryId_;

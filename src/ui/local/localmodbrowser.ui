@@ -471,6 +471,15 @@
     <string>Open Mod Dialog</string>
    </property>
   </action>
+  <action name="actionSearch_on_Curseforge">
+   <property name="icon">
+    <iconset resource="../../images/image.qrc">
+     <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Search on Curseforge</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../images/image.qrc"/>

@@ -29,6 +29,8 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     fileListWidget_(new ModrinthFileListWidget(this)),
     api_(new ModrinthAPI(this))
 {
+    infoWidget_->hide();
+    fileListWidget_->hide();
     ui->setupUi(this);
     ui->modListView->setModel(model_);
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));

@@ -32,7 +32,9 @@
 #include "localmodmenu.h"
 #include "local/localmoditem.h"
 #include "ui/curseforge/curseforgemoddialog.h"
+#include "ui/curseforge/curseforgemodbrowser.h"
 #include "ui/modrinth/modrinthmoddialog.h"
+#include "ui/browserdialog.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
@@ -46,6 +48,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     modPath_(modPath),
     filter_(new LocalModFilter(this, modPath_))
 {
+    infoWidget_->hide();
+    fileListWidget_->hide();
     ui->setupUi(this);
     //setup mod list
 //    ui->updateWidget->setVisible(false);
@@ -460,6 +464,8 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
         menu->addAction(ui->actionOpen_Mod_Dialog);
         if(mod->curseforgeMod())
             menu->addAction(ui->actionOpen_Curseforge_Mod_Dialog);
+        else
+            menu->addAction(ui->actionSearch_on_Curseforge);
         if(mod->modrinthMod())
             menu->addAction(ui->actionOpen_Modrinth_Mod_Dialog);
         menu->addSeparator();
@@ -776,6 +782,17 @@ void LocalModBrowser::on_actionOpen_Mod_Dialog_triggered()
     if(selectedMods_.count() == 1){
         auto mod = selectedMods_.first();
         auto dialog = new LocalModDialog(this, mod);
+        dialog->show();
+    }
+}
+
+
+void LocalModBrowser::on_actionSearch_on_Curseforge_triggered()
+{
+    if(selectedMods_.count() == 1){
+        auto mod = selectedMods_.first();
+        auto browser = new CurseforgeModBrowser(this, mod);
+        auto dialog = new BrowserDialog(this, browser);
         dialog->show();
     }
 }

@@ -46,6 +46,7 @@ SOURCES += \
     src/optifine/optifinemodinfo.cpp \
     src/qss/stylesheets.cpp \
     src/ui/browser.cpp \
+    src/ui/browserdialog.cpp \
     src/ui/curseforge/curseforgefilelistwidget.cpp \
     src/ui/curseforge/curseforgeimagepopup.cpp \
     src/ui/curseforge/curseforgemodinfowidget.cpp \
@@ -142,6 +143,7 @@ HEADERS += \
     src/optifine/optifinemodinfo.h \
     src/qss/stylesheets.h \
     src/ui/browser.h \
+    src/ui/browserdialog.h \
     src/ui/curseforge/curseforgefilelistwidget.h \
     src/ui/curseforge/curseforgeimagepopup.h \
     src/ui/curseforge/curseforgemodinfowidget.h \
@@ -206,6 +208,7 @@ HEADERS += \
 
 FORMS += \
     src/ui/aboutdialog.ui \
+    src/ui/browserdialog.ui \
     src/ui/browsermanagerdialog.ui \
     src/ui/browserselectorwidget.ui \
     src/ui/curseforge/curseforgefileitemwidget.ui \
