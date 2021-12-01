@@ -36,6 +36,7 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod)
 {
     auto item = new LocalModItem(mod);
     item->setData(QVariant::fromValue(mod));
+    item->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
     auto nameItem = new LocalModItem(mod);
     auto idItem = new LocalModItem(mod);
     auto versionItem = new LocalModItem(mod);

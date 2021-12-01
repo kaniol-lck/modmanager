@@ -205,7 +205,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modIconListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
-    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &LocalModBrowser::updateIndexWidget);
+    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &LocalModBrowser::updateListViewIndexWidget);
+    connect(ui->modTreeView->verticalScrollBar(), &QScrollBar::valueChanged, this, &LocalModBrowser::updateTreeViewIndexWidget);
 
     connect(ui->stackedWidget, &QStackedWidget::currentChanged, this, &LocalModBrowser::updateSelectedMods);
     connect(ui->modListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &LocalModBrowser::updateSelectedMods);
@@ -248,40 +249,15 @@ void LocalModBrowser::updateModList()
         ui->modTreeView->header()->blockSignals(false);
     }
 
-    auto addMod = [=](LocalMod *mod){
-        auto items = LocalModItem::itemsFromMod(mod);
-        model_->appendRow(items);
-        items.first()->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
-        auto enableBox = new QCheckBox(this);
-        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(LocalModItem::EnableColumn)), enableBox);
-        connect(enableBox, &QCheckBox::toggled, mod, &LocalMod::setEnabled);
-        auto starButton = new QToolButton(this);
-        starButton->setAutoRaise(true);
-        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(LocalModItem::StarColumn)), starButton);
-        auto tagsWidget = new TagsWidget(this);
-        tagsWidget->setMod(mod);
-        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(LocalModItem::TagsColumn)), tagsWidget);
-        connect(starButton, &QToolButton::clicked, this, [=]{
-            auto checked = starButton->icon().name() != "starred-symbolic";
-            mod->setFeatured(checked);
-        });
-        auto onModChanged = [=]{
-            enableBox->setChecked(mod->isEnabled());
-            starButton->setIcon(QIcon::fromTheme(mod->isFeatured() ? "starred-symbolic" : "non-starred-symbolic"));
-        };
-        onModChanged();
-        QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
-    };
-
     for(auto &&map : modPath_->modMaps()){
         for (auto &&mod : map) {
-            addMod(mod);
+            model_->appendRow(LocalModItem::itemsFromMod(mod));
         }
     }
     //TODO: optfine in sub dir
     if(modPath_->info().loaderType() == ModLoaderType::Fabric)
         if(auto mod = modPath_->optiFineMod()){
-            addMod(mod);
+            model_->appendRow(LocalModItem::itemsFromMod(mod));
         }
     model_->sort(LocalModItem::NameColumn);
     ui->modIconListView->setModelColumn(LocalModItem::NameColumn);
@@ -498,7 +474,7 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
     return menu;
 }
 
-void LocalModBrowser::updateIndexWidget()
+void LocalModBrowser::updateListViewIndexWidget()
 {
     auto beginRow = ui->modListView->indexAt(QPoint(0, 0)).row();
     if(beginRow < 0) return;
@@ -510,9 +486,53 @@ void LocalModBrowser::updateIndexWidget()
         if(ui->modListView->indexWidget(index)) continue;
 //        qDebug() << "new widget at row" << row;
         auto item = model_->item(row);
+        if(!item) continue;
         auto mod = item->data().value<LocalMod*>();
-        auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
-        ui->modListView->setIndexWidget(index, modItemWidget);
+        if(mod){
+            auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
+            ui->modListView->setIndexWidget(index, modItemWidget);
+            item->setSizeHint(QSize(0, modItemWidget->height()));
+        }
+    }
+}
+
+void LocalModBrowser::updateTreeViewIndexWidget()
+{
+    auto beginRow = ui->modTreeView->indexAt(QPoint(0, 0)).row();
+    if(beginRow < 0) return;
+    auto endRow = ui->modTreeView->indexAt(QPoint(0, ui->modTreeView->height())).row();
+    //extra 2
+    endRow += 2;
+    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
+        auto index = model_->index(row, LocalModItem::EnableColumn);
+        if(ui->modTreeView->indexWidget(index)) continue;
+//        qDebug() << "new widget at row" << row;
+        auto item = model_->item(row);
+        if(!item) continue;
+        auto mod = item->data().value<LocalMod*>();
+        if(mod){
+            auto enableBox = new QCheckBox(this);
+            ui->modTreeView->setIndexWidget(model_->index(row, LocalModItem::EnableColumn), enableBox);
+            connect(enableBox, &QCheckBox::toggled, mod, &LocalMod::setEnabled);
+            auto starButton = new QToolButton(this);
+            starButton->setAutoRaise(true);
+            connect(starButton, &QToolButton::clicked, this, [=]{
+                auto checked = starButton->icon().name() != "starred-symbolic";
+                mod->setFeatured(checked);
+            });
+            ui->modTreeView->setIndexWidget(model_->index(row, LocalModItem::StarColumn), starButton);
+            auto tagsWidget = new TagsWidget(this, mod);
+            ui->modTreeView->setIndexWidget(model_->index(row, LocalModItem::TagsColumn), tagsWidget);
+            auto onModChanged = [=]{
+                enableBox->setChecked(mod->isEnabled());
+                starButton->setIcon(QIcon::fromTheme(mod->isFeatured() ? "starred-symbolic" : "non-starred-symbolic"));
+            };
+            onModChanged();
+            QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
+            //        auto modItemWidget = new LocalModItemWidget(ui->modTreeView, mod);
+            //        ui->modTreeView->setIndexWidget(index, modItemWidget);
+            //        item->setSizeHint(QSize(0, modItemWidget->height()));
+        }
     }
 }
 
@@ -631,7 +651,8 @@ void LocalModBrowser::paintEvent(QPaintEvent *event)
 {
     if(!modPath_->modsLoaded())
         modPath_->loadMods();
-    updateIndexWidget();
+    updateListViewIndexWidget();
+    updateTreeViewIndexWidget();
     QWidget::paintEvent(event);
 }
 

@@ -71,7 +71,8 @@ private slots:
     void filterList();
     void updateStatusText();
     void updateProgressBar();
-    void updateIndexWidget();
+    void updateListViewIndexWidget();
+    void updateTreeViewIndexWidget();
 
     void on_checkUpdatesButton_clicked();
     void on_updateAllButton_clicked();
