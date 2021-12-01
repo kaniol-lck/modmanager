@@ -121,6 +121,7 @@ void ModManager::updateBrowsers()
     auto browser = ui->pageSwitcher->currentBrowser();
     ui->modInfoDock->setWidget(browser->infoWidget());
     ui->fileListDock->setWidget(browser->fileListWidget());
+    ui->menu_Mod->clear();
     ui->menu_Mod->addActions(browser->modActions());
     ui->menu_Mod->setEnabled(!browser->modActions().isEmpty());
 }

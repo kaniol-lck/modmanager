@@ -17,9 +17,6 @@ public:
     explicit LocalModItemWidget(QWidget *parent, LocalMod *localMod);
     ~LocalModItemWidget();
 
-    void enterEvent(QEvent * event);
-    void leaveEvent(QEvent * event);
-
     LocalMod *mod() const;
 
 public slots:
@@ -48,7 +45,9 @@ private slots:
     void on_warningButton_clicked();
     void on_disableButton_toggled(bool checked);
     void on_featuredButton_toggled(bool checked);
-
+protected:
+    void enterEvent(QEvent * event) override;
+    void leaveEvent(QEvent * event) override;
 private:
     Ui::LocalModItemWidget *ui;
     LocalMod *mod_;
