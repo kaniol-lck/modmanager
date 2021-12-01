@@ -441,13 +441,39 @@
   </action>
   <action name="actionRename_to">
    <property name="icon">
-    <iconset theme="entry-edit"/>
+    <iconset theme="entry-edit">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Rename to...</string>
    </property>
   </action>
+  <action name="actionOpen_Curseforge_Mod_Dialog">
+   <property name="icon">
+    <iconset resource="../../images/image.qrc">
+     <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Curseforge Mod Dialog</string>
+   </property>
+  </action>
+  <action name="actionOpen_Modrinth_Mod_Dialog">
+   <property name="icon">
+    <iconset resource="../../images/image.qrc">
+     <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Modrinth Mod Dialog</string>
+   </property>
+  </action>
+  <action name="actionOpen_Mod_Dialog">
+   <property name="text">
+    <string>Open Mod Dialog</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../images/image.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -23,11 +23,11 @@ bool LocalModItem::operator<(const QStandardItem &other) const
         if(mod_->isDisabled() && !otherMod->isDisabled()) return false;
         if(!mod_->isDisabled() && otherMod->isDisabled()) return true;
     }
-    if(column() == LocalModBrowser::FileDateColumn)
+    if(column() == FileDateColumn)
         return data(FileDateRole).toDateTime() < other.data(FileDateRole).toDateTime();
-    if(column() == LocalModBrowser::FileSizeColumn)
+    if(column() == FileSizeColumn)
         return data(FileSizeRole).toInt() < other.data(FileSizeRole).toInt();
-    if(column() == LocalModBrowser::TagsColumn)
+    if(column() == TagsColumn)
         return data(TagsRole).toString() < other.data(TagsRole).toString();;
     return QStandardItem::operator<(other);
 }
@@ -84,4 +84,24 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod)
     QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
     QObject::connect(mod, &LocalMod::modIconUpdated, onIconChanged);
     return list;
+}
+
+QList<QPair<int, QStandardItem *>> LocalModItem::headerItems()
+{
+    return {
+        { NameColumn, new QStandardItem(QObject::tr("Mod Name")) },
+        { IdColumn, new QStandardItem(QObject::tr("ID")) },
+        { VersionColumn, new QStandardItem(QObject::tr("Version")) },
+        { FileDateColumn, new QStandardItem(QObject::tr("Last Modified")) },
+        { FileSizeColumn, new QStandardItem(QObject::tr("File Size")) },
+        { FileNameColumn, new QStandardItem(QObject::tr("File Name")) },
+        { EnableColumn, new QStandardItem(QObject::tr("Enable")) },
+        { StarColumn, new QStandardItem(QIcon::fromTheme("starred-symbolic"), "Star") },
+        { TagsColumn, new QStandardItem(QIcon::fromTheme("tag"), QObject::tr("Tags")) },
+        { CurseforgeIdColumn, new QStandardItem(QIcon(":/image/curseforge.svg"), QObject::tr("Curseforge ID")) },
+        { CurseforgeFileIdColumn, new QStandardItem(QIcon(":/image/curseforge.svg"), QObject::tr("Curseforge File ID")) },
+        { ModrinthIdColumn, new QStandardItem(QIcon(":/image/modrinth.svg"), QObject::tr("Modrinth ID")) },
+        { ModrinthFileIdColumn, new QStandardItem(QIcon(":/image/modrinth.svg"), QObject::tr("Modrinth File ID")) },
+        { DescriptionColumn, new QStandardItem(QObject::tr("Description")) }
+    };
 }

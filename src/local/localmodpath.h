@@ -14,6 +14,7 @@ class ModrinthAPI;
 class LocalModPath : public QObject
 {
     Q_OBJECT
+    static constexpr auto kFileName = "mods.json";
 public:
     explicit LocalModPath(const LocalModPathInfo &info);
     ~LocalModPath();
@@ -93,7 +94,6 @@ private:
     void readFromFile();
     explicit LocalModPath(LocalModPath *path, const QString &subDir);
 
-    static constexpr auto kFileName = "mods.json";
     QStringList relative_;
     QMap<QString, LocalModPath *> subPaths_;
     CurseforgeAPI *curseforgeAPI_;

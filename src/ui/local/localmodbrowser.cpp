@@ -31,11 +31,14 @@
 #include "localmodfilter.h"
 #include "localmodmenu.h"
 #include "local/localmoditem.h"
+#include "ui/curseforge/curseforgemoddialog.h"
+#include "ui/modrinth/modrinthmoddialog.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
     ui(new Ui::LocalModBrowser),
     model_(new QStandardItemModel(this)),
+    modMemu_(new QMenu(this)),
     infoWidget_(new LocalModInfoWidget(this)),
     fileListWidget_(new LocalFileListWidget(this)),
     statusBar_(new QStatusBar(this)),
@@ -78,6 +81,12 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->mainLayout->addWidget(statusBar_);
 
     ui->actionReload_Mods->setEnabled(!modPath_->isLoading());
+
+    modMemu_->addAction(ui->actionToggle_Enable);
+    modMemu_->addAction(ui->actionToggle_Star);
+    modMemu_->addSeparator();
+    modMemu_->addAction(ui->actionRename_Selected_Mods);
+    modMemu_->addAction(ui->actionRename_to);
 
     viewSwitcher_->button(0)->setChecked(true);
     connect(viewSwitcher_, &QButtonGroup::idClicked, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
@@ -224,20 +233,8 @@ void LocalModBrowser::reload()
 void LocalModBrowser::updateModList()
 {
     model_->clear();
-    model_->setHorizontalHeaderItem(NameColumn, new QStandardItem(tr("Mod Name")));
-    model_->setHorizontalHeaderItem(IdColumn, new QStandardItem(tr("ID")));
-    model_->setHorizontalHeaderItem(VersionColumn, new QStandardItem(tr("Version")));
-    model_->setHorizontalHeaderItem(FileDateColumn, new QStandardItem(tr("Last Modified")));
-    model_->setHorizontalHeaderItem(FileSizeColumn, new QStandardItem(tr("File Size")));
-    model_->setHorizontalHeaderItem(FileNameColumn, new QStandardItem(tr("File Name")));
-    model_->setHorizontalHeaderItem(EnableColumn, new QStandardItem(tr("Enable")));
-    model_->setHorizontalHeaderItem(StarColumn, new QStandardItem(QIcon::fromTheme("starred-symbolic"), "Star"));
-    model_->setHorizontalHeaderItem(TagsColumn, new QStandardItem(QIcon::fromTheme("tag"), tr("Tags")));
-    model_->setHorizontalHeaderItem(CurseforgeIdColumn, new QStandardItem(QIcon(":/image/curseforge.svg"), tr("Curseforge ID")));
-    model_->setHorizontalHeaderItem(CurseforgeFileIdColumn, new QStandardItem(QIcon(":/image/curseforge.svg"), tr("Curseforge File ID")));
-    model_->setHorizontalHeaderItem(ModrinthIdColumn, new QStandardItem(QIcon(":/image/modrinth.svg"), tr("Modrinth ID")));
-    model_->setHorizontalHeaderItem(ModrinthFileIdColumn, new QStandardItem(QIcon(":/image/modrinth.svg"), tr("Modrinth File ID")));
-    model_->setHorizontalHeaderItem(DescriptionColumn, new QStandardItem(tr("Description")));
+    for(auto &&[column, item] : LocalModItem::headerItems())
+        model_->setHorizontalHeaderItem(column, item);
     auto list = Config().getLocalModsHeaderSections();
     auto &&header = ui->modTreeView->header();
     if(!list.isEmpty()){
@@ -256,14 +253,14 @@ void LocalModBrowser::updateModList()
         model_->appendRow(items);
         items.first()->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
         auto enableBox = new QCheckBox(this);
-        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(EnableColumn)), enableBox);
+        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(LocalModItem::EnableColumn)), enableBox);
         connect(enableBox, &QCheckBox::toggled, mod, &LocalMod::setEnabled);
         auto starButton = new QToolButton(this);
         starButton->setAutoRaise(true);
-        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(StarColumn)), starButton);
+        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(LocalModItem::StarColumn)), starButton);
         auto tagsWidget = new TagsWidget(this);
         tagsWidget->setMod(mod);
-        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(TagsColumn)), tagsWidget);
+        ui->modTreeView->setIndexWidget(model_->indexFromItem(items.at(LocalModItem::TagsColumn)), tagsWidget);
         connect(starButton, &QToolButton::clicked, this, [=]{
             auto checked = starButton->icon().name() != "starred-symbolic";
             mod->setFeatured(checked);
@@ -286,10 +283,10 @@ void LocalModBrowser::updateModList()
         if(auto mod = modPath_->optiFineMod()){
             addMod(mod);
         }
-    model_->sort(NameColumn);
-    ui->modIconListView->setModelColumn(NameColumn);
-    ui->modTreeView->hideColumn(ModColumn);
-    for(auto &&column : { EnableColumn, StarColumn })
+    model_->sort(LocalModItem::NameColumn);
+    ui->modIconListView->setModelColumn(LocalModItem::NameColumn);
+    ui->modTreeView->hideColumn(LocalModItem::ModColumn);
+    for(auto &&column : { LocalModItem::EnableColumn, LocalModItem::StarColumn })
         ui->modTreeView->setColumnWidth(column, 0);
     filter_->refreshTags();
     filterList();
@@ -463,7 +460,8 @@ void LocalModBrowser::updateProgressBar()
 QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
 {
     auto menu = new QMenu(this);
-    if(mods.count() == 1){
+    bool isSingleMod = mods.count() == 1;
+    if(isSingleMod){
         //single mod
         auto mod = mods.first();
         auto localModMenu = new LocalModMenu(this, mod);
@@ -483,14 +481,20 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
             });
             menu->addSeparator();
         }
+        menu->addAction(ui->actionOpen_Mod_Dialog);
+        if(mod->curseforgeMod())
+            menu->addAction(ui->actionOpen_Curseforge_Mod_Dialog);
+        if(mod->modrinthMod())
+            menu->addAction(ui->actionOpen_Modrinth_Mod_Dialog);
+        menu->addSeparator();
     }
     //multi mods
     //batch rename
-    menu->addAction(ui->actionRename_Selected_Mods);
-    menu->addAction(ui->actionRename_to);
-    menu->addSeparator();
     menu->addAction(ui->actionToggle_Enable);
     menu->addAction(ui->actionToggle_Star);
+    menu->addSeparator();
+    menu->addAction(ui->actionRename_Selected_Mods);
+    menu->addAction(ui->actionRename_to);
     return menu;
 }
 
@@ -543,12 +547,7 @@ QWidget *LocalModBrowser::fileListWidget() const
 
 QList<QAction *> LocalModBrowser::modActions() const
 {
-    return {
-        ui->actionToggle_Enable,
-                ui->actionToggle_Star,
-                ui->actionRename_Selected_Mods,
-                ui->actionRename_to
-    };
+    return modMemu_->actions();
 }
 
 LocalModPath *LocalModBrowser::modPath() const
@@ -558,7 +557,7 @@ LocalModPath *LocalModBrowser::modPath() const
 
 void LocalModBrowser::onItemSelected(const QModelIndex &index)
 {
-    auto item = model_->itemFromIndex(index.siblingAtColumn(ModColumn));
+    auto item = model_->itemFromIndex(index.siblingAtColumn(LocalModItem::ModColumn));
     auto mod = item->data().value<LocalMod*>();
     infoWidget_->setMod(mod);
     fileListWidget_->setMod(mod);
@@ -566,7 +565,7 @@ void LocalModBrowser::onItemSelected(const QModelIndex &index)
 
 void LocalModBrowser::onItemDoubleClicked(const QModelIndex &index)
 {
-    auto item = model_->itemFromIndex(index.siblingAtColumn(ModColumn));
+    auto item = model_->itemFromIndex(index.siblingAtColumn(LocalModItem::ModColumn));
     auto mod = item->data().value<LocalMod*>();
     auto dialog = new LocalModDialog(this, mod);
     dialog->show();
@@ -596,8 +595,8 @@ void LocalModBrowser::on_modTreeView_customContextMenuRequested(const QPoint &po
 void LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested(const QPoint &pos)
 {
     auto menu = new QMenu(this);
-    for(int column = ModColumn + 1; column < model_->columnCount(); column++){
-        if(column == NameColumn) continue;
+    for(int column = LocalModItem::ModColumn + 1; column < model_->columnCount(); column++){
+        if(column == LocalModItem::NameColumn) continue;
         auto item = model_->horizontalHeaderItem(column);
         auto action = menu->addAction(item->icon(), item->text());
         action->setCheckable(true);
@@ -728,3 +727,35 @@ void LocalModBrowser::onSelectedModsChanged()
 
     updateStatusText();
 }
+
+void LocalModBrowser::on_actionOpen_Curseforge_Mod_Dialog_triggered()
+{
+    if(selectedMods_.count() == 1){
+        auto mod = selectedMods_.first();
+        if(mod->curseforgeMod()){
+            auto dialog = new CurseforgeModDialog(this, mod->curseforgeMod(), mod);
+            dialog->show();
+        }
+    }
+}
+
+void LocalModBrowser::on_actionOpen_Modrinth_Mod_Dialog_triggered()
+{
+    if(selectedMods_.count() == 1){
+        auto mod = selectedMods_.first();
+        if(mod->modrinthMod()){
+            auto dialog = new ModrinthModDialog(this, mod->modrinthMod(), mod);
+            dialog->show();
+        }
+    }
+}
+
+void LocalModBrowser::on_actionOpen_Mod_Dialog_triggered()
+{
+    if(selectedMods_.count() == 1){
+        auto mod = selectedMods_.first();
+        auto dialog = new LocalModDialog(this, mod);
+        dialog->show();
+    }
+}
+

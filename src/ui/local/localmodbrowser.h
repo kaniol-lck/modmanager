@@ -26,7 +26,6 @@ class LocalModBrowser : public Browser
 {
     Q_OBJECT
 public:
-    enum { ModColumn, NameColumn, IdColumn, VersionColumn, EnableColumn, StarColumn, TagsColumn, FileDateColumn, FileSizeColumn, FileNameColumn, CurseforgeIdColumn, CurseforgeFileIdColumn, ModrinthIdColumn, ModrinthFileIdColumn, DescriptionColumn };
     explicit LocalModBrowser(QWidget *parent, LocalModPath *modPath);
     ~LocalModBrowser();
 
@@ -93,11 +92,16 @@ private slots:
     void on_actionRename_Selected_Mods_triggered();
     void updateSelectedMods();
     void onSelectedModsChanged();
+    void on_actionOpen_Curseforge_Mod_Dialog_triggered();
+    void on_actionOpen_Modrinth_Mod_Dialog_triggered();
+    void on_actionOpen_Mod_Dialog_triggered();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
     Ui::LocalModBrowser *ui;
     QStandardItemModel *model_;
+    QMenu *modMemu_;
     LocalModInfoWidget *infoWidget_;
     LocalFileListWidget *fileListWidget_;
     QStatusBar *statusBar_;
