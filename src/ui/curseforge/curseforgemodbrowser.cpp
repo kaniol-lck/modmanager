@@ -49,6 +49,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent) :
     connect(this, &CurseforgeModBrowser::downloadPathChanged, fileListWidget_, &CurseforgeFileListWidget::setDownloadPath);
     connect(ui->modListView, &QListView::entered, this, &CurseforgeModBrowser::onItemSelected);
     connect(ui->modListView, &QListView::clicked, this, &CurseforgeModBrowser::onItemSelected);
+    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &CurseforgeModBrowser::updateIndexWidget);
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;

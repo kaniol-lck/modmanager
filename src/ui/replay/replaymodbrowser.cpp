@@ -36,6 +36,7 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
     connect(ui->loaderSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
     connect(ui->searchText, &QLineEdit::textChanged, this, &ReplayModBrowser::filterList);
+    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &ReplayModBrowser::updateIndexWidget);
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;

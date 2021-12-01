@@ -284,9 +284,6 @@
    <property name="text">
     <string>&amp;Reload/Refresh</string>
    </property>
-   <property name="shortcut">
-    <string>F5</string>
-   </property>
   </action>
   <action name="actionShow_Mod_Date_Time">
    <property name="checkable">

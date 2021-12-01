@@ -34,6 +34,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     connect(ui->showPreview, &QCheckBox::stateChanged, this, &OptifineModBrowser::filterList);
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &OptifineModBrowser::filterList);
     connect(ui->searchText, &QLineEdit::textChanged, this, &OptifineModBrowser::filterList);
+    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &OptifineModBrowser::updateIndexWidget);
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;

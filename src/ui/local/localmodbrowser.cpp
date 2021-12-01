@@ -196,6 +196,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modIconListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
+    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &LocalModBrowser::updateIndexWidget);
 
     connect(ui->stackedWidget, &QStackedWidget::currentChanged, this, &LocalModBrowser::updateSelectedMods);
     connect(ui->modListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &LocalModBrowser::updateSelectedMods);
@@ -441,6 +442,10 @@ void LocalModBrowser::filterList()
 void LocalModBrowser::updateStatusText()
 {
     auto str = tr("%1 mods in total. ").arg(modPath_->modCount());
+    if(auto count = selectedMods_.count(); count == 1)
+        str.prepend(tr("Selected: %1. ").arg(selectedMods_.first()->commonInfo()->name()));
+    else if(count)
+        str.prepend(tr("%1 mods selected. ").arg(count));
     if(hiddenCount_){
         if(hiddenCount_ < modPath_->modCount() / 2)
             str.append(tr("(%1 mods are hidden)").arg(hiddenCount_));
@@ -720,4 +725,6 @@ void LocalModBrowser::onSelectedModsChanged()
     for(auto &&mod : selectedMods_)
         if(mod->isFeatured()) isStarred = true;
     ui->actionToggle_Star->setChecked(isStarred);
+
+    updateStatusText();
 }

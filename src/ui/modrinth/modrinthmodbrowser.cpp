@@ -48,6 +48,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     connect(ui->modListView, &QListView::entered, this, &ModrinthModBrowser::onItemSelected);
     connect(ui->modListView, &QListView::clicked, this, &ModrinthModBrowser::onItemSelected);
     connect(this, &ModrinthModBrowser::downloadPathChanged, fileListWidget_, &ModrinthFileListWidget::setDownloadPath);
+    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &ModrinthModBrowser::updateIndexWidget);
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;
