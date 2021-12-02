@@ -36,6 +36,11 @@ public:
         ignores_ << fileInfo.id();
     }
 
+    Updatable &operator<<(const FileInfoT &fileInfo){
+        updateFileInfos_ << fileInfo;
+        return *this;
+    }
+
     void clearIgnores(){
         ignores_.clear();
     }

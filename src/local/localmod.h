@@ -186,6 +186,7 @@ inline void LocalMod::ignoreUpdate(const FileInfoT &fileInfo)
 {
     updater<FileInfoT>().addIgnore(fileInfo);
     emit updateReady(updateTypes());
+    emit modCacheUpdated();
 }
 
 template<>
