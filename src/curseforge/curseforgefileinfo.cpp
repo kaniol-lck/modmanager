@@ -101,3 +101,8 @@ const QDateTime &CurseforgeFileInfo::fileDate() const
 {
     return fileDate_;
 }
+
+bool CurseforgeFileInfo::operator==(const CurseforgeFileInfo &info) const
+{
+    return id_ == info.id_;
+}

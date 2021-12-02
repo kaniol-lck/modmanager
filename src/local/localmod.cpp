@@ -208,15 +208,15 @@ ModWebsiteType LocalMod::defaultUpdateType() const
 
 QList<ModWebsiteType> LocalMod::updateTypes() const
 {
-    bool bl1(curseforgeUpdate_.updateFileInfo());
-    bool bl2(modrinthUpdate_.updateFileInfo());
+    bool bl1(curseforgeUpdate_.hasUpdate());
+    bool bl2(modrinthUpdate_.hasUpdate());
 
     if(bl1 && !bl2)
         return { ModWebsiteType::Curseforge };
     else if(!bl1 && bl2)
         return { ModWebsiteType::Modrinth };
     else if(bl1 && bl2){
-        if(curseforgeUpdate_.fileDate() > modrinthUpdate_.fileDate())
+        if(curseforgeUpdate_.updateFileInfos().first().fileDate() > modrinthUpdate_.updateFileInfos().first().fileDate())
             return { ModWebsiteType::Curseforge, ModWebsiteType::Modrinth };
         else
             return { ModWebsiteType::Modrinth, ModWebsiteType::Curseforge};
@@ -226,95 +226,42 @@ QList<ModWebsiteType> LocalMod::updateTypes() const
 
 QPair<QString, QString> LocalMod::updateNames(ModWebsiteType type) const
 {
-    if(type == Curseforge)
-        return curseforgeUpdate_.updateNames();
-    else if(type == Modrinth)
-        return modrinthUpdate_.updateNames();
-    else
+//    if(type == Curseforge)
+//        return curseforgeUpdate_.updateNames();
+//    else if(type == Modrinth)
+//        return modrinthUpdate_.updateNames();
+//    else
         return QPair("", "");
 }
 
 QPair<QString, QString> LocalMod::updateInfos(ModWebsiteType type) const
 {
-    if(type == Curseforge)
-        return curseforgeUpdate_.updateInfos();
-    else if(type == Modrinth)
-        return modrinthUpdate_.updateInfos();
-    else
-        return QPair("", "");
+//    if(type == Curseforge)
+//        return curseforgeUpdate_.updateInfos();
+//    else if(type == Modrinth)
+//        return modrinthUpdate_.updateInfos();
+//    else
+    return QPair("", "");
 }
 
-QAria2Downloader *LocalMod::update(ModWebsiteType type)
+QAria2Downloader *LocalMod::update()
 {
-    if(type == None) return nullptr;
-    emit updateStarted();
-
-    auto path = QFileInfo(modFile_->path()).absolutePath();
-    auto callback1 = [=](const auto &newInfo){
-        auto newPath = QDir(path).absoluteFilePath(newInfo.fileName());
-
-        auto file = new LocalModFile(this, newPath);
-        file->loadInfo();
-        //loader type mismatch
-        if(!file->loaderTypes().contains(modFile_->loaderType())){
-            emit updateFinished(false);
-            return false;
-        }
-
-        //deal with old mod file
-        auto postUpdate = Config().getPostUpdate();
-        if(postUpdate == Config::Delete){
-            //remove old file
-            if(!modFile_->remove())
-                return false;
-            modFile_->deleteLater();
-        } else if(postUpdate == Config::Keep){
-            if(!modFile_->addOld())
-                return false;
-            oldFiles_ << modFile_;
-        }
-
-        //TODO: if version updated from curseforge also in modrinth, etc...
-        if(type == Curseforge)
-            modrinthUpdate_.reset(true);
-        if(type == Modrinth)
-            curseforgeUpdate_.reset(true);
-
-        setModFile(file);
-        emit modFileUpdated();
-
-        return true;
-    };
-    auto callback2 = [=]{
-        emit modCacheUpdated();
-        emit updateFinished(true);
-    };
-
-    QAria2Downloader *downloader;
-
-    if(type == ModWebsiteType::Curseforge){
-        if(curseforgeUpdate_.updateFileInfo())
-            downloader = curseforgeUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback1, callback2);
-        else
-            downloader = curseforgeUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback1, callback2);
+    switch (defaultUpdateType()) {
+    case ModWebsiteType::None:
+        return nullptr;
+    case ModWebsiteType::Curseforge:
+        return update(curseforgeUpdate_.updateFileInfos().first());
+    case ModWebsiteType::Modrinth:
+        return update(modrinthUpdate_.updateFileInfos().first());
     }
-    else /*if(type == ModWebsiteType::Modrinth)*/{
-        if(modrinthUpdate_.updateFileInfo())
-            downloader = modrinthUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback1, callback2);
-        else
-            downloader = modrinthUpdate_.update(path, modFile_->commonInfo()->iconBytes(), callback1, callback2);
-    }
-
-    connect(downloader, &AbstractDownloader::downloadProgress, this, &LocalMod::updateProgress);
-    return downloader;
 }
 
 qint64 LocalMod::updateSize(ModWebsiteType type) const
 {
-    if(type == Curseforge)
-        return curseforgeUpdate_.size();
-    if(type == Modrinth)
-        return modrinthUpdate_.size();
+//    if(type == Curseforge)
+//        return curseforgeUpdate_.size();
+//    if(type == Modrinth)
+//        return modrinthUpdate_.size();
 
     return 0;
 }
@@ -410,16 +357,6 @@ bool LocalMod::setEnabled(bool enabled)
         updateIcon();
     }
     return bl;
-}
-
-void LocalMod::ignoreUpdate(ModWebsiteType type)
-{
-    if(type == Curseforge)
-        curseforgeUpdate_.addIgnore();
-    else if(type == Modrinth)
-        modrinthUpdate_.addIgnore();
-    emit modCacheUpdated();
-    emit updateReady(updateTypes());
 }
 
 void LocalMod::clearIgnores()

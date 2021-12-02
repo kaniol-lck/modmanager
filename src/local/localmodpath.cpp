@@ -519,42 +519,42 @@ void LocalModPath::cancelChecking()
     emit checkCancelled();
 }
 
-void LocalModPath::updateMods(QList<QPair<LocalMod *, ModWebsiteType> > modUpdateList)
+void LocalModPath::updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curseforgeUpdateList,
+                              QList<QPair<LocalMod *, ModrinthFileInfo> > modrinthUpdateList)
 {
-    if(modUpdateList.isEmpty()) return;
+    auto size = curseforgeUpdateList.size() + modrinthUpdateList.size();
+    if(!size) return;
     emit updatesStarted();
     auto count = std::make_shared<int>(0);
     auto successCount = std::make_shared<int>(0);
     auto failCount = std::make_shared<int>(0);
-    auto bytesReceivedList = std::make_shared<QVector<qint64>>(modUpdateList.size());
+    auto bytesReceivedList = std::make_shared<QVector<qint64>>(size);
     auto totalSize = std::make_shared<qint64>(0);
 
-    for(int i = 0; i < modUpdateList.size(); i++){
-        auto mod = modUpdateList.at(i).first;
-        auto updateSource = modUpdateList.at(i).second;
-
-        auto downloader = mod->update(updateSource);
-
-//        connect(downloader, &AbstractDownloader::statusChanged, this, [=](auto status){
-//            if(status == Downloader::Queue)
-//                *totalSize += downloader->fileInfo().size();
-//        });
-        connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64){
-            (*bytesReceivedList)[i] = bytesReceived;
-            auto sumReceived = std::accumulate(bytesReceivedList->cbegin(), bytesReceivedList->cend(), 0);
-            emit updatesProgress(sumReceived, *totalSize);
-        });
-        connect(mod, &LocalMod::updateFinished, this, [=](bool success){
-            (*count)++;
-            if(success)
-                (*successCount)++;
-            else
-                (*failCount)++;
-            emit updatesDoneCountUpdated(*count, modUpdateList.size());
-            if(*count == modUpdateList.size())
-                emit updatesDone(*successCount, *failCount);
-        });
-    }
+    int i = 0;
+    auto updateList = [=, &i](auto &&list){
+        for(auto &&[mod, info] : list){
+            auto downloader = mod->update(info);
+            connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64){
+                (*bytesReceivedList)[i] = bytesReceived;
+                auto sumReceived = std::accumulate(bytesReceivedList->cbegin(), bytesReceivedList->cend(), 0);
+                emit updatesProgress(sumReceived, *totalSize);
+            });
+            connect(mod, &LocalMod::updateFinished, this, [=](bool success){
+                (*count)++;
+                if(success)
+                    (*successCount)++;
+                else
+                    (*failCount)++;
+                emit updatesDoneCountUpdated(*count, size);
+                if(*count == size)
+                    emit updatesDone(*successCount, *failCount);
+            });
+            i++;
+        }
+    };
+    updateList(curseforgeUpdateList);
+    updateList(modrinthUpdateList);
 }
 
 QAria2Downloader *LocalModPath::downloadNewMod(DownloadFileInfo &info)

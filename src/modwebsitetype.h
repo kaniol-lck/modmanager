@@ -5,7 +5,7 @@
 #include <QList>
 #include <QIcon>
 
-enum ModWebsiteType{
+enum class ModWebsiteType{
     None,
     Curseforge,
     Modrinth

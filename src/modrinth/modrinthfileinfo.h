@@ -33,6 +33,8 @@ public:
     bool isFeatured() const;
     bool isPrimary() const;
 
+    bool operator==(const ModrinthFileInfo &info) const;
+
 private:
     IdType id_;
     QString modId_;

@@ -37,7 +37,7 @@ public:
     void searchOnWebsites();
     void checkModUpdates(bool force = true);
     void cancelChecking();
-    void updateMods(QList<QPair<LocalMod *, ModWebsiteType> > modUpdateList);
+    void updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curseforgeUpdateList, QList<QPair<LocalMod *, ModrinthFileInfo> > modrinthUpdateList);
 
     //download new mod
     QAria2Downloader *downloadNewMod(DownloadFileInfo &info);

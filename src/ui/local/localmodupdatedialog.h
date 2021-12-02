@@ -26,7 +26,6 @@ private slots:
 private:
     Ui::LocalModUpdateDialog *ui;
     LocalModPath *modPath_;
-    QList<LocalMod*> modList_;
     QStandardItemModel model_;
 };
 

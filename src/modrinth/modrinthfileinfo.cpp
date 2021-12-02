@@ -114,3 +114,8 @@ bool ModrinthFileInfo::isPrimary() const
 {
     return isPrimary_;
 }
+
+bool ModrinthFileInfo::operator==(const ModrinthFileInfo &info) const
+{
+    return id_ == info.id_;
+}

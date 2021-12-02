@@ -17,56 +17,34 @@ class Updatable
 public:
     Updatable() = default;
 
-    qint64 size() const
-    {
-        return updateFileInfo_->size();
-    }
-
-    QDateTime fileDate() const
-    {
-        return updateFileInfo_->fileDate();
-    }
-
     std::optional<FileInfoT> currentFileInfo() const
     {
         return currentFileInfo_;
     }
 
-    std::optional<FileInfoT> updateFileInfo() const
+    const QList<FileInfoT> &updateFileInfos() const
     {
-        return updateFileInfo_;
+        return updateFileInfos_;
     }
 
-    QPair<QString, QString> updateNames() const
-    {
-        return QPair(currentFileInfo_? currentFileInfo_->displayName() : "",
-                     updateFileInfo_? updateFileInfo_->displayName() : "");
-    }
-
-    QPair<QString, QString> updateInfos() const
-    {
-        auto getInfo = [=](const auto &info){
-            if(!info) return QString();
-            return QStringList{
-                        info->displayName(),
-                        info->fileName(),
-                        info->fileDate().toString()
-            }.join("\n");
-        };
-        return QPair(getInfo(currentFileInfo_), getInfo(updateFileInfo_));
-    }
-
-    void addIgnore(){
-        if(!updateFileInfo_) return;
-        auto id = updateFileInfo_->id();
-        updateFileInfo_.reset();
-        ignores_ << id;
-    }
+//    QPair<QString, QString> updateInfos() const
+//    {
+//        auto getInfo = [=](const auto &info){
+//            if(!info) return QString();
+//            return QStringList{
+//                        info->displayName(),
+//                        info->fileName(),
+//                        info->fileDate().toString()
+//            }.join("\n");
+//        };
+//        return QPair(getInfo(currentFileInfo_), getInfo(updateFileInfos_));
+//    }
 
     void addIgnore(const typename FileInfoT::IdType &id){
+        std::remove_if(updateFileInfos_.begin(), updateFileInfos_.end(), [=](const auto &fileInfo){
+            return fileInfo.id() == id;
+        });
         ignores_ << id;
-        if(updateFileInfo_)
-            updateFileInfo_.reset();
     }
 
     void clearIgnores(){
@@ -74,7 +52,7 @@ public:
     }
 
     void reset(bool clearCurrent = false){
-        updateFileInfo_.reset();
+        updateFileInfos_.clear();
         if(clearCurrent)
             currentFileInfo_.reset();
     }
@@ -82,12 +60,13 @@ public:
     bool findUpdate(const QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
     {
         //select mod file for matched game versions and mod loader type
-        QList<FileInfoT> list;
-        std::insert_iterator<QList<FileInfoT>> iter(list, list.begin());
+        updateFileInfos_.clear();
+        std::insert_iterator<QList<FileInfoT>> iter(updateFileInfos_, updateFileInfos_.begin());
         std::copy_if(fileList.cbegin(), fileList.cend(), iter, [=](const auto &file){
             Config config;
             if(ignores_.contains(file.id()))
                 return false;
+            //check release type
             bool releaseTypeCheck = false;
             if(file.releaseType() == FileInfoT::Release)
                 releaseTypeCheck = true;
@@ -95,6 +74,8 @@ public:
                 releaseTypeCheck = true;
             if(config.getUseAlphaUpdate() && file.releaseType() == FileInfoT::Beta)
                 releaseTypeCheck = true;
+            if(!releaseTypeCheck) return false;
+            //check version
             bool versionCheck = false;
             for(auto &&version : file.gameVersions()){
                 switch (config.getVersionMatch()) {
@@ -108,44 +89,45 @@ public:
                     break;
                 }
             }
+            if(!versionCheck) return false;
+            //check loader type
             bool loaderCheck = false;
             if(file.loaderTypes().contains(targetType))
                 loaderCheck = true;
             if(!loaderCheck && config.getLoaderMatch() == Config::IncludeUnmarked && file.loaderTypes().isEmpty())
                 loaderCheck = true;
-
-            return releaseTypeCheck && versionCheck && loaderCheck;
+            if(!loaderCheck) return false;
+            //not older or same version
+            if(file.fileDate() <= currentFileInfo_->fileDate()) return false;
+            if(file.id() == currentFileInfo_->id()) return false;
+            //all pass
+            return true;
         });
 
         //non match
-        if(list.isEmpty()) return false;
+        if(updateFileInfos_.isEmpty()) return false;
 
-        //find latesest file
-        auto resultIter = std::max_element(list.cbegin(), list.cend(), [=](const auto &file1, const auto &file2){
-            return file1.fileDate() < file2.fileDate();
+        //sort in filedate
+        std::sort(updateFileInfos_.begin(), updateFileInfos_.end(), [=](const auto &file1, const auto &file2){
+            return file1.fileDate() > file2.fileDate();
         });
 
-        //not older or same version
-        if(resultIter->fileDate() <= currentFileInfo_->fileDate())
-            return false;
-
-        if(resultIter->id() == currentFileInfo_->id())
-            return false;
-
-        updateFileInfo_.emplace(*resultIter);
+        //all pass
         return true;
     }
 
-    QAria2Downloader *update(const QString &path, const QByteArray &iconBytes, std::function<bool (FileInfoT)> callback1, std::function<void ()> callback2)
+    QAria2Downloader *update(const QString &path, const QByteArray &iconBytes, const FileInfoT &fileInfo , std::function<bool ()> callback1, std::function<void ()> callback2)
     {
-        DownloadFileInfo info(*updateFileInfo_);
+        DownloadFileInfo info(fileInfo);
         info.setPath(path);
         info.setIconBytes(iconBytes);
         auto downloader = DownloadManager::manager()->download(info);
         QObject::connect(downloader, &QAria2Downloader::finished, [=]{
-            if(callback1(*updateFileInfo_)){
-                currentFileInfo_.emplace(*updateFileInfo_);
-                updateFileInfo_.reset();
+            if(callback1()){
+                currentFileInfo_ = fileInfo;
+                if(auto index = updateFileInfos_.indexOf(fileInfo); index >= 0)
+                    while(index != updateFileInfos_.size())
+                        updateFileInfos_.removeAt(index);
                 callback2();
             }
         });
@@ -162,27 +144,20 @@ public:
         currentFileInfo_ = newCurrentFileInfo;
     }
 
-    void setUpdateFileInfo(std::optional<FileInfoT> newUpdateFileInfo)
-    {
-        updateFileInfo_ = newUpdateFileInfo;
-    }
-
-    void setUpdateFileInfo(FileInfoT newUpdateFileInfo)
-    {
-        updateFileInfo_ = newUpdateFileInfo;
-    }
-
     const QList<typename FileInfoT::IdType> &ignores() const
     {
         return ignores_;
     }
 
+    bool hasUpdate() const
+    {
+        return !updateFileInfos_.isEmpty();
+    }
+
 private:
     std::optional<FileInfoT> currentFileInfo_;
-    std::optional<FileInfoT> updateFileInfo_;
+    QList<FileInfoT> updateFileInfos_;
     QList<typename FileInfoT::IdType> ignores_;
 };
-
-
 
 #endif // UPDATABLE_HPP

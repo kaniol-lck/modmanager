@@ -33,6 +33,8 @@ public:
     int releaseType() const;
     const QDateTime &fileDate() const;
 
+    bool operator==(const CurseforgeFileInfo &info) const;
+
 private:
     IdType id_;
     QString displayName_;
