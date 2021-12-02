@@ -5,6 +5,10 @@
 
 #include "util/tutil.hpp"
 
+ModrinthFileInfo::ModrinthFileInfo(IdType id) :
+    id_(id)
+{}
+
 ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
 {
     ModrinthFileInfo fileInfo;

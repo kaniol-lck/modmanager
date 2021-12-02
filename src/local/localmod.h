@@ -52,15 +52,12 @@ public:
 
     ModWebsiteType defaultUpdateType() const;
     QList<ModWebsiteType> updateTypes() const;
-    QPair<QString, QString> updateNames(ModWebsiteType type) const;
-    QPair<QString, QString> updateInfos(ModWebsiteType type) const;
     QAria2Downloader *update();
     template<typename FileInfoT>
     QAria2Downloader *update(const FileInfoT &fileInfo);
 
-    qint64 updateSize(ModWebsiteType type) const;
     template<typename FileInfoT>
-    inline Updatable<FileInfoT> &updatable();
+    inline Updatable<FileInfoT> &updater();
 
     //api
     CurseforgeAPI *curseforgeAPI() const;
@@ -82,7 +79,8 @@ public:
     bool isDisabled();
     bool isEnabled();
 
-    void ignoreUpdate(ModWebsiteType type);
+    template<typename FileInfoT>
+    void ignoreUpdate(const FileInfoT &fileInfo);
     void clearIgnores();
 
     void addDepend(std::tuple<QString, QString, std::optional<FabricModInfo>> modDepend);
@@ -183,13 +181,20 @@ private:
     void updateIcon();
 };
 
+template<typename FileInfoT>
+inline void LocalMod::ignoreUpdate(const FileInfoT &fileInfo)
+{
+    updater<FileInfoT>().addIgnore(fileInfo);
+    emit updateReady(updateTypes());
+}
+
 template<>
-inline Updatable<CurseforgeFileInfo> &LocalMod::updatable(){
+inline Updatable<CurseforgeFileInfo> &LocalMod::updater(){
     return curseforgeUpdate_;
 }
 
 template<>
-inline Updatable<ModrinthFileInfo> &LocalMod::updatable(){
+inline Updatable<ModrinthFileInfo> &LocalMod::updater(){
     return modrinthUpdate_;
 }
 
@@ -200,8 +205,8 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
 
     auto path = QFileInfo(modFile_->path()).absolutePath();
     auto newPath = QDir(path).absoluteFilePath(fileInfo.fileName());
+    auto file = new LocalModFile(this, newPath);
     auto callback1 = [=]{
-        auto file = new LocalModFile(this, newPath);
         file->loadInfo();
         //loader type mismatch
         if(!file->loaderTypes().contains(modFile_->loaderType())){
@@ -240,7 +245,7 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
 
     QAria2Downloader *downloader;
 
-    downloader = Updatable<FileInfoT>().update(path, modFile_->commonInfo()->iconBytes(), fileInfo, callback1, callback2);
+    downloader = updater<FileInfoT>().update(path, modFile_->commonInfo()->iconBytes(), fileInfo, callback1, callback2);
     connect(downloader, &AbstractDownloader::downloadProgress, this, &LocalMod::updateProgress);
     return downloader;
 }

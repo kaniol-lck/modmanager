@@ -13,6 +13,7 @@ class ModrinthFileInfo
 public:
     using IdType = QString;
     ModrinthFileInfo() = default;
+    explicit ModrinthFileInfo(IdType id);
 
     static ModrinthFileInfo fromVariant(const QVariant &variant);
     QJsonObject toJsonObject() const;

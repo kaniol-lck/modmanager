@@ -13,6 +13,7 @@ class CurseforgeFileInfo
 public:
     using IdType = int;
     CurseforgeFileInfo() = default;
+    explicit CurseforgeFileInfo(IdType id);
 
     static CurseforgeFileInfo fromVariant(const QVariant &variant);
     QJsonObject toJsonObject() const;

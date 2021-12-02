@@ -6,6 +6,10 @@
 
 #include "util/tutil.hpp"
 
+CurseforgeFileInfo::CurseforgeFileInfo(IdType id) :
+    id_(id)
+{}
+
 CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
 {
     CurseforgeFileInfo fileInfo;

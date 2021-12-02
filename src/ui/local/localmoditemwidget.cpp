@@ -196,26 +196,28 @@ void LocalModItemWidget::updateReady(QList<ModWebsiteType> types)
     for(auto &&fileInfo : mod_->curseforgeUpdate().updateFileInfos()){
         auto name = fileInfo.displayName();
         auto action = menu->addAction(QIcon(":/image/curseforge.svg"), name);
-        action->setToolTip(mod_->updateInfos(ModWebsiteType::Curseforge).second);
         connect(action, &QAction::triggered, this, [=]{
             mod_->update(fileInfo);
         });
         connect(ignoreMenu->addAction(QIcon(":/image/curseforge.svg"), name), &QAction::triggered, this, [=]{
-            //                    mod_->ignoreUpdate(type);
+            mod_->ignoreUpdate(fileInfo);
         });
     }
-    for(auto &&fileInfo : mod_->curseforgeUpdate().updateFileInfos()){
+    for(auto &&fileInfo : mod_->modrinthUpdate().updateFileInfos()){
         auto name = fileInfo.displayName();
         auto action = menu->addAction(QIcon(":/image/modrinth.svg"), name);
-        action->setToolTip(mod_->updateInfos(ModWebsiteType::Modrinth).second);
         connect(action, &QAction::triggered, this, [=]{
             mod_->update(fileInfo);
         });
         connect(ignoreMenu->addAction(QIcon(":/image/modrinth.svg"), name), &QAction::triggered, this, [=]{
-            //                    mod_->ignoreUpdate(type);
+            mod_->ignoreUpdate(fileInfo);
         });
     }
     menu->addSeparator();
+    if(!mod_->curseforgeUpdate().ignores().isEmpty() || !mod_->modrinthUpdate().ignores().isEmpty())
+        menu->addAction(tr("Clear Update Ignores"), this, [=]{
+            mod_->clearIgnores();
+        });
     menu->addMenu(ignoreMenu);
     ui->updateButton->setMenu(menu);
 }

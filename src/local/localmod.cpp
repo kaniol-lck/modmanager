@@ -224,26 +224,6 @@ QList<ModWebsiteType> LocalMod::updateTypes() const
         return {};
 }
 
-QPair<QString, QString> LocalMod::updateNames(ModWebsiteType type) const
-{
-//    if(type == Curseforge)
-//        return curseforgeUpdate_.updateNames();
-//    else if(type == Modrinth)
-//        return modrinthUpdate_.updateNames();
-//    else
-        return QPair("", "");
-}
-
-QPair<QString, QString> LocalMod::updateInfos(ModWebsiteType type) const
-{
-//    if(type == Curseforge)
-//        return curseforgeUpdate_.updateInfos();
-//    else if(type == Modrinth)
-//        return modrinthUpdate_.updateInfos();
-//    else
-    return QPair("", "");
-}
-
 QAria2Downloader *LocalMod::update()
 {
     switch (defaultUpdateType()) {
@@ -254,16 +234,6 @@ QAria2Downloader *LocalMod::update()
     case ModWebsiteType::Modrinth:
         return update(modrinthUpdate_.updateFileInfos().first());
     }
-}
-
-qint64 LocalMod::updateSize(ModWebsiteType type) const
-{
-//    if(type == Curseforge)
-//        return curseforgeUpdate_.size();
-//    if(type == Modrinth)
-//        return modrinthUpdate_.size();
-
-    return 0;
 }
 
 CurseforgeAPI *LocalMod::curseforgeAPI() const
@@ -364,6 +334,7 @@ void LocalMod::clearIgnores()
     curseforgeUpdate_.clearIgnores();
     modrinthUpdate_.clearIgnores();
     emit modCacheUpdated();
+    emit updateReady(updateTypes());
     checkUpdates();
 }
 

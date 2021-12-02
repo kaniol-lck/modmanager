@@ -27,24 +27,13 @@ public:
         return updateFileInfos_;
     }
 
-//    QPair<QString, QString> updateInfos() const
-//    {
-//        auto getInfo = [=](const auto &info){
-//            if(!info) return QString();
-//            return QStringList{
-//                        info->displayName(),
-//                        info->fileName(),
-//                        info->fileDate().toString()
-//            }.join("\n");
-//        };
-//        return QPair(getInfo(currentFileInfo_), getInfo(updateFileInfos_));
-//    }
-
     void addIgnore(const typename FileInfoT::IdType &id){
-        std::remove_if(updateFileInfos_.begin(), updateFileInfos_.end(), [=](const auto &fileInfo){
-            return fileInfo.id() == id;
-        });
-        ignores_ << id;
+        addIgnore(FileInfoT(id));
+    }
+
+    void addIgnore(const FileInfoT& fileInfo){
+        updateFileInfos_.removeAll(fileInfo);
+        ignores_ << fileInfo.id();
     }
 
     void clearIgnores(){
@@ -124,7 +113,7 @@ public:
         auto downloader = DownloadManager::manager()->download(info);
         QObject::connect(downloader, &QAria2Downloader::finished, [=]{
             if(callback1()){
-                currentFileInfo_ = fileInfo;
+                setCurrentFileInfo(fileInfo);
                 if(auto index = updateFileInfos_.indexOf(fileInfo); index >= 0)
                     while(index != updateFileInfos_.size())
                         updateFileInfos_.removeAt(index);
@@ -141,7 +130,7 @@ public:
 
     void setCurrentFileInfo(FileInfoT newCurrentFileInfo)
     {
-        currentFileInfo_ = newCurrentFileInfo;
+        currentFileInfo_.emplace(newCurrentFileInfo);
     }
 
     const QList<typename FileInfoT::IdType> &ignores() const
