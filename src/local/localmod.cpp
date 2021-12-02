@@ -10,6 +10,7 @@
 #include "local/localmodpath.h"
 #include "local/idmapper.h"
 #include "local/knownfile.h"
+#include "local/localfilelinker.h"
 #include "curseforge/curseforgeapi.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthapi.h"
@@ -66,90 +67,14 @@ void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
 
 void LocalMod::searchOnWebsite()
 {
-    auto count = std::make_shared<int>(2);
-    auto hasWeb = std::make_shared<bool>(false);
-    auto foo = [=](bool bl){
-        if(bl) *hasWeb = true;
-        if(--(*count) == 0) emit websiteReady(*hasWeb);
-    };
-    emit checkWebsiteStarted();
-    connect(this, &LocalMod::searchOnCurseforgeFinished, this, foo);
-    searchOnCurseforge();
-    connect(this, &LocalMod::searchOnModrinthFinished, this, foo);
-    searchOnModrinth();
-}
-
-void LocalMod::searchOnCurseforge()
-{
-    emit checkCurseforgeStarted();
-    //id cache
-    if(!curseforgeMod_ && IdMapper::idMap().contains(commonInfo()->id()))
-        if(auto id = IdMapper::get(commonInfo()->id()).curseforgeId())
-            setCurseforgeId(id, false);
-    auto &&murmurhash = modFile_->murmurhash();
-    //file cache
-    if(!curseforgeUpdate_.currentFileInfo() && KnownFile::curseforgeFiles().keys().contains(murmurhash))
-        setCurrentCurseforgeFileInfo(KnownFile::curseforgeFiles().value(murmurhash), false);
-    //do i need web search?
-    if(curseforgeMod_ && curseforgeUpdate_.currentFileInfo())
-        emit searchOnCurseforgeFinished(true);
-    else if(KnownFile::unmatchedCurseforgeFiles().contains(murmurhash)){
-        emit searchOnCurseforgeFinished(false);
-    } else{
-        auto conn = curseforgeAPI_->getIdByFingerprint(murmurhash, [=](int id, auto fileInfo, const auto &fileList){
-            IdMapper::addCurseforge(commonInfo()->id(), id);
-            KnownFile::addCurseforge(murmurhash, fileInfo);
-            CurseforgeModInfo modInfo(id);
-            modInfo.setLatestFiles(fileList);
-            curseforgeMod_ = new CurseforgeMod(this, modInfo);
-            setCurrentCurseforgeFileInfo(fileInfo);
-            emit modCacheUpdated();
-            emit curseforgeReady(true);
-            emit searchOnCurseforgeFinished(true);
-        }, [=]{
-            KnownFile::addUnmatchedCurseforge(murmurhash);
-            emit searchOnCurseforgeFinished(false);
-        });
-        connect(this, &QObject::destroyed, this, [=]{
-            disconnect(conn);
-        });
-    }
-}
-
-void LocalMod::searchOnModrinth()
-{
-    emit checkModrinthStarted();
-    //id cache
-    if(!modrinthMod_ && IdMapper::idMap().contains(commonInfo()->id()))
-        if(auto id = IdMapper::get(commonInfo()->id()).modrinthId(); !id.isEmpty())
-            setModrinthId(id, false);
-    auto &&sha1 = modFile_->sha1();
-    //file cache
-    if(!modrinthUpdate_.currentFileInfo() && KnownFile::modrinthFiles().keys().contains(sha1))
-        setCurrentModrinthFileInfo(KnownFile::modrinthFiles().value(sha1), false);
-    //do i need web search?
-    if(modrinthMod_ && modrinthUpdate_.currentFileInfo())
-        emit searchOnModrinthFinished(true);
-    else if(KnownFile::unmatchedModrinthFiles().contains(sha1)){
-        emit searchOnModrinthFinished(false);
-    } else{
-        auto conn = modrinthAPI_->getVersionFileBySha1(sha1, [=](const auto &fileInfo){
-            IdMapper::addModrinth(commonInfo()->id(), fileInfo.modId());
-            KnownFile::addModrinth(sha1, fileInfo);
-            ModrinthModInfo modInfo(fileInfo.modId());
-            modrinthMod_ = new ModrinthMod(this, modInfo);
-            setCurrentModrinthFileInfo(fileInfo);
-            emit modCacheUpdated();
-            emit modrinthReady(true);
-            emit searchOnModrinthFinished(true);
-        }, [=]{
-            KnownFile::addUnmatchedModrinth(sha1);
-            emit searchOnModrinthFinished(false);
-        });
-        connect(this, &QObject::destroyed, this, [=]{
-            disconnect(conn);
-        });
-    }
+    auto linker = new LocalFileLinker(modFile_);
+    connect(linker, &LocalFileLinker::linkFinished, this, &LocalMod::websiteReady);
+    connect(linker, &LocalFileLinker::linkFinished, this, &LocalMod::modFileUpdated);
+    connect(linker, &LocalFileLinker::linkCurseforgeFinished, this, &LocalMod::curseforgeReady);
+    connect(linker, &LocalFileLinker::curseforgeFileChanged, this, [=](const auto &file){ curseforgeUpdate_.setCurrentFileInfo(file); });
+    connect(linker, &LocalFileLinker::linkModrinthFinished, this, &LocalMod::modrinthReady);
+    connect(linker, &LocalFileLinker::modrinthFileChanged, this, [=](const auto &file){ modrinthUpdate_.setCurrentFileInfo(file); });
+    linker->link();
 }
 
 void LocalMod::checkUpdates(bool force)
@@ -643,10 +568,6 @@ QJsonObject LocalMod::toJsonObject() const
     if(curseforgeMod_){
         QJsonObject curseforgeObject;
         curseforgeObject.insert("id", curseforgeMod_->modInfo().id());
-        if(curseforgeUpdate_.currentFileInfo())
-            curseforgeObject.insert("currentFileInfo", curseforgeUpdate_.currentFileInfo()->toJsonObject());
-        if(curseforgeUpdate_.updateFileInfo())
-            curseforgeObject.insert("updateFileInfo", curseforgeUpdate_.updateFileInfo()->toJsonObject());
         if(!curseforgeUpdate_.ignores().isEmpty()){
             QJsonArray ignoreArray;
             for(auto &&fileId : curseforgeUpdate_.ignores())
@@ -659,10 +580,6 @@ QJsonObject LocalMod::toJsonObject() const
     if(modrinthMod_){
         QJsonObject modrinthObject;
         modrinthObject.insert("id", modrinthMod_->modInfo().id());
-        if(modrinthUpdate_.currentFileInfo())
-            modrinthObject.insert("currentFileInfo", modrinthUpdate_.currentFileInfo()->toJsonObject());
-        if(modrinthUpdate_.updateFileInfo())
-            modrinthObject.insert("updateFileInfo", modrinthUpdate_.updateFileInfo()->toJsonObject());
         if(!modrinthUpdate_.ignores().isEmpty()){
             QJsonArray ignoreArray;
             for(auto &&fileId : modrinthUpdate_.ignores())
@@ -684,10 +601,6 @@ void LocalMod::restore(const QVariant &variant)
     if(contains(variant, "curseforge")){
         if(contains(value(variant, "curseforge"), "id"))
             setCurseforgeId(value(variant, "curseforge", "id").toInt());
-        if(contains(value(variant, "curseforge"), "currentFileInfo"))
-            setCurrentCurseforgeFileInfo(CurseforgeFileInfo::fromVariant(value(variant, "curseforge", "currentFileInfo")));
-        if(contains(value(variant, "curseforge"), "updateFileInfo"))
-            curseforgeUpdate_.setUpdateFileInfo(CurseforgeFileInfo::fromVariant(value(variant, "curseforge", "updateFileInfo")));
         if(contains(value(variant, "curseforge"), "ignores"))
             for(auto &&id : value(variant, "curseforge", "ignores").toList())
                 curseforgeUpdate_.addIgnore(id.toInt());
@@ -695,10 +608,6 @@ void LocalMod::restore(const QVariant &variant)
     if(contains(variant, "modrinth")){
         if(contains(value(variant, "modrinth"), "id"))
             setModrinthId(value(variant, "modrinth", "id").toString());
-        if(contains(value(variant, "modrinth"), "currentFileInfo"))
-            setCurrentModrinthFileInfo(ModrinthFileInfo::fromVariant(value(variant, "modrinth", "currentFileInfo")));
-        if(contains(value(variant, "modrinth"), "updateFileInfo"))
-            modrinthUpdate_.setUpdateFileInfo(ModrinthFileInfo::fromVariant(value(variant, "modrinth", "updateFileInfo")));
         if(contains(value(variant, "modrinth"), "ignores"))
             for(auto &&id : value(variant, "modrinth", "ignores").toList())
                 modrinthUpdate_.addIgnore(id.toString());

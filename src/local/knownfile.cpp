@@ -109,11 +109,10 @@ void KnownFile::readFromFile()
     modrinthFiles_.clear();
     auto &&modrinthMap = value(result, "modrinth").toMap();
     for(auto it = modrinthMap.cbegin(); it != modrinthMap.cend(); it++){
-        auto &&file = ModrinthFileInfo::fromVariant(it.value().toString());
+        auto &&file = ModrinthFileInfo::fromVariant(it.value());
         if(modrinthFiles_.contains(it.key()) || file.id().isEmpty()) continue;
         modrinthFiles_[it.key()] = file;
     }
-    curseforgeFiles_.clear();
     unmatchedCurseforgeFiles_ = value(result, "unmatchedCurseforge").toStringList();
     unmatchedModrinthFiles_ = value(result, "unmatchedModrinth").toStringList();
 }

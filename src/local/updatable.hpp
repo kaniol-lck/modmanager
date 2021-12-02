@@ -152,14 +152,24 @@ public:
         return downloader;
     }
 
+    void setCurrentFileInfo(std::optional<FileInfoT> newCurrentFileInfo)
+    {
+        currentFileInfo_ = newCurrentFileInfo;
+    }
+
     void setCurrentFileInfo(FileInfoT newCurrentFileInfo)
     {
-        currentFileInfo_.emplace(newCurrentFileInfo);
+        currentFileInfo_ = newCurrentFileInfo;
+    }
+
+    void setUpdateFileInfo(std::optional<FileInfoT> newUpdateFileInfo)
+    {
+        updateFileInfo_ = newUpdateFileInfo;
     }
 
     void setUpdateFileInfo(FileInfoT newUpdateFileInfo)
     {
-        updateFileInfo_.emplace(newUpdateFileInfo);
+        updateFileInfo_ = newUpdateFileInfo;
     }
 
     const QList<typename FileInfoT::IdType> &ignores() const

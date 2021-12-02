@@ -28,6 +28,7 @@ SOURCES += \
     src/local/forgemodinfo.cpp \
     src/local/idmapper.cpp \
     src/local/knownfile.cpp \
+    src/local/localfilelinker.cpp \
     src/local/localmod.cpp \
     src/local/localmodfile.cpp \
     src/local/localmoditem.cpp \
@@ -124,6 +125,7 @@ HEADERS += \
     src/local/forgemodinfo.h \
     src/local/idmapper.h \
     src/local/knownfile.h \
+    src/local/localfilelinker.h \
     src/local/localmod.h \
     src/local/localmodfile.h \
     src/local/localmoditem.h \
