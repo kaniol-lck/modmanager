@@ -6,6 +6,7 @@
 #include <iterator>
 #include <algorithm>
 #include <tuple>
+#include <functional>
 
 #include "local/localmodpath.h"
 #include "local/idmapper.h"
@@ -69,11 +70,14 @@ void LocalMod::searchOnWebsite()
 {
     auto linker = new LocalFileLinker(modFile_);
     connect(linker, &LocalFileLinker::linkFinished, this, &LocalMod::websiteReady);
-    connect(linker, &LocalFileLinker::linkFinished, this, &LocalMod::modFileUpdated);
     connect(linker, &LocalFileLinker::linkCurseforgeFinished, this, &LocalMod::curseforgeReady);
-    connect(linker, &LocalFileLinker::curseforgeFileChanged, this, [=](const auto &file){ curseforgeUpdate_.setCurrentFileInfo(file); });
+    connect(linker, &LocalFileLinker::curseforgeFileChanged, this, [=](const auto &info){
+        setCurrentCurseforgeFileInfo(info, false);
+    });
     connect(linker, &LocalFileLinker::linkModrinthFinished, this, &LocalMod::modrinthReady);
-    connect(linker, &LocalFileLinker::modrinthFileChanged, this, [=](const auto &file){ modrinthUpdate_.setCurrentFileInfo(file); });
+    connect(linker, &LocalFileLinker::modrinthFileChanged, this, [=](const auto &info){
+        setCurrentModrinthFileInfo(info, false);
+    });
     linker->link();
 }
 
@@ -480,22 +484,22 @@ const Updatable<ModrinthFileInfo> &LocalMod::modrinthUpdate() const
     return modrinthUpdate_;
 }
 
-void LocalMod::setCurrentCurseforgeFileInfo(const CurseforgeFileInfo &info, bool cache)
+void LocalMod::setCurrentCurseforgeFileInfo(const std::optional<CurseforgeFileInfo> &info, bool cache)
 {
-    if(info.id() == 0) return;
+    if(info->id() == 0) return;
     curseforgeUpdate_.setCurrentFileInfo(info);
-    emit modCacheUpdated();
-    if(cache)
-        KnownFile::addCurseforge(modFile_->murmurhash(), info);
+    emit modFileUpdated();
+    if(cache && info)
+        KnownFile::addCurseforge(modFile_->murmurhash(), *info);
 }
 
-void LocalMod::setCurrentModrinthFileInfo(const ModrinthFileInfo &info, bool cache)
+void LocalMod::setCurrentModrinthFileInfo(const std::optional<ModrinthFileInfo> &info, bool cache)
 {
-    if(info.id().isEmpty()) return;
+    if(info->id().isEmpty()) return;
     modrinthUpdate_.setCurrentFileInfo(info);
-    emit modCacheUpdated();
-    if(cache)
-        KnownFile::addModrinth(modFile_->sha1(), info);
+    emit modFileUpdated();
+    if(cache && info)
+        KnownFile::addModrinth(modFile_->sha1(), *info);
 }
 
 const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &LocalMod::depends() const

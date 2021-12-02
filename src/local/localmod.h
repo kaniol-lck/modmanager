@@ -86,8 +86,8 @@ public:
 
     const Updatable<CurseforgeFileInfo> &curseforgeUpdate() const;
     const Updatable<ModrinthFileInfo> &modrinthUpdate() const;
-    void setCurrentCurseforgeFileInfo(const CurseforgeFileInfo &info, bool cache = true);
-    void setCurrentModrinthFileInfo(const ModrinthFileInfo &info, bool cache = true);
+    void setCurrentCurseforgeFileInfo(const std::optional<CurseforgeFileInfo> &info, bool cache = true);
+    void setCurrentModrinthFileInfo(const std::optional<ModrinthFileInfo> &info, bool cache = true);
     const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &depends() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &conflicts() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &breaks() const;
