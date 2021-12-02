@@ -96,8 +96,9 @@ private slots:
     void on_actionOpen_Curseforge_Mod_Dialog_triggered();
     void on_actionOpen_Modrinth_Mod_Dialog_triggered();
     void on_actionOpen_Mod_Dialog_triggered();
-
     void on_actionSearch_on_Curseforge_triggered();
+
+    void on_actionSearch_on_Modrinth_triggered();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

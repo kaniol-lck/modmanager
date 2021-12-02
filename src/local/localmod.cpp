@@ -56,6 +56,12 @@ CurseforgeMod *LocalMod::curseforgeMod() const
 void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
 {
     curseforgeMod_ = newCurseforgeMod;
+    if(curseforgeMod_){
+        curseforgeMod_->setParent(this);
+        emit curseforgeReady(true);
+        emit modCacheUpdated();
+        emit modFileUpdated();
+    }
 }
 
 void LocalMod::searchOnWebsite()
@@ -834,4 +840,15 @@ void LocalMod::updateIcon()
 ModrinthMod *LocalMod::modrinthMod() const
 {
     return modrinthMod_;
+}
+
+void LocalMod::setModrinthMod(ModrinthMod *newModrinthMod)
+{
+    modrinthMod_ = newModrinthMod;
+    if(modrinthMod_){
+        modrinthMod_->setParent(this);
+        emit modrinthReady(true);
+        emit modCacheUpdated();
+        emit modFileUpdated();
+    }
 }

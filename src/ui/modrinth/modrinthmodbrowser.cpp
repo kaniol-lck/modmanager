@@ -20,14 +20,16 @@
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
 #include "util/unclosedmenu.h"
+#include "local/localmod.h"
 
-ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
+ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ExploreBrowser(parent, QIcon(":/image/modrinth.svg"), "Modrinth", QUrl("https://modrinth.com/mods")),
     ui(new Ui::ModrinthModBrowser),
     model_(new QStandardItemModel(this)),
     infoWidget_(new ModrinthModInfoWidget(this)),
     fileListWidget_(new ModrinthFileListWidget(this)),
-    api_(new ModrinthAPI(this))
+    api_(new ModrinthAPI(this)),
+    localMod_(localMod)
 {
     infoWidget_->hide();
     fileListWidget_->hide();
@@ -36,8 +38,10 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    ui->loaderSelect->blockSignals(true);
     for(const auto &type : ModLoaderType::modrinth)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
+    ui->loaderSelect->blockSignals(false);
 
     updateVersionList();
     updateCategoryList();
@@ -47,12 +51,14 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent) :
     connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModrinthModBrowser::updateLocalPathList);
-    connect(ui->modListView, &QListView::entered, this, &ModrinthModBrowser::onItemSelected);
-    connect(ui->modListView, &QListView::clicked, this, &ModrinthModBrowser::onItemSelected);
+    connect(ui->modListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ModrinthModBrowser::onItemSelected);
     connect(this, &ModrinthModBrowser::downloadPathChanged, fileListWidget_, &ModrinthFileListWidget::setDownloadPath);
     connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &ModrinthModBrowser::updateIndexWidget);
 
-    if(Config().getSearchModsOnStartup()){
+    if(localMod_){
+        currentName_ = localMod_->commonInfo()->id();
+        ui->searchText->setText(currentName_);
+    } else if(Config().getSearchModsOnStartup()){
         inited_ = true;
         getModList(currentName_);
     }
@@ -471,13 +477,20 @@ void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     emit downloadPathChanged(downloadPath_);
 }
 
-void ModrinthModBrowser::onItemSelected(const QModelIndex &index)
+void ModrinthModBrowser::onItemSelected()
 {
+    auto indexes = ui->modListView->selectionModel()->selectedRows();
+    if(indexes.isEmpty()) return;
+    auto index = indexes.first();
     auto item = model_->itemFromIndex(index);
     auto mod = item->data().value<ModrinthMod*>();
     if(mod){
         infoWidget_->setMod(mod);
         fileListWidget_->setMod(mod);
+        if(mod != selectedMod_){
+            selectedMod_ = mod;
+            emit selectedModsChanged(mod);
+        }
     }
 }
 
@@ -510,4 +523,9 @@ void ModrinthModBrowser::paintEvent(QPaintEvent *event)
     }
     updateIndexWidget();
     QWidget::paintEvent(event);
+}
+
+ModrinthMod *ModrinthModBrowser::selectedMod() const
+{
+    return selectedMod_;
 }

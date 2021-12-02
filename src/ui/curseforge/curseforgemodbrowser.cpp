@@ -39,8 +39,10 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    ui->loaderSelect->blockSignals(true);
     for(const auto &type : ModLoaderType::curseforge)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
+    ui->loaderSelect->blockSignals(false);
 
     updateVersionList();
     updateCategoryList();
@@ -51,16 +53,13 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &CurseforgeModBrowser::updateLocalPathList);
     connect(this, &CurseforgeModBrowser::downloadPathChanged, fileListWidget_, &CurseforgeFileListWidget::setDownloadPath);
-    connect(ui->modListView, &QListView::entered, this, &CurseforgeModBrowser::onItemSelected);
-    connect(ui->modListView, &QListView::clicked, this, &CurseforgeModBrowser::onItemSelected);
+    connect(ui->modListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &CurseforgeModBrowser::onItemSelected);
     connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &CurseforgeModBrowser::updateIndexWidget);
 
     if(localMod_){
         currentName_ = localMod_->commonInfo()->id();
         ui->searchText->setText(currentName_);
-    }
-
-    if(Config().getSearchModsOnStartup()){
+    } else if(Config().getSearchModsOnStartup()){
         inited_ = true;
         getModList(currentName_);
     }
@@ -375,13 +374,20 @@ void CurseforgeModBrowser::on_openFolderButton_clicked()
     openFileInFolder(path);
 }
 
-void CurseforgeModBrowser::onItemSelected(const QModelIndex &index)
+void CurseforgeModBrowser::onItemSelected()
 {
+    auto indexes = ui->modListView->selectionModel()->selectedRows();
+    if(indexes.isEmpty()) return;
+    auto index = indexes.first();
     auto item = model_->itemFromIndex(index);
     auto mod = item->data().value<CurseforgeMod*>();
     if(mod){
         infoWidget_->setMod(mod);
         fileListWidget_->setMod(mod);
+        if(mod != selectedMod_){
+            selectedMod_ = mod;
+            emit selectedModsChanged(mod);
+        }
     }
 }
 
@@ -415,6 +421,12 @@ void CurseforgeModBrowser::paintEvent(QPaintEvent *event)
     }
     updateIndexWidget();
     QWidget::paintEvent(event);
+}
+
+CurseforgeMod *CurseforgeModBrowser::selectedMod() const
+{
+    qDebug() << selectedMod_;
+    return selectedMod_;
 }
 
 void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)

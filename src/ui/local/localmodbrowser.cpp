@@ -34,6 +34,7 @@
 #include "ui/curseforge/curseforgemoddialog.h"
 #include "ui/curseforge/curseforgemodbrowser.h"
 #include "ui/modrinth/modrinthmoddialog.h"
+#include "ui/modrinth/modrinthmodbrowser.h"
 #include "ui/browserdialog.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
@@ -468,6 +469,8 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
             menu->addAction(ui->actionSearch_on_Curseforge);
         if(mod->modrinthMod())
             menu->addAction(ui->actionOpen_Modrinth_Mod_Dialog);
+        else
+            menu->addAction(ui->actionSearch_on_Modrinth);
         menu->addSeparator();
     }
     //multi mods
@@ -786,14 +789,31 @@ void LocalModBrowser::on_actionOpen_Mod_Dialog_triggered()
     }
 }
 
-
 void LocalModBrowser::on_actionSearch_on_Curseforge_triggered()
 {
     if(selectedMods_.count() == 1){
         auto mod = selectedMods_.first();
         auto browser = new CurseforgeModBrowser(this, mod);
         auto dialog = new BrowserDialog(this, browser);
-        dialog->show();
+        dialog->setWindowTitle(tr("Select corresponding mod on Curseforge..."));
+        connect(dialog, &BrowserDialog::accepted, this, [=]{
+            mod->setCurseforgeMod(browser->selectedMod());
+        });
+        dialog->exec();
+    }
+}
+
+void LocalModBrowser::on_actionSearch_on_Modrinth_triggered()
+{
+    if(selectedMods_.count() == 1){
+        auto mod = selectedMods_.first();
+        auto browser = new ModrinthModBrowser(this, mod);
+        auto dialog = new BrowserDialog(this, browser);
+        dialog->setWindowTitle(tr("Select corresponding mod on Modrinth..."));
+        connect(dialog, &BrowserDialog::accepted, this, [=]{
+            mod->setModrinthMod(browser->selectedMod());
+        });
+        dialog->exec();
     }
 }
 

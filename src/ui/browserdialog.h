@@ -15,7 +15,8 @@ class BrowserDialog : public QDialog
 public:
     explicit BrowserDialog(QWidget *parent, Browser *browser);
     ~BrowserDialog();
-
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
 private:
     Ui::BrowserDialog *ui;
     Browser *browser_;

@@ -26,8 +26,11 @@ public:
 
     QWidget *infoWidget() const override;
     QWidget *fileListWidget() const override;
+    CurseforgeMod *selectedMod() const;
+
 signals:
     void downloadPathChanged(LocalModPath *path);
+    void selectedModsChanged(CurseforgeMod *selectedMod);
 
 public slots:
     void refresh() override;
@@ -45,7 +48,7 @@ private slots:
     void on_loaderSelect_currentIndexChanged(int index);
     void on_downloadPathSelect_currentIndexChanged(int index);
     void on_openFolderButton_clicked();
-    void onItemSelected(const QModelIndex &index);
+    void onItemSelected();
     void updateIndexWidget();
     void on_sortSelect_currentIndexChanged(int);
 
@@ -69,6 +72,7 @@ private:
     bool hasMore_ = false;
     bool isSearching_ = false;
     bool inited_ = false;
+    CurseforgeMod* selectedMod_ = nullptr;
 };
 
 #endif // CURSEFORGEMODBROWSER_H
