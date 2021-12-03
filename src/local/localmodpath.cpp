@@ -484,6 +484,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
                     (*checkedCount)++;
                     if(!types.isEmpty()) (*updateCount)++;
                     if(!success) (*failedCount) ++;
+                    qDebug() << "update check finish:" << mod->displayName();
                     emit updateCheckedCountUpdated(*updateCount, *checkedCount, count);
                     //done
                     if(*checkedCount == count){
@@ -504,6 +505,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
                     mod->cancelChecking();
                     disconnect(conn);
                 });
+                qDebug() << "update check start:" << mod->displayName();
                 mod->checkUpdates();
         }
     } else if(interval != Config::Never){

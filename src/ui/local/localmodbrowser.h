@@ -18,6 +18,7 @@ class QStatusBar;
 class QProgressBar;
 class LocalModInfoWidget;
 class LocalFileListWidget;
+class LocalStatusBarWidget;
 class QAbstractItemView;
 namespace Ui {
 class LocalModBrowser;
@@ -105,9 +106,10 @@ protected:
 private:
     Ui::LocalModBrowser *ui;
     QStandardItemModel *model_;
-    QMenu *modMemu_;
+    QMenu *modMenu_;
     LocalModInfoWidget *infoWidget_;
     LocalFileListWidget *fileListWidget_;
+    LocalStatusBarWidget *statusBarWidget_;
     QStatusBar *statusBar_;
     QProgressBar *progressBar_;
     QButtonGroup *viewSwitcher_;

@@ -54,6 +54,7 @@ SOURCES += \
     src/ui/local/localfilelistwidget.cpp \
     src/ui/local/localmodfileitemwidget.cpp \
     src/ui/local/localmodinfowidget.cpp \
+    src/ui/local/localstatusbarwidget.cpp \
     src/ui/modrinth/modrinthfilelistwidget.cpp \
     src/ui/modrinth/modrinthmodinfowidget.cpp \
     src/ui/pageswitcher.cpp \
@@ -152,6 +153,7 @@ HEADERS += \
     src/ui/local/localfilelistwidget.h \
     src/ui/local/localmodfileitemwidget.h \
     src/ui/local/localmodinfowidget.h \
+    src/ui/local/localstatusbarwidget.h \
     src/ui/modrinth/modrinthfilelistwidget.h \
     src/ui/modrinth/modrinthmodinfowidget.h \
     src/ui/pageswitcher.h \
@@ -209,6 +211,7 @@ HEADERS += \
     src/version.h
 
 FORMS += \
+    src/ui/local/localstatusbarwidget.ui \
     src/ui/aboutdialog.ui \
     src/ui/browserdialog.ui \
     src/ui/browsermanagerdialog.ui \

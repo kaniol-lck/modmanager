@@ -105,6 +105,9 @@ void LocalMod::checkUpdates(bool force)
         checkCurseforgeUpdate(force);
         connect(this, &LocalMod::checkCancelled, disconnecter(
                     connect(this, &LocalMod::curseforgeUpdateReady, foo)));
+        connect(this, &LocalMod::curseforgeUpdateReady, [=]{
+            qDebug() << "curseforge finish: " << displayName();
+        });
         noSource = false;
     }
     if(config.getUseModrinthUpdate() && modrinthMod_ && modrinthUpdate_.currentFileInfo()){
@@ -112,6 +115,9 @@ void LocalMod::checkUpdates(bool force)
         checkModrinthUpdate(force);
         connect(this, &LocalMod::checkCancelled, disconnecter(
                     connect(this, &LocalMod::modrinthUpdateReady, foo)));
+        connect(this, &LocalMod::curseforgeUpdateReady, [=]{
+            qDebug() << "modrinth finish: " << displayName();
+        });
         noSource = false;
     }
     if(noSource) emit updateReady({});
@@ -595,25 +601,27 @@ void LocalMod::setModFile(LocalModFile *newModFile)
 {
     if(modFile_) disconnect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
     modFile_ = newModFile;
-    if(modFile_) connect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
-    modFile_->setParent(this);
-    tagManager_.removeTags({TagCategory::EnvironmentCategory, TagCategory::SubDirCategory, TagCategory::FileNameCategory });
-    if(modFile_->loaderType() == ModLoaderType::Fabric){
-        if(auto environment = modFile_->fabric().environment(); environment == "*"){
-            addTag(Tag::clientTag());
-            addTag(Tag::serverTag());
-        }else if(environment == "client")
-            addTag(Tag::clientTag());
-        else if(environment == "server")
-            addTag(Tag::serverTag());
-    }
-    for(auto &&subDir : modFile_->subDirs())
-        addTag(Tag(subDir, TagCategory::SubDirCategory));
-    for(auto str : { R"(\[(.*?)\])", R"(\((.*?)\))", R"(【(.*?)】)" }){
-        auto i = QRegularExpression(str).globalMatch(modFile_->fileInfo().fileName());
-        while(i.hasNext()) {
-            QRegularExpressionMatch match = i.next();
-            addTag(Tag(match.captured(1), TagCategory::FileNameCategory));
+    if(modFile_) {
+        connect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
+        modFile_->setParent(this);
+        tagManager_.removeTags({TagCategory::EnvironmentCategory, TagCategory::SubDirCategory, TagCategory::FileNameCategory });
+        if(modFile_->loaderType() == ModLoaderType::Fabric){
+            if(auto environment = modFile_->fabric().environment(); environment == "*"){
+                addTag(Tag::clientTag());
+                addTag(Tag::serverTag());
+            }else if(environment == "client")
+                addTag(Tag::clientTag());
+            else if(environment == "server")
+                addTag(Tag::serverTag());
+        }
+        for(auto &&subDir : modFile_->subDirs())
+            addTag(Tag(subDir, TagCategory::SubDirCategory));
+        for(auto str : { R"(\[(.*?)\])", R"(\((.*?)\))", R"(【(.*?)】)" }){
+            auto i = QRegularExpression(str).globalMatch(modFile_->fileInfo().fileName());
+            while(i.hasNext()) {
+                QRegularExpressionMatch match = i.next();
+                addTag(Tag(match.captured(1), TagCategory::FileNameCategory));
+            }
         }
     }
     updateIcon();

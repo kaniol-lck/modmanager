@@ -244,9 +244,7 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
         emit updateFinished(true);
     };
 
-    QAria2Downloader *downloader;
-
-    downloader = updater<FileInfoT>().update(path, modFile_->commonInfo()->iconBytes(), fileInfo, callback1, callback2);
+    auto downloader = updater<FileInfoT>().update(path, modFile_->commonInfo()->iconBytes(), fileInfo, callback1, callback2);
     connect(downloader, &AbstractDownloader::downloadProgress, this, &LocalMod::updateProgress);
     return downloader;
 }

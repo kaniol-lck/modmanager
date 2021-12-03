@@ -1,4 +1,5 @@
 #include "localmodbrowser.h"
+#include "localstatusbarwidget.h"
 #include "ui_localmodbrowser.h"
 
 #include <QMenu>
@@ -41,10 +42,12 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
     ui(new Ui::LocalModBrowser),
     model_(new QStandardItemModel(this)),
-    modMemu_(new QMenu(this)),
+    modMenu_(new QMenu(this)),
     infoWidget_(new LocalModInfoWidget(this)),
     fileListWidget_(new LocalFileListWidget(this)),
+    statusBarWidget_(new LocalStatusBarWidget(this)),
     statusBar_(new QStatusBar(this)),
+    progressBar_(statusBarWidget_->progressBar()),
     viewSwitcher_(new QButtonGroup(this)),
     modPath_(modPath),
     filter_(new LocalModFilter(this, modPath_))
@@ -64,37 +67,17 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->modTreeView->setVerticalScrollBar(new SmoothScrollBar(this));
 
     //setup status bar
-    progressBar_ = new QProgressBar(statusBar_);
-    progressBar_->setVisible(false);
-    statusBar_->addPermanentWidget(progressBar_);
-    auto frame = new QFrame(this);
-    frame->setLayout(new QHBoxLayout);
-    frame->layout()->setSpacing(0);
-    frame->layout()->setMargin(0);
-    frame->setFrameShape(QFrame::StyledPanel);
-    frame->setFrameShadow(QFrame::Raised);
-    int id = 0;
-    for (auto icon : { "view-list-details", "view-list-icons", "view-list-text" }) {
-        auto button = new QToolButton(this);
-        button->setCheckable(true);
-        button->setAutoRaise(true);
-        button->setIcon(QIcon::fromTheme(icon));
-        viewSwitcher_->addButton(button, id++);
-        frame->layout()->addWidget(button);
-    }
-    statusBar_->addPermanentWidget(frame);
+    statusBar_->addPermanentWidget(statusBarWidget_);
+    connect(statusBarWidget_, &LocalStatusBarWidget::viewModeChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
     ui->mainLayout->addWidget(statusBar_);
 
     ui->actionReload_Mods->setEnabled(!modPath_->isLoading());
 
-    modMemu_->addAction(ui->actionToggle_Enable);
-    modMemu_->addAction(ui->actionToggle_Star);
-    modMemu_->addSeparator();
-    modMemu_->addAction(ui->actionRename_Selected_Mods);
-    modMemu_->addAction(ui->actionRename_to);
-
-    viewSwitcher_->button(0)->setChecked(true);
-    connect(viewSwitcher_, &QButtonGroup::idClicked, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
+    modMenu_->addAction(ui->actionToggle_Enable);
+    modMenu_->addAction(ui->actionToggle_Star);
+    modMenu_->addSeparator();
+    modMenu_->addAction(ui->actionRename_Selected_Mods);
+    modMenu_->addAction(ui->actionRename_to);
 
     auto findNewMenu = new QMenu(this);
     ui->actionFind_New_Mods->setMenu(findNewMenu);
@@ -120,20 +103,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     filter_->showAll();
 
     auto menu = new QMenu(this);
-//    connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
-//        auto pathInfo = modPath_->info();
-//        auto dialog = new LocalModPathSettingsDialog(this, pathInfo);
-//        connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo){
-//            modPath_->setInfo(newInfo);
-//            localItem_->child(index)->setText(0, newInfo.displayName());
-//        });
-//        dialog->exec();
-//    });
-//    connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
-//        if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
-//        LocalModPathManager::removePath(modPath_);
-//    });
-//    menu->addSeparator();
     menu->addAction(ui->actionReload_Mods);
     menu->addAction(ui->actionBatch_Rename);
     menu->addAction(ui->actionDelete_Old_Files_In_Path);
@@ -285,12 +254,12 @@ void LocalModBrowser::onLoadStarted()
 {
     ui->actionReload_Mods->setEnabled(false);
     onLoadProgress(0, 0);
-    statusBar_->showMessage(tr("Loading mod files..."));
+    statusBarWidget_->setText(tr("Loading mod files..."));
 }
 
 void LocalModBrowser::onLoadProgress(int loadedCount, int totalCount)
 {
-    statusBar_->showMessage(tr("Loading mod files.. (Loaded %1/%2 mod files)").arg(loadedCount).arg(totalCount));
+    statusBarWidget_->setText(tr("Loading mod files.. (Loaded %1/%2 mod files)").arg(loadedCount).arg(totalCount));
     progressBar_->setMaximum(totalCount);
     progressBar_->setValue(loadedCount);
 }
@@ -311,7 +280,7 @@ void LocalModBrowser::onCheckWebsitesStarted()
 
 void LocalModBrowser::onWebsiteCheckedCountUpdated(int checkedCount)
 {
-    statusBar_->showMessage(tr("Searching on mod websites... (Searched %1/%2 mods)").arg(checkedCount).arg(modPath_->modCount()));
+    statusBarWidget_->setText(tr("Searching on mod websites... (Searched %1/%2 mods)").arg(checkedCount).arg(modPath_->modCount()));
     progressBar_->setValue(checkedCount);
 }
 
@@ -340,7 +309,7 @@ void LocalModBrowser::onCheckCancelled()
 void LocalModBrowser::onUpdateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount)
 {
     if(!isChecking_) return;
-    statusBar_->showMessage(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(totalCount));
+    statusBarWidget_->setText(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(totalCount));
     progressBar_->setValue(checkedCount);
 }
 
@@ -386,7 +355,7 @@ void LocalModBrowser::onUpdatesProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 void LocalModBrowser::onUpdatesDoneCountUpdated(int doneCount, int totalCount)
 {
-    statusBar_->showMessage(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
+    statusBarWidget_->setText(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
 }
 
 void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
@@ -435,7 +404,9 @@ void LocalModBrowser::updateStatusText()
 
 void LocalModBrowser::updateProgressBar()
 {
-    progressBar_->setVisible(modPath_->isLoading() || modPath_->isSearching() || modPath_->isChecking());
+    bool bl = modPath_->isLoading() || modPath_->isSearching() || modPath_->isChecking();
+    progressBar_->setVisible(bl);
+    if(!bl) statusBarWidget_->setText("");
 }
 
 QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
@@ -576,7 +547,7 @@ QWidget *LocalModBrowser::fileListWidget() const
 
 QList<QAction *> LocalModBrowser::modActions() const
 {
-    return modMemu_->actions();
+    return modMenu_->actions();
 }
 
 LocalModPath *LocalModBrowser::modPath() const
