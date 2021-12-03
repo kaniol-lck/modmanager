@@ -112,6 +112,7 @@ QMetaObject::Connection ModrinthAPI::getInfo(const QString &id, std::function<vo
     return connect(reply, &QNetworkReply::finished, this,  [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
+            callback({});
             return;
         }
 

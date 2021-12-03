@@ -472,22 +472,21 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
       (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1)){
         isChecking_ = true;
         emit checkUpdatesStarted();
-        int count = 0;
-        for(auto &&map : modMaps())
-            count += map.size();
+        auto count = std::make_shared<int>(0);
         auto checkedCount = std::make_shared<int>(0);
         auto updateCount = std::make_shared<int>(0);
         auto failedCount = std::make_shared<int>(0);
         for(auto &&map : modMaps())
             for(const auto &mod : map){
+                (*count) ++;
                 auto conn = connect(mod, &LocalMod::updateReady, this, [=](QList<ModWebsiteType> types, bool success){
                     (*checkedCount)++;
                     if(!types.isEmpty()) (*updateCount)++;
                     if(!success) (*failedCount) ++;
                     qDebug() << "update check finish:" << mod->displayName();
-                    emit updateCheckedCountUpdated(*updateCount, *checkedCount, count);
+                    emit updateCheckedCountUpdated(*updateCount, *checkedCount, *count);
                     //done
-                    if(*checkedCount == count){
+                    if(*checkedCount == *count){
                         auto currentDateTime = QDateTime::currentDateTime();
                         for(auto &&path : subPaths_){
                             path->latestUpdateCheck_ = currentDateTime;
@@ -499,6 +498,7 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
                         emit updatesReady(*failedCount);
                     }
                 });
+                connect(mod, &LocalMod::updateReady, disconnecter(conn));
                 //cancel on reloading
                 connect(this, &LocalModPath::loadStarted, disconnecter(conn));
                 connect(this, &LocalModPath::checkCancelled, [=]{
