@@ -101,6 +101,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
                         afterItem->setToolTip(getToolTip(mod->curseforgeUpdate().updateFileInfos().first()));
                         connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
                             auto &fileInfo = mod->curseforgeUpdate().updateFileInfos().at(index);
+                            afterItem->setData(index);
                             afterItem->setToolTip(getToolTip(fileInfo));
                         });
                     }

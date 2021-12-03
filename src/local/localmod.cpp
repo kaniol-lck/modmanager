@@ -91,15 +91,16 @@ void LocalMod::checkUpdates(bool force)
 
     Config config;
     auto count = std::make_shared<int>(0);
+    auto doneCount = std::make_shared<int>(0);
     auto success = std::make_shared<bool>(false);
     auto foo = [=](bool hasUpdate[[maybe_unused]], bool success2){
+        qDebug() << displayName() << "done:" << ++(*doneCount) << "/" << *count;
         if(success2) *success = true;
-        if(--(*count) == 0){
+        if(*doneCount == *count){
             emit modCacheUpdated();
             emit updateReady(updateTypes(), *success);
         }
     };
-    bool noSource = true;
     if(config.getUseCurseforgeUpdate() && curseforgeMod_ && curseforgeUpdate_.currentFileInfo()){
         (*count)++;
         checkCurseforgeUpdate(force);
@@ -108,7 +109,6 @@ void LocalMod::checkUpdates(bool force)
         connect(this, &LocalMod::curseforgeUpdateReady, [=]{
             qDebug() << "curseforge finish: " << displayName();
         });
-        noSource = false;
     }
     if(config.getUseModrinthUpdate() && modrinthMod_ && modrinthUpdate_.currentFileInfo()){
         (*count)++;
@@ -118,9 +118,8 @@ void LocalMod::checkUpdates(bool force)
         connect(this, &LocalMod::curseforgeUpdateReady, [=]{
             qDebug() << "modrinth finish: " << displayName();
         });
-        noSource = false;
     }
-    if(noSource) emit updateReady({});
+    if(!*count) emit updateReady({});
 }
 
 void LocalMod::cancelChecking()
