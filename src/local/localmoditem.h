@@ -15,7 +15,7 @@ public:
     LocalModItem(LocalMod *mod = nullptr);
     bool operator<(const QStandardItem &other) const override;
 
-    static QList<QStandardItem *> itemsFromMod(LocalMod *mod);
+    static QList<QStandardItem *> itemsFromMod(LocalMod *mod, QList<QStandardItem *> list = {});
     static QList<QPair<int, QStandardItem *> > headerItems();
 private:
     LocalMod *mod_;

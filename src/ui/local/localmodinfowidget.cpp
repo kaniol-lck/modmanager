@@ -89,7 +89,7 @@ void LocalModInfoWidget::updateInfo()
         widget->deleteLater();
     }
     tagWidgets_.clear();
-    for(auto &&tag : mod_->tagManager().tags()){
+    for(auto &&tag : mod_->tags()){
         auto label = new QLabel(tag.name(), this);
         label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
         label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));

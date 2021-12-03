@@ -26,8 +26,8 @@ QMenu *LocalModMenu::addTagMenu() const
         });
     //Functionality category
     auto addFunctionalityTagmenu = menu->addMenu(QIcon::fromTheme("tag"), tr("Functionality tag"));
-    auto &&tagManager = mod_->path()->tagManager();
-    for(auto &&tag : Config().getRightClickTagMenu()? tagManager.functionalityTags() : Tag::functionalityTags().values())
+    auto &&tagManager = mod_->path()->containedTags();
+    for(auto &&tag : Config().getRightClickTagMenu()? tagManager.tags(TagCategory::FunctionalityCategory) : Tag::functionalityTags().values())
         connect(addFunctionalityTagmenu->addAction(QIcon::fromTheme("tag"), tag.name()), &QAction::triggered, this, [=]{
             mod_->addTag(tag);
         });
@@ -44,21 +44,25 @@ QMenu *LocalModMenu::addTagMenu() const
     connect(menu->addAction(QIcon::fromTheme("tag-edit"), tr("Translation tag")), &QAction::triggered, this, [=]{
         bool ok;
         QString str;
-        if(auto translationTag = mod_->tagManager().translationTag())
-            str = translationTag->name();
+        if(auto translationTag = mod_->tags(TagCategory::TranslationCategory); !translationTag.isEmpty())
+            str = translationTag.first().name();
         auto name = QInputDialog::getText(widget, tr("Translation tag"), tr("Translation:"), QLineEdit::Normal, str, &ok);
-        if(ok && !name.isEmpty())
+        if(ok && !name.isEmpty()){
+            mod_->removeTags(TagCategory::TranslationCategory);
             mod_->addTag(Tag(name, TagCategory::TranslationCategory));
+        }
     });
     //Notation category
     connect(menu->addAction(QIcon::fromTheme("tag-edit"), tr("Notation tag")), &QAction::triggered, this, [=]{
         bool ok;
         QString str;
-        if(auto notationTag = mod_->tagManager().notationTag())
-            str = notationTag->name();
+        if(auto notationTag = mod_->tags(TagCategory::NotationCategory); !notationTag.isEmpty())
+            str = notationTag.first().name();
         auto name = QInputDialog::getText(widget, tr("Notation tag"), tr("Notation:"), QLineEdit::Normal, str, &ok);
-        if(ok && !name.isEmpty())
+        if(ok && !name.isEmpty()){
+            mod_->removeTags(TagCategory::NotationCategory);
             mod_->addTag(Tag(name, TagCategory::NotationCategory));
+        }
     });
     //Custom category
     for(auto &&tag : Tag::customTags())
@@ -80,7 +84,7 @@ QMenu *LocalModMenu::removeTagmenu() const
     auto widget = qobject_cast<QWidget*>(parent());
     auto menu = new QMenu(tr("Remove tag"), widget);
     menu->setIcon(QIcon::fromTheme("tag-delete"));
-    for(auto &&tag : mod_->tagManager().tags(TagCategory::CustomizableCategories))
+    for(auto &&tag : mod_->tags(TagCategory::CustomizableCategories))
         connect(menu->addAction(QIcon::fromTheme("tag-delete"), tag.name()), &QAction::triggered, this, [=]{
             mod_->removeTag(tag);
         });

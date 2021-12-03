@@ -4,12 +4,12 @@
 #include <QObject>
 
 #include "curseforgemodinfo.h"
-#include "tag/tag.h"
+#include "tag/tagable.h"
 
 class LocalMod;
 class CurseforgeAPI;
 
-class CurseforgeMod : public QObject
+class CurseforgeMod : public QObject, public Tagable
 {
     Q_OBJECT
 public:

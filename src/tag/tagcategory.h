@@ -11,6 +11,7 @@ public:
 
     bool operator==(const TagCategory &other) const;
     bool operator!=(const TagCategory &other) const;
+    bool operator<(const TagCategory &other) const;
 
     static TagCategory fromId(const QString &id);
 
@@ -35,5 +36,8 @@ private:
     QString id_;
     QColor color_;
 };
+
+[[maybe_unused]]
+uint qHash(const TagCategory &key, uint seed = 0);
 
 #endif // TAGCATEGORY_H

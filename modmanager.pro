@@ -46,6 +46,7 @@ SOURCES += \
     src/optifine/optifinemod.cpp \
     src/optifine/optifinemodinfo.cpp \
     src/qss/stylesheets.cpp \
+    src/tag/tagable.cpp \
     src/ui/browser.cpp \
     src/ui/browserdialog.cpp \
     src/ui/curseforge/curseforgefilelistwidget.cpp \
@@ -61,7 +62,6 @@ SOURCES += \
     src/replay/replayapi.cpp \
     src/replay/replaymod.cpp \
     src/replay/replaymodinfo.cpp \
-    src/tag/localmodtags.cpp \
     src/tag/tag.cpp \
     src/tag/tagcategory.cpp \
     src/ui/aboutdialog.cpp \
@@ -145,6 +145,7 @@ HEADERS += \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \
     src/qss/stylesheets.h \
+    src/tag/tagable.h \
     src/ui/browser.h \
     src/ui/browserdialog.h \
     src/ui/curseforge/curseforgefilelistwidget.h \
@@ -160,7 +161,6 @@ HEADERS += \
     src/replay/replayapi.h \
     src/replay/replaymod.h \
     src/replay/replaymodinfo.h \
-    src/tag/localmodtags.h \
     src/tag/tag.h \
     src/tag/tagcategory.h \
     src/ui/aboutdialog.h \

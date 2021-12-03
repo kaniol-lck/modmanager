@@ -60,6 +60,11 @@ bool TagCategory::operator!=(const TagCategory &other) const
     return !operator==(other);
 }
 
+bool TagCategory::operator<(const TagCategory &other) const
+{
+    return id_ < other.id_;
+}
+
 TagCategory TagCategory::fromId(const QString &id)
 {
     for(auto category : PresetCategories)
@@ -98,4 +103,9 @@ QString TagCategory::name() const
     if(id_ == "custom")
         return QObject::tr("Custom Tag");
     return "";
+}
+
+uint qHash(const TagCategory &key, uint seed)
+{
+    return qHash(key.id(), seed);
 }

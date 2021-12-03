@@ -161,11 +161,14 @@ void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
             auto mod = item->data().value<LocalMod*>();
             auto type = mod->updateTypes().at(model_.item(row, SourceColumn)->data().toInt());
             auto fileInfoIndex = model_.item(row, AfterColumn)->data().toInt();
-            qDebug() << static_cast<int>(type) << fileInfoIndex;
-            if(type == ModWebsiteType::Curseforge)
+            if(type == ModWebsiteType::Curseforge){
                 curseforgeUpdateList << QPair{ mod, mod->curseforgeUpdate().updateFileInfos().at(fileInfoIndex) };
-            else if(type == ModWebsiteType::Modrinth)
+                qDebug() << "Curseforge" << mod->curseforgeUpdate().updateFileInfos().at(fileInfoIndex).displayName();
+            }
+            else if(type == ModWebsiteType::Modrinth){
                 modrinthUpdateList << QPair{ mod, mod->modrinthUpdate().updateFileInfos().at(fileInfoIndex) };
+                qDebug() << "Modrinth" << mod->modrinthUpdate().updateFileInfos().at(fileInfoIndex).displayName();
+            }
         }
-//    modPath_->updateMods(curseforgeUpdateList, modrinthUpdateList);
+    modPath_->updateMods(curseforgeUpdateList, modrinthUpdateList);
 }

@@ -4,11 +4,13 @@
 #include <QObject>
 #include <QFileInfo>
 
+#include "tag/tagable.h"
+
 #include "fabricmodinfo.h"
 #include "forgemodinfo.h"
 #include "modloadertype.h"
 
-class LocalModFile : public QObject
+class LocalModFile : public QObject, public Tagable
 {
     Q_OBJECT
 public:

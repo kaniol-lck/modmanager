@@ -157,7 +157,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::updatesDone, this, &LocalModBrowser::onUpdatesDone);
 
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::updateProgressBar);
-    connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
+    connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::checkWebsitesStarted, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::websiteCheckedCountUpdated, this, &LocalModBrowser::updateProgressBar);
@@ -208,6 +208,7 @@ void LocalModBrowser::reload()
 void LocalModBrowser::updateModList()
 {
     model_->clear();
+    selectedMods_.clear();
     for(auto &&[column, item] : LocalModItem::headerItems())
         model_->setHorizontalHeaderItem(column, item);
     auto list = Config().getLocalModsHeaderSections();
@@ -404,7 +405,7 @@ void LocalModBrowser::updateStatusText()
 
 void LocalModBrowser::updateProgressBar()
 {
-    bool bl = modPath_->isLoading() || modPath_->isSearching() || modPath_->isChecking();
+    bool bl = modPath_->isLoading() || modPath_->isSearching() || modPath_->isChecking() || modPath_->isUpdating();
     progressBar_->setVisible(bl);
     if(!bl) statusBarWidget_->setText("");
 }

@@ -15,21 +15,24 @@
 
 ModrinthMod::ModrinthMod(LocalMod *parent, const QString &id) :
     QObject(parent),
-    api_(parent->modrinthAPI()),
-    modInfo_(id)
-{}
+    api_(parent->modrinthAPI())
+{
+    setModInfo(ModrinthModInfo(id));
+}
 
 ModrinthMod::ModrinthMod(QObject *parent, const ModrinthModInfo &info) :
     QObject(parent),
-    api_(ModrinthAPI::api()),
-    modInfo_(info)
-{}
+    api_(ModrinthAPI::api())
+{
+    setModInfo(info);
+}
 
 ModrinthMod::ModrinthMod(LocalMod *parent, const ModrinthModInfo &info) :
     QObject(parent),
-    api_(parent->modrinthAPI()),
-    modInfo_(info)
-{}
+    api_(parent->modrinthAPI())
+{
+    setModInfo(info);
+}
 
 ModrinthMod::~ModrinthMod()
 {
@@ -39,21 +42,6 @@ ModrinthMod::~ModrinthMod()
 ModrinthModInfo ModrinthMod::modInfo() const
 {
     return modInfo_;
-}
-
-QList<Tag> ModrinthMod::tags() const
-{
-    QList<Tag> tags;
-    for(auto &&categoryId : modInfo_.categories()){
-        auto it = std::find_if(ModrinthAPI::getCategories().cbegin(), ModrinthAPI::getCategories().cend(), [=](auto &&t){
-            return std::get<1>(t) == categoryId;
-        });
-        if(it != ModrinthAPI::getCategories().end()){
-            auto [name, iconName] = *it;
-            tags << Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName);
-        }
-    }
-    return tags;
 }
 
 void ModrinthMod::acquireAuthor()
@@ -124,4 +112,18 @@ QMetaObject::Connection ModrinthMod::acquireFileList(std::function<void (QList<M
         disconnect(conn);
     });
     return conn;
+}
+
+void ModrinthMod::setModInfo(ModrinthModInfo newModInfo)
+{
+    modInfo_ = newModInfo;
+    for(auto &&categoryId : modInfo_.categories()){
+        auto it = std::find_if(ModrinthAPI::getCategories().cbegin(), ModrinthAPI::getCategories().cend(), [=](auto &&t){
+            return std::get<1>(t) == categoryId;
+        });
+        if(it != ModrinthAPI::getCategories().end()){
+            auto [name, iconName] = *it;
+            addTag(Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName));
+        }
+    }
 }

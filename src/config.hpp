@@ -29,11 +29,9 @@ class Config : private QSettings
 {
 public:
     explicit Config() :
-        QSettings(),
-        old_("modmanager.ini", QSettings::IniFormat)
+        QSettings()
     {
         setIniCodec("UTF-8");
-        old_.setIniCodec("UTF-8");
     }
 
     //General

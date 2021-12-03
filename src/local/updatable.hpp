@@ -119,9 +119,7 @@ public:
         QObject::connect(downloader, &QAria2Downloader::finished, [=]{
             if(callback1()){
                 setCurrentFileInfo(fileInfo);
-                if(auto index = updateFileInfos_.indexOf(fileInfo); index >= 0)
-                    while(index != updateFileInfos_.size())
-                        updateFileInfos_.removeAt(index);
+                updateFileInfos_.clear();
                 callback2();
             }
         });

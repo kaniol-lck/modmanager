@@ -99,3 +99,8 @@ uint qHash(const Tag &key, uint seed)
 {
     return qHash(key.name(), seed);
 }
+
+QDebug operator<<(QDebug debug, const Tag tag)
+{
+    return debug << tag.name();
+}

@@ -41,4 +41,7 @@ private:
 [[maybe_unused]]
 uint qHash(const Tag &key, uint seed = 0);
 
+[[maybe_unused]]
+QDebug operator<<(QDebug debug, const Tag tag);
+
 #endif // TAG_H

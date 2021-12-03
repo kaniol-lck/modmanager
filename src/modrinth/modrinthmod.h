@@ -4,12 +4,12 @@
 #include <QObject>
 
 #include "modrinthmodinfo.h"
-#include "tag/tag.h"
+#include "tag/tagable.h"
 
 class ModrinthAPI;
 class LocalMod;
 
-class ModrinthMod : public QObject
+class ModrinthMod : public QObject, public Tagable
 {
     Q_OBJECT
 public:
@@ -19,12 +19,13 @@ public:
     ~ModrinthMod();
 
     ModrinthModInfo modInfo() const;
-    QList<Tag> tags() const;
 
     void acquireAuthor();
     void acquireIcon();
     void acquireFullInfo();
     QMetaObject::Connection acquireFileList(std::function<void (QList<ModrinthFileInfo>)> callback = [](QList<ModrinthFileInfo>){}, std::function<void ()> failed = []{});
+
+    void setModInfo(ModrinthModInfo newModInfo);
 
 signals:
     void authorReady();

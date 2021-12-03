@@ -38,6 +38,7 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     targetVersion_(parent->info().gameVersion()),
     targetLoaderType_(parent->info().loaderType())
 {
+    addSubTagable(path_);
     setModFile(file);
     connect(parent, &LocalModPath::infoUpdated, this, [=]{
         targetVersion_ = parent->info().gameVersion();
@@ -448,11 +449,9 @@ void LocalMod::setCurseforgeId(int id, bool cache)
 void LocalMod::setModrinthId(const QString &id, bool cache)
 {
     if(!id.isEmpty()){
-        modrinthMod_ = new ModrinthMod(this, id);
-        emit modrinthReady(true);
+        setModrinthMod(new ModrinthMod(this, id));
         if(cache)
             IdMapper::addModrinth(commonInfo()->id(), id);
-        updateIcon();
     } else
         emit modrinthReady(false);
 }
@@ -478,9 +477,9 @@ QJsonObject LocalMod::toJsonObject() const
         object.insert("alias", alias_);
     if(isFeatured_)
         object.insert("featured", isFeatured_);
-    if(!tagManager_.tags(TagCategory::CustomizableCategories).isEmpty()){
+    if(!tags(TagCategory::CustomizableCategories).isEmpty()){
         QJsonArray tagArray;
-        for(auto &&tag : tagManager_.tags(TagCategory::CustomizableCategories))
+        for(auto &&tag : tags(TagCategory::CustomizableCategories))
             tagArray << tag.toJsonValue();
         object.insert("tags", tagArray);
     }
@@ -529,7 +528,7 @@ void LocalMod::restore(const QVariant &variant)
     alias_ = value(variant, "alias").toString();
     isFeatured_ = value(variant, "featured").toBool();
     for(auto &&tag : value(variant, "tags").toList())
-        tagManager_ << Tag::fromVariant(tag);
+        addTag(Tag::fromVariant(tag));
     if(contains(variant, "curseforge")){
         if(contains(value(variant, "curseforge"), "id"))
             setCurseforgeId(value(variant, "curseforge", "id").toInt());
@@ -569,43 +568,44 @@ LocalModPath *LocalMod::path() const
     return path_;
 }
 
-const QList<Tag> LocalMod::tags() const
-{
-    return tagManager_.tags();
-}
+//const QList<Tag> LocalMod::tags() const
+//{
+//    return tagManager_.tags();
+//}
 
-const QList<Tag> LocalMod::customizableTags() const
-{
-    return tagManager_.tags(TagCategory::CustomizableCategories);
-}
+//const QList<Tag> LocalMod::customizableTags() const
+//{
+//    return tagManager_.tags(TagCategory::CustomizableCategories);
+//}
 
-void LocalMod::addTag(const Tag &tag)
-{
-    tagManager_.addTag(tag);
-    emit modCacheUpdated();
-    emit modFileUpdated();
-}
+//void LocalMod::addTag(const Tag &tag)
+//{
+//    tagManager_.addTag(tag);
+//    emit modCacheUpdated();
+//    emit modFileUpdated();
+//}
 
-void LocalMod::removeTag(const Tag &tag)
-{
-    tagManager_.removeTag(tag);
-    emit modCacheUpdated();
-    emit modFileUpdated();
-}
+//void LocalMod::removeTag(const Tag &tag)
+//{
+//    tagManager_.removeTag(tag);
+//    emit modCacheUpdated();
+//    emit modFileUpdated();
+//}
 
-const LocalModTags &LocalMod::tagManager() const
-{
-    return tagManager_;
-}
+//Tagable &LocalMod::tagManager()
+//{
+//    return tagManager_;
+//}
 
 void LocalMod::setModFile(LocalModFile *newModFile)
 {
     if(modFile_) disconnect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
+    removeSubTagable(modFile_);
     modFile_ = newModFile;
+    addSubTagable(modFile_);
     if(modFile_) {
         connect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
         modFile_->setParent(this);
-        tagManager_.removeTags({TagCategory::EnvironmentCategory, TagCategory::SubDirCategory, TagCategory::FileNameCategory });
         if(modFile_->loaderType() == ModLoaderType::Fabric){
             if(auto environment = modFile_->fabric().environment(); environment == "*"){
                 addTag(Tag::clientTag());
@@ -614,15 +614,6 @@ void LocalMod::setModFile(LocalModFile *newModFile)
                 addTag(Tag::clientTag());
             else if(environment == "server")
                 addTag(Tag::serverTag());
-        }
-        for(auto &&subDir : modFile_->subDirs())
-            addTag(Tag(subDir, TagCategory::SubDirCategory));
-        for(auto str : { R"(\[(.*?)\])", R"(\((.*?)\))", R"(【(.*?)】)" }){
-            auto i = QRegularExpression(str).globalMatch(modFile_->fileInfo().fileName());
-            while(i.hasNext()) {
-                QRegularExpressionMatch match = i.next();
-                addTag(Tag(match.captured(1), TagCategory::FileNameCategory));
-            }
         }
     }
     updateIcon();
@@ -693,7 +684,9 @@ ModrinthMod *LocalMod::modrinthMod() const
 
 void LocalMod::setModrinthMod(ModrinthMod *newModrinthMod)
 {
+    removeSubTagable(modrinthMod_);
     modrinthMod_ = newModrinthMod;
+    addSubTagable(modrinthMod_);
     if(modrinthMod_){
         modrinthMod_->setParent(this);
         emit modrinthReady(true);

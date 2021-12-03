@@ -11,7 +11,7 @@ class LocalMod;
 class CurseforgeAPI;
 class ModrinthAPI;
 
-class LocalModPath : public QObject
+class LocalModPath : public QObject, public Tagable
 {
     Q_OBJECT
     static constexpr auto kFileName = "mods.json";
@@ -45,7 +45,7 @@ public:
     const LocalModPathInfo &info() const;
     void setInfo(const LocalModPathInfo &newInfo, bool deduceLoader = false);
 
-    LocalModTags tagManager();
+    Tagable containedTags();
 
     CurseforgeAPI *curseforgeAPI() const;
     ModrinthAPI *modrinthAPI() const;
@@ -60,8 +60,8 @@ public:
     bool isLoading() const;
     bool isSearching() const;
     bool isChecking() const;
-
     bool modsLoaded() const;
+    bool isUpdating() const;
 
 signals:
     void infoUpdated();
@@ -110,6 +110,7 @@ private:
     bool isLoading_ = false;
     bool isSearching_ = false;
     bool isChecking_ = false;
+    bool isUpdating_ = false;
 };
 
 #endif // LOCALMODPATH_H

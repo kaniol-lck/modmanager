@@ -14,7 +14,15 @@ LocalModFile::LocalModFile(QObject *parent, const QString &path, const QStringLi
     path_(path),
     subDirs_(subDirs),
     fileInfo_(path)
-{}
+{
+    for(auto str : { R"(\[(.*?)\])", R"(\((.*?)\))", R"(【(.*?)】)" }){
+        auto i = QRegularExpression(str).globalMatch(fileInfo().fileName());
+        while(i.hasNext()) {
+            QRegularExpressionMatch match = i.next();
+            addTag(Tag(match.captured(1), TagCategory::FileNameCategory));
+        }
+    }
+}
 
 LocalModFile::~LocalModFile()
 {

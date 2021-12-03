@@ -9,7 +9,7 @@
 #include "updatable.hpp"
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
-#include "tag/localmodtags.h"
+#include "tag/tagable.h"
 #include "modwebsitetype.h"
 
 class LocalModPath;
@@ -18,7 +18,7 @@ class ModrinthMod;
 class CurseforgeAPI;
 class ModrinthAPI;
 
-class LocalMod : public QObject
+class LocalMod : public QObject, public Tagable
 {
     Q_OBJECT
 public:
@@ -108,11 +108,11 @@ public:
 
     LocalModPath *path() const;
 
-    const QList<Tag> tags() const;
-    const QList<Tag> customizableTags() const;
-    void addTag(const Tag &tag);
-    void removeTag(const Tag &tag);
-    const LocalModTags &tagManager() const;
+//    const QList<Tag> tags() const;
+//    const QList<Tag> customizableTags() const;
+//    void addTag(const Tag &tag);
+//    void removeTag(const Tag &tag);
+//    Tagable &tagManager();
 
     void setModFile(LocalModFile *newModFile);
 
@@ -149,7 +149,7 @@ signals:
 private:
     bool isFeatured_ = false;
     QString alias_;
-    LocalModTags tagManager_;
+//    Tagable tagManager_;
     QPixmap icon_;
 
     //api for update
@@ -228,11 +228,8 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
             oldFiles_ << modFile_;
         }
 
-        //        //TODO: if version updated from curseforge also in modrinth, etc...
-        //        if(type == Curseforge)
-        //            modrinthUpdate_.reset(true);
-        //        if(type == Modrinth)
-        //            curseforgeUpdate_.reset(true);
+        modrinthUpdate_.reset(true);
+        curseforgeUpdate_.reset(true);
 
         setModFile(file);
         emit modFileUpdated();

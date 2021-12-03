@@ -34,6 +34,8 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     modrinthAPI_(path->modrinthAPI_),
     info_(path->info_)
 {
+    addSubTagable(path);
+    addTag(Tag(subDir, TagCategory::SubDirCategory));
     info_.path_.append("/").append(relative_.join("/"));
     connect(this, &LocalModPath::websitesReady, this, [=]{
         //new path not from exsiting will check update
@@ -41,6 +43,11 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
         checkModUpdates(false);
         initialUpdateChecked_ = true;
     });
+}
+
+bool LocalModPath::isUpdating() const
+{
+    return isUpdating_;
 }
 
 bool LocalModPath::modsLoaded() const
@@ -526,6 +533,7 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curs
 {
     auto size = curseforgeUpdateList.size() + modrinthUpdateList.size();
     if(!size) return;
+    isUpdating_ = true;
     emit updatesStarted();
     auto count = std::make_shared<int>(0);
     auto successCount = std::make_shared<int>(0);
@@ -549,8 +557,10 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curs
                 else
                     (*failCount)++;
                 emit updatesDoneCountUpdated(*count, size);
-                if(*count == size)
+                if(*count == size){
+                    isUpdating_ = false;
                     emit updatesDone(*successCount, *failCount);
+                }
             });
             i++;
         }
@@ -594,13 +604,13 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader)
         loadMods(deduceLoader);
 }
 
-LocalModTags LocalModPath::tagManager()
+Tagable LocalModPath::containedTags()
 {
-    LocalModTags tags;
-    for(auto &&map : modMaps())
-        for(auto &&mod : map)
-            for(auto &&tag : mod->tags())
-                tags << tag;
+    Tagable tags;
+    for(const auto &subPath : qAsConst(subPaths_))
+        tags.addSubTagable(subPath);
+    for(auto &&mod : modMap_)
+        tags.addSubTagable(mod);
     return tags;
 }
 

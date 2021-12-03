@@ -44,7 +44,7 @@ QString ModFileRenamer::newBaseFileName(LocalMod *mod)
         else
             categories << TagCategory::fromId(stringList.first());
         QString replacer = stringList.size() >= 2? stringList.at(1) : "";
-        newFileName.replace("<tags|" + match.captured(1) + ">", tagConcat(mod->tagManager().tags(categories), replacer));
+        newFileName.replace("<tags|" + match.captured(1) + ">", tagConcat(mod->tags(categories), replacer));
     }
     //filename capture-replace
     it = QRegularExpression(R"(<capture\|(.+?)>)").globalMatch(newFileName);

@@ -32,53 +32,55 @@ bool LocalModItem::operator<(const QStandardItem &other) const
     return QStandardItem::operator<(other);
 }
 
-QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod)
+QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod, QList<QStandardItem *> list)
 {
-    auto item = new LocalModItem(mod);
-    item->setData(QVariant::fromValue(mod));
-    item->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
-    auto nameItem = new LocalModItem(mod);
-    auto idItem = new LocalModItem(mod);
-    auto versionItem = new LocalModItem(mod);
-    auto enableItem= new LocalModItem(mod);
-    auto starItem = new LocalModItem(mod);
-    auto tagsItem = new LocalModItem(mod);
-    auto fileDateItem = new LocalModItem(mod);
-    auto fileSizeItem = new LocalModItem(mod);
-    auto fileNameItem = new LocalModItem(mod);
-    auto descItem = new LocalModItem(mod);
-    auto curseforgeIdItem = new LocalModItem(mod);
-    auto curseforgeFileIdItem = new LocalModItem(mod);
-    auto modrinthFileIdItem = new LocalModItem(mod);
-    auto modrinthIdItem = new LocalModItem(mod);
-    QList<QStandardItem *> list = { item, nameItem, idItem, versionItem, enableItem, starItem, tagsItem, fileDateItem, fileSizeItem, fileNameItem, curseforgeIdItem, curseforgeFileIdItem, modrinthIdItem, modrinthFileIdItem, descItem };
+    if(list.isEmpty()){
+        auto item = new LocalModItem(mod);
+        item->setData(QVariant::fromValue(mod));
+        item->setSizeHint(QSize(0, 104/*modItemWidget->height()*/));
+        auto nameItem = new LocalModItem(mod);
+        auto idItem = new LocalModItem(mod);
+        auto versionItem = new LocalModItem(mod);
+        auto enableItem= new LocalModItem(mod);
+        auto starItem = new LocalModItem(mod);
+        auto tagsItem = new LocalModItem(mod);
+        auto fileDateItem = new LocalModItem(mod);
+        auto fileSizeItem = new LocalModItem(mod);
+        auto fileNameItem = new LocalModItem(mod);
+        auto descItem = new LocalModItem(mod);
+        auto curseforgeIdItem = new LocalModItem(mod);
+        auto curseforgeFileIdItem = new LocalModItem(mod);
+        auto modrinthFileIdItem = new LocalModItem(mod);
+        auto modrinthIdItem = new LocalModItem(mod);
+        list = { item, nameItem, idItem, versionItem, enableItem, starItem, tagsItem, fileDateItem, fileSizeItem, fileNameItem, curseforgeIdItem, curseforgeFileIdItem, modrinthIdItem, modrinthFileIdItem, descItem };
+    }
     auto onModChanged = [=]{
-        nameItem->setText(clearFormat(mod->displayName()));
-        idItem->setText(mod->commonInfo()->id());
-        versionItem->setText(mod->commonInfo()->version());
-        descItem->setText(mod->commonInfo()->description());
+        list.at(NameColumn)->setText(clearFormat(mod->displayName()));
+        list.at(IdColumn)->setText(mod->commonInfo()->id());
+        list.at(VersionColumn)->setText(mod->commonInfo()->version());
+        list.at(DescriptionColumn)->setText(mod->commonInfo()->description());
         for(auto &&item : list)
             item->setForeground(mod->isDisabled()? Qt::gray : Qt::black);
         if(mod->curseforgeMod())
-            curseforgeIdItem->setText(QString::number(mod->curseforgeMod()->modInfo().id()));
+            list.at(CurseforgeIdColumn)->setText(QString::number(mod->curseforgeMod()->modInfo().id()));
         if(auto file = mod->curseforgeUpdate().currentFileInfo())
-            curseforgeFileIdItem->setText(QString::number(file->id()));
+            list.at(CurseforgeFileIdColumn)->setText(QString::number(file->id()));
         if(mod->modrinthMod())
-            modrinthIdItem->setText(mod->modrinthMod()->modInfo().id());
+            list.at(ModrinthIdColumn)->setText(mod->modrinthMod()->modInfo().id());
         if(auto file = mod->modrinthUpdate().currentFileInfo())
-            modrinthFileIdItem->setText(file->id());
-        fileDateItem->setText(mod->modFile()->fileInfo().lastModified().toString());
-        fileDateItem->setData(mod->modFile()->fileInfo().lastModified(), FileDateRole);
-        fileSizeItem->setText(sizeConvert(mod->modFile()->fileInfo().size()));
-        fileSizeItem->setData(mod->modFile()->fileInfo().size(), FileSizeRole);
-        fileNameItem->setText(mod->modFile()->fileInfo().fileName());
+            list.at(ModrinthFileIdColumn)->setText(file->id());
+        list.at(FileDateColumn)->setText(mod->modFile()->fileInfo().lastModified().toString());
+        list.at(FileDateColumn)->setData(mod->modFile()->fileInfo().lastModified(), FileDateRole);
+        list.at(FileSizeColumn)->setText(sizeConvert(mod->modFile()->fileInfo().size()));
+        list.at(FileSizeColumn)->setData(mod->modFile()->fileInfo().size(), FileSizeRole);
+        list.at(FileNameColumn)->setText(mod->modFile()->fileInfo().fileName());
         QString tagsStr;
-        for(auto &&tag : mod->tagManager().tags())
+        for(auto &&tag : mod->tags())
             tagsStr += tag.name() + " ";
-        tagsItem->setData(tagsStr, TagsRole);
+        list.at(TagsColumn)->setData(tagsStr, TagsRole);
     };
     auto onIconChanged = [=]{
-        nameItem->setIcon(mod->icon().scaled(96, 96));
+        list.at(NameColumn)->setIcon(mod->icon().scaled(96, 96));
     };
     onModChanged();
     onIconChanged();

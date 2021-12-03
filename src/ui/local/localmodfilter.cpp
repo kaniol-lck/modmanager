@@ -150,11 +150,11 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
     for(auto &&action : subDirTagMenu_->actions()){
         bool hasTag = false;
         if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tagManager().subDirTags().isEmpty()){
+        if(action->data().toBool() && mod->tags(TagCategory::SubDirCategory).isEmpty()){
             showSubDirTag = true;
             break;
         }
-        for(auto &&tag : mod->tagManager().subDirTags()){
+        for(auto &&tag : mod->tags(TagCategory::SubDirCategory)){
             if(action->text() == tag.name()){
                 hasTag = true;
                 break;
@@ -170,11 +170,11 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
     for(auto &&action : environmentTagMenu_->actions()){
         bool hasTag = false;
         if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tagManager().environmentTags().isEmpty()){
+        if(action->data().toBool() && mod->tags(TagCategory::EnvironmentCategory).isEmpty()){
             showEnvironmentTag = true;
             break;
         }
-        for(auto &&tag : mod->tagManager().environmentTags()){
+        for(auto &&tag : mod->tags(TagCategory::EnvironmentCategory)){
             if(action->text() == tag.name()){
                 hasTag = true;
                 break;
@@ -190,11 +190,11 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
     for(auto &&action : typeTagMenu_->actions()){
         bool hasTag = false;
         if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tagManager().typeTags().isEmpty()){
+        if(action->data().toBool() && mod->tags(TagCategory::TypeCategory).isEmpty()){
             showTypeTag = true;
             break;
         }
-        for(auto &&tag : mod->tagManager().typeTags()){
+        for(auto &&tag : mod->tags(TagCategory::TypeCategory)){
             if(action->text() == tag.name()){
                 hasTag = true;
                 break;
@@ -210,11 +210,11 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
     for(auto &&action : functionalityTagMenu_->actions()){
         bool hasTag = false;
         if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tagManager().functionalityTags().isEmpty()){
+        if(action->data().toBool() && mod->tags(TagCategory::FunctionalityCategory).isEmpty()){
             showFunctionalityTag = true;
             break;
         }
-        for(auto &&tag : mod->tagManager().functionalityTags()){
+        for(auto &&tag : mod->tags(TagCategory::FunctionalityCategory)){
             if(action->text() == tag.name()){
                 hasTag = true;
                 break;
@@ -230,11 +230,11 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
     for(auto &&action : customTagMenu_->actions()){
         bool hasTag = false;
         if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tagManager().customTags().isEmpty()){
+        if(action->data().toBool() && mod->tags(TagCategory::CustomCategory).isEmpty()){
             showCustomTag = true;
             break;
         }
-        for(auto &&tag : mod->tagManager().customTags()){
+        for(auto &&tag : mod->tags(TagCategory::CustomCategory)){
             if(action->text() == tag.name()){
                 hasTag = true;
                 break;
@@ -280,11 +280,11 @@ void LocalModFilter::refreshTags() const
             noneAction->setChecked(true);
         noneAction->setData(true);
     };
-    auto &&tagManager = path_->tagManager();
+    auto &&containedTags = path_->containedTags();
     //subDir tag
-    addTags(subDirTagMenu_, tagManager.subDirTags());
+    addTags(subDirTagMenu_, containedTags.tags(TagCategory::SubDirCategory));
     //functionality tag
-    addTags(functionalityTagMenu_, tagManager.functionalityTags());
+    addTags(functionalityTagMenu_, containedTags.tags(TagCategory::FunctionalityCategory));
     //custom tag
-    addTags(customTagMenu_, tagManager.customTags());
+    addTags(customTagMenu_, containedTags.tags(TagCategory::CustomCategory));
 }

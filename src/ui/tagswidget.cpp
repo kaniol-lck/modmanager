@@ -38,7 +38,7 @@ void TagsWidget::updateUi()
     }
     tagWidgets_.clear();
     if(!mod_) return;
-    for(auto &&tag : mod_->tagManager().tags(Config().getShowTagCategories())){
+    for(auto &&tag : mod_->tags(Config().getShowTagCategories())){
         auto label = new QLabel(tag.name(), this);
         label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
         label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
