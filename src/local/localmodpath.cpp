@@ -610,7 +610,8 @@ Tagable LocalModPath::containedTags()
 {
     Tagable tags;
     for(const auto &subPath : qAsConst(subPaths_))
-        tags.addSubTagable(subPath);
+        if(!subPath->modMap().isEmpty())
+            tags.addSubTagable(subPath);
     for(auto &&mod : modMap_)
         tags.addSubTagable(mod);
     return tags;
