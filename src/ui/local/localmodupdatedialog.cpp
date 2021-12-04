@@ -3,6 +3,7 @@
 
 #include "local/localmodpath.h"
 #include "local/localmod.h"
+#include "local/localfilelinker.h"
 
 #include <QComboBox>
 
@@ -61,15 +62,15 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
             nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
             if(type == ModWebsiteType::Curseforge)
-                beforeItem->setText(mod->curseforgeUpdate().currentFileInfo()->displayName());
+                beforeItem->setText(mod->modFile()->linker()->curseforgeFileInfo()->displayName());
             else if(type == ModWebsiteType::Modrinth)
-                beforeItem->setText(mod->modrinthUpdate().currentFileInfo()->displayName());
+                beforeItem->setText(mod->modFile()->linker()->modrinthFileInfo()->displayName());
             beforeItem->setForeground(Qt::darkRed);
             beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
             if(type == ModWebsiteType::Curseforge)
-                beforeItem->setToolTip(getToolTip(*mod->curseforgeUpdate().currentFileInfo()));
+                beforeItem->setToolTip(getToolTip(*mod->modFile()->linker()->curseforgeFileInfo()));
             else if(type == ModWebsiteType::Modrinth)
-                beforeItem->setToolTip(getToolTip(*mod->modrinthUpdate().currentFileInfo()));
+                beforeItem->setToolTip(getToolTip(*mod->modFile()->linker()->modrinthFileInfo()));
 
             afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
             afterItem->setForeground(Qt::darkGreen);

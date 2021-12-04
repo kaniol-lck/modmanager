@@ -109,6 +109,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
     auto watcher = new QFutureWatcher<void>(this);
     watcher->setFuture(future);
     connect(watcher, &QFutureWatcher<void>::finished, this, [=]{
+        qDebug() << "modMap clear";
         qDeleteAll(modMap_);
         modMap_.clear();
         fabricModMap_.clear();
@@ -131,7 +132,6 @@ void LocalModPath::loadMods(bool autoLoaderType)
         //restore cached info
         readFromFile();
         emit modListUpdated();
-        searchOnWebsites();
     });
 }
 
@@ -443,32 +443,6 @@ QList<std::tuple<FabricModInfo, QString, QString, FabricModInfo> > LocalModPath:
 LocalMod *LocalModPath::findLocalMod(const QString &id)
 {
     return modMap_.contains(id)? modMap_.value(id) : nullptr;
-}
-
-void LocalModPath::searchOnWebsites()
-{
-    if(modMap_.isEmpty()) return;
-    isSearching_ = true;
-    emit checkWebsitesStarted();
-    int count = 0;
-    for(auto &&map : modMaps())
-        count += map.size();
-    auto checkedCount = std::make_shared<int>(0);
-    for(auto &&map : modMaps())
-        for(const auto &mod : map){
-            auto conn = connect(mod, &LocalMod::websiteReady, this, [=] {
-                (*checkedCount)++;
-                if(!isSearching_) return;
-                emit websiteCheckedCountUpdated(*checkedCount);
-                if(*checkedCount == count){
-                    isSearching_ = false;
-                    emit websitesReady();
-                }
-            });
-            mod->searchOnWebsite();
-            //cancel on reloading
-            connect(this, &LocalModPath::loadStarted, disconnecter(conn));
-        }
 }
 
 void LocalModPath::checkModUpdates(bool force) // force = true by default

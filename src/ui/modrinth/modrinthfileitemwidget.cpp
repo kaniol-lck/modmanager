@@ -6,6 +6,7 @@
 
 #include "local/localmod.h"
 #include "local/localmodpath.h"
+#include "local/localfilelinker.h"
 #include "modrinth/modrinthmod.h"
 #include "download/downloadmanager.h"
 #include "util/funcutil.h"
@@ -139,7 +140,9 @@ void ModrinthFileItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
 void ModrinthFileItemWidget::updateLocalInfo()
 {
     auto name = fileInfo_.displayName();
-    if(localMod_ && localMod_->modrinthUpdate().currentFileInfo() && localMod_->modrinthUpdate().currentFileInfo()->id() == fileInfo_.id())
+    if(localMod_)
+        if(const auto &fileInfo = localMod_->modFile()->linker()->modrinthFileInfo();
+                fileInfo && fileInfo->id() == fileInfo_.id())
         name.prepend("<font color=\"#56a\">" + tr("[Current]") + "</font> ");
     ui->displayNameText->setText(name);
     //refresh downloaded infos
@@ -152,10 +155,12 @@ void ModrinthFileItemWidget::on_ModrinthFileItemWidget_customContextMenuRequeste
     connect(menu->addAction(tr("Copy download link")), &QAction::triggered, this, [=]{
         QApplication::clipboard()->setText(fileInfo_.url().toString());
     });
-    if(localMod_ && !(localMod_->modrinthUpdate().currentFileInfo() && localMod_->modrinthUpdate().currentFileInfo()->id() == fileInfo_.id()))
-        connect(menu->addAction(tr("Set as current")), &QAction::triggered, this, [=]{
-            localMod_->setCurrentModrinthFileInfo(fileInfo_);
-        });
+    if(localMod_)
+        if(const auto &fileInfo = localMod_->modFile()->linker()->modrinthFileInfo();
+                !fileInfo || fileInfo->id() != fileInfo_.id())
+            menu->addAction(tr("Set as current"), this, [=]{
+                localMod_->modFile()->linker()->setModrinthFileInfo(fileInfo_);
+            });
     if(!menu->isEmpty())
         menu->exec(mapToGlobal(pos));
 }

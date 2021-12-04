@@ -10,7 +10,19 @@
 LocalFileLinker::LocalFileLinker(LocalModFile *localFile) :
     QObject(localFile),
     localFile_(localFile)
-{}
+{
+    connect(this, &LocalFileLinker::linkCurseforgeFinished, this, [=]{
+        curseforgeLinked_ = true;
+    });
+    connect(this, &LocalFileLinker::linkModrinthFinished, this, [=]{
+        modrinthLinked_ = true;
+    });
+}
+
+bool LocalFileLinker::linked() const
+{
+    return curseforgeLinked_  && modrinthLinked_;
+}
 
 void LocalFileLinker::link()
 {
@@ -33,7 +45,7 @@ void LocalFileLinker::linkCurseforge()
     auto &&murmurhash = localFile_->murmurhash();
     //file cache
     if(KnownFile::curseforgeFiles().keys().contains(murmurhash)){
-        setCurseforgeFile(KnownFile::curseforgeFiles().value(murmurhash));
+        setCurseforgeFileInfo(KnownFile::curseforgeFiles().value(murmurhash));
         emit linkCurseforgeFinished(true);
         return;
     }
@@ -42,8 +54,9 @@ void LocalFileLinker::linkCurseforge()
         return;
     }
     qDebug() << "link curseforge:" << murmurhash;
+    static CurseforgeAPI api;
     connect(this, &QObject::destroyed, disconnecter(
-                CurseforgeAPI::api()->getIdByFingerprint(murmurhash, [=](int id, auto fileInfo, const QList<CurseforgeFileInfo> &fileList[[maybe_unused]]){
+                api.getIdByFingerprint(murmurhash, [=](int id, auto fileInfo, const QList<CurseforgeFileInfo> &fileList[[maybe_unused]]){
         IdMapper::addCurseforge(localFile_->commonInfo()->id(), id);
         KnownFile::addCurseforge(murmurhash, fileInfo);
         emit linkCurseforgeFinished(true);
@@ -59,7 +72,7 @@ void LocalFileLinker::linkModrinth()
     auto &&sha1 = localFile_->sha1();
     //file cache
     if(KnownFile::modrinthFiles().keys().contains(sha1)){
-        setModrinthFile(KnownFile::modrinthFiles().value(sha1));
+        setModrinthFileInfo(KnownFile::modrinthFiles().value(sha1));
         emit linkModrinthFinished(true);
         return;
     }
@@ -68,8 +81,9 @@ void LocalFileLinker::linkModrinth()
         return;
     }
     qDebug() << "link modrinth:" << sha1;
+    static ModrinthAPI api;
     connect(this, &QObject::destroyed, disconnecter(
-                ModrinthAPI::api()->getVersionFileBySha1(sha1, [=](const ModrinthFileInfo &fileInfo){
+                api.getVersionFileBySha1(sha1, [=](const ModrinthFileInfo &fileInfo){
         IdMapper::addModrinth(localFile_->commonInfo()->id(), fileInfo.modId());
         KnownFile::addModrinth(sha1, fileInfo);
         emit linkModrinthFinished(true);
@@ -79,24 +93,24 @@ void LocalFileLinker::linkModrinth()
     })));
 }
 
-std::optional<CurseforgeFileInfo> LocalFileLinker::curseforgeFile() const
+std::optional<CurseforgeFileInfo> LocalFileLinker::curseforgeFileInfo() const
 {
-    return curseforgeFile_;
+    return curseforgeFileInfo_;
 }
 
-void LocalFileLinker::setCurseforgeFile(CurseforgeFileInfo newCurseforgeFile)
+void LocalFileLinker::setCurseforgeFileInfo(CurseforgeFileInfo newCurseforgeFileInfo)
 {
-    curseforgeFile_ = newCurseforgeFile;
-    emit curseforgeFileChanged(curseforgeFile_);
+    curseforgeFileInfo_ = newCurseforgeFileInfo;
+    emit curseforgeFileInfoChanged(curseforgeFileInfo_);
 }
 
-std::optional<ModrinthFileInfo> LocalFileLinker::modrinthFile() const
+std::optional<ModrinthFileInfo> LocalFileLinker::modrinthFileInfo() const
 {
-    return modrinthFile_;
+    return modrinthFileInfo_;
 }
 
-void LocalFileLinker::setModrinthFile(ModrinthFileInfo newModrinthFile)
+void LocalFileLinker::setModrinthFileInfo(ModrinthFileInfo newModrinthFileInfo)
 {
-    modrinthFile_ = newModrinthFile;
-    emit modrinthFileChanged(modrinthFile_);
+    modrinthFileInfo_ = newModrinthFileInfo;
+    emit modrinthFileInfoChanged(modrinthFileInfo_);
 }

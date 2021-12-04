@@ -5,11 +5,14 @@
 #include <QFileInfo>
 
 #include "tag/tagable.h"
+#include "updater.hpp"
 
 #include "fabricmodinfo.h"
 #include "forgemodinfo.h"
 #include "modloadertype.h"
 
+class LocalMod;
+class LocalFileLinker;
 class LocalModFile : public QObject, public Tagable
 {
     Q_OBJECT
@@ -60,10 +63,18 @@ public:
 
     const QStringList &subDirs() const;
 
+    LocalFileLinker *linker() const;
+
+    LocalMod *mod() const;
+    void setMod(LocalMod *newMod);
+
 signals:
     void fileChanged();
 
 private:
+    LocalFileLinker *linker_;
+    LocalMod *mod_ = nullptr;
+
     //file
     QString path_;
     QStringList subDirs_;

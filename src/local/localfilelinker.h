@@ -14,14 +14,16 @@ class LocalFileLinker : public QObject
 public:
     explicit LocalFileLinker(LocalModFile *localFile);
 
+    bool linked() const;
+
     void link();
     void linkCurseforge();
     void linkModrinth();
-    std::optional<CurseforgeFileInfo> curseforgeFile() const;
-    void setCurseforgeFile(CurseforgeFileInfo newCurseforgeFile);
+    std::optional<CurseforgeFileInfo> curseforgeFileInfo() const;
+    void setCurseforgeFileInfo(CurseforgeFileInfo newCurseforgeFileInfo);
 
-    std::optional<ModrinthFileInfo> modrinthFile() const;
-    void setModrinthFile(ModrinthFileInfo newModrinthFile);
+    std::optional<ModrinthFileInfo> modrinthFileInfo() const;
+    void setModrinthFileInfo(ModrinthFileInfo newModrinthFileInfo);
 
 signals:
     void linkStarted();
@@ -30,13 +32,16 @@ signals:
     void linkCurseforgeFinished(bool success);
     void linkModrinthStarted();
     void linkModrinthFinished(bool success);
-    void curseforgeFileChanged(std::optional<CurseforgeFileInfo> curseforgeFile);
-    void modrinthFileChanged(std::optional<ModrinthFileInfo> modrinthFile);
+    void curseforgeFileInfoChanged(std::optional<CurseforgeFileInfo> curseforgeFileInfo);
+    void modrinthFileInfoChanged(std::optional<ModrinthFileInfo> modrinthFileInfo);
 
 private:
     LocalModFile *localFile_ = nullptr;
-    std::optional<CurseforgeFileInfo> curseforgeFile_;
-    std::optional<ModrinthFileInfo> modrinthFile_;
+    std::optional<CurseforgeFileInfo> curseforgeFileInfo_;
+    std::optional<ModrinthFileInfo> modrinthFileInfo_;
+
+    bool curseforgeLinked_ = false;
+    bool modrinthLinked_ = false;
 };
 
 #endif // LOCALFILELINKER_H

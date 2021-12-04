@@ -179,8 +179,11 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modIconListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
-    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &LocalModBrowser::updateListViewIndexWidget);
-    connect(ui->modTreeView->verticalScrollBar(), &QScrollBar::valueChanged, this, &LocalModBrowser::updateTreeViewIndexWidget);
+//    connect(ui->modListView->verticalScrollBar(), &QScrollBar::sliderReleased, this, &LocalModBrowser::updateListViewIndexWidget);
+//    connect(ui->modListView->verticalScrollBar(), &QScrollBar::sliderReleased, this, [=]{
+//        qDebug() << "release";
+//    });
+//    connect(ui->modTreeView->verticalScrollBar(), &QScrollBar::sliderReleased, this, &LocalModBrowser::updateTreeViewIndexWidget);
 
     auto selectionModel = ui->modListView->selectionModel();
     ui->modIconListView->setSelectionModel(selectionModel);
@@ -207,6 +210,7 @@ void LocalModBrowser::reload()
 
 void LocalModBrowser::updateModList()
 {
+    qDebug() << "model clear";
     model_->clear();
     selectedMods_.clear();
     for(auto &&[column, item] : LocalModItem::headerItems())
@@ -460,8 +464,11 @@ void LocalModBrowser::updateListViewIndexWidget()
     auto beginRow = ui->modListView->indexAt(QPoint(0, 0)).row();
     if(beginRow < 0) return;
     auto endRow = ui->modListView->indexAt(QPoint(0, ui->modListView->height())).row();
-    //extra 2
-    endRow += 2;
+    if(endRow < 0)
+        endRow = model_->rowCount() - 1;
+    else
+        //extra 2
+        endRow += 2;
     for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
         auto index = model_->index(row, 0);
         if(ui->modListView->indexWidget(index)) continue;
@@ -482,8 +489,11 @@ void LocalModBrowser::updateTreeViewIndexWidget()
     auto beginRow = ui->modTreeView->indexAt(QPoint(0, 0)).row();
     if(beginRow < 0) return;
     auto endRow = ui->modTreeView->indexAt(QPoint(0, ui->modTreeView->height())).row();
-    //extra 2
-    endRow += 2;
+    if(endRow < 0)
+        endRow = model_->rowCount() - 1;
+    else
+        //extra 2
+        endRow += 2;
     for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
         auto index = model_->index(row, LocalModItem::EnableColumn);
         if(ui->modTreeView->indexWidget(index)) continue;
@@ -510,9 +520,6 @@ void LocalModBrowser::updateTreeViewIndexWidget()
             };
             onModChanged();
             QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
-            //        auto modItemWidget = new LocalModItemWidget(ui->modTreeView, mod);
-            //        ui->modTreeView->setIndexWidget(index, modItemWidget);
-            //        item->setSizeHint(QSize(0, modItemWidget->height()));
         }
     }
 }
@@ -576,21 +583,21 @@ void LocalModBrowser::on_modListView_customContextMenuRequested(const QPoint &po
 {
     auto mods = selectedMods(ui->modListView);
     if(auto menu = getMenu(mods); menu && !menu->actions().empty())
-        menu->exec(ui->modListView->mapToGlobal(pos));
+        menu->exec(ui->modListView->viewport()->mapToGlobal(pos));
 }
 
 void LocalModBrowser::on_modIconListView_customContextMenuRequested(const QPoint &pos)
 {
     auto mods = selectedMods(ui->modIconListView);
     if(auto menu = getMenu(mods); menu && !menu->actions().empty())
-        menu->exec(ui->modIconListView->mapToGlobal(pos));
+        menu->exec(ui->modIconListView->viewport()->mapToGlobal(pos));
 }
 
 void LocalModBrowser::on_modTreeView_customContextMenuRequested(const QPoint &pos)
 {
     auto mods = selectedMods(ui->modTreeView);
     if(auto menu = getMenu(mods); menu && !menu->actions().empty())
-        menu->exec(ui->modTreeView->mapToGlobal(pos + QPoint(0, ui->modTreeView->header()->height())));
+        menu->exec(ui->modTreeView->viewport()->mapToGlobal(pos));
 }
 
 void LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested(const QPoint &pos)

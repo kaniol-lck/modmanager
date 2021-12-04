@@ -134,7 +134,7 @@ HEADERS += \
     src/local/localmodpathinfo.h \
     src/local/localmodpathmanager.h \
     src/local/modfilerenamer.h \
-    src/local/updatable.hpp \
+    src/local/updater.hpp \
     src/modloadertype.h \
     src/modrinth/modrinthapi.h \
     src/modrinth/modrinthfileinfo.h \

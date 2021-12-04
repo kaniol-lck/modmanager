@@ -12,6 +12,7 @@
 #include <QDateTime>
 
 #include "local/localmodpath.h"
+#include "local/localfilelinker.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
 
@@ -99,8 +100,8 @@ bool hasFile(LocalModPath *path, const CurseforgeFileInfo &fileInfo)
     if(hasFile(path->info().path(), fileInfo.fileName())) return true;
     for(auto &&map : path->modMaps())
         for(const auto &localMod : map)
-            if(localMod->curseforgeMod() && localMod->curseforgeUpdate().currentFileInfo() &&
-                    localMod->curseforgeUpdate().currentFileInfo()->id() == fileInfo.id())
+            if(const auto &fileInfo2 =  localMod->modFile()->linker()->curseforgeFileInfo();
+                    fileInfo2 && fileInfo2->id() == fileInfo.id())
                 return true;
     return false;
 }
@@ -120,8 +121,8 @@ bool hasFile(LocalModPath *path, const ModrinthFileInfo &fileInfo)
     if(hasFile(path->info().path(), fileInfo.fileName())) return true;
     for(auto &&map : path->modMaps())
         for(const auto &localMod : map)
-            if(localMod->modrinthMod() && localMod->modrinthUpdate().currentFileInfo() &&
-                    localMod->modrinthUpdate().currentFileInfo()->id() == fileInfo.id())
+            if(const auto &fileInfo2 = localMod->modFile()->linker()->modrinthFileInfo();
+                    fileInfo2 &&fileInfo2->id() == fileInfo.id())
                 return true;
     return false;
 }

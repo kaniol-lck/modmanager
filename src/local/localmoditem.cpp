@@ -2,6 +2,7 @@
 
 #include "ui/local/localmodbrowser.h"
 #include "local/localmod.h"
+#include "local/localfilelinker.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
 #include "util/funcutil.h"
@@ -63,11 +64,11 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod, QList<QStandard
             item->setForeground(mod->isDisabled()? Qt::gray : Qt::black);
         if(mod->curseforgeMod())
             list.at(CurseforgeIdColumn)->setText(QString::number(mod->curseforgeMod()->modInfo().id()));
-        if(auto file = mod->curseforgeUpdate().currentFileInfo())
+        if(auto file = mod->modFile()->linker()->curseforgeFileInfo())
             list.at(CurseforgeFileIdColumn)->setText(QString::number(file->id()));
         if(mod->modrinthMod())
             list.at(ModrinthIdColumn)->setText(mod->modrinthMod()->modInfo().id());
-        if(auto file = mod->modrinthUpdate().currentFileInfo())
+        if(auto file = mod->modFile()->linker()->modrinthFileInfo())
             list.at(ModrinthFileIdColumn)->setText(file->id());
         list.at(FileDateColumn)->setText(mod->modFile()->fileInfo().lastModified().toString());
         list.at(FileDateColumn)->setData(mod->modFile()->fileInfo().lastModified(), FileDateRole);

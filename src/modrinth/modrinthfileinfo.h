@@ -7,10 +7,12 @@
 
 #include "gameversion.h"
 #include "modloadertype.h"
+#include "modwebsitetype.h"
 
 class ModrinthFileInfo
 {
 public:
+    static constexpr ModWebsiteType Type = Modrinth;
     using IdType = QString;
     ModrinthFileInfo() = default;
     explicit ModrinthFileInfo(IdType id);

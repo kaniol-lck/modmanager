@@ -7,10 +7,12 @@
 
 #include "gameversion.h"
 #include "modloadertype.h"
+#include "modwebsitetype.h"
 
 class CurseforgeFileInfo
 {
 public:
+    static constexpr ModWebsiteType Type = Curseforge;
     using IdType = int;
     CurseforgeFileInfo() = default;
     explicit CurseforgeFileInfo(IdType id);

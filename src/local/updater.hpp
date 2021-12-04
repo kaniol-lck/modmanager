@@ -1,5 +1,5 @@
-#ifndef UPDATABLE_HPP
-#define UPDATABLE_HPP
+#ifndef UPDATER_H
+#define UPDATER_H
 
 #include <QDateTime>
 #include <optional>
@@ -10,17 +10,14 @@
 #include "config.hpp"
 #include "gameversion.h"
 #include "modloadertype.h"
-
-template<typename FileInfoT>
-class Updatable
+#include "modwebsitetype.h"
+template<ModWebsiteType type>
+class Updater
 {
+    friend class LocalModFile;
+    using FileInfoT = typename CommonClass<type>::FileInfo;
 public:
-    Updatable() = default;
-
-    std::optional<FileInfoT> currentFileInfo() const
-    {
-        return currentFileInfo_;
-    }
+    Updater() = default;
 
     const QList<FileInfoT> &updateFileInfos() const
     {
@@ -36,7 +33,7 @@ public:
         ignores_ << fileInfo.id();
     }
 
-    Updatable &operator<<(const FileInfoT &fileInfo){
+    Updater &operator<<(const FileInfoT &fileInfo){
         updateFileInfos_ << fileInfo;
         return *this;
     }
@@ -45,13 +42,11 @@ public:
         ignores_.clear();
     }
 
-    void reset(bool clearCurrent = false){
+    void reset(){
         updateFileInfos_.clear();
-        if(clearCurrent)
-            currentFileInfo_.reset();
     }
 
-    bool findUpdate(const QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
+    bool findUpdate(const std::optional<FileInfoT> &currentFileInfo, const QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
     {
         //select mod file for matched game versions and mod loader type
         updateFileInfos_.clear();
@@ -92,8 +87,8 @@ public:
                 loaderCheck = true;
             if(!loaderCheck) return false;
             //not older or same version
-            if(file.fileDate() <= currentFileInfo_->fileDate()) return false;
-            if(file.id() == currentFileInfo_->id()) return false;
+            if(file.fileDate() <= currentFileInfo->fileDate()) return false;
+            if(file.id() == currentFileInfo->id()) return false;
             //all pass
             return true;
         });
@@ -118,22 +113,11 @@ public:
         auto downloader = DownloadManager::manager()->download(info);
         QObject::connect(downloader, &QAria2Downloader::finished, [=]{
             if(callback1()){
-                setCurrentFileInfo(fileInfo);
                 updateFileInfos_.clear();
                 callback2();
             }
         });
         return downloader;
-    }
-
-    void setCurrentFileInfo(std::optional<FileInfoT> newCurrentFileInfo)
-    {
-        currentFileInfo_ = newCurrentFileInfo;
-    }
-
-    void setCurrentFileInfo(FileInfoT newCurrentFileInfo)
-    {
-        currentFileInfo_.emplace(newCurrentFileInfo);
     }
 
     const QList<typename FileInfoT::IdType> &ignores() const
@@ -146,10 +130,15 @@ public:
         return !updateFileInfos_.isEmpty();
     }
 
+    void setMod(typename CommonClass<type>::Mod *newMod)
+    {
+        mod_ = newMod;
+    }
+
 private:
-    std::optional<FileInfoT> currentFileInfo_;
+    typename CommonClass<type>::Mod *mod_;
     QList<FileInfoT> updateFileInfos_;
     QList<typename FileInfoT::IdType> ignores_;
 };
 
-#endif // UPDATABLE_HPP
+#endif // UPDATER_H

@@ -67,26 +67,11 @@ void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
     }
 }
 
-void LocalMod::searchOnWebsite()
-{
-    auto linker = new LocalFileLinker(modFile_);
-    connect(linker, &LocalFileLinker::linkFinished, this, &LocalMod::websiteReady);
-    connect(linker, &LocalFileLinker::linkCurseforgeFinished, this, &LocalMod::curseforgeReady);
-    connect(linker, &LocalFileLinker::curseforgeFileChanged, this, [=](const auto &info){
-        setCurrentCurseforgeFileInfo(info, false);
-    });
-    connect(linker, &LocalFileLinker::linkModrinthFinished, this, &LocalMod::modrinthReady);
-    connect(linker, &LocalFileLinker::modrinthFileChanged, this, [=](const auto &info){
-        setCurrentModrinthFileInfo(info, false);
-    });
-    linker->link();
-}
-
 void LocalMod::checkUpdates(bool force)
 {
     //clear update cache
-    modrinthUpdate_.reset();
-    curseforgeUpdate_.reset();
+    modrinthUpdater_.reset();
+    curseforgeUpdater_.reset();
 
     emit checkUpdatesStarted();
 
@@ -102,7 +87,7 @@ void LocalMod::checkUpdates(bool force)
             emit updateReady(updateTypes(), *success);
         }
     };
-    if(config.getUseCurseforgeUpdate() && curseforgeMod_ && curseforgeUpdate_.currentFileInfo()){
+    if(config.getUseCurseforgeUpdate() && curseforgeMod_ && modFile_->linker()->curseforgeFileInfo()){
         (*count)++;
         checkCurseforgeUpdate(force);
 //        connect(this, &LocalMod::checkCancelled, disconnecter(
@@ -112,7 +97,7 @@ void LocalMod::checkUpdates(bool force)
             foo(hasUpdate, success2);
         });
     }
-    if(config.getUseModrinthUpdate() && modrinthMod_ && modrinthUpdate_.currentFileInfo()){
+    if(config.getUseModrinthUpdate() && modrinthMod_ && modFile_->linker()->modrinthFileInfo()){
         (*count)++;
         checkModrinthUpdate(force);
 //        connect(this, &LocalMod::checkCancelled, disconnecter(
@@ -143,13 +128,13 @@ void LocalMod::checkCurseforgeUpdate(bool force)
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
         connect(this, &LocalMod::checkCancelled, disconnecter(
                     curseforgeMod_->acquireAllFileList([=](const QList<CurseforgeFileInfo> &fileList){
-            bool bl = curseforgeUpdate_.findUpdate(fileList, targetVersion_, targetLoaderType_);
+            bool bl = curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo(), fileList, targetVersion_, targetLoaderType_);
             emit curseforgeUpdateReady(bl);
         }, [=]{
             emit curseforgeUpdateReady(false, false);
         })));
     }else{
-        bool bl = curseforgeUpdate_.findUpdate(curseforgeMod_->modInfo().allFileList(), targetVersion_, targetLoaderType_);
+        bool bl = curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo(), curseforgeMod_->modInfo().allFileList(), targetVersion_, targetLoaderType_);
         emit curseforgeUpdateReady(bl);
     }
 }
@@ -164,12 +149,12 @@ void LocalMod::checkModrinthUpdate(bool force)
     emit checkModrinthUpdateStarted();
     auto updateFullInfo = [=]{
         if(!modrinthMod_->modInfo().fileList().isEmpty()){
-            bool bl = modrinthUpdate_.findUpdate(modrinthMod_->modInfo().fileList(), targetVersion_, targetLoaderType_);
+            bool bl = modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo(), modrinthMod_->modInfo().fileList(), targetVersion_, targetLoaderType_);
             emit modrinthUpdateReady(bl);
         }else {
             connect(this, &LocalMod::checkCancelled, disconnecter(
                         modrinthMod_->acquireFileList([=](const QList<ModrinthFileInfo> &fileList){
-                bool bl = modrinthUpdate_.findUpdate(fileList, targetVersion_, targetLoaderType_);
+                bool bl = modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo(), fileList, targetVersion_, targetLoaderType_);
                 emit modrinthUpdateReady(bl);
             }, [=]{
                 emit modrinthUpdateReady(false, false);
@@ -217,15 +202,15 @@ ModWebsiteType LocalMod::defaultUpdateType() const
 
 QList<ModWebsiteType> LocalMod::updateTypes() const
 {
-    bool bl1(curseforgeUpdate_.hasUpdate());
-    bool bl2(modrinthUpdate_.hasUpdate());
+    bool bl1(curseforgeUpdater_.hasUpdate());
+    bool bl2(modrinthUpdater_.hasUpdate());
 
     if(bl1 && !bl2)
         return { ModWebsiteType::Curseforge };
     else if(!bl1 && bl2)
         return { ModWebsiteType::Modrinth };
     else if(bl1 && bl2){
-        if(curseforgeUpdate_.updateFileInfos().first().fileDate() > modrinthUpdate_.updateFileInfos().first().fileDate())
+        if(curseforgeUpdater_.updateFileInfos().first().fileDate() > modrinthUpdater_.updateFileInfos().first().fileDate())
             return { ModWebsiteType::Curseforge, ModWebsiteType::Modrinth };
         else
             return { ModWebsiteType::Modrinth, ModWebsiteType::Curseforge};
@@ -239,9 +224,9 @@ QAria2Downloader *LocalMod::update()
     case ModWebsiteType::None:
         return nullptr;
     case ModWebsiteType::Curseforge:
-        return update(curseforgeUpdate_.updateFileInfos().first());
+        return update(curseforgeUpdater_.updateFileInfos().first());
     case ModWebsiteType::Modrinth:
-        return update(modrinthUpdate_.updateFileInfos().first());
+        return update(modrinthUpdater_.updateFileInfos().first());
     }
 }
 
@@ -292,12 +277,11 @@ void LocalMod::rollback(LocalModFile *file)
     emit modFileUpdated();
 
     //reset update info
-    curseforgeUpdate_.reset(true);
-    modrinthUpdate_.reset(true);
-    connect(this, &LocalMod::websiteReady, this, [=]{
-        checkUpdates(false);
-    });
-    searchOnWebsite();
+    curseforgeUpdater_.reset();
+    modrinthUpdater_.reset();
+//    connect(this, &LocalMod::websiteReady, this, [=]{
+//        checkUpdates(false);
+//    });
 }
 
 void LocalMod::deleteAllOld()
@@ -340,8 +324,8 @@ bool LocalMod::setEnabled(bool enabled)
 
 void LocalMod::clearIgnores()
 {
-    curseforgeUpdate_.clearIgnores();
-    modrinthUpdate_.clearIgnores();
+    curseforgeUpdater_.clearIgnores();
+    modrinthUpdater_.clearIgnores();
     emit modCacheUpdated();
     emit updateReady(updateTypes());
     checkUpdates();
@@ -391,32 +375,14 @@ const QList<LocalModFile *> &LocalMod::duplicateFiles() const
     return duplicateFiles_;
 }
 
-const Updatable<CurseforgeFileInfo> &LocalMod::curseforgeUpdate() const
+const Updater<Curseforge> &LocalMod::curseforgeUpdate() const
 {
-    return curseforgeUpdate_;
+    return curseforgeUpdater_;
 }
 
-const Updatable<ModrinthFileInfo> &LocalMod::modrinthUpdate() const
+const Updater<Modrinth> &LocalMod::modrinthUpdate() const
 {
-    return modrinthUpdate_;
-}
-
-void LocalMod::setCurrentCurseforgeFileInfo(const std::optional<CurseforgeFileInfo> &info, bool cache)
-{
-    if(info->id() == 0) return;
-    curseforgeUpdate_.setCurrentFileInfo(info);
-    emit modFileUpdated();
-    if(cache && info)
-        KnownFile::addCurseforge(modFile_->murmurhash(), *info);
-}
-
-void LocalMod::setCurrentModrinthFileInfo(const std::optional<ModrinthFileInfo> &info, bool cache)
-{
-    if(info->id().isEmpty()) return;
-    modrinthUpdate_.setCurrentFileInfo(info);
-    emit modFileUpdated();
-    if(cache && info)
-        KnownFile::addModrinth(modFile_->sha1(), *info);
+    return modrinthUpdater_;
 }
 
 const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &LocalMod::depends() const
@@ -487,15 +453,15 @@ QJsonObject LocalMod::toJsonObject() const
     if(curseforgeMod_){
         QJsonObject curseforgeObject;
         curseforgeObject.insert("id", curseforgeMod_->modInfo().id());
-        if(!curseforgeUpdate_.ignores().isEmpty()){
+        if(!curseforgeUpdater_.ignores().isEmpty()){
             QJsonArray ignoreArray;
-            for(auto &&fileId : curseforgeUpdate_.ignores())
+            for(auto &&fileId : curseforgeUpdater_.ignores())
                 ignoreArray << fileId;
             curseforgeObject.insert("ignored-updates", ignoreArray);
         }
-        if(!curseforgeUpdate_.updateFileInfos().isEmpty()){
+        if(!curseforgeUpdater_.updateFileInfos().isEmpty()){
             QJsonArray updateFileInfoArray;
-            for(auto &&fileInfo : curseforgeUpdate_.updateFileInfos())
+            for(auto &&fileInfo : curseforgeUpdater_.updateFileInfos())
                 updateFileInfoArray << fileInfo.toJsonObject();
             curseforgeObject.insert("available-updates", updateFileInfoArray);
         }
@@ -505,15 +471,15 @@ QJsonObject LocalMod::toJsonObject() const
     if(modrinthMod_){
         QJsonObject modrinthObject;
         modrinthObject.insert("id", modrinthMod_->modInfo().id());
-        if(!modrinthUpdate_.ignores().isEmpty()){
+        if(!modrinthUpdater_.ignores().isEmpty()){
             QJsonArray ignoreArray;
-            for(auto &&fileId : modrinthUpdate_.ignores())
+            for(auto &&fileId : modrinthUpdater_.ignores())
                 ignoreArray << fileId;
             modrinthObject.insert("ignored-updates", ignoreArray);
         }
-        if(!modrinthUpdate_.updateFileInfos().isEmpty()){
+        if(!modrinthUpdater_.updateFileInfos().isEmpty()){
             QJsonArray updateFileInfoArray;
-            for(auto &&fileInfo : modrinthUpdate_.updateFileInfos())
+            for(auto &&fileInfo : modrinthUpdater_.updateFileInfos())
                 updateFileInfoArray << fileInfo.toJsonObject();
             modrinthObject.insert("available-updates", updateFileInfoArray);
         }
@@ -534,20 +500,20 @@ void LocalMod::restore(const QVariant &variant)
             setCurseforgeId(value(variant, "curseforge", "id").toInt());
         if(contains(value(variant, "curseforge"), "ignored-updates"))
             for(auto &&id : value(variant, "curseforge", "ignored-updates").toList())
-                curseforgeUpdate_.addIgnore(id.toInt());
+                curseforgeUpdater_.addIgnore(id.toInt());
         if(contains(value(variant, "curseforge"), "available-updates"))
             for(auto &&fileInfo : value(variant, "curseforge", "available-updates").toList())
-                curseforgeUpdate_ << CurseforgeFileInfo::fromVariant(fileInfo);
+                curseforgeUpdater_ << CurseforgeFileInfo::fromVariant(fileInfo);
     }
     if(contains(variant, "modrinth")){
         if(contains(value(variant, "modrinth"), "id"))
             setModrinthId(value(variant, "modrinth", "id").toString());
         if(contains(value(variant, "modrinth"), "ignored-updates"))
             for(auto &&id : value(variant, "modrinth", "ignored-updates").toList())
-                modrinthUpdate_.addIgnore(id.toString());
+                modrinthUpdater_.addIgnore(id.toString());
         if(contains(value(variant, "curseforge"), "available-updates"))
             for(auto &&fileInfo : value(variant, "modrinth", "available-updates").toList())
-                modrinthUpdate_ << ModrinthFileInfo::fromVariant(fileInfo);
+                modrinthUpdater_ << ModrinthFileInfo::fromVariant(fileInfo);
     }
 }
 

@@ -6,7 +6,7 @@
 #include <optional>
 
 #include "localmodfile.h"
-#include "updatable.hpp"
+#include "updater.hpp"
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
 #include "tag/tagable.h"
@@ -38,9 +38,6 @@ public:
     ModrinthMod *modrinthMod() const;
     void setModrinthMod(ModrinthMod *newModrinthMod);
 
-    //search
-    void searchOnWebsite();
-
     //update
     bool perpareUpdate();
     void checkUpdates(bool force = true);
@@ -56,8 +53,8 @@ public:
     template<typename FileInfoT>
     QAria2Downloader *update(const FileInfoT &fileInfo);
 
-    template<typename FileInfoT>
-    inline Updatable<FileInfoT> &updater();
+    template<ModWebsiteType type>
+    inline Updater<type> &updater();
 
     //api
     CurseforgeAPI *curseforgeAPI() const;
@@ -87,10 +84,8 @@ public:
     void addConflict(std::tuple<QString, QString, FabricModInfo> modConflict);
     void addBreak(std::tuple<QString, QString, FabricModInfo> modBreak);
 
-    const Updatable<CurseforgeFileInfo> &curseforgeUpdate() const;
-    const Updatable<ModrinthFileInfo> &modrinthUpdate() const;
-    void setCurrentCurseforgeFileInfo(const std::optional<CurseforgeFileInfo> &info, bool cache = true);
-    void setCurrentModrinthFileInfo(const std::optional<ModrinthFileInfo> &info, bool cache = true);
+    const Updater<Curseforge> &curseforgeUpdate() const;
+    const Updater<Modrinth> &modrinthUpdate() const;
     const QList<std::tuple<QString, QString, std::optional<FabricModInfo> > > &depends() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &conflicts() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &breaks() const;
@@ -108,12 +103,6 @@ public:
 
     LocalModPath *path() const;
 
-//    const QList<Tag> tags() const;
-//    const QList<Tag> customizableTags() const;
-//    void addTag(const Tag &tag);
-//    void removeTag(const Tag &tag);
-//    Tagable &tagManager();
-
     void setModFile(LocalModFile *newModFile);
 
     const QPixmap &icon() const;
@@ -127,7 +116,6 @@ signals:
     void modIconUpdated();
     void modCacheUpdated();
 
-    void websiteReady(bool bl);
     void checkUpdatesStarted();
     void checkCancelled();
     void updateReady(QList<ModWebsiteType> types, bool success = true);
@@ -168,10 +156,11 @@ private:
 
     //related on websites
     CurseforgeMod *curseforgeMod_ = nullptr;
-    Updatable<CurseforgeFileInfo> curseforgeUpdate_;
-
     ModrinthMod *modrinthMod_ = nullptr;
-    Updatable<ModrinthFileInfo> modrinthUpdate_;
+
+    //updater
+    Updater<Curseforge> curseforgeUpdater_;
+    Updater<Modrinth> modrinthUpdater_;
 
     //dependencies
     QList<std::tuple<QString, QString, std::optional<FabricModInfo>>> depends_;
@@ -184,19 +173,19 @@ private:
 template<typename FileInfoT>
 inline void LocalMod::ignoreUpdate(const FileInfoT &fileInfo)
 {
-    updater<FileInfoT>().addIgnore(fileInfo);
+    updater<FileInfoT::Type>().addIgnore(fileInfo);
     emit updateReady(updateTypes());
     emit modCacheUpdated();
 }
 
 template<>
-inline Updatable<CurseforgeFileInfo> &LocalMod::updater(){
-    return curseforgeUpdate_;
+inline Updater<Curseforge> &LocalMod::updater(){
+    return curseforgeUpdater_;
 }
 
 template<>
-inline Updatable<ModrinthFileInfo> &LocalMod::updater(){
-    return modrinthUpdate_;
+inline Updater<Modrinth> &LocalMod::updater(){
+    return modrinthUpdater_;
 }
 
 template<typename FileInfoT>
@@ -228,8 +217,8 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
             oldFiles_ << modFile_;
         }
 
-        modrinthUpdate_.reset(true);
-        curseforgeUpdate_.reset(true);
+        modrinthUpdater_.reset();
+        curseforgeUpdater_.reset();
 
         setModFile(file);
         emit modFileUpdated();
@@ -241,7 +230,7 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
         emit updateFinished(true);
     };
 
-    auto downloader = updater<FileInfoT>().update(path, modFile_->commonInfo()->iconBytes(), fileInfo, callback1, callback2);
+    auto downloader = updater<FileInfoT::Type>().update(path, modFile_->commonInfo()->iconBytes(), fileInfo, callback1, callback2);
     connect(downloader, &AbstractDownloader::downloadProgress, this, &LocalMod::updateProgress);
     return downloader;
 }

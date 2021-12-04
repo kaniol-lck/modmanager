@@ -34,7 +34,6 @@ public:
 
     LocalMod *findLocalMod(const QString &id);
 
-    void searchOnWebsites();
     void checkModUpdates(bool force = true);
     void cancelChecking();
     void updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curseforgeUpdateList, QList<QPair<LocalMod *, ModrinthFileInfo> > modrinthUpdateList);
