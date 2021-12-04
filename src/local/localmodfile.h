@@ -11,6 +11,7 @@
 #include "forgemodinfo.h"
 #include "modloadertype.h"
 
+class LocalModPath;
 class LocalMod;
 class LocalFileLinker;
 class LocalModFile : public QObject, public Tagable
@@ -18,7 +19,7 @@ class LocalModFile : public QObject, public Tagable
     Q_OBJECT
 public:
     //TODO: subdir
-    explicit LocalModFile(QObject *parent, const QString &path, const QStringList &subDirs = QStringList());
+    explicit LocalModFile(LocalModPath *parent, const QString &path, const QStringList &subDirs = QStringList());
     ~LocalModFile();
 
     ModLoaderType::Type loadInfo();
@@ -68,11 +69,15 @@ public:
     LocalMod *mod() const;
     void setMod(LocalMod *newMod);
 
+    LocalModPath *modPath() const;
+    void setModPath(LocalModPath *newModPath);
+
 signals:
     void fileChanged();
 
 private:
     LocalFileLinker *linker_;
+    LocalModPath *modPath_ = nullptr;
     LocalMod *mod_ = nullptr;
 
     //file

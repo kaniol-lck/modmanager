@@ -396,8 +396,11 @@ void CurseforgeModBrowser::updateIndexWidget()
     auto beginRow = ui->modListView->indexAt(QPoint(0, 0)).row();
     if(beginRow < 0) return;
     auto endRow = ui->modListView->indexAt(QPoint(0, ui->modListView->height())).row();
-    //extra 2
-    endRow += 2;
+    if(endRow < 0)
+        endRow = model_->rowCount() - 1;
+    else
+        //extra 2
+        endRow += 2;
     for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
         auto index = model_->index(row, 0);
         if(ui->modListView->indexWidget(index)) continue;

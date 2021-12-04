@@ -83,7 +83,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
     QList<LocalModFile*> modFileList;
     for(auto &&fileInfo : dir.entryInfoList(QDir::Files))
         if(LocalModFile::availableSuffix.contains(fileInfo.suffix()))
-            modFileList << new LocalModFile(nullptr, fileInfo.absoluteFilePath(), relative_);
+            modFileList << new LocalModFile(this, fileInfo.absoluteFilePath(), relative_);
 
     auto future = QtConcurrent::run([=]{
         int count = 0;
@@ -114,6 +114,10 @@ void LocalModPath::loadMods(bool autoLoaderType)
         modMap_.clear();
         fabricModMap_.clear();
         provideList_.clear();
+
+        //load normal mods (include duplicate)
+        for(const auto &file : qAsConst(modFileList))
+            file->linker()->link();
 
         //load normal mods (include duplicate)
         for(const auto &file : qAsConst(modFileList))
@@ -554,6 +558,7 @@ QAria2Downloader *LocalModPath::downloadNewMod(DownloadFileInfo &info)
         if(!LocalModFile::availableSuffix.contains(fileInfo.suffix())) return;
         auto file = new LocalModFile(this, fileInfo.absoluteFilePath());
         file->loadInfo();
+        file->linker()->link();
         addNormalMod(file);
         addOldMod(file);
         if(!file->parent())

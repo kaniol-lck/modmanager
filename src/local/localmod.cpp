@@ -185,8 +185,9 @@ QAria2Downloader *LocalMod::downloadOldMod(DownloadFileInfo &info)
     connect(downloader, &AbstractDownloader::finished, this, [=]{
         QFileInfo fileInfo(path_->info().path(), info.fileName());
         if(!LocalModFile::availableSuffix.contains(fileInfo.suffix())) return;
-        auto file = new LocalModFile(this, fileInfo.absoluteFilePath());
+        auto file = new LocalModFile(path_, fileInfo.absoluteFilePath());
         file->loadInfo();
+        file->linker()->link();
         qDebug() << file->addOld();
         addOldFile(file);
         emit modFileUpdated();
@@ -243,6 +244,7 @@ ModrinthAPI *LocalMod::modrinthAPI() const
 void LocalMod::addOldFile(LocalModFile *oldFile)
 {
     oldFile->setParent(this);
+    oldFile->setMod(this);
     oldFiles_ << oldFile;
     emit modFileUpdated();
 }
@@ -250,6 +252,7 @@ void LocalMod::addOldFile(LocalModFile *oldFile)
 void LocalMod::addDuplicateFile(LocalModFile *duplicateFile)
 {
     duplicateFile->setParent(this);
+    duplicateFile->setMod(this);
     duplicateFiles_ << duplicateFile;
 }
 
@@ -568,6 +571,7 @@ void LocalMod::setModFile(LocalModFile *newModFile)
     if(modFile_) disconnect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
     removeSubTagable(modFile_);
     modFile_ = newModFile;
+    modFile_->setMod(this);
     addSubTagable(modFile_);
     if(modFile_) {
         connect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);

@@ -1,6 +1,7 @@
 #include "localfilelinker.h"
 #include "localmod.h"
 #include "localmodfile.h"
+#include "localmodpath.h"
 
 #include <QDir>
 #include <QCryptographicHash>
@@ -11,9 +12,10 @@
 
 const QStringList LocalModFile::availableSuffix{ "jar", "old", "disabled"};
 
-LocalModFile::LocalModFile(QObject *parent, const QString &path, const QStringList &subDirs) :
+LocalModFile::LocalModFile(LocalModPath *parent, const QString &path, const QStringList &subDirs) :
     QObject(parent),
     linker_(new LocalFileLinker(this)),
+    modPath_(parent),
     path_(path),
     subDirs_(subDirs),
     fileInfo_(path)
@@ -61,9 +63,6 @@ ModLoaderType::Type LocalModFile::loadInfo()
     //load forge mod
     if(forgeModInfoList_ = ForgeModInfo::fromZip(path_); !forgeModInfoList_.isEmpty())
         loaderType_ = ModLoaderType::Forge;
-
-    if(!linker()->linked())
-        linker_->link();
 
     //for count
     return loaderType_;
@@ -272,6 +271,16 @@ LocalMod *LocalModFile::mod() const
 void LocalModFile::setMod(LocalMod *newMod)
 {
     mod_ = newMod;
+}
+
+LocalModPath *LocalModFile::modPath() const
+{
+    return modPath_;
+}
+
+void LocalModFile::setModPath(LocalModPath *newModPath)
+{
+    modPath_ = newModPath;
 }
 
 void LocalModFile::setLoaderType(ModLoaderType::Type newLoaderType)

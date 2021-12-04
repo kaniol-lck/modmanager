@@ -6,6 +6,7 @@
 #include <optional>
 
 #include "localmodfile.h"
+#include "localfilelinker.h"
 #include "updater.hpp"
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
@@ -195,9 +196,10 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
 
     auto path = QFileInfo(modFile_->path()).absolutePath();
     auto newPath = QDir(path).absoluteFilePath(fileInfo.fileName());
-    auto file = new LocalModFile(this, newPath);
+    auto file = new LocalModFile(path_, newPath);
     auto callback1 = [=]{
         file->loadInfo();
+        file->linker()->link();
         //loader type mismatch
         if(!file->loaderTypes().contains(modFile_->loaderType())){
             emit updateFinished(false);
