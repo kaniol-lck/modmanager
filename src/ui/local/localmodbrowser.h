@@ -54,10 +54,6 @@ private slots:
     void onLoadProgress(int loadedCount, int totalCount);
     void onLoadFinished();
 
-    void onCheckWebsitesStarted();
-    void onWebsiteCheckedCountUpdated(int checkedCount);
-    void onWebsitesReady();
-
     void onCheckUpdatesStarted();
     void onCheckCancelled();
     void onUpdateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount);
@@ -75,8 +71,6 @@ private slots:
     void updateListViewIndexWidget();
     void updateTreeViewIndexWidget();
 
-    void on_checkUpdatesButton_clicked();
-    void on_updateAllButton_clicked();
     void on_hideUpdatesButton_clicked();
     void onItemSelected(const QModelIndex &index);
     void onItemDoubleClicked(const QModelIndex &index);
@@ -98,9 +92,9 @@ private slots:
     void on_actionOpen_Modrinth_Mod_Dialog_triggered();
     void on_actionOpen_Mod_Dialog_triggered();
     void on_actionSearch_on_Curseforge_triggered();
-
     void on_actionSearch_on_Modrinth_triggered();
-
+    void on_actionCheck_Updates_triggered();
+    void on_actionUpdate_All_triggered();
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
@@ -117,8 +111,6 @@ private:
     LocalModFilter *filter_;
     QList<LocalMod*> selectedMods_;
     int hiddenCount_ = 0;
-    bool isChecking_ = false;
-    bool isUpdating_ = false;
 
     QAbstractItemView *currentView();
     QList<LocalMod *> selectedMods(QAbstractItemView *view = nullptr);

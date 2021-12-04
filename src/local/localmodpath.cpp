@@ -19,12 +19,12 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info) :
     modrinthAPI_(new ModrinthAPI(this)),
     info_(info)
 {
-    connect(this, &LocalModPath::websitesReady, this, [=]{
-        //new path not from exsiting will check update
-        if(initialUpdateChecked_) return;
-        checkModUpdates(false);
-        initialUpdateChecked_ = true;
-    });
+//    connect(this, &LocalModPath::websitesReady, this, [=]{
+//        //new path not from exsiting will check update
+//        if(initialUpdateChecked_) return;
+//        checkModUpdates(false);
+//        initialUpdateChecked_ = true;
+//    });
 }
 
 LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
@@ -37,12 +37,12 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     addSubTagable(path);
     addTag(Tag(subDir, TagCategory::SubDirCategory));
     info_.path_.append("/").append(relative_.join("/"));
-    connect(this, &LocalModPath::websitesReady, this, [=]{
-        //new path not from exsiting will check update
-        if(initialUpdateChecked_) return;
-        checkModUpdates(false);
-        initialUpdateChecked_ = true;
-    });
+//    connect(this, &LocalModPath::websitesReady, this, [=]{
+//        //new path not from exsiting will check update
+//        if(initialUpdateChecked_) return;
+//        checkModUpdates(false);
+//        initialUpdateChecked_ = true;
+//    });
 }
 
 bool LocalModPath::isUpdating() const
@@ -65,7 +65,6 @@ void LocalModPath::loadMods(bool autoLoaderType)
     if(isLoading_) return;
     isLoading_ = true;
     loaded_ = true;
-    isSearching_ = false;
     isChecking_ = false;
     QDir dir(info_.path());
     for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot)){
@@ -135,6 +134,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
 
         //restore cached info
         readFromFile();
+        updateUpdatableCount();
         emit modListUpdated();
     });
 }
@@ -301,11 +301,6 @@ void LocalModPath::readFromFile()
             modMap_[it.key()]->restore(*it);
     if(optiFineMod_ && result.toMap().contains("optifine"))
         optiFineMod_->restore(value(result, "optifine"));
-}
-
-bool LocalModPath::isSearching() const
-{
-    return isSearching_;
 }
 
 bool LocalModPath::isChecking() const

@@ -52,6 +52,6 @@ void TagsWidget::wheelEvent(QWheelEvent *event)
     auto &&scrollBar = ui->scrollArea->horizontalScrollBar();
     auto value = scrollBar->value() - event->angleDelta().y() * 0.2;
     scrollBar->setValue(value);
-    if(scrollBar->value() == value)
+    if(scrollBar->value())
         event->accept();
 }

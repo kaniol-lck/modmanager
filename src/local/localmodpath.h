@@ -57,7 +57,6 @@ public:
     LocalMod *optiFineMod() const;
 
     bool isLoading() const;
-    bool isSearching() const;
     bool isChecking() const;
     bool modsLoaded() const;
     bool isUpdating() const;
@@ -69,10 +68,6 @@ signals:
     void loadProgress(int loadedCount, int totalCount);
     void loadFinished();
     void checkCancelled();
-
-    void checkWebsitesStarted();
-    void websiteCheckedCountUpdated(int checkedCount);
-    void websitesReady();
 
     void checkUpdatesStarted();
     void updateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount);
