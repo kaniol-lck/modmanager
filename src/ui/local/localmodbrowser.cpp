@@ -43,7 +43,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui(new Ui::LocalModBrowser),
     model_(new QStandardItemModel(this)),
     modMenu_(new QMenu(this)),
-    infoWidget_(new LocalModInfoWidget(this)),
+    infoWidget_(new LocalModInfoWidget(this, modPath)),
     fileListWidget_(new LocalFileListWidget(this)),
     statusBarWidget_(new LocalStatusBarWidget(this)),
     statusBar_(new QStatusBar(this)),
@@ -169,14 +169,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::updateProgressBar);
 
     connect(ui->searchText, &QLineEdit::textChanged, this, &LocalModBrowser::filterList);
-
-    connect(ui->modListView, &QListView::entered, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modListView, &QListView::clicked, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modIconListView, &QListView::entered, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modIconListView, &QListView::clicked, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modTreeView, &QTreeView::entered, this, &LocalModBrowser::onItemSelected);
-    connect(ui->modTreeView, &QTreeView::clicked, this, &LocalModBrowser::onItemSelected);
-
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modIconListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
@@ -371,10 +363,6 @@ void LocalModBrowser::filterList()
 void LocalModBrowser::updateStatusText()
 {
     auto str = tr("%1 mods in total. ").arg(modPath_->modCount());
-    if(auto count = selectedMods_.count(); count == 1)
-        str.prepend(tr("Selected: %1. ").arg(selectedMods_.first()->commonInfo()->name()));
-    else if(count)
-        str.prepend(tr("%1 mods selected. ").arg(count));
     if(hiddenCount_){
         if(hiddenCount_ < modPath_->modCount() / 2)
             str.append(tr("(%1 mods are hidden)").arg(hiddenCount_));
@@ -524,14 +512,6 @@ QList<QAction *> LocalModBrowser::modActions() const
 LocalModPath *LocalModBrowser::modPath() const
 {
     return modPath_;
-}
-
-void LocalModBrowser::onItemSelected(const QModelIndex &index)
-{
-    auto item = model_->itemFromIndex(index.siblingAtColumn(LocalModItem::ModColumn));
-    auto mod = item->data().value<LocalMod*>();
-    infoWidget_->setMod(mod);
-    fileListWidget_->setMod(mod);
 }
 
 void LocalModBrowser::onItemDoubleClicked(const QModelIndex &index)
@@ -697,7 +677,8 @@ void LocalModBrowser::onSelectedModsChanged()
         if(mod->isFeatured()) isStarred = true;
     ui->actionToggle_Star->setChecked(isStarred);
 
-    updateStatusText();
+    infoWidget_->setMods(selectedMods_);
+    fileListWidget_->setMods(selectedMods_);
 }
 
 void LocalModBrowser::on_actionOpen_Curseforge_Mod_Dialog_triggered()
@@ -758,7 +739,6 @@ void LocalModBrowser::on_actionSearch_on_Modrinth_triggered()
         dialog->exec();
     }
 }
-
 
 void LocalModBrowser::on_actionCheck_Updates_triggered()
 {

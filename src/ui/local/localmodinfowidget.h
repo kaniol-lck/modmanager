@@ -4,6 +4,8 @@
 #include <QWidget>
 
 class LocalMod;
+
+class LocalModPath;
 namespace Ui {
 class LocalModInfoWidget;
 }
@@ -13,17 +15,19 @@ class LocalModInfoWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit LocalModInfoWidget(QWidget *parent = nullptr);
+    explicit LocalModInfoWidget(QWidget *parent = nullptr, LocalModPath *path = nullptr);
     ~LocalModInfoWidget();
 
-    void setMod(LocalMod *mod);
+    void setMods(QList<LocalMod *> mods);
 signals:
     void modChanged();
 private slots:
     void updateInfo();
 private:
+    LocalModPath *path_ = nullptr;
     Ui::LocalModInfoWidget *ui;
-    LocalMod *mod_;
+    QList<LocalMod *> mods_;
+    LocalMod * mod_;
     QList<QWidget*> tagWidgets_;
 };
 

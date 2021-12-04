@@ -88,8 +88,11 @@ void CurseforgeFileListWidget::updateIndexWidget()
     auto beginRow = ui->fileListView->indexAt(QPoint(0, 0)).row();
     if(beginRow < 0) return;
     auto endRow = ui->fileListView->indexAt(QPoint(0, ui->fileListView->height())).row();
-    //extra 2
-    endRow += 2;
+    if(endRow < 0)
+        endRow = model_->rowCount() - 1;
+    else
+        //extra 2
+        endRow += 2;
     for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
         auto index = model_->index(row, 0);
         if(ui->fileListView->indexWidget(index)) continue;

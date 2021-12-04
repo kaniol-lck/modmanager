@@ -72,7 +72,6 @@ private slots:
     void updateTreeViewIndexWidget();
 
     void on_hideUpdatesButton_clicked();
-    void onItemSelected(const QModelIndex &index);
     void onItemDoubleClicked(const QModelIndex &index);
     void on_modListView_customContextMenuRequested(const QPoint &pos);
     void on_modIconListView_customContextMenuRequested(const QPoint &pos);
