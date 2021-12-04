@@ -321,9 +321,11 @@ LocalMod *LocalModPath::optiFineMod() const
 
 void LocalModPath::updateUpdatableCount()
 {
-    auto count = std::count_if(modMap_.cbegin(), modMap_.cend(), [=](const auto &mod){
+    int count = std::count_if(modMap_.cbegin(), modMap_.cend(), [=](LocalMod *mod){
         return !mod->updateTypes().isEmpty();
     });
+    for(auto subPath : qAsConst(subPaths_))
+        count += subPath->updatableCount();
     if(count == updatableCount_) return;
     updatableCount_ = count;
     emit updatableCountChanged(count);
