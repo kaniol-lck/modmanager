@@ -12,11 +12,16 @@ LocalFileLinker::LocalFileLinker(LocalModFile *localFile) :
     QObject(localFile),
     localFile_(localFile)
 {
-    connect(this, &LocalFileLinker::linkCurseforgeFinished, this, [=]{
+    //TODO: update mod info
+    connect(this, &LocalFileLinker::linkCurseforgeFinished, this, [=](bool success, int id){
         curseforgeLinked_ = true;
+        if(success && id && localFile_->mod() && !localFile_->mod()->curseforgeMod())
+            localFile_->mod()->setCurseforgeId(id);
     });
-    connect(this, &LocalFileLinker::linkModrinthFinished, this, [=]{
+    connect(this, &LocalFileLinker::linkModrinthFinished, this, [=](bool success, QString id){
         modrinthLinked_ = true;
+        if(success && !id.isEmpty() && localFile_->mod() && !localFile_->mod()->modrinthMod())
+            localFile_->mod()->setModrinthId(id);
     });
 }
 
@@ -65,7 +70,7 @@ void LocalFileLinker::linkCurseforge()
         IdMapper::addCurseforge(localFile_->commonInfo()->id(), id);
         qDebug() << "success link curseforge:" << murmurhash;
         KnownFile::addCurseforge(murmurhash, fileInfo);
-        emit linkCurseforgeFinished(true);
+        emit linkCurseforgeFinished(true, id);
     }, [=]{
         qDebug() << "fail link curseforge:" << murmurhash;
         KnownFile::addUnmatchedCurseforge(murmurhash);
@@ -98,7 +103,7 @@ void LocalFileLinker::linkModrinth()
         IdMapper::addModrinth(localFile_->commonInfo()->id(), fileInfo.modId());
         KnownFile::addModrinth(sha1, fileInfo);
         qDebug() << "success link modrinth:" << sha1;
-        emit linkModrinthFinished(true);
+        emit linkModrinthFinished(true, fileInfo.modId());
     }, [=]{
         qDebug() << "fail link modrinth:" << sha1;
         KnownFile::addUnmatchedModrinth(sha1);

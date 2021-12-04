@@ -29,9 +29,9 @@ signals:
     void linkStarted();
     void linkFinished(bool success);
     void linkCurseforgeStarted();
-    void linkCurseforgeFinished(bool success);
+    void linkCurseforgeFinished(bool success, int id = 0);
     void linkModrinthStarted();
-    void linkModrinthFinished(bool success);
+    void linkModrinthFinished(bool success, QString id = QString());
     void curseforgeFileInfoChanged(std::optional<CurseforgeFileInfo> curseforgeFileInfo);
     void modrinthFileInfoChanged(std::optional<ModrinthFileInfo> modrinthFileInfo);
 

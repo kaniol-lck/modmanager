@@ -56,7 +56,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     fileListWidget_->hide();
     ui->setupUi(this);
     //setup mod list
-//    ui->updateWidget->setVisible(false);
+    ui->updateWidget->setVisible(false);
     ui->modListView->setModel(model_);
     ui->modIconListView->setModel(model_);
     ui->modTreeView->setModel(model_);
