@@ -8,6 +8,7 @@
 class IdMapper
 {
     //TODO: what if fabric and forge has same modid and different website id;
+    static constexpr auto kFileName = "modid.json";
     class Id
     {
         friend class IdMapper;
@@ -35,7 +36,6 @@ private:
     void writeToFile();
     void readFromFile();
 
-    static constexpr auto kFileName = "modid.json";
     QFile file_;
     QMap<QString, Id> idMap_;
 };

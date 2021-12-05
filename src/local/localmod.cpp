@@ -518,6 +518,14 @@ void LocalMod::restore(const QVariant &variant)
             for(auto &&fileInfo : value(variant, "modrinth", "available-updates").toList())
                 modrinthUpdater_ << ModrinthFileInfo::fromVariant(fileInfo);
     }
+    //restore from id mapper
+    if(IdMapper::idMap().contains(commonInfo()->id())){
+        auto id = IdMapper::idMap().value(commonInfo()->id());
+        if(!curseforgeMod_ && id.curseforgeId())
+            setCurseforgeId(id.curseforgeId(), false);
+        if(!modrinthMod_ && !id.modrinthId().isEmpty())
+            setModrinthId(id.modrinthId(), false);
+    }
 }
 
 bool LocalMod::isFeatured() const

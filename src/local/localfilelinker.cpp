@@ -13,6 +13,8 @@ LocalFileLinker::LocalFileLinker(LocalModFile *localFile) :
     localFile_(localFile)
 {
     //TODO: update mod info
+    connect(this, &LocalFileLinker::curseforgeFileInfoChanged, localFile_, &LocalModFile::fileChanged);
+    connect(this, &LocalFileLinker::modrinthFileInfoChanged, localFile_, &LocalModFile::fileChanged);
     connect(this, &LocalFileLinker::linkCurseforgeFinished, this, [=](bool success, int id){
         curseforgeLinked_ = true;
         if(success && id && localFile_->mod() && !localFile_->mod()->curseforgeMod())
