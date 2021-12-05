@@ -32,6 +32,7 @@ bool LocalFileLinker::linked() const
 
 void LocalFileLinker::link()
 {
+    if(localFile_->loaderTypes().isEmpty()) return;
     emit linkStarted();
     auto count = std::make_shared<int>(2);
     auto hasWeb = std::make_shared<bool>(false);

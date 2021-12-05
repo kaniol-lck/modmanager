@@ -6,7 +6,6 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QStandardPaths>
-#include <QDesktopWidget>
 #include <QMouseEvent>
 #include <QScreen>
 

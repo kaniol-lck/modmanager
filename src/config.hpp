@@ -30,9 +30,7 @@ class Config : private QSettings
 public:
     explicit Config() :
         QSettings()
-    {
-        setIniCodec("UTF-8");
-    }
+    {}
 
     //General
     getterAndSetter(SmoothScroll, Bool, smoothScroll, true)

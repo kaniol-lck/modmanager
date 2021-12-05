@@ -31,9 +31,10 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
     zipFile.close();
 
     QString jarVersion;
-    QRegExp re(R"(Implementation-Version:\s?([^\s]+))");
-    if(auto i = re.indexIn(manifest); i)
-        jarVersion = re.cap(1);
+    QRegularExpression re(R"(Implementation-Version:\s?([^\s]+))");
+    auto match = re.match(manifest);
+    if(match.hasMatch())
+        jarVersion = match.captured(1);
 
     //modern forge
     zip->setCurrentFile("META-INF/mods.toml");
