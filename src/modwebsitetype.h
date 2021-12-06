@@ -30,6 +30,11 @@ struct CommonClass<Curseforge>
 {
     using Mod = CurseforgeMod;
     using FileInfo = CurseforgeFileInfo;
+    using Id = int;
+    static bool isEmptyId(Id id)
+    {
+        return id;
+    }
 };
 
 class ModrinthMod;
@@ -39,5 +44,10 @@ struct CommonClass<Modrinth>
 {
     using Mod = ModrinthMod;
     using FileInfo = ModrinthFileInfo;
+    using Id = QString;
+    static bool isEmptyId(Id id)
+    {
+        return id.isEmpty();
+    }
 };
 #endif // MODWEBSITETYPE_H

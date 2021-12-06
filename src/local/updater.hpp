@@ -44,12 +44,14 @@ public:
 
     void reset(){
         updateFileInfos_.clear();
+        updatableId_ = typename CommonClass<type>::Id();
     }
 
     bool findUpdate(const std::optional<FileInfoT> &currentFileInfo, const QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
     {
         //select mod file for matched game versions and mod loader type
         updateFileInfos_.clear();
+        updatableId_ = typename CommonClass<type>::Id();
         std::insert_iterator<QList<FileInfoT>> iter(updateFileInfos_, updateFileInfos_.begin());
         std::copy_if(fileList.cbegin(), fileList.cend(), iter, [=](const auto &file){
             Config config;
@@ -101,6 +103,8 @@ public:
             return file1.fileDate() > file2.fileDate();
         });
 
+        updatableId_ = currentFileInfo->id();
+
         //all pass
         return true;
     }
@@ -114,6 +118,7 @@ public:
         QObject::connect(downloader, &QAria2Downloader::finished, [=]{
             if(callback1()){
                 updateFileInfos_.clear();
+                updatableId_ = typename CommonClass<type>::Id();
                 callback2();
             }
         });
@@ -135,8 +140,19 @@ public:
         mod_ = newMod;
     }
 
+    const typename CommonClass<type>::Id &updatableId() const
+    {
+        return updatableId_;
+    }
+
+    void setUpdatableId(const typename CommonClass<type>::Id &newUpdatableId)
+    {
+        updatableId_ = newUpdatableId;
+    }
+
 private:
     typename CommonClass<type>::Mod *mod_;
+    typename CommonClass<type>::Id updatableId_;
     QList<FileInfoT> updateFileInfos_;
     QList<typename FileInfoT::IdType> ignores_;
 };

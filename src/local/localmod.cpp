@@ -462,6 +462,8 @@ QJsonObject LocalMod::toJsonObject() const
                 ignoreArray << fileId;
             curseforgeObject.insert("ignored-updates", ignoreArray);
         }
+        if(curseforgeUpdater_.updatableId())
+            curseforgeObject.insert("current-file-id", curseforgeUpdater_.updatableId());
         if(!curseforgeUpdater_.updateFileInfos().isEmpty()){
             QJsonArray updateFileInfoArray;
             for(auto &&fileInfo : curseforgeUpdater_.updateFileInfos())
@@ -480,6 +482,8 @@ QJsonObject LocalMod::toJsonObject() const
                 ignoreArray << fileId;
             modrinthObject.insert("ignored-updates", ignoreArray);
         }
+        if(!modrinthUpdater_.updatableId().isEmpty())
+            modrinthObject.insert("current-file-id", curseforgeUpdater_.updatableId());
         if(!modrinthUpdater_.updateFileInfos().isEmpty()){
             QJsonArray updateFileInfoArray;
             for(auto &&fileInfo : modrinthUpdater_.updateFileInfos())
@@ -499,24 +503,40 @@ void LocalMod::restore(const QVariant &variant)
     for(auto &&tag : value(variant, "tags").toList())
         addTag(Tag::fromVariant(tag));
     if(contains(variant, "curseforge")){
-        if(contains(value(variant, "curseforge"), "id"))
-            setCurseforgeId(value(variant, "curseforge", "id").toInt());
-        if(contains(value(variant, "curseforge"), "ignored-updates"))
-            for(auto &&id : value(variant, "curseforge", "ignored-updates").toList())
+        auto curseforgeVariant = value(variant, "curseforge");
+        if(contains(curseforgeVariant, "id"))
+            setCurseforgeId(value(curseforgeVariant, "id").toInt());
+        if(contains(curseforgeVariant, "ignored-updates"))
+            for(auto &&id : value(curseforgeVariant, "ignored-updates").toList())
                 curseforgeUpdater_.addIgnore(id.toInt());
-        if(contains(value(variant, "curseforge"), "available-updates"))
-            for(auto &&fileInfo : value(variant, "curseforge", "available-updates").toList())
-                curseforgeUpdater_ << CurseforgeFileInfo::fromVariant(fileInfo);
+        if(contains(curseforgeVariant, "current-file-id")){
+            auto id = value(curseforgeVariant, "current-file-id").toInt();
+            if(auto fileInfo = modFile_->linker()->curseforgeFileInfo();
+                    fileInfo && fileInfo->id() == id){
+                curseforgeUpdater_.setUpdatableId(id);
+                if(contains(curseforgeVariant, "available-updates"))
+                    for(auto &&fileInfo : value(curseforgeVariant, "available-updates").toList())
+                        curseforgeUpdater_ << CurseforgeFileInfo::fromVariant(fileInfo);
+            }
+        }
     }
     if(contains(variant, "modrinth")){
-        if(contains(value(variant, "modrinth"), "id"))
-            setModrinthId(value(variant, "modrinth", "id").toString());
+        auto modrinthVariant = value(variant, "modrinth");
+        if(contains(modrinthVariant, "id"))
+            setModrinthId(value(modrinthVariant, "id").toString());
         if(contains(value(variant, "modrinth"), "ignored-updates"))
-            for(auto &&id : value(variant, "modrinth", "ignored-updates").toList())
+            for(auto &&id : value(modrinthVariant, "ignored-updates").toList())
                 modrinthUpdater_.addIgnore(id.toString());
-        if(contains(value(variant, "curseforge"), "available-updates"))
-            for(auto &&fileInfo : value(variant, "modrinth", "available-updates").toList())
-                modrinthUpdater_ << ModrinthFileInfo::fromVariant(fileInfo);
+        if(contains(modrinthVariant, "current-file-id")){
+            auto id = value(modrinthVariant, "current-file-id").toString();
+            if(auto fileInfo = modFile_->linker()->modrinthFileInfo();
+                    fileInfo && fileInfo->id() == id){
+                modrinthUpdater_.setUpdatableId(id);
+                if(contains(modrinthVariant, "available-updates"))
+                    for(auto &&fileInfo : value(modrinthVariant, "available-updates").toList())
+                        modrinthUpdater_ << ModrinthFileInfo::fromVariant(fileInfo);
+            }
+        }
     }
     //restore from id mapper
     if(IdMapper::idMap().contains(commonInfo()->id())){

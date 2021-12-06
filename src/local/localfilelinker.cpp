@@ -122,7 +122,7 @@ std::optional<CurseforgeFileInfo> LocalFileLinker::curseforgeFileInfo() const
 void LocalFileLinker::setCurseforgeFileInfo(CurseforgeFileInfo newCurseforgeFileInfo)
 {
     curseforgeFileInfo_ = newCurseforgeFileInfo;
-    emit curseforgeFileInfoChanged(curseforgeFileInfo_);
+    emit curseforgeFileInfoChanged();
 }
 
 std::optional<ModrinthFileInfo> LocalFileLinker::modrinthFileInfo() const
@@ -133,5 +133,5 @@ std::optional<ModrinthFileInfo> LocalFileLinker::modrinthFileInfo() const
 void LocalFileLinker::setModrinthFileInfo(ModrinthFileInfo newModrinthFileInfo)
 {
     modrinthFileInfo_ = newModrinthFileInfo;
-    emit modrinthFileInfoChanged(modrinthFileInfo_);
+    emit modrinthFileInfoChanged();
 }

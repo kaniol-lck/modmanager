@@ -32,8 +32,8 @@ signals:
     void linkCurseforgeFinished(bool success, int id = 0);
     void linkModrinthStarted();
     void linkModrinthFinished(bool success, QString id = QString());
-    void curseforgeFileInfoChanged(std::optional<CurseforgeFileInfo> curseforgeFileInfo);
-    void modrinthFileInfoChanged(std::optional<ModrinthFileInfo> modrinthFileInfo);
+    void curseforgeFileInfoChanged();
+    void modrinthFileInfoChanged();
 
 private:
     LocalModFile *localFile_ = nullptr;
