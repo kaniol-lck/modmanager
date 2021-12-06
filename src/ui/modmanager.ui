@@ -17,7 +17,7 @@
    <string notr="true"/>
   </property>
   <property name="dockOptions">
-   <set>QMainWindow::AnimatedDocks</set>
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -87,6 +87,7 @@
     <addaction name="actionPage_Selector"/>
     <addaction name="actionMod_Infomation"/>
     <addaction name="actionFile_List"/>
+    <addaction name="actionLock_Panels"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Mod_Authors"/>
     <addaction name="actionShow_Mod_Date_Time"/>
@@ -140,7 +141,7 @@
     <set>QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable</set>
    </property>
    <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+    <set>Qt::AllDockWidgetAreas</set>
    </property>
    <property name="windowTitle">
     <string>Page Selector</string>
@@ -175,6 +176,9 @@
   <widget class="QDockWidget" name="fileListDock">
    <property name="contextMenuPolicy">
     <enum>Qt::CustomContextMenu</enum>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::AllDockWidgetAreas</set>
    </property>
    <property name="windowTitle">
     <string>File List</string>
@@ -371,6 +375,14 @@
    </property>
    <property name="text">
     <string>Show Mod Game Version</string>
+   </property>
+  </action>
+  <action name="actionLock_Panels">
+   <property name="icon">
+    <iconset theme="lock"/>
+   </property>
+   <property name="text">
+    <string>Lock Panels</string>
    </property>
   </action>
  </widget>

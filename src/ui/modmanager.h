@@ -38,6 +38,7 @@ public slots:
     void updateUi();
 private slots:
     void updateBrowsers();
+    void updateLockPanels();
     void syncPathList();
     void editLocalPath(int index);
     void on_actionPreferences_triggered();
@@ -69,6 +70,7 @@ private slots:
     void on_fileListDock_customContextMenuRequested(const QPoint &pos);
     void on_actionMod_Infomation_toggled(bool arg1);
     void on_actionFile_List_toggled(bool arg1);
+    void on_actionLock_Panels_triggered();
 private:
     Ui::ModManager *ui;
     mutable Config config_;
@@ -80,7 +82,6 @@ private:
     bool useFramelessWindow_;
     bool enableBlurBehind_;
     bool isMoving_ = false;
-    QAction *lockPanelAction() const;
     void updateBlur() const;
 };
 #endif // MODMANAGER_H

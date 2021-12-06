@@ -58,16 +58,9 @@ ModManager::ModManager(QWidget *parent) :
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
-    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock, ui->fileListDock }){
-        if(config.getLockPanel())
-            widget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-        else
-            widget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-    }
+    updateLockPanels();
+
     ui->pageSelectorDock->setWidget(browserSelector_);
-    ui->pageSelectorDock->setTitleBarWidget(new QLabel);
-    ui->modInfoDock->setTitleBarWidget(new QLabel);
-    ui->fileListDock->setTitleBarWidget(new QLabel);
 
     //Download
     ui->pageSwitcher->addDownloadPage();
@@ -124,6 +117,25 @@ void ModManager::updateBrowsers()
     ui->menu_Mod->clear();
     ui->menu_Mod->addActions(browser->modActions());
     ui->menu_Mod->setEnabled(!browser->modActions().isEmpty());
+}
+
+void ModManager::updateLockPanels()
+{
+    if(config_.getLockPanel()){
+        ui->actionLock_Panels->setIcon(QIcon::fromTheme("unlock"));
+        ui->actionLock_Panels->setText(tr("Unlock Panels"));
+        for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock, ui->fileListDock }){
+            widget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            widget->setTitleBarWidget(new QLabel);
+        }
+    } else{
+        ui->actionLock_Panels->setIcon(QIcon::fromTheme("lock"));
+        ui->actionLock_Panels->setText(tr("Lock Panels"));
+        for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock, ui->fileListDock }){
+            widget->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
+            widget->setTitleBarWidget(nullptr);
+        }
+    }
 }
 
 void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
@@ -323,7 +335,7 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         menu->addSeparator();
         menu->addAction(ui->actionManage_Browser);
         menu->addSeparator();
-        menu->addAction(lockPanelAction());
+        menu->addAction(ui->actionLock_Panels);
     } else if(index.parent().row() == PageSwitcher::Explore){
         // on one of explore items
         auto exploreBrowser = ui->pageSwitcher->exploreBrowser(index.row());
@@ -558,43 +570,20 @@ void ModManager::on_actionAbout_Qt_triggered()
 void ModManager::on_modInfoDock_customContextMenuRequested(const QPoint &pos)
 {
     auto menu = new QMenu(this);
-    menu->addAction(lockPanelAction());
+    menu->addAction(ui->actionLock_Panels);
     menu->exec(ui->modInfoDock->mapToGlobal(pos));
 }
 
 void ModManager::on_fileListDock_customContextMenuRequested(const QPoint &pos)
 {
     auto menu = new QMenu(this);
-    menu->addAction(lockPanelAction());
+    menu->addAction(ui->actionLock_Panels);
     menu->exec(ui->fileListDock->mapToGlobal(pos));
 }
 
 WindowsTitleBar *ModManager::titleBar()
 {
     return titleBar_;
-}
-
-QAction *ModManager::lockPanelAction() const
-{
-    if(config_.getLockPanel()){
-        auto action = new QAction(QIcon::fromTheme("unlock"), tr("Unlock Panel"));
-        connect(action, &QAction::triggered, this, [=]{
-            ui->pageSelectorDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-            ui->modInfoDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-            ui->fileListDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
-            config_.setLockPanel(false);
-        });
-        return action;
-    } else{
-        auto action = new QAction(QIcon::fromTheme("lock"), tr("Lock Panel"));
-        connect(action, &QAction::triggered, this, [=]{
-            ui->pageSelectorDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            ui->modInfoDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            ui->fileListDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            config_.setLockPanel(true);
-        });
-        return action;
-    }
 }
 
 void ModManager::updateBlur() const
@@ -634,3 +623,10 @@ void ModManager::updateBlur() const
     }
 #endif
 }
+
+void ModManager::on_actionLock_Panels_triggered()
+{
+    config_.setLockPanel(!config_.getLockPanel());
+    updateLockPanels();
+}
+
