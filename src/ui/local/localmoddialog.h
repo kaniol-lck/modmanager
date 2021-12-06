@@ -26,33 +26,21 @@ public slots:
 
 private slots:
     void on_curseforgeButton_clicked();
-
     void on_modrinthButton_clicked();
-
     void on_homepageButton_clicked();
-
     void on_sourceButton_clicked();
-
     void on_issueButton_clicked();
-
     void on_disableButton_toggled(bool checked);
-
     void on_editAliasButton_toggled(bool checked);
-
     void on_editFileNameButton_toggled(bool checked);
-
     void on_versionSelect_currentIndexChanged(int index);
-
     void on_rollbackButton_clicked();
-
     void on_deleteButton_clicked();
-
     void on_tagsWidget_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::LocalModDialog *ui;
     FlowLayout *tagsLayout_;
-    QList<QWidget*> tagWidgets_;
     LocalModFile *file_;
     LocalMod *mod_ = nullptr;
 

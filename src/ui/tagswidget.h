@@ -13,6 +13,7 @@ class TagsWidget : public QWidget
 
 public:
     explicit TagsWidget(QWidget *parent = nullptr, LocalMod* mod = nullptr);
+    ~TagsWidget();
 
     void setMod(LocalMod* mod);
     void updateUi();

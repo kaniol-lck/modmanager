@@ -123,7 +123,7 @@ void ModrinthMod::setModInfo(ModrinthModInfo newModInfo)
         });
         if(it != ModrinthAPI::getCategories().end()){
             auto [name, iconName] = *it;
-            addTag(Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName));
+            importTag(Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName));
         }
     }
 }

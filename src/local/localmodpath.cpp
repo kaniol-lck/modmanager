@@ -35,7 +35,7 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     info_(path->info_)
 {
     addSubTagable(path);
-    addTag(Tag(subDir, TagCategory::SubDirCategory));
+    importTag(Tag(subDir, TagCategory::SubDirCategory));
     info_.path_.append("/").append(relative_.join("/"));
 //    connect(this, &LocalModPath::websitesReady, this, [=]{
 //        //new path not from exsiting will check update
@@ -158,9 +158,6 @@ void LocalModPath::addNormalMod(LocalModFile *file)
             connect(optiFineMod_, &LocalMod::updateFinished, this, [=](bool){
                 emit updatesReady();
             });
-            connect(optiFineMod_, &LocalMod::modCacheUpdated, this, [=]{
-                writeToFile();
-            });
             connect(optiFineMod_, &LocalMod::updateReady, this, &LocalModPath::updateUpdatableCount);
             connect(optiFineMod_, &LocalMod::updateFinished, this, &LocalModPath::updateUpdatableCount);
         }
@@ -178,9 +175,6 @@ void LocalModPath::addNormalMod(LocalModFile *file)
         //connect update signal
         connect(mod, &LocalMod::updateFinished, this, [=](bool){
             emit updatesReady();
-        });
-        connect(mod, &LocalMod::modCacheUpdated, this, [=]{
-            writeToFile();
         });
         connect(mod, &LocalMod::updateReady, this, &LocalModPath::updateUpdatableCount);
         connect(mod, &LocalMod::updateFinished, this, &LocalModPath::updateUpdatableCount);
@@ -259,6 +253,7 @@ std::tuple<LocalModPath::FindResultType, std::optional<FabricModInfo> > LocalMod
 
 void LocalModPath::writeToFile()
 {
+    qDebug() << "write to file";
     QJsonObject object;
 
     object.insert("latestUpdateCheck", latestUpdateCheck_.toString(Qt::DateFormat::ISODate));
@@ -501,7 +496,9 @@ void LocalModPath::checkModUpdates(bool force) // force = true by default
         auto failedCount = std::make_shared<int>(0);
         for(auto &&map : modMaps())
             for(const auto &mod : map){
-                (*count) ++;
+                connect(mod, &LocalMod::checkUpdatesStarted, this, [=]{
+                    (*count) ++;
+                });
                 auto conn = connect(mod, &LocalMod::updateReady, this, [=](QList<ModWebsiteType> types, bool success){
                     (*checkedCount)++;
                     if(!types.isEmpty()) (*updateCount)++;

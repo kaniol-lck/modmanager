@@ -10,7 +10,10 @@ class Tagable
 {
 public:
     Tagable() = default;
+    ~Tagable();
 
+    //impport will not trigger editted
+    void importTag(const Tag &tag);
     void addTag(const Tag &tag);
     void addTags(const TagCategory &category, const QList<Tag> &tag);
     void removeTag(const Tag &tag);
@@ -25,9 +28,18 @@ public:
 
     void addSubTagable(Tagable *child);
     void removeSubTagable(Tagable *child);
+
+protected:
+    virtual void tagsChanged();
+    virtual void tagsEditted();
+
 private:
+    void setTagsChanged();
+    void setTagsEditted();
+
     QMap<TagCategory, QList<Tag>> tagMap_;
-    QList<Tagable *> children_;
+    QList<Tagable *> parents_ = {};
+    QList<Tagable *> children_ = {};
 };
 
 #endif // TAGABLE_H

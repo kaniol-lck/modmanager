@@ -24,12 +24,10 @@ LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     mod_(mod)
 {
     ui->setupUi(this);
+    ui->tagsWidget->setMod(mod_);
     //not use it currently
     ui->disableButton->setVisible(false);
     ui->aliasText->setVisible(false);
-
-    tagsLayout_ = new FlowLayout();
-    ui->tagsHorizontal->addLayout(tagsLayout_);
 
     connect(mod_, &LocalMod::destroyed, this, &QDialog::close);
 
@@ -168,22 +166,6 @@ void LocalModDialog::onCurrentFileChanged()
 
     //if disabled
     ui->disableButton->setChecked(mod_->isDisabled());
-
-    //tags
-//    ui->tagsWidget->setVisible(!mod_->tags().isEmpty());
-    QStringList tagTextList;
-    for(auto widget : qAsConst(tagWidgets_)){
-        tagsLayout_->removeWidget(widget);
-        widget->deleteLater();
-    }
-    tagWidgets_.clear();
-    for(auto &&tag : mod_->tags()){
-        auto label = new QLabel(tag.name(), this);
-        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
-        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
-        tagsLayout_->addWidget(label);
-        tagWidgets_ << label;
-    }
 }
 
 void LocalModDialog::on_curseforgeButton_clicked()

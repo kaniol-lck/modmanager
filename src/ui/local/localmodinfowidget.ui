@@ -29,7 +29,7 @@
    <item row="0" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page_3">
       <layout class="QGridLayout" name="gridLayout_3">
@@ -172,7 +172,7 @@
             </layout>
            </item>
            <item>
-            <widget class="QWidget" name="tagsWidget" native="true"/>
+            <widget class="TagsFlowWidget" name="tagsWidget" native="true"/>
            </item>
            <item>
             <widget class="Line" name="line">
@@ -217,6 +217,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TagsFlowWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/tagsflowwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

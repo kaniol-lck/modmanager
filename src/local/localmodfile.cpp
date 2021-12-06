@@ -24,7 +24,7 @@ LocalModFile::LocalModFile(LocalModPath *parent, const QString &path, const QStr
         auto i = QRegularExpression(str).globalMatch(fileInfo().fileName());
         while(i.hasNext()) {
             QRegularExpressionMatch match = i.next();
-            addTag(Tag(match.captured(1), TagCategory::FileNameCategory));
+            importTag(Tag(match.captured(1), TagCategory::FileNameCategory));
         }
     }
 }

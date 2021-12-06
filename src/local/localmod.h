@@ -113,6 +113,9 @@ public slots:
     void setFeatured(bool featured);
 
 signals:
+    void tagsChanged() override;
+    void tagsEditted() override;
+
     void modFileUpdated();
     void modIconUpdated();
     void modCacheUpdated();

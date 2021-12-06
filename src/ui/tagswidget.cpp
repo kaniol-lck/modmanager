@@ -18,15 +18,20 @@ TagsWidget::TagsWidget(QWidget *parent, LocalMod* mod) :
     ui->setupUi(this);
     ui->scrollArea->verticalScrollBar()->setEnabled(false);
     updateUi();
-    if(mod_) connect(mod, &LocalMod::modFileUpdated, this, &TagsWidget::updateUi);
+    if(mod_) connect(mod, &LocalMod::tagsChanged, this, &TagsWidget::updateUi);
+}
+
+TagsWidget::~TagsWidget()
+{
+    delete ui;
 }
 
 void TagsWidget::setMod(LocalMod *mod)
 {
-    if(mod_) disconnect(mod, &LocalMod::modFileUpdated, this, &TagsWidget::updateUi);
+    if(mod_) disconnect(mod, &LocalMod::tagsChanged, this, &TagsWidget::updateUi);
     mod_ = mod;
     updateUi();
-    connect(mod, &LocalMod::modFileUpdated, this, &TagsWidget::updateUi);
+    connect(mod, &LocalMod::tagsChanged, this, &TagsWidget::updateUi);
 }
 
 void TagsWidget::updateUi()

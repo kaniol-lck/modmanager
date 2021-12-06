@@ -65,6 +65,11 @@ public:
     bool isChecking() const;
     bool modsLoaded() const;
     bool isUpdating() const;
+
+public slots:
+    void writeToFile();
+    void readFromFile();
+
 signals:
     void infoUpdated();
     void modListUpdated();
@@ -97,8 +102,6 @@ private:
     enum FindResultType{ Environmant, Missing, Mismatch, Match, RangeSemverError, VersionSemverError };
     std::tuple<FindResultType, std::optional<FabricModInfo>> findFabricMod(const QString &modid, const QString &range_str) const;
 
-    void writeToFile();
-    void readFromFile();
     explicit LocalModPath(LocalModPath *path, const QString &subDir);
 
     QStringList relative_;

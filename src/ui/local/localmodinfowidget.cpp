@@ -8,7 +8,6 @@
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
 #include "util/smoothscrollbar.h"
-#include "util/flowlayout.h"
 #include "util/funcutil.h"
 
 LocalModInfoWidget::LocalModInfoWidget(QWidget *parent, LocalModPath *path) :
@@ -17,7 +16,6 @@ LocalModInfoWidget::LocalModInfoWidget(QWidget *parent, LocalModPath *path) :
     ui(new Ui::LocalModInfoWidget)
 {
     ui->setupUi(this);
-    ui->tagsWidget->setLayout(new FlowLayout());
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
     if(path_)
         ui->pathName->setText(path_->info().displayName());
@@ -41,6 +39,7 @@ void LocalModInfoWidget::setMods(QList<LocalMod *> mods)
     case 1:{
         ui->stackedWidget->setCurrentIndex(1);
         mod_ = mods.first();
+        ui->tagsWidget->setMod(mod_);
 
         updateInfo();
         connect(this, &LocalModInfoWidget::modChanged, this, disconnecter(
@@ -97,18 +96,4 @@ void LocalModInfoWidget::updateInfo()
 //        ui->curseforgeButton->setVisible(true);
 //    if (mod_->modrinthMod())
 //        ui->modrinthButton->setVisible(true);
-
-    //tags
-    for(auto widget : qAsConst(tagWidgets_)){
-        ui->tagsWidget->layout()->removeWidget(widget);
-        widget->deleteLater();
-    }
-    tagWidgets_.clear();
-    for(auto &&tag : mod_->tags()){
-        auto label = new QLabel(tag.name(), this);
-        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
-        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
-        ui->tagsWidget->layout()->addWidget(label);
-        tagWidgets_ << label;
-    }
 }

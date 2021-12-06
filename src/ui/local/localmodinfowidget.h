@@ -28,7 +28,6 @@ private:
     Ui::LocalModInfoWidget *ui;
     QList<LocalMod *> mods_;
     LocalMod * mod_;
-    QList<QWidget*> tagWidgets_;
 };
 
 #endif // LOCALMODINFOWIDGET_H

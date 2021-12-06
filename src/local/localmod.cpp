@@ -27,6 +27,7 @@ LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
     curseforgeAPI_(CurseforgeAPI::api()),
     modrinthAPI_(ModrinthAPI::api())
 {
+//    connect(this, &LocalMod::tagsEditted, this, &LocalMod::modFileUpdated);
     setModFile(file);
 }
 
@@ -38,6 +39,8 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     targetVersion_(parent->info().gameVersion()),
     targetLoaderType_(parent->info().loaderType())
 {
+    connect(this, &LocalMod::tagsEditted, path_, &LocalModPath::writeToFile);
+    connect(this, &LocalMod::modCacheUpdated, path_, &LocalModPath::writeToFile);
     addSubTagable(path_);
     setModFile(file);
     connect(parent, &LocalModPath::infoUpdated, this, [=]{
@@ -446,9 +449,9 @@ QJsonObject LocalMod::toJsonObject() const
         object.insert("alias", alias_);
     if(isFeatured_)
         object.insert("featured", isFeatured_);
-    if(!tags(TagCategory::CustomizableCategories).isEmpty()){
+    if(auto taglist = tags(TagCategory::CustomizableCategories, true); !taglist.isEmpty()){
         QJsonArray tagArray;
-        for(auto &&tag : tags(TagCategory::CustomizableCategories))
+        for(auto &&tag : taglist)
             tagArray << tag.toJsonValue();
         object.insert("tags", tagArray);
     }
@@ -501,7 +504,7 @@ void LocalMod::restore(const QVariant &variant)
     alias_ = value(variant, "alias").toString();
     isFeatured_ = value(variant, "featured").toBool();
     for(auto &&tag : value(variant, "tags").toList())
-        addTag(Tag::fromVariant(tag));
+        importTag(Tag::fromVariant(tag));
     if(contains(variant, "curseforge")){
         auto curseforgeVariant = value(variant, "curseforge");
         if(contains(curseforgeVariant, "id"))
@@ -577,12 +580,12 @@ void LocalMod::setModFile(LocalModFile *newModFile)
         modFile_->setParent(this);
         if(modFile_->loaderType() == ModLoaderType::Fabric){
             if(auto environment = modFile_->fabric().environment(); environment == "*"){
-                addTag(Tag::clientTag());
-                addTag(Tag::serverTag());
+                importTag(Tag::clientTag());
+                importTag(Tag::serverTag());
             }else if(environment == "client")
-                addTag(Tag::clientTag());
+                importTag(Tag::clientTag());
             else if(environment == "server")
-                addTag(Tag::serverTag());
+                importTag(Tag::serverTag());
         }
     }
     updateIcon();

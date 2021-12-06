@@ -1,5 +1,23 @@
 #include "tagable.h"
 
+Tagable::~Tagable()
+{
+    for(auto parent : qAsConst(parents_))
+        parent->children_.removeAll(this);
+    for(auto child : qAsConst(children_))
+        child->parents_.removeAll(this);
+}
+
+void Tagable::importTag(const Tag &tag)
+{
+    auto category = tag.category();
+    if(tagMap_.contains(category))
+        tagMap_[category] << tag;
+    else
+        tagMap_[category] = { tag };
+    setTagsChanged();
+}
+
 void Tagable::addTag(const Tag &tag)
 {
     auto category = tag.category();
@@ -7,6 +25,8 @@ void Tagable::addTag(const Tag &tag)
         tagMap_[category] << tag;
     else
         tagMap_[category] = { tag };
+    setTagsChanged();
+    if(category.isCustomizable()) setTagsEditted();
 }
 
 void Tagable::addTags(const TagCategory &category, const QList<Tag> &tags)
@@ -15,23 +35,35 @@ void Tagable::addTags(const TagCategory &category, const QList<Tag> &tags)
         tagMap_[category] << tags;
     else
         tagMap_[category] = tags;
+    setTagsChanged();
+    if(category.isCustomizable()) setTagsEditted();
 }
 
 void Tagable::removeTag(const Tag &tag)
 {
     auto category = tag.category();
     tagMap_[category].removeAll(tag);
+    setTagsChanged();
+    if(category.isCustomizable()) setTagsEditted();
 }
 
 void Tagable::removeTags(const QList<TagCategory> &categories)
 {
-    for(const auto &category : categories)
+    bool editted= false;
+    for(const auto &category : categories){
         tagMap_.remove(category);
+        if(category.isCustomizable()) editted = true;
+    }
+    setTagsChanged();
+    if(editted) setTagsEditted();
 }
 
 void Tagable::removeTags(const TagCategory &category)
 {
     tagMap_.remove(category);
+    setTagsChanged();
+    if(category.isCustomizable()) setTagsEditted();
+    if(category.isCustomizable()) setTagsEditted();
 }
 
 Tagable &Tagable::operator<<(const Tag &tag)
@@ -76,10 +108,34 @@ QList<Tag> Tagable::customizableTags() const
 
 void Tagable::addSubTagable(Tagable *child)
 {
+    if(!child) return;
     children_ << child;
+    child->parents_ << this;
+    setTagsChanged();
 }
 
 void Tagable::removeSubTagable(Tagable *child)
 {
+    if(!child) return;
     children_.removeAll(child);
+    child->parents_.removeAll(this);
+    setTagsChanged();
+}
+
+void Tagable::tagsChanged()
+{}
+
+void Tagable::tagsEditted()
+{}
+
+void Tagable::setTagsChanged()
+{
+    for(const auto &parent : qAsConst(parents_))
+        parent->setTagsChanged();
+    tagsChanged();
+}
+
+void Tagable::setTagsEditted()
+{
+    tagsEditted();
 }

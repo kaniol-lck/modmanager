@@ -13,6 +13,8 @@ public:
     bool operator!=(const TagCategory &other) const;
     bool operator<(const TagCategory &other) const;
 
+    bool isCustomizable() const;
+
     static TagCategory fromId(const QString &id);
 
     static const TagCategory SubDirCategory;
