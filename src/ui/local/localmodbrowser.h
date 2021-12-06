@@ -54,6 +54,10 @@ private slots:
     void onLoadProgress(int loadedCount, int totalCount);
     void onLoadFinished();
 
+    void onLinkStarted();
+    void onLinkProgress(int linkedCount, int totalCount);
+    void onLinkFinished();
+
     void onCheckUpdatesStarted();
     void onCheckCancelled();
     void onUpdateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount);
@@ -94,6 +98,8 @@ private slots:
     void on_actionSearch_on_Modrinth_triggered();
     void on_actionCheck_Updates_triggered();
     void on_actionUpdate_All_triggered();
+    void on_actionLink_Mod_Files_triggered();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:

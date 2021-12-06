@@ -35,6 +35,7 @@ bool LocalFileLinker::linked() const
 void LocalFileLinker::link()
 {
     if(localFile_->loaderTypes().isEmpty()) return;
+    if(curseforgeLinked_  && modrinthLinked_) return;
     emit linkStarted();
     auto count = std::make_shared<int>(2);
     auto hasWeb = std::make_shared<bool>(false);
@@ -42,26 +43,40 @@ void LocalFileLinker::link()
         if(bl) *hasWeb = true;
         if(--(*count) == 0) emit linkFinished(*hasWeb);
     };
-    connect(this, &LocalFileLinker::linkCurseforgeFinished, this, foo);
-    connect(this, &LocalFileLinker::linkModrinthFinished, this, foo);
-    linkCurseforge();
-    linkModrinth();
+    if(!curseforgeLinked_){
+        connect(this, &LocalFileLinker::linkCurseforgeFinished, this, foo);
+        linkCurseforge();
+    }
+    if(!modrinthLinked_){
+        connect(this, &LocalFileLinker::linkModrinthFinished, this, foo);
+        linkModrinth();
+    }
+}
+
+void LocalFileLinker::linkCached()
+{
+    linkCachedCurseforge();
+    linkCachedModrinth();
+}
+
+void LocalFileLinker::linkCachedCurseforge()
+{
+    auto &&murmurhash = localFile_->murmurhash();
+    if(KnownFile::curseforgeFiles().keys().contains(murmurhash)){
+        setCurseforgeFileInfo(KnownFile::curseforgeFiles().value(murmurhash));
+        curseforgeLinked_ = true;
+        return;
+    }
+    if(KnownFile::unmatchedCurseforgeFiles().contains(murmurhash)){
+        curseforgeLinked_ = true;
+        return;
+    }
 }
 
 void LocalFileLinker::linkCurseforge()
 {
     emit linkCurseforgeStarted();
     auto &&murmurhash = localFile_->murmurhash();
-    //file cache
-    if(KnownFile::curseforgeFiles().keys().contains(murmurhash)){
-        setCurseforgeFileInfo(KnownFile::curseforgeFiles().value(murmurhash));
-        emit linkCurseforgeFinished(true);
-        return;
-    }
-    if(KnownFile::unmatchedCurseforgeFiles().contains(murmurhash)){
-        emit linkCurseforgeFinished(false);
-        return;
-    }
     qDebug() << "try link curseforge:" << murmurhash;
     CurseforgeAPI *api;
     if(localFile_->modPath())
@@ -81,20 +96,24 @@ void LocalFileLinker::linkCurseforge()
     })));
 }
 
+void LocalFileLinker::linkCachedModrinth()
+{
+    auto &&sha1 = localFile_->sha1();
+    if(KnownFile::modrinthFiles().keys().contains(sha1)){
+        setModrinthFileInfo(KnownFile::modrinthFiles().value(sha1));
+        modrinthLinked_ = true;
+        return;
+    }
+    if(KnownFile::unmatchedModrinthFiles().contains(sha1)){
+        modrinthLinked_ = true;
+        return;
+    }
+}
+
 void LocalFileLinker::linkModrinth()
 {
     emit linkModrinthStarted();
     auto &&sha1 = localFile_->sha1();
-    //file cache
-    if(KnownFile::modrinthFiles().keys().contains(sha1)){
-        setModrinthFileInfo(KnownFile::modrinthFiles().value(sha1));
-        emit linkModrinthFinished(true);
-        return;
-    }
-    if(KnownFile::unmatchedModrinthFiles().contains(sha1)){
-        emit linkModrinthFinished(false);
-        return;
-    }
     qDebug() << "try link modrinth:" << sha1;
     ModrinthAPI *api;
     if(localFile_->modPath())

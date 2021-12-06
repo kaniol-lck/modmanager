@@ -17,7 +17,10 @@ public:
     bool linked() const;
 
     void link();
+    void linkCached();
+    void linkCachedCurseforge();
     void linkCurseforge();
+    void linkCachedModrinth();
     void linkModrinth();
     std::optional<CurseforgeFileInfo> curseforgeFileInfo() const;
     void setCurseforgeFileInfo(CurseforgeFileInfo newCurseforgeFileInfo);

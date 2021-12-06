@@ -187,7 +187,7 @@ QAria2Downloader *LocalMod::downloadOldMod(DownloadFileInfo &info)
         if(!LocalModFile::availableSuffix.contains(fileInfo.suffix())) return;
         auto file = new LocalModFile(path_, fileInfo.absoluteFilePath());
         file->loadInfo();
-        file->linker()->link();
+        file->linker()->linkCached();
         qDebug() << file->addOld();
         addOldFile(file);
         emit modFileUpdated();
@@ -564,35 +564,6 @@ LocalModPath *LocalMod::path() const
 {
     return path_;
 }
-
-//const QList<Tag> LocalMod::tags() const
-//{
-//    return tagManager_.tags();
-//}
-
-//const QList<Tag> LocalMod::customizableTags() const
-//{
-//    return tagManager_.tags(TagCategory::CustomizableCategories);
-//}
-
-//void LocalMod::addTag(const Tag &tag)
-//{
-//    tagManager_.addTag(tag);
-//    emit modCacheUpdated();
-//    emit modFileUpdated();
-//}
-
-//void LocalMod::removeTag(const Tag &tag)
-//{
-//    tagManager_.removeTag(tag);
-//    emit modCacheUpdated();
-//    emit modFileUpdated();
-//}
-
-//Tagable &LocalMod::tagManager()
-//{
-//    return tagManager_;
-//}
 
 void LocalMod::setModFile(LocalModFile *newModFile)
 {

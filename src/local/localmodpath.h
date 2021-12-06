@@ -34,6 +34,10 @@ public:
 
     LocalMod *findLocalMod(const QString &id);
 
+    //link mods
+    void linkAllFiles();
+
+    //check update
     void checkModUpdates(bool force = true);
     void cancelChecking();
     void updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curseforgeUpdateList, QList<QPair<LocalMod *, ModrinthFileInfo> > modrinthUpdateList);
@@ -57,22 +61,31 @@ public:
     LocalMod *optiFineMod() const;
 
     bool isLoading() const;
+    bool isLinking() const;
     bool isChecking() const;
     bool modsLoaded() const;
     bool isUpdating() const;
-
 signals:
     void infoUpdated();
     void modListUpdated();
+
+    //load
     void loadStarted();
     void loadProgress(int loadedCount, int totalCount);
     void loadFinished();
     void checkCancelled();
 
+    //link
+    void linkStarted();
+    void linkProgress(int linkedCount, int totalCount);
+    void linkFinished();
+
+    //check update
     void checkUpdatesStarted();
     void updateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount);
     void updatesReady(int failedCount = 0);
 
+    //update
     void updatesStarted();
     void updatableCountChanged(int count);
     void updatesProgress(qint64 bytesReceived, qint64 bytesTotal);
@@ -102,7 +115,7 @@ private:
     bool loaded_ = false;
     bool initialUpdateChecked_ = false;
     bool isLoading_ = false;
-    bool isSearching_ = false;
+    bool isLinking_ = false;
     bool isChecking_ = false;
     bool isUpdating_ = false;
 };

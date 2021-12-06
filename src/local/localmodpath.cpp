@@ -42,7 +42,12 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
 //        if(initialUpdateChecked_) return;
 //        checkModUpdates(false);
 //        initialUpdateChecked_ = true;
-//    });
+    //    });
+}
+
+bool LocalModPath::isLinking() const
+{
+    return isLinking_;
 }
 
 bool LocalModPath::isUpdating() const
@@ -114,9 +119,9 @@ void LocalModPath::loadMods(bool autoLoaderType)
         fabricModMap_.clear();
         provideList_.clear();
 
-        //load normal mods (include duplicate)
+        //link all file from cache
         for(const auto &file : qAsConst(modFileList))
-            file->linker()->link();
+            file->linker()->linkCached();
 
         //load normal mods (include duplicate)
         for(const auto &file : qAsConst(modFileList))
@@ -442,6 +447,42 @@ QList<std::tuple<FabricModInfo, QString, QString, FabricModInfo> > LocalModPath:
 LocalMod *LocalModPath::findLocalMod(const QString &id)
 {
     return modMap_.contains(id)? modMap_.value(id) : nullptr;
+}
+
+void LocalModPath::linkAllFiles()
+{
+    if(modMap_.isEmpty() || isLinking_) return;
+    isLinking_ = true;
+    emit linkStarted();
+    qDebug() << "link started";
+    auto count = std::make_shared<int>(0);
+    auto linkedCount = std::make_shared<int>(0);
+    for(auto &&map : modMaps()) for(const auto &mod : map){
+        auto file = mod->modFile();
+        auto linker = file->linker();
+        connect(linker, &LocalFileLinker::linkStarted, this, [=]{
+            (*count)++;
+        });
+        connect(linker, &LocalFileLinker::linkFinished, this, [=]{
+            (*linkedCount) ++;
+            emit linkProgress(*linkedCount, *count);
+            if(*linkedCount == *count){
+                isLinking_ = false;
+                emit linkFinished();
+                qDebug() << "link finished";
+            }
+        });
+        bool noLink = true;
+        if(!linker->linked()){
+            noLink = false;
+            linker->link();
+        }
+        if(noLink){
+            isLinking_ = false;
+            emit linkFinished();
+            qDebug() << "link finished : nothing to link.";
+        }
+    }
 }
 
 void LocalModPath::checkModUpdates(bool force) // force = true by default

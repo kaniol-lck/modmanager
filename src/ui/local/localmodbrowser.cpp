@@ -108,6 +108,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     menu->addAction(ui->actionReload_Mods);
     menu->addAction(ui->actionBatch_Rename);
     menu->addAction(ui->actionDelete_Old_Files_In_Path);
+    menu->addAction(ui->actionLink_Mod_Files);
     ui->menuButton->setMenu(menu);
 
     auto renameToMenu = new QMenu(this);
@@ -147,6 +148,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::onLoadFinished);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::loadFinished);
     connect(modPath_, &LocalModPath::modListUpdated, this, &LocalModBrowser::updateModList);
+    connect(modPath_, &LocalModPath::linkStarted, this, &LocalModBrowser::onLinkStarted);
+    connect(modPath_, &LocalModPath::linkProgress, this, &LocalModBrowser::onLinkProgress);
+    connect(modPath_, &LocalModPath::linkFinished, this, &LocalModBrowser::onLinkFinished);
     connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::onCheckUpdatesStarted);
     connect(modPath_, &LocalModPath::checkCancelled, this, &LocalModBrowser::onCheckCancelled);
     connect(modPath_, &LocalModPath::updateCheckedCountUpdated, this, &LocalModBrowser::onUpdateCheckedCountUpdated);
@@ -160,6 +164,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::linkStarted, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::linkProgress, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::linkFinished, this, &LocalModBrowser::updateProgressBar);
 //    connect(modPath_, &LocalModPath::checkWebsitesStarted, this, &LocalModBrowser::updateProgressBar);
 //    connect(modPath_, &LocalModPath::websiteCheckedCountUpdated, this, &LocalModBrowser::updateProgressBar);
 //    connect(modPath_, &LocalModPath::websitesReady, this, &LocalModBrowser::updateProgressBar);
@@ -269,6 +276,26 @@ void LocalModBrowser::onLoadFinished()
     ui->actionCheck_Updates->setText("Check Updates");
 }
 
+void LocalModBrowser::onLinkStarted()
+{
+    ui->actionLink_Mod_Files->setEnabled(false);
+    onLinkProgress(0, 0);
+    statusBarWidget_->setText(tr("Linking mod files..."));
+}
+
+void LocalModBrowser::onLinkProgress(int linkedCount, int totalCount)
+{
+    statusBarWidget_->setText(tr("Linkinig mod files.. (Linked %1/%2 mod files)").arg(linkedCount).arg(totalCount));
+    progressBar_->setMaximum(totalCount);
+    progressBar_->setValue(linkedCount);
+}
+
+void LocalModBrowser::onLinkFinished()
+{
+    ui->actionLink_Mod_Files->setEnabled(true);
+    updateStatusText();
+}
+
 void LocalModBrowser::onCheckUpdatesStarted()
 {
 //    ui->checkUpdatesButton->setEnabled(false);
@@ -374,7 +401,7 @@ void LocalModBrowser::updateStatusText()
 
 void LocalModBrowser::updateProgressBar()
 {
-    bool bl = modPath_->isLoading() || modPath_->isChecking() || modPath_->isUpdating();
+    bool bl = modPath_->isLoading() || modPath_->isLinking() || modPath_->isChecking() || modPath_->isUpdating();
     progressBar_->setVisible(bl);
     if(!bl) statusBarWidget_->setText("");
 }
@@ -752,5 +779,11 @@ void LocalModBrowser::on_actionUpdate_All_triggered()
 {
     auto dialog = new LocalModUpdateDialog(this, modPath_);
     dialog->exec();
+}
+
+
+void LocalModBrowser::on_actionLink_Mod_Files_triggered()
+{
+    modPath_->linkAllFiles();
 }
 

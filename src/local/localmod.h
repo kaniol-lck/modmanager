@@ -199,7 +199,7 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
     auto file = new LocalModFile(path_, newPath);
     auto callback1 = [=]{
         file->loadInfo();
-        file->linker()->link();
+        file->linker()->linkCached();
         //loader type mismatch
         if(!file->loaderTypes().contains(modFile_->loaderType())){
             emit updateFinished(false);
