@@ -29,19 +29,20 @@ QMetaObject::Connection OptifineAPI::getModList(std::function<void (QList<Optifi
         auto webPage = reply->readAll();
         reply->deleteLater();
 
-        QRegExp re(R"(<tr class='downloadLine.*'>(.*)</tr>)");
-        re.setMinimal(true);
-        int pos = 0;
+        QRegularExpression re(R"(<tr class='downloadLine.*?'>(.*?)</tr>)");
+        //TODO: workaround for multiline match
+        webPage.replace('\n', "");
         QList<OptifineModInfo> list;
-        GameVersion gameVersion = capture(webPage, "<h2>Minecraft (.+)</h2>", true, pos);
+        GameVersion gameVersion = capture(webPage, "<h2>Minecraft (.+?)</h2>", 0);
         GameVersion nextGameVersion;
-        while ((pos = re.indexIn(webPage, pos)) != -1) {
-            if(auto gv = capture(webPage, "<h2>Minecraft (.+)</h2>", true, pos); gv != nextGameVersion){
+        auto it = re.globalMatch(webPage);
+        while(it.hasNext()) {
+            auto match = it.next();
+            if(auto gv = capture(webPage, "<h2>Minecraft (.+?)</h2>", match.capturedStart(1)); gv != nextGameVersion){
                 if(nextGameVersion != GameVersion::Any) gameVersion = nextGameVersion;
                 nextGameVersion = gv;
             }
-            list << OptifineModInfo::fromHtml(re.cap(1), gameVersion);
-            pos +=  re.matchedLength();
+            list << OptifineModInfo::fromHtml(match.captured(1), gameVersion);
         }
         callback(list);
     });
@@ -62,7 +63,9 @@ QMetaObject::Connection OptifineAPI::getDownloadUrl(const QString &fileName, std
         }
         auto webPage = reply->readAll();
         reply->deleteLater();
-        auto str = capture(webPage, R"(<a href='(.*)' onclick='.*'>.*</a>)");
+        //TODO: workaround for multiline match
+        webPage.replace('\n', "");
+        auto str = capture(webPage, R"(<a href='(.*?)' onclick='.*?'>.*?</a>)");
         QUrl downloadUrl = "https://optifine.net/" + str;
         callback(downloadUrl);
     });

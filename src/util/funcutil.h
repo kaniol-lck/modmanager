@@ -22,7 +22,7 @@ bool hasFile(LocalModPath *path, const CurseforgeFileInfo &fileInfo);
 bool hasFile(LocalModPath *path, ModrinthMod *mod);
 bool hasFile(LocalModPath *path, const ModrinthFileInfo &fileInfo);
 
-QString capture(const QString &str, const QString &regExp, bool minimal = true, int offset = 0);
+QString capture(const QString &str, const QString &rx, int offset = 0);
 
 QStringList getExistingDirectories(QWidget *parent = nullptr, const QString &caption = QString(), const QString &dir = QString());
 

@@ -31,19 +31,19 @@ void ReplayAPI::getModList(std::function<void (QList<ReplayModInfo>)> callback)
         }
         auto webPage = reply->readAll();
         reply->deleteLater();
-        QRegExp re(R"((<th>Replay Mod .*)</tr>)");
-        re.setMinimal(true);
+        QRegularExpression re(R"((<th>Replay Mod .*?)</tr>)");
         int pos = webPage.indexOf("All Versions");
         QList<ReplayModInfo> list;
-        GameVersion gameVersion = capture(webPage, "<h3>(Minecraft .+) ?.*</h3>", true, pos);
+        GameVersion gameVersion = capture(webPage, "<h3>(Minecraft .+?) ?.*?</h3>", pos);
         GameVersion nextGameVersion;
-        while ((pos = re.indexIn(webPage, pos)) != -1) {
-            if(auto gv = capture(webPage, "<h3>(Minecraft .+) ?.*</h3>", true, pos); gv != nextGameVersion){
+        auto it = re.globalMatch(webPage);
+        while (it.hasNext()) {
+            auto match = it.next();
+            if(auto gv = capture(webPage, "<h3>(Minecraft .+?) ?.*?</h3>", pos); gv != nextGameVersion){
                 if(nextGameVersion != GameVersion::Any) gameVersion = nextGameVersion;
                 nextGameVersion = gv;
             }
-            list << ReplayModInfo::fromHtml(re.cap(1), gameVersion);
-            pos +=  re.matchedLength();
+            list << ReplayModInfo::fromHtml(match.captured(1), gameVersion);
         }
         callback(list);
     });

@@ -100,7 +100,7 @@ void ModrinthModDialog::updateFullInfo()
 {
     updateBasicInfo();
     auto text = mod_->modInfo().description();
-    text.replace(QRegExp("<br ?/?>"), "\n");
+    text.replace(QRegularExpression("<br ?/?>"), "\n");
     ui->websiteButton->setVisible(!mod_->modInfo().websiteUrl().isEmpty());
     ui->modDescription->setMarkdown(text);
     ui->modDescription->setCursor(Qt::ArrowCursor);

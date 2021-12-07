@@ -64,7 +64,11 @@ LocalModItemWidget::~LocalModItemWidget()
     delete ui;
 }
 
-void LocalModItemWidget::enterEvent(QEvent *event)
+#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+void LocalModItemWidget::enterEvent(QEnterEvent *event)
+#else
+void LocalModItemWidget::enterEvent(QEvent * event)
+#endif
 {
     ui->disableButton->setVisible(true);
     ui->featuredButton->setVisible(true);

@@ -8,9 +8,9 @@
 OptifineModInfo OptifineModInfo::fromHtml(const QString &html, const GameVersion &gameVersion)
 {
     OptifineModInfo info;
-    info.name_ = capture(html, R"(<td class='colFile'>(.*)</td>)");
-    info.mirrorUrl_ = capture(html, R"_(<td class='colMirror'><a href="(.*)">.*</a></td>)_");
-    info.fileName_ = capture(info.mirrorUrl_.toString(), R"(=(.*\.jar))");
+    info.name_ = capture(html, R"(<td class='colFile'>(.*?)</td>)");
+    info.mirrorUrl_ = capture(html, R"_(<td class='colMirror'><a href="(.*)">.*?</a></td>)_");
+    info.fileName_ = capture(info.mirrorUrl_.toString(), R"(=(.*?\.jar))");
     info.gameVersion_ = gameVersion;
     info.isPreview_ = info.fileName_.contains("preview");
     return info;

@@ -127,12 +127,11 @@ bool hasFile(LocalModPath *path, const ModrinthFileInfo &fileInfo)
     return false;
 }
 
-QString capture(const QString &str, const QString &regExp, bool minimal, int offset)
+QString capture(const QString &str, const QString &rx, int offset)
 {
-    QRegExp re(regExp);
-    re.setMinimal(minimal);
-    if(re.indexIn(str, offset) != -1)
-        return re.cap(1);
+    QRegularExpression re(rx);
+    if(auto match = re.match(str, offset); match.hasMatch())
+        return match.captured(1);
     else
         return "";
 }

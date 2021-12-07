@@ -3,7 +3,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QRegExp>
 #include <QJsonDocument>
 #include <QDebug>
 
@@ -162,11 +161,10 @@ bool GameVersion::operator!=(const GameVersion &another) const
 
 GameVersion GameVersion::deduceFromString(const QString &string)
 {
-    QRegExp re(R"((\d+\.\d+(\.\d+)?))");
-    if(re.indexIn(string) != -1){
-        //2nd cap
-        auto str = re.cap(1);
-        if(mojangVersionList().contains(str))
+    QRegularExpression re(R"((\d+\.\d+(\.\d+)?))");
+    if(auto match = re.match(string); match.hasMatch()){
+        auto str = match.captured(1);
+        if(mojangVersionList().contains(GameVersion(str)))
             return {GameVersion(str)};
     }
     return GameVersion::Any;
