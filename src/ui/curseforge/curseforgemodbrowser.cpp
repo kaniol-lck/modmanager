@@ -7,9 +7,11 @@
 #include <QAction>
 #include <QMenu>
 #include <QStandardItem>
+#include <QStatusBar>
 
 #include "curseforgemodinfowidget.h"
 #include "curseforgefilelistwidget.h"
+#include "curseforgestatusbarwidget.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
 #include "local/localmod.h"
@@ -29,6 +31,8 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     model_(new QStandardItemModel(this)),
     infoWidget_(new CurseforgeModInfoWidget(this)),
     fileListWidget_(new CurseforgeFileListWidget(this)),
+    statusBarWidget_(new CurseforgeStatusBarWidget(this)),
+    statusBar_(new QStatusBar(this)),
     api_(new CurseforgeAPI(this)),
     localMod_(mod)
 {
@@ -39,6 +43,10 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    //setup status bar
+    statusBar_->addPermanentWidget(statusBarWidget_);
+    ui->mainLayout->addWidget(statusBar_);
+
     ui->loaderSelect->blockSignals(true);
     for(const auto &type : ModLoaderType::curseforge)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
@@ -47,6 +55,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     updateVersionList();
     updateCategoryList();
     updateLocalPathList();
+    updateStatusText();
 
     connect(ui->modListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
@@ -245,6 +254,12 @@ void CurseforgeModBrowser::onSliderChanged(int i)
     }
 }
 
+void CurseforgeModBrowser::updateStatusText()
+{
+    auto str = tr("Loaded %1 mods from Curseforge.").arg(idList_.size());
+    statusBar_->showMessage(str);
+}
+
 void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
 {
     if(!index)
@@ -252,6 +267,8 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
     else if(!hasMore_ || isSearching_)
         return;
     setCursor(Qt::BusyCursor);
+    statusBarWidget_->setText(tr("Searching mods..."));
+    statusBarWidget_->setProgressVisible(true);
 
     GameVersion gameVersion = currentGameVersion_;
     auto category = currentCategoryId_;
@@ -260,6 +277,8 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
     isSearching_ = true;
     auto conn = api_->searchMods(gameVersion, index, name, category, sort, [=](const QList<CurseforgeModInfo> &infoList){
         setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText("");
+        statusBarWidget_->setProgressVisible(false);
 
         //new search
         if(currentIndex_ == 0){
@@ -312,6 +331,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             currentIndex_ += 20;
             getModList(currentName_, currentIndex_, needMore - shownCount);
         }
+        updateStatusText();
         updateIndexWidget();
     });
     connect(this, &QObject::destroyed, this, [=]{

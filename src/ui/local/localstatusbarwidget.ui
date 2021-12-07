@@ -40,11 +40,7 @@
      <widget class="QWidget" name="page">
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>TextLabel</string>
-         </property>
-        </widget>
+        <widget class="QLabel" name="label"/>
        </item>
       </layout>
      </widget>
@@ -97,7 +93,8 @@
          <string>List Mode</string>
         </property>
         <property name="icon">
-         <iconset theme="view-list-details"/>
+         <iconset theme="view-list-details">
+          <normaloff>.</normaloff>.</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -113,7 +110,8 @@
          <string>Icon Mode</string>
         </property>
         <property name="icon">
-         <iconset theme="view-list-icons"/>
+         <iconset theme="view-list-icons">
+          <normaloff>.</normaloff>.</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -129,7 +127,8 @@
          <string>Detail Mode</string>
         </property>
         <property name="icon">
-         <iconset theme="view-list-text"/>
+         <iconset theme="view-list-text">
+          <normaloff>.</normaloff>.</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>

@@ -12,6 +12,8 @@ class QListWidgetItem;
 
 class QStandardItemModel;
 class LocalMod;
+class CurseforgeStatusBarWidget;
+class QStatusBar;
 namespace Ui {
 class CurseforgeModBrowser;
 }
@@ -44,6 +46,7 @@ private slots:
     void updateLocalPathList();
     void search();
     void onSliderChanged(int i);
+    void updateStatusText();
     void on_modListView_doubleClicked(const QModelIndex &index);
     void on_loaderSelect_currentIndexChanged(int index);
     void on_downloadPathSelect_currentIndexChanged(int index);
@@ -59,10 +62,12 @@ private:
     QStandardItemModel *model_;
     CurseforgeModInfoWidget *infoWidget_;
     CurseforgeFileListWidget *fileListWidget_;
+    CurseforgeStatusBarWidget *statusBarWidget_;
+    QStatusBar *statusBar_;
     CurseforgeAPI *api_;
     QList<int> idList_;
     LocalModPath *downloadPath_ = nullptr;
-    //open as dialog to search mod
+    //open as a dialog to search mod
     LocalMod *localMod_;
     QString currentName_;
     int currentIndex_;
