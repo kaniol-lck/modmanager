@@ -28,7 +28,6 @@ private slots:
 private:
     Ui::CurseforgeModInfoWidget *ui;
     CurseforgeMod *mod_ = nullptr;
-    QList<QWidget*> tagWidgets_;
     bool transltedSummary_ = false;
 };
 

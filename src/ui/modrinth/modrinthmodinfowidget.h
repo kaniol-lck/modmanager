@@ -28,7 +28,6 @@ private slots:
 private:
     Ui::ModrinthModInfoWidget *ui;
     ModrinthMod *mod_ = nullptr;
-    QList<QWidget*> tagWidgets_;
     bool transltedSummary_ = false;
 };
 

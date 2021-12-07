@@ -154,6 +154,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>28</height>
+          </size>
+         </property>
          <property name="font">
           <font>
            <pointsize>13</pointsize>
@@ -195,16 +201,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="tags" native="true">
-         <layout class="QHBoxLayout" name="tagsLayout">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-         </layout>
-        </widget>
+        <widget class="TagsWidget" name="tagsWidget" native="true"/>
        </item>
        <item>
         <spacer name="horizontalSpacer">
@@ -374,6 +371,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TagsWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/tagswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

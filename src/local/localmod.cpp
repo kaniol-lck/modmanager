@@ -66,7 +66,7 @@ void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
         curseforgeMod_->setParent(this);
         emit curseforgeReady(true);
         emit modCacheUpdated();
-        emit modFileUpdated();
+        emit modInfoChanged();
     }
 }
 
@@ -193,7 +193,7 @@ QAria2Downloader *LocalMod::downloadOldMod(DownloadFileInfo &info)
         file->linker()->linkCached();
         qDebug() << file->addOld();
         addOldFile(file);
-        emit modFileUpdated();
+        emit modInfoChanged();
     });
     return downloader;
 }
@@ -249,7 +249,7 @@ void LocalMod::addOldFile(LocalModFile *oldFile)
     oldFile->setParent(this);
     oldFile->setMod(this);
     oldFiles_ << oldFile;
-    emit modFileUpdated();
+    emit modInfoChanged();
 }
 
 void LocalMod::addDuplicateFile(LocalModFile *duplicateFile)
@@ -267,7 +267,7 @@ void LocalMod::duplicateToOld()
     }
 
     duplicateFiles_.clear();
-    emit modFileUpdated();
+    emit modInfoChanged();
 }
 
 void LocalMod::rollback(LocalModFile *file)
@@ -280,7 +280,7 @@ void LocalMod::rollback(LocalModFile *file)
     oldFiles_ << modFile_;
     setModFile(file);
     if(disabled) setEnabled(false);
-    emit modFileUpdated();
+    emit modInfoChanged();
 
     //reset update info
     curseforgeUpdater_.reset();
@@ -295,7 +295,7 @@ void LocalMod::deleteAllOld()
     for(auto &oldFile : qAsConst(oldFiles_))
         oldFile->remove();
     clearQObjects(oldFiles_);
-    emit modFileUpdated();
+    emit modInfoChanged();
 }
 
 void LocalMod::deleteOld(LocalModFile *file)
@@ -305,7 +305,7 @@ void LocalMod::deleteOld(LocalModFile *file)
         file->setParent(nullptr);
         file->deleteLater();
     }
-    emit modFileUpdated();
+    emit modInfoChanged();
 }
 
 bool LocalMod::isDisabled()
@@ -322,7 +322,7 @@ bool LocalMod::setEnabled(bool enabled)
 {
     auto bl = modFile_->setEnabled(enabled);
     if(bl){
-        emit modFileUpdated();
+        emit modInfoChanged();
         updateIcon();
     }
     return bl;
@@ -421,7 +421,8 @@ void LocalMod::setCurseforgeId(int id, bool cache)
 void LocalMod::setModrinthId(const QString &id, bool cache)
 {
     if(!id.isEmpty()){
-        setModrinthMod(new ModrinthMod(this, id));
+        modrinthMod_ = new ModrinthMod(this, id);
+        emit curseforgeReady(true);
         if(cache)
             IdMapper::addModrinth(commonInfo()->id(), id);
     } else
@@ -437,7 +438,7 @@ void LocalMod::setAlias(const QString &newAlias)
 {
     if(alias_ == newAlias) return;
     alias_ = newAlias;
-    emit modFileUpdated();
+    emit modInfoChanged();
     emit modCacheUpdated();
 }
 
@@ -560,7 +561,7 @@ void LocalMod::setFeatured(bool featured)
 {
     isFeatured_ = featured;
     emit modCacheUpdated();
-    emit modFileUpdated();
+    emit modInfoChanged();
 }
 
 LocalModPath *LocalMod::path() const
@@ -570,13 +571,13 @@ LocalModPath *LocalMod::path() const
 
 void LocalMod::setModFile(LocalModFile *newModFile)
 {
-    if(modFile_) disconnect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
+    if(modFile_) disconnect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modInfoChanged);
     removeSubTagable(modFile_);
     modFile_ = newModFile;
     modFile_->setMod(this);
     addSubTagable(modFile_);
     if(modFile_) {
-        connect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modFileUpdated);
+        connect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modInfoChanged);
         modFile_->setParent(this);
         if(modFile_->loaderType() == ModLoaderType::Fabric){
             if(auto environment = modFile_->fabric().environment(); environment == "*"){
@@ -663,6 +664,6 @@ void LocalMod::setModrinthMod(ModrinthMod *newModrinthMod)
         modrinthMod_->setParent(this);
         emit modrinthReady(true);
         emit modCacheUpdated();
-        emit modFileUpdated();
+        emit modInfoChanged();
     }
 }

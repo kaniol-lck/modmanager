@@ -85,7 +85,7 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod, QList<QStandard
     };
     onModChanged();
     onIconChanged();
-    QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
+    QObject::connect(mod, &LocalMod::modInfoChanged, onModChanged);
     QObject::connect(mod, &LocalMod::modIconUpdated, onIconChanged);
     return list;
 }

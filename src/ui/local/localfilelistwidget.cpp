@@ -42,7 +42,7 @@ void LocalFileListWidget::setMods(QList<LocalMod *> mods)
         mod_ = mods.first();
         onModFileUpdated();
         connect(this, &LocalFileListWidget::modChanged, this, disconnecter(
-                    connect(mod_, &LocalMod::modFileUpdated, this, &LocalFileListWidget::onModFileUpdated)));
+                    connect(mod_, &LocalMod::modInfoChanged, this, &LocalFileListWidget::onModFileUpdated)));
         break;
     }
     default:

@@ -6,13 +6,14 @@
 #include <optional>
 #include <modloadertype.h>
 
+#include "tag/tagable.h"
+
 #include "curseforgefileinfo.h"
 #include "modloadertype.h"
 
 class CurseforgeMod;
 
-
-class CurseforgeModInfo
+class CurseforgeModInfo : Tagable
 {
     friend class CurseforgeMod;
 public:

@@ -28,6 +28,8 @@ public:
     void setModInfo(ModrinthModInfo newModInfo);
 
 signals:
+    void tagsChanged() override;
+
     void authorReady();
     void iconReady();
     void fullInfoReady();

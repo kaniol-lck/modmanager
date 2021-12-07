@@ -26,8 +26,8 @@ QAria2::QAria2(QObject *parent) : QObject(parent)
     config_.downloadEventCallback = downloadEventCallback;
     config_.keepRunning = true;
     session_ = aria2::sessionNew(aria2::KeyVals(), config_);
-    for(auto &&keyVal : aria2::getGlobalOptions(session_))
-        qDebug() << keyVal.first.data() << keyVal.second.data();
+//    for(auto &&keyVal : aria2::getGlobalOptions(session_))
+//        qDebug() << keyVal.first.data() << keyVal.second.data();
     QtConcurrent::run([=]{
         aria2::run(session_, aria2::RUN_DEFAULT);
     });

@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-class LocalMod;
+class Tagable;
 namespace Ui {
 class TagsWidget;
 }
@@ -12,17 +12,29 @@ class TagsWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit TagsWidget(QWidget *parent = nullptr, LocalMod* mod = nullptr);
+    explicit TagsWidget(QWidget *parent = nullptr);
     ~TagsWidget();
 
-    void setMod(LocalMod* mod);
+    template<typename T>
+    void setMod(T* mod)
+    {
+        if(mod_) disconnect(mod, &T::tagsChanged, this, &TagsWidget::updateUi);
+        mod_ = mod;
+        updateUi();
+        connect(mod, &T::tagsChanged, this, &TagsWidget::updateUi);
+    }
+
     void updateUi();
+    bool iconOnly() const;
+    void setIconOnly(bool newIconOnly);
+
 protected:
     void wheelEvent(QWheelEvent *event) override;
 private:
     Ui::TagsWidget *ui;
     QList<QWidget *> tagWidgets_;
-    LocalMod *mod_ = nullptr;
+    Tagable *mod_ = nullptr;
+    bool iconOnly_ = false;
 };
 
 #endif // TAGSWIDGET_H

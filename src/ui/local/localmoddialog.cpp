@@ -47,7 +47,7 @@ LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     connect(mod_, &LocalMod::modrinthReady, this, [=](bool bl){
         ui->modrinthButton->setEnabled(bl);
     });
-    connect(mod_, &LocalMod::modFileUpdated, this, &LocalModDialog::onCurrentModChanged);
+    connect(mod_, &LocalMod::modInfoChanged, this, &LocalModDialog::onCurrentModChanged);
     connect(ui->aliasText, &QLineEdit::returnPressed, this, [=]{
         ui->editAliasButton->setChecked(false);
     });

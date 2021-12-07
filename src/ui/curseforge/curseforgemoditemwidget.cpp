@@ -19,6 +19,8 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
 {
     ui->setupUi(this);
     ui->downloadProgress->setVisible(false);
+    ui->tagsWidget->setIconOnly(true);
+    ui->tagsWidget->setMod(mod_);
     updateIcon();
     connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModItemWidget::updateIcon);
 
@@ -57,20 +59,6 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     ui->modUpdateDate->setToolTip(mod->modInfo().dateModified().toString());
     ui->modCreateDate->setText(tr("%1 ago").arg(timesTo(mod->modInfo().dateCreated())));
     ui->modCreateDate->setToolTip(mod->modInfo().dateCreated().toString());
-
-    //tags
-    for(auto &&tag : mod_->tags()){
-        auto label = new QLabel(this);
-        label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-        if(!tag.iconName().isEmpty())
-            label->setText(QString(R"(<img src="%1" height="22" width="22"/>)").arg(tag.iconName()));
-        else
-            label->setText(tag.name());
-        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
-        if(tag.category() != TagCategory::CurseforgeCategory)
-            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
-        ui->tagsLayout->addWidget(label);
-    }
 
     //loader type
     for(auto &&loaderType : mod_->modInfo().loaderTypes()){
@@ -178,7 +166,7 @@ void CurseforgeModItemWidget::updateUi()
     Config config;
     ui->modAuthors->setVisible(config.getShowModAuthors());
     ui->modDateTime->setVisible(config.getShowModDateTime());
-    ui->tags->setVisible(config.getShowModCategory());
+    ui->tagsWidget->setVisible(config.getShowModCategory());
     ui->loaderTypes->setVisible(config.getShowModLoaderType());
 }
 

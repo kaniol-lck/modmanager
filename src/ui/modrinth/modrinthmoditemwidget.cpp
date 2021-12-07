@@ -16,6 +16,8 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
     mod_(mod)
 {
     ui->setupUi(this);
+    ui->tagsWidget->setIconOnly(true);
+    ui->tagsWidget->setMod(mod_);
     ui->downloadProgress->setVisible(false);
     ui->downloadButton->setEnabled(false);
 
@@ -37,19 +39,6 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
 
     if(!mod_->modInfo().iconBytes().isEmpty())
         updateIcon();
-    //tags
-    for(auto &&tag : mod_->tags()){
-        auto label = new QLabel(this);
-        if(!tag.iconName().isEmpty())
-            // a bit smaller than curseforge's
-            label->setText(QString(R"(<img src="%1" height="16" width="16"/>)").arg(tag.iconName()));
-        else
-            label->setText(tag.name());
-        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
-        if(tag.category() != TagCategory::ModrinthCategory)
-            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
-        ui->tagsLayout->addWidget(label);
-    }
 
     mod->acquireFileList();
 
@@ -167,7 +156,7 @@ void ModrinthModItemWidget::updateUi()
     Config config;
     ui->modAuthors->setVisible(config.getShowModAuthors());
     ui->modDateTime->setVisible(config.getShowModDateTime());
-    ui->tags->setVisible(config.getShowModCategory());
+    ui->tagsWidget->setVisible(config.getShowModCategory());
 }
 
 void ModrinthModItemWidget::on_modSummary_customContextMenuRequested(const QPoint &pos)

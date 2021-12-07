@@ -42,7 +42,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     updateInfo();
 
     //signals / slots
-    connect(mod_, &LocalMod::modFileUpdated, this, &LocalModItemWidget::updateInfo);
+    connect(mod_, &LocalMod::modInfoChanged, this, &LocalModItemWidget::updateInfo);
 
     connect(mod_, &LocalMod::updateReady, this, &LocalModItemWidget::updateReady);
 

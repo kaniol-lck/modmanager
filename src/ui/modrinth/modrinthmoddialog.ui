@@ -71,6 +71,9 @@
       </widget>
      </item>
      <item>
+      <widget class="TagsFlowWidget" name="tagsWidget" native="true"/>
+     </item>
+     <item>
       <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="author_label">
@@ -220,6 +223,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TagsFlowWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/tagsflowwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../images/image.qrc"/>
  </resources>

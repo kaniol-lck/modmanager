@@ -116,7 +116,7 @@ signals:
     void tagsChanged() override;
     void tagsEditted() override;
 
-    void modFileUpdated();
+    void modInfoChanged();
     void modIconUpdated();
     void modCacheUpdated();
 
@@ -226,7 +226,7 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
         curseforgeUpdater_.reset();
 
         setModFile(file);
-        emit modFileUpdated();
+        emit modInfoChanged();
 
         return true;
     };

@@ -16,25 +16,33 @@ CurseforgeMod::CurseforgeMod(QObject *parent, int id) :
     QObject(parent),
     api_(CurseforgeAPI::api()),
     modInfo_(id)
-{}
+{
+    addSubTagable(&modInfo_);
+}
 
 CurseforgeMod::CurseforgeMod(LocalMod *parent, int id) :
     QObject(parent),
     api_(parent->curseforgeAPI()),
     modInfo_(id)
-{}
+{
+    addSubTagable(&modInfo_);
+}
 
 CurseforgeMod::CurseforgeMod(QObject *parent, const CurseforgeModInfo &info) :
     QObject(parent),
     api_(CurseforgeAPI::api()),
     modInfo_(info)
-{}
+{
+    addSubTagable(&modInfo_);
+}
 
 CurseforgeMod::CurseforgeMod(LocalMod *parent, const CurseforgeModInfo &info) :
     QObject(parent),
     api_(parent->curseforgeAPI()),
     modInfo_(info)
-{}
+{
+    addSubTagable(&modInfo_);
+}
 
 CurseforgeMod::~CurseforgeMod()
 {
@@ -48,6 +56,7 @@ void CurseforgeMod::acquireBasicInfo()
     auto conn = api_->getInfo(modInfo_.id_, [=](const auto &info){
         gettingBasicInfo_ = false;
         modInfo_ = info;
+        addSubTagable(&modInfo_);
         emit basicInfoReady();
         modInfo_.basicInfo_ = true;
     });
@@ -110,20 +119,4 @@ QMetaObject::Connection CurseforgeMod::acquireAllFileList(std::function<void (QL
 const CurseforgeModInfo &CurseforgeMod::modInfo() const
 {
     return modInfo_;
-}
-
-QList<Tag> CurseforgeMod::tags() const
-{
-    QList<Tag> tags;
-    for(auto &&categoryId : modInfo_.categories()){
-        auto it = std::find_if(CurseforgeAPI::getCategories().cbegin(), CurseforgeAPI::getCategories().cend(), [=](auto &&t){
-            return std::get<0>(t) == categoryId;
-        });
-        if(it != CurseforgeAPI::getCategories().end()){
-            auto [id, name, iconName, parentId] = *it;
-            tags << Tag(name, TagCategory::CurseforgeCategory, ":/image/curseforge/" + iconName);
-        } else
-            qDebug() << categoryId;
-    }
-    return tags;
 }

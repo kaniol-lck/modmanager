@@ -504,14 +504,15 @@ void LocalModBrowser::updateTreeViewIndexWidget()
                 mod->setFeatured(checked);
             });
             ui->modTreeView->setIndexWidget(model_->index(row, LocalModItem::StarColumn), starButton);
-            auto tagsWidget = new TagsWidget(this, mod);
+            auto tagsWidget = new TagsWidget(this);
+            tagsWidget->setMod(mod);
             ui->modTreeView->setIndexWidget(model_->index(row, LocalModItem::TagsColumn), tagsWidget);
             auto onModChanged = [=]{
                 enableBox->setChecked(mod->isEnabled());
                 starButton->setIcon(QIcon::fromTheme(mod->isFeatured() ? "starred-symbolic" : "non-starred-symbolic"));
             };
             onModChanged();
-            QObject::connect(mod, &LocalMod::modFileUpdated, onModChanged);
+            QObject::connect(mod, &LocalMod::modInfoChanged, onModChanged);
         }
     }
 }

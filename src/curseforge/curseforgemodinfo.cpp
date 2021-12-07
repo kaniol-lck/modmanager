@@ -1,3 +1,4 @@
+#include "curseforgeapi.h"
 #include "curseforgemodinfo.h"
 
 #include <QDebug>
@@ -47,10 +48,21 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     for(auto &&variant : value(variant, "latestFiles").toList())
         modInfo.latestFileList_ << CurseforgeFileInfo::fromVariant(variant);
 
-    //latest file url
+    //categories
     for(auto &&variant : value(variant, "categories").toList()){
-        if(auto id = value(variant, "categoryId").toInt(); !modInfo.categories_.contains(id))
-                modInfo.categories_ << value(variant, "categoryId").toInt();
+        if(auto categoryId = value(variant, "categoryId").toInt(); !modInfo.categories_.contains(categoryId)){
+            modInfo.categories_ << value(variant, "categoryId").toInt();
+
+            //import as tags
+            auto it = std::find_if(CurseforgeAPI::getCategories().cbegin(), CurseforgeAPI::getCategories().cend(), [=](auto &&t){
+                return std::get<0>(t) == categoryId;
+            });
+            if(it != CurseforgeAPI::getCategories().end()){
+                auto [id, name, iconName, parentId] = *it;
+                modInfo.importTag(Tag(name, TagCategory::CurseforgeCategory, ":/image/curseforge/" + iconName));
+            } else
+                qDebug() << "UNKNOWN CURSEFORGE CATEGORY ID:" << categoryId;
+        }
     }
 
     return modInfo;

@@ -1,37 +1,25 @@
 #include "tagswidget.h"
 #include "ui_tagswidget.h"
 
-#include "local/localmod.h"
-#include "config.hpp"
-
 #include <QLabel>
-#include <QHBoxLayout>
 #include <QScrollBar>
 #include <QScrollArea>
 #include <QWheelEvent>
 
-TagsWidget::TagsWidget(QWidget *parent, LocalMod* mod) :
+#include "tag/tagable.h"
+#include "config.hpp"
+
+TagsWidget::TagsWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::TagsWidget),
-    mod_(mod)
+    ui(new Ui::TagsWidget)
 {
     ui->setupUi(this);
     ui->scrollArea->verticalScrollBar()->setEnabled(false);
-    updateUi();
-    if(mod_) connect(mod, &LocalMod::tagsChanged, this, &TagsWidget::updateUi);
 }
 
 TagsWidget::~TagsWidget()
 {
     delete ui;
-}
-
-void TagsWidget::setMod(LocalMod *mod)
-{
-    if(mod_) disconnect(mod, &LocalMod::tagsChanged, this, &TagsWidget::updateUi);
-    mod_ = mod;
-    updateUi();
-    connect(mod, &LocalMod::tagsChanged, this, &TagsWidget::updateUi);
 }
 
 void TagsWidget::updateUi()
@@ -44,9 +32,17 @@ void TagsWidget::updateUi()
     tagWidgets_.clear();
     if(!mod_) return;
     for(auto &&tag : mod_->tags(Config().getShowTagCategories())){
-        auto label = new QLabel(tag.name(), this);
+        auto label = new QLabel(this);
+        if(!tag.iconName().isEmpty())
+            if(iconOnly_)
+                label->setText(QString(R"(<img src="%1" height="16" width="16"/>)").arg(tag.iconName()));
+            else
+                label->setText(QString(R"(<img src="%1" height="16" width="16"/> %2)").arg(tag.iconName(), tag.name()));
+        else
+            label->setText(tag.name());
         label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
-        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
+        if(!iconOnly_)
+            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
         ui->tagsLayout->addWidget(label);
         tagWidgets_ << label;
     }
@@ -59,4 +55,15 @@ void TagsWidget::wheelEvent(QWheelEvent *event)
     scrollBar->setValue(value);
     if(scrollBar->value())
         event->accept();
+}
+
+bool TagsWidget::iconOnly() const
+{
+    return iconOnly_;
+}
+
+void TagsWidget::setIconOnly(bool newIconOnly)
+{
+    iconOnly_ = newIconOnly;
+    updateUi();
 }

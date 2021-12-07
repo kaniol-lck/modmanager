@@ -37,7 +37,7 @@
         <x>0</x>
         <y>0</y>
         <width>379</width>
-        <height>387</height>
+        <height>378</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -97,7 +97,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QWidget" name="tagsWidget" native="true"/>
+        <widget class="TagsFlowWidget" name="tagsWidget" native="true"/>
        </item>
        <item>
         <widget class="QLabel" name="modSummary">
@@ -155,6 +155,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TagsFlowWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/tagsflowwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

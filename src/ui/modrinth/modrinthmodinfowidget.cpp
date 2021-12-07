@@ -5,7 +5,6 @@
 
 #include "modrinth/modrinthmod.h"
 #include "util/smoothscrollbar.h"
-#include "util/flowlayout.h"
 #include "util/funcutil.h"
 #include "util/youdaotranslator.h"
 
@@ -14,7 +13,6 @@ ModrinthModInfoWidget::ModrinthModInfoWidget(QWidget *parent) :
     ui(new Ui::ModrinthModInfoWidget)
 {
     ui->setupUi(this);
-    ui->tagsWidget->setLayout(new FlowLayout());
     ui->scrollArea->setVisible(false);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
 }
@@ -30,6 +28,7 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
     emit modChanged();
 
     ui->scrollArea->setVisible(mod_);
+    ui->tagsWidget->setMod(mod_);
     if(!mod_) return;
 
 //    auto action = new QAction(tr("Copy website link"), this);
@@ -80,25 +79,6 @@ void ModrinthModInfoWidget::updateBasicInfo()
     }
     connect(this, &ModrinthModInfoWidget::modChanged, this, disconnecter(
                 connect(mod_, &ModrinthMod::iconReady, this, &ModrinthModInfoWidget::updateIcon)));
-
-    //tags
-    for(auto widget : qAsConst(tagWidgets_)){
-        ui->tagsWidget->layout()->removeWidget(widget);
-        widget->deleteLater();
-    }
-    tagWidgets_.clear();
-    for(auto &&tag : mod_->tags()){
-        auto label = new QLabel(this);
-        label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-        if(!tag.iconName().isEmpty())
-            label->setText(QString(R"(<img src="%1" height="16" width="16"/> %2)").arg(tag.iconName(), tag.name()));
-        else
-            label->setText(tag.name());
-        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
-        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
-        ui->tagsWidget->layout()->addWidget(label);
-        tagWidgets_ << label;
-    }
 }
 
 void ModrinthModInfoWidget::updateFullInfo()

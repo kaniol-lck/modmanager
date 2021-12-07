@@ -25,9 +25,9 @@ public:
     QMetaObject::Connection acquireAllFileList(std::function<void (QList<CurseforgeFileInfo>)> callback = [](QList<CurseforgeFileInfo>){}, std::function<void ()> failed = []{});
 
     const CurseforgeModInfo &modInfo() const;
-    QList<Tag> tags() const;
-
 signals:
+    void tagsChanged() override;
+
     void basicInfoReady();
     void iconReady();
     void descriptionReady();
