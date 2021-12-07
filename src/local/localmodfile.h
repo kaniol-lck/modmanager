@@ -75,6 +75,9 @@ public:
 signals:
     void fileChanged();
 
+private slots:
+    void updateFileNameTags();
+
 private:
     LocalFileLinker *linker_;
     LocalModPath *modPath_ = nullptr;

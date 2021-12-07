@@ -125,6 +125,11 @@
          </property>
         </spacer>
        </item>
+       <item>
+        <widget class="QWidget" name="loaderTypes" native="true">
+         <layout class="QHBoxLayout" name="loadersLayout"/>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>

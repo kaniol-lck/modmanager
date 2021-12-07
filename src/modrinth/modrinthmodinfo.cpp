@@ -36,7 +36,11 @@ ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
         if(it != ModrinthAPI::getCategories().end()){
             auto [name, iconName] = *it;
             modInfo.importTag(Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName));
-        } else
+        } else if(categoryId == "fabric")
+            modInfo.loaderTypes_ << ModLoaderType::Fabric;
+        else if(categoryId == "forge")
+            modInfo.loaderTypes_ << ModLoaderType::Forge;
+        else
             qDebug() << "UNKNOWN MODRINTH CATEGORY ID:" << categoryId;
     }
 
@@ -70,7 +74,11 @@ ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
         if(it != ModrinthAPI::getCategories().end()){
             auto [name, iconName] = *it;
             modInfo.importTag(Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName));
-        } else
+        } else if(categoryId == "fabric")
+            modInfo.loaderTypes_ << ModLoaderType::Fabric;
+        else if(categoryId == "forge")
+            modInfo.loaderTypes_ << ModLoaderType::Forge;
+        else
             qDebug() << "UNKNOWN MODRINTH CATEGORY ID:" << categoryId;
     }
 
@@ -158,6 +166,11 @@ bool ModrinthModInfo::hasBasicInfo() const
 bool ModrinthModInfo::hasFullInfo() const
 {
     return fullInfo_;
+}
+
+const QList<ModLoaderType::Type> &ModrinthModInfo::loaderTypes() const
+{
+    return loaderTypes_;
 }
 
 const QDateTime &ModrinthModInfo::dateCreated() const

@@ -20,13 +20,7 @@ LocalModFile::LocalModFile(LocalModPath *parent, const QString &path, const QStr
     subDirs_(subDirs),
     fileInfo_(path)
 {
-    for(auto str : { R"(\[(.*?)\])", R"(\((.*?)\))", R"(【(.*?)】)" }){
-        auto i = QRegularExpression(str).globalMatch(fileInfo().fileName());
-        while(i.hasNext()) {
-            QRegularExpressionMatch match = i.next();
-            importTag(Tag(match.captured(1), TagCategory::FileNameCategory));
-        }
-    }
+    updateFileNameTags();
 }
 
 LocalModFile::~LocalModFile()
@@ -102,7 +96,8 @@ bool LocalModFile::rename(const QString newBaseName)
     if(file.rename(newPath)){
         path_ = newPath;
         fileInfo_.setFile(path_);
-            emit fileChanged();
+        updateFileNameTags();
+        emit fileChanged();
         return true;
     } else
     return false;
@@ -295,6 +290,18 @@ LocalModPath *LocalModFile::modPath() const
 void LocalModFile::setModPath(LocalModPath *newModPath)
 {
     modPath_ = newModPath;
+}
+
+void LocalModFile::updateFileNameTags()
+{
+    removeTags(TagCategory::FileNameCategory);
+    for(auto str : { R"(\[(.*?)\])", R"(\((.*?)\))", R"(【(.*?)】)" }){
+        auto i = QRegularExpression(str).globalMatch(fileInfo().fileName());
+        while(i.hasNext()) {
+            QRegularExpressionMatch match = i.next();
+            importTag(Tag(match.captured(1), TagCategory::FileNameCategory));
+        }
+    }
 }
 
 void LocalModFile::setLoaderType(ModLoaderType::Type newLoaderType)

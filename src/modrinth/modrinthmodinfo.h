@@ -25,6 +25,7 @@ public:
     const QString &description() const;
     const QStringList &versions() const;
     int downloadCount() const;
+    const QList<ModLoaderType::Type> &loaderTypes() const;
     const QUrl &iconUrl() const;
     const QByteArray &iconBytes() const;
     const QString &summary() const;
@@ -48,6 +49,7 @@ private:
     QString description_;
     QList<GameVersion> gameVersions_;
     int downloadCount_;
+    QList<ModLoaderType::Type> loaderTypes_;
     QUrl websiteUrl_;
     QUrl iconUrl_;
     QByteArray iconBytes_;
