@@ -9,7 +9,13 @@
 
 LocalModItem::LocalModItem(LocalMod *mod) :
     mod_(mod)
-{}
+{
+    auto onModChanged = [=]{
+        setToolTip(mod->displayName());
+    };
+    onModChanged();
+    QObject::connect(mod, &LocalMod::modInfoChanged, onModChanged);
+}
 
 bool LocalModItem::operator<(const QStandardItem &other) const
 {
@@ -56,7 +62,9 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod, QList<QStandard
         list = { item, nameItem, idItem, versionItem, enableItem, starItem, tagsItem, fileDateItem, fileSizeItem, fileNameItem, curseforgeIdItem, curseforgeFileIdItem, modrinthIdItem, modrinthFileIdItem, descItem };
     }
     auto onModChanged = [=]{
+        list.at(ModColumn)->setToolTip(mod->displayName());
         list.at(NameColumn)->setText(clearFormat(mod->displayName()));
+        list.at(NameColumn)->setToolTip(mod->displayName());
         list.at(IdColumn)->setText(mod->commonInfo()->id());
         list.at(VersionColumn)->setText(mod->commonInfo()->version());
         list.at(DescriptionColumn)->setText(mod->commonInfo()->description());

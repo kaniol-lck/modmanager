@@ -51,6 +51,7 @@ void LocalFileListWidget::setMods(QList<LocalMod *> mods)
         for(const auto &mod : qAsConst(mods)){
             auto item = new QStandardItem;
             item->setData(QVariant::fromValue(mod));
+            item->setToolTip(mod->displayName());
             model_->appendRow(item);
             item->setSizeHint(QSize(0, 100));
         }
