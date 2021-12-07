@@ -2,6 +2,7 @@
 
 #include <QDebug>
 
+#include "modrinthapi.h"
 #include "util/tutil.hpp"
 
 ModrinthModInfo::ModrinthModInfo(const QString &id) :
@@ -28,6 +29,17 @@ ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
     for(auto &&v : value(variant, "versions").toList())
         modInfo.gameVersions_ << GameVersion(v.toString());
 
+    for(auto &&categoryId : modInfo.categories()){
+        auto it = std::find_if(ModrinthAPI::getCategories().cbegin(), ModrinthAPI::getCategories().cend(), [=](auto &&t){
+            return std::get<1>(t) == categoryId;
+        });
+        if(it != ModrinthAPI::getCategories().end()){
+            auto [name, iconName] = *it;
+            modInfo.importTag(Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName));
+        } else
+            qDebug() << "UNKNOWN MODRINTH CATEGORY ID:" << categoryId;
+    }
+
     return modInfo;
 }
 
@@ -50,6 +62,17 @@ ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
     modInfo.dateModified_ = value(variant, "updated").toDateTime();
 
     modInfo.websiteUrl_ = "https://modrinth.com/mod/" + modInfo.modId_;
+
+    for(auto &&categoryId : modInfo.categories()){
+        auto it = std::find_if(ModrinthAPI::getCategories().cbegin(), ModrinthAPI::getCategories().cend(), [=](auto &&t){
+            return std::get<1>(t) == categoryId;
+        });
+        if(it != ModrinthAPI::getCategories().end()){
+            auto [name, iconName] = *it;
+            modInfo.importTag(Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName));
+        } else
+            qDebug() << "UNKNOWN MODRINTH CATEGORY ID:" << categoryId;
+    }
 
     return modInfo;
 }

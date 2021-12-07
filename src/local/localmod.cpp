@@ -62,8 +62,10 @@ CurseforgeMod *LocalMod::curseforgeMod() const
 void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
 {
     curseforgeMod_ = newCurseforgeMod;
+    addSubTagable(curseforgeMod_);
     if(curseforgeMod_){
         curseforgeMod_->setParent(this);
+        curseforgeMod_->acquireBasicInfo();
         emit curseforgeReady(true);
         emit modCacheUpdated();
         emit modInfoChanged();
@@ -410,7 +412,11 @@ void LocalMod::setCurseforgeId(int id, bool cache)
 {
     if(id != 0){
         curseforgeMod_ = new CurseforgeMod(this, id);
+        addSubTagable(curseforgeMod_);
         emit curseforgeReady(true);
+        if(curseforgeMod_){
+            curseforgeMod_->acquireBasicInfo();
+        }
         if(cache)
             IdMapper::addCurseforge(commonInfo()->id(), id);
         updateIcon();
@@ -422,7 +428,11 @@ void LocalMod::setModrinthId(const QString &id, bool cache)
 {
     if(!id.isEmpty()){
         modrinthMod_ = new ModrinthMod(this, id);
+        addSubTagable(modrinthMod_);
         emit curseforgeReady(true);
+        if(modrinthMod_){
+            modrinthMod_->acquireFullInfo();
+        }
         if(cache)
             IdMapper::addModrinth(commonInfo()->id(), id);
     } else
@@ -579,15 +589,6 @@ void LocalMod::setModFile(LocalModFile *newModFile)
     if(modFile_) {
         connect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modInfoChanged);
         modFile_->setParent(this);
-        if(modFile_->loaderType() == ModLoaderType::Fabric){
-            if(auto environment = modFile_->fabric().environment(); environment == "*"){
-                importTag(Tag::clientTag());
-                importTag(Tag::serverTag());
-            }else if(environment == "client")
-                importTag(Tag::clientTag());
-            else if(environment == "server")
-                importTag(Tag::serverTag());
-        }
     }
     updateIcon();
 }
@@ -662,6 +663,7 @@ void LocalMod::setModrinthMod(ModrinthMod *newModrinthMod)
     addSubTagable(modrinthMod_);
     if(modrinthMod_){
         modrinthMod_->setParent(this);
+        modrinthMod_->acquireFullInfo();
         emit modrinthReady(true);
         emit modCacheUpdated();
         emit modInfoChanged();

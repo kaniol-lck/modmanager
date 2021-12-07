@@ -64,6 +64,20 @@ ModLoaderType::Type LocalModFile::loadInfo()
     if(forgeModInfoList_ = ForgeModInfo::fromZip(path_); !forgeModInfoList_.isEmpty())
         loaderType_ = ModLoaderType::Forge;
 
+    //tags
+    removeTags(TagCategory::EnvironmentCategory);
+    if(loaderType_ == ModLoaderType::Fabric){
+        if(auto environment = fabric().environment(); environment == "*"){
+            importTag(Tag::clientTag());
+            importTag(Tag::serverTag());
+        }else if(environment == "client")
+            importTag(Tag::clientTag());
+        else if(environment == "server")
+            importTag(Tag::serverTag());
+    }
+    if(loaderType_ != ModLoaderType::Any && commonInfo()->id() == "optifine")
+        importTag(Tag("OptiFine", TagCategory::OptiFineCategory, ":/image/optifine.png"));
+
     //for count
     return loaderType_;
 }

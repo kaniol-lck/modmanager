@@ -117,13 +117,5 @@ QMetaObject::Connection ModrinthMod::acquireFileList(std::function<void (QList<M
 void ModrinthMod::setModInfo(ModrinthModInfo newModInfo)
 {
     modInfo_ = newModInfo;
-    for(auto &&categoryId : modInfo_.categories()){
-        auto it = std::find_if(ModrinthAPI::getCategories().cbegin(), ModrinthAPI::getCategories().cend(), [=](auto &&t){
-            return std::get<1>(t) == categoryId;
-        });
-        if(it != ModrinthAPI::getCategories().end()){
-            auto [name, iconName] = *it;
-            importTag(Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName));
-        }
-    }
+    addSubTagable(&modInfo_);
 }

@@ -4,9 +4,11 @@
 #include <QVariant>
 #include <QUrl>
 
+#include "tag/tagable.h"
+
 #include "modrinthfileinfo.h"
 
-class ModrinthModInfo
+class ModrinthModInfo : Tagable
 {
     friend class ModrinthMod;
 public:

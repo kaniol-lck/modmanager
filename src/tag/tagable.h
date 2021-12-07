@@ -33,10 +33,10 @@ protected:
     virtual void tagsChanged();
     virtual void tagsEditted();
 
-private:
     void setTagsChanged();
     void setTagsEditted();
 
+private:
     QMap<TagCategory, QList<Tag>> tagMap_;
     QList<Tagable *> parents_ = {};
     QList<Tagable *> children_ = {};
