@@ -130,6 +130,14 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
                 config.setRenamePatternHistory(list);
             });
         }
+        if(renameToMenu->isEmpty())
+            renameToMenu->addAction(tr("No Rename History"))->setEnabled(false);
+        else{
+            renameToMenu->addSeparator();
+            renameToMenu->addAction(tr("Clear History"), this, [=]{
+                Config().setRenamePatternHistory({});
+            });
+        }
     });
 
     if(modPath_->modsLoaded())

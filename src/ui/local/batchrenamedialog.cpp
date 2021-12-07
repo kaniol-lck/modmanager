@@ -40,11 +40,19 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, QList<LocalMod *> mods) :
 
     auto historyMenu = new QMenu(this);
     auto list = Config().getRenamePatternHistory();
-    historyMenu->addSection(tr("Rename Histories"));
+    historyMenu->addSection(tr("Rename History"));
     for(auto &&v : list){
         auto str = v.toString();
         historyMenu->addAction(str, this, [=]{
             ui->renamePattern->setPlainText(str);
+        });
+    }
+    if(historyMenu->isEmpty())
+        historyMenu->addAction(tr("No Rename History"))->setEnabled(false);
+    else{
+        historyMenu->addSeparator();
+        historyMenu->addAction(tr("Clear History"), this, [=]{
+            Config().setRenamePatternHistory({});
         });
     }
     ui->historyButton->setMenu(historyMenu);
