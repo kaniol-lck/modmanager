@@ -19,6 +19,7 @@
 #include <dwmapi.h>
 #endif
 
+#include "dockwidgetcontent.h"
 #include "ui/aboutdialog.h"
 #include "ui/browserselectorwidget.h"
 #include "local/localmodpathmanager.h"
@@ -48,6 +49,7 @@ ModManager::ModManager(QWidget *parent) :
     useFramelessWindow_ = config_.getUseFramelessWindow();
     enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
+    DockWidgetContent::lockPanelsAction = ui->actionLock_Panels;
     restoreGeometry(config.getGeometry());
     restoreState(config.getWindowState());
     ui->actionAbout_Qt->setIcon(QIcon(":/qt-project.org/qmessagebox/images/qtlogo-64.png"));
@@ -567,19 +569,19 @@ void ModManager::on_actionAbout_Qt_triggered()
     QMessageBox::aboutQt(this);
 }
 
-void ModManager::on_modInfoDock_customContextMenuRequested(const QPoint &pos)
-{
-    auto menu = new QMenu(this);
-    menu->addAction(ui->actionLock_Panels);
-    menu->exec(ui->modInfoDock->mapToGlobal(pos));
-}
+//void ModManager::on_modInfoDock_customContextMenuRequested(const QPoint &pos)
+//{
+//    auto menu = new QMenu(this);
+//    menu->addAction(ui->actionLock_Panels);
+//    menu->exec(ui->modInfoDock->mapToGlobal(pos));
+//}
 
-void ModManager::on_fileListDock_customContextMenuRequested(const QPoint &pos)
-{
-    auto menu = new QMenu(this);
-    menu->addAction(ui->actionLock_Panels);
-    menu->exec(ui->fileListDock->mapToGlobal(pos));
-}
+//void ModManager::on_fileListDock_customContextMenuRequested(const QPoint &pos)
+//{
+//    auto menu = new QMenu(this);
+//    menu->addAction(ui->actionLock_Panels);
+//    menu->exec(ui->fileListDock->mapToGlobal(pos));
+//}
 
 WindowsTitleBar *ModManager::titleBar()
 {

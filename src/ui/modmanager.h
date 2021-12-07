@@ -66,8 +66,8 @@ private slots:
     void on_actionNext_Page_triggered();
     void on_actionPrevious_Page_triggered();
     void on_actionAbout_Qt_triggered();
-    void on_modInfoDock_customContextMenuRequested(const QPoint &pos);
-    void on_fileListDock_customContextMenuRequested(const QPoint &pos);
+//    void on_modInfoDock_customContextMenuRequested(const QPoint &pos);
+//    void on_fileListDock_customContextMenuRequested(const QPoint &pos);
     void on_actionMod_Infomation_toggled(bool arg1);
     void on_actionFile_List_toggled(bool arg1);
     void on_actionLock_Panels_triggered();

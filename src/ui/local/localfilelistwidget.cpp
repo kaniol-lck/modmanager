@@ -12,7 +12,7 @@
 #include "util/funcutil.h"
 
 LocalFileListWidget::LocalFileListWidget(QWidget *parent) :
-    QWidget(parent),
+    DockWidgetContent(parent),
     ui(new Ui::LocalFileListWidget),
     model_(new QStandardItemModel(this)),
     buttons_(new QButtonGroup(this))

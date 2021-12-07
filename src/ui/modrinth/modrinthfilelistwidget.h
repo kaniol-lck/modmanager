@@ -1,7 +1,7 @@
 #ifndef MODRINTHFILELISTWIDGET_H
 #define MODRINTHFILELISTWIDGET_H
 
-#include <QWidget>
+#include "ui/dockwidgetcontent.h"
 
 class ModrinthMod;
 class LocalModPath;
@@ -10,7 +10,7 @@ namespace Ui {
 class ModrinthFileListWidget;
 }
 
-class ModrinthFileListWidget : public QWidget
+class ModrinthFileListWidget : public DockWidgetContent
 {
     Q_OBJECT
 

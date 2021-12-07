@@ -1,14 +1,14 @@
 #ifndef CURSEFORGEMODINFOWIDGET_H
 #define CURSEFORGEMODINFOWIDGET_H
 
-#include <QWidget>
+#include "ui/dockwidgetcontent.h"
 
 class CurseforgeMod;
 namespace Ui {
 class CurseforgeModInfoWidget;
 }
 
-class CurseforgeModInfoWidget : public QWidget
+class CurseforgeModInfoWidget : public DockWidgetContent
 {
     Q_OBJECT
 

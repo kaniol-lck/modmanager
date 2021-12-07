@@ -1,7 +1,7 @@
 #ifndef LOCALFILELISTWIDGET_H
 #define LOCALFILELISTWIDGET_H
 
-#include <QWidget>
+#include "ui/dockwidgetcontent.h"
 
 class LocalMod;
 class QStandardItemModel;
@@ -13,7 +13,7 @@ namespace Ui {
 class LocalFileListWidget;
 }
 
-class LocalFileListWidget : public QWidget
+class LocalFileListWidget : public DockWidgetContent
 {
     Q_OBJECT
 

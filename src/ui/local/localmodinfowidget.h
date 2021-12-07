@@ -1,7 +1,7 @@
 #ifndef LOCALMODINFOWIDGET_H
 #define LOCALMODINFOWIDGET_H
 
-#include <QWidget>
+#include "ui/dockwidgetcontent.h"
 
 class LocalMod;
 
@@ -10,7 +10,7 @@ namespace Ui {
 class LocalModInfoWidget;
 }
 
-class LocalModInfoWidget : public QWidget
+class LocalModInfoWidget : public DockWidgetContent
 {
     Q_OBJECT
 

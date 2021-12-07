@@ -1,14 +1,14 @@
 #ifndef MODRINTHMODINFOWIDGET_H
 #define MODRINTHMODINFOWIDGET_H
 
-#include <QWidget>
+#include "ui/dockwidgetcontent.h"
 
 class ModrinthMod;
 namespace Ui {
 class ModrinthModInfoWidget;
 }
 
-class ModrinthModInfoWidget : public QWidget
+class ModrinthModInfoWidget : public DockWidgetContent
 {
     Q_OBJECT
 

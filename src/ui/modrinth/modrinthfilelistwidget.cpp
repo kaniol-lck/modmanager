@@ -11,7 +11,7 @@
 #include "util/funcutil.h"
 
 ModrinthFileListWidget::ModrinthFileListWidget(QWidget *parent) :
-    QWidget(parent),
+    DockWidgetContent(parent),
     ui(new Ui::ModrinthFileListWidget),
     model_(new QStandardItemModel(this))
 {

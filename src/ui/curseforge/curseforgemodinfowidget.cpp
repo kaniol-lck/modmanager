@@ -10,7 +10,7 @@
 #include "util/youdaotranslator.h"
 
 CurseforgeModInfoWidget::CurseforgeModInfoWidget(QWidget *parent) :
-    QWidget(parent),
+    DockWidgetContent(parent),
     ui(new Ui::CurseforgeModInfoWidget)
 {
     ui->setupUi(this);
