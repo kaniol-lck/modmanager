@@ -92,6 +92,9 @@ QTreeView::branch {
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
+     <property name="verticalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>

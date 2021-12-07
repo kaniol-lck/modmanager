@@ -25,7 +25,7 @@ signals:
 
 private slots:
     void addMultiple();
-    void onItemSelected(const QModelIndex &index);
+    void onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous);
     void on_addButton_clicked();
     void on_manageButton_clicked();
     void on_browserTreeView_customContextMenuRequested(const QPoint &pos);

@@ -19,9 +19,6 @@ BrowserSelectorWidget::BrowserSelectorWidget(QWidget *parent) :
     auto action = new QAction(tr("Add multiple paths"), this);
     connect(action, &QAction::triggered, this, &BrowserSelectorWidget::addMultiple, Qt::QueuedConnection);
     ui->addButton->addAction(action);
-
-    connect(ui->browserTreeView, &QTreeView::entered, this, &BrowserSelectorWidget::onItemSelected);
-    connect(ui->browserTreeView, &QTreeView::clicked, this, &BrowserSelectorWidget::onItemSelected);
 }
 
 BrowserSelectorWidget::~BrowserSelectorWidget()
@@ -32,6 +29,7 @@ BrowserSelectorWidget::~BrowserSelectorWidget()
 void BrowserSelectorWidget::setModel(QAbstractItemModel *model)
 {
     ui->browserTreeView->setModel(model);
+    connect(ui->browserTreeView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &BrowserSelectorWidget::onCurrentRowChanged);
     ui->browserTreeView->expandAll();
 }
 
@@ -46,10 +44,10 @@ void BrowserSelectorWidget::addMultiple()
     LocalModPathManager::addPaths(paths);
 }
 
-void BrowserSelectorWidget::onItemSelected(const QModelIndex &index)
+void BrowserSelectorWidget::onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous[[maybe_unused]])
 {
-    if(auto parent = index.parent(); parent.isValid())
-        emit browserChanged(parent.row(), index.row());
+    if(auto parent = current.parent(); parent.isValid())
+        emit browserChanged(parent.row(), current.row());
 }
 
 void BrowserSelectorWidget::on_addButton_clicked()
