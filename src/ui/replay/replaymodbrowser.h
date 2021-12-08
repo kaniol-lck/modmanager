@@ -5,8 +5,8 @@
 
 class LocalModPath;
 class ReplayAPI;
-
-
+class ExploreStatusBarWidget;
+class QStatusBar;
 class QStandardItemModel;
 namespace Ui {
 class ReplayModBrowser;
@@ -31,6 +31,7 @@ signals:
 private slots:
     void updateLocalPathList();
     void filterList();
+    void updateStatusText();
     void on_openFolderButton_clicked();
     void on_downloadPathSelect_currentIndexChanged(int index);
     void updateIndexWidget();
@@ -39,6 +40,8 @@ protected:
 private:
     Ui::ReplayModBrowser *ui;
     QStandardItemModel *model_;
+    ExploreStatusBarWidget *statusBarWidget_;
+    QStatusBar *statusBar_;
     ReplayAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     bool inited_ = false;

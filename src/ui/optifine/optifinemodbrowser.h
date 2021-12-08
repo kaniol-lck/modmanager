@@ -6,8 +6,8 @@
 class OptifineAPI;
 class BMCLAPI;
 class LocalModPath;
-
-
+class ExploreStatusBarWidget;
+class QStatusBar;
 class QStandardItemModel;
 namespace Ui {
 class OptifineModBrowser;
@@ -32,6 +32,7 @@ signals:
 private slots:
     void updateLocalPathList();
     void filterList();
+    void updateStatusText();
     void on_openFolderButton_clicked();
     void on_downloadPathSelect_currentIndexChanged(int index);
     void on_getOptiFabric_clicked();
@@ -42,6 +43,8 @@ protected:
 private:
     Ui::OptifineModBrowser *ui;
     QStandardItemModel *model_;
+    ExploreStatusBarWidget *statusBarWidget_;
+    QStatusBar *statusBar_;
     OptifineAPI *api_;
     BMCLAPI *bmclapi_;
     LocalModPath *downloadPath_ = nullptr;

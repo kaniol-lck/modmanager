@@ -5,9 +5,11 @@
 #include <QDir>
 #include <QMenu>
 #include <QStandardItem>
+#include <QStatusBar>
 
 #include "modrinthmodinfowidget.h"
 #include "modrinthfilelistwidget.h"
+#include "ui/explorestatusbarwidget.h"
 #include "modrinthmoditemwidget.h"
 #include "modrinthmoddialog.h"
 #include "local/localmodpathmanager.h"
@@ -28,6 +30,8 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     model_(new QStandardItemModel(this)),
     infoWidget_(new ModrinthModInfoWidget(this)),
     fileListWidget_(new ModrinthFileListWidget(this)),
+    statusBarWidget_(new ExploreStatusBarWidget(this)),
+    statusBar_(new QStatusBar(this)),
     api_(new ModrinthAPI(this)),
     localMod_(localMod)
 {
@@ -38,6 +42,10 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    //setup status bar
+    statusBar_->addPermanentWidget(statusBarWidget_);
+    layout()->addWidget(statusBar_);
+
     ui->loaderSelect->blockSignals(true);
     for(const auto &type : ModLoaderType::modrinth)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
@@ -46,6 +54,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     updateVersionList();
     updateCategoryList();
     updateLocalPathList();
+    updateStatusText();
 
     connect(ui->modListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthModBrowser::onSliderChanged);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
@@ -376,6 +385,12 @@ void ModrinthModBrowser::onSliderChanged(int i)
     }
 }
 
+void ModrinthModBrowser::updateStatusText()
+{
+    auto str = tr("Loaded %1 mods from Modrinth.").arg(model_->rowCount());
+    statusBar_->showMessage(str);
+}
+
 void ModrinthModBrowser::getModList(QString name, int index)
 {
     if(!index)
@@ -383,6 +398,8 @@ void ModrinthModBrowser::getModList(QString name, int index)
     else if(!hasMore_ || isSearching_)
         return;
     setCursor(Qt::BusyCursor);
+    statusBarWidget_->setText(tr("Searching mods..."));
+    statusBarWidget_->setProgressVisible(true);
 
     auto sort = ui->sortSelect->currentIndex();
     auto type = ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex());
@@ -390,6 +407,8 @@ void ModrinthModBrowser::getModList(QString name, int index)
     isSearching_ = true;
     auto conn = api_->searchMods(name, currentIndex_, currentGameVersions_, type, currentCategoryIds_, sort, [=](const QList<ModrinthModInfo> &infoList){
         setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText("");
+        statusBarWidget_->setProgressVisible(false);
 
         //new search
         if(currentIndex_ == 0){
@@ -424,6 +443,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
             hasMore_ = false;
         }
         isSearching_ = false;
+        updateStatusText();
     });
     connect(this, &QObject::destroyed, this, [=]{
         disconnect(conn);

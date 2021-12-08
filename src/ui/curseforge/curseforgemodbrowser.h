@@ -8,12 +8,10 @@ class CurseforgeMod;
 class LocalModPath;
 class CurseforgeModInfoWidget;
 class CurseforgeFileListWidget;
-class QListWidgetItem;
-
+class ExploreStatusBarWidget;
+class QStatusBar;
 class QStandardItemModel;
 class LocalMod;
-class CurseforgeStatusBarWidget;
-class QStatusBar;
 namespace Ui {
 class CurseforgeModBrowser;
 }
@@ -62,7 +60,7 @@ private:
     QStandardItemModel *model_;
     CurseforgeModInfoWidget *infoWidget_;
     CurseforgeFileListWidget *fileListWidget_;
-    CurseforgeStatusBarWidget *statusBarWidget_;
+    ExploreStatusBarWidget *statusBarWidget_;
     QStatusBar *statusBar_;
     CurseforgeAPI *api_;
     QList<int> idList_;

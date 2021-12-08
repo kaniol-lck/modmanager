@@ -8,9 +8,11 @@ class ModrinthMod;
 class LocalModPath;
 class ModrinthModInfoWidget;
 class ModrinthFileListWidget;
-class QListWidgetItem;
+class ExploreStatusBarWidget;
+class ExploreStatusBarWidget;
 class QStandardItemModel;
 class LocalMod;
+class QStatusBar;
 namespace Ui {
 class ModrinthModBrowser;
 }
@@ -42,6 +44,7 @@ private slots:
     void updateLocalPathList();
     void search();
     void onSliderChanged(int i);
+    void updateStatusText();
     void on_modListView_doubleClicked(const QModelIndex &index);
     void on_sortSelect_currentIndexChanged(int);
     void on_loaderSelect_currentIndexChanged(int);
@@ -56,6 +59,8 @@ private:
     QStandardItemModel *model_;
     ModrinthModInfoWidget *infoWidget_;
     ModrinthFileListWidget *fileListWidget_;
+    ExploreStatusBarWidget *statusBarWidget_;
+    QStatusBar *statusBar_;
     ModrinthAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     QString currentName_;

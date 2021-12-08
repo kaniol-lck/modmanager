@@ -69,7 +69,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     //setup status bar
     statusBar_->addPermanentWidget(statusBarWidget_);
     connect(statusBarWidget_, &LocalStatusBarWidget::viewModeChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
-    ui->mainLayout->addWidget(statusBar_);
+    layout()->addWidget(statusBar_);
 
     ui->actionReload_Mods->setEnabled(!modPath_->isLoading());
 

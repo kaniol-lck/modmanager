@@ -4,7 +4,9 @@
 #include <QScrollBar>
 #include <QDebug>
 #include <QStandardItem>
+#include <QStatusBar>
 
+#include "ui/explorestatusbarwidget.h"
 #include "optifinemoditemwidget.h"
 #include "optifine/optifineapi.h"
 #include "optifine/optifinemod.h"
@@ -21,6 +23,8 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/optifine.png"), "OptiFine", QUrl("https://www.optifine.net")),
     ui(new Ui::OptifineModBrowser),
     model_(new QStandardItemModel(this)),
+    statusBarWidget_(new ExploreStatusBarWidget(this)),
+    statusBar_(new QStatusBar(this)),
     api_(new OptifineAPI(this)),
     bmclapi_(new BMCLAPI(this))
 {
@@ -29,7 +33,12 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    //setup status bar
+    statusBar_->addPermanentWidget(statusBarWidget_);
+    layout()->addWidget(statusBar_);
+
     updateLocalPathList();
+    updateStatusText();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &OptifineModBrowser::updateLocalPathList);
     connect(ui->showPreview, &QCheckBox::stateChanged, this, &OptifineModBrowser::filterList);
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &OptifineModBrowser::filterList);
@@ -109,9 +118,22 @@ void OptifineModBrowser::filterList()
     }
 }
 
+void OptifineModBrowser::updateStatusText()
+{
+    auto str = tr("Loaded %1 mods from OptiFine.").arg(model_->rowCount());
+    statusBar_->showMessage(str);
+}
+
 void OptifineModBrowser::getModList()
 {
+    setCursor(Qt::BusyCursor);
+    statusBarWidget_->setText(tr("Searching mods..."));
+    statusBarWidget_->setProgressVisible(true);
+
     auto callback = [=](const auto &list){
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText("");
+        statusBarWidget_->setProgressVisible(false);
         for(auto row = 0; row < model_->rowCount(); row++){
             auto item = model_->item(row);
             auto mod = item->data().value<OptifineMod*>();
@@ -141,6 +163,8 @@ void OptifineModBrowser::getModList()
         item->setFont(font);
         item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         model_->appendRow(item);
+
+        updateStatusText();
     };
     auto source = Config().getOptifineSource();
     if(source == Config::OptifineSourceType::Official)

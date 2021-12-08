@@ -26,13 +26,6 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="3" column="0">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <widget class="QWidget" name="page">

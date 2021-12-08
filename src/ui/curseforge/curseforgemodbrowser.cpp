@@ -11,7 +11,7 @@
 
 #include "curseforgemodinfowidget.h"
 #include "curseforgefilelistwidget.h"
-#include "curseforgestatusbarwidget.h"
+#include "ui/explorestatusbarwidget.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
 #include "local/localmod.h"
@@ -31,7 +31,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     model_(new QStandardItemModel(this)),
     infoWidget_(new CurseforgeModInfoWidget(this)),
     fileListWidget_(new CurseforgeFileListWidget(this)),
-    statusBarWidget_(new CurseforgeStatusBarWidget(this)),
+    statusBarWidget_(new ExploreStatusBarWidget(this)),
     statusBar_(new QStatusBar(this)),
     api_(new CurseforgeAPI(this)),
     localMod_(mod)
@@ -45,7 +45,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
 
     //setup status bar
     statusBar_->addPermanentWidget(statusBarWidget_);
-    ui->mainLayout->addWidget(statusBar_);
+    layout()->addWidget(statusBar_);
 
     ui->loaderSelect->blockSignals(true);
     for(const auto &type : ModLoaderType::curseforge)
@@ -256,7 +256,7 @@ void CurseforgeModBrowser::onSliderChanged(int i)
 
 void CurseforgeModBrowser::updateStatusText()
 {
-    auto str = tr("Loaded %1 mods from Curseforge.").arg(idList_.size());
+    auto str = tr("Loaded %1 mods from Curseforge.").arg(model_->rowCount());
     statusBar_->showMessage(str);
 }
 
@@ -332,7 +332,6 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             getModList(currentName_, currentIndex_, needMore - shownCount);
         }
         updateStatusText();
-        updateIndexWidget();
     });
     connect(this, &QObject::destroyed, this, [=]{
         disconnect(conn);

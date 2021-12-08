@@ -6,7 +6,9 @@
 #include <QNetworkReply>
 #include <QScrollBar>
 #include <QStandardItem>
+#include <QStatusBar>
 
+#include "ui/explorestatusbarwidget.h"
 #include "replaymoditemwidget.h"
 #include "replay/replayapi.h"
 #include "replay/replaymod.h"
@@ -20,6 +22,8 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/replay.png"), "ReplayMod", QUrl("https://www.replaymod.com")),
     ui(new Ui::ReplayModBrowser),
     model_(new QStandardItemModel(this)),
+    statusBarWidget_(new ExploreStatusBarWidget(this)),
+    statusBar_(new QStatusBar(this)),
     api_(new ReplayAPI())
 {
     ui->setupUi(this);
@@ -27,10 +31,15 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    //setup status bar
+    statusBar_->addPermanentWidget(statusBarWidget_);
+    layout()->addWidget(statusBar_);
+
     for(const auto &type : ModLoaderType::replay)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
     updateLocalPathList();
+    updateStatusText();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ReplayModBrowser::updateLocalPathList);
 
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
@@ -144,7 +153,14 @@ void ReplayModBrowser::paintEvent(QPaintEvent *event)
 
 void ReplayModBrowser::getModList()
 {
+    setCursor(Qt::BusyCursor);
+    statusBarWidget_->setText(tr("Searching mods..."));
+    statusBarWidget_->setProgressVisible(true);
+
     api_->getModList([=](const auto &list){
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText("");
+        statusBarWidget_->setProgressVisible(false);
         for(auto row = 0; row < model_->rowCount(); row++){
             auto item = model_->item(row);
             auto mod = item->data().value<ReplayMod*>();
@@ -173,6 +189,8 @@ void ReplayModBrowser::getModList()
         item->setFont(font);
         item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
         model_->appendRow(item);
+
+        updateStatusText();
     });
 }
 
@@ -191,4 +209,10 @@ void ReplayModBrowser::filterList()
                       mod->modInfo().gameVersionString().contains(searchText)));
         }
     }
+}
+
+void ReplayModBrowser::updateStatusText()
+{
+    auto str = tr("Loaded %1 mods from ReplayMod.").arg(model_->rowCount());
+    statusBar_->showMessage(str);
 }

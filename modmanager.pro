@@ -52,8 +52,8 @@ SOURCES += \
     src/ui/curseforge/curseforgefilelistwidget.cpp \
     src/ui/curseforge/curseforgeimagepopup.cpp \
     src/ui/curseforge/curseforgemodinfowidget.cpp \
-    src/ui/curseforge/curseforgestatusbarwidget.cpp \
     src/ui/dockwidgetcontent.cpp \
+    src/ui/explorestatusbarwidget.cpp \
     src/ui/local/localfilelistwidget.cpp \
     src/ui/local/localmodfileitemwidget.cpp \
     src/ui/local/localmodinfowidget.cpp \
@@ -154,8 +154,8 @@ HEADERS += \
     src/ui/curseforge/curseforgefilelistwidget.h \
     src/ui/curseforge/curseforgeimagepopup.h \
     src/ui/curseforge/curseforgemodinfowidget.h \
-    src/ui/curseforge/curseforgestatusbarwidget.h \
     src/ui/dockwidgetcontent.h \
+    src/ui/explorestatusbarwidget.h \
     src/ui/local/localfilelistwidget.h \
     src/ui/local/localmodfileitemwidget.h \
     src/ui/local/localmodinfowidget.h \
@@ -217,7 +217,7 @@ HEADERS += \
     src/version.h
 
 FORMS += \
-    src/ui/curseforge/curseforgestatusbarwidget.ui \
+    src/ui/explorestatusbarwidget.ui \
     src/ui/local/localstatusbarwidget.ui \
     src/ui/aboutdialog.ui \
     src/ui/browserdialog.ui \
