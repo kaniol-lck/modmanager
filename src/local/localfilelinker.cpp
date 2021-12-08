@@ -85,6 +85,7 @@ void LocalFileLinker::linkCurseforge()
         api = CurseforgeAPI::api();
     connect(this, &QObject::destroyed, disconnecter(
                 api->getIdByFingerprint(murmurhash, [=](int id, auto fileInfo, const QList<CurseforgeFileInfo> &fileList[[maybe_unused]]){
+        setCurseforgeFileInfo(fileInfo);
         IdMapper::addCurseforge(localFile_->commonInfo()->id(), id);
         qDebug() << "success link curseforge:" << murmurhash;
         KnownFile::addCurseforge(murmurhash, fileInfo);
@@ -122,6 +123,7 @@ void LocalFileLinker::linkModrinth()
         api = ModrinthAPI::api();
     connect(this, &QObject::destroyed, disconnecter(
                 api->getVersionFileBySha1(sha1, [=](const ModrinthFileInfo &fileInfo){
+        setModrinthFileInfo(fileInfo);
         IdMapper::addModrinth(localFile_->commonInfo()->id(), fileInfo.modId());
         KnownFile::addModrinth(sha1, fileInfo);
         qDebug() << "success link modrinth:" << sha1;

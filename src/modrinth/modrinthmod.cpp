@@ -97,7 +97,7 @@ void ModrinthMod::acquireFullInfo()
     });
 }
 
-QMetaObject::Connection ModrinthMod::acquireFileList(std::function<void (QList<ModrinthFileInfo>)> callback, std::function<void ()> failed)
+QMetaObject::Connection ModrinthMod::acquireFileList()
 {
     if(gettingFileList_) return {};
     gettingFileList_ = true;
@@ -105,9 +105,10 @@ QMetaObject::Connection ModrinthMod::acquireFileList(std::function<void (QList<M
     auto conn = api_->getVersions(modInfo_.modId_, [=](const auto &files){
         gettingFileList_ = false;
         modInfo_.fileList_ = files;
-        callback(files);
-        emit fileListReady();
-    }, failed);
+        emit fileListReady(files);
+    }, [=]{
+        emit fileListReady({});
+    });
     connect(this, &QObject::destroyed, this, [=]{
         disconnect(conn);
     });

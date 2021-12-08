@@ -432,7 +432,7 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
         if(!mod->customizableTags().isEmpty())
             menu->addMenu(localModMenu->removeTagmenu());
         menu->addSeparator();
-        if(!mod->curseforgeUpdate().ignores().isEmpty() || !mod->modrinthUpdate().ignores().isEmpty()){
+        if(!mod->curseforgeUpdater().ignores().isEmpty() || !mod->modrinthUpdater().ignores().isEmpty()){
             menu->addAction(tr("Clear update ignores"), this, [=]{
                 mod->clearIgnores();
             });
@@ -778,8 +778,13 @@ void LocalModBrowser::on_actionSearch_on_Modrinth_triggered()
 
 void LocalModBrowser::on_actionCheck_Updates_triggered()
 {
-    if(!modPath()->isChecking())
-        modPath_->checkModUpdates();
+    if(!modPath_->isChecking()){
+        auto conn = connect(modPath_, &LocalModPath::linkFinished, this, [=]{
+            modPath_->checkModUpdates();
+        });
+        if(!modPath_->isLinking()) modPath_->linkAllFiles();
+        connect(modPath_, &LocalModPath::updatesReady, this, disconnecter(conn));
+    }
     else
         modPath_->cancelChecking();
 }

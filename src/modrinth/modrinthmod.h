@@ -23,7 +23,7 @@ public:
     void acquireAuthor();
     void acquireIcon();
     void acquireFullInfo();
-    QMetaObject::Connection acquireFileList(std::function<void (QList<ModrinthFileInfo>)> callback = [](QList<ModrinthFileInfo>){}, std::function<void ()> failed = []{});
+    QMetaObject::Connection acquireFileList();
 
     void setModInfo(ModrinthModInfo newModInfo);
 
@@ -33,7 +33,7 @@ signals:
     void authorReady();
     void iconReady();
     void fullInfoReady();
-    void fileListReady();
+    void fileListReady(QList<ModrinthFileInfo> fileList);
 
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadFinished();

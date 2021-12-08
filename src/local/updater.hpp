@@ -17,7 +17,11 @@ class Updater
     friend class LocalModFile;
     using FileInfoT = typename CommonClass<type>::FileInfo;
 public:
-    Updater() = default;
+//    Updater() = default;
+    Updater(const GameVersion &targetVersion, ModLoaderType::Type targetType) :
+        targetVersion_(targetVersion),
+        targetType_(targetType)
+    {}
 
     const QList<FileInfoT> &updateFileInfos() const
     {
@@ -47,13 +51,13 @@ public:
         updatableId_ = typename CommonClass<type>::Id();
     }
 
-    bool findUpdate(const std::optional<FileInfoT> &currentFileInfo, const QList<FileInfoT> fileList, const GameVersion &targetVersion, ModLoaderType::Type targetType)
+    bool findUpdate(const std::optional<FileInfoT> &currentFileInfo)
     {
         //select mod file for matched game versions and mod loader type
         updateFileInfos_.clear();
         updatableId_ = typename CommonClass<type>::Id();
         std::insert_iterator<QList<FileInfoT>> iter(updateFileInfos_, updateFileInfos_.begin());
-        std::copy_if(fileList.cbegin(), fileList.cend(), iter, [=](const auto &file){
+        std::copy_if(availableFileInfos_.cbegin(), availableFileInfos_.cend(), iter, [=](const auto &file){
             Config config;
             if(ignores_.contains(file.id()))
                 return false;
@@ -71,11 +75,11 @@ public:
             for(auto &&version : file.gameVersions()){
                 switch (config.getVersionMatch()) {
                 case Config::MinorVersion:
-                    if(version == targetVersion)
+                    if(version == targetVersion_)
                         versionCheck = true;
                     break;
                 case Config::MajorVersion:
-                    if(version.majorVersion() == targetVersion.majorVersion())
+                    if(version.majorVersion() == targetVersion_.majorVersion())
                         versionCheck = true;
                     break;
                 }
@@ -83,7 +87,7 @@ public:
             if(!versionCheck) return false;
             //check loader type
             bool loaderCheck = false;
-            if(file.loaderTypes().contains(targetType))
+            if(file.loaderTypes().contains(targetType_))
                 loaderCheck = true;
             if(!loaderCheck && config.getLoaderMatch() == Config::IncludeUnmarked && file.loaderTypes().isEmpty())
                 loaderCheck = true;
@@ -150,11 +154,30 @@ public:
         updatableId_ = newUpdatableId;
     }
 
+    void setAvailableFileInfos(const QList<FileInfoT> &newAvailableFileInfos)
+    {
+        availableFileInfos_ = newAvailableFileInfos;
+    }
+
+    void setTargetVersion(const GameVersion &newTargetVersion)
+    {
+        targetVersion_ = newTargetVersion;
+    }
+
+    void setTargetType(ModLoaderType::Type newTargetType)
+    {
+        targetType_ = newTargetType;
+    }
+
 private:
     typename CommonClass<type>::Mod *mod_;
     typename CommonClass<type>::Id updatableId_;
     QList<FileInfoT> updateFileInfos_;
+    QList<FileInfoT> availableFileInfos_;
     QList<typename FileInfoT::IdType> ignores_;
+
+    GameVersion targetVersion_;
+    ModLoaderType::Type targetType_;
 };
 
 #endif // UPDATER_H

@@ -89,38 +89,38 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
                 case ModWebsiteType::None:
                     break;
                 case ModWebsiteType::Curseforge:
-                    if(mod->curseforgeUpdate().updateFileInfos().size() == 1){
-                        setAfterItem(mod->curseforgeUpdate().updateFileInfos().first());
+                    if(mod->curseforgeUpdater().updateFileInfos().size() == 1){
+                        setAfterItem(mod->curseforgeUpdater().updateFileInfos().first());
                         ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), nullptr);
-                    }else if(mod->curseforgeUpdate().updateFileInfos().size() > 1){
+                    }else if(mod->curseforgeUpdater().updateFileInfos().size() > 1){
                         unsetAfterItem();
                         auto comboBox = new QComboBox(this);
                         comboBox->setStyleSheet("color: darkgreen");
                         ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), comboBox);
-                        for(const auto &fileInfo : mod->curseforgeUpdate().updateFileInfos())
+                        for(const auto &fileInfo : mod->curseforgeUpdater().updateFileInfos())
                             comboBox->addItem(fileInfo.displayName());
-                        afterItem->setToolTip(getToolTip(mod->curseforgeUpdate().updateFileInfos().first()));
+                        afterItem->setToolTip(getToolTip(mod->curseforgeUpdater().updateFileInfos().first()));
                         connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
-                            auto &fileInfo = mod->curseforgeUpdate().updateFileInfos().at(index);
+                            auto &fileInfo = mod->curseforgeUpdater().updateFileInfos().at(index);
                             afterItem->setData(index);
                             afterItem->setToolTip(getToolTip(fileInfo));
                         });
                     }
                     break;
                 case ModWebsiteType::Modrinth:
-                    if(mod->modrinthUpdate().updateFileInfos().size() == 1){
-                        setAfterItem(mod->modrinthUpdate().updateFileInfos().first());
+                    if(mod->modrinthUpdater().updateFileInfos().size() == 1){
+                        setAfterItem(mod->modrinthUpdater().updateFileInfos().first());
                         ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), nullptr);
-                    }else if(mod->modrinthUpdate().updateFileInfos().size() > 1){
+                    }else if(mod->modrinthUpdater().updateFileInfos().size() > 1){
                         unsetAfterItem();
                         auto comboBox = new QComboBox(this);
                         comboBox->setStyleSheet("color: darkgreen");
                         ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), comboBox);
-                        for(const auto &fileInfo : mod->modrinthUpdate().updateFileInfos())
+                        for(const auto &fileInfo : mod->modrinthUpdater().updateFileInfos())
                             comboBox->addItem(fileInfo.displayName());
-                        afterItem->setToolTip(getToolTip(mod->curseforgeUpdate().updateFileInfos().first()));
+                        afterItem->setToolTip(getToolTip(mod->curseforgeUpdater().updateFileInfos().first()));
                         connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
-                            auto &fileInfo = mod->modrinthUpdate().updateFileInfos().at(index);
+                            auto &fileInfo = mod->modrinthUpdater().updateFileInfos().at(index);
                             afterItem->setData(index);
                             afterItem->setToolTip(getToolTip(fileInfo));
                         });
@@ -163,12 +163,12 @@ void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
             auto type = mod->updateTypes().at(model_.item(row, SourceColumn)->data().toInt());
             auto fileInfoIndex = model_.item(row, AfterColumn)->data().toInt();
             if(type == ModWebsiteType::Curseforge){
-                curseforgeUpdateList << QPair{ mod, mod->curseforgeUpdate().updateFileInfos().at(fileInfoIndex) };
-                qDebug() << "Curseforge" << mod->curseforgeUpdate().updateFileInfos().at(fileInfoIndex).displayName();
+                curseforgeUpdateList << QPair{ mod, mod->curseforgeUpdater().updateFileInfos().at(fileInfoIndex) };
+                qDebug() << "Curseforge" << mod->curseforgeUpdater().updateFileInfos().at(fileInfoIndex).displayName();
             }
             else if(type == ModWebsiteType::Modrinth){
-                modrinthUpdateList << QPair{ mod, mod->modrinthUpdate().updateFileInfos().at(fileInfoIndex) };
-                qDebug() << "Modrinth" << mod->modrinthUpdate().updateFileInfos().at(fileInfoIndex).displayName();
+                modrinthUpdateList << QPair{ mod, mod->modrinthUpdater().updateFileInfos().at(fileInfoIndex) };
+                qDebug() << "Modrinth" << mod->modrinthUpdater().updateFileInfos().at(fileInfoIndex).displayName();
             }
         }
     modPath_->updateMods(curseforgeUpdateList, modrinthUpdateList);

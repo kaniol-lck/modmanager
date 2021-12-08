@@ -22,7 +22,7 @@ public:
     void acquireBasicInfo();
     void acquireIcon();
     void acquireDescription();
-    QMetaObject::Connection acquireAllFileList(std::function<void (QList<CurseforgeFileInfo>)> callback = [](QList<CurseforgeFileInfo>){}, std::function<void ()> failed = []{});
+    QMetaObject::Connection acquireAllFileList();
 
     const CurseforgeModInfo &modInfo() const;
 signals:
@@ -31,7 +31,7 @@ signals:
     void basicInfoReady();
     void iconReady();
     void descriptionReady();
-    void allFileListReady();
+    void allFileListReady(QList<CurseforgeFileInfo> fileInfos);
 
 private:
     CurseforgeAPI *api_;

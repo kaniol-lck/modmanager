@@ -22,30 +22,32 @@
 #include "util/mmlogger.h"
 #include "util/funcutil.h"
 
-LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
-    QObject(parent),
-    curseforgeAPI_(CurseforgeAPI::api()),
-    modrinthAPI_(ModrinthAPI::api())
-{
+//LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
+//    QObject(parent),
+//    curseforgeAPI_(CurseforgeAPI::api()),
+//    modrinthAPI_(ModrinthAPI::api())
+//{
 //    connect(this, &LocalMod::tagsEditted, this, &LocalMod::modFileUpdated);
-    setModFile(file);
-}
+//    setModFile(file);
+//}
 
 LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     QObject(parent),
     curseforgeAPI_(parent->curseforgeAPI()),
     modrinthAPI_(parent->modrinthAPI()),
     path_(parent),
-    targetVersion_(parent->info().gameVersion()),
-    targetLoaderType_(parent->info().loaderType())
+    curseforgeUpdater_(parent->info().gameVersion(), parent->info().loaderType()),
+    modrinthUpdater_(parent->info().gameVersion(), parent->info().loaderType())
 {
     connect(this, &LocalMod::tagsEditted, path_, &LocalModPath::writeToFile);
     connect(this, &LocalMod::modCacheUpdated, path_, &LocalModPath::writeToFile);
     addSubTagable(path_);
     setModFile(file);
     connect(parent, &LocalModPath::infoUpdated, this, [=]{
-        targetVersion_ = parent->info().gameVersion();
-        targetLoaderType_ = parent->info().loaderType();
+        curseforgeUpdater_.setTargetVersion(parent->info().gameVersion());
+        curseforgeUpdater_.setTargetType(parent->info().loaderType());
+        modrinthUpdater_.setTargetVersion(parent->info().gameVersion());
+        modrinthUpdater_.setTargetType(parent->info().loaderType());
     });
 }
 
@@ -61,15 +63,36 @@ CurseforgeMod *LocalMod::curseforgeMod() const
 
 void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
 {
+    removeSubTagable(modrinthMod_);
     curseforgeMod_ = newCurseforgeMod;
-    addSubTagable(curseforgeMod_);
     if(curseforgeMod_){
+        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, &LocalMod::setCurseforgeFileInfos);
+        addSubTagable(curseforgeMod_);
         curseforgeMod_->setParent(this);
         curseforgeMod_->acquireBasicInfo();
         emit curseforgeReady(true);
-        emit modCacheUpdated();
-        emit modInfoChanged();
     }
+    emit modCacheUpdated();
+    emit modInfoChanged();
+}
+
+void LocalMod::setCurseforgeId(int id, bool cache)
+{
+    if(id != 0){
+        curseforgeMod_ = new CurseforgeMod(this, id);
+        addSubTagable(curseforgeMod_);
+        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, &LocalMod::setCurseforgeFileInfos);
+        emit curseforgeReady(true);
+        emit modInfoChanged();
+        emit modCacheUpdated();
+        if(curseforgeMod_){
+            curseforgeMod_->acquireBasicInfo();
+        }
+        if(cache)
+            IdMapper::addCurseforge(commonInfo()->id(), id);
+        updateIcon();
+    } else
+        emit curseforgeReady(false);
 }
 
 void LocalMod::checkUpdates(bool force)
@@ -117,7 +140,7 @@ void LocalMod::checkUpdates(bool force)
 
 void LocalMod::cancelChecking()
 {
-    emit checkCancelled();
+//    emit checkCancelled();
 }
 
 void LocalMod::checkCurseforgeUpdate(bool force)
@@ -131,15 +154,15 @@ void LocalMod::checkCurseforgeUpdate(bool force)
 
     //update file list
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
-        connect(this, &LocalMod::checkCancelled, disconnecter(
-                    curseforgeMod_->acquireAllFileList([=](const QList<CurseforgeFileInfo> &fileList){
-            bool bl = curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo(), fileList, targetVersion_, targetLoaderType_);
+//        connect(this, &LocalMod::checkCancelled, disconnecter(
+        curseforgeMod_->acquireAllFileList();
+        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, [=](const QList<CurseforgeFileInfo> &){
+            bool bl = curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
             emit curseforgeUpdateReady(bl);
-        }, [=]{
-            emit curseforgeUpdateReady(false, false);
-        })));
+            //TODO: failed
+        });
     }else{
-        bool bl = curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo(), curseforgeMod_->modInfo().allFileList(), targetVersion_, targetLoaderType_);
+        bool bl = curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
         emit curseforgeUpdateReady(bl);
     }
 }
@@ -154,16 +177,16 @@ void LocalMod::checkModrinthUpdate(bool force)
     emit checkModrinthUpdateStarted();
     auto updateFullInfo = [=]{
         if(!modrinthMod_->modInfo().fileList().isEmpty()){
-            bool bl = modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo(), modrinthMod_->modInfo().fileList(), targetVersion_, targetLoaderType_);
+            bool bl = modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
             emit modrinthUpdateReady(bl);
         }else {
-            connect(this, &LocalMod::checkCancelled, disconnecter(
-                        modrinthMod_->acquireFileList([=](const QList<ModrinthFileInfo> &fileList){
-                bool bl = modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo(), fileList, targetVersion_, targetLoaderType_);
+//            connect(this, &LocalMod::checkCancelled, disconnecter(
+            modrinthMod_->acquireFileList();
+            connect(modrinthMod_, &ModrinthMod::fileListReady, this, [=](const QList<ModrinthFileInfo> &){
+                bool bl = modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
                 emit modrinthUpdateReady(bl);
-            }, [=]{
-                emit modrinthUpdateReady(false, false);
-            })));
+                //TODO: failed
+            });
         }
     };
 
@@ -383,12 +406,12 @@ const QList<LocalModFile *> &LocalMod::duplicateFiles() const
     return duplicateFiles_;
 }
 
-const Updater<Curseforge> &LocalMod::curseforgeUpdate() const
+const Updater<Curseforge> &LocalMod::curseforgeUpdater() const
 {
     return curseforgeUpdater_;
 }
 
-const Updater<Modrinth> &LocalMod::modrinthUpdate() const
+const Updater<Modrinth> &LocalMod::modrinthUpdater() const
 {
     return modrinthUpdater_;
 }
@@ -406,37 +429,6 @@ const QList<std::tuple<QString, QString, FabricModInfo> > &LocalMod::conflicts()
 const QList<std::tuple<QString, QString, FabricModInfo> > &LocalMod::breaks() const
 {
     return breaks_;
-}
-
-void LocalMod::setCurseforgeId(int id, bool cache)
-{
-    if(id != 0){
-        curseforgeMod_ = new CurseforgeMod(this, id);
-        addSubTagable(curseforgeMod_);
-        emit curseforgeReady(true);
-        if(curseforgeMod_){
-            curseforgeMod_->acquireBasicInfo();
-        }
-        if(cache)
-            IdMapper::addCurseforge(commonInfo()->id(), id);
-        updateIcon();
-    } else
-        emit curseforgeReady(false);
-}
-
-void LocalMod::setModrinthId(const QString &id, bool cache)
-{
-    if(!id.isEmpty()){
-        modrinthMod_ = new ModrinthMod(this, id);
-        addSubTagable(modrinthMod_);
-        emit curseforgeReady(true);
-        if(modrinthMod_){
-            modrinthMod_->acquireFullInfo();
-        }
-        if(cache)
-            IdMapper::addModrinth(commonInfo()->id(), id);
-    } else
-        emit modrinthReady(false);
 }
 
 const QString &LocalMod::alias() const
@@ -574,6 +566,16 @@ void LocalMod::setFeatured(bool featured)
     emit modInfoChanged();
 }
 
+void LocalMod::setCurseforgeFileInfos(const QList<CurseforgeFileInfo> &fileInfos)
+{
+    curseforgeUpdater_.setAvailableFileInfos(fileInfos);
+}
+
+void LocalMod::setModrinthFileInfos(const QList<ModrinthFileInfo> &fileInfos)
+{
+    modrinthUpdater_.setAvailableFileInfos(fileInfos);
+}
+
 LocalModPath *LocalMod::path() const
 {
     return path_;
@@ -660,12 +662,31 @@ void LocalMod::setModrinthMod(ModrinthMod *newModrinthMod)
 {
     removeSubTagable(modrinthMod_);
     modrinthMod_ = newModrinthMod;
-    addSubTagable(modrinthMod_);
     if(modrinthMod_){
+        connect(modrinthMod_, &ModrinthMod::fileListReady, this, &LocalMod::setModrinthFileInfos);
+        addSubTagable(modrinthMod_);
         modrinthMod_->setParent(this);
         modrinthMod_->acquireFullInfo();
         emit modrinthReady(true);
-        emit modCacheUpdated();
-        emit modInfoChanged();
     }
+    emit modCacheUpdated();
+    emit modInfoChanged();
+}
+
+void LocalMod::setModrinthId(const QString &id, bool cache)
+{
+    if(!id.isEmpty()){
+        modrinthMod_ = new ModrinthMod(this, id);
+        addSubTagable(modrinthMod_);
+        connect(modrinthMod_, &ModrinthMod::fileListReady, this, &LocalMod::setModrinthFileInfos);
+        emit modrinthReady(true);
+        emit modInfoChanged();
+        emit modCacheUpdated();
+        if(modrinthMod_){
+            modrinthMod_->acquireFullInfo();
+        }
+        if(cache)
+            IdMapper::addModrinth(commonInfo()->id(), id);
+    } else
+        emit modrinthReady(false);
 }
