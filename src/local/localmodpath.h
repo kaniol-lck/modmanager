@@ -38,7 +38,7 @@ public:
     void linkAllFiles();
 
     //check update
-    void checkModUpdates(bool force = true);
+    void checkModUpdates();
     void cancelChecking();
     void updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curseforgeUpdateList, QList<QPair<LocalMod *, ModrinthFileInfo> > modrinthUpdateList);
 

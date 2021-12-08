@@ -779,9 +779,7 @@ void LocalModBrowser::on_actionSearch_on_Modrinth_triggered()
 void LocalModBrowser::on_actionCheck_Updates_triggered()
 {
     if(!modPath_->isChecking()){
-        auto conn = connect(modPath_, &LocalModPath::linkFinished, this, [=]{
-            modPath_->checkModUpdates();
-        });
+        auto conn = connect(modPath_, &LocalModPath::linkFinished, &LocalModPath::checkModUpdates);
         if(!modPath_->isLinking()) modPath_->linkAllFiles();
         connect(modPath_, &LocalModPath::updatesReady, this, disconnecter(conn));
     }

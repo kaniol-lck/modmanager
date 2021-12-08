@@ -19,6 +19,18 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info) :
     modrinthAPI_(new ModrinthAPI(this)),
     info_(info)
 {
+    connect(this, &LocalModPath::loadFinished, [=]{
+        auto conn = connect(this, &LocalModPath::linkFinished, this, [=]{
+            auto interval = Config().getUpdateCheckInterval();
+            if(interval == Config::Always || !latestUpdateCheck_.isValid() ||
+                    (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1))
+                checkModUpdates();
+            else if(interval != Config::Never){
+            }
+        });
+        linkAllFiles();
+        connect(this, &LocalModPath::updatesReady, this, disconnecter(conn));
+    });
 //    connect(this, &LocalModPath::websitesReady, this, [=]{
 //        //new path not from exsiting will check update
 //        if(initialUpdateChecked_) return;
@@ -106,8 +118,6 @@ void LocalModPath::loadMods(bool autoLoaderType)
         }
         for(const auto &file : qAsConst(modFileList))
             file->setLoaderType(info_.loaderType());
-        isLoading_ = false;
-        emit loadFinished();
     });
 
     auto watcher = new QFutureWatcher<void>(this);
@@ -141,6 +151,8 @@ void LocalModPath::loadMods(bool autoLoaderType)
         readFromFile();
         updateUpdatableCount();
         emit modListUpdated();
+        isLoading_ = false;
+        emit loadFinished();
     });
 }
 
@@ -452,6 +464,7 @@ void LocalModPath::linkAllFiles()
     qDebug() << "link started";
     auto count = std::make_shared<int>(0);
     auto linkedCount = std::make_shared<int>(0);
+    bool noLink = true;
     for(auto &&map : modMaps()) for(const auto &mod : map){
         auto file = mod->modFile();
         auto linker = file->linker();
@@ -467,71 +480,59 @@ void LocalModPath::linkAllFiles()
                 qDebug() << "link finished";
             }
         });
-        bool noLink = true;
         if(!linker->linked()){
             noLink = false;
             linker->link();
         }
-        if(noLink){
-            isLinking_ = false;
-            emit linkFinished();
-            qDebug() << "link finished : nothing to link.";
-        }
+    }
+    if(noLink){
+        isLinking_ = false;
+        emit linkFinished();
+        qDebug() << "link finished : nothing to link.";
     }
 }
 
-void LocalModPath::checkModUpdates(bool force) // force = true by default
+void LocalModPath::checkModUpdates() // force = true by default
 {
     if(modMap_.isEmpty() || isChecking_) return;
-    auto interval = Config().getUpdateCheckInterval();
-    //check update manually or
-    //reach the check interval
-    if(force || interval == Config::Always ||
-      (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1)){
-        isChecking_ = true;
-        emit checkUpdatesStarted();
-        auto count = std::make_shared<int>(0);
-        auto checkedCount = std::make_shared<int>(0);
-        auto updateCount = std::make_shared<int>(0);
-        auto failedCount = std::make_shared<int>(0);
-        for(auto &&map : modMaps())
-            for(const auto &mod : map){
-                connect(mod, &LocalMod::checkUpdatesStarted, this, [=]{
-                    (*count) ++;
-                });
-                auto conn = connect(mod, &LocalMod::updateReady, this, [=](QList<ModWebsiteType> types, bool success){
-                    (*checkedCount)++;
-                    if(!types.isEmpty()) (*updateCount)++;
-                    if(!success) (*failedCount) ++;
-                    qDebug() << "update check finish:" << mod->displayName();
-                    emit updateCheckedCountUpdated(*updateCount, *checkedCount, *count);
-                    //done
-                    if(*checkedCount == *count){
-                        auto currentDateTime = QDateTime::currentDateTime();
-                        for(auto &&path : subPaths_){
-                            path->latestUpdateCheck_ = currentDateTime;
-                            path->writeToFile();
-                        }
-                        latestUpdateCheck_ = currentDateTime;
-                        writeToFile();
-                        isChecking_ = false;
-                        emit updatesReady(*failedCount);
-                    }
-                });
-                connect(mod, &LocalMod::updateReady, disconnecter(conn));
-                //cancel on reloading
-                connect(this, &LocalModPath::loadStarted, disconnecter(conn));
-                connect(this, &LocalModPath::checkCancelled, [=]{
-                    mod->cancelChecking();
-                    disconnect(conn);
-                });
-                qDebug() << "update check start:" << mod->displayName();
-                mod->checkUpdates();
-        }
-    } else if(interval != Config::Never){
-        //not manual not never i.e. load cache
-        updateUpdatableCount();
-        emit updatesReady();
+    isChecking_ = true;
+    emit checkUpdatesStarted();
+    auto count = std::make_shared<int>(0);
+    auto checkedCount = std::make_shared<int>(0);
+    auto updateCount = std::make_shared<int>(0);
+    auto failedCount = std::make_shared<int>(0);
+    for(auto &&map : modMaps()) for(const auto &mod : map){
+        connect(mod, &LocalMod::checkUpdatesStarted, this, [=]{
+            (*count) ++;
+        });
+        auto conn = connect(mod, &LocalMod::updateReady, this, [=](QList<ModWebsiteType> types, bool success){
+            (*checkedCount)++;
+            if(!types.isEmpty()) (*updateCount)++;
+            if(!success) (*failedCount) ++;
+            qDebug() << "update check finish:" << mod->displayName();
+            emit updateCheckedCountUpdated(*updateCount, *checkedCount, *count);
+            //done
+            if(*checkedCount == *count){
+                auto currentDateTime = QDateTime::currentDateTime();
+                for(auto &&path : subPaths_){
+                    path->latestUpdateCheck_ = currentDateTime;
+                    path->writeToFile();
+                }
+                latestUpdateCheck_ = currentDateTime;
+                writeToFile();
+                isChecking_ = false;
+                emit updatesReady(*failedCount);
+            }
+        });
+        connect(mod, &LocalMod::updateReady, disconnecter(conn));
+        //cancel on reloading
+        connect(this, &LocalModPath::loadStarted, disconnecter(conn));
+        connect(this, &LocalModPath::checkCancelled, [=]{
+            mod->cancelChecking();
+            disconnect(conn);
+        });
+        qDebug() << "update check start:" << mod->displayName();
+        mod->checkUpdates();
     }
 }
 
