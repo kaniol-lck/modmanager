@@ -29,6 +29,8 @@ public:
     QWidget *fileListWidget() const override;
     ModrinthMod *selectedMod() const;
 
+    ExploreBrowser *another() override;
+
 signals:
     void downloadPathChanged(LocalModPath *path);
     void selectedModsChanged(ModrinthMod *selectedMod);

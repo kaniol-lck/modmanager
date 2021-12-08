@@ -11,9 +11,14 @@ BrowserDialog::BrowserDialog(QWidget *parent, Browser *browser) :
     browser_(browser)
 {
     ui->setupUi(this);
+    //as standalone dialog
+    if(!parent) ui->buttonBox->hide();
+
     ui->hLayout->insertWidget(0, browser_);
-    ui->vLayout->insertWidget(0, browser_->infoWidget());
-    browser_->infoWidget()->show();
+    if(browser_->infoWidget()){
+        ui->vLayout->insertWidget(0, browser_->infoWidget());
+        browser_->infoWidget()->show();
+    }
     ui->hLayout->setStretchFactor(0, 1);
     ui->hLayout->setStretchFactor(1, 3);
 }
@@ -21,6 +26,8 @@ BrowserDialog::BrowserDialog(QWidget *parent, Browser *browser) :
 void BrowserDialog::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+        return;
+    if(!parent() && event->key() == Qt::Key_Escape)
         return;
     QDialog::keyPressEvent(event);
 }

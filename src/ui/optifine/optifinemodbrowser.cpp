@@ -81,6 +81,11 @@ void OptifineModBrowser::updateUi()
 
 }
 
+ExploreBrowser *OptifineModBrowser::another()
+{
+    return new OptifineModBrowser;
+}
+
 void OptifineModBrowser::updateLocalPathList()
 {
     //remember selected path

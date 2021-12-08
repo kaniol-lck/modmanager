@@ -552,3 +552,8 @@ ModrinthMod *ModrinthModBrowser::selectedMod() const
 {
     return selectedMod_;
 }
+
+ExploreBrowser *ModrinthModBrowser::another()
+{
+    return new ModrinthModBrowser;
+}

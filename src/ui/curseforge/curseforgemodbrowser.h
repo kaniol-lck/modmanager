@@ -28,6 +28,8 @@ public:
     QWidget *fileListWidget() const override;
     CurseforgeMod *selectedMod() const;
 
+    ExploreBrowser *another() override;
+
 signals:
     void downloadPathChanged(LocalModPath *path);
     void selectedModsChanged(CurseforgeMod *selectedMod);

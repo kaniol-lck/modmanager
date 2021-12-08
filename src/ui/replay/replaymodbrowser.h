@@ -25,6 +25,8 @@ public slots:
     void searchModByPathInfo(const LocalModPathInfo &info) override;
     void updateUi() override;
 
+    ExploreBrowser *another() override;
+
 signals:
     void downloadPathChanged(LocalModPath *path);
 

@@ -11,6 +11,8 @@ public:
     explicit ExploreBrowser(QWidget *parent, const QIcon &icon, const QString &name, const QUrl &url);
     virtual ~ExploreBrowser() = default;
 
+    virtual ExploreBrowser *another() = 0;
+
     QAction *visitWebsiteAction() const;
     const QIcon &icon() const;
     const QString &name() const;

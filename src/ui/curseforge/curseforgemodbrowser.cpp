@@ -451,6 +451,11 @@ CurseforgeMod *CurseforgeModBrowser::selectedMod() const
     return selectedMod_;
 }
 
+ExploreBrowser *CurseforgeModBrowser::another()
+{
+    return new CurseforgeModBrowser;
+}
+
 void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
 {
     getModList(currentName_);

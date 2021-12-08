@@ -76,6 +76,11 @@ void ReplayModBrowser::updateUi()
 
 }
 
+ExploreBrowser *ReplayModBrowser::another()
+{
+    return new ReplayModBrowser;
+}
+
 void ReplayModBrowser::updateLocalPathList()
 {
     //remember selected path

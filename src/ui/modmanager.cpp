@@ -39,6 +39,7 @@
 #include "util/funcutil.h"
 #include "ui/windowstitlebar.h"
 #include "qss/stylesheets.h"
+#include "ui/browserdialog.h"
 
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
@@ -345,6 +346,12 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
             exploreBrowser->refresh();
         });
         menu->addAction(exploreBrowser->visitWebsiteAction());
+        connect(menu->addAction(tr("Open in New Dialog")), &QAction::triggered, this, [=]{
+            auto dialog = new BrowserDialog(nullptr, exploreBrowser->another());
+            dialog->setWindowTitle(exploreBrowser->name());
+            dialog->setWindowIcon(exploreBrowser->icon());
+            dialog->show();
+        });
     } else if(index.parent().row() == PageSwitcher::Local){
         // on one of local items
         auto localBrowser = ui->pageSwitcher->localModBrowser(index.row());
