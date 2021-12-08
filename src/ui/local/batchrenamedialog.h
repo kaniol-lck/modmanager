@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 
 #include "local/modfilerenamer.h"
+#include "local/localmod.h"
 
 class LocalModPath;
 class LocalMod;
