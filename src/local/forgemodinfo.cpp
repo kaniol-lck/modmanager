@@ -108,6 +108,9 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
             if(info.version_ == "${file.jarVersion}")
                 info.version_ = jarVersion;
 
+            if(info.id_ == "optifine")
+                info.version_ = optiFineVersion(zip);
+
             list << info;
         }
     }
@@ -148,9 +151,31 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
                 }
             }
 
+            if(info.id_ == "optifine")
+                info.version_ = optiFineVersion(zip);
+
             list << info;
         }
     }
 
     return list;
+}
+
+QString ForgeModInfo::optiFineVersion(QuaZip *zip)
+{
+    zip->setCurrentFile("net/optifine/VersionCheckThread.class");
+    QuaZipFile zipFile(zip);
+    if(zipFile.open(QIODevice::ReadOnly)){
+        QByteArray bytes = zipFile.readAll();
+        QString str;
+        for(auto pos = bytes.indexOf("OF-Release") + 10 + 3; pos < bytes.size(); pos++){
+            if(auto b = bytes.at(pos); isalnum(b) || b == '_')
+                str.append(bytes.at(pos));
+            else if(!str.isEmpty())
+                break;
+        }
+        zipFile.close();
+        return str;
+    }
+    return {};
 }
