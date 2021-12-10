@@ -31,7 +31,6 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
         });
     }
     ui->modAuthors->setText("by <b>" + mod->modInfo().author() + "</b>");
-    ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
     ui->modUpdateDate->setText(tr("%1 ago").arg(timesTo(mod->modInfo().dateModified())));
     ui->modUpdateDate->setToolTip(mod->modInfo().dateModified().toString());
     ui->modCreateDate->setText(tr("%1 ago").arg(timesTo(mod->modInfo().dateCreated())));
@@ -54,10 +53,16 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
     if(!mod_->modInfo().iconBytes().isEmpty())
         updateIcon();
 
-    mod->acquireFileList();
-
     connect(mod, &ModrinthMod::iconReady, this, &ModrinthModItemWidget::updateIcon);
-    connect(mod, &ModrinthMod::fileListReady, this, &ModrinthModItemWidget::updateFileList);
+
+    if(Config().getAutoFetchModrinthFileList()){
+        mod->acquireFileList();
+        connect(mod, &ModrinthMod::fileListReady, this, &ModrinthModItemWidget::updateFileList);
+        ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
+    } else{
+        ui->downloadSpeedText->hide();
+        ui->downloadButton->hide();
+    }
 
     updateUi();
 }

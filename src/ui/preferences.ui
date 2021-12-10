@@ -324,14 +324,14 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="4" column="0">
               <widget class="QLabel" name="label_11">
                <property name="text">
                 <string>OptiFine version source:</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="4" column="1">
               <widget class="QComboBox" name="optifineVersionSource">
                <item>
                 <property name="text">
@@ -349,6 +349,13 @@
               <widget class="QCheckBox" name="searchModsOnStartup">
                <property name="text">
                 <string>Search mods on startup</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QCheckBox" name="autoFetchModrinthFileList">
+               <property name="text">
+                <string>Auto fetch Modrinth mod</string>
                </property>
               </widget>
              </item>

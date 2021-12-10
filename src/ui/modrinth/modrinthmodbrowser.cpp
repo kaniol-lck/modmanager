@@ -430,7 +430,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
             item->setSizeHint(QSize(0, 100));
             model_->appendRow(item);
             mod->acquireIcon();
-            mod->acquireFileList();
+//            mod->acquireFileList();
         }
         if(infoList.size() < Config().getSearchResultCount()){
             auto item = new QStandardItem(tr("There is no more mod here..."));

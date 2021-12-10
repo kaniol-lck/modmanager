@@ -42,6 +42,8 @@ void ModrinthFileListWidget::setMod(ModrinthMod *mod)
 
     connect(this, &ModrinthFileListWidget::modChanged, this, disconnecter(
                 connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthFileListWidget::updateFullInfo)));
+    connect(this, &ModrinthFileListWidget::modChanged, this, disconnecter(
+                connect(mod_, &ModrinthMod::fileListReady, this, &ModrinthFileListWidget::updateFileList)));
 }
 
 void ModrinthFileListWidget::setDownloadPath(LocalModPath *newDownloadPath)
