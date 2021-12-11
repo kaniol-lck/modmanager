@@ -12,6 +12,7 @@ class ExploreStatusBarWidget;
 class QStatusBar;
 class QStandardItemModel;
 class LocalMod;
+class QMenu;
 namespace Ui {
 class CurseforgeModBrowser;
 }
@@ -27,6 +28,9 @@ public:
     QWidget *infoWidget() const override;
     QWidget *fileListWidget() const override;
     CurseforgeMod *selectedMod() const;
+
+    QList<QAction *> modActions() const override;
+    QList<QAction *> pathActions() const override;
 
     ExploreBrowser *another() override;
 
@@ -54,7 +58,6 @@ private slots:
     void onItemSelected();
     void updateIndexWidget();
     void on_sortSelect_currentIndexChanged(int);
-
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:

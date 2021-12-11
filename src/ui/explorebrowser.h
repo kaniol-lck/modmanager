@@ -4,6 +4,7 @@
 #include "ui/browser.h"
 #include "local/localmodpathinfo.h"
 
+class QMenu;
 class ExploreBrowser : public Browser
 {
     Q_OBJECT
@@ -13,14 +14,23 @@ public:
 
     virtual ExploreBrowser *another() = 0;
 
+    QList<QAction *> modActions() const override;
+    QList<QAction *> pathActions() const override;
+
     QAction *visitWebsiteAction() const;
-    const QIcon &icon() const;
-    const QString &name() const;
+    QIcon icon() const override;
+    QString name() const override;
 public slots:
     virtual void refresh() = 0;
     virtual void searchModByPathInfo(const LocalModPathInfo &info) = 0;
     virtual void updateUi() = 0;
+
+    void openDialog();
 signals:
+protected:
+    QMenu *modMenu_;
+    QMenu *pathMenu_;
+
 private:
     QIcon icon_;
     QString name_;

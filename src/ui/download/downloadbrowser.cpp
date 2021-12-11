@@ -34,6 +34,16 @@ DownloadBrowser::~DownloadBrowser()
     delete ui;
 }
 
+QIcon DownloadBrowser::icon() const
+{
+    return QIcon::fromTheme("download");
+}
+
+QString DownloadBrowser::name() const
+{
+    return tr("Downloader");
+}
+
 void DownloadBrowser::addNewDownloaderItem(const DownloadFileInfo &info, QAria2Downloader *downloader)
 {
     auto *listItem = new QListWidgetItem();

@@ -37,6 +37,9 @@ public:
 
     QList<QAction *> modActions() const override;
     QList<QAction *> pathActions() const override;
+
+    QIcon icon() const override;
+    QString name() const override;
 signals:
     void loadFinished();
     void selectedModsChanged();

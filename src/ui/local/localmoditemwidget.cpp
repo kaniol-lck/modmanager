@@ -32,11 +32,8 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
 
     this->setAttribute(Qt::WA_Hover, true);
 
-    auto onIconChanged = [=]{
-        ui->modIcon->setPixmap(mod_->icon().scaled(80, 80, Qt::KeepAspectRatio));
-    };
     onIconChanged();
-    connect(mod_, &LocalMod::modIconUpdated, this, onIconChanged);
+    connect(mod_, &LocalMod::modIconUpdated, this, &LocalModItemWidget::onIconChanged);
 
     //init info
     updateInfo();
@@ -176,6 +173,11 @@ void LocalModItemWidget::updateUi()
     ui->modAuthors->setVisible(config.getShowModAuthors());
     //tags
     ui->tagsWidget->updateUi();
+}
+
+void LocalModItemWidget::onIconChanged()
+{
+    ui->modIcon->setPixmap(mod_->icon().scaled(ui->modIcon->size(), Qt::KeepAspectRatio));
 }
 
 void LocalModItemWidget::on_updateButton_clicked()
@@ -329,4 +331,23 @@ void LocalModItemWidget::on_featuredButton_toggled(bool checked)
 LocalMod *LocalModItemWidget::mod() const
 {
     return mod_;
+}
+
+void LocalModItemWidget::setMinimal(bool minimal)
+{
+    if(minimal){
+        tweakWidgetFontPointSize(ui->modDescription, 9);
+        tweakWidgetFontPointSize(ui->modName, 11);
+        ui->modIcon->setFixedSize(QSize(64, 64));
+    } else{
+        tweakWidgetFontPointSize(ui->modDescription, 10);
+        tweakWidgetFontPointSize(ui->modName, 13);
+        ui->modIcon->setFixedSize(QSize(80, 80));
+    }
+    onIconChanged();
+//    ui->tagsWidget->setHidden(minimal);
+//    ui->curseforgeButton->setHidden(minimal);
+//    ui->modrinthButton->setHidden(minimal);
+//    ui->featuredButton->setHidden(minimal);
+//    ui->disableButton->setHidden(minimal);
 }

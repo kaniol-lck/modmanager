@@ -212,3 +212,10 @@ std::function<void ()> disconnecter(QMetaObject::Connection conn){
         QObject::disconnect(conn);
     };
 }
+
+void tweakWidgetFontPointSize(QWidget *widget, int pointSize)
+{
+    auto font = widget->font();
+    font.setPointSize(pointSize);
+    widget->setFont(font);
+}

@@ -447,8 +447,18 @@ void CurseforgeModBrowser::paintEvent(QPaintEvent *event)
 
 CurseforgeMod *CurseforgeModBrowser::selectedMod() const
 {
-    qDebug() << selectedMod_;
+//    qDebug() << selectedMod_;
     return selectedMod_;
+}
+
+QList<QAction *> CurseforgeModBrowser::modActions() const
+{
+    return modMenu_->actions();
+}
+
+QList<QAction *> CurseforgeModBrowser::pathActions() const
+{
+    return pathMenu_->actions();
 }
 
 ExploreBrowser *CurseforgeModBrowser::another()
@@ -460,4 +470,3 @@ void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
 {
     getModList(currentName_);
 }
-

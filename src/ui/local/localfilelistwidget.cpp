@@ -139,6 +139,7 @@ void LocalFileListWidget::updateIndexWidget()
         auto mod = item->data().value<LocalMod*>();
         if(mod){
             auto modItemWidget = new LocalModItemWidget(ui->fileListView, mod);
+//            modItemWidget->setMinimal(true);
             ui->fileListView->setIndexWidget(index, modItemWidget);
             item->setSizeHint(QSize(0, modItemWidget->height()));
         }
@@ -164,6 +165,7 @@ void LocalFileListWidget::updateUpdateIndexWidget()
         auto mod = item->data().value<LocalMod*>();
         if(mod){
             auto modItemWidget = new LocalModItemWidget(ui->updateFileListView, mod);
+//            modItemWidget->setMinimal(true);
             ui->updateFileListView->setIndexWidget(index, modItemWidget);
             item->setSizeHint(QSize(0, modItemWidget->height()));
         }

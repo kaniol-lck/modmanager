@@ -31,3 +31,4 @@ void Browser::onModMenuAboutToShow()
 
 void Browser::onModMenuAboutToHide()
 {}
+

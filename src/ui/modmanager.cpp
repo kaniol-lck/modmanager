@@ -344,16 +344,7 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
     } else if(index.parent().row() == PageSwitcher::Explore){
         // on one of explore items
         auto exploreBrowser = ui->pageSwitcher->exploreBrowser(index.row());
-        connect(menu->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh")), &QAction::triggered, this, [=]{
-            exploreBrowser->refresh();
-        });
-        menu->addAction(exploreBrowser->visitWebsiteAction());
-        connect(menu->addAction(tr("Open in New Dialog")), &QAction::triggered, this, [=]{
-            auto dialog = new BrowserDialog(nullptr, exploreBrowser->another());
-            dialog->setWindowTitle(exploreBrowser->name());
-            dialog->setWindowIcon(exploreBrowser->icon());
-            dialog->show();
-        });
+        menu->addActions(exploreBrowser->pathActions());
     } else if(index.parent().row() == PageSwitcher::Local){
         // on one of local items
         auto localBrowser = ui->pageSwitcher->localModBrowser(index.row());
@@ -484,11 +475,9 @@ void ModManager::on_menuPaths_aboutToShow()
     ui->menuPaths->clear();
     int index = 0;
     for(auto path : LocalModPathManager::pathList()){
-        auto action = new QAction(path->info().displayName());
-        connect(action, &QAction::triggered, this, [=]{
+        ui->menuPaths->addAction(path->info().icon(), path->info().displayName(), this, [=]{
             ui->pageSwitcher->setPage(PageSwitcher::Local, index);
         });
-        ui->menuPaths->addAction(action);
         index++;
     }
 }

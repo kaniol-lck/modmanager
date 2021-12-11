@@ -87,9 +87,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     pathMenu_->addAction(ui->actionBatch_Rename);
     pathMenu_->addAction(ui->actionDelete_Old_Files_In_Path);
     pathMenu_->addSeparator();
-    pathMenu_->addAction(ui->actionUpdate_All);
-    pathMenu_->addAction(ui->actionCheck_Updates);
     pathMenu_->addAction(ui->actionLink_Mod_Files);
+    pathMenu_->addAction(ui->actionCheck_Updates);
+    pathMenu_->addAction(ui->actionUpdate_All);
 
     auto findNewMenu = new QMenu(this);
     ui->actionFind_New_Mods->setMenu(findNewMenu);
@@ -560,6 +560,16 @@ QList<QAction *> LocalModBrowser::modActions() const
 QList<QAction *> LocalModBrowser::pathActions() const
 {
     return pathMenu_->actions();
+}
+
+QIcon LocalModBrowser::icon() const
+{
+    return modPath_->info().icon();
+}
+
+QString LocalModBrowser::name() const
+{
+    return modPath_->info().displayName();
 }
 
 LocalModPath *LocalModBrowser::modPath() const

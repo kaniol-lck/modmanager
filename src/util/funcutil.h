@@ -32,6 +32,8 @@ QString clearFormat(QString str);
 
 QString timesTo(const QDateTime &dateTime);
 
-std::function<void ()> disconnecter(QMetaObject::Connection conn);;
+std::function<void ()> disconnecter(QMetaObject::Connection conn);
+
+void tweakWidgetFontPointSize(QWidget *widget, int pointSize);
 
 #endif // FUNCUTIL_H

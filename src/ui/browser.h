@@ -16,6 +16,8 @@ public:
     virtual QList<QAction *> pathActions() const;
     virtual void onModMenuAboutToShow();
     virtual void onModMenuAboutToHide();
+    virtual QIcon icon() const = 0;
+    virtual QString name() const = 0;
 };
 
 #endif // BROWSER_H

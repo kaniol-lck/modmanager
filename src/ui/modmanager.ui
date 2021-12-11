@@ -57,7 +57,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>29</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTools">
@@ -83,6 +83,9 @@
      <property name="title">
       <string>Tags</string>
      </property>
+     <property name="icon">
+      <iconset theme="tag"/>
+     </property>
     </widget>
     <addaction name="actionPage_Selector"/>
     <addaction name="actionMod_Infomation"/>
@@ -106,7 +109,10 @@
     </property>
     <widget class="QMenu" name="menu_New_Path">
      <property name="title">
-      <string>&amp;New Path</string>
+      <string>&amp;New Local Path</string>
+     </property>
+     <property name="icon">
+      <iconset theme="folder-new"/>
      </property>
      <addaction name="actionOpen_new_path_dialog"/>
      <addaction name="separator"/>
@@ -115,15 +121,16 @@
     </widget>
     <widget class="QMenu" name="menuPaths">
      <property name="title">
-      <string>Paths</string>
+      <string>Local Paths</string>
+     </property>
+     <property name="icon">
+      <iconset theme="folder"/>
      </property>
     </widget>
     <addaction name="menu_New_Path"/>
     <addaction name="menuPaths"/>
-    <addaction name="separator"/>
-    <addaction name="actionReload"/>
-    <addaction name="separator"/>
     <addaction name="actionManage_Browser"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_Mod">
     <property name="title">
@@ -200,7 +207,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Manage Local Mod Browser</string>
+    <string>Manage Local Paths</string>
    </property>
   </action>
   <action name="action_About_Mod_Manager">

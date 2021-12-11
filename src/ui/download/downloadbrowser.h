@@ -20,6 +20,8 @@ public:
     explicit DownloadBrowser(QWidget *parent = nullptr);
     ~DownloadBrowser();
 
+    QIcon icon() const override;
+    QString name() const override;
 public slots:
     void addNewDownloaderItem(const DownloadFileInfo &info, QAria2Downloader *downloader);
     void downloadSpeed(qint64 download, qint64 upload = 0);

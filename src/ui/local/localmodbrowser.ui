@@ -384,7 +384,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Find New Mods</string>
+    <string>Find New Mods in...</string>
    </property>
   </action>
   <action name="actionToggle_Enable">

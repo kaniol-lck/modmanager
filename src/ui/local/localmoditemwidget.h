@@ -19,11 +19,15 @@ public:
 
     LocalMod *mod() const;
 
+    void setMinimal(bool minimal);
+
 public slots:
     void updateInfo();
     void updateUi();
 
 private slots:
+    void onIconChanged();
+
     void on_updateButton_clicked();
 
     void updateReady(QList<ModWebsiteType> types);
