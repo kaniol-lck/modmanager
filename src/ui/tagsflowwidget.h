@@ -11,19 +11,21 @@ class TagsFlowWidget : public QWidget
 public:
     explicit TagsFlowWidget(QWidget *parent = nullptr);
 
+    void setTagable(const Tagable &tagable);
+
     template<typename T>
-    void setMod(T* mod)
+    void setTagableObject(T* tagableObject)
     {
-        if(mod_) disconnect(mod, &T::tagsChanged, this, &TagsFlowWidget::updateUi);
-        mod_ = mod;
+        if(tagableObject_) disconnect(tagableObject, &T::tagsChanged, this, &TagsFlowWidget::updateUi);
+        tagableObject_ = tagableObject;
         updateUi();
-        connect(mod, &T::tagsChanged, this, &TagsFlowWidget::updateUi);
+        connect(tagableObject, &T::tagsChanged, this, &TagsFlowWidget::updateUi);
     }
 
     void updateUi();
 private:
     QList<QWidget*> tagWidgets_;
-    Tagable *mod_ = nullptr;
+    Tagable *tagableObject_ = nullptr;
 };
 
 #endif // TAGSFLOWWIDGET_H

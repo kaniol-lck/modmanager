@@ -71,6 +71,8 @@ public slots:
     void readFromFile();
 
 signals:
+    void tagsChanged() override;
+
     void infoUpdated();
     void modListUpdated();
 

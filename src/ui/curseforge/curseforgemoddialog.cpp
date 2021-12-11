@@ -30,7 +30,7 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     localMod_(localMod)
 {
     ui->setupUi(this);
-    ui->tagsWidget->setMod(mod_);
+    ui->tagsWidget->setTagableObject(mod_);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->galleryListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setModel(model_);

@@ -23,6 +23,7 @@ signals:
     void modChanged();
 private slots:
     void updateInfo();
+    void updatePathInfo();
 private:
     LocalModPath *path_ = nullptr;
     Ui::LocalModInfoWidget *ui;

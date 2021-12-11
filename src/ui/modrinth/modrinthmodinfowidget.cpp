@@ -28,7 +28,7 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
     emit modChanged();
 
     ui->scrollArea->setVisible(mod_);
-    ui->tagsWidget->setMod(mod_);
+    ui->tagsWidget->setTagableObject(mod_);
     if(!mod_) return;
 
 //    auto action = new QAction(tr("Copy website link"), this);

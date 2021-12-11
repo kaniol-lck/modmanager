@@ -13,6 +13,27 @@ TagsFlowWidget::TagsFlowWidget(QWidget *parent) :
     updateUi();
 }
 
+void TagsFlowWidget::setTagable(const Tagable &tagable)
+{
+    //tags
+    for(auto widget : qAsConst(tagWidgets_)){
+        layout()->removeWidget(widget);
+        widget->deleteLater();
+    }
+    tagWidgets_.clear();
+    for(auto &&tag : tagable.tags(Config().getShowTagCategories())){
+        auto label = new QLabel(this);
+        if(!tag.iconName().isEmpty())
+            label->setText(QString(R"(<img src="%1" height="16" width="16"/> %2)").arg(tag.iconName(), tag.name()));
+        else
+            label->setText(tag.name());
+        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
+        label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
+        layout()->addWidget(label);
+        tagWidgets_ << label;
+    }
+}
+
 void TagsFlowWidget::updateUi()
 {
     //tags
@@ -21,8 +42,8 @@ void TagsFlowWidget::updateUi()
         widget->deleteLater();
     }
     tagWidgets_.clear();
-    if(!mod_) return;
-    for(auto &&tag : mod_->tags(Config().getShowTagCategories())){
+    if(!tagableObject_) return;
+    for(auto &&tag : tagableObject_->tags(Config().getShowTagCategories())){
         auto label = new QLabel(this);
         if(!tag.iconName().isEmpty())
             label->setText(QString(R"(<img src="%1" height="16" width="16"/> %2)").arg(tag.iconName(), tag.name()));

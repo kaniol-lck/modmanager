@@ -24,7 +24,7 @@ LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     mod_(mod)
 {
     ui->setupUi(this);
-    ui->tagsWidget->setMod(mod_);
+    ui->tagsWidget->setTagableObject(mod_);
     //not use it currently
     ui->disableButton->setVisible(false);
     ui->aliasText->setVisible(false);

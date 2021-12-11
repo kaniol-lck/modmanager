@@ -24,7 +24,7 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
     localMod_(localMod)
 {
     ui->setupUi(this);
-    ui->tagsWidget->setMod(mod_);
+    ui->tagsWidget->setTagableObject(mod_);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setModel(model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));

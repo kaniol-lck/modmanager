@@ -17,8 +17,13 @@ LocalModInfoWidget::LocalModInfoWidget(QWidget *parent, LocalModPath *path) :
 {
     ui->setupUi(this);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
-    if(path_)
+    if(path_){
         ui->pathName->setText(path_->info().displayName());
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->pathTagsWidget->setTagableObject(path_);
+        updatePathInfo();
+        connect(path_, &LocalModPath::modListUpdated, this, &LocalModInfoWidget::updatePathInfo);
+    }
 }
 
 LocalModInfoWidget::~LocalModInfoWidget()
@@ -35,11 +40,12 @@ void LocalModInfoWidget::setMods(QList<LocalMod *> mods)
     switch (mods.size()) {
     case 0:
         ui->stackedWidget->setCurrentIndex(0);
+        ui->modCount->setVisible(false);
         break;
     case 1:{
         ui->stackedWidget->setCurrentIndex(1);
         mod_ = mods.first();
-        ui->tagsWidget->setMod(mod_);
+        ui->tagsWidget->setTagableObject(mod_);
 
         updateInfo();
         connect(this, &LocalModInfoWidget::modChanged, this, disconnecter(
@@ -55,6 +61,7 @@ void LocalModInfoWidget::setMods(QList<LocalMod *> mods)
     }
     default:
         ui->stackedWidget->setCurrentIndex(0);
+        ui->modCount->setVisible(true);
         ui->modCount->setText(tr("%1 mods are selected.").arg(mods.size()));
     }
 }
@@ -95,5 +102,12 @@ void LocalModInfoWidget::updateInfo()
 //    if (mod_->curseforgeMod())
 //        ui->curseforgeButton->setVisible(true);
 //    if (mod_->modrinthMod())
-//        ui->modrinthButton->setVisible(true);
+    //        ui->modrinthButton->setVisible(true);
+}
+
+void LocalModInfoWidget::updatePathInfo()
+{
+    ui->path->setText(path_->info().path());
+    ui->pathGameVersion->setText(path_->info().gameVersion());
+    ui->pathLoaderType->setText(ModLoaderType::toString(path_->info().loaderType()));
 }

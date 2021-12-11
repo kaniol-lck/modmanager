@@ -31,7 +31,7 @@ void CurseforgeModInfoWidget::setMod(CurseforgeMod *mod)
     emit modChanged();
 
     ui->scrollArea->setVisible(mod_);
-    ui->tagsWidget->setMod(mod);
+    ui->tagsWidget->setTagableObject(mod);
     if(!mod_) return;
 
 //    auto action = new QAction(tr("Copy website link"), this);

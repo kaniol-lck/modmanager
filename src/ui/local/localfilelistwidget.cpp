@@ -8,19 +8,30 @@
 #include "localmoditemwidget.h"
 #include "localmodfileitemwidget.h"
 #include "local/localmod.h"
+#include "local/localmodpath.h"
 #include "util/smoothscrollbar.h"
 #include "util/funcutil.h"
 
-LocalFileListWidget::LocalFileListWidget(QWidget *parent) :
+LocalFileListWidget::LocalFileListWidget(QWidget *parent, LocalModPath *path) :
     DockWidgetContent(parent),
+    path_(path),
     ui(new Ui::LocalFileListWidget),
+    updateModel_(new QStandardItemModel(this)),
     model_(new QStandardItemModel(this)),
     buttons_(new QButtonGroup(this))
 {
     ui->setupUi(this);
+    ui->updateFileListView->setModel(updateModel_);
+    ui->updateFileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setModel(model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     connect(buttons_, &QButtonGroup::idClicked, this, &LocalFileListWidget::idClicked);
+    if(path_){
+        onUpdatesReady();
+        connect(path_, &LocalModPath::updatableCountChanged, this, &LocalFileListWidget::onUpdatesReady);
+        connect(path_, &LocalModPath::updatesReady, this, &LocalFileListWidget::onUpdatesReady);
+    }
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 LocalFileListWidget::~LocalFileListWidget()
@@ -37,17 +48,18 @@ void LocalFileListWidget::setMods(QList<LocalMod *> mods)
     ui->fileListView->setVisible(!mods.isEmpty());
     switch (mods.size()) {
     case 0:
+        ui->stackedWidget->setCurrentIndex(0);
         break;
-    case 1:{
+    case 1:
+        ui->stackedWidget->setCurrentIndex(1);
         mod_ = mods.first();
         onModFileUpdated();
         connect(this, &LocalFileListWidget::modChanged, this, disconnecter(
                     connect(mod_, &LocalMod::modInfoChanged, this, &LocalFileListWidget::onModFileUpdated)));
         break;
-    }
     default:
+        ui->stackedWidget->setCurrentIndex(1);
         model_->clear();
-        //TODO: laggy
         for(const auto &mod : qAsConst(mods)){
             auto item = new QStandardItem;
             item->setData(QVariant::fromValue(mod));
@@ -56,7 +68,6 @@ void LocalFileListWidget::setMods(QList<LocalMod *> mods)
             item->setSizeHint(QSize(0, 100));
         }
     }
-
 }
 
 void LocalFileListWidget::idClicked(int id)
@@ -89,6 +100,25 @@ void LocalFileListWidget::onModFileUpdated()
     model_->sort(0, Qt::DescendingOrder);
 }
 
+void LocalFileListWidget::onUpdatesReady()
+{
+    if(auto count = path_->updatableCount()){
+        ui->updateText->setText(tr("%1 mods need update.").arg(count));
+        updateModel_->clear();
+        for(auto &&map : path_->modMaps()) for(const auto &mod : map){
+            if(mod->updateTypes().isEmpty()) continue;
+            auto item = new QStandardItem;
+            item->setData(QVariant::fromValue(mod));
+            item->setToolTip(mod->displayName());
+            updateModel_->appendRow(item);
+            item->setSizeHint(QSize(0, 100));
+        }
+    } else{
+        ui->updateText->setText("");
+        updateModel_->clear();
+    }
+}
+
 void LocalFileListWidget::updateIndexWidget()
 {
     if(mods_.size() <= 1) return;
@@ -115,9 +145,37 @@ void LocalFileListWidget::updateIndexWidget()
     }
 }
 
+void LocalFileListWidget::updateUpdateIndexWidget()
+{
+    auto beginRow = ui->updateFileListView->indexAt(QPoint(0, 0)).row();
+    if(beginRow < 0) return;
+    auto endRow = ui->updateFileListView->indexAt(QPoint(0, ui->updateFileListView->height())).row();
+    if(endRow < 0)
+        endRow = updateModel_->rowCount() - 1;
+    else
+        //extra 2
+        endRow += 2;
+    for(int row = beginRow; row <= endRow && row < updateModel_->rowCount(); row++){
+        auto index = updateModel_->index(row, 0);
+        if(ui->updateFileListView->indexWidget(index)) continue;
+//        qDebug() << "new widget at row" << row;
+        auto item = updateModel_->item(row);
+        if(!item) continue;
+        auto mod = item->data().value<LocalMod*>();
+        if(mod){
+            auto modItemWidget = new LocalModItemWidget(ui->updateFileListView, mod);
+            ui->updateFileListView->setIndexWidget(index, modItemWidget);
+            item->setSizeHint(QSize(0, modItemWidget->height()));
+        }
+    }
+}
+
 void LocalFileListWidget::paintEvent(QPaintEvent *event)
 {
-    updateIndexWidget();
+    if(ui->stackedWidget->currentIndex() == 0)
+        updateUpdateIndexWidget();
+    else
+        updateIndexWidget();
     QWidget::paintEvent(event);
 }
 

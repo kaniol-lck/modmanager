@@ -45,7 +45,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     modMenu_(new QMenu(this)),
     pathMenu_(new QMenu(this)),
     infoWidget_(new LocalModInfoWidget(this, modPath)),
-    fileListWidget_(new LocalFileListWidget(this)),
+    fileListWidget_(new LocalFileListWidget(this, modPath)),
     statusBarWidget_(new LocalStatusBarWidget(this)),
     statusBar_(new QStatusBar(this)),
     progressBar_(statusBarWidget_->progressBar()),
