@@ -57,7 +57,7 @@ ModManager::ModManager(QWidget *parent) :
     browserSelector_->setModel(ui->pageSwitcher->model());
     connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
     connect(ui->pageSwitcher, &PageSwitcher::pageChanged, browserSelector_, &BrowserSelectorWidget::setCurrentIndex);
-    connect(ui->pageSwitcher, &PageSwitcher::pageChanged, this, &ModManager::updateBrowsers);
+    connect(ui->pageSwitcher, &PageSwitcher::browserChanged, this, &ModManager::updateBrowsers);
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
@@ -112,14 +112,16 @@ void ModManager::updateUi()
     updateBlur();
 }
 
-void ModManager::updateBrowsers()
+void ModManager::updateBrowsers(Browser *previous, Browser *current)
 {
-    auto browser = ui->pageSwitcher->currentBrowser();
-    ui->modInfoDock->setWidget(browser->infoWidget());
-    ui->fileListDock->setWidget(browser->fileListWidget());
+    ui->modInfoDock->setWidget(current->infoWidget());
+    ui->fileListDock->setWidget(current->fileListWidget());
     ui->menu_Mod->clear();
-    ui->menu_Mod->addActions(browser->modActions());
-    ui->menu_Mod->setEnabled(!browser->modActions().isEmpty());
+    ui->menu_Mod->addActions(current->modActions());
+    ui->menu_Mod->setEnabled(!current->modActions().isEmpty());
+    for(auto action : previous->pathActions())
+        ui->menu_Path->removeAction(action);
+    ui->menu_Path->addActions(current->pathActions());
 }
 
 void ModManager::updateLockPanels()

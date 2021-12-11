@@ -13,6 +13,7 @@ public:
     virtual QWidget *infoWidget() const;
     virtual QWidget *fileListWidget() const;
     virtual QList<QAction *> modActions() const;
+    virtual QList<QAction *> pathActions() const;
     virtual void onModMenuAboutToShow();
     virtual void onModMenuAboutToHide();
 };

@@ -57,6 +57,7 @@ public:
     QStandardItemModel *model();
 signals:
     void pageChanged(QModelIndex modelIndex);
+    void browserChanged(Browser *previous, Browser *current);
 public slots:
     void setCurrentIndex(int index);
     void setPage(int category, int page);

@@ -12,8 +12,10 @@ class QListWidgetItem;
 class LocalModPath;
 class BrowserSelectorWidget;
 class WindowsTitleBar;
+class Browser;
 
 QT_BEGIN_NAMESPACE
+
 namespace Ui { class ModManager; }
 QT_END_NAMESPACE
 
@@ -37,7 +39,7 @@ protected:
 public slots:
     void updateUi();
 private slots:
-    void updateBrowsers();
+    void updateBrowsers(Browser *previous, Browser *current);
     void updateLockPanels();
     void syncPathList();
     void editLocalPath(int index);

@@ -21,6 +21,11 @@ QList<QAction *> Browser::modActions() const
     return {};
 }
 
+QList<QAction *> Browser::pathActions() const
+{
+    return {};
+}
+
 void Browser::onModMenuAboutToShow()
 {}
 

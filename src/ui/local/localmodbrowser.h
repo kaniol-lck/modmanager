@@ -36,6 +36,7 @@ public:
     QWidget *fileListWidget() const override;
 
     QList<QAction *> modActions() const override;
+    QList<QAction *> pathActions() const override;
 signals:
     void loadFinished();
     void selectedModsChanged();
@@ -106,6 +107,7 @@ private:
     Ui::LocalModBrowser *ui;
     QStandardItemModel *model_;
     QMenu *modMenu_;
+    QMenu *pathMenu_;
     LocalModInfoWidget *infoWidget_;
     LocalFileListWidget *fileListWidget_;
     LocalStatusBarWidget *statusBarWidget_;

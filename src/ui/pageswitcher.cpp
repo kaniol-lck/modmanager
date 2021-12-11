@@ -216,9 +216,11 @@ QStandardItemModel *PageSwitcher::model()
 void PageSwitcher::setCurrentIndex(int index)
 {
     if(index < 0) return;
+    auto previousBrowser = currentBrowser();
     QStackedWidget::setCurrentIndex(index);
     auto [currentCategory, currentPage] = currentCategoryPage();
     emit pageChanged(model_.index(currentPage, 0, model_.index(currentCategory, 0)));
+    emit browserChanged(previousBrowser, currentBrowser());
 }
 
 int PageSwitcher::currentCategory() const
