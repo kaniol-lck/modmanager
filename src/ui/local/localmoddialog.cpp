@@ -35,7 +35,7 @@ LocalModDialog::LocalModDialog(QWidget *parent, LocalMod *mod) :
     onCurrentModChanged();
 
     auto onIconChanged = [=]{
-        ui->modIcon->setPixmap(mod_->icon().scaled(80, 80));
+        ui->modIcon->setPixmap(mod_->icon().scaled(80, 80, Qt::KeepAspectRatio));
     };
     onIconChanged();
     connect(mod_, &LocalMod::modIconUpdated, this, onIconChanged);

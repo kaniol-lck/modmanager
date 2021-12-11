@@ -46,7 +46,7 @@ void LocalModInfoWidget::setMods(QList<LocalMod *> mods)
                     connect(mod_, &LocalMod::modInfoChanged, this, &LocalModInfoWidget::updateInfo)));
 
         auto onIconChanged = [=]{
-            ui->modIcon->setPixmap(mod_->icon().scaled(80, 80));
+            ui->modIcon->setPixmap(mod_->icon().scaled(80, 80, Qt::KeepAspectRatio));
         };
         onIconChanged();
         connect(this, &LocalModInfoWidget::modChanged, this, disconnecter(

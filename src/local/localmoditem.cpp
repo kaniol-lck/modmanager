@@ -89,7 +89,7 @@ QList<QStandardItem *> LocalModItem::itemsFromMod(LocalMod *mod, QList<QStandard
         list.at(TagsColumn)->setData(tagsStr, TagsRole);
     };
     auto onIconChanged = [=]{
-        list.at(NameColumn)->setIcon(mod->icon().scaled(96, 96));
+        list.at(NameColumn)->setIcon(mod->icon().scaled(96, 96, Qt::KeepAspectRatio));
     };
     onModChanged();
     onIconChanged();
