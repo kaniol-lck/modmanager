@@ -355,7 +355,7 @@
              <item row="3" column="0" colspan="2">
               <widget class="QCheckBox" name="autoFetchModrinthFileList">
                <property name="text">
-                <string>Auto fetch Modrinth mod</string>
+                <string>Auto fetch Modrinth file list</string>
                </property>
               </widget>
              </item>
