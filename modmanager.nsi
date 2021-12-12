@@ -50,7 +50,7 @@ SetCompressor lzma
 ; MUI end ------
 
 Name "${PRODUCT_NAME}"
-OutFile "ModManager-${PRODUCT_VERSION}-Installer.exe"
+OutFile "ModManager-Installer.exe"
 InstallDir "$PROGRAMFILES\Mod Manager"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show

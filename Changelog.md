@@ -6,6 +6,67 @@ Soon....
 
 ## 公开测试 Beta Test
 
+### v1.0.0-beta.8
+
+*WIP*
+
+Added lazy loading of local mods and explore page, improving startup proformance.
+添加了本地mods和浏览页面缓式加载，提升启动时的性能。
+
+Added local mod path info display.
+添加了本地mod路径信息显示。
+
+Added multi-mod info display when select multiple local mods.
+在多选本地mod时，添加了多个mod信息显示。 
+
+Added standardalone dialog for explore pages.
+为探索页面添加了独立对话框界面。
+
+Added corresponding actions in menubar for different pages.
+为不同页面在菜单栏中添加了对应的操作。
+
+Added more mod information in table view. You can select which item to be displayed.
+向表格视图中添加了更多的mod信息。你可以选择那些项目被显示。
+
+Added batch rename history and fast batch rename based on rename history.
+添加了批量重命名历史和基于批量重命名历史的快速批量从重命名
+
+Added multi-section mod actions to right click menu on local mod.
+为本地mod的右键菜单添加了多项选择的mod操作。
+
+Added manual mod search for unlinked mod-ids.
+为未链接的mod-id添加了手动mod搜索。
+
+Added Curseforge/Modrinth/OptiFine tags for local mod.
+为本地mod添加了Curseforge/Modrinth/OptiFine标签。
+
+Added status bar for explore pages.
+为探索页面添加了状态栏。
+
+Added loader type for Modrinth mods display.
+添加了Modrinth mod的加载器版本显示。
+
+Added OptiFine version detect.
+添加了OptiFine版本检测。
+
+Update check will show all available updates(not latest).
+更新检查会显示所有可用的更新（非最新的）。
+
+Tweaked dock widgets to make them more flexible and show title when unlocked.
+调整了停靠部件使其更灵活，并在未锁定时显示标题。
+
+Fixed formatted name in icon/table view and in disabled state.
+修复了样式代码名称在图标/表格视图以及禁用状态中的显示。
+
+Fixed local mod file links.
+修复了本地mod文件链接。
+
+Fixed local modid cache.
+修复了本地modid缓存。
+
+Fixed local mod icon scale aspect.
+修复了本地mod图标缩放宽高比。
+
 ### v1.0.0-beta.7
 
 *2021.11.27*
