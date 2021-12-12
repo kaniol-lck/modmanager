@@ -8,7 +8,7 @@ Soon....
 
 ### v1.0.0-beta.8
 
-*WIP*
+*2021.12.12*
 
 Added lazy loading of local mods and explore page, improving startup proformance.
 添加了本地mods和浏览页面缓式加载，提升启动时的性能。
@@ -54,6 +54,12 @@ Update check will show all available updates(not latest).
 
 Tweaked dock widgets to make them more flexible and show title when unlocked.
 调整了停靠部件使其更灵活，并在未锁定时显示标题。
+
+Modrinth file list auto fetch is toggleable, off by default.
+自动获取Modrinth文件列表是可选择的，默认为关。
+
+Fixed(?) update checking stucked.
+修复了（？）更新检查卡住。
 
 Fixed formatted name in icon/table view and in disabled state.
 修复了样式代码名称在图标/表格视图以及禁用状态中的显示。
