@@ -96,13 +96,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     auto exportMenu = new QMenu(this);
     ui->actionExport->setMenu(exportMenu);
     exportMenu->setIcon(QIcon::fromTheme("document-export"));
-    exportMenu->addAction(QIcon(":/image/curseforge.svg"), tr("Export manifest.json"), this, [=]{
-        auto dialog = new ExportManifestJsonDialog(this, modPath_);
-        dialog->exec();
-    });
-    exportMenu->addAction(QIcon(":/image/curseforge.svg"), tr("Export modlist.html"), this, [=]{
-
-    });
+    exportMenu->addAction(ui->actionExport_manifest_json);
+    exportMenu->addAction(ui->actionExport_modlist_html_Cuseforge);
+    exportMenu->addAction(ui->actionExport_modlist_html_Modrinth);
 
     auto findNewMenu = new QMenu(this);
     ui->actionFind_New_Mods->setMenu(findNewMenu);
@@ -836,5 +832,23 @@ void LocalModBrowser::on_actionUpdate_All_triggered()
 void LocalModBrowser::on_actionLink_Mod_Files_triggered()
 {
     modPath_->linkAllFiles();
+}
+
+void LocalModBrowser::on_actionExport_manifest_json_triggered()
+{
+    auto dialog = new ExportManifestJsonDialog(this, modPath_, ExportManifestJsonDialog::MANIFEST_JSON);
+    dialog->exec();
+}
+
+void LocalModBrowser::on_actionExport_modlist_html_Cuseforge_triggered()
+{
+    auto dialog = new ExportManifestJsonDialog(this, modPath_, ExportManifestJsonDialog::CF_HTML);
+    dialog->exec();
+}
+
+void LocalModBrowser::on_actionExport_modlist_html_Modrinth_triggered()
+{
+    auto dialog = new ExportManifestJsonDialog(this, modPath_, ExportManifestJsonDialog::M_HTML);
+    dialog->exec();
 }
 

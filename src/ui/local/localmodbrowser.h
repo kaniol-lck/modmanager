@@ -104,6 +104,12 @@ private slots:
     void on_actionUpdate_All_triggered();
     void on_actionLink_Mod_Files_triggered();
 
+    void on_actionExport_manifest_json_triggered();
+
+    void on_actionExport_modlist_html_Cuseforge_triggered();
+
+    void on_actionExport_modlist_html_Modrinth_triggered();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:

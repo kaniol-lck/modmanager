@@ -13,9 +13,13 @@ class ExportManifestJsonDialog;
 class ExportManifestJsonDialog : public QDialog
 {
     Q_OBJECT
-    enum { NameColumn, IdColumn, FileIdColumn, RequiredColumn };
+    enum { NameColumn,
+           IdColumn, AuthorsColumn = IdColumn,
+           FileIdColumn, WebsiteColumn = FileIdColumn,
+           RequiredColumn };
 public:
-    explicit ExportManifestJsonDialog(QWidget *parent, LocalModPath *modPath);
+    enum Mode { MODPACKS, MANIFEST_JSON, CF_HTML,  M_HTML };
+    explicit ExportManifestJsonDialog(QWidget *parent, LocalModPath *modPath, Mode mode);
     ~ExportManifestJsonDialog();
 
 private slots:
@@ -24,6 +28,7 @@ private slots:
 private:
     Ui::ExportManifestJsonDialog *ui;
     LocalModPath *modPath_;
+    Mode mode_;
     QStandardItemModel model_;
     QList<LocalMod *> disabledMods_;
 };

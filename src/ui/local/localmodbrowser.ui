@@ -496,10 +496,38 @@
   </action>
   <action name="actionExport">
    <property name="icon">
-    <iconset theme="document-export"/>
+    <iconset theme="document-export">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Export</string>
+   </property>
+  </action>
+  <action name="actionExport_manifest_json">
+   <property name="icon">
+    <iconset resource="../../images/image.qrc">
+     <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export manifest.json</string>
+   </property>
+  </action>
+  <action name="actionExport_modlist_html_Cuseforge">
+   <property name="icon">
+    <iconset resource="../../images/image.qrc">
+     <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export modlist.html (Cuseforge)</string>
+   </property>
+  </action>
+  <action name="actionExport_modlist_html_Modrinth">
+   <property name="icon">
+    <iconset resource="../../images/image.qrc">
+     <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export modlist.html (Modrinth)</string>
    </property>
   </action>
  </widget>
