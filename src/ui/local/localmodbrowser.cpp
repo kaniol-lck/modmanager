@@ -820,7 +820,6 @@ void LocalModBrowser::on_actionUpdate_All_triggered()
     dialog->exec();
 }
 
-
 void LocalModBrowser::on_actionLink_Mod_Files_triggered()
 {
     modPath_->linkAllFiles();

@@ -73,6 +73,8 @@ private slots:
     void on_actionMod_Infomation_toggled(bool arg1);
     void on_actionFile_List_toggled(bool arg1);
     void on_actionLock_Panels_triggered();
+    void on_actionClear_Unmatched_File_Link_Caches_triggered();
+
 private:
     Ui::ModManager *ui;
     mutable Config config_;

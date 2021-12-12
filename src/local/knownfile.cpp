@@ -44,6 +44,13 @@ void KnownFile::addUnmatchedModrinth(const QString &sha1)
     files()->writeToFile();
 }
 
+void KnownFile::clearUnmatched()
+{
+    files()->unmatchedCurseforgeFiles_.clear();
+    files()->unmatchedModrinthFiles_.clear();
+    files()->writeToFile();
+}
+
 const QMap<QString, CurseforgeFileInfo> &KnownFile::curseforgeFiles()
 {
     return files()->curseforgeFiles_;

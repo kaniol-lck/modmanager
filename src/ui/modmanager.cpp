@@ -40,6 +40,7 @@
 #include "ui/windowstitlebar.h"
 #include "qss/stylesheets.h"
 #include "ui/browserdialog.h"
+#include "local/knownfile.h"
 
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
@@ -628,5 +629,12 @@ void ModManager::on_actionLock_Panels_triggered()
 {
     config_.setLockPanel(!config_.getLockPanel());
     updateLockPanels();
+}
+
+void ModManager::on_actionClear_Unmatched_File_Link_Caches_triggered()
+{
+    if(QMessageBox::No == QMessageBox::question(this, tr("Clear Caches"), tr("Clear unmatched file links?\n"
+                                                                             "By doing this, we will recheck those files unmatched before."))) return;
+    KnownFile::clearUnmatched();
 }
 

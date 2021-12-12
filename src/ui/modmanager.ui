@@ -64,6 +64,7 @@
     <property name="title">
      <string>&amp;Tools</string>
     </property>
+    <addaction name="actionClear_Unmatched_File_Link_Caches"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
@@ -385,6 +386,14 @@
    </property>
    <property name="text">
     <string>Lock Panels</string>
+   </property>
+  </action>
+  <action name="actionClear_Unmatched_File_Link_Caches">
+   <property name="icon">
+    <iconset theme="edit-clear-history"/>
+   </property>
+   <property name="text">
+    <string>Clear Unmatched File Link Caches</string>
    </property>
   </action>
  </widget>

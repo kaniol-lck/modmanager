@@ -51,7 +51,7 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, QList<LocalMod *> mods) :
         historyMenu->addAction(tr("No Rename History"))->setEnabled(false);
     else{
         historyMenu->addSeparator();
-        historyMenu->addAction(tr("Clear History"), this, [=]{
+        historyMenu->addAction(QIcon::fromTheme("edit-clear-history"), tr("Clear History"), this, [=]{
             Config().setRenamePatternHistory({});
         });
     }
