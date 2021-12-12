@@ -30,6 +30,7 @@ bool LocalModItem::operator<(const QStandardItem &other) const
         if(mod_->isDisabled() && !otherMod->isDisabled()) return false;
         if(!mod_->isDisabled() && otherMod->isDisabled()) return true;
     }
+    //TODO: column is not always static
     if(column() == FileDateColumn)
         return data(FileDateRole).toDateTime() < other.data(FileDateRole).toDateTime();
     if(column() == FileSizeColumn)

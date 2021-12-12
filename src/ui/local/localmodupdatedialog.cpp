@@ -155,7 +155,8 @@ LocalModUpdateDialog::~LocalModUpdateDialog()
 }
 
 void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
-{QList<QPair<LocalMod *, CurseforgeFileInfo> > curseforgeUpdateList;
+{
+    QList<QPair<LocalMod *, CurseforgeFileInfo> > curseforgeUpdateList;
     QList<QPair<LocalMod *, ModrinthFileInfo> > modrinthUpdateList;
     for(int row = 0; row < model_.rowCount(); row++)
         if(auto item = model_.item(row); item->checkState() == Qt::Checked){

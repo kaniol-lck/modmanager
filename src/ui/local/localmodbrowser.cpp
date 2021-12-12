@@ -22,6 +22,7 @@
 #include "localmoddialog.h"
 #include "localmodupdatedialog.h"
 #include "localmodcheckdialog.h"
+#include "exportmanifestjsondialog.h"
 #include "batchrenamedialog.h"
 #include "ui/tagswidget.h"
 #include "config.hpp"
@@ -96,7 +97,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->actionExport->setMenu(exportMenu);
     exportMenu->setIcon(QIcon::fromTheme("document-export"));
     exportMenu->addAction(QIcon(":/image/curseforge.svg"), tr("Export manifest.json"), this, [=]{
-
+        auto dialog = new ExportManifestJsonDialog(this, modPath_);
+        dialog->exec();
     });
     exportMenu->addAction(QIcon(":/image/curseforge.svg"), tr("Export modlist.html"), this, [=]{
 
