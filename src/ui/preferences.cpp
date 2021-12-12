@@ -11,9 +11,6 @@ Preferences::Preferences(QWidget *parent) :
     ui(new Ui::Preferences)
 {
     ui->setupUi(this);
-    //TODO
-    ui->label_11->setVisible(false);
-    ui->optifineVersionSource->setVisible(false);
 #if !defined (DE_KDE) && !defined (Q_OS_WIN)
     ui->enableBlurBehind->setVisible(false);
 #endif

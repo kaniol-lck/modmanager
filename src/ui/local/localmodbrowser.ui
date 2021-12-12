@@ -494,6 +494,14 @@
     <string>Link Mod Files</string>
    </property>
   </action>
+  <action name="actionExport">
+   <property name="icon">
+    <iconset theme="document-export"/>
+   </property>
+   <property name="text">
+    <string>Export</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../images/image.qrc"/>

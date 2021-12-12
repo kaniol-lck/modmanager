@@ -64,7 +64,6 @@ void BMCLAPI::getOptifineDownloadUrl(const OptifineModInfo &info, std::function<
         }
         if(auto redirection = reply->attribute(QNetworkRequest::RedirectionTargetAttribute); !redirection.isNull()){
             QUrl downloadUrl = PREFIX + redirection.toString();
-            qDebug() << downloadUrl;
             callback(downloadUrl);
         }
         reply->deleteLater();

@@ -82,6 +82,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 
     pathMenu_->addAction(ui->actionOpen_Folder);
     pathMenu_->addAction(ui->actionFind_New_Mods);
+    pathMenu_->addAction(ui->actionExport);
     pathMenu_->addSeparator();
     pathMenu_->addAction(ui->actionReload_Mods);
     pathMenu_->addAction(ui->actionBatch_Rename);
@@ -91,19 +92,29 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     pathMenu_->addAction(ui->actionCheck_Updates);
     pathMenu_->addAction(ui->actionUpdate_All);
 
+    auto exportMenu = new QMenu(this);
+    ui->actionExport->setMenu(exportMenu);
+    exportMenu->setIcon(QIcon::fromTheme("document-export"));
+    exportMenu->addAction(QIcon(":/image/curseforge.svg"), tr("Export manifest.json"), this, [=]{
+
+    });
+    exportMenu->addAction(QIcon(":/image/curseforge.svg"), tr("Export modlist.html"), this, [=]{
+
+    });
+
     auto findNewMenu = new QMenu(this);
     ui->actionFind_New_Mods->setMenu(findNewMenu);
     findNewMenu->setIcon(QIcon::fromTheme("search"));
-    connect(findNewMenu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge"), &QAction::triggered, this, [=]{
+    findNewMenu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge", this, [=]{
         emit findNewOnCurseforge(modPath_->info());
     });
-    connect(findNewMenu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth"), &QAction::triggered, this, [=]{
+    findNewMenu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth", this, [=]{
         emit findNewOnModrinth(modPath_->info());
     });
-    connect(findNewMenu->addAction(QIcon(":/image/optifine.png"), "OptiFine"), &QAction::triggered, this, [=]{
+    findNewMenu->addAction(QIcon(":/image/optifine.png"), "OptiFine", this, [=]{
         emit findNewOnOptifine(modPath_->info());
     });
-    connect(findNewMenu->addAction(QIcon(":/image/replay.png"), "ReplayMod"), &QAction::triggered, this, [=]{
+    findNewMenu->addAction(QIcon(":/image/replay.png"), "ReplayMod", this, [=]{
         emit findNewOnReplay(modPath_->info());
     });
     ui->openFolderButton->setDefaultAction(ui->actionOpen_Folder);

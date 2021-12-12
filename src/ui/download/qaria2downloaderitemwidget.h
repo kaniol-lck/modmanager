@@ -24,6 +24,8 @@ private slots:
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadSpeed(qint64 download, qint64 upload);
     void on_pauseButton_clicked();
+    void on_QAria2DownloaderItemWidget_customContextMenuRequested(const QPoint &pos);
+
 private:
     Ui::QAria2DownloaderItemWidget *ui;
     QAria2Downloader *downloader_;

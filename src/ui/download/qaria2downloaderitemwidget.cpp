@@ -2,6 +2,8 @@
 #include "ui_qaria2downloaderitemwidget.h"
 
 #include <QDebug>
+#include <QClipboard>
+#include <QMenu>
 
 #include "download/qaria2downloader.h"
 #include "util/funcutil.h"
@@ -100,5 +102,15 @@ void QAria2DownloaderItemWidget::on_pauseButton_clicked()
         downloader_->pause();
     else if(downloader_->status() == aria2::DOWNLOAD_PAUSED)
         downloader_->start();
+}
+
+
+void QAria2DownloaderItemWidget::on_QAria2DownloaderItemWidget_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    menu->addAction(tr("Copy Download Link"), this, [=]{
+        QApplication::clipboard()->setText(downloader_->url().toString());
+    });
+    menu->exec(mapToGlobal(pos));
 }
 
