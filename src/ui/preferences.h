@@ -20,6 +20,8 @@ private slots:
     void on_downloadPathButton_clicked();
     void on_useFramelessWindow_toggled(bool checked);
 
+    void on_proxyType_currentIndexChanged(int index);
+
 private:
     Ui::Preferences *ui;
 };

@@ -10,6 +10,7 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QPainter>
+#include <QNetworkProxy>
 #ifdef DE_KDE
 #include <KWindowEffects>
 #endif
@@ -62,6 +63,7 @@ ModManager::ModManager(QWidget *parent) :
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
+    setProxy();
     updateLockPanels();
 
     ui->pageSelectorDock->setWidget(browserSelector_);
@@ -113,6 +115,17 @@ void ModManager::updateUi()
     updateBlur();
 }
 
+void ModManager::setProxy()
+{
+    QNetworkProxy proxy;
+    proxy.setType(static_cast<QNetworkProxy::ProxyType>(config_.getProxyType()));
+    proxy.setHostName(config_.getProxyHostName());
+    proxy.setPort(config_.getProxyPort());
+    proxy.setUser(config_.getProxyUser());
+    proxy.setPassword(config_.getProxyPassword());
+    QNetworkProxy::setApplicationProxy(proxy);
+}
+
 void ModManager::updateBrowsers(Browser *previous, Browser *current)
 {
     ui->modInfoDock->setWidget(current->infoWidget());
@@ -120,7 +133,7 @@ void ModManager::updateBrowsers(Browser *previous, Browser *current)
     ui->menu_Mod->clear();
     ui->menu_Mod->addActions(current->modActions());
     ui->menu_Mod->setEnabled(!current->modActions().isEmpty());
-    for(auto action : previous->pathActions())
+    for(const auto &action : previous->pathActions())
         ui->menu_Path->removeAction(action);
     ui->menu_Path->addActions(current->pathActions());
 }
@@ -314,6 +327,7 @@ void ModManager::on_actionPreferences_triggered()
     auto preferences = new Preferences(this);
     preferences->exec();
     connect(preferences, &Preferences::accepted, this, &ModManager::updateUi, Qt::UniqueConnection);
+    connect(preferences, &Preferences::accepted, this, &ModManager::setProxy, Qt::UniqueConnection);
     connect(preferences, &Preferences::accepted, QAria2::qaria2(), &QAria2::updateOptions, Qt::UniqueConnection);
 }
 

@@ -39,6 +39,7 @@ protected:
 public slots:
     void updateUi();
 private slots:
+    void setProxy();
     void updateBrowsers(Browser *previous, Browser *current);
     void updateLockPanels();
     void syncPathList();

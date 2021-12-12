@@ -72,6 +72,12 @@ Preferences::Preferences(QWidget *parent) :
     ui->aria2maxTries->setValue(config.getAria2timeout());
     ui->aria2maxConcurrentDownloads->setValue(config.getAria2maxConcurrentDownloads());
     ui->networkRequestTimeout->setValue(config.getNetworkRequestTimeout() / 1000);
+
+    ui->proxyType->setCurrentIndex(config.getProxyType());
+    ui->proxyHostName->setText(config.getProxyHostName());
+    ui->proxyPort->setValue(config.getProxyPort());
+    ui->proxyUser->setText(config.getProxyUser());
+    ui->proxyPassword->setText(config.getProxyPassword());
 }
 
 Preferences::~Preferences()
@@ -130,6 +136,12 @@ void Preferences::on_Preferences_accepted()
     config.setAria2maxTries(ui->aria2maxTries->value());
     config.setAria2maxConcurrentDownloads(ui->aria2maxConcurrentDownloads->value());
     config.setNetworkRequestTimeout(ui->networkRequestTimeout->value() * 1000);
+
+    config.setProxyType(ui->proxyType->currentIndex());
+    config.setProxyHostName(ui->proxyHostName->text());
+    config.setProxyPort(ui->proxyPort->value());
+    config.setProxyUser(ui->proxyUser->text());
+    config.setProxyPassword(ui->proxyPassword->text());
 }
 
 void Preferences::on_commonPathButton_clicked()
@@ -145,6 +157,17 @@ void Preferences::on_downloadPathButton_clicked()
     if(str.isEmpty()) return;
     ui->downloadPathText->setText(str);
 }
+
+void Preferences::on_proxyType_currentIndexChanged(int index)
+{
+    //No Proxy
+    bool noProxy = index == 2;
+    ui->proxyHostName->setEnabled(!noProxy);
+    ui->proxyPort->setEnabled(!noProxy);
+    ui->proxyUser->setEnabled(!noProxy);
+    ui->proxyPassword->setEnabled(!noProxy);
+}
+
 
 void Preferences::on_useFramelessWindow_toggled(bool checked[[maybe_unused]])
 {

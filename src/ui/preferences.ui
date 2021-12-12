@@ -788,8 +788,8 @@
             <height>559</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_4">
-           <item>
+          <layout class="QGridLayout" name="gridLayout_11">
+           <item row="0" column="0">
             <widget class="QGroupBox" name="groupBox_2">
              <property name="title">
               <string>Aria2</string>
@@ -832,7 +832,7 @@
              </layout>
             </widget>
            </item>
-           <item>
+           <item row="1" column="0">
             <layout class="QFormLayout" name="formLayout_7">
              <item row="0" column="0">
               <widget class="QLabel" name="label_17">
@@ -846,7 +846,105 @@
              </item>
             </layout>
            </item>
-           <item>
+           <item row="2" column="0">
+            <widget class="QGroupBox" name="groupBox_8">
+             <property name="title">
+              <string>Proxy</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout_8">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_18">
+                <property name="text">
+                 <string>Type:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="proxyType">
+                <item>
+                 <property name="text">
+                  <string>Default</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>SOCKS 5</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>No Proxy</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>HTTP</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Caching-only HTTP</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Caching FTP</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_19">
+                <property name="text">
+                 <string>Host name:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_20">
+                <property name="text">
+                 <string>Port:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="proxyHostName"/>
+              </item>
+              <item row="2" column="1">
+               <widget class="QSpinBox" name="proxyPort">
+                <property name="maximum">
+                 <number>65535</number>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_21">
+                <property name="text">
+                 <string>User:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_22">
+                <property name="text">
+                 <string>Password:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="proxyPassword">
+                <property name="echoMode">
+                 <enum>QLineEdit::Password</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="proxyUser"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="0">
             <spacer name="verticalSpacer_2">
              <property name="orientation">
               <enum>Qt::Vertical</enum>

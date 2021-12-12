@@ -108,6 +108,12 @@ public:
     getterAndSetter(Aria2maxConcurrentDownloads, Int, aria2maxConcurrentDownloads, 5)
     getterAndSetter(NetworkRequestTimeout, Int, networkRequestTimeout, 60000)
 
+    getterAndSetter_prefix(ProxyType, Int, type, "proxy", 2)
+    getterAndSetter_prefix(ProxyHostName, String, hostName, "proxy", QString())
+    getterAndSetter_prefix(ProxyPort, Int, port, "proxy", 8080)
+    getterAndSetter_prefix(ProxyUser, String, user, "proxy", QString())
+    getterAndSetter_prefix(ProxyPassword, String, password, "proxy", QString())
+
     //Path List
     getterAndSetter(LocalPathList, List, localPathList, QVariant())
     //Download List
