@@ -79,9 +79,9 @@ ExportManifestJsonDialog::ExportManifestJsonDialog(QWidget *parent, LocalModPath
     case ExportManifestJsonDialog::CF_HTML:
     case ExportManifestJsonDialog::M_HTML:{
         if(mode_ == CF_HTML)
-            setWindowTitle("Export mods.html (Curseforge)");
+            setWindowTitle("Export modlist.html (Curseforge)");
         else
-            setWindowTitle("Export mods.html (Modrinth)");
+            setWindowTitle("Export modlist.html (Modrinth)");
 
         ui->manifestWidget->hide();
         for(auto &&gameVersion : GameVersion::mojangVersionList())
@@ -202,8 +202,8 @@ void ExportManifestJsonDialog::on_buttonBox_accepted()
         }
         stringList << "</ul>";
         fileContent = stringList.join('\n').toUtf8();
-        filePath = QFileDialog::getSaveFileName(this, tr("Save your mods.html"),
-                                                QDir(modPath_->info().path()).filePath("mods.html"), "*.html");
+        filePath = QFileDialog::getSaveFileName(this, tr("Save your modlist.html"),
+                                                QDir(modPath_->info().path()).filePath("modlist.html"), "*.html");
         break;
     }
 
