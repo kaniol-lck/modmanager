@@ -31,12 +31,6 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info) :
         linkAllFiles();
         connect(this, &LocalModPath::updatesReady, this, disconnecter(conn));
     });
-//    connect(this, &LocalModPath::websitesReady, this, [=]{
-//        //new path not from exsiting will check update
-//        if(initialUpdateChecked_) return;
-//        checkModUpdates(false);
-//        initialUpdateChecked_ = true;
-//    });
 }
 
 LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
@@ -49,12 +43,6 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     addSubTagable(path);
     importTag(Tag(subDir, TagCategory::SubDirCategory));
     info_.path_.append("/").append(relative_.join("/"));
-//    connect(this, &LocalModPath::websitesReady, this, [=]{
-//        //new path not from exsiting will check update
-//        if(initialUpdateChecked_) return;
-//        checkModUpdates(false);
-//        initialUpdateChecked_ = true;
-    //    });
 }
 
 bool LocalModPath::isLinking() const
@@ -80,9 +68,11 @@ LocalModPath::~LocalModPath()
 void LocalModPath::loadMods(bool autoLoaderType)
 {
     if(isLoading_) return;
-    isLoading_ = true;
     loaded_ = true;
+    isLoading_ = true;
+    isLinking_ = false;
     isChecking_ = false;
+    isUpdating_ = false;
     QDir dir(info_.path());
     for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot)){
         bool containsMod = false;
@@ -126,6 +116,10 @@ void LocalModPath::loadMods(bool autoLoaderType)
         qDebug() << "modMap clear";
         qDeleteAll(modMap_);
         modMap_.clear();
+        if(optiFineMod_){
+            optiFineMod_->deleteLater();
+            optiFineMod_ = nullptr;
+        }
         fabricModMap_.clear();
         provideList_.clear();
 
@@ -468,19 +462,21 @@ void LocalModPath::linkAllFiles()
     for(auto &&map : modMaps()) for(const auto &mod : map){
         auto file = mod->modFile();
         auto linker = file->linker();
-        connect(linker, &LocalFileLinker::linkStarted, this, [=]{
-            (*count)++;
-        });
-        connect(linker, &LocalFileLinker::linkFinished, this, [=]{
-            (*linkedCount) ++;
-            emit linkProgress(*linkedCount, *count);
-            if(*linkedCount == *count){
-                isLinking_ = false;
-                emit linkFinished();
-                qDebug() << "link finished";
-            }
-        });
         if(!linker->linked()){
+            connect(linker, &LocalFileLinker::linkStarted, this, [=]{
+                (*count)++;
+                qDebug() << "start link:" <<  *count;
+            });
+            connect(linker, &LocalFileLinker::linkFinished, this, [=]{
+                (*linkedCount) ++;
+                emit linkProgress(*linkedCount, *count);
+                qDebug() << "link progress" << *linkedCount << "/" <<  *count;
+                if(*linkedCount == *count){
+                    isLinking_ = false;
+                    emit linkFinished();
+                    qDebug() << "link finished";
+                }
+            });
             noLink = false;
             linker->link();
         }

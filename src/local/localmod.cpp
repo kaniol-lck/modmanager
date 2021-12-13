@@ -117,23 +117,25 @@ void LocalMod::checkUpdates(bool force)
     };
     if(config.getUseCurseforgeUpdate() && curseforgeMod_ && modFile_->linker()->curseforgeFileInfo()){
         (*count)++;
-        checkCurseforgeUpdate(force);
 //        connect(this, &LocalMod::checkCancelled, disconnecter(
 //        connect(this, &LocalMod::curseforgeUpdateReady, foo);
-        connect(this, &LocalMod::curseforgeUpdateReady, [=](bool hasUpdate, bool success2){
+        auto conn = connect(this, &LocalMod::curseforgeUpdateReady, [=](bool hasUpdate, bool success2){
             qDebug() << "curseforge finish: " << displayName();
             foo(hasUpdate, success2);
         });
+        connect(this, &LocalMod::curseforgeUpdateReady, disconnecter(conn));
+        checkCurseforgeUpdate(force);
     }
     if(config.getUseModrinthUpdate() && modrinthMod_ && modFile_->linker()->modrinthFileInfo()){
         (*count)++;
-        checkModrinthUpdate(force);
 //        connect(this, &LocalMod::checkCancelled, disconnecter(
 //                    connect(this, &LocalMod::modrinthUpdateReady, foo)));
-        connect(this, &LocalMod::modrinthUpdateReady, [=](bool hasUpdate, bool success2){
+        auto conn = connect(this, &LocalMod::modrinthUpdateReady, [=](bool hasUpdate, bool success2){
             qDebug() << "modrinth finish: " << displayName();
             foo(hasUpdate, success2);
         });
+        connect(this, &LocalMod::modrinthUpdateReady, disconnecter(conn));
+        checkModrinthUpdate(force);
     }
     if(!*count) emit updateReady({});
 }

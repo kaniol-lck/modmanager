@@ -37,17 +37,19 @@ void LocalFileLinker::link()
     if(localFile_->loaderTypes().isEmpty()) return;
     if(curseforgeLinked_  && modrinthLinked_) return;
     emit linkStarted();
-    auto count = std::make_shared<int>(2);
+    auto count = std::make_shared<int>(0);
     auto hasWeb = std::make_shared<bool>(false);
     auto foo = [=](bool bl){
         if(bl) *hasWeb = true;
         if(--(*count) == 0) emit linkFinished(*hasWeb);
     };
     if(!curseforgeLinked_){
+        (*count) ++;
         connect(this, &LocalFileLinker::linkCurseforgeFinished, this, foo);
         linkCurseforge();
     }
     if(!modrinthLinked_){
+        (*count) ++;
         connect(this, &LocalFileLinker::linkModrinthFinished, this, foo);
         linkModrinth();
     }
