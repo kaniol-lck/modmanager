@@ -1,59 +1,59 @@
 QWidget:focus{
-	outline: none;
+        outline: none;
 }
 
 QWidget {
-	background-color: rgb(82, 82, 82);
-	color: whitesmoke;
+        background-color: rgb(82, 82, 82);
+        color: whitesmoke;
 }
 
 QLabel {
-	background-color: transparent
+        background-color: transparent;
 }
 
 QScrollArea, QScrollArea .QWidget {
-	background-color: transparent;
-	border-color: transparent;
+        background-color: transparent;
+        border-color: transparent;
 }
 
 .ModList::item:hover {
   border-left: 5px solid #eee;
-  background-color: transparent;
+  background-color: #22eeeeee;
 }
 
 .ModList::item:selected {
   border-left: 5px solid #37d;
-  background-color: transparent;
+  background-color: #223377dd;
   color: black;
 }
 
 .MenuButton, #maxButton, #minButton, #closeButton{
-	border: none;
+        border: none;
 }
 
 .MenuButton:hover {
-	background-color: rgb(165, 165, 165);
-	border: none;
+        background-color: rgb(165, 165, 165);
+        border: none;
 }
 
 .MenuButton:pressed {
-	background-color: rgb(110, 110, 110);
-	color: whitesmoke;
-	border: none;
+        background-color: rgb(110, 110, 110);
+        color: whitesmoke;
+        border: none;
 }
 
 #maxButton:hover,#minButton:hover {
-	background-color: rgb(218, 218, 218);
-	border: none;
+        background-color: rgb(218, 218, 218);
+        border: none;
 }
 
 #closeButton:hover {
-	background-color: red;
-	border: none;
+        background-color: red;
+        border: none;
 }
 
 QGroupBox {
-	background-color: rgb(46, 46, 46);
+        background-color: rgb(46, 46, 46);
     border: 1px solid rgb(110, 110, 110);
     border-radius: 5px;
     margin-top: 20px;
@@ -66,102 +66,102 @@ QGroupBox::title {
 }
 
 QToolButton[autoRaise=false], QPushButton, QComboBox {
-	background-color: rgb(95, 95, 95);
-	border: 1px solid rgb(214, 214, 214);
-	border-radius: 5px;
-	padding: 4px;
-	padding-right: 10px;
+        background-color: rgb(95, 95, 95);
+        border: 1px solid rgb(214, 214, 214);
+        border-radius: 5px;
+        padding: 4px;
+        padding-right: 10px;
 }
 
 QToolButton[autoRaise=false]:hover, QPushButton:hover, QComboBox:hover {
-	background-color: rgb(204, 204, 204);
-	border: 1px solid rgb(180, 180, 180);
+        background-color: rgb(204, 204, 204);
+        border: 1px solid rgb(180, 180, 180);
 }
 
 QToolButton[autoRaise=false]:pressed, QPushButton:pressed, QComboBox:pressed {
-	background-color: rgb(158, 158, 158);
-	border: 1px solid rgb(219, 219, 219);
+        background-color: rgb(158, 158, 158);
+        border: 1px solid rgb(219, 219, 219);
 }
 
 QToolButton[autoRaise=false][popupMode="2"]::menu-indicator, QPushButton::menu-indicator {
-	subcontrol-origin: padding;
-	subcontrol-position: center right;
+        subcontrol-origin: padding;
+        subcontrol-position: center right;
 }
 
 QToolButton[autoRaise=true] {
-	padding: 4px;
-	padding-right: 10px;
+        padding: 4px;
+        padding-right: 10px;
 }
 
 QMenu {
-	background-color: rgb(61, 61, 61);
-	border-radius: 1px;
-	border: 1px outset rgb(90, 90, 90);
+        background-color: rgb(61, 61, 61);
+        border-radius: 1px;
+        border: 1px outset rgb(90, 90, 90);
 }
 
 QMenu::item {
-	padding: 5px 10px;
-	margin: 2px;
+        padding: 5px 10px;
+        margin: 2px;
 }
 
 QMenu::item:selected {
-	background:rgb(115, 115, 115);
-	color:rgb(255, 255, 255);
-	border-width: 1px; 
-	border-radius: 1px;
-	border-color: rgb(58, 58, 58);
-	border-style: inset;
+        background:rgb(115, 115, 115);
+        color:rgb(255, 255, 255);
+        border-width: 1px;
+        border-radius: 1px;
+        border-color: rgb(58, 58, 58);
+        border-style: inset;
 }
 
 QComboBox{
-	border:1px solid gray;
-	border-radius:3px; 
-	padding: 5px; 
-	min-width:40px;
+        border:1px solid gray;
+        border-radius:3px;
+        padding: 5px;
+        min-width:40px;
 }
 
 QComboBox::drop-down{
-	subcontrol-origin:padding;
-	subcontrol-position:top right; 
-	border: none;
-} 
+        subcontrol-origin:padding;
+        subcontrol-position:top right;
+        border: none;
+}
 
 QToolButton[autoRaise=false][popupMode="2"]::menu-indicator, QPushButton::menu-indicator, QComboBox::down-arrow {
     image: url(:/icons/breeze-modmanager/16x16/go-down.svg);
 }
 
 QTreeView::item {
-	min-height: 40px;
-	font-size: 20px;
+        min-height: 40px;
+        font-size: 20px;
 }
 
 QTreeView::item::selected {
-	color: black;
+        color: black;
 }
 
 .QTabWidget {
-	border: none;
+        border: none;
 }
 
 QTabBar {
-	background-color: rgb(39, 39, 39);
-	border-radius: 2px;
-	margin: 2px;
-	padding: none;
+        background-color: rgb(39, 39, 39);
+        border-radius: 2px;
+        margin: 2px;
+        padding: none;
 }
 
 QTabBar::tab {
-	border: none;
-	background-color: transparent;
+        border: none;
+        background-color: transparent;
     max-width: 75px;
-	min-width:75px;
-	min-height:25px;
+        min-width:75px;
+        min-height:25px;
     font-size:14px;
-	padding: 5px 10px;
-	margin: 4px 10px;
+        padding: 5px 10px;
+        margin: 4px 10px;
 }
 
 QTabBar::tab:selected {
-	border: 1px solid gray;
-	background-color: rgb(66, 66, 66);
+        border: 1px solid gray;
+        background-color: rgb(66, 66, 66);
 }

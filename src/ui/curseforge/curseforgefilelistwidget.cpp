@@ -18,6 +18,7 @@ CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent) :
     ui->setupUi(this);
     ui->fileListView->setModel(model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->fileListView->setProperty("class", "ModList");
     connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeFileListWidget::updateIndexWidget);
 }
 

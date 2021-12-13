@@ -23,8 +23,10 @@ LocalFileListWidget::LocalFileListWidget(QWidget *parent, LocalModPath *path) :
     ui->setupUi(this);
     ui->updateFileListView->setModel(updateModel_);
     ui->updateFileListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->updateFileListView->setProperty("class", "ModList");
     ui->fileListView->setModel(model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->fileListView->setProperty("class", "ModList");
     connect(buttons_, &QButtonGroup::idClicked, this, &LocalFileListWidget::idClicked);
     if(path_){
         onUpdatesReady();

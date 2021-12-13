@@ -28,6 +28,7 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setModel(model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->fileListView->setProperty("class", "ModList");
 
     connect(mod_, &ModrinthMod::destroyed, this, &QDialog::close);
 

@@ -56,6 +56,7 @@ protected:
     void enterEvent(QEvent * event) override;
 #endif
     void leaveEvent(QEvent * event) override;
+    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::LocalModItemWidget *ui;
     LocalMod *mod_;

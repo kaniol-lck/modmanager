@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QGraphicsDropShadowEffect>
+#include <QPainter>
 
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
@@ -77,6 +78,18 @@ void LocalModItemWidget::leaveEvent(QEvent *event)
     ui->disableButton->setVisible(ui->disableButton->isChecked());
     ui->featuredButton->setVisible(ui->featuredButton->isChecked());
     QWidget::leaveEvent(event);
+}
+
+void LocalModItemWidget::paintEvent(QPaintEvent *event[[maybe_unused]])
+{
+    if(mod_->isDisabled()){
+        QPainter p(this);
+        p.setPen(Qt::NoPen);
+        p.setOpacity(0.5);
+        p.setBrush(Qt::gray);
+        auto r = rect();
+        p.drawRect(r);
+    }
 }
 
 void LocalModItemWidget::updateInfo()
