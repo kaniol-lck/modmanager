@@ -54,7 +54,7 @@ jobs:
           chmod +x appimagetool-*.AppImage
           sudo mkdir -p /home/qt/work/install
           sudo ln -s $QT_PLUGIN_PATH /home/qt/work/install/plugins
-          ./appimagetool-*.AppImage deploy -s AppDir/usr/share/applications/*.desktop
+          ./appimagetool-*.AppImage -s deploy AppDir/usr/share/applications/*.desktop
           ./appimagetool-*.AppImage AppDir
       - uses: actions/upload-artifact@v2
         with:
