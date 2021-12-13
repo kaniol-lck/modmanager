@@ -111,7 +111,7 @@ void LocalModItemWidget::updateInfo()
     if (mod_->modrinthMod())
         ui->modrinthButton->setVisible(true);
 
-    updateReady(mod_->updateTypes());
+    updateReady();
 
     //rollback
     if (mod_->oldFiles().isEmpty())
@@ -185,9 +185,9 @@ void LocalModItemWidget::on_updateButton_clicked()
     mod_->update();
 }
 
-void LocalModItemWidget::updateReady(QList<ModWebsiteType> types)
+void LocalModItemWidget::updateReady()
 {
-    if (types.isEmpty()){
+    if (mod_->updateTypes().isEmpty()){
         ui->updateButton->setVisible(false);
         if(ui->updateButton->menu())
             ui->updateButton->menu()->clear();

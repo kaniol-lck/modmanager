@@ -11,13 +11,15 @@
 #include "modrinth/modrinthapi.h"
 #include "util/tutil.hpp"
 #include "util/funcutil.h"
+#include "util/checksheet.h"
 #include "config.hpp"
 
 LocalModPath::LocalModPath(const LocalModPathInfo &info) :
     QObject(LocalModPathManager::manager()),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
-    info_(info)
+    info_(info),
+    updateChecker_(new CheckSheet(this))
 {
     connect(this, &LocalModPath::loadFinished, [=]{
         auto conn = connect(this, &LocalModPath::linkFinished, this, [=]{
@@ -38,11 +40,17 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     relative_(path->relative_ + QStringList{subDir}),
     curseforgeAPI_(path->curseforgeAPI_),
     modrinthAPI_(path->modrinthAPI_),
-    info_(path->info_)
+    info_(path->info_),
+    updateChecker_(new CheckSheet(this))
 {
     addSubTagable(path);
     importTag(Tag(subDir, TagCategory::SubDirCategory));
     info_.path_.append("/").append(relative_.join("/"));
+}
+
+CheckSheet *LocalModPath::updateChecker() const
+{
+    return updateChecker_;
 }
 
 bool LocalModPath::isLinking() const
@@ -71,7 +79,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
     loaded_ = true;
     isLoading_ = true;
     isLinking_ = false;
-    isChecking_ = false;
+    updateChecker_->reset();
     isUpdating_ = false;
     QDir dir(info_.path());
     for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot)){
@@ -311,7 +319,7 @@ void LocalModPath::readFromFile()
 
 bool LocalModPath::isChecking() const
 {
-    return isChecking_;
+    return updateChecker_->isWaiting();
 }
 
 bool LocalModPath::isLoading() const
@@ -490,51 +498,24 @@ void LocalModPath::linkAllFiles()
 
 void LocalModPath::checkModUpdates() // force = true by default
 {
-    if(modMap_.isEmpty() || isChecking_) return;
-    isChecking_ = true;
-    emit checkUpdatesStarted();
-    auto count = std::make_shared<int>(0);
-    auto checkedCount = std::make_shared<int>(0);
-    auto updateCount = std::make_shared<int>(0);
-    auto failedCount = std::make_shared<int>(0);
+    if(modMap_.isEmpty() || updateChecker_->isWaiting()) return;
+//    emit checkUpdatesStarted();
+//    auto count = std::make_shared<int>(0);
+//    auto checkedCount = std::make_shared<int>(0);
+//    auto updateCount = std::make_shared<int>(0);
+//    auto failedCount = std::make_shared<int>(0);
     for(auto &&map : modMaps()) for(const auto &mod : map){
-        connect(mod, &LocalMod::checkUpdatesStarted, this, [=]{
-            (*count) ++;
-        });
-        auto conn = connect(mod, &LocalMod::updateReady, this, [=](QList<ModWebsiteType> types, bool success){
-            (*checkedCount)++;
-            if(!types.isEmpty()) (*updateCount)++;
-            if(!success) (*failedCount) ++;
-            qDebug() << "update check finish:" << mod->displayName();
-            emit updateCheckedCountUpdated(*updateCount, *checkedCount, *count);
-            //done
-            if(*checkedCount == *count){
-                auto currentDateTime = QDateTime::currentDateTime();
-                for(auto &&path : subPaths_){
-                    path->latestUpdateCheck_ = currentDateTime;
-                    path->writeToFile();
-                }
-                latestUpdateCheck_ = currentDateTime;
-                writeToFile();
-                isChecking_ = false;
-                emit updatesReady(*failedCount);
-            }
-        });
-        connect(mod, &LocalMod::updateReady, disconnecter(conn));
-        //cancel on reloading
-        connect(this, &LocalModPath::loadStarted, disconnecter(conn));
-        connect(this, &LocalModPath::checkCancelled, [=]{
-            mod->cancelChecking();
-            disconnect(conn);
-        });
-        qDebug() << "update check start:" << mod->displayName();
+        updateChecker_->add(mod->updateChecker(), &CheckSheet::started, &CheckSheet::finished);
         mod->checkUpdates();
+//                latestUpdateCheck_ = currentDateTime;
+//                writeToFile();
+//        isChecking_ = false;
     }
 }
 
 void LocalModPath::cancelChecking()
 {
-    isChecking_ = false;
+    updateChecker_->cancel();
     emit checkCancelled();
 }
 

@@ -13,6 +13,7 @@
 #include "tag/tagable.h"
 #include "modwebsitetype.h"
 
+class CheckSheet;
 class LocalModPath;
 class CurseforgeMod;
 class ModrinthMod;
@@ -113,6 +114,8 @@ public:
     const QList<std::tuple<QString, QString, FabricModInfo> > &conflicts() const;
     const QList<std::tuple<QString, QString, FabricModInfo> > &breaks() const;
 
+    CheckSheet *updateChecker() const;
+
 public slots:
     bool setEnabled(bool enabled);
     void setFeatured(bool featured);
@@ -136,9 +139,9 @@ signals:
     void modrinthUpdateReady(bool hasUpdate, bool success = true);
 
     //update
-    void checkUpdatesStarted();
-    void checkCancelled();
-    void updateReady(QList<ModWebsiteType> types, bool success = true);
+//    void checkUpdatesStarted();
+//    void checkCancelled();
+    void updateReady();
 
     void checkCurseforgeStarted();
     void checkCurseforgeUpdateStarted();
@@ -172,6 +175,8 @@ private:
     Updater<Curseforge> curseforgeUpdater_;
     Updater<Modrinth> modrinthUpdater_;
 
+    CheckSheet *updateChecker_;
+
     //dependencies
     QList<std::tuple<QString, QString, std::optional<FabricModInfo>>> depends_;
     QList<std::tuple<QString, QString, FabricModInfo>> conflicts_;
@@ -184,7 +189,7 @@ template<typename FileInfoT>
 inline void LocalMod::ignoreUpdate(const FileInfoT &fileInfo)
 {
     updater<FileInfoT::Type>().addIgnore(fileInfo);
-    emit updateReady(updateTypes());
+    emit updateReady();
     emit modCacheUpdated();
 }
 

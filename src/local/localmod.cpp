@@ -21,6 +21,7 @@
 #include "config.hpp"
 #include "util/mmlogger.h"
 #include "util/funcutil.h"
+#include "util/checksheet.h"
 
 //LocalMod::LocalMod(QObject *parent, LocalModFile *file) :
 //    QObject(parent),
@@ -37,10 +38,12 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     modrinthAPI_(parent->modrinthAPI()),
     path_(parent),
     curseforgeUpdater_(parent->info().gameVersion(), parent->info().loaderType()),
-    modrinthUpdater_(parent->info().gameVersion(), parent->info().loaderType())
+    modrinthUpdater_(parent->info().gameVersion(), parent->info().loaderType()),
+    updateChecker_(new CheckSheet(this))
 {
     connect(this, &LocalMod::tagsEditted, path_, &LocalModPath::writeToFile);
     connect(this, &LocalMod::modCacheUpdated, path_, &LocalModPath::writeToFile);
+    connect(updateChecker_, &CheckSheet::finished, this, &LocalMod::updateReady);
     addSubTagable(path_);
     setModFile(file);
     connect(parent, &LocalModPath::infoUpdated, this, [=]{
@@ -101,43 +104,15 @@ void LocalMod::checkUpdates(bool force)
     modrinthUpdater_.reset();
     curseforgeUpdater_.reset();
 
-    emit checkUpdatesStarted();
-
     Config config;
-    auto count = std::make_shared<int>(0);
-    auto doneCount = std::make_shared<int>(0);
-    auto success = std::make_shared<bool>(false);
-    auto foo = [=](bool hasUpdate[[maybe_unused]], bool success2){
-        qDebug() << displayName() << "done:" << ++(*doneCount) << "/" << *count;
-        if(success2) *success = true;
-        if(*doneCount == *count){
-            emit modCacheUpdated();
-            emit updateReady(updateTypes(), *success);
-        }
-    };
     if(config.getUseCurseforgeUpdate() && curseforgeMod_ && modFile_->linker()->curseforgeFileInfo()){
-        (*count)++;
-//        connect(this, &LocalMod::checkCancelled, disconnecter(
-//        connect(this, &LocalMod::curseforgeUpdateReady, foo);
-        auto conn = connect(this, &LocalMod::curseforgeUpdateReady, [=](bool hasUpdate, bool success2){
-            qDebug() << "curseforge finish: " << displayName();
-            foo(hasUpdate, success2);
-        });
-        connect(this, &LocalMod::curseforgeUpdateReady, disconnecter(conn));
+        updateChecker_->add(this, &LocalMod::checkCurseforgeUpdateStarted, &LocalMod::curseforgeUpdateReady);
         checkCurseforgeUpdate(force);
     }
     if(config.getUseModrinthUpdate() && modrinthMod_ && modFile_->linker()->modrinthFileInfo()){
-        (*count)++;
-//        connect(this, &LocalMod::checkCancelled, disconnecter(
-//                    connect(this, &LocalMod::modrinthUpdateReady, foo)));
-        auto conn = connect(this, &LocalMod::modrinthUpdateReady, [=](bool hasUpdate, bool success2){
-            qDebug() << "modrinth finish: " << displayName();
-            foo(hasUpdate, success2);
-        });
-        connect(this, &LocalMod::modrinthUpdateReady, disconnecter(conn));
+        updateChecker_->add(this, &LocalMod::checkModrinthUpdateStarted, &LocalMod::modrinthUpdateReady);
         checkModrinthUpdate(force);
     }
-    if(!*count) emit updateReady({});
 }
 
 void LocalMod::cancelChecking()
@@ -147,12 +122,12 @@ void LocalMod::cancelChecking()
 
 void LocalMod::checkCurseforgeUpdate(bool force)
 {
+    emit checkCurseforgeUpdateStarted();
+
     if(!curseforgeMod_){
         emit curseforgeUpdateReady(false, false);
         return;
     }
-
-    emit checkCurseforgeUpdateStarted();
 
     //update file list
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
@@ -171,12 +146,13 @@ void LocalMod::checkCurseforgeUpdate(bool force)
 
 void LocalMod::checkModrinthUpdate(bool force)
 {
+    emit checkModrinthUpdateStarted();
+
     if(!modrinthMod_){
         emit modrinthUpdateReady(false, false);
         return;
     }
 
-    emit checkModrinthUpdateStarted();
     auto updateFullInfo = [=]{
         if(!modrinthMod_->modInfo().fileList().isEmpty()){
             bool bl = modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
@@ -360,7 +336,7 @@ void LocalMod::clearIgnores()
     curseforgeUpdater_.clearIgnores();
     modrinthUpdater_.clearIgnores();
     emit modCacheUpdated();
-    emit updateReady(updateTypes());
+//    emit updateReady(updateTypes());
     checkUpdates();
 }
 
@@ -576,6 +552,11 @@ void LocalMod::setCurseforgeFileInfos(const QList<CurseforgeFileInfo> &fileInfos
 void LocalMod::setModrinthFileInfos(const QList<ModrinthFileInfo> &fileInfos)
 {
     modrinthUpdater_.setAvailableFileInfos(fileInfos);
+}
+
+CheckSheet *LocalMod::updateChecker() const
+{
+    return updateChecker_;
 }
 
 LocalModPath *LocalMod::path() const

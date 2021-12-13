@@ -103,6 +103,7 @@ SOURCES += \
     src/ui/tagsflowwidget.cpp \
     src/ui/tagswidget.cpp \
     src/ui/windowstitlebar.cpp \
+    src/util/checksheet.cpp \
     src/util/flowlayout.cpp \
     src/util/funcutil.cpp \
     src/util/datetimesortitem.cpp \
@@ -206,6 +207,7 @@ HEADERS += \
     src/ui/tagswidget.h \
     src/ui/windowstitlebar.h \
     src/util/WindowCompositionAttribute.h \
+    src/util/checksheet.h \
     src/util/flowlayout.h \
     src/util/funcutil.h \
     src/util/localmodsortitem.h \

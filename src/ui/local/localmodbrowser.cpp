@@ -39,6 +39,8 @@
 #include "ui/modrinth/modrinthmodbrowser.h"
 #include "ui/browserdialog.h"
 
+#include <util/checksheet.h>
+
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
     ui(new Ui::LocalModBrowser),
@@ -180,9 +182,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::linkStarted, this, &LocalModBrowser::onLinkStarted);
     connect(modPath_, &LocalModPath::linkProgress, this, &LocalModBrowser::onLinkProgress);
     connect(modPath_, &LocalModPath::linkFinished, this, &LocalModBrowser::onLinkFinished);
-    connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::onCheckUpdatesStarted);
-    connect(modPath_, &LocalModPath::checkCancelled, this, &LocalModBrowser::onCheckCancelled);
-    connect(modPath_, &LocalModPath::updateCheckedCountUpdated, this, &LocalModBrowser::onUpdateCheckedCountUpdated);
+    connect(modPath_->updateChecker(), &CheckSheet::started, this, &LocalModBrowser::onCheckUpdatesStarted);
+    connect(modPath_->updateChecker(), &CheckSheet::finished, this, &LocalModBrowser::onCheckCancelled);
+    connect(modPath_->updateChecker(), &CheckSheet::progress, this, &LocalModBrowser::onUpdateCheckedCountUpdated);
     connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::onUpdatesReady);
     connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::onUpdatableCountChanged);
     connect(modPath_, &LocalModPath::updatesStarted, this, &LocalModBrowser::onUpdatesStarted);
@@ -199,10 +201,10 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 //    connect(modPath_, &LocalModPath::checkWebsitesStarted, this, &LocalModBrowser::updateProgressBar);
 //    connect(modPath_, &LocalModPath::websiteCheckedCountUpdated, this, &LocalModBrowser::updateProgressBar);
 //    connect(modPath_, &LocalModPath::websitesReady, this, &LocalModBrowser::updateProgressBar);
-    connect(modPath_, &LocalModPath::checkUpdatesStarted, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_->updateChecker(), &CheckSheet::started, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::checkCancelled, this, &LocalModBrowser::updateProgressBar);
-    connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::updateProgressBar);
-    connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_->updateChecker(), &CheckSheet::progress, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_->updateChecker(), &CheckSheet::finished, this, &LocalModBrowser::updateProgressBar);
 
     connect(ui->searchText, &QLineEdit::textChanged, this, &LocalModBrowser::filterList);
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
@@ -330,7 +332,7 @@ void LocalModBrowser::onCheckUpdatesStarted()
 //    ui->checkUpdatesButton->setEnabled(false);
     ui->actionCheck_Updates->setText(tr("Cancel Checking"));
     ui->updateWidget->setVisible(false);
-    onUpdateCheckedCountUpdated(0, 0, 0);
+    onUpdateCheckedCountUpdated(0, 0);
     progressBar_->setMaximum(modPath_->modCount());
 }
 
@@ -339,10 +341,10 @@ void LocalModBrowser::onCheckCancelled()
     onUpdatesReady();
 }
 
-void LocalModBrowser::onUpdateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount)
+void LocalModBrowser::onUpdateCheckedCountUpdated(int checkedCount, int totalCount)
 {
     if(!modPath_->isChecking()) return;
-    statusBarWidget_->setText(tr("%1 mods need update... (Checked %2/%3 mods)").arg(updateCount).arg(checkedCount).arg(totalCount));
+    statusBarWidget_->setText(tr("%1 mods need update... (Checked %2/%3 mods)").arg(modPath_->updatableCount()).arg(checkedCount).arg(totalCount));
     progressBar_->setValue(checkedCount);
 }
 
