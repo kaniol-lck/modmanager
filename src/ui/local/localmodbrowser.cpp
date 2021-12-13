@@ -302,7 +302,7 @@ void LocalModBrowser::onLoadFinished()
 {
     ui->actionReload_Mods->setEnabled(true);
     updateStatusText();
-    ui->actionCheck_Updates->setText("Check Updates");
+    ui->actionCheck_Updates->setText(tr("Check Updates"));
 }
 
 void LocalModBrowser::onLinkStarted()
@@ -328,7 +328,7 @@ void LocalModBrowser::onLinkFinished()
 void LocalModBrowser::onCheckUpdatesStarted()
 {
 //    ui->checkUpdatesButton->setEnabled(false);
-    ui->actionCheck_Updates->setText("Cancel Checking");
+    ui->actionCheck_Updates->setText(tr("Cancel Checking"));
     ui->updateWidget->setVisible(false);
     onUpdateCheckedCountUpdated(0, 0, 0);
     progressBar_->setMaximum(modPath_->modCount());
@@ -350,7 +350,7 @@ void LocalModBrowser::onUpdatesReady(int failedCount)
 {
     if(modPath_->isUpdating()) return;
 //    ui->checkUpdatesButton->setEnabled(true);
-    ui->actionCheck_Updates->setText("Check Updates");
+    ui->actionCheck_Updates->setText(tr("Check Updates"));
     onUpdatableCountChanged();
     updateStatusText();
     if(failedCount)
