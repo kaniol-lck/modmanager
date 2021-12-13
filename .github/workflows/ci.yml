@@ -155,6 +155,11 @@ jobs:
         if: contains(matrix.mingw_arch, 'mingw32')
         run : |
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_dw2-1.dll deploy/bin/
+      - name: Modify NSIS for x64
+        if: contains(matrix.mingw_arch, 'mingw64')
+        shell: pwsh
+        run: |
+          (Get-Content modmanager.nsi).replace('PROGRAMFILES', 'PROGRAMFILES64') | Set-Content modmanager.nsi
       - name: Create installer
         run:
           makensis modmanager.nsi
