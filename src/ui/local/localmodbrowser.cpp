@@ -157,7 +157,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
             renameToMenu->addAction(tr("No Rename History"))->setEnabled(false);
         else{
             renameToMenu->addSeparator();
-            renameToMenu->addAction(tr("Clear History"), this, [=]{
+            renameToMenu->addAction(QIcon::fromTheme("edit-clear-history"), tr("Clear History"), this, [=]{
                 Config().setRenamePatternHistory({});
             });
         }
@@ -167,6 +167,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
         updateModList();
 
     onSelectedModsChanged();
+    onUpdatableCountChanged();
 
 //    onUpdatableCountChanged();
 
@@ -179,9 +180,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::onLoadFinished);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::loadFinished);
     connect(modPath_, &LocalModPath::modListUpdated, this, &LocalModBrowser::updateModList);
-    connect(modPath_, &LocalModPath::linkStarted, this, &LocalModBrowser::onLinkStarted);
-    connect(modPath_, &LocalModPath::linkProgress, this, &LocalModBrowser::onLinkProgress);
-    connect(modPath_, &LocalModPath::linkFinished, this, &LocalModBrowser::onLinkFinished);
+    connect(modPath_->modsLinker(), &CheckSheet::started, this, &LocalModBrowser::onLinkStarted);
+    connect(modPath_->modsLinker(), &CheckSheet::progress, this, &LocalModBrowser::onLinkProgress);
+    connect(modPath_->modsLinker(), &CheckSheet::finished, this, &LocalModBrowser::onLinkFinished);
     connect(modPath_->updateChecker(), &CheckSheet::started, this, &LocalModBrowser::onCheckUpdatesStarted);
     connect(modPath_->updateChecker(), &CheckSheet::finished, this, &LocalModBrowser::onCheckCancelled);
     connect(modPath_->updateChecker(), &CheckSheet::progress, this, &LocalModBrowser::onUpdateCheckedCountUpdated);
@@ -195,12 +196,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::loadStarted, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::updateProgressBar);
-    connect(modPath_, &LocalModPath::linkStarted, this, &LocalModBrowser::updateProgressBar);
-    connect(modPath_, &LocalModPath::linkProgress, this, &LocalModBrowser::updateProgressBar);
-    connect(modPath_, &LocalModPath::linkFinished, this, &LocalModBrowser::updateProgressBar);
-//    connect(modPath_, &LocalModPath::checkWebsitesStarted, this, &LocalModBrowser::updateProgressBar);
-//    connect(modPath_, &LocalModPath::websiteCheckedCountUpdated, this, &LocalModBrowser::updateProgressBar);
-//    connect(modPath_, &LocalModPath::websitesReady, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_->modsLinker(), &CheckSheet::started, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_->modsLinker(), &CheckSheet::progress, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_->modsLinker(), &CheckSheet::finished, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_->updateChecker(), &CheckSheet::started, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_, &LocalModPath::checkCancelled, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_->updateChecker(), &CheckSheet::progress, this, &LocalModBrowser::updateProgressBar);
@@ -210,11 +208,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modIconListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
-//    connect(ui->modListView->verticalScrollBar(), &QScrollBar::sliderReleased, this, &LocalModBrowser::updateListViewIndexWidget);
-//    connect(ui->modListView->verticalScrollBar(), &QScrollBar::sliderReleased, this, [=]{
-//        qDebug() << "release";
-//    });
-//    connect(ui->modTreeView->verticalScrollBar(), &QScrollBar::sliderReleased, this, &LocalModBrowser::updateTreeViewIndexWidget);
 
     auto selectionModel = ui->modListView->selectionModel();
     ui->modIconListView->setSelectionModel(selectionModel);
@@ -289,13 +282,19 @@ void LocalModBrowser::updateUi()
 void LocalModBrowser::onLoadStarted()
 {
     ui->actionReload_Mods->setEnabled(false);
+    ui->actionLink_Mod_Files->setEnabled(false);
+    ui->actionCheck_Updates->setEnabled(false);
+    ui->actionExport->setEnabled(false);
+    ui->actionDelete_Old_Files_In_Path->setEnabled(false);
+    ui->actionBatch_Rename->setEnabled(false);
+    ui->actionUpdate_All->setEnabled(false);
     onLoadProgress(0, 0);
-    statusBarWidget_->setText(tr("Loading mod files..."));
+    statusBarWidget_->label()->setText(tr("Loading mod files..."));
 }
 
 void LocalModBrowser::onLoadProgress(int loadedCount, int totalCount)
 {
-    statusBarWidget_->setText(tr("Loading mod files.. (Loaded %1/%2 mod files)").arg(loadedCount).arg(totalCount));
+    statusBarWidget_->label()->setText(tr("Loading mod files.. (Loaded %1/%2 mod files)").arg(loadedCount).arg(totalCount));
     progressBar_->setMaximum(totalCount);
     progressBar_->setValue(loadedCount);
 }
@@ -303,6 +302,14 @@ void LocalModBrowser::onLoadProgress(int loadedCount, int totalCount)
 void LocalModBrowser::onLoadFinished()
 {
     ui->actionReload_Mods->setEnabled(true);
+    if(!modPath_->isLinking()){
+        ui->actionLink_Mod_Files->setEnabled(true);
+        ui->actionCheck_Updates->setEnabled(true);
+//        ui->actionUpdate_All->setEnabled(true);
+    }
+    ui->actionExport->setEnabled(true);
+    ui->actionDelete_Old_Files_In_Path->setEnabled(true);
+    ui->actionBatch_Rename->setEnabled(true);
     updateStatusText();
     ui->actionCheck_Updates->setText(tr("Check Updates"));
 }
@@ -310,13 +317,15 @@ void LocalModBrowser::onLoadFinished()
 void LocalModBrowser::onLinkStarted()
 {
     ui->actionLink_Mod_Files->setEnabled(false);
+    ui->actionCheck_Updates->setEnabled(false);
+    ui->actionUpdate_All->setEnabled(false);
     onLinkProgress(0, 0);
-    statusBarWidget_->setText(tr("Linking mod files..."));
+    statusBarWidget_->label()->setText(tr("Linking mod files..."));
 }
 
 void LocalModBrowser::onLinkProgress(int linkedCount, int totalCount)
 {
-    statusBarWidget_->setText(tr("Linkinig mod files.. (Linked %1/%2 mod files)").arg(linkedCount).arg(totalCount));
+    statusBarWidget_->label()->setText(tr("Linkinig mod files.. (Linked %1/%2 mod files)").arg(linkedCount).arg(totalCount));
     progressBar_->setMaximum(totalCount);
     progressBar_->setValue(linkedCount);
 }
@@ -324,12 +333,16 @@ void LocalModBrowser::onLinkProgress(int linkedCount, int totalCount)
 void LocalModBrowser::onLinkFinished()
 {
     ui->actionLink_Mod_Files->setEnabled(true);
+    if(!modPath_->isChecking()){
+        ui->actionCheck_Updates->setEnabled(true);
+//        ui->actionUpdate_All->setEnabled(true);
+    }
     updateStatusText();
 }
 
 void LocalModBrowser::onCheckUpdatesStarted()
 {
-//    ui->checkUpdatesButton->setEnabled(false);
+    ui->actionUpdate_All->setEnabled(false);
     ui->actionCheck_Updates->setText(tr("Cancel Checking"));
     ui->updateWidget->setVisible(false);
     onUpdateCheckedCountUpdated(0, 0);
@@ -344,14 +357,13 @@ void LocalModBrowser::onCheckCancelled()
 void LocalModBrowser::onUpdateCheckedCountUpdated(int checkedCount, int totalCount)
 {
     if(!modPath_->isChecking()) return;
-    statusBarWidget_->setText(tr("%1 mods need update... (Checked %2/%3 mods)").arg(modPath_->updatableCount()).arg(checkedCount).arg(totalCount));
+    statusBarWidget_->label()->setText(tr("%1 mods need update... (Checked %2/%3 mods)").arg(modPath_->updatableCount()).arg(checkedCount).arg(totalCount));
     progressBar_->setValue(checkedCount);
 }
 
 void LocalModBrowser::onUpdatesReady(int failedCount)
 {
     if(modPath_->isUpdating()) return;
-//    ui->checkUpdatesButton->setEnabled(true);
     ui->actionCheck_Updates->setText(tr("Check Updates"));
     onUpdatableCountChanged();
     updateStatusText();
@@ -365,19 +377,21 @@ void LocalModBrowser::onUpdatableCountChanged()
     if(auto count = modPath_->updatableCount()){
         ui->updateWidget->setVisible(true);
         ui->updateAllButton->setVisible(true);
-        ui->updateAllButton->setEnabled(true);
-        ui->updateAllButton->setText(tr("Update All"));
+        ui->actionUpdate_All->setEnabled(true);
+        ui->actionUpdate_All->setText(tr("Update All"));
         ui->updateProgressText->setText(tr("%1 mods need update.").arg(count));
     } else {
         ui->updateWidget->setVisible(false);
+        ui->actionUpdate_All->setEnabled(false);
+        ui->actionUpdate_All->setText(tr("Nothing to Update"));
     }
 }
 
 void LocalModBrowser::onUpdatesStarted()
 {
-    ui->updateAllButton->setEnabled(false);
+    ui->actionUpdate_All->setEnabled(false);
     onUpdatesProgress(0, 0);
-    ui->updateAllButton->setText(tr("Updating..."));
+    ui->actionUpdate_All->setText(tr("Updating..."));
 }
 
 void LocalModBrowser::onUpdatesProgress(qint64 bytesReceived, qint64 bytesTotal)
@@ -388,7 +402,7 @@ void LocalModBrowser::onUpdatesProgress(qint64 bytesReceived, qint64 bytesTotal)
 
 void LocalModBrowser::onUpdatesDoneCountUpdated(int doneCount, int totalCount)
 {
-    statusBarWidget_->setText(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
+    statusBarWidget_->label()->setText(tr("Updating... (Updated %1/%2 mods)").arg(doneCount).arg(totalCount));
 }
 
 void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
@@ -434,7 +448,7 @@ void LocalModBrowser::updateProgressBar()
 {
     bool bl = modPath_->isLoading() || modPath_->isLinking() || modPath_->isChecking() || modPath_->isUpdating();
     progressBar_->setVisible(bl);
-    if(!bl) statusBarWidget_->setText("");
+    statusBarWidget_->label()->setVisible(bl);
 }
 
 QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
@@ -816,11 +830,8 @@ void LocalModBrowser::on_actionSearch_on_Modrinth_triggered()
 
 void LocalModBrowser::on_actionCheck_Updates_triggered()
 {
-    if(!modPath_->isChecking()){
-        auto conn = connect(modPath_, &LocalModPath::linkFinished, &LocalModPath::checkModUpdates);
-        if(!modPath_->isLinking()) modPath_->linkAllFiles();
-        connect(modPath_, &LocalModPath::updatesReady, this, disconnecter(conn));
-    }
+    if(!modPath_->isChecking())
+        modPath_->checkModUpdates();
     else
         modPath_->cancelChecking();
 }

@@ -1,11 +1,34 @@
 #include "checksheet.h"
 
+#include <QDebug>
+
 CheckSheet::CheckSheet(QObject *parent) : QObject(parent)
 {}
 
-bool CheckSheet::isWaiting()
+void CheckSheet::start()
 {
-    return !startConnections_.isEmpty();
+    isAdding_ = true;
+//    qDebug() << "started";
+    emit started();
+}
+
+void CheckSheet::done()
+{
+    isAdding_ = false;
+//    qDebug() << startConnections_.size() << finishConnections_.size();
+    if(startConnections_.isEmpty()){
+//        qDebug() << "finished: nothing to do";
+        emit finished();
+    } else if(finishedCount_ >= finishConnections_.count()){
+//        qDebug() << "finished";
+        reset();
+        emit finished();
+    }
+}
+
+bool CheckSheet::isWaiting() const
+{
+    return finishedCount_ < finishConnections_.count();
 }
 
 void CheckSheet::reset()
@@ -29,8 +52,11 @@ void CheckSheet::cancel()
 void CheckSheet::onOneFinished()
 {
     finishedCount_ ++;
+    if(isAdding_) return;
     emit progress(finishedCount_, finishConnections_.count());
+//    qDebug() << finishedCount_ << "/" << finishConnections_.count();
     if(finishedCount_ >= finishConnections_.count()){
+//        qDebug() << "finished";
         reset();
         emit finished();
     }

@@ -85,7 +85,8 @@
       <string>Tags</string>
      </property>
      <property name="icon">
-      <iconset theme="tag"/>
+      <iconset theme="tag">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
     <addaction name="actionPage_Selector"/>
@@ -113,7 +114,8 @@
       <string>&amp;New Local Path</string>
      </property>
      <property name="icon">
-      <iconset theme="folder-new"/>
+      <iconset theme="folder-new">
+       <normaloff>.</normaloff>.</iconset>
      </property>
      <addaction name="actionOpen_new_path_dialog"/>
      <addaction name="separator"/>
@@ -125,7 +127,8 @@
       <string>Local Paths</string>
      </property>
      <property name="icon">
-      <iconset theme="folder"/>
+      <iconset theme="folder">
+       <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
     <addaction name="menu_New_Path"/>
@@ -316,6 +319,9 @@
    </property>
   </action>
   <action name="actionNext_Page">
+   <property name="icon">
+    <iconset theme="go-next"/>
+   </property>
    <property name="text">
     <string>Next Page</string>
    </property>
@@ -327,6 +333,9 @@
    </property>
   </action>
   <action name="actionPrevious_Page">
+   <property name="icon">
+    <iconset theme="go-previous"/>
+   </property>
    <property name="text">
     <string>Previous Page</string>
    </property>
@@ -390,7 +399,8 @@
   </action>
   <action name="actionClear_Unmatched_File_Link_Caches">
    <property name="icon">
-    <iconset theme="edit-clear-history"/>
+    <iconset theme="edit-clear-history">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Clear Unmatched File Link Caches</string>

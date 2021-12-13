@@ -18,11 +18,10 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info) :
     QObject(LocalModPathManager::manager()),
     curseforgeAPI_(new CurseforgeAPI(this)),
     modrinthAPI_(new ModrinthAPI(this)),
-    info_(info),
-    updateChecker_(new CheckSheet(this))
+    info_(info)
 {
     connect(this, &LocalModPath::loadFinished, [=]{
-        auto conn = connect(this, &LocalModPath::linkFinished, this, [=]{
+        auto conn = connect(&modsLinker_, &CheckSheet::finished, this, [=]{
             auto interval = Config().getUpdateCheckInterval();
             if(interval == Config::Always || !latestUpdateCheck_.isValid() ||
                     (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1))
@@ -30,8 +29,10 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info) :
             else if(interval != Config::Never){
             }
         });
+        qDebug() << "load finished";
         linkAllFiles();
-        connect(this, &LocalModPath::updatesReady, this, disconnecter(conn));
+        connect(&modsLinker_, &CheckSheet::finished, this, disconnecter(conn));
+//        connect(&modsLinker_, &CheckSheet::finished, this, &LocalModPath::updatesReady);
     });
 }
 
@@ -40,22 +41,26 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     relative_(path->relative_ + QStringList{subDir}),
     curseforgeAPI_(path->curseforgeAPI_),
     modrinthAPI_(path->modrinthAPI_),
-    info_(path->info_),
-    updateChecker_(new CheckSheet(this))
+    info_(path->info_)
 {
     addSubTagable(path);
     importTag(Tag(subDir, TagCategory::SubDirCategory));
     info_.path_.append("/").append(relative_.join("/"));
 }
 
-CheckSheet *LocalModPath::updateChecker() const
+const CheckSheet *LocalModPath::modsLinker() const
 {
-    return updateChecker_;
+    return &modsLinker_;
+}
+
+const CheckSheet *LocalModPath::updateChecker() const
+{
+    return &updateChecker_;
 }
 
 bool LocalModPath::isLinking() const
 {
-    return isLinking_;
+    return modsLinker_.isWaiting();
 }
 
 bool LocalModPath::isUpdating() const
@@ -78,8 +83,8 @@ void LocalModPath::loadMods(bool autoLoaderType)
     if(isLoading_) return;
     loaded_ = true;
     isLoading_ = true;
-    isLinking_ = false;
-    updateChecker_->reset();
+    modsLinker_.reset();
+    updateChecker_.reset();
     isUpdating_ = false;
     QDir dir(info_.path());
     for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot)){
@@ -319,7 +324,7 @@ void LocalModPath::readFromFile()
 
 bool LocalModPath::isChecking() const
 {
-    return updateChecker_->isWaiting();
+    return updateChecker_.isWaiting();
 }
 
 bool LocalModPath::isLoading() const
@@ -460,62 +465,31 @@ LocalMod *LocalModPath::findLocalMod(const QString &id)
 
 void LocalModPath::linkAllFiles()
 {
-    if(modMap_.isEmpty() || isLinking_) return;
-    isLinking_ = true;
-    emit linkStarted();
-    qDebug() << "link started";
-    auto count = std::make_shared<int>(0);
-    auto linkedCount = std::make_shared<int>(0);
-    bool noLink = true;
+    if(modMap_.isEmpty() || modsLinker_.isWaiting()) return;
+    modsLinker_.start();
     for(auto &&map : modMaps()) for(const auto &mod : map){
         auto file = mod->modFile();
         auto linker = file->linker();
-        if(!linker->linked()){
-            connect(linker, &LocalFileLinker::linkStarted, this, [=]{
-                (*count)++;
-                qDebug() << "start link:" <<  *count;
-            });
-            connect(linker, &LocalFileLinker::linkFinished, this, [=]{
-                (*linkedCount) ++;
-                emit linkProgress(*linkedCount, *count);
-                qDebug() << "link progress" << *linkedCount << "/" <<  *count;
-                if(*linkedCount == *count){
-                    isLinking_ = false;
-                    emit linkFinished();
-                    qDebug() << "link finished";
-                }
-            });
-            noLink = false;
-            linker->link();
-        }
+        modsLinker_.add(linker, &LocalFileLinker::linkStarted, &LocalFileLinker::linkFinished);
+        linker->link();
     }
-    if(noLink){
-        isLinking_ = false;
-        emit linkFinished();
-        qDebug() << "link finished : nothing to link.";
-    }
+    modsLinker_.done();
 }
 
 void LocalModPath::checkModUpdates() // force = true by default
 {
-    if(modMap_.isEmpty() || updateChecker_->isWaiting()) return;
-//    emit checkUpdatesStarted();
-//    auto count = std::make_shared<int>(0);
-//    auto checkedCount = std::make_shared<int>(0);
-//    auto updateCount = std::make_shared<int>(0);
-//    auto failedCount = std::make_shared<int>(0);
+    if(modMap_.isEmpty() || updateChecker_.isWaiting()) return;
+    updateChecker_.start();
     for(auto &&map : modMaps()) for(const auto &mod : map){
-        updateChecker_->add(mod->updateChecker(), &CheckSheet::started, &CheckSheet::finished);
+        updateChecker_.add(mod->updateChecker(), &CheckSheet::started, &CheckSheet::finished);
         mod->checkUpdates();
-//                latestUpdateCheck_ = currentDateTime;
-//                writeToFile();
-//        isChecking_ = false;
     }
+    updateChecker_.done();
 }
 
 void LocalModPath::cancelChecking()
 {
-    updateChecker_->cancel();
+    updateChecker_.cancel();
     emit checkCancelled();
 }
 

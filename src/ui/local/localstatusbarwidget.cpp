@@ -21,12 +21,12 @@ LocalStatusBarWidget::~LocalStatusBarWidget()
     delete ui;
 }
 
+QLabel *LocalStatusBarWidget::label() const
+{
+    return ui->label;
+}
+
 QProgressBar *LocalStatusBarWidget::progressBar() const
 {
     return ui->progressBar;
-}
-
-void LocalStatusBarWidget::setText(const QString &text)
-{
-    ui->label->setText(text);
 }

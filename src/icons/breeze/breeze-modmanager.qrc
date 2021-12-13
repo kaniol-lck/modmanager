@@ -33,6 +33,10 @@
         <file>16x16/view-list-icons.svg</file>
         <file>16x16/view-list-text.svg</file>
         <file>16x16/edit-clear-history.svg</file>
+        <file>16x16/link.svg</file>
+        <file>16x16/go-next.svg</file>
+        <file>16x16/go-previous.svg</file>
+        <file>16x16/window-new.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

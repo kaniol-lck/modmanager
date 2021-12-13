@@ -105,6 +105,7 @@ void LocalMod::checkUpdates(bool force)
     curseforgeUpdater_.reset();
 
     Config config;
+    updateChecker_->start();
     if(config.getUseCurseforgeUpdate() && curseforgeMod_ && modFile_->linker()->curseforgeFileInfo()){
         updateChecker_->add(this, &LocalMod::checkCurseforgeUpdateStarted, &LocalMod::curseforgeUpdateReady);
         checkCurseforgeUpdate(force);
@@ -113,6 +114,7 @@ void LocalMod::checkUpdates(bool force)
         updateChecker_->add(this, &LocalMod::checkModrinthUpdateStarted, &LocalMod::modrinthUpdateReady);
         checkModrinthUpdate(force);
     }
+    updateChecker_->done();
 }
 
 void LocalMod::cancelChecking()

@@ -391,6 +391,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset theme="checkmark"/>
+   </property>
    <property name="text">
     <string>Enable</string>
    </property>
@@ -401,6 +404,9 @@
   <action name="actionToggle_Star">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="starred-symbolic"/>
    </property>
    <property name="text">
     <string>Star</string>
@@ -490,6 +496,9 @@
    </property>
   </action>
   <action name="actionLink_Mod_Files">
+   <property name="icon">
+    <iconset theme="link"/>
+   </property>
    <property name="text">
     <string>Link Mod Files</string>
    </property>

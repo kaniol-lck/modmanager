@@ -9,17 +9,18 @@ class CheckSheet : public QObject
 public:
     explicit CheckSheet(QObject *parent = nullptr);
 
+    void start();
+    void done();
+
     template <typename Func1, typename Func2>
     void add(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 startSignal, Func2 finishSignal)
     {
-        if(startConnections_.isEmpty())
-            emit started();
         startConnections_ << connect(sender, startSignal, this, [=]{
             finishConnections_ << connect(sender, finishSignal, this, &CheckSheet::onOneFinished);
         });
     }
 
-    bool isWaiting();
+    bool isWaiting() const;
 
 public slots:
     void reset();
@@ -37,6 +38,7 @@ private:
     QList<QMetaObject::Connection> startConnections_;
     QList<QMetaObject::Connection> finishConnections_;
     int finishedCount_ = 0;
+    bool isAdding_ = false;
 };
 
 #endif // CHECKSHEET_H

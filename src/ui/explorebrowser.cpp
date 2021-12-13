@@ -20,7 +20,7 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     pathMenu_->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh Mods"), this, &ExploreBrowser::refresh)
             ->setShortcut(QKeySequence(Qt::Key_F5));
     pathMenu_->addAction(visitWebsiteAction_);
-    pathMenu_->addAction(tr("Open in New Dialog"), this, &ExploreBrowser::openDialog);
+    pathMenu_->addAction(QIcon::fromTheme("window-new"), tr("Open in New Dialog"), this, &ExploreBrowser::openDialog);
 }
 
 QList<QAction *> ExploreBrowser::modActions() const

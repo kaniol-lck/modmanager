@@ -5,8 +5,8 @@
 
 #include "localmod.h"
 #include "localmodpathinfo.h"
+#include "util/checksheet.h"
 
-class CheckSheet;
 class LocalModFile;
 class LocalMod;
 class CurseforgeAPI;
@@ -67,7 +67,8 @@ public:
     bool modsLoaded() const;
     bool isUpdating() const;
 
-    CheckSheet *updateChecker() const;
+    const CheckSheet *updateChecker() const;
+    const CheckSheet *modsLinker() const;
 
 public slots:
     void writeToFile();
@@ -85,14 +86,6 @@ signals:
     void loadFinished();
     void checkCancelled();
 
-    //link
-    void linkStarted();
-    void linkProgress(int linkedCount, int totalCount);
-    void linkFinished();
-
-    //check update
-    void checkUpdatesStarted();
-    void updateCheckedCountUpdated(int updateCount, int checkedCount, int totalCount);
     void updatesReady(int failedCount = 0);
 
     //update
@@ -119,13 +112,12 @@ private:
     QMultiMap<QString, FabricModInfo> fabricModMap_;
     QStringList provideList_;
     QDateTime latestUpdateCheck_;
-    CheckSheet *updateChecker_;
+    CheckSheet updateChecker_;
+    CheckSheet modsLinker_;
     int updatableCount_ = 0;
     bool loaded_ = false;
     bool initialUpdateChecked_ = false;
     bool isLoading_ = false;
-    bool isLinking_ = false;
-//    bool isChecking_ = false;
     bool isUpdating_ = false;
 };
 

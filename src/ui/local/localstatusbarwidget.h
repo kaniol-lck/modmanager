@@ -5,6 +5,7 @@
 
 class QButtonGroup;
 
+class QLabel;
 class QProgressBar;
 namespace Ui {
 class LocalModStatusBar;
@@ -19,9 +20,9 @@ public:
     explicit LocalStatusBarWidget(QWidget *parent = nullptr);
     ~LocalStatusBarWidget();
 
+    QLabel *label() const;
     QProgressBar *progressBar() const;
 
-    void setText(const QString &text);
 signals:
     void viewModeChanged(int mode);
 private:
