@@ -24,7 +24,6 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui->setupUi(this);
     ui->updateProgress->setVisible(false);
     ui->updateButton->setVisible(false);
-    ui->updateButton->setEnabled(false);
     ui->curseforgeButton->setVisible(false);
     ui->modrinthButton->setVisible(false);
     ui->disableButton->setVisible(false);
@@ -156,7 +155,6 @@ void LocalModItemWidget::updateInfo()
         ui->modAuthors->setStyleSheet("color: #777");
         ui->modDescription->setStyleSheet("color: #777;");
         ui->modVersion->setStyleSheet("color: #777");
-        ui->updateButton->setEnabled(false);
         displayName = clearFormat(displayName);
         description = clearFormat(description);
     } else{
@@ -165,7 +163,6 @@ void LocalModItemWidget::updateInfo()
         ui->modAuthors->setStyleSheet("");
         ui->modDescription->setStyleSheet("");
         ui->modVersion->setStyleSheet("");
-        ui->updateButton->setEnabled(true);
     }
     setEffect(ui->modName, displayName);
     ui->modName->setText(displayName);
@@ -208,7 +205,7 @@ void LocalModItemWidget::updateReady()
     }
     ui->updateButton->setVisible(true);
     ui->updateButton->setText(tr("Update"));
-    ui->updateButton->setEnabled(!mod_->isDisabled());
+    ui->updateButton->setEnabled(true);
 
     auto menu = new QMenu(this);
     auto ignoreMenu = new QMenu(tr("Ignore update"), this);

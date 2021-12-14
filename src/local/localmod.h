@@ -220,6 +220,8 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
             return false;
         }
 
+        bool isDisabled = modFile_->type() == LocalModFile::Disabled;
+
         //deal with old mod file
         auto postUpdate = Config().getPostUpdate();
         if(postUpdate == Config::Delete){
@@ -228,6 +230,8 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
                 return false;
             modFile_->deleteLater();
         } else if(postUpdate == Config::Keep){
+            if(isDisabled)
+                modFile_->setEnabled(true);
             if(!modFile_->addOld())
                 return false;
             oldFiles_ << modFile_;
@@ -237,6 +241,8 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
         curseforgeUpdater_.reset();
 
         setModFile(file);
+        if(isDisabled)
+            file->setEnabled(false);
         emit modInfoChanged();
 
         return true;
