@@ -471,8 +471,7 @@ void LocalModPath::linkAllFiles()
 {
     if(modMap_.isEmpty() || modsLinker_.isWaiting()) return;
     modsLinker_.start();
-    for(auto &&map : modMaps()) for(const auto &mod : map){
-        auto file = mod->modFile();
+    for(auto &&map : modMaps()) for(const auto &mod : map) for(const auto &file : mod->files()){
         auto linker = file->linker();
         modsLinker_.add(linker, &LocalFileLinker::linkStarted, &LocalFileLinker::linkFinished);
         linker->link();

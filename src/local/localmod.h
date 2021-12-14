@@ -86,6 +86,8 @@ public:
     LocalModFile *modFile() const;
     void setModFile(LocalModFile *newModFile);
 
+    QList<LocalModFile *> files() const;
+
     //old files
     void addOldFile(LocalModFile *oldFile);
     const QList<LocalModFile *> &oldFiles() const;

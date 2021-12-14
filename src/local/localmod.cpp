@@ -580,6 +580,16 @@ void LocalMod::setModFile(LocalModFile *newModFile)
     updateIcon();
 }
 
+QList<LocalModFile *> LocalMod::files() const
+{
+    QList<LocalModFile *> files;
+    if(modFile_)
+        files << modFile_;
+    files << oldFiles_;
+    files << duplicateFiles_;
+    return files;
+}
+
 const QPixmap &LocalMod::icon() const
 {
     return icon_;
