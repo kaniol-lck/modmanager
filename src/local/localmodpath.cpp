@@ -32,6 +32,10 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info) :
         qDebug() << "load finished";
         linkAllFiles();
         connect(&modsLinker_, &CheckSheet::finished, this, disconnecter(conn));
+        connect(&updateChecker_, &CheckSheet::finished, this, [=]{
+            latestUpdateCheck_ = QDateTime::currentDateTime();
+            writeToFile();
+        });
 //        connect(&modsLinker_, &CheckSheet::finished, this, &LocalModPath::updatesReady);
     });
 }

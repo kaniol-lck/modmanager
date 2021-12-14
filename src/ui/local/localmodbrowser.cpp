@@ -335,7 +335,7 @@ void LocalModBrowser::onLinkFinished()
     ui->actionLink_Mod_Files->setEnabled(true);
     if(!modPath_->isChecking()){
         ui->actionCheck_Updates->setEnabled(true);
-//        ui->actionUpdate_All->setEnabled(true);
+        ui->actionUpdate_All->setEnabled(true);
     }
     updateStatusText();
 }
