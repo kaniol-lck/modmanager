@@ -7,14 +7,8 @@
     <x>0</x>
     <y>0</y>
     <width>612</width>
-    <height>38</height>
+    <height>24</height>
    </rect>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>0</width>
-    <height>38</height>
-   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -35,7 +29,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -47,11 +41,11 @@
    </item>
    <item>
     <widget class="QProgressBar" name="progressBar">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>24</height>
+      </size>
      </property>
      <property name="maximum">
       <number>0</number>
@@ -62,82 +56,89 @@
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QToolButton" name="listButton">
-        <property name="toolTip">
-         <string>List Mode</string>
-        </property>
-        <property name="icon">
-         <iconset theme="view-list-details">
-          <normaloff>.</normaloff>.</iconset>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="autoRaise">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="iconButton">
-        <property name="toolTip">
-         <string>Icon Mode</string>
-        </property>
-        <property name="icon">
-         <iconset theme="view-list-icons">
-          <normaloff>.</normaloff>.</iconset>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="autoRaise">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="detailButton">
-        <property name="toolTip">
-         <string>Detail Mode</string>
-        </property>
-        <property name="icon">
-         <iconset theme="view-list-text">
-          <normaloff>.</normaloff>.</iconset>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="autoRaise">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+     <item>
+      <widget class="QToolButton" name="listButton">
+       <property name="maximumSize">
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>List Mode</string>
+       </property>
+       <property name="icon">
+        <iconset theme="view-list-details">
+         <normaloff>.</normaloff>.</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+1</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="iconButton">
+       <property name="maximumSize">
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Icon Mode</string>
+       </property>
+       <property name="icon">
+        <iconset theme="view-list-icons">
+         <normaloff>.</normaloff>.</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+2</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="detailButton">
+       <property name="maximumSize">
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Detail Mode</string>
+       </property>
+       <property name="icon">
+        <iconset theme="view-list-text">
+         <normaloff>.</normaloff>.</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+3</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
