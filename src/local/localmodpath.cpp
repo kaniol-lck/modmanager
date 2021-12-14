@@ -96,10 +96,10 @@ void LocalModPath::loadMods(bool autoLoaderType)
         for(auto &&fileInfo2 : fileInfo.dir().entryInfoList(QDir::Files))
             if((containsMod = LocalModFile::availableSuffix.contains(fileInfo2.suffix())))
                 break;
-        qDebug() << "containsMod" << containsMod;
         if(auto fileName = fileInfo.fileName(); !subPaths_.contains(fileName) && containsMod){
             auto subPath = new LocalModPath(this, fileName);
             subPaths_.insert(fileName, subPath);
+            containedTags_.addSubTagable(subPath);
             subPath->loadMods();
         }
     }
@@ -131,9 +131,12 @@ void LocalModPath::loadMods(bool autoLoaderType)
     watcher->setFuture(future);
     connect(watcher, &QFutureWatcher<void>::finished, this, [=]{
         qDebug() << "modMap clear";
+        for(const auto &mod : modMap_)
+            containedTags_.removeSubTagable(mod);
         qDeleteAll(modMap_);
         modMap_.clear();
         if(optiFineMod_){
+            containedTags_.removeSubTagable(optiFineMod_);
             optiFineMod_->deleteLater();
             optiFineMod_ = nullptr;
         }
@@ -177,6 +180,7 @@ void LocalModPath::addNormalMod(LocalModFile *file)
             optiFineMod_->addDuplicateFile(file);
         else{
             optiFineMod_ = new LocalMod(this, file);
+            containedTags_.addSubTagable(optiFineMod_);
             //connect update signal
             connect(optiFineMod_, &LocalMod::updateFinished, this, [=](bool){
                 emit updatesReady();
@@ -202,6 +206,7 @@ void LocalModPath::addNormalMod(LocalModFile *file)
         connect(mod, &LocalMod::updateReady, this, &LocalModPath::updateUpdatableCount);
         connect(mod, &LocalMod::updateFinished, this, &LocalModPath::updateUpdatableCount);
         modMap_[id] = mod;
+        containedTags_.addSubTagable(mod);
     }
 }
 
@@ -575,13 +580,7 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader)
 
 Tagable LocalModPath::containedTags()
 {
-    Tagable tags;
-    for(const auto &subPath : qAsConst(subPaths_))
-        if(!subPath->modMap().isEmpty())
-            tags.addSubTagable(subPath);
-    for(auto &&mod : modMap_)
-        tags.addSubTagable(mod);
-    return tags;
+    return containedTags_;
 }
 
 CurseforgeAPI *LocalModPath::curseforgeAPI() const

@@ -36,7 +36,6 @@ private slots:
     void on_versionSelect_currentIndexChanged(int index);
     void on_rollbackButton_clicked();
     void on_deleteButton_clicked();
-    void on_tagsWidget_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::LocalModDialog *ui;

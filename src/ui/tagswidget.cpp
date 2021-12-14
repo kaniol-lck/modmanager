@@ -5,8 +5,10 @@
 #include <QScrollBar>
 #include <QScrollArea>
 #include <QWheelEvent>
+#include <QMenu>
 
 #include "tag/tagable.h"
+#include "local/localmodmenu.h"
 #include "config.hpp"
 
 TagsWidget::TagsWidget(QWidget *parent) :
@@ -30,8 +32,8 @@ void TagsWidget::updateUi()
         widget->deleteLater();
     }
     tagWidgets_.clear();
-    if(!mod_) return;
-    for(auto &&tag : mod_->tags(Config().getShowTagCategories())){
+    if(!tagableObject_) return;
+    for(auto &&tag : tagableObject_->tags(Config().getShowTagCategories())){
         auto label = new QLabel(this);
         if(!tag.iconName().isEmpty())
             if(iconOnly_)
@@ -67,3 +69,17 @@ void TagsWidget::setIconOnly(bool newIconOnly)
     iconOnly_ = newIconOnly;
     updateUi();
 }
+
+void TagsWidget::on_TagsWidget_customContextMenuRequested(const QPoint &pos)
+{
+    if(isLocalMod_){
+        auto mod = dynamic_cast<LocalMod *>(tagableObject_);
+        auto menu = new QMenu(this);
+        auto localModMenu = new LocalModMenu(this, mod);
+        menu->addMenu(localModMenu->addTagMenu());
+        if(!mod->tags(TagCategory::CustomizableCategories).isEmpty())
+            menu->addMenu(localModMenu->removeTagmenu());
+        menu->exec(mapToGlobal(pos));
+    }
+}
+

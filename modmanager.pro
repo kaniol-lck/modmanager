@@ -259,7 +259,6 @@ FORMS += \
     src/ui/preferences.ui \
     src/ui/replay/replaymodbrowser.ui \
     src/ui/replay/replaymoditemwidget.ui \
-    src/ui/tagsflowwidget.ui \
     src/ui/tagswidget.ui \
     src/ui/windowstitlebar.ui
 

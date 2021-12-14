@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "local/localmod.h"
+
 class Tagable;
 class TagsFlowWidget : public QWidget
 {
@@ -16,6 +18,7 @@ public:
     template<typename T>
     void setTagableObject(T* tagableObject)
     {
+        isLocalMod_ = std::is_base_of_v<T, LocalMod>;
         if(tagableObject_) disconnect(tagableObject, &T::tagsChanged, this, &TagsFlowWidget::updateUi);
         tagableObject_ = tagableObject;
         updateUi();
@@ -23,9 +26,14 @@ public:
     }
 
     void updateUi();
+
+private slots:
+    void on_TagsFlowWidget_customContextMenuRequested(const QPoint &pos);
+
 private:
     QList<QWidget*> tagWidgets_;
     Tagable *tagableObject_ = nullptr;
+    bool isLocalMod_ = false;
 };
 
 #endif // TAGSFLOWWIDGET_H

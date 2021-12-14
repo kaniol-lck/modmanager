@@ -262,13 +262,3 @@ void LocalModDialog::on_deleteButton_clicked()
     if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this version?"))) return;
     mod_->deleteOld(file_);
 }
-
-void LocalModDialog::on_tagsWidget_customContextMenuRequested(const QPoint &pos)
-{
-    auto menu = new QMenu(this);
-    auto localModMenu = new LocalModMenu(this, mod_);
-    menu->addMenu(localModMenu->addTagMenu());
-    if(!mod_->tags().isEmpty())
-        menu->addMenu(localModMenu->removeTagmenu());
-    menu->exec(ui->tagsWidget->mapToGlobal(pos));
-}

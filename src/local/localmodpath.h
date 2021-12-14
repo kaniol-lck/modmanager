@@ -104,6 +104,7 @@ private:
 
     QStringList relative_;
     QMap<QString, LocalModPath *> subPaths_;
+    Tagable containedTags_;
     CurseforgeAPI *curseforgeAPI_;
     ModrinthAPI *modrinthAPI_;
     LocalModPathInfo info_;
