@@ -6,6 +6,9 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, false);
+    QGuiApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(":/image/modmanager.png"));
     a.setOrganizationName("kaniol");
