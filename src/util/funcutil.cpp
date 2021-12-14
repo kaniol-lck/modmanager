@@ -10,6 +10,7 @@
 #include <QListView>
 #include <QTreeView>
 #include <QDateTime>
+#include <QStack>
 
 #include "local/localmodpath.h"
 #include "local/localfilelinker.h"
@@ -154,33 +155,62 @@ QStringList getExistingDirectories(QWidget *parent, const QString &caption, cons
 
 QString colorCodeFormat(QString str)
 {
-    QVector<std::tuple<QString, QString>> replaceList{
-        {"§0", R"(</span><span style="color:#000000">)"},
-        {"§1", R"(</span><span style="color:#0000AA">)"},
-        {"§2", R"(</span><span style="color:#00AA00">)"},
-        {"§3", R"(</span><span style="color:#00AAAA">)"},
-        {"§4", R"(</span><span style="color:#AA0000">)"},
-        {"§5", R"(</span><span style="color:#AA00AA">)"},
-        {"§6", R"(</span><span style="color:#FFAA00">)"},
-        {"§7", R"(</span><span style="color:#AAAAAA">)"},
-        {"§8", R"(</span><span style="color:#555555">)"},
-        {"§9", R"(</span><span style="color:#5555FF">)"},
-        {"§a", R"(</span><span style="color:#55FF55">)"},
-        {"§b", R"(</span><span style="color:#55FFFF">)"},
-        {"§c", R"(</span><span style="color:#FF5555">)"},
-        {"§d", R"(</span><span style="color:#FF55FF">)"},
-        {"§e", R"(</span><span style="color:#FFFF55">)"},
-        {"§f", R"(</span><span style="color:#FFFFFF">)"},
-        {"§g", R"(</span><span style="color:#DDD605">)"},
-        {"§r", R"(</span>)"}
+    QStack<QString> stack;
+    static const QMap<QChar, std::tuple<QString, QString>> replaceList{
+        { '0', { "</span>", R"(<span style="color:#000000">)" } },
+        { '1', { "</span>", R"(<span style="color:#0000AA">)" } },
+        { '2', { "</span>", R"(<span style="color:#00AA00">)" } },
+        { '3', { "</span>", R"(<span style="color:#00AAAA">)" } },
+        { '4', { "</span>", R"(<span style="color:#AA0000">)" } },
+        { '5', { "</span>", R"(<span style="color:#AA00AA">)" } },
+        { '6', { "</span>", R"(<span style="color:#FFAA00">)" } },
+        { '7', { "</span>", R"(<span style="color:#AAAAAA">)" } },
+        { '8', { "</span>", R"(<span style="color:#555555">)" } },
+        { '9', { "</span>", R"(<span style="color:#5555FF">)" } },
+        { 'a', { "</span>", R"(<span style="color:#55FF55">)" } },
+        { 'b', { "</span>", R"(<span style="color:#55FFFF">)" } },
+        { 'c', { "</span>", R"(<span style="color:#FF5555">)" } },
+        { 'd', { "</span>", R"(<span style="color:#FF55FF">)" } },
+        { 'e', { "</span>", R"(<span style="color:#FFFF55">)" } },
+        { 'f', { "</span>", R"(<span style="color:#FFFFFF">)" } },
+        { 'g', { "</span>", R"(<span style="color:#DDD605">)" } },
+//        { 'k', { "</span>", R"(<span">)" } },
+        { 'l', { "</b>", R"(<b>)" } },
+        { 'm', { "</s>", R"(<s>)" } },
+        { 'n', { "</u>", R"(<u>)" } },
+        { 'o', { "</i>", R"(<i>)" } },
     };
-    for(auto &&[str1, str2] : replaceList)
-        str.replace(str1, str2);
-    if(auto index = str.indexOf("</span>"); index >= 0 && index < str.indexOf("<span"))
-        str.remove(index, 7); //length of </span>
-    if(auto index = str.lastIndexOf("</span>"); index < str.lastIndexOf("<span"))
-        str.append("</span>");
-    return str;
+    QString newString;
+    for(int i = 0; i < str.size(); i++){
+        if(i + 1 < str.size()){
+            if(auto ch = str.at(i); ch != "§"){
+                newString += ch;
+                continue;
+            }
+            auto code = str.at(i + 1);
+            if(replaceList.contains(code)){
+                auto &&[end, start] = replaceList[code];
+                        if(stack.contains(end)){
+                    stack.removeAll(end);
+                    newString += end;
+                }
+                stack << end;
+                newString += start;
+                //skip next
+                i++;
+            } else if(code == 'r'){
+                while(!stack.isEmpty())
+                    newString += stack.takeLast();
+                //skip next
+                i++;
+            }
+        } else{
+            newString += str.at(i);
+            while(!stack.isEmpty())
+                newString += stack.takeLast();
+        }
+    }
+    return newString;
 }
 
 QString clearFormat(QString str)
