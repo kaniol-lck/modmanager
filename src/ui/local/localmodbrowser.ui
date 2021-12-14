@@ -392,7 +392,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="checkmark"/>
+    <iconset theme="checkmark">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Enable</string>
@@ -406,7 +407,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="starred-symbolic"/>
+    <iconset theme="starred-symbolic">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Star</string>
@@ -497,7 +499,8 @@
   </action>
   <action name="actionLink_Mod_Files">
    <property name="icon">
-    <iconset theme="link"/>
+    <iconset theme="link">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Link Mod Files</string>
@@ -537,6 +540,14 @@
    </property>
    <property name="text">
     <string>Export modlist.html (Modrinth)</string>
+   </property>
+  </action>
+  <action name="actionSort">
+   <property name="icon">
+    <iconset theme="view-sort"/>
+   </property>
+   <property name="text">
+    <string>Sort</string>
    </property>
   </action>
  </widget>

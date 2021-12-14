@@ -37,6 +37,9 @@
         <file>16x16/go-next.svg</file>
         <file>16x16/go-previous.svg</file>
         <file>16x16/window-new.svg</file>
+        <file>16x16/view-sort.svg</file>
+        <file>16x16/view-sort-ascending.svg</file>
+        <file>16x16/view-sort-descending.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

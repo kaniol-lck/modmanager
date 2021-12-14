@@ -12,6 +12,7 @@
 #include <QTreeView>
 #include <QInputDialog>
 #include <QCheckBox>
+#include <QActionGroup>
 
 #include "localmodinfowidget.h"
 #include "localfilelistwidget.h"
@@ -38,8 +39,7 @@
 #include "ui/modrinth/modrinthmoddialog.h"
 #include "ui/modrinth/modrinthmodbrowser.h"
 #include "ui/browserdialog.h"
-
-#include <util/checksheet.h>
+#include "util/checksheet.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
@@ -94,6 +94,40 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     pathMenu_->addAction(ui->actionLink_Mod_Files);
     pathMenu_->addAction(ui->actionCheck_Updates);
     pathMenu_->addAction(ui->actionUpdate_All);
+
+    auto sortMenu = new QMenu(this);
+    ui->actionSort->setMenu(sortMenu);
+    sortMenu->setIcon(QIcon::fromTheme("view-sort"));
+    connect(sortMenu, &QMenu::aboutToShow, this, [=]{
+        sortMenu->clear();
+        auto order = ui->modTreeView->header()->sortIndicatorOrder();
+        auto section = ui->modTreeView->header()->sortIndicatorSection();
+        auto orderGroup = new QActionGroup(this);
+        auto sectionGroup = new QActionGroup(this);
+        sortMenu->addSection(tr("Order"));
+        auto ascendingAction = sortMenu->addAction(QIcon::fromTheme("view-sort-ascending"), tr("Ascending"), this, [=]{
+            ui->modTreeView->sortByColumn(section, Qt::AscendingOrder);
+        });
+        auto descendingAction = sortMenu->addAction(QIcon::fromTheme("view-sort-descending"), tr("Descending"), this, [=]{
+            model_->sort(section, Qt::DescendingOrder);
+        });
+        ascendingAction->setCheckable(true);
+        descendingAction->setCheckable(true);
+        (order == Qt::AscendingOrder? ascendingAction : descendingAction)->setChecked(true);
+        orderGroup->addAction(ascendingAction);
+        orderGroup->addAction(descendingAction);
+        sortMenu->addSection(tr("Column"));
+        for(int column = LocalModItem::ModColumn + 1; column < model_->columnCount(); column++){
+            auto item = model_->horizontalHeaderItem(column);
+            auto action = sortMenu->addAction(item->icon(), item->text(), this, [=]{
+                ui->modTreeView->sortByColumn(column, order);
+            });
+            action->setCheckable(true);
+            sectionGroup->addAction(action);
+            if(column == section)
+                action->setChecked(true);
+        }
+    });
 
     auto exportMenu = new QMenu(this);
     ui->actionExport->setMenu(exportMenu);
@@ -262,7 +296,7 @@ void LocalModBrowser::updateModList()
         if(auto mod = modPath_->optiFineMod()){
             model_->appendRow(LocalModItem::itemsFromMod(mod));
         }
-    model_->sort(LocalModItem::NameColumn);
+    ui->modTreeView->sortByColumn(LocalModItem::NameColumn, Qt::AscendingOrder);
     ui->modIconListView->setModelColumn(LocalModItem::NameColumn);
     ui->modTreeView->hideColumn(LocalModItem::ModColumn);
     for(auto &&column : { LocalModItem::EnableColumn, LocalModItem::StarColumn })
@@ -454,6 +488,8 @@ void LocalModBrowser::updateProgressBar()
 QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
 {
     auto menu = new QMenu(this);
+    menu->addAction(ui->actionSort);
+    menu->addSeparator();
     bool isSingleMod = mods.count() == 1;
     if(isSingleMod){
         //single mod
