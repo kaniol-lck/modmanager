@@ -50,7 +50,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     infoWidget_(new LocalModInfoWidget(this, modPath)),
     fileListWidget_(new LocalFileListWidget(this, modPath)),
     statusBarWidget_(new LocalStatusBarWidget(this)),
-    statusBar_(new QStatusBar(this)),
     progressBar_(statusBarWidget_->progressBar()),
     viewSwitcher_(new QButtonGroup(this)),
     modPath_(modPath),
@@ -71,9 +70,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->modTreeView->setVerticalScrollBar(new SmoothScrollBar(this));
 
     //setup status bar
-    statusBar_->addPermanentWidget(statusBarWidget_);
+    ui->statusBar->addPermanentWidget(statusBarWidget_);
     connect(statusBarWidget_, &LocalStatusBarWidget::viewModeChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
-    layout()->addWidget(statusBar_);
 
     ui->actionReload_Mods->setEnabled(!modPath_->isLoading());
 
@@ -253,6 +251,12 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
 LocalModBrowser::~LocalModBrowser()
 {
     delete ui;
+}
+
+void LocalModBrowser::load()
+{
+    if(!modPath_->modsLoaded())
+        modPath_->loadMods();
 }
 
 bool LocalModBrowser::isLoading() const
@@ -475,7 +479,7 @@ void LocalModBrowser::updateStatusText()
         else
             str.append(tr("(%1 mods are shown)").arg(modPath_->modCount() - hiddenCount_));
     }
-    statusBar_->showMessage(str);
+    ui->statusBar->showMessage(str);
 }
 
 void LocalModBrowser::updateProgressBar()
@@ -704,8 +708,6 @@ void LocalModBrowser::saveSections()
 
 void LocalModBrowser::paintEvent(QPaintEvent *event)
 {
-    if(!modPath_->modsLoaded())
-        modPath_->loadMods();
     updateListViewIndexWidget();
     updateTreeViewIndexWidget();
     QWidget::paintEvent(event);

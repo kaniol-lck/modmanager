@@ -12,7 +12,6 @@ class ExploreStatusBarWidget;
 class ExploreStatusBarWidget;
 class QStandardItemModel;
 class LocalMod;
-class QStatusBar;
 namespace Ui {
 class ModrinthModBrowser;
 }
@@ -24,6 +23,8 @@ class ModrinthModBrowser : public ExploreBrowser
 public:
     explicit ModrinthModBrowser(QWidget *parent = nullptr, LocalMod *localMod = nullptr);
     ~ModrinthModBrowser();
+
+    void load() override;
 
     QWidget *infoWidget() const override;
     QWidget *fileListWidget() const override;
@@ -62,7 +63,6 @@ private:
     ModrinthModInfoWidget *infoWidget_;
     ModrinthFileListWidget *fileListWidget_;
     ExploreStatusBarWidget *statusBarWidget_;
-    QStatusBar *statusBar_;
     ModrinthAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     QString currentName_;

@@ -1,14 +1,16 @@
 #ifndef BROWSER_H
 #define BROWSER_H
 
-#include <QWidget>
+#include <QMainWindow>
 
-class Browser : public QWidget
+class Browser : public QMainWindow
 {
     Q_OBJECT
 public:
     explicit Browser(QWidget *parent = nullptr);
     virtual ~Browser() = 0;
+
+    virtual void load();
 
     virtual QWidget *infoWidget() const;
     virtual QWidget *fileListWidget() const;

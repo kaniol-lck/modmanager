@@ -30,6 +30,8 @@ public:
     explicit LocalModBrowser(QWidget *parent, LocalModPath *modPath);
     ~LocalModBrowser();
 
+    void load() override;
+
     bool isLoading() const;
     LocalModPath *modPath() const;
     QWidget *infoWidget() const override;
@@ -120,7 +122,6 @@ private:
     LocalModInfoWidget *infoWidget_;
     LocalFileListWidget *fileListWidget_;
     LocalStatusBarWidget *statusBarWidget_;
-    QStatusBar *statusBar_;
     QProgressBar *progressBar_;
     QButtonGroup *viewSwitcher_;
     LocalModPath *modPath_;

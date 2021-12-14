@@ -10,9 +10,11 @@
 #include "local/localmodpath.h"
 
 #include <QDebug>
+#include <QMdiSubWindow>
 
-PageSwitcher::PageSwitcher(QWidget *parent) :
-    QStackedWidget(parent),
+PageSwitcher::PageSwitcher(QObject *parent) :
+    QObject(parent),
+    windows_(3),
     pageCount_(3)
 {
     model_.appendRow(new QStandardItem(tr("Download")));
@@ -27,25 +29,27 @@ PageSwitcher::PageSwitcher(QWidget *parent) :
 
 void PageSwitcher::nextPage()
 {
-    auto index = currentIndex() + 1;
-    if(index >= count())
-        index -= count();
-    setCurrentIndex(index);
+    mdiArea_->activateNextSubWindow();
+//    auto index = currentIndex() + 1;
+//    if(index >= count())
+//        index -= count();
+//    setCurrentIndex(index);
 }
 
 void PageSwitcher::previesPage()
 {
-    auto index = currentIndex() - 1;
-    if(index < 0)
-        index += count();
-    setCurrentIndex(index);
+    mdiArea_->activatePreviousSubWindow();
+//    auto index = currentIndex() - 1;
+//    if(index < 0)
+//        index += count();
+//    setCurrentIndex(index);
 }
 
 void PageSwitcher::addDownloadPage()
 {
     if(!downloadBrowser_)
-        downloadBrowser_ = new DownloadBrowser(this);
-    addWidget(downloadBrowser_);
+        downloadBrowser_ = new DownloadBrowser(mdiArea_);
+    addWidget(downloadBrowser_, Download);
     pageCount_[Download]++;
     auto item = new QStandardItem(QIcon::fromTheme("download"), tr("Downloader"));
     model_.item(Download)->appendRow(item);
@@ -54,9 +58,9 @@ void PageSwitcher::addDownloadPage()
 void PageSwitcher::addCurseforgePage()
 {
     if(!curseforgeModBrowser_)
-        curseforgeModBrowser_ = new CurseforgeModBrowser(this);
+        curseforgeModBrowser_ = new CurseforgeModBrowser(mdiArea_);
     exploreBrowsers_ << curseforgeModBrowser_;
-    insertWidget(pageCount_[Download] + pageCount_[Explore], curseforgeModBrowser_);
+    addWidget(curseforgeModBrowser_, Explore);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/curseforge.svg"), tr("Curseforge"));
     model_.item(Explore)->appendRow(item);
@@ -65,9 +69,9 @@ void PageSwitcher::addCurseforgePage()
 void PageSwitcher::addModrinthPage()
 {
     if(!modrinthModBrowser_)
-        modrinthModBrowser_ = new ModrinthModBrowser(this);
+        modrinthModBrowser_ = new ModrinthModBrowser(mdiArea_);
     exploreBrowsers_ << modrinthModBrowser_;
-    insertWidget(pageCount_[Download] + pageCount_[Explore], modrinthModBrowser_);
+    addWidget(modrinthModBrowser_, Explore);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/modrinth.svg"), tr("Modrinth"));
     model_.item(Explore)->appendRow(item);
@@ -76,9 +80,9 @@ void PageSwitcher::addModrinthPage()
 void PageSwitcher::addOptiFinePage()
 {
     if(!optifineModBrowser_)
-        optifineModBrowser_ = new OptifineModBrowser(this);
+        optifineModBrowser_ = new OptifineModBrowser(mdiArea_);
     exploreBrowsers_ << optifineModBrowser_;
-    insertWidget(pageCount_[Download] + pageCount_[Explore], optifineModBrowser_);
+    addWidget(optifineModBrowser_, Explore);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/optifine.png"), tr("OptiFine"));
     model_.item(Explore)->appendRow(item);
@@ -87,9 +91,9 @@ void PageSwitcher::addOptiFinePage()
 void PageSwitcher::addReplayModPage()
 {
     if(!replayModBrowser_)
-        replayModBrowser_ = new ReplayModBrowser(this);
+        replayModBrowser_ = new ReplayModBrowser(mdiArea_);
     exploreBrowsers_ << replayModBrowser_;
-    insertWidget(pageCount_[Download] + pageCount_[Explore], replayModBrowser_);
+    addWidget(replayModBrowser_, Explore);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/replay.png"), tr("ReplayMod"));
     model_.item(Explore)->appendRow(item);
@@ -98,7 +102,7 @@ void PageSwitcher::addReplayModPage()
 void PageSwitcher::addLocalPage(LocalModBrowser *browser)
 {
     localModBrowsers_ << browser;
-    addWidget(browser);
+    addWidget(browser, Local);
     pageCount_[Local]++;
     auto item = new QStandardItem(browser->modPath()->info().icon(), browser->modPath()->info().displayName());
     model_.item(Local)->appendRow(item);
@@ -131,14 +135,14 @@ void PageSwitcher::addLocalPage(LocalModBrowser *browser)
 
 void PageSwitcher::addLocalPage(LocalModPath *path)
 {
-    auto localModBrowser = new LocalModBrowser(this, path);
+    auto localModBrowser = new LocalModBrowser(mdiArea_, path);
     addLocalPage(localModBrowser);
 }
 
 void PageSwitcher::removeExplorePage(int index)
 {
     if(index < 0) return;
-    removeWidget(exploreBrowsers_.at(index));
+    mdiArea_->removeSubWindow(exploreBrowsers_.at(index));
     exploreBrowsers_.removeAt(index);
     pageCount_[Explore]--;
     model_.item(Explore)->removeRow(index);
@@ -167,7 +171,7 @@ void PageSwitcher::removeReplayModPage()
 LocalModBrowser *PageSwitcher::takeLocalModBrowser(int index)
 {
     auto browser = localModBrowsers_.takeAt(index);
-    removeWidget(browser);
+    mdiArea_->removeSubWindow(browser);
     pageCount_[Local]--;
     model_.item(Local)->removeRow(index);
     return browser;
@@ -180,8 +184,13 @@ void PageSwitcher::removeLocalModBrowser(int index)
 
 void PageSwitcher::setPage(int category, int page)
 {
-    auto index = std::accumulate(pageCount_.cbegin(), pageCount_.cbegin() + category, 0) + page;
-    setCurrentIndex(index);
+    auto previousBrowser = currentBrowser();
+    mdiArea_->currentSubWindow()->hide();
+    windows_[category][page]->showMaximized();
+    mdiArea_->setActiveSubWindow(windows_[category][page]);
+//    emit pageChanged(model_.index(category, 0, model_.index(page, 0)));
+    emit browserChanged(previousBrowser, currentBrowser());
+    currentBrowser()->load();
 }
 
 void PageSwitcher::updateUi()
@@ -201,6 +210,13 @@ void PageSwitcher::updateUi()
     if(!config.getShowReplayMod() && exploreBrowsers_.contains(replayModBrowser_)) removeReplayModPage();
 }
 
+void PageSwitcher::addWidget(QWidget *widget, int category)
+{
+    auto window = mdiArea_->addSubWindow(widget, Qt::FramelessWindowHint);
+    windows_[category] << window;
+    window->hide();
+}
+
 void PageSwitcher::removeExplorePage(ExploreBrowser *exploreBrowser)
 {
     auto index = exploreBrowsers_.indexOf(exploreBrowser);
@@ -208,19 +224,14 @@ void PageSwitcher::removeExplorePage(ExploreBrowser *exploreBrowser)
     removeExplorePage(index);
 }
 
+void PageSwitcher::setMdiArea(QMdiArea *newMdiArea)
+{
+    mdiArea_ = newMdiArea;
+}
+
 QStandardItemModel *PageSwitcher::model()
 {
     return &model_;
-}
-
-void PageSwitcher::setCurrentIndex(int index)
-{
-    if(index < 0) return;
-    auto previousBrowser = currentBrowser();
-    QStackedWidget::setCurrentIndex(index);
-    auto [currentCategory, currentPage] = currentCategoryPage();
-    emit pageChanged(model_.index(currentPage, 0, model_.index(currentCategory, 0)));
-    emit browserChanged(previousBrowser, currentBrowser());
 }
 
 int PageSwitcher::currentCategory() const
@@ -301,12 +312,12 @@ LocalModBrowser *PageSwitcher::localModBrowser(int index) const
 
 QPair<int, int> PageSwitcher::currentCategoryPage() const
 {
-    auto index = currentIndex();
-    for(int category = 0; pageCount_.size(); category ++){
-        if(index < pageCount_[category]){
-            return { category, index };
-        }
-        index -= pageCount_[category];
-    }
-    return { -1, -1 };
+    auto window = mdiArea_->currentSubWindow();
+    if(auto index = windows_[Download].indexOf(window); index >= 0)
+        return { Download, index };
+    if(auto index = windows_[Explore].indexOf(window); index >= 0)
+        return { Explore, index };
+    if(auto index = windows_[Local].indexOf(window); index >= 0)
+        return { Local, index };
+    return { 0, 0 };
 }

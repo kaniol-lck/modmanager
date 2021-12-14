@@ -1,7 +1,7 @@
 #ifndef PAGESWITCHER_H
 #define PAGESWITCHER_H
 
-#include <QStackedWidget>
+#include <QMdiArea>
 #include <QStandardItemModel>
 
 class Browser;
@@ -14,12 +14,12 @@ class ReplayModBrowser;
 class LocalModBrowser;
 class LocalModPath;
 
-class PageSwitcher : public QStackedWidget
+class PageSwitcher : public QObject
 {
     Q_OBJECT
 public:
     enum BrowserCategory{ Download, Explore, Local };
-    explicit PageSwitcher(QWidget *parent = nullptr);
+    explicit PageSwitcher(QObject *parent = nullptr);
 
     void nextPage();
     void previesPage();
@@ -55,15 +55,21 @@ public:
     int currentPage() const;
     Browser *currentBrowser() const;
     QStandardItemModel *model();
+    void setMdiArea(QMdiArea *newMdiArea);
+
 signals:
     void pageChanged(QModelIndex modelIndex);
     void browserChanged(Browser *previous, Browser *current);
+
 public slots:
-    void setCurrentIndex(int index);
     void setPage(int category, int page);
     void updateUi();
+
 private:
+    void addWidget(QWidget *widget, int category);
     void removeExplorePage(ExploreBrowser *exploreBrowser);
+    QMdiArea *mdiArea_;
+    QVector<QList<QMdiSubWindow *>> windows_;
     QStandardItemModel model_;
     QVector<int> pageCount_;
 

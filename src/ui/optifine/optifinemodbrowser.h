@@ -21,6 +21,8 @@ public:
     explicit OptifineModBrowser(QWidget *parent = nullptr);
     ~OptifineModBrowser();
 
+    void load() override;
+
 public slots:
     void refresh() override;
     void searchModByPathInfo(const LocalModPathInfo &info) override;
@@ -46,7 +48,6 @@ private:
     Ui::OptifineModBrowser *ui;
     QStandardItemModel *model_;
     ExploreStatusBarWidget *statusBarWidget_;
-    QStatusBar *statusBar_;
     OptifineAPI *api_;
     BMCLAPI *bmclapi_;
     LocalModPath *downloadPath_ = nullptr;

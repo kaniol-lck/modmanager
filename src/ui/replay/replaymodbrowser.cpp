@@ -23,7 +23,6 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     ui(new Ui::ReplayModBrowser),
     model_(new QStandardItemModel(this)),
     statusBarWidget_(new ExploreStatusBarWidget(this)),
-    statusBar_(new QStatusBar(this)),
     api_(new ReplayAPI())
 {
     ui->setupUi(this);
@@ -32,8 +31,7 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     ui->modListView->setProperty("class", "ModList");
 
     //setup status bar
-    statusBar_->addPermanentWidget(statusBarWidget_);
-    layout()->addWidget(statusBar_);
+    ui->statusbar->addPermanentWidget(statusBarWidget_);
 
     for(const auto &type : ModLoaderType::replay)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
@@ -56,6 +54,14 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
 ReplayModBrowser::~ReplayModBrowser()
 {
     delete ui;
+}
+
+void ReplayModBrowser::load()
+{
+    if(!inited_){
+        inited_ = true;
+        getModList();
+    }
 }
 
 void ReplayModBrowser::refresh()
@@ -148,10 +154,6 @@ void ReplayModBrowser::updateIndexWidget()
 
 void ReplayModBrowser::paintEvent(QPaintEvent *event)
 {
-    if(!inited_){
-        inited_ = true;
-        getModList();
-    }
     updateIndexWidget();
     QWidget::paintEvent(event);
 }
@@ -219,5 +221,5 @@ void ReplayModBrowser::filterList()
 void ReplayModBrowser::updateStatusText()
 {
     auto str = tr("Loaded %1 mods from ReplayMod.").arg(model_->rowCount());
-    statusBar_->showMessage(str);
+    ui->statusbar->showMessage(str);
 }

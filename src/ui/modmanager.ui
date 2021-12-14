@@ -37,15 +37,9 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <widget class="PageSwitcher" name="pageSwitcher">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="currentIndex">
-       <number>-1</number>
+     <widget class="QMdiArea" name="mdiArea">
+      <property name="lineWidth">
+       <number>0</number>
       </property>
      </widget>
     </item>
@@ -320,7 +314,8 @@
   </action>
   <action name="actionNext_Page">
    <property name="icon">
-    <iconset theme="go-next"/>
+    <iconset theme="go-next">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Next Page</string>
@@ -334,7 +329,8 @@
   </action>
   <action name="actionPrevious_Page">
    <property name="icon">
-    <iconset theme="go-previous"/>
+    <iconset theme="go-previous">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Previous Page</string>
@@ -407,14 +403,6 @@
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>PageSwitcher</class>
-   <extends>QStackedWidget</extends>
-   <header>ui/pageswitcher.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -7,6 +7,7 @@
 #include "local/localmodpathinfo.h"
 #include "browserselectorwidget.h"
 #include "config.hpp"
+#include "pageswitcher.h"
 
 class QListWidgetItem;
 class LocalModPath;
@@ -78,6 +79,7 @@ private slots:
 
 private:
     Ui::ModManager *ui;
+    PageSwitcher pageSwitcher_;
     mutable Config config_;
     BrowserSelectorWidget *browserSelector_;
 //#ifdef Q_OS_WIN

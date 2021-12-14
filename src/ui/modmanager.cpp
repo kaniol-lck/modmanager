@@ -52,37 +52,41 @@ ModManager::ModManager(QWidget *parent) :
     useFramelessWindow_ = config_.getUseFramelessWindow();
     enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
+    pageSwitcher_.setMdiArea(ui->mdiArea);
     DockWidgetContent::lockPanelsAction = ui->actionLock_Panels;
     restoreGeometry(config.getGeometry());
     restoreState(config.getWindowState());
     ui->actionAbout_Qt->setIcon(QIcon(":/qt-project.org/qmessagebox/images/qtlogo-64.png"));
-    browserSelector_->setModel(ui->pageSwitcher->model());
-    connect(browserSelector_, &BrowserSelectorWidget::browserChanged, ui->pageSwitcher, &PageSwitcher::setPage);
-    connect(ui->pageSwitcher, &PageSwitcher::pageChanged, browserSelector_, &BrowserSelectorWidget::setCurrentIndex);
-    connect(ui->pageSwitcher, &PageSwitcher::browserChanged, this, &ModManager::updateBrowsers);
+    browserSelector_->setModel(pageSwitcher_.model());
+    connect(browserSelector_, &BrowserSelectorWidget::browserChanged, &pageSwitcher_, &PageSwitcher::setPage);
+    connect(&pageSwitcher_, &PageSwitcher::pageChanged, browserSelector_, &BrowserSelectorWidget::setCurrentIndex);
+    connect(&pageSwitcher_, &PageSwitcher::browserChanged, this, &ModManager::updateBrowsers);
     connect(browserSelector_, &BrowserSelectorWidget::customContextMenuRequested, this, &ModManager::customContextMenuRequested);
     LocalModPathManager::load();
 
     setProxy();
     updateLockPanels();
 
+    ui->menubar->setVisible(true);
+    qDebug() << ui->menubar->isVisible();
+
     ui->pageSelectorDock->setWidget(browserSelector_);
 
     //Download
-    ui->pageSwitcher->addDownloadPage();
+    pageSwitcher_.addDownloadPage();
     //Explore
-    if(config.getShowCurseforge()) ui->pageSwitcher->addCurseforgePage();
-    if(config.getShowModrinth()) ui->pageSwitcher->addModrinthPage();
-    if(config.getShowOptiFine()) ui->pageSwitcher->addOptiFinePage();
-    if(config.getShowReplayMod()) ui->pageSwitcher->addReplayModPage();
+    if(config.getShowCurseforge()) pageSwitcher_.addCurseforgePage();
+    if(config.getShowModrinth()) pageSwitcher_.addModrinthPage();
+    if(config.getShowOptiFine()) pageSwitcher_.addOptiFinePage();
+    if(config.getShowReplayMod()) pageSwitcher_.addReplayModPage();
 
     //Local
     syncPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModManager::syncPathList);
 
     //default browser
-    if(ui->pageSwitcher->exploreBrowsers().size())
-        ui->pageSwitcher->setPage(PageSwitcher::Explore, 0);
+    if(pageSwitcher_.exploreBrowsers().size())
+        pageSwitcher_.setPage(PageSwitcher::Explore, 0);
 
     //init versions
     VersionManager::initVersionLists();
@@ -111,7 +115,7 @@ ModManager::~ModManager()
 void ModManager::updateUi()
 {
     qApp->setStyleSheet(styleSheetPath(config_.getCustomStyle()));
-    ui->pageSwitcher->updateUi();
+    pageSwitcher_.updateUi();
     updateBlur();
 }
 
@@ -276,29 +280,29 @@ void ModManager::syncPathList()
 {
     //remember selected path
     LocalModBrowser *selectedBrowser = nullptr;
-    if(ui->pageSwitcher->currentCategory() == PageSwitcher::Local)
-        selectedBrowser = ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentIndex());
+    if(pageSwitcher_.currentCategory() == PageSwitcher::Local)
+        selectedBrowser = pageSwitcher_.localModBrowser(pageSwitcher_.currentPage());
 
     auto oldCount = pathList_.size();
     for(const auto &path : LocalModPathManager::pathList()){
         if(auto i = pathList_.indexOf(path); i < 0){
             //not present, new one
             pathList_ << path;
-            ui->pageSwitcher->addLocalPage(path);
+            pageSwitcher_.addLocalPage(path);
         } else{
             //present, move position
             oldCount--;
             auto path = pathList_.takeAt(i);
             pathList_ << path;
-            auto browser = ui->pageSwitcher->takeLocalModBrowser(i);
-            ui->pageSwitcher->addLocalPage(browser);
+            auto browser = pageSwitcher_.takeLocalModBrowser(i);
+            pageSwitcher_.addLocalPage(browser);
         }
     }
     //remove remained mod path
     auto i = oldCount;
     while (i--) {
         pathList_.removeAt(i);
-        ui->pageSwitcher->removeLocalModBrowser(i);
+        pageSwitcher_.removeLocalModBrowser(i);
     }
 
     //they should be same after sync
@@ -306,8 +310,8 @@ void ModManager::syncPathList()
 
     //reset selected path
     if(!selectedBrowser){
-        if(auto index = ui->pageSwitcher->localModBrowsers().indexOf(selectedBrowser); index >= 0)
-            ui->pageSwitcher->setPage(PageSwitcher::Local, index);
+        if(auto index = pageSwitcher_.localModBrowsers().indexOf(selectedBrowser); index >= 0)
+            pageSwitcher_.setPage(PageSwitcher::Local, index);
     }
 }
 
@@ -358,11 +362,11 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         menu->addAction(ui->actionLock_Panels);
     } else if(index.parent().row() == PageSwitcher::Explore){
         // on one of explore items
-        auto exploreBrowser = ui->pageSwitcher->exploreBrowser(index.row());
+        auto exploreBrowser = pageSwitcher_.exploreBrowser(index.row());
         menu->addActions(exploreBrowser->pathActions());
     } else if(index.parent().row() == PageSwitcher::Local){
         // on one of local items
-        auto localBrowser = ui->pageSwitcher->localModBrowser(index.row());
+        auto localBrowser = pageSwitcher_.localModBrowser(index.row());
         connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
             editLocalPath(index.row());
         });
@@ -436,20 +440,20 @@ void ModManager::on_actionSelect_Multiple_Directories_triggered()
 
 void ModManager::on_menu_Mod_aboutToShow()
 {
-    ui->pageSwitcher->currentBrowser()->onModMenuAboutToShow();
+    pageSwitcher_.currentBrowser()->onModMenuAboutToShow();
 }
 
 void ModManager::on_menu_Mod_aboutToHide()
 {
-    ui->pageSwitcher->currentBrowser()->onModMenuAboutToHide();
+    pageSwitcher_.currentBrowser()->onModMenuAboutToHide();
 }
 
 void ModManager::on_menu_Path_aboutToShow()
 {
-    if(ui->pageSwitcher->currentCategory() == PageSwitcher::Download)
+    if(pageSwitcher_.currentCategory() == PageSwitcher::Download)
         ui->actionReload->setEnabled(false);
-    if(ui->pageSwitcher->currentCategory() == PageSwitcher::Local)
-        if(auto localBrowser = ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentPage()); localBrowser && localBrowser->isLoading()){
+    if(pageSwitcher_.currentCategory() == PageSwitcher::Local)
+        if(auto localBrowser = pageSwitcher_.localModBrowser(pageSwitcher_.currentPage()); localBrowser && localBrowser->isLoading()){
             ui->actionReload->setEnabled(false);
             connect(localBrowser, &LocalModBrowser::loadFinished, this, [=]{
                 ui->actionReload->setEnabled(true);
@@ -478,7 +482,7 @@ void ModManager::on_menu_Help_aboutToShow()
             ui->menu_Help->removeAction(action);
     }
     int count = 0;
-    for(auto browser : ui->pageSwitcher->exploreBrowsers()){
+    for(auto browser : pageSwitcher_.exploreBrowsers()){
         auto action = browser->visitWebsiteAction();
         action->setData(true);
         ui->menu_Help->insertAction(ui->menu_Help->actions().at(count++), action);
@@ -491,7 +495,7 @@ void ModManager::on_menuPaths_aboutToShow()
     int index = 0;
     for(auto path : LocalModPathManager::pathList()){
         ui->menuPaths->addAction(path->info().icon(), path->info().displayName(), this, [=]{
-            ui->pageSwitcher->setPage(PageSwitcher::Local, index);
+            pageSwitcher_.setPage(PageSwitcher::Local, index);
         });
         index++;
     }
@@ -516,7 +520,7 @@ void ModManager::on_menuTags_aboutToShow()
             else
                 list.removeAll(category);
             config_.setShowTagCategories(list);
-            ui->pageSwitcher->updateUi();
+            pageSwitcher_.updateUi();
         });
         ui->menuTags->addAction(action);
     }
@@ -524,57 +528,57 @@ void ModManager::on_menuTags_aboutToShow()
 
 void ModManager::on_actionReload_triggered()
 {
-    if(auto category = ui->pageSwitcher->currentCategory(); category == PageSwitcher::Explore)
-        ui->pageSwitcher->exploreBrowser(ui->pageSwitcher->currentPage())->refresh();
+    if(auto category = pageSwitcher_.currentCategory(); category == PageSwitcher::Explore)
+        pageSwitcher_.exploreBrowser(pageSwitcher_.currentPage())->refresh();
     else if(category == PageSwitcher::Local)
-        ui->pageSwitcher->localModBrowser(ui->pageSwitcher->currentPage())->reload();
+        pageSwitcher_.localModBrowser(pageSwitcher_.currentPage())->reload();
 }
 
 void ModManager::on_actionShow_Mod_Authors_toggled(bool arg1)
 {
     config_.setShowModAuthors(arg1);
-    ui->pageSwitcher->updateUi();
+    pageSwitcher_.updateUi();
 }
 
 void ModManager::on_actionShow_Mod_Date_Time_toggled(bool arg1)
 {
     config_.setShowModDateTime(arg1);
-    ui->pageSwitcher->updateUi();
+    pageSwitcher_.updateUi();
 }
 
 void ModManager::on_actionShow_Mod_Category_toggled(bool arg1)
 {
     config_.setShowModCategory(arg1);
-    ui->pageSwitcher->updateUi();
+    pageSwitcher_.updateUi();
 }
 
 void ModManager::on_actionShow_Mod_Loader_Type_toggled(bool arg1)
 {
     config_.setShowModLoaderType(arg1);
-    ui->pageSwitcher->updateUi();
+    pageSwitcher_.updateUi();
 }
 
 void ModManager::on_actionShow_Mod_Release_Type_toggled(bool arg1)
 {
     config_.setShowModReleaseType(arg1);
-    ui->pageSwitcher->updateUi();
+    pageSwitcher_.updateUi();
 }
 
 
 void ModManager::on_actionShow_Mod_Game_Version_toggled(bool arg1)
 {
     config_.setShowModGameVersion(arg1);
-    ui->pageSwitcher->updateUi();
+    pageSwitcher_.updateUi();
 }
 
 void ModManager::on_actionNext_Page_triggered()
 {
-    ui->pageSwitcher->nextPage();
+    pageSwitcher_.nextPage();
 }
 
 void ModManager::on_actionPrevious_Page_triggered()
 {
-    ui->pageSwitcher->previesPage();
+    pageSwitcher_.previesPage();
 }
 
 void ModManager::on_actionAbout_Qt_triggered()

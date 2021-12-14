@@ -23,7 +23,7 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
 
     connect(manager_->qaria2(), &QAria2::started, this, [=]{});
     connect(manager_->qaria2(), &QAria2::finished, this, [=]{
-        ui->downloadSpeedText->setText("Idoling");
+        ui->statusbar->showMessage("Idoling");
     });
     connect(manager_, &DownloadManager::downloaderAdded, this, &DownloadBrowser::addNewDownloaderItem);
     connect(manager_->qaria2(), &QAria2::downloadSpeed, this, &DownloadBrowser::downloadSpeed);
@@ -57,5 +57,5 @@ void DownloadBrowser::downloadSpeed(qint64 download, qint64 upload)
 {
     auto text = tr("Download Speed:") + speedConvert(download) +
             " " + tr("Upload Speed:") + speedConvert(upload);
-    ui->downloadSpeedText->setText(text);
+    ui->statusbar->showMessage(text);
 }

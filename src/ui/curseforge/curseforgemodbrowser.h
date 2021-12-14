@@ -25,6 +25,8 @@ public:
     explicit CurseforgeModBrowser(QWidget *parent = nullptr, LocalMod *mod = nullptr);
     ~CurseforgeModBrowser();
 
+    void load() override;
+
     QWidget *infoWidget() const override;
     QWidget *fileListWidget() const override;
     CurseforgeMod *selectedMod() const;
@@ -66,7 +68,6 @@ private:
     CurseforgeModInfoWidget *infoWidget_;
     CurseforgeFileListWidget *fileListWidget_;
     ExploreStatusBarWidget *statusBarWidget_;
-    QStatusBar *statusBar_;
     CurseforgeAPI *api_;
     QList<int> idList_;
     LocalModPath *downloadPath_ = nullptr;

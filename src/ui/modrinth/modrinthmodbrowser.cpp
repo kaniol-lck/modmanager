@@ -5,7 +5,6 @@
 #include <QDir>
 #include <QMenu>
 #include <QStandardItem>
-#include <QStatusBar>
 
 #include "modrinthmodinfowidget.h"
 #include "modrinthfilelistwidget.h"
@@ -31,7 +30,6 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     infoWidget_(new ModrinthModInfoWidget(this)),
     fileListWidget_(new ModrinthFileListWidget(this)),
     statusBarWidget_(new ExploreStatusBarWidget(this)),
-    statusBar_(new QStatusBar(this)),
     api_(new ModrinthAPI(this)),
     localMod_(localMod)
 {
@@ -43,8 +41,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ui->modListView->setProperty("class", "ModList");
 
     //setup status bar
-    statusBar_->addPermanentWidget(statusBarWidget_);
-    layout()->addWidget(statusBar_);
+    ui->statusbar->addPermanentWidget(statusBarWidget_);
 
     ui->loaderSelect->blockSignals(true);
     for(const auto &type : ModLoaderType::modrinth)
@@ -81,6 +78,14 @@ ModrinthModBrowser::~ModrinthModBrowser()
         auto mod = item->data().value<ModrinthMod*>();
         if(mod && !mod->parent())
             mod->deleteLater();
+    }
+}
+
+void ModrinthModBrowser::load()
+{
+    if(!inited_){
+        inited_ = true;
+        getModList(currentName_);
     }
 }
 
@@ -388,7 +393,7 @@ void ModrinthModBrowser::onSliderChanged(int i)
 void ModrinthModBrowser::updateStatusText()
 {
     auto str = tr("Loaded %1 mods from Modrinth.").arg(model_->rowCount());
-    statusBar_->showMessage(str);
+    ui->statusbar->showMessage(str);
 }
 
 void ModrinthModBrowser::getModList(QString name, int index)
@@ -540,10 +545,6 @@ void ModrinthModBrowser::updateIndexWidget()
 
 void ModrinthModBrowser::paintEvent(QPaintEvent *event)
 {
-    if(!inited_){
-        inited_ = true;
-        getModList(currentName_);
-    }
     updateIndexWidget();
     QWidget::paintEvent(event);
 }

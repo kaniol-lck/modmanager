@@ -20,6 +20,8 @@ public:
     explicit ReplayModBrowser(QWidget *parent = nullptr);
     ~ReplayModBrowser();
 
+    void load() override;
+
 public slots:
     void refresh() override;
     void searchModByPathInfo(const LocalModPathInfo &info) override;
@@ -43,7 +45,6 @@ private:
     Ui::ReplayModBrowser *ui;
     QStandardItemModel *model_;
     ExploreStatusBarWidget *statusBarWidget_;
-    QStatusBar *statusBar_;
     ReplayAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     bool inited_ = false;

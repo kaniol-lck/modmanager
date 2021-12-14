@@ -1,6 +1,9 @@
 #include "browser.h"
 
-Browser::Browser(QWidget *parent) : QWidget(parent)
+Browser::Browser(QWidget *parent) : QMainWindow(parent)
+{}
+
+void Browser::load()
 {}
 
 Browser::~Browser()

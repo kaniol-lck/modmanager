@@ -221,8 +221,11 @@ HEADERS += \
     src/version.h
 
 FORMS += \
+    src/ui/curseforge/curseforgemodbrowser.ui \
+    src/ui/download/downloadbrowser.ui \
     src/ui/explorestatusbarwidget.ui \
     src/ui/local/exportmanifestjsondialog.ui \
+    src/ui/local/localmodbrowser.ui \
     src/ui/local/localstatusbarwidget.ui \
     src/ui/aboutdialog.ui \
     src/ui/browserdialog.ui \
@@ -251,11 +254,14 @@ FORMS += \
     src/ui/modrinth/modrinthfileitemwidget.ui \
     src/ui/modrinth/modrinthfilelistwidget.ui \
     src/ui/modrinth/modrinthmodbrowser.ui \
+    src/ui/modrinth/modrinthmodbrowser.ui \
     src/ui/modrinth/modrinthmoddialog.ui \
     src/ui/modrinth/modrinthmodinfowidget.ui \
     src/ui/modrinth/modrinthmoditemwidget.ui \
     src/ui/optifine/optifinemodbrowser.ui \
+    src/ui/optifine/optifinemodbrowser.ui \
     src/ui/optifine/optifinemoditemwidget.ui \
+    src/ui/replay/replaymodbrowser.ui \
     src/ui/preferences.ui \
     src/ui/replay/replaymodbrowser.ui \
     src/ui/replay/replaymoditemwidget.ui \

@@ -24,7 +24,6 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ui(new Ui::OptifineModBrowser),
     model_(new QStandardItemModel(this)),
     statusBarWidget_(new ExploreStatusBarWidget(this)),
-    statusBar_(new QStatusBar(this)),
     api_(new OptifineAPI(this)),
     bmclapi_(new BMCLAPI(this))
 {
@@ -34,8 +33,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ui->modListView->setProperty("class", "ModList");
 
     //setup status bar
-    statusBar_->addPermanentWidget(statusBarWidget_);
-    layout()->addWidget(statusBar_);
+    ui->statusbar->addPermanentWidget(statusBarWidget_);
 
     updateLocalPathList();
     updateStatusText();
@@ -60,6 +58,14 @@ OptifineModBrowser::~OptifineModBrowser()
             mod->deleteLater();
     }
     delete ui;
+}
+
+void OptifineModBrowser::load()
+{
+    if(!inited_){
+        inited_ = true;
+        getModList();
+    }
 }
 
 void OptifineModBrowser::refresh()
@@ -126,7 +132,7 @@ void OptifineModBrowser::filterList()
 void OptifineModBrowser::updateStatusText()
 {
     auto str = tr("Loaded %1 mods from OptiFine.").arg(model_->rowCount());
-    statusBar_->showMessage(str);
+    ui->statusbar->showMessage(str);
 }
 
 void OptifineModBrowser::getModList()
@@ -247,10 +253,6 @@ void OptifineModBrowser::updateIndexWidget()
 
 void OptifineModBrowser::paintEvent(QPaintEvent *event)
 {
-    if(!inited_){
-        inited_ = true;
-        getModList();
-    }
     updateIndexWidget();
     QWidget::paintEvent(event);
 }
