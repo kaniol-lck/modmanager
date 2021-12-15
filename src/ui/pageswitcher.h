@@ -57,7 +57,6 @@ public:
     int currentPage() const;
     Browser *currentBrowser() const;
     QStandardItemModel *model();
-    void setMenubar(QMenuBar *newMenubar);
 
 signals:
     void pageChanged(QModelIndex modelIndex);

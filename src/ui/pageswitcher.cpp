@@ -29,6 +29,7 @@ PageSwitcher::PageSwitcher(QWidget *parent) :
         item->setForeground(QColor(127, 127, 127));
         item->setFlags(item->flags().setFlag(Qt::ItemIsSelectable, false));
     };
+//    setViewMode(QMdiArea::TabbedView);
 }
 
 void PageSwitcher::nextPage()
@@ -218,8 +219,9 @@ void PageSwitcher::updateUi()
 
 void PageSwitcher::addWidget(QMainWindow *browser, int category)
 {
-    for(auto action : menubar_->actions())
-        browser->menuBar()->addAction(action);
+    //disable menu
+    browser->menuBar()->setNativeMenuBar(false);
+    browser->menuBar()->hide();
     auto window = addSubWindow(browser, Qt::FramelessWindowHint);
     windows_[category] << window;
 }
@@ -229,11 +231,6 @@ void PageSwitcher::removeExplorePage(ExploreBrowser *exploreBrowser)
     auto index = exploreBrowsers_.indexOf(exploreBrowser);
     if(index < 0) return;
     removeExplorePage(index);
-}
-
-void PageSwitcher::setMenubar(QMenuBar *newMenubar)
-{
-    menubar_ = newMenubar;
 }
 
 QStandardItemModel *PageSwitcher::model()

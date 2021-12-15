@@ -45,8 +45,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
     ui(new Ui::LocalModBrowser),
     model_(new QStandardItemModel(this)),
-    modMenu_(new QMenu(this)),
-    pathMenu_(new QMenu(this)),
     infoWidget_(new LocalModInfoWidget(this, modPath)),
     fileListWidget_(new LocalFileListWidget(this, modPath)),
     statusBarWidget_(new LocalStatusBarWidget(this)),
@@ -82,24 +80,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(statusBarWidget_, &LocalStatusBarWidget::viewModeChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
 
     ui->actionReload_Mods->setEnabled(!modPath_->isLoading());
-
-    modMenu_->addAction(ui->actionToggle_Enable);
-    modMenu_->addAction(ui->actionToggle_Star);
-    modMenu_->addSeparator();
-    modMenu_->addAction(ui->actionRename_Selected_Mods);
-    modMenu_->addAction(ui->actionRename_to);
-
-    pathMenu_->addAction(ui->actionOpen_Folder);
-    pathMenu_->addAction(ui->actionFind_New_Mods);
-    pathMenu_->addAction(ui->actionExport);
-    pathMenu_->addSeparator();
-    pathMenu_->addAction(ui->actionReload_Mods);
-    pathMenu_->addAction(ui->actionBatch_Rename);
-    pathMenu_->addAction(ui->actionDelete_Old_Files_In_Path);
-    pathMenu_->addSeparator();
-    pathMenu_->addAction(ui->actionLink_Mod_Files);
-    pathMenu_->addAction(ui->actionCheck_Updates);
-    pathMenu_->addAction(ui->actionUpdate_All);
 
     auto sortMenu = new QMenu(this);
     ui->actionSort->setMenu(sortMenu);
@@ -616,12 +596,12 @@ QWidget *LocalModBrowser::fileListWidget() const
 
 QList<QAction *> LocalModBrowser::modActions() const
 {
-    return modMenu_->actions();
+    return ui->menuMod->actions();
 }
 
 QList<QAction *> LocalModBrowser::pathActions() const
 {
-    return pathMenu_->actions();
+    return ui->menuPath->actions();
 }
 
 QIcon LocalModBrowser::icon() const

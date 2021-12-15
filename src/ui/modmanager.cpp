@@ -53,7 +53,6 @@ ModManager::ModManager(QWidget *parent) :
     enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
     setCentralWidget(&pageSwitcher_);
-    pageSwitcher_.setMenubar(menuBar());
     DockWidgetContent::lockPanelsAction = ui->actionLock_Panels;
     restoreGeometry(config.getGeometry());
     restoreState(config.getWindowState());

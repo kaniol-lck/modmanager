@@ -309,6 +309,44 @@
     <bool>true</bool>
    </attribute>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuMod">
+    <property name="title">
+     <string>&amp;Mod</string>
+    </property>
+    <addaction name="actionToggle_Enable"/>
+    <addaction name="actionToggle_Star"/>
+    <addaction name="separator"/>
+    <addaction name="actionRename_Selected_Mods"/>
+    <addaction name="actionRename_to"/>
+   </widget>
+   <widget class="QMenu" name="menuPath">
+    <property name="title">
+     <string>&amp;Path</string>
+    </property>
+    <addaction name="actionOpen_Folder"/>
+    <addaction name="actionFind_New_Mods"/>
+    <addaction name="actionExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionReload_Mods"/>
+    <addaction name="actionBatch_Rename"/>
+    <addaction name="actionDelete_Old_Files_In_Path"/>
+    <addaction name="separator"/>
+    <addaction name="actionLink_Mod_Files"/>
+    <addaction name="actionCheck_Updates"/>
+    <addaction name="actionUpdate_All"/>
+   </widget>
+   <addaction name="menuMod"/>
+   <addaction name="menuPath"/>
+  </widget>
   <action name="actionReload_Mods">
    <property name="icon">
     <iconset theme="view-refresh">
