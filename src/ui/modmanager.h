@@ -34,9 +34,6 @@ protected:
 #if defined (DE_KDE) || defined (Q_OS_WIN)
     void paintEvent(QPaintEvent *event) override;
 #endif //defined (DE_KDE) || defined (Q_OS_WIN)
-#ifdef Q_OS_WIN
-    bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
-#endif //Q_OS_WIN
 public slots:
     void updateUi();
 private slots:
@@ -86,7 +83,6 @@ private:
     WindowsTitleBar *titleBar_;
 //#endif //Q_OS_WIN
     QList<LocalModPath*> pathList_;
-    bool useFramelessWindow_;
     bool enableBlurBehind_;
     bool isMoving_ = false;
     void updateBlur() const;

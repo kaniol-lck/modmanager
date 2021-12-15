@@ -4,6 +4,9 @@
 #include <QLocale>
 #include <QTranslator>
 
+#include "ui/framelesswrapper.h"
+#include "config.hpp"
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, false);
@@ -38,6 +41,10 @@ int main(int argc, char *argv[])
     a.setFont(font);
 #endif
     ModManager w;
-    w.show();
+    if(Config().getUseFramelessWindow()){
+        auto frameless = FramelessWrapper::makeFrameless(&w);
+        frameless->show();
+    } else
+        w.show();
     return a.exec();
 }

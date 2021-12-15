@@ -49,7 +49,6 @@ ModManager::ModManager(QWidget *parent) :
     browserSelector_(new BrowserSelectorWidget(this))
 {
     Config config;
-    useFramelessWindow_ = config_.getUseFramelessWindow();
     enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
     setCentralWidget(&pageSwitcher_);
@@ -93,14 +92,6 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionShow_Mod_Category->setChecked(config.getShowModCategory());
     ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
 
-#ifdef Q_OS_WIN
-    //TODO
-    if(useFramelessWindow_){
-        setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
-        titleBar_ = new WindowsTitleBar(this, windowTitle(), ui->menubar);
-        ui->gridLayout->addWidget(titleBar_);
-    }
-#endif //Q_OS_WIN
     updateUi();
 }
 
@@ -190,88 +181,6 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 #endif //Q_OS_WIN
 }
 #endif //defined (DE_KDE) || defined (Q_OS_WIN)
-
-#ifdef Q_OS_WIN
-bool ModManager::nativeEvent(const QByteArray &eventType[[maybe_unused]], void *message, long *result)
-{
-    if(!useFramelessWindow_) return false;
-    MSG* msg = (MSG*)message;
-    int boundaryWidth = 4;
-    switch(msg->message){
-//    case WM_ENTERSIZEMOVE:{
-//        if(!isMoving_){
-//            isMoving_ = true;
-//            updateBlur();
-//        }
-//        return true;
-//    }
-//    case WM_EXITSIZEMOVE:{
-//        if(isMoving_){
-//            isMoving_ = false;
-//            updateBlur();
-//        }
-//        return true;
-//    }
-    case WM_NCCALCSIZE:{
-        NCCALCSIZE_PARAMS& params = *reinterpret_cast<NCCALCSIZE_PARAMS*>(msg->lParam);
-        if (params.rgrc[0].top != 0)
-            params.rgrc[0].top -= 1;
-
-        *result = WVR_REDRAW;
-        return true;
-    }
-    case WM_NCHITTEST:{
-        int xPos = GET_X_LPARAM(msg->lParam) - this->frameGeometry().x();
-        int yPos = GET_Y_LPARAM(msg->lParam) - this->frameGeometry().y();
-        if(xPos < boundaryWidth && yPos<boundaryWidth)
-            *result = HTTOPLEFT;
-        else if(xPos >= width()-boundaryWidth&&yPos<boundaryWidth)
-            *result = HTTOPRIGHT;
-        else if(xPos<boundaryWidth&&yPos >= height()-boundaryWidth)
-            *result = HTBOTTOMLEFT;
-        else if(xPos>=width()-boundaryWidth&&yPos>=height()-boundaryWidth)
-            *result = HTBOTTOMRIGHT;
-        else if(xPos < boundaryWidth)
-            *result =  HTLEFT;
-        else if(xPos>=width() - boundaryWidth)
-            *result = HTRIGHT;
-        else if(yPos < boundaryWidth)
-            *result = HTTOP;
-        else if(yPos >= height() - boundaryWidth)
-            *result = HTBOTTOM;
-        if(*result) return true;
-        if (!titleBar_) return false;
-
-        //support highdpi
-        double dpr = this->devicePixelRatioF();
-        long x = GET_X_LPARAM(msg->lParam);
-        long y = GET_Y_LPARAM(msg->lParam);
-        QPoint pos = titleBar_->mapFromGlobal(QPoint(x/dpr,y/dpr));
-
-        if (!titleBar_->rect().contains(pos)) return false;
-        QWidget* child = titleBar_->childAt(pos);
-        if (!qobject_cast<QToolButton*>(child)){
-            *result = HTCAPTION;
-            return true;
-        }
-    }
-    case WM_GETMINMAXINFO: {
-        if (::IsZoomed(msg->hwnd)) {
-            RECT frame = { 0, 0, 0, 0 };
-            AdjustWindowRectEx(&frame, WS_OVERLAPPEDWINDOW, FALSE, 0);
-            frame.left = abs(frame.left);
-            frame.top = abs(frame.bottom);
-            this->setContentsMargins(frame.left, frame.top, frame.right, frame.bottom);
-        } else{
-            this->setContentsMargins(0, 0, 0, 0);
-        }
-        *result = ::DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
-         break;
-    }
-    }
-    return false;
-}
-#endif //Q_OS_WIN
 
 void ModManager::syncPathList()
 {
@@ -617,11 +526,11 @@ void ModManager::updateBlur() const
             }
         }
 //    }
-    if(useFramelessWindow_){
-        HWND hwnd = (HWND)winId();
-        DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
-        ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
-    }
+//    if(useFramelessWindow_){
+//        HWND hwnd = (HWND)winId();
+//        DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
+//        ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
+//    }
 #endif
 }
 

@@ -54,6 +54,7 @@ SOURCES += \
     src/ui/curseforge/curseforgemodinfowidget.cpp \
     src/ui/dockwidgetcontent.cpp \
     src/ui/explorestatusbarwidget.cpp \
+    src/ui/framelesswrapper.cpp \
     src/ui/local/exportmanifestjsondialog.cpp \
     src/ui/local/localfilelistwidget.cpp \
     src/ui/local/localmodfileitemwidget.cpp \
@@ -158,6 +159,7 @@ HEADERS += \
     src/ui/curseforge/curseforgemodinfowidget.h \
     src/ui/dockwidgetcontent.h \
     src/ui/explorestatusbarwidget.h \
+    src/ui/framelesswrapper.h \
     src/ui/local/exportmanifestjsondialog.h \
     src/ui/local/localfilelistwidget.h \
     src/ui/local/localmodfileitemwidget.h \

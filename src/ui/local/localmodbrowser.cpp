@@ -223,6 +223,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->modTreeView->setSelectionModel(selectionModel);
     connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &LocalModBrowser::updateSelectedMods);
     connect(this, &LocalModBrowser::selectedModsChanged, this, &LocalModBrowser::onSelectedModsChanged);
+    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &LocalModBrowser::updateListViewIndexWidget);
+    connect(ui->modTreeView->verticalScrollBar(), &QScrollBar::valueChanged, this, &LocalModBrowser::updateTreeViewIndexWidget);
 }
 
 LocalModBrowser::~LocalModBrowser()

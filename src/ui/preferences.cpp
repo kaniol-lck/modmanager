@@ -101,7 +101,7 @@ void Preferences::on_Preferences_accepted()
     config.setShowModReleaseType(ui->showModReleaseType->isChecked());
     config.setShowModGameVersion(ui->showModGameVersion->isChecked());
     config.setEnableBlurBehind(ui->enableBlurBehind->isChecked());
-    config.setUseFramelessWindow(ui->enableBlurBehind->isChecked());
+    config.setUseFramelessWindow(ui->useFramelessWindow->isChecked());
     config.setCustomStyle(ui->customStyle->currentData().toString());
     config.setAutoTranslate(ui->autoTranslate->isChecked());
     config.setUseSystemIconTheme(ui->useSystemIconTheme->isChecked());
