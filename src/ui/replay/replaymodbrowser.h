@@ -36,9 +36,10 @@ private slots:
     void updateLocalPathList();
     void filterList();
     void updateStatusText();
-    void on_openFolderButton_clicked();
     void on_downloadPathSelect_currentIndexChanged(int index);
     void updateIndexWidget();
+    void on_actionOpen_Folder_triggered();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:

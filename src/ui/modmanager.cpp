@@ -94,11 +94,11 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
 
 #ifdef Q_OS_WIN
+    //TODO
     if(useFramelessWindow_){
         setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
         titleBar_ = new WindowsTitleBar(this, windowTitle(), ui->menubar);
         ui->gridLayout->addWidget(titleBar_);
-        ui->gridLayout->addWidget(ui->mdiArea);
     }
 #endif //Q_OS_WIN
     updateUi();

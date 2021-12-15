@@ -51,10 +51,11 @@ private slots:
     void on_modListView_doubleClicked(const QModelIndex &index);
     void on_sortSelect_currentIndexChanged(int);
     void on_loaderSelect_currentIndexChanged(int);
-    void on_openFolderButton_clicked();
     void on_downloadPathSelect_currentIndexChanged(int index);
     void onItemSelected();
     void updateIndexWidget();
+    void on_actionOpen_Folder_triggered();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:

@@ -3,6 +3,7 @@
 
 #include <QAction>
 #include <QDesktopServices>
+#include <QDockWidget>
 #include <QMenu>
 #include <QUrl>
 

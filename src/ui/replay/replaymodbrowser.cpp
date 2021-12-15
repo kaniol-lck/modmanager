@@ -30,8 +30,19 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    setCentralWidget(ui->modListView);
+
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
+
+    ui->searchBar->addWidget(ui->searchText);
+
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->versionSelect);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_3);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->loaderSelect);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_4);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->downloadPathSelect);
 
     for(const auto &type : ModLoaderType::replay)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
@@ -106,16 +117,6 @@ void ReplayModBrowser::updateLocalPathList()
         if(index >= 0)
             ui->downloadPathSelect->setCurrentIndex(index);
     }
-}
-
-void ReplayModBrowser::on_openFolderButton_clicked()
-{
-    QString path;
-    if(downloadPath_)
-        path = downloadPath_->info().path();
-    else
-        path = Config().getDownloadPath();
-    openFileInFolder(path);
 }
 
 void ReplayModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
@@ -223,3 +224,14 @@ void ReplayModBrowser::updateStatusText()
     auto str = tr("Loaded %1 mods from ReplayMod.").arg(model_->rowCount());
     ui->statusbar->showMessage(str);
 }
+
+void ReplayModBrowser::on_actionOpen_Folder_triggered()
+{
+    QString path;
+    if(downloadPath_)
+        path = downloadPath_->info().path();
+    else
+        path = Config().getDownloadPath();
+    openFileInFolder(path);
+}
+

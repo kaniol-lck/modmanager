@@ -40,8 +40,22 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    setCentralWidget(ui->modListView);
+
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
+
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->versionSelectButton);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_5);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->categorySelectButton);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_3);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->loaderSelect);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_4);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->downloadPathSelect);
+
+    ui->searchBar->addWidget(ui->searchText);
+    ui->searchBar->addWidget(ui->sortSelect);
 
     ui->loaderSelect->blockSignals(true);
     for(const auto &type : ModLoaderType::modrinth)
@@ -482,16 +496,6 @@ void ModrinthModBrowser::on_loaderSelect_currentIndexChanged(int)
     getModList(currentName_);
 }
 
-void ModrinthModBrowser::on_openFolderButton_clicked()
-{
-    QString path;
-    if(downloadPath_)
-        path = downloadPath_->info().path();
-    else
-        path = Config().getDownloadPath();
-    openFileInFolder(path);
-}
-
 void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
     if(index < 0 || index >= ui->downloadPathSelect->count()) return;
@@ -557,4 +561,14 @@ ModrinthMod *ModrinthModBrowser::selectedMod() const
 ExploreBrowser *ModrinthModBrowser::another()
 {
     return new ModrinthModBrowser;
+}
+
+void ModrinthModBrowser::on_actionOpen_Folder_triggered()
+{
+    QString path;
+    if(downloadPath_)
+        path = downloadPath_->info().path();
+    else
+        path = Config().getDownloadPath();
+    openFileInFolder(path);
 }
