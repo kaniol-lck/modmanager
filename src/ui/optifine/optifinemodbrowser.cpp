@@ -32,6 +32,8 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    setCentralWidget(ui->modListView);
+
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 

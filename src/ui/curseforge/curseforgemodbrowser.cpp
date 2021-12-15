@@ -42,6 +42,8 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
 
+    setCentralWidget(ui->modListView);
+
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 

@@ -52,8 +52,8 @@ ModManager::ModManager(QWidget *parent) :
     useFramelessWindow_ = config_.getUseFramelessWindow();
     enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
-    pageSwitcher_.setMdiArea(ui->mdiArea);
-    pageSwitcher_.setMenubar(ui->menubar);
+    setCentralWidget(&pageSwitcher_);
+    pageSwitcher_.setMenubar(menuBar());
     DockWidgetContent::lockPanelsAction = ui->actionLock_Panels;
     restoreGeometry(config.getGeometry());
     restoreState(config.getWindowState());
@@ -67,8 +67,6 @@ ModManager::ModManager(QWidget *parent) :
 
     setProxy();
     updateLockPanels();
-
-//    ui->menubar->setNativeMenuBar(false);
 
     ui->pageSelectorDock->setWidget(browserSelector_);
 

@@ -50,8 +50,9 @@ QString ExploreBrowser::name() const
 
 void ExploreBrowser::openDialog()
 {
-    auto dialog = new BrowserDialog(nullptr, another());
-    dialog->setWindowTitle(name_);
-    dialog->setWindowIcon(icon_);
-    dialog->show();
+//    auto dialog = new BrowserDialog(nullptr, another());
+//    dialog->setWindowTitle(name_);
+//    dialog->setWindowIcon(icon_);
+//    dialog->show();
+    another()->show();
 }

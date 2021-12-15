@@ -16,12 +16,12 @@ class ReplayModBrowser;
 class LocalModBrowser;
 class LocalModPath;
 
-class PageSwitcher : public QObject
+class PageSwitcher : public QMdiArea
 {
     Q_OBJECT
 public:
     enum BrowserCategory{ Download, Explore, Local };
-    explicit PageSwitcher(QObject *parent = nullptr);
+    explicit PageSwitcher(QWidget *parent = nullptr);
 
     void nextPage();
     void previesPage();
@@ -57,8 +57,6 @@ public:
     int currentPage() const;
     Browser *currentBrowser() const;
     QStandardItemModel *model();
-    void setMdiArea(QMdiArea *newMdiArea);
-
     void setMenubar(QMenuBar *newMenubar);
 
 signals:
@@ -72,7 +70,6 @@ public slots:
 private:
     void addWidget(QMainWindow *browser, int category);
     void removeExplorePage(ExploreBrowser *exploreBrowser);
-    QMdiArea *mdiArea_;
     QMenuBar *menubar_;
     QVector<QList<QMdiSubWindow *>> windows_;
     QStandardItemModel model_;
