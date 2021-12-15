@@ -45,6 +45,18 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->versionSelectButton);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_5);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->categorySelectButton);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_3);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->loaderSelect);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_4);
+    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->downloadPathSelect);
+
+    ui->searchBar->addWidget(ui->searchText);
+    ui->searchBar->addWidget(ui->sortSelect);
+
     ui->loaderSelect->blockSignals(true);
     for(const auto &type : ModLoaderType::curseforge)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
@@ -388,17 +400,6 @@ void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     emit downloadPathChanged(downloadPath_);
 }
 
-
-void CurseforgeModBrowser::on_openFolderButton_clicked()
-{
-    QString path;
-    if(downloadPath_)
-        path = downloadPath_->info().path();
-    else
-        path = Config().getDownloadPath();
-    openFileInFolder(path);
-}
-
 void CurseforgeModBrowser::onItemSelected()
 {
     auto indexes = ui->modListView->selectionModel()->selectedRows();
@@ -472,3 +473,14 @@ void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
 {
     getModList(currentName_);
 }
+
+void CurseforgeModBrowser::on_actionOpen_Folder_triggered()
+{
+    QString path;
+    if(downloadPath_)
+        path = downloadPath_->info().path();
+    else
+        path = Config().getDownloadPath();
+    openFileInFolder(path);
+}
+

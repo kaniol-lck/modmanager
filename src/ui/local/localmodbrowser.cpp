@@ -69,6 +69,14 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->modIconListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modTreeView->setVerticalScrollBar(new SmoothScrollBar(this));
 
+    auto button = new QToolButton(this);
+    button->setDefaultAction(ui->actionFind_New_Mods);
+    button->setPopupMode(QToolButton::InstantPopup);
+    button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    ui->toolBar->insertWidget(ui->actionCheck_Updates, button);
+    ui->searchBar->addWidget(ui->searchText);
+    ui->searchBar->addWidget(ui->filterButton);
+
     //setup status bar
     ui->statusBar->addPermanentWidget(statusBarWidget_);
     connect(statusBarWidget_, &LocalStatusBarWidget::viewModeChanged, ui->stackedWidget, &QStackedWidget::setCurrentIndex);
@@ -149,22 +157,11 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     findNewMenu->addAction(QIcon(":/image/replay.png"), "ReplayMod", this, [=]{
         emit findNewOnReplay(modPath_->info());
     });
-    ui->openFolderButton->setDefaultAction(ui->actionOpen_Folder);
-    ui->findnewButton->setDefaultAction(ui->actionFind_New_Mods);
-    ui->findnewButton->setPopupMode(QToolButton::InstantPopup);
-    ui->checkUpdatesButton->setDefaultAction(ui->actionCheck_Updates);
     ui->updateAllButton->setDefaultAction(ui->actionUpdate_All);
 
     connect(filter_->menu(), &UnclosedMenu::menuTriggered, this, &LocalModBrowser::filterList);
     ui->filterButton->setMenu(filter_->menu());
     filter_->showAll();
-
-    auto menu = new QMenu(this);
-    menu->addAction(ui->actionReload_Mods);
-    menu->addAction(ui->actionBatch_Rename);
-    menu->addAction(ui->actionDelete_Old_Files_In_Path);
-    menu->addAction(ui->actionLink_Mod_Files);
-    ui->menuButton->setMenu(menu);
 
     auto renameToMenu = new QMenu(this);
     ui->actionRename_to->setMenu(renameToMenu);

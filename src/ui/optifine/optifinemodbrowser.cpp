@@ -35,6 +35,14 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
+    ui->searchBar->addWidget(ui->searchText);
+    ui->searchBar->addWidget(ui->showPreview);
+
+    ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->label);
+    ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->versionSelect);
+    ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->label_4);
+    ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->downloadPathSelect);
+
     updateLocalPathList();
     updateStatusText();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &OptifineModBrowser::updateLocalPathList);
@@ -185,16 +193,6 @@ void OptifineModBrowser::getModList()
         bmclapi_->getOptifineList(callback);
 }
 
-void OptifineModBrowser::on_openFolderButton_clicked()
-{
-    QString path;
-    if(downloadPath_)
-        path = downloadPath_->info().path();
-    else
-        path = Config().getDownloadPath();
-    openFileInFolder(path);
-}
-
 void OptifineModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
     if(index < 0 || index >= ui->downloadPathSelect->count()) return;
@@ -203,28 +201,6 @@ void OptifineModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     else
         downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
     emit downloadPathChanged(downloadPath_);
-}
-
-void OptifineModBrowser::on_getOptiFabric_clicked()
-{
-    //OptiFabric on Curseforge
-    //Project ID 322385
-    auto mod = new CurseforgeMod(this, 322385);
-    auto dialog = new CurseforgeModDialog(this, mod);
-    dialog->setDownloadPath(downloadPath_);
-    connect(this, &OptifineModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
-    dialog->show();
-}
-
-void OptifineModBrowser::on_getOptiForge_clicked()
-{
-    //OptiForge on Curseforge
-    //Project ID 372196
-    auto mod = new CurseforgeMod(this, 372196);
-    auto dialog = new CurseforgeModDialog(this, mod);
-    dialog->setDownloadPath(downloadPath_);
-    connect(this, &OptifineModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
-    dialog->show();
 }
 
 void OptifineModBrowser::updateIndexWidget()
@@ -256,3 +232,38 @@ void OptifineModBrowser::paintEvent(QPaintEvent *event)
     updateIndexWidget();
     QWidget::paintEvent(event);
 }
+
+void OptifineModBrowser::on_actionGet_OptiFabric_triggered()
+{
+    //OptiFabric on Curseforge
+    //Project ID 322385
+    auto mod = new CurseforgeMod(this, 322385);
+    auto dialog = new CurseforgeModDialog(this, mod);
+    dialog->setDownloadPath(downloadPath_);
+    connect(this, &OptifineModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
+    dialog->show();
+}
+
+
+void OptifineModBrowser::on_actionGet_OptiForge_triggered()
+{
+    //OptiForge on Curseforge
+    //Project ID 372196
+    auto mod = new CurseforgeMod(this, 372196);
+    auto dialog = new CurseforgeModDialog(this, mod);
+    dialog->setDownloadPath(downloadPath_);
+    connect(this, &OptifineModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
+    dialog->show();
+}
+
+
+void OptifineModBrowser::on_actionOpen_Folder_triggered()
+{
+    QString path;
+    if(downloadPath_)
+        path = downloadPath_->info().path();
+    else
+        path = Config().getDownloadPath();
+    openFileInFolder(path);
+}
+

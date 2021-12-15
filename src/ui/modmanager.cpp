@@ -53,6 +53,7 @@ ModManager::ModManager(QWidget *parent) :
     enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
     pageSwitcher_.setMdiArea(ui->mdiArea);
+    pageSwitcher_.setMenubar(ui->menubar);
     DockWidgetContent::lockPanelsAction = ui->actionLock_Panels;
     restoreGeometry(config.getGeometry());
     restoreState(config.getWindowState());
@@ -67,8 +68,7 @@ ModManager::ModManager(QWidget *parent) :
     setProxy();
     updateLockPanels();
 
-    ui->menubar->setVisible(true);
-    qDebug() << ui->menubar->isVisible();
+//    ui->menubar->setNativeMenuBar(false);
 
     ui->pageSelectorDock->setWidget(browserSelector_);
 
@@ -101,7 +101,7 @@ ModManager::ModManager(QWidget *parent) :
         setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
         titleBar_ = new WindowsTitleBar(this, windowTitle(), ui->menubar);
         ui->gridLayout->addWidget(titleBar_);
-        ui->gridLayout->addWidget(ui->pageSwitcher);
+        ui->gridLayout->addWidget(ui->mdiArea);
     }
 #endif //Q_OS_WIN
     updateUi();
@@ -564,7 +564,6 @@ void ModManager::on_actionShow_Mod_Release_Type_toggled(bool arg1)
     pageSwitcher_.updateUi();
 }
 
-
 void ModManager::on_actionShow_Mod_Game_Version_toggled(bool arg1)
 {
     config_.setShowModGameVersion(arg1);
@@ -585,20 +584,6 @@ void ModManager::on_actionAbout_Qt_triggered()
 {
     QMessageBox::aboutQt(this);
 }
-
-//void ModManager::on_modInfoDock_customContextMenuRequested(const QPoint &pos)
-//{
-//    auto menu = new QMenu(this);
-//    menu->addAction(ui->actionLock_Panels);
-//    menu->exec(ui->modInfoDock->mapToGlobal(pos));
-//}
-
-//void ModManager::on_fileListDock_customContextMenuRequested(const QPoint &pos)
-//{
-//    auto menu = new QMenu(this);
-//    menu->addAction(ui->actionLock_Panels);
-//    menu->exec(ui->fileListDock->mapToGlobal(pos));
-//}
 
 WindowsTitleBar *ModManager::titleBar()
 {

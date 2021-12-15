@@ -4,6 +4,8 @@
 #include <QMdiArea>
 #include <QStandardItemModel>
 
+class QMenuBar;
+class QMainWindow;
 class Browser;
 class ExploreBrowser;
 class DownloadBrowser;
@@ -57,6 +59,8 @@ public:
     QStandardItemModel *model();
     void setMdiArea(QMdiArea *newMdiArea);
 
+    void setMenubar(QMenuBar *newMenubar);
+
 signals:
     void pageChanged(QModelIndex modelIndex);
     void browserChanged(Browser *previous, Browser *current);
@@ -66,9 +70,10 @@ public slots:
     void updateUi();
 
 private:
-    void addWidget(QWidget *widget, int category);
+    void addWidget(QMainWindow *browser, int category);
     void removeExplorePage(ExploreBrowser *exploreBrowser);
     QMdiArea *mdiArea_;
+    QMenuBar *menubar_;
     QVector<QList<QMdiSubWindow *>> windows_;
     QStandardItemModel model_;
     QVector<int> pageCount_;

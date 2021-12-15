@@ -11,6 +11,7 @@
 
 #include <QDebug>
 #include <QMdiSubWindow>
+#include <QMenu>
 
 PageSwitcher::PageSwitcher(QObject *parent) :
     QObject(parent),
@@ -185,12 +186,14 @@ void PageSwitcher::removeLocalModBrowser(int index)
 void PageSwitcher::setPage(int category, int page)
 {
     auto previousBrowser = currentBrowser();
-    mdiArea_->currentSubWindow()->hide();
-    windows_[category][page]->showMaximized();
-    mdiArea_->setActiveSubWindow(windows_[category][page]);
-//    emit pageChanged(model_.index(category, 0, model_.index(page, 0)));
-    emit browserChanged(previousBrowser, currentBrowser());
-    currentBrowser()->load();
+    if(auto window = windows_[category][page]; window && window != mdiArea_->currentSubWindow()){
+        window->showMaximized();
+        mdiArea_->setActiveSubWindow(window);
+
+//        emit pageChanged(model_.index(category, 0, model_.index(page, 0)));
+        emit browserChanged(previousBrowser, currentBrowser());
+        currentBrowser()->load();
+    }
 }
 
 void PageSwitcher::updateUi()
@@ -210,11 +213,11 @@ void PageSwitcher::updateUi()
     if(!config.getShowReplayMod() && exploreBrowsers_.contains(replayModBrowser_)) removeReplayModPage();
 }
 
-void PageSwitcher::addWidget(QWidget *widget, int category)
+void PageSwitcher::addWidget(QMainWindow *browser, int category)
 {
-    auto window = mdiArea_->addSubWindow(widget, Qt::FramelessWindowHint);
+    browser->setMenuBar(menubar_);
+    auto window = mdiArea_->addSubWindow(browser, Qt::FramelessWindowHint);
     windows_[category] << window;
-    window->hide();
 }
 
 void PageSwitcher::removeExplorePage(ExploreBrowser *exploreBrowser)
@@ -222,6 +225,11 @@ void PageSwitcher::removeExplorePage(ExploreBrowser *exploreBrowser)
     auto index = exploreBrowsers_.indexOf(exploreBrowser);
     if(index < 0) return;
     removeExplorePage(index);
+}
+
+void PageSwitcher::setMenubar(QMenuBar *newMenubar)
+{
+    menubar_ = newMenubar;
 }
 
 void PageSwitcher::setMdiArea(QMdiArea *newMdiArea)

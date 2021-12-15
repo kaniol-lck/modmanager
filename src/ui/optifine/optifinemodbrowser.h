@@ -37,11 +37,13 @@ private slots:
     void updateLocalPathList();
     void filterList();
     void updateStatusText();
-    void on_openFolderButton_clicked();
     void on_downloadPathSelect_currentIndexChanged(int index);
-    void on_getOptiFabric_clicked();
-    void on_getOptiForge_clicked();
     void updateIndexWidget();
+    void on_actionGet_OptiFabric_triggered();
+    void on_actionGet_OptiForge_triggered();
+
+    void on_actionOpen_Folder_triggered();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
