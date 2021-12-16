@@ -8,6 +8,7 @@
 #include "modrinth/modrinthfileinfo.h"
 #include "optifine/optifinemodinfo.h"
 #include "replay/replaymodinfo.h"
+#include "github/githubfileinfo.h"
 
 class DownloadFileInfo
 {
@@ -22,6 +23,7 @@ public:
     DownloadFileInfo(const ModrinthFileInfo &info);
     DownloadFileInfo(const OptifineModInfo &info);
     DownloadFileInfo(const ReplayModInfo &info);
+    DownloadFileInfo(const GitHubFileInfo &info);
 
     const QString &fileName() const;
     const QUrl &url() const;

@@ -6,6 +6,7 @@
 #include "ui/modrinth/modrinthmodbrowser.h"
 #include "ui/optifine/optifinemodbrowser.h"
 #include "ui/replay/replaymodbrowser.h"
+#include "ui/github/githubrepobrowser.h"
 #include "ui/local/localmodbrowser.h"
 #include "local/localmodpath.h"
 
@@ -101,6 +102,17 @@ void PageSwitcher::addReplayModPage()
     addWidget(replayModBrowser_, Explore);
     pageCount_[Explore]++;
     auto item = new QStandardItem(QIcon(":/image/replay.png"), tr("ReplayMod"));
+    model_.item(Explore)->appendRow(item);
+}
+
+void PageSwitcher::addGitHubPage()
+{
+    auto browser = new GitHubRepoBrowser(this);
+    githubBrowsers_ << browser;
+    exploreBrowsers_ << browser;
+    addWidget(browser, Explore);
+    pageCount_[Explore]++;
+    auto item = new QStandardItem(QIcon(":/image/github.svg"), tr("GitHub"));
     model_.item(Explore)->appendRow(item);
 }
 

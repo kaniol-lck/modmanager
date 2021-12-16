@@ -23,6 +23,12 @@ SOURCES += \
     src/download/downloadmanager.cpp \
     src/download/qaria2.cpp \
     src/download/qaria2downloader.cpp \
+    src/github/githubapi.cpp \
+    src/github/githubfileinfo.cpp \
+    src/github/githubrelease.cpp \
+    src/github/githubreleaseinfo.cpp \
+    src/github/githubrepo.cpp \
+    src/github/githubrepoinfo.cpp \
     src/local/commonmodinfo.cpp \
     src/local/fabricmodinfo.cpp \
     src/local/forgemodinfo.cpp \
@@ -55,6 +61,11 @@ SOURCES += \
     src/ui/dockwidgetcontent.cpp \
     src/ui/explorestatusbarwidget.cpp \
     src/ui/framelesswrapper.cpp \
+    src/ui/github/githubfileitemwidget.cpp \
+    src/ui/github/githubfilelistwidget.cpp \
+    src/ui/github/githubreleaseinfowidget.cpp \
+    src/ui/github/githubreleaseitemwidget.cpp \
+    src/ui/github/githubrepobrowser.cpp \
     src/ui/local/exportmanifestjsondialog.cpp \
     src/ui/local/localfilelistwidget.cpp \
     src/ui/local/localmodfileitemwidget.cpp \
@@ -127,6 +138,12 @@ HEADERS += \
     src/download/downloadmanager.h \
     src/download/qaria2.h \
     src/download/qaria2downloader.h \
+    src/github/githubapi.h \
+    src/github/githubfileinfo.h \
+    src/github/githubrelease.h \
+    src/github/githubreleaseinfo.h \
+    src/github/githubrepo.h \
+    src/github/githubrepoinfo.h \
     src/local/commonmodinfo.h \
     src/local/fabricmodinfo.h \
     src/local/forgemodinfo.h \
@@ -160,6 +177,11 @@ HEADERS += \
     src/ui/dockwidgetcontent.h \
     src/ui/explorestatusbarwidget.h \
     src/ui/framelesswrapper.h \
+    src/ui/github/githubfileitemwidget.h \
+    src/ui/github/githubfilelistwidget.h \
+    src/ui/github/githubreleaseinfowidget.h \
+    src/ui/github/githubreleaseitemwidget.h \
+    src/ui/github/githubrepobrowser.h \
     src/ui/local/exportmanifestjsondialog.h \
     src/ui/local/localfilelistwidget.h \
     src/ui/local/localmodfileitemwidget.h \
@@ -226,6 +248,11 @@ FORMS += \
     src/ui/curseforge/curseforgemodbrowser.ui \
     src/ui/download/downloadbrowser.ui \
     src/ui/explorestatusbarwidget.ui \
+    src/ui/github/githubfileitemwidget.ui \
+    src/ui/github/githubfilelistwidget.ui \
+    src/ui/github/githubreleaseinfowidget.ui \
+    src/ui/github/githubreleaseitemwidget.ui \
+    src/ui/github/githubrepobrowser.ui \
     src/ui/local/exportmanifestjsondialog.ui \
     src/ui/local/localmodbrowser.ui \
     src/ui/local/localstatusbarwidget.ui \

@@ -42,6 +42,16 @@ DownloadFileInfo::DownloadFileInfo(const ReplayModInfo &info) :
     //replay does not provide size info
 }
 
+DownloadFileInfo::DownloadFileInfo(const GitHubFileInfo &info) :
+    DownloadFileInfo(info.downloadUrl())
+{
+    title_ = "GitHub";
+    icon_.load(":/image/github.svg");
+    displayName_ = info.name();
+    fileName_ = info.name();
+    size_ = info.size();
+}
+
 const QString &DownloadFileInfo::fileName() const
 {
     return fileName_;

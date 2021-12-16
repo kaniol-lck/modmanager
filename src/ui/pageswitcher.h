@@ -13,6 +13,7 @@ class CurseforgeModBrowser;
 class ModrinthModBrowser;
 class OptifineModBrowser;
 class ReplayModBrowser;
+class GitHubRepoBrowser;
 class LocalModBrowser;
 class LocalModPath;
 
@@ -31,6 +32,7 @@ public:
     void addModrinthPage();
     void addOptiFinePage();
     void addReplayModPage();
+    void addGitHubPage();
     void addLocalPage(LocalModBrowser *browser);
     void addLocalPage(LocalModPath *path);
 
@@ -79,6 +81,7 @@ private:
     ModrinthModBrowser *modrinthModBrowser_ = nullptr;
     OptifineModBrowser *optifineModBrowser_ = nullptr;
     ReplayModBrowser *replayModBrowser_ = nullptr;
+    QList<GitHubRepoBrowser *> githubBrowsers_;
     QList<ExploreBrowser *> exploreBrowsers_;
     QList<LocalModBrowser *> localModBrowsers_;
 };

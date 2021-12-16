@@ -72,6 +72,8 @@ ModManager::ModManager(QWidget *parent) :
     if(config.getShowOptiFine()) pageSwitcher_.addOptiFinePage();
     if(config.getShowReplayMod()) pageSwitcher_.addReplayModPage();
 
+    pageSwitcher_.addGitHubPage();
+
     //Local
     syncPathList();
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModManager::syncPathList);

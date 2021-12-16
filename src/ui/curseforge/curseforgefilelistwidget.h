@@ -19,17 +19,22 @@ public:
     ~CurseforgeFileListWidget();
 
     void setMod(CurseforgeMod *mod);
+
 signals:
     void modChanged();
     void downloadPathChanged(LocalModPath *path);
+
 public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
     void updateUi();
+
 private slots:
     void updateFileList();
     void updateIndexWidget();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
+
 private:
     Ui::CurseforgeFileListWidget *ui;
     QStandardItemModel *model_;
