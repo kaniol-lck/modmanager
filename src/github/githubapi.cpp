@@ -16,8 +16,9 @@ GitHubAPI *GitHubAPI::api()
     return &api;
 }
 
-QMetaObject::Connection GitHubAPI::getReleases(const QUrl releaseUrl, std::function<void (QList<GitHubReleaseInfo>)> callback)
+QMetaObject::Connection GitHubAPI::getReleases(const GitHubRepoInfo &info, std::function<void (QList<GitHubReleaseInfo>)> callback)
 {
+    auto releaseUrl = QString("https://api.github.com/repos/%1/%2/releases").arg(info.user(), info.repo());
     QNetworkRequest request(releaseUrl);
     auto reply = accessManager_.get(request);
     return connect(reply, &QNetworkReply::finished, this, [=]{

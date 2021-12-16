@@ -10,6 +10,8 @@ public:
     explicit Browser(QWidget *parent = nullptr);
     virtual ~Browser() = 0;
 
+    void show();
+
     virtual void load();
 
     virtual QWidget *infoWidget() const;

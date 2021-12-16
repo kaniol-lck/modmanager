@@ -1,7 +1,29 @@
 #include "browser.h"
 
+#include <QDockWidget>
+
 Browser::Browser(QWidget *parent) : QMainWindow(parent)
 {}
+
+void Browser::show()
+{
+    setWindowTitle(name());
+    setWindowIcon(icon());
+    //TODO
+    if(infoWidget()){
+        auto infoDock = new QDockWidget(tr("Infomation"), this);
+        infoDock->setWidget(infoWidget());
+        infoDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        addDockWidget(Qt::RightDockWidgetArea, infoDock);
+    }
+    if(fileListWidget()){
+        auto fileListDock = new QDockWidget(tr("File List"), this);
+        fileListDock->setWidget(fileListWidget());
+        fileListDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        addDockWidget(Qt::RightDockWidgetArea, fileListDock);
+    }
+    QMainWindow::show();
+}
 
 void Browser::load()
 {}
@@ -34,4 +56,3 @@ void Browser::onModMenuAboutToShow()
 
 void Browser::onModMenuAboutToHide()
 {}
-

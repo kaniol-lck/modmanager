@@ -27,7 +27,6 @@ SOURCES += \
     src/github/githubfileinfo.cpp \
     src/github/githubrelease.cpp \
     src/github/githubreleaseinfo.cpp \
-    src/github/githubrepo.cpp \
     src/github/githubrepoinfo.cpp \
     src/local/commonmodinfo.cpp \
     src/local/fabricmodinfo.cpp \
@@ -142,7 +141,6 @@ HEADERS += \
     src/github/githubfileinfo.h \
     src/github/githubrelease.h \
     src/github/githubreleaseinfo.h \
-    src/github/githubrepo.h \
     src/github/githubrepoinfo.h \
     src/local/commonmodinfo.h \
     src/local/fabricmodinfo.h \

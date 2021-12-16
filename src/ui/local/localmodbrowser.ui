@@ -327,6 +327,14 @@
     <addaction name="separator"/>
     <addaction name="actionRename_Selected_Mods"/>
     <addaction name="actionRename_to"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpen_Mod_Dialog"/>
+    <addaction name="actionOpen_Curseforge_Mod_Dialog"/>
+    <addaction name="actionOpen_Modrinth_Mod_Dialog"/>
+    <addaction name="actionOpen_In_GitHub"/>
+    <addaction name="separator"/>
+    <addaction name="actionSearch_on_Curseforge"/>
+    <addaction name="actionSearch_on_Modrinth"/>
    </widget>
    <widget class="QMenu" name="menuPath">
     <property name="title">
@@ -562,6 +570,15 @@
   <action name="actionFilter">
    <property name="text">
     <string>Filter</string>
+   </property>
+  </action>
+  <action name="actionOpen_In_GitHub">
+   <property name="icon">
+    <iconset resource="../../images/image.qrc">
+     <normaloff>:/image/github.svg</normaloff>:/image/github.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open In GitHub</string>
    </property>
   </action>
  </widget>

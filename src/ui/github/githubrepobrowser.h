@@ -3,6 +3,8 @@
 
 #include "ui/explorebrowser.h"
 
+#include "github/githubrepoinfo.h"
+
 class GitHubFileListWidget;
 class ExploreStatusBarWidget;
 class LocalModPath;
@@ -19,7 +21,7 @@ class GitHubRepoBrowser : public ExploreBrowser
     Q_OBJECT
 
 public:
-    explicit GitHubRepoBrowser(QWidget *parent = nullptr);
+    explicit GitHubRepoBrowser(QWidget *parent, const GitHubRepoInfo &info);
     ~GitHubRepoBrowser();
 
     void load() override;
@@ -49,6 +51,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    GitHubRepoInfo info_;
     Ui::GitHubRepoBrowser *ui;
     QStandardItemModel *model_;
     GitHubReleaseInfoWidget *infoWidget_;

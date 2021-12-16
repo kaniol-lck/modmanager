@@ -29,9 +29,6 @@
        <bold>true</bold>
       </font>
      </property>
-     <property name="text">
-      <string notr="true">Name</string>
-     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>

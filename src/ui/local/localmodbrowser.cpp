@@ -38,6 +38,7 @@
 #include "ui/curseforge/curseforgemodbrowser.h"
 #include "ui/modrinth/modrinthmoddialog.h"
 #include "ui/modrinth/modrinthmodbrowser.h"
+#include "ui/github/githubrepobrowser.h"
 #include "ui/browserdialog.h"
 #include "util/checksheet.h"
 
@@ -880,5 +881,21 @@ void LocalModBrowser::on_actionExport_modlist_html_Modrinth_triggered()
 {
     auto dialog = new ExportManifestJsonDialog(this, modPath_, ExportManifestJsonDialog::M_HTML);
     dialog->exec();
+}
+
+
+void LocalModBrowser::on_actionOpen_In_GitHub_triggered()
+{
+    if(selectedMods_.isEmpty()) return;
+    auto mod = selectedMods_.first();
+    auto url = mod->commonInfo()->sources();
+    if(url.host() != "github.com") return;
+    auto list = url.path().split("/");
+    if(list.size() < 3) return;
+    qDebug() << list.at(1) << list.at(2);
+    GitHubRepoInfo repoInfo(list.at(1), list.at(2));
+    auto browser = new GitHubRepoBrowser(this, repoInfo);
+    browser->load();
+    browser->show();
 }
 

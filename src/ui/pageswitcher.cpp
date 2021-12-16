@@ -105,14 +105,14 @@ void PageSwitcher::addReplayModPage()
     model_.item(Explore)->appendRow(item);
 }
 
-void PageSwitcher::addGitHubPage()
+void PageSwitcher::addGitHubPage(const GitHubRepoInfo &info)
 {
-    auto browser = new GitHubRepoBrowser(this);
+    auto browser = new GitHubRepoBrowser(this, info);
     githubBrowsers_ << browser;
     exploreBrowsers_ << browser;
     addWidget(browser, Explore);
     pageCount_[Explore]++;
-    auto item = new QStandardItem(QIcon(":/image/github.svg"), tr("GitHub"));
+    auto item = new QStandardItem(info.icon(), info.name());
     model_.item(Explore)->appendRow(item);
 }
 

@@ -4,6 +4,7 @@
 #include <QNetworkAccessManager>
 #include <QObject>
 
+#include "githubrepoinfo.h"
 #include "github/githubreleaseinfo.h"
 #include "github/githubfileinfo.h"
 
@@ -14,7 +15,7 @@ public:
     explicit GitHubAPI(QObject *parent = nullptr);
     static GitHubAPI *api();
 
-    [[nodiscard]] QMetaObject::Connection getReleases(const QUrl releaseUrl, std::function<void (QList<GitHubReleaseInfo>)> callback);
+    [[nodiscard]] QMetaObject::Connection getReleases(const GitHubRepoInfo &info, std::function<void (QList<GitHubReleaseInfo>)> callback);
     [[nodiscard]] QMetaObject::Connection getAssets(const QUrl assetUrl, std::function<void (QList<GitHubFileInfo>)> callback);
 
 private:

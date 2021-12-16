@@ -72,7 +72,7 @@ ModManager::ModManager(QWidget *parent) :
     if(config.getShowOptiFine()) pageSwitcher_.addOptiFinePage();
     if(config.getShowReplayMod()) pageSwitcher_.addReplayModPage();
 
-    pageSwitcher_.addGitHubPage();
+    pageSwitcher_.addGitHubPage(GitHubRepoInfo("kaniol-lck", "modmanager", windowTitle(), QIcon(":/image/modmanager.png")));
 
     //Local
     syncPathList();

@@ -112,6 +112,8 @@ private slots:
 
     void on_actionExport_modlist_html_Modrinth_triggered();
 
+    void on_actionOpen_In_GitHub_triggered();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:

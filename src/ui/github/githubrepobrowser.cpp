@@ -12,14 +12,15 @@
 #include "ui/explorestatusbarwidget.h"
 #include "util/smoothscrollbar.h"
 
-GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent) :
-    ExploreBrowser(parent, QIcon(":/image/github.svg"), "GitHub", QUrl("https://www.github.com")),
+GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent, const GitHubRepoInfo &info) :
+    ExploreBrowser(parent, info.icon(), info.name(), info.url()),
+    info_(info),
     ui(new Ui::GitHubRepoBrowser),
     model_(new QStandardItemModel(this)),
     infoWidget_(new GitHubReleaseInfoWidget(this)),
     fileListWidget_(new GitHubFileListWidget(this)),
     statusBarWidget_(new ExploreStatusBarWidget(this)),
-  api_(new GitHubAPI())
+    api_(new GitHubAPI())
 {
     ui->setupUi(this);
     ui->releaseListView->setModel(model_);
@@ -80,7 +81,7 @@ void GitHubRepoBrowser::updateUi()
 
 ExploreBrowser *GitHubRepoBrowser::another()
 {
-    return new GitHubRepoBrowser;
+    return new GitHubRepoBrowser(nullptr, info_);
 }
 
 void GitHubRepoBrowser::updateStatusText()
@@ -142,7 +143,7 @@ void GitHubRepoBrowser::getReleaseList()
     statusBarWidget_->setText(tr("Searching mods..."));
     statusBarWidget_->setProgressVisible(true);
 
-    auto conn = api_->getReleases(QUrl("https://api.github.com/repos/kaniol-lck/modmanager/releases"), [=](const auto &list){
+    auto conn = api_->getReleases(info_, [=](const auto &list){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);

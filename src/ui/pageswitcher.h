@@ -4,6 +4,8 @@
 #include <QMdiArea>
 #include <QStandardItemModel>
 
+#include "github/githubrepoinfo.h"
+
 class QMenuBar;
 class QMainWindow;
 class Browser;
@@ -32,7 +34,7 @@ public:
     void addModrinthPage();
     void addOptiFinePage();
     void addReplayModPage();
-    void addGitHubPage();
+    void addGitHubPage(const GitHubRepoInfo &info);
     void addLocalPage(LocalModBrowser *browser);
     void addLocalPage(LocalModPath *path);
 
