@@ -2,25 +2,32 @@
 #define FRAMELESSWRAPPER_H
 
 #include <QMenuBar>
-#include <QWidget>
+#include <QMainWindow>
 
 class QMainWindow;
 class WindowsTitleBar;
-class FramelessWrapper : QWidget
+
+class FramelessWrapper : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    FramelessWrapper(QWidget *parent, QWidget *widget, QMenuBar *menuBar);
+    FramelessWrapper(QWidget *parent, QWidget *widget, QMenuBar *menuBar = nullptr);
     static QWidget *makeFrameless(QMainWindow *window);
+    static QWidget *makeFrameless(QDialog *dialog);
+
+private slots:
+    void updateBlur();
 
 protected:
 #ifdef Q_OS_WIN
     bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
 #endif //Q_OS_WIN
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     WindowsTitleBar *titleBar_;
+    bool isMoving_ = false;
 };
 
 #endif // FRAMELESSWRAPPER_H

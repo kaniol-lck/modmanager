@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTools">

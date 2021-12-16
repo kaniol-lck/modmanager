@@ -27,7 +27,6 @@ class ModManager : public QMainWindow
 public:
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
-    WindowsTitleBar *titleBar();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -79,9 +78,6 @@ private:
     PageSwitcher pageSwitcher_;
     mutable Config config_;
     BrowserSelectorWidget *browserSelector_;
-//#ifdef Q_OS_WIN
-    WindowsTitleBar *titleBar_;
-//#endif //Q_OS_WIN
     QList<LocalModPath*> pathList_;
     bool enableBlurBehind_;
     bool isMoving_ = false;

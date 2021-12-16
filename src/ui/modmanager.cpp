@@ -1,3 +1,4 @@
+#include "framelesswrapper.h"
 #include "modmanager.h"
 #include "ui_modmanager.h"
 
@@ -13,11 +14,6 @@
 #include <QNetworkProxy>
 #ifdef DE_KDE
 #include <KWindowEffects>
-#endif
-#ifdef Q_OS_WIN
-#include "util/WindowCompositionAttribute.h"
-#include <windowsx.h>
-#include <dwmapi.h>
 #endif
 
 #include "dockwidgetcontent.h"
@@ -97,6 +93,9 @@ ModManager::ModManager(QWidget *parent) :
 
 ModManager::~ModManager()
 {
+    Config config;
+    config.setGeometry(saveGeometry());
+    config.setWindowState(saveState());
     delete ui;
 }
 
@@ -151,9 +150,7 @@ void ModManager::updateLockPanels()
 
 void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
 {
-    Config config;
-    config.setGeometry(saveGeometry());
-    config.setWindowState(saveState());
+//    qDebug() << "closed";
 }
 
 #if defined (DE_KDE) || defined (Q_OS_WIN)
@@ -300,7 +297,11 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
 void ModManager::on_action_About_Mod_Manager_triggered()
 {
     auto dialog = new AboutDialog(this);
-    dialog->show();
+    if(config_.getUseFramelessWindow()){
+        auto frameless = FramelessWrapper::makeFrameless(dialog);
+        frameless->show();
+    } else
+        dialog->show();
 }
 
 void ModManager::on_actionPage_Selector_toggled(bool arg1)
@@ -491,46 +492,11 @@ void ModManager::on_actionAbout_Qt_triggered()
     QMessageBox::aboutQt(this);
 }
 
-WindowsTitleBar *ModManager::titleBar()
-{
-    return titleBar_;
-}
-
 void ModManager::updateBlur() const
 {
 #ifdef DE_KDE
     //TODO: disable blur under intel graphical card
     KWindowEffects::enableBlurBehind(windowHandle(), config_.getEnableBlurBehind());
-#endif
-#ifdef Q_OS_WIN
-    //    setAttribute(Qt::WA_TranslucentBackground);
-//    if(enableBlurBehind_){
-        if(auto huser = GetModuleHandle(L"user32.dll"); huser){
-            auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
-            if(setWindowCompositionAttribute){
-                ACCENT_STATE as;
-                if(config_.getEnableBlurBehind()){
-//                    if(isMoving_)
-                        as = ACCENT_ENABLE_BLURBEHIND;
-//                    else
-//                        as = ACCENT_ENABLE_ACRYLICBLURBEHIND;
-                }
-                else
-                    as = ACCENT_DISABLED;
-                ACCENT_POLICY accent = { as, 0x1e0, 0x000f0f0f, 0 };
-                WINDOWCOMPOSITIONATTRIBDATA data;
-                data.Attrib = WCA_ACCENT_POLICY;
-                data.pvData = &accent;
-                data.cbData = sizeof(accent);
-                setWindowCompositionAttribute(::HWND(winId()), &data);
-            }
-        }
-//    }
-//    if(useFramelessWindow_){
-//        HWND hwnd = (HWND)winId();
-//        DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
-//        ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
-//    }
 #endif
 }
 

@@ -5,6 +5,7 @@
 #include <QStyle>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QToolBar>
 #ifdef Q_OS_WIN
 #include <windowsx.h>
 #include <dwmapi.h>
@@ -21,8 +22,6 @@ WindowsTitleBar::WindowsTitleBar(QWidget *parent, const QString &title, QMenuBar
     ui->minButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMinButton));
     ui->titleText->setText(title);
     if(menuBar){
-//    menuBar->setStyleSheet("QMenuBar{background-color: transparent;}");
-//    ui->verticalLayout->addWidget(menuBar);
         menuBar->hide();
         for(auto &&action : menuBar->actions()){
             auto button = new QToolButton(this);
@@ -52,12 +51,14 @@ void WindowsTitleBar::setIconVisible(bool bl)
 #ifdef Q_OS_WIN
 void WindowsTitleBar::mouseMoveEvent(QMouseEvent *event)
 {
+    qDebug() << "?????" << event->pos();
     if(event->buttons()&Qt::LeftButton)
         parent_->move(event->pos() + parent_->pos() - clickPos_);
 }
 
 void WindowsTitleBar::mousePressEvent(QMouseEvent *event)
 {
+    qDebug() << "?????" << event->pos();
     if(event->button()==Qt::LeftButton)
         clickPos_=event->pos();
 }
