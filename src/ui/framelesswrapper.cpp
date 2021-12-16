@@ -1,5 +1,4 @@
 #include "framelesswrapper.h"
-#include "ui_framelesswrapper.h"
 
 #include <QDialog>
 #include <QMainWindow>
@@ -34,9 +33,11 @@ FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, QMenuBar *m
 
     updateBlur();
 
+#ifdef Q_OS_WIN
     HWND hwnd = (HWND)winId();
     DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
     ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
+#endif //Q_OS_WIN
 }
 
 QWidget *FramelessWrapper::makeFrameless(QMainWindow *window)
@@ -57,6 +58,7 @@ QWidget *FramelessWrapper::makeFrameless(QDialog *dialog)
 
 void FramelessWrapper::updateBlur()
 {
+#ifdef Q_OS_WIN
     //set blur
     if(auto huser = GetModuleHandle(L"user32.dll"); huser){
         auto setWindowCompositionAttribute = (pfnSetWindowCompositionAttribute)::GetProcAddress(huser, "SetWindowCompositionAttribute");
@@ -79,6 +81,7 @@ void FramelessWrapper::updateBlur()
             setWindowCompositionAttribute(::HWND(winId()), &data);
         }
     }
+#endif //Q_OS_WIN
 }
 
 #ifdef Q_OS_WIN
@@ -163,6 +166,7 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
     }
     return false;
 }
+#endif //Q_OS_WIN
 
 void FramelessWrapper::paintEvent(QPaintEvent *event[[maybe_unused]])
 {
@@ -176,4 +180,3 @@ void FramelessWrapper::paintEvent(QPaintEvent *event[[maybe_unused]])
         p.fillRect(rect, QBrush(QColor(255, 255, 255, 215)));
     }
 }
-#endif //Q_OS_WIN

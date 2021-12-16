@@ -41,10 +41,13 @@ int main(int argc, char *argv[])
     a.setFont(font);
 #endif
     ModManager w;
+
+#ifdef Q_OS_WIN
     if(Config().getUseFramelessWindow()){
         auto frameless = FramelessWrapper::makeFrameless(&w);
         frameless->show();
     } else
+#endif
         w.show();
     return a.exec();
 }
