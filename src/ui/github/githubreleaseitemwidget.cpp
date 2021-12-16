@@ -10,11 +10,13 @@ GitHubReleaseItemWidget::GitHubReleaseItemWidget(QWidget *parent, const GitHubRe
 {
     ui->setupUi(this);
     ui->name->setText(info.name());
+    ui->tagName->setText(info.tagName());
     ui->body->setMarkdown(info.body());
     ui->createDateTime->setText(tr("Created"));
     ui->createDateTime->setDateTime(info.created());
     ui->publishDateTime->setText(tr("Published"));
     ui->publishDateTime->setDateTime(info.published());
+    ui->prerelease->setVisible(info.prerelease());
     ui->downloadProgress->setVisible(false);
     ui->downloadSpeedText->setVisible(false);
     ui->downloadButton->setVisible(false);

@@ -13,7 +13,7 @@
 #include "util/smoothscrollbar.h"
 
 GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent, const GitHubRepoInfo &info) :
-    ExploreBrowser(parent, info.icon(), info.name(), info.url()),
+    ExploreBrowser(parent, info.icon(), info.name() + " (GitHub)", info.url()),
     info_(info),
     ui(new Ui::GitHubRepoBrowser),
     model_(new QStandardItemModel(this)),

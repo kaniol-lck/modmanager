@@ -22,6 +22,7 @@ void Browser::show()
         fileListDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
         addDockWidget(Qt::RightDockWidgetArea, fileListDock);
     }
+    load();
     QMainWindow::show();
 }
 
