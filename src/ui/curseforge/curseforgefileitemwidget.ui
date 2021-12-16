@@ -14,9 +14,6 @@
    <enum>Qt::CustomContextMenu</enum>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>10</number>
-   </property>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="spacing">
@@ -177,24 +174,12 @@
    <item row="0" column="1">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QPushButton" name="downloadButton">
+      <widget class="QToolButton" name="downloadButton">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>150</width>
-         <height>16777215</height>
-        </size>
        </property>
        <property name="text">
         <string>Download</string>
@@ -213,11 +198,13 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
        <property name="toolTip">
         <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>2.3MB</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -227,20 +214,14 @@
      <item>
       <widget class="QProgressBar" name="downloadProgress">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>0</height>
-        </size>
-       </property>
        <property name="maximumSize">
         <size>
-         <width>150</width>
+         <width>16777215</width>
          <height>10</height>
         </size>
        </property>

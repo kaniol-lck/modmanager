@@ -36,7 +36,7 @@ GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent) :
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;
-        getRepoList();
+        getReleaseList();
     }
 }
 
@@ -49,7 +49,7 @@ void GitHubRepoBrowser::load()
 {
     if(!inited_){
         inited_ = true;
-        getRepoList();
+        getReleaseList();
     }
 }
 
@@ -136,7 +136,7 @@ void GitHubRepoBrowser::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 }
 
-void GitHubRepoBrowser::getRepoList()
+void GitHubRepoBrowser::getReleaseList()
 {
     setCursor(Qt::BusyCursor);
     statusBarWidget_->setText(tr("Searching mods..."));
@@ -168,7 +168,7 @@ void GitHubRepoBrowser::getRepoList()
 //        ui->versionSelect->addItem(tr("Any"));
 //        ui->versionSelect->addItems(gameVersions);
 
-        auto item = new QStandardItem(tr("There is no more mod here..."));
+        auto item = new QStandardItem(tr("There is no more release here..."));
         item->setSizeHint(QSize(0, 108));
         auto font = qApp->font();
         font.setPointSize(20);

@@ -59,7 +59,7 @@ private:
     bool inited_ = false;
     GitHubRelease* selectedRelease_ = nullptr;
 
-    void getRepoList();
+    void getReleaseList();
 };
 
 #endif // GITHUBREPOBROWSER_H

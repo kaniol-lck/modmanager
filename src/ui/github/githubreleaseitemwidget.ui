@@ -142,6 +142,9 @@
    </item>
    <item row="1" column="0">
     <widget class="QTextBrowser" name="body">
+     <property name="styleSheet">
+      <string notr="true">background: transparent;</string>
+     </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -150,6 +153,9 @@
      </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::NoTextInteraction</set>
      </property>
     </widget>
    </item>
