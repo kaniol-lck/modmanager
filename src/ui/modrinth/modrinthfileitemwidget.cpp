@@ -38,8 +38,8 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, ModrinthMod *mod
         ui->releaseType->setText(fileInfo_.releaseType());
     }
     ui->fileNameText->setText(fileInfo_.fileName());
-    ui->fileDateText->setText(tr("%1 ago").arg(timesTo(info.fileDate())));
-    ui->fileDateText->setToolTip(info.fileDate().toString());
+    ui->fileDateTime->setText(tr("Updated"));
+    ui->fileDateTime->setDateTime(info.fileDate());
 
     //game version
     for(auto &&version : fileInfo_.gameVersions()){

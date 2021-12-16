@@ -55,10 +55,10 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
         });
     }
     ui->modAuthors->setText(mod->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
-    ui->modUpdateDate->setText(tr("%1 ago").arg(timesTo(mod->modInfo().dateModified())));
-    ui->modUpdateDate->setToolTip(mod->modInfo().dateModified().toString());
-    ui->modCreateDate->setText(tr("%1 ago").arg(timesTo(mod->modInfo().dateCreated())));
-    ui->modCreateDate->setToolTip(mod->modInfo().dateCreated().toString());
+    ui->updateDateTime->setText(tr("Updated"));
+    ui->updateDateTime->setDateTime(mod->modInfo().dateModified());
+    ui->createDateTime->setText(tr("Created"));
+    ui->createDateTime->setDateTime(mod->modInfo().dateCreated());
 
     //loader type
     for(auto &&loaderType : mod_->modInfo().loaderTypes()){

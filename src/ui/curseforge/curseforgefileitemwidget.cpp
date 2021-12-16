@@ -39,8 +39,8 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
         ui->releaseType->setText(QString::number(fileInfo_.releaseType()));
     }
     ui->fileNameText->setText(fileInfo_.fileName());
-    ui->fileDateText->setText(tr("%1 ago").arg(timesTo(info.fileDate())));
-    ui->fileDateText->setToolTip(info.fileDate().toString());
+    ui->dateTimeText->setText(tr("Updated"));
+    ui->dateTimeText->setDateTime(info.fileDate());
 
     //game version
     for(auto &&version : fileInfo_.gameVersions()){
@@ -143,7 +143,7 @@ void CurseforgeFileItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
 void CurseforgeFileItemWidget::updateUi()
 {
     Config config;
-    ui->fileDateTime->setVisible(config.getShowModDateTime());
+    ui->dateTimeText->setVisible(config.getShowModDateTime());
     ui->loaderTypes->setVisible(config.getShowModLoaderType());
     ui->gameVersions->setVisible(config.getShowModGameVersion());
     ui->releaseType->setVisible(config.getShowModReleaseType());

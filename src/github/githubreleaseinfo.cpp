@@ -11,6 +11,8 @@ GitHubReleaseInfo GitHubReleaseInfo::fromVariant(const QVariant &variant)
     info.url_ = value(variant, "url").toString();
     info.body_ = value(variant, "body").toString();
     info.prerelease_ = value(variant, "prerelease").toBool();
+    info.created_ = value(variant, "created_at").toDateTime();
+    info.published_ = value(variant, "published_at").toDateTime();
 
     for(auto &&variant : value(variant, "assets").toList())
         info.assets_ << GitHubFileInfo::fromVariant(variant);
@@ -20,6 +22,16 @@ GitHubReleaseInfo GitHubReleaseInfo::fromVariant(const QVariant &variant)
 const QList<GitHubFileInfo> &GitHubReleaseInfo::assets() const
 {
     return assets_;
+}
+
+const QDateTime &GitHubReleaseInfo::created() const
+{
+    return created_;
+}
+
+const QDateTime &GitHubReleaseInfo::published() const
+{
+    return published_;
 }
 
 const QString &GitHubReleaseInfo::name() const

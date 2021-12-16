@@ -57,6 +57,7 @@ SOURCES += \
     src/ui/curseforge/curseforgefilelistwidget.cpp \
     src/ui/curseforge/curseforgeimagepopup.cpp \
     src/ui/curseforge/curseforgemodinfowidget.cpp \
+    src/ui/datetimetext.cpp \
     src/ui/dockwidgetcontent.cpp \
     src/ui/explorestatusbarwidget.cpp \
     src/ui/framelesswrapper.cpp \
@@ -172,6 +173,7 @@ HEADERS += \
     src/ui/curseforge/curseforgefilelistwidget.h \
     src/ui/curseforge/curseforgeimagepopup.h \
     src/ui/curseforge/curseforgemodinfowidget.h \
+    src/ui/datetimetext.h \
     src/ui/dockwidgetcontent.h \
     src/ui/explorestatusbarwidget.h \
     src/ui/framelesswrapper.h \
@@ -244,6 +246,7 @@ HEADERS += \
 
 FORMS += \
     src/ui/curseforge/curseforgemodbrowser.ui \
+    src/ui/datetimetext.ui \
     src/ui/download/downloadbrowser.ui \
     src/ui/explorestatusbarwidget.ui \
     src/ui/github/githubfileitemwidget.ui \

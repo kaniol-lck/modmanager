@@ -59,34 +59,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLabel" name="label">
-         <property name="font">
-          <font>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">color: rgb(127, 127, 127);</string>
-         </property>
-         <property name="text">
-          <string>Updated</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="fileDateText">
-         <property name="font">
-          <font>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">color: rgb(127, 127, 127);</string>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
+        <widget class="DateTimeText" name="fileDateTime" native="true"/>
        </item>
        <item>
         <spacer name="horizontalSpacer_2">
@@ -198,6 +171,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DateTimeText</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/datetimetext.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

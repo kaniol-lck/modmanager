@@ -249,34 +249,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="label">
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(127, 127, 127);</string>
-          </property>
-          <property name="text">
-           <string>Updated</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="modUpdateDate">
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(127, 127, 127);</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
+         <widget class="DateTimeText" name="updateDateTime" native="true"/>
         </item>
         <item>
          <spacer name="horizontalSpacer_3">
@@ -295,34 +268,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="label_3">
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(127, 127, 127);</string>
-          </property>
-          <property name="text">
-           <string>Created</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="modCreateDate">
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(127, 127, 127);</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
+         <widget class="DateTimeText" name="createDateTime" native="true"/>
         </item>
         <item>
          <spacer name="horizontalSpacer_2">
@@ -372,6 +318,12 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>DateTimeText</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/datetimetext.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>TagsWidget</class>
    <extends>QWidget</extends>
