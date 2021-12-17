@@ -26,6 +26,7 @@
 #include "ui/modrinth/modrinthmodbrowser.h"
 #include "ui/optifine/optifinemodbrowser.h"
 #include "ui/replay/replaymodbrowser.h"
+#include "ui/github/githubrepobrowser.h"
 #include "ui/download/downloadbrowser.h"
 #include "ui/preferences.h"
 #include "ui/browsermanagerdialog.h"
@@ -67,12 +68,17 @@ ModManager::ModManager(QWidget *parent) :
     //Download
     pageSwitcher_.addDownloadPage();
     //Explore
-    if(config.getShowCurseforge()) pageSwitcher_.addCurseforgePage();
-    if(config.getShowModrinth()) pageSwitcher_.addModrinthPage();
-    if(config.getShowOptiFine()) pageSwitcher_.addOptiFinePage();
-    if(config.getShowReplayMod()) pageSwitcher_.addReplayModPage();
+    if(config.getShowCurseforge())
+        pageSwitcher_.addExploreBrowser(new CurseforgeModBrowser(this));
+    if(config.getShowModrinth())
+        pageSwitcher_.addExploreBrowser(new ModrinthModBrowser(this));
+    if(config.getShowOptiFine())
+        pageSwitcher_.addExploreBrowser(new OptifineModBrowser(this));
+    if(config.getShowReplayMod())
+        pageSwitcher_.addExploreBrowser(new ReplayModBrowser(this));
 
-    pageSwitcher_.addGitHubPage(GitHubRepoInfo("kaniol-lck", "modmanager", windowTitle(), QIcon(":/image/modmanager.png")));
+    GitHubRepoInfo info("kaniol-lck", "modmanager", windowTitle(), QIcon(":/image/modmanager.png"));
+    pageSwitcher_.addExploreBrowser(new GitHubRepoBrowser(this, info));
 
     //Local
     syncPathList();
@@ -193,21 +199,21 @@ void ModManager::syncPathList()
         if(auto i = pathList_.indexOf(path); i < 0){
             //not present, new one
             pathList_ << path;
-            pageSwitcher_.addLocalPage(path);
+            pageSwitcher_.addLocalBrowser(new LocalModBrowser(this, path));
         } else{
             //present, move position
             oldCount--;
             auto path = pathList_.takeAt(i);
             pathList_ << path;
-            auto browser = pageSwitcher_.takeLocalModBrowser(i);
-            pageSwitcher_.addLocalPage(browser);
+            auto browser = pageSwitcher_.takeLocalBrowser(i);
+            pageSwitcher_.addLocalBrowser(browser);
         }
     }
     //remove remained mod path
     auto i = oldCount;
     while (i--) {
         pathList_.removeAt(i);
-        pageSwitcher_.removeLocalModBrowser(i);
+        pageSwitcher_.removeLocalBrowser(i);
     }
 
     //they should be same after sync

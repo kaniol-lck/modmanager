@@ -22,6 +22,7 @@ class LocalModPath;
 class PageSwitcher : public QMdiArea
 {
     Q_OBJECT
+    static constexpr int SubWindowRole = 433;
 public:
     enum BrowserCategory{ Download, Explore, Local };
     explicit PageSwitcher(QWidget *parent = nullptr);
@@ -29,33 +30,20 @@ public:
     void nextPage();
     void previesPage();
 
-    void addDownloadPage();
-    void addCurseforgePage();
-    void addModrinthPage();
-    void addOptiFinePage();
-    void addReplayModPage();
-    void addGitHubPage(const GitHubRepoInfo &info);
-    void addLocalPage(LocalModBrowser *browser);
-    void addLocalPage(LocalModPath *path);
-
-    void removeExplorePage(int index);
-    void removeCurseforgePage();
-    void removeModrinthPage();
-    void removeOptiFinePage();
-    void removeReplayModPage();
-
-    LocalModBrowser *takeLocalModBrowser(int index);
-    void removeLocalModBrowser(int index);
-
     DownloadBrowser *downloadBrowser() const;
-    CurseforgeModBrowser *curseforgeModBrowser() const;
-    ModrinthModBrowser *modrinthModBrowser() const;
-    OptifineModBrowser *optifineModBrowser() const;
-    ReplayModBrowser *replayModBrowser() const;
+    void addDownloadPage();
+
     const QList<ExploreBrowser *> &exploreBrowsers() const;
-    const QList<LocalModBrowser *> &localModBrowsers() const;
     ExploreBrowser *exploreBrowser(int index) const;
+    void addExploreBrowser(ExploreBrowser *browser);
+    void removeExploreBrowser(int index);
+
+    const QList<LocalModBrowser *> &localModBrowsers() const;
     LocalModBrowser *localModBrowser(int index) const;
+    void addLocalBrowser(LocalModBrowser *browser);
+    LocalModBrowser *takeLocalBrowser(int index);
+    void removeLocalBrowser(int index);
+
     QPair<int, int> currentCategoryPage() const;
     int currentCategory() const;
     int currentPage() const;
@@ -71,19 +59,13 @@ public slots:
     void updateUi();
 
 private:
-    void addWidget(QMainWindow *browser, int category);
-    void removeExplorePage(ExploreBrowser *exploreBrowser);
+    void addBrowser(Browser *browser, BrowserCategory category);
+    QMdiSubWindow *addWidget(QStandardItem *item);
+    void removeExploreBrowser(ExploreBrowser *exploreBrowser);
     QMenuBar *menubar_;
-    QVector<QList<QMdiSubWindow *>> windows_;
     QStandardItemModel model_;
-    QVector<int> pageCount_;
 
     DownloadBrowser *downloadBrowser_ = nullptr;
-    CurseforgeModBrowser *curseforgeModBrowser_ = nullptr;
-    ModrinthModBrowser *modrinthModBrowser_ = nullptr;
-    OptifineModBrowser *optifineModBrowser_ = nullptr;
-    ReplayModBrowser *replayModBrowser_ = nullptr;
-    QList<GitHubRepoBrowser *> githubBrowsers_;
     QList<ExploreBrowser *> exploreBrowsers_;
     QList<LocalModBrowser *> localModBrowsers_;
 };
