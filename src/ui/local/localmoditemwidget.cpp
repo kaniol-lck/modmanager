@@ -31,6 +31,8 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui->tagsWidget->setMod(mod_);
 
     this->setAttribute(Qt::WA_Hover, true);
+    setAttribute(Qt::WA_StyledBackground, true);
+    setProperty("class", "LocalModItemWidget");
 
     onIconChanged();
     connect(mod_, &LocalMod::modIconUpdated, this, &LocalModItemWidget::onIconChanged);

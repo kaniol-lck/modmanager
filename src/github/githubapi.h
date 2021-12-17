@@ -15,7 +15,7 @@ public:
     explicit GitHubAPI(QObject *parent = nullptr);
     static GitHubAPI *api();
 
-    [[nodiscard]] QMetaObject::Connection getReleases(const GitHubRepoInfo &info, std::function<void (QList<GitHubReleaseInfo>)> callback);
+    [[nodiscard]] QMetaObject::Connection getReleases(const GitHubRepoInfo &info, int page, std::function<void (QList<GitHubReleaseInfo>)> callback);
     [[nodiscard]] QMetaObject::Connection getAssets(const QUrl assetUrl, std::function<void (QList<GitHubFileInfo>)> callback);
 
 private:

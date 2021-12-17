@@ -793,13 +793,10 @@ void LocalModBrowser::onSelectedModsChanged()
         ui->actionSearch_on_Curseforge->setEnabled(true);
         ui->actionSearch_on_Modrinth->setEnabled(true);
         auto mod = selectedMods_.first();
-        if(auto url = mod->commonInfo()->sources();
-                url.host() == "github.com" && url.path().count('/') == 2)
-            ui->actionOpen_In_GitHub->setEnabled(true);
-        if(mod->curseforgeMod())
-            ui->actionOpen_Curseforge_Mod_Dialog->setEnabled(true);
-        if(mod->modrinthMod())
-            ui->actionOpen_Modrinth_Mod_Dialog->setEnabled(true);
+        auto url = mod->commonInfo()->sources();
+        ui->actionOpen_In_GitHub->setEnabled(url.host() == "github.com" && url.path().count('/') == 2);
+        ui->actionOpen_Curseforge_Mod_Dialog->setEnabled(mod->curseforgeMod());
+        ui->actionOpen_Modrinth_Mod_Dialog->setEnabled(mod->modrinthMod());
     } else{
         ui->actionOpen_Mod_Dialog->setEnabled(false);
         ui->actionSearch_on_Curseforge->setEnabled(false);

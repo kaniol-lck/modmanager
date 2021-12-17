@@ -5,9 +5,10 @@
 
 #include <QDir>
 #include <QCryptographicHash>
-#include <MurmurHash2.h>
 #include <QDebug>
+#include <QElapsedTimer>
 
+#include "util/funcutil.h"
 #include "util/mmlogger.h"
 
 const QStringList LocalModFile::availableSuffix{ "jar", "old", "disabled"};
@@ -30,6 +31,8 @@ LocalModFile::~LocalModFile()
 
 ModLoaderType::Type LocalModFile::loadInfo()
 {
+    auto timer = new QElapsedTimer;
+    timer->start();
     if(type() == NotMod) return ModLoaderType::Any;
     QFile modFile(path_);
 
@@ -42,22 +45,27 @@ ModLoaderType::Type LocalModFile::loadInfo()
     //sha1
     sha1_ = QCryptographicHash::hash(fileContent, QCryptographicHash::Sha1).toHex();
 
+    //qDebug() << "sha1 finish" << timer->elapsed();
     //exclude some bytes for murmurhash
-    QByteArray filteredFileContent;
-    for (const char& b : qAsConst(fileContent)){
-        if (b == 0x9 || b == 0xa || b == 0xd || b == 0x20) continue;
-        filteredFileContent.append(b);
-    }
-    murmurhash_ = QByteArray::number(MurmurHash2(filteredFileContent.constData(), filteredFileContent.length(), 1));
+    //TODO: filter murmurhash cost half loading time
+    //qDebug() << "murmur pre finish" << timer->elapsed();
+    murmurhash_ = QByteArray::number(filteredMurmurHash2(fileContent));
+
+//    static qint64 total = 0;
+//    total += timer->elapsed();
+//    qDebug() << "basic finish" << timer->elapsed();
+//    qDebug() << "total:" << total;
 
     //load fabric mod
     if(fabricModInfoList_ = FabricModInfo::fromZip(path_); !fabricModInfoList_.isEmpty())
         loaderType_ = ModLoaderType::Fabric;
 
+    //qDebug() << "fabric finish" << timer->elapsed();
     //load forge mod
     if(forgeModInfoList_ = ForgeModInfo::fromZip(path_); !forgeModInfoList_.isEmpty())
         loaderType_ = ModLoaderType::Forge;
 
+    //qDebug() << "forge finish" << timer->elapsed();
     //tags
     removeTags(TagCategory::EnvironmentCategory);
     if(loaderType_ == ModLoaderType::Fabric){
@@ -71,6 +79,8 @@ ModLoaderType::Type LocalModFile::loadInfo()
     }
     if(loaderType_ != ModLoaderType::Any && commonInfo()->id() == "optifine")
         importTag(Tag("OptiFine", TagCategory::OptiFineCategory, ":/image/optifine.png"));
+
+    //qDebug() << "finish" << timer->elapsed();
 
     //for count
     return loaderType_;

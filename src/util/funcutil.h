@@ -36,4 +36,7 @@ std::function<void ()> disconnecter(QMetaObject::Connection conn);
 
 void tweakWidgetFontPointSize(QWidget *widget, int pointSize);
 
+//murmurhash: https://github.com/aappleby/smhasher
+uint32_t filteredMurmurHash2(const QByteArray &bytes);
+
 #endif // FUNCUTIL_H

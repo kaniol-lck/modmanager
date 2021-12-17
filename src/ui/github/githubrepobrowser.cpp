@@ -32,6 +32,7 @@ GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent, const GitHubRepoInfo &info
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
+    connect(ui->releaseListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &GitHubRepoBrowser::onSliderChanged);
     connect(ui->releaseListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &GitHubRepoBrowser::onItemSelected);
     connect(ui->releaseListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &GitHubRepoBrowser::updateIndexWidget);
 
@@ -84,6 +85,14 @@ ExploreBrowser *GitHubRepoBrowser::another()
     return new GitHubRepoBrowser(nullptr, info_);
 }
 
+void GitHubRepoBrowser::onSliderChanged(int i)
+{
+    if(!isSearching_ && hasMore_ && i >= ui->releaseListView->verticalScrollBar()->maximum() - 1000){
+        currentPage_ ++;
+        getReleaseList(currentPage_);
+    }
+}
+
 void GitHubRepoBrowser::updateStatusText()
 {
     auto str = tr("Loaded %1 releases from GitHub.").arg(model_->rowCount());
@@ -110,6 +119,7 @@ void GitHubRepoBrowser::updateIndexWidget()
 //            modItemWidget->setDownloadPath(downloadPath_);
 //            connect(this, &ReplayModBrowser::downloadPathChanged, modItemWidget, &ReplayModItemWidget::setDownloadPath);
             ui->releaseListView->setIndexWidget(index, modItemWidget);
+            item->setSizeHint(QSize(0, 200));
         }
     }
 }
@@ -137,45 +147,44 @@ void GitHubRepoBrowser::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 }
 
-void GitHubRepoBrowser::getReleaseList()
+void GitHubRepoBrowser::getReleaseList(int page)
 {
+    if(page == 1)
+        currentPage_ = 1;
+    else if(!hasMore_ || isSearching_)
+        return;
     setCursor(Qt::BusyCursor);
     statusBarWidget_->setText(tr("Searching mods..."));
     statusBarWidget_->setProgressVisible(true);
 
-    auto conn = api_->getReleases(info_, [=](const auto &list){
+    isSearching_ = true;
+    auto conn = api_->getReleases(info_, page, [=](const auto &list){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);
-//        for(auto row = 0; row < model_->rowCount(); row++){
-//            auto item = model_->item(row);
-//            auto mod = item->data().value<ReplayMod*>();
-//            if(mod && !mod->parent())
-//                mod->deleteLater();
-//        }
-//        model_->clear();
-//        QStringList gameVersions;
+        //new search
+        if(currentPage_ == 1){
+            model_->clear();
+            hasMore_ = true;
+        }
         for(auto releaseInfo : list){
             auto release = new GitHubRelease(this, releaseInfo);
-//            if(!gameVersions.contains(modInfo.gameVersion()))
-//                gameVersions << modInfo.gameVersion();
-//            auto mod = new ReplayMod(this, modInfo);
             auto item = new QStandardItem;
             item->setData(QVariant::fromValue(release));
             model_->appendRow(item);
-            item->setSizeHint(QSize(0, 100));
+            item->setSizeHint(QSize(0, 200));
         }
-//        ui->versionSelect->clear();
-//        ui->versionSelect->addItem(tr("Any"));
-//        ui->versionSelect->addItems(gameVersions);
-
-        auto item = new QStandardItem(tr("There is no more release here..."));
-        item->setSizeHint(QSize(0, 108));
-        auto font = qApp->font();
-        font.setPointSize(20);
-        item->setFont(font);
-        item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        model_->appendRow(item);
+        if(list.size() < Config().getSearchResultCount()){
+            auto item = new QStandardItem(tr("There is no more mod here..."));
+            item->setSizeHint(QSize(0, 108));
+            auto font = qApp->font();
+            font.setPointSize(20);
+            item->setFont(font);
+            item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+            model_->appendRow(item);
+            hasMore_ = false;
+        }
+        isSearching_ = false;
 
         updateStatusText();
     });

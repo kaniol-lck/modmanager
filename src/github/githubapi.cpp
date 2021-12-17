@@ -2,6 +2,7 @@
 
 #include <QJsonDocument>
 #include <QNetworkReply>
+#include <QUrlQuery>
 
 #include "config.hpp"
 
@@ -16,9 +17,20 @@ GitHubAPI *GitHubAPI::api()
     return &api;
 }
 
-QMetaObject::Connection GitHubAPI::getReleases(const GitHubRepoInfo &info, std::function<void (QList<GitHubReleaseInfo>)> callback)
+QMetaObject::Connection GitHubAPI::getReleases(const GitHubRepoInfo &info, int page, std::function<void (QList<GitHubReleaseInfo>)> callback)
 {
-    auto releaseUrl = QString("https://api.github.com/repos/%1/%2/releases").arg(info.user(), info.repo());
+    QUrl releaseUrl = QString("https://api.github.com/repos/%1/%2/releases").arg(info.user(), info.repo());
+
+    //url query
+    QUrlQuery urlQuery;
+
+    //index
+    urlQuery.addQueryItem("page", QString::number(page));
+    //search page size
+    urlQuery.addQueryItem("per_page", QString::number(Config().getSearchResultCount()));
+
+    releaseUrl.setQuery(urlQuery);
+    qDebug() << releaseUrl;
     QNetworkRequest request(releaseUrl);
     auto reply = accessManager_.get(request);
     return connect(reply, &QNetworkReply::finished, this, [=]{

@@ -40,6 +40,7 @@ signals:
     void downloadPathChanged(LocalModPath *path);
 
 private slots:
+    void onSliderChanged(int i);
 //    void updateLocalPathList();
 //    void filterList();
     void updateStatusText();
@@ -61,8 +62,11 @@ private:
     LocalModPath *downloadPath_ = nullptr;
     bool inited_ = false;
     GitHubRelease* selectedRelease_ = nullptr;
+    int currentPage_ = 1;
+    bool hasMore_ = false;
+    bool isSearching_ = false;
 
-    void getReleaseList();
+    void getReleaseList(int page = 1);
 };
 
 #endif // GITHUBREPOBROWSER_H

@@ -249,3 +249,56 @@ void tweakWidgetFontPointSize(QWidget *widget, int pointSize)
     font.setPointSize(pointSize);
     widget->setFont(font);
 }
+
+uint32_t filteredMurmurHash2(const QByteArray &bytes)
+{
+  const uint32_t m = 0x5bd1e995;
+  const int r = 24;
+
+  QByteArray filteredBytes;
+  for (const char& b : qAsConst(bytes)){
+      if (b == 0x9 || b == 0xa || b == 0xd || b == 0x20) continue;
+      filteredBytes.append(b);
+  }
+
+  auto len = filteredBytes.length();
+  auto data = filteredBytes.constData();
+
+  uint32_t h = 1 ^ len;
+
+  // Mix 4 bytes at a time into the hash
+
+  while(len >= 4)
+  {
+      uint32_t k = *(uint32_t*)data;
+
+      k *= m;
+      k ^= k >> r;
+      k *= m;
+
+      h *= m;
+      h ^= k;
+
+      data += 4;
+      len -= 4;
+  }
+
+  // Handle the last few bytes of the input array
+
+  switch(len)
+  {
+  case 3: h ^= data[2] << 16;
+  case 2: h ^= data[1] << 8;
+  case 1: h ^= data[0];
+      h *= m;
+  };
+
+  // Do a few final mixes of the hash to ensure the last few
+  // bytes are well-incorporated.
+
+  h ^= h >> 13;
+  h *= m;
+  h ^= h >> 15;
+
+  return h;
+}

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
-    <height>100</height>
+    <width>413</width>
+    <height>330</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -235,7 +235,7 @@ padding:1px 2px;</string>
    <item row="2" column="0">
     <widget class="QTextBrowser" name="body">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>

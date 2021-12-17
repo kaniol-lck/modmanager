@@ -21,6 +21,8 @@ GitHubReleaseItemWidget::GitHubReleaseItemWidget(QWidget *parent, const GitHubRe
     ui->downloadSpeedText->setVisible(false);
     ui->downloadButton->setVisible(false);
 //    ui->downloadSpeedText->setText(sizeConvert(info.size()));
+    setProperty("class", "GitHubReleaseItemWidget");
+    setAttribute(Qt::WA_StyledBackground, true);
 }
 
 GitHubReleaseItemWidget::~GitHubReleaseItemWidget()

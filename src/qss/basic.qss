@@ -18,6 +18,10 @@ QScrollArea, QScrollArea .QWidget {
   color: black;
 }
 
+.GitHubReleaseItemWidget, .LocalModItemWidget {
+  margin-left: 5px;
+}
+
 #maxButton:hover,#minButton:hover {
   background-color: rgb(218, 218, 218);
   border: none;

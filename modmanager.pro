@@ -304,9 +304,6 @@ TRANSLATIONS += \
 CONFIG += lrelease
 CONFIG += embed_translations
 
-#murmurhash: https://github.com/aappleby/smhasher
-include(3rdparty/MurmurHash/murmurhash.pri)
-
 #cpp-semver: https://github.com/easz/cpp-semver
 include(3rdparty/cpp-semver/cpp-semver.pri)
 
