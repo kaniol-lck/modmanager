@@ -35,8 +35,7 @@ public:
     void setName(const QString &newName);
 
     bool isAutoName() const;
-    void setIsAutoName(bool newIsAutoName);
-    QString autoName() const;
+    void setAutoName(bool newIsAutoName);
 
     const QString &path() const;
     void setPath(const QString &newPath);

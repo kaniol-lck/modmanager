@@ -35,19 +35,11 @@ PageSwitcher::PageSwitcher(QWidget *parent) :
 void PageSwitcher::nextPage()
 {
     activateNextSubWindow();
-//    auto index = currentIndex() + 1;
-//    if(index >= count())
-//        index -= count();
-//    setCurrentIndex(index);
 }
 
 void PageSwitcher::previesPage()
 {
     activatePreviousSubWindow();
-//    auto index = currentIndex() - 1;
-//    if(index < 0)
-//        index += count();
-//    setCurrentIndex(index);
 }
 
 void PageSwitcher::addDownloadPage()
@@ -94,13 +86,9 @@ LocalModBrowser *PageSwitcher::localModBrowser(int index) const
 
 void PageSwitcher::removeLocalBrowser(int index)
 {
-    qDebug() << "remove" << index;
     auto item = model_.item(Local)->takeRow(index).first();
     item->data().value<LocalModBrowser *>()->deleteLater();
     removeSubWindowForItem(item);
-//    auto window = item->data(SubWindowRole).value<QMdiSubWindow *>();
-//    removeSubWindow(window);
-    //TODO
 }
 
 void PageSwitcher::setPage(int category, int page)
@@ -125,14 +113,11 @@ void PageSwitcher::syncPathList()
     //remember selected path
     LocalModBrowser *selectedBrowser = nullptr;
     auto [currentCategory, currentPage] = currentCategoryPage();
-    if(currentCategory == PageSwitcher::Local){
+    if(currentCategory == PageSwitcher::Local)
         selectedBrowser = localModBrowser(currentPage);
-        qDebug() << selectedBrowser->name();
-    }
 
     auto oldCount = model_.item(Local)->rowCount();
     for(const auto &path : LocalModPathManager::pathList()){
-//        qDebug() << "find in" << findLocalBrowser(path);
         if(auto i = findLocalBrowser(path); i < 0){
             //not present, new one
             addLocalBrowser(new LocalModBrowser(this, path));
@@ -157,10 +142,8 @@ void PageSwitcher::syncPathList()
 
     //reset selected path
     if(selectedBrowser){
-        if(auto index = findLocalBrowser(selectedBrowser->modPath()); index >= 0){
+        if(auto index = findLocalBrowser(selectedBrowser->modPath()); index >= 0)
             setPage(PageSwitcher::Local, index);
-            qDebug() << "set" << PageSwitcher::Local << index;
-        }
     }
 }
 
@@ -227,35 +210,6 @@ Browser *PageSwitcher::currentBrowser() const
     auto [currentCategory, currentPage] = currentCategoryPage();
     return model_.item(currentCategory)->child(currentPage)->data().value<Browser *>();
 }
-
-//const QList<ExploreBrowser *> &PageSwitcher::exploreBrowsers() const
-//{
-//    return exploreBrowsers_;
-//}
-
-//const QList<LocalModBrowser *> &PageSwitcher::localModBrowsers() const
-//{
-//    return localModBrowsers_;
-//}
-
-//DownloadBrowser *PageSwitcher::downloadBrowser() const
-//{
-//    return downloadBrowser_;
-//}
-
-//ExploreBrowser *PageSwitcher::exploreBrowser(int index) const
-//{
-//    if(index >= exploreBrowsers_.size())
-//        return nullptr;
-//    return exploreBrowsers_.at(index);
-//}
-
-//LocalModBrowser *PageSwitcher::localModBrowser(int index) const
-//{
-//    if(index >= localModBrowsers_.size())
-//        return nullptr;
-//    return localModBrowsers_.at(index);
-//}
 
 QPair<int, int> PageSwitcher::currentCategoryPage() const
 {

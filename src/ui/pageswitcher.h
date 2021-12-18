@@ -30,15 +30,12 @@ public:
     void nextPage();
     void previesPage();
 
-//    DownloadBrowser *downloadBrowser() const;
     void addDownloadPage();
 
-//    const QList<ExploreBrowser *> &exploreBrowsers() const;
     ExploreBrowser *exploreBrowser(int index) const;
     void addExploreBrowser(ExploreBrowser *browser);
     void removeExploreBrowser(int index);
 
-//    const QList<LocalModBrowser *> &localModBrowsers() const;
     LocalModBrowser *localModBrowser(int index) const;
     void addLocalBrowser(LocalModBrowser *browser);
     void removeLocalBrowser(int index);
@@ -68,10 +65,6 @@ private:
     QStandardItemModel model_;
 
     bool isSyncing_ = false;
-
-//    DownloadBrowser *downloadBrowser_ = nullptr;
-//    QList<ExploreBrowser *> exploreBrowsers_;
-//    QList<LocalModBrowser *> localModBrowsers_;
 };
 
 #endif // PAGESWITCHER_H

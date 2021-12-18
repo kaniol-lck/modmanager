@@ -70,6 +70,9 @@ public:
     const CheckSheet *updateChecker() const;
     const CheckSheet *modsLinker() const;
 
+    QString displayName() const;
+    QIcon icon() const;
+
 public slots:
     void writeToFile();
     void readFromFile();

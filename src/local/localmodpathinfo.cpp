@@ -60,7 +60,7 @@ QVariant LocalModPathInfo::toVariant() const
 
 QString LocalModPathInfo::displayName() const
 {
-    return isAutoName_? autoName() : name_;
+    return isAutoName_? gameVersion_ + " - " + ModLoaderType::toString(loaderType_) : name_;
 }
 
 QIcon LocalModPathInfo::icon() const
@@ -101,11 +101,6 @@ bool LocalModPathInfo::isAutoName() const
     return isAutoName_;
 }
 
-QString LocalModPathInfo::autoName() const
-{
-    return gameVersion_ + " - " + ModLoaderType::toString(loaderType_);
-}
-
 const QString &LocalModPathInfo::path() const
 {
     return path_;
@@ -141,7 +136,7 @@ LocalModPathInfo LocalModPathInfo::deduceFromPath(const QString &path)
     return info;
 }
 
-void LocalModPathInfo::setIsAutoName(bool newIsAutoName)
+void LocalModPathInfo::setAutoName(bool newIsAutoName)
 {
     isAutoName_ = newIsAutoName;
 }

@@ -57,6 +57,16 @@ const CheckSheet *LocalModPath::modsLinker() const
     return &modsLinker_;
 }
 
+QString LocalModPath::displayName() const
+{
+    return info_.displayName();
+}
+
+QIcon LocalModPath::icon() const
+{
+    return info_.icon();
+}
+
 const CheckSheet *LocalModPath::updateChecker() const
 {
     return &updateChecker_;

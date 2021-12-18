@@ -34,9 +34,9 @@ private slots:
 private:
     Ui::LocalModPathSettingsDialog *ui;
     LocalModPathInfo info_;
-    QString customName;
+    QString customName_;
 
-    void updateAutoName();
+    void updateDisplayName();
 };
 
 #endif // LOCALMODPATHSETTINGSDIALOG_H

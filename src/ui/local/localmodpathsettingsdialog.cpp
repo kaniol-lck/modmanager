@@ -25,7 +25,7 @@ LocalModPathSettingsDialog::LocalModPathSettingsDialog(QWidget *parent, const Lo
     LocalModPathSettingsDialog(parent)
 {
     info_ = info;
-    customName = info.name();
+    customName_ = info.name();
     ui->nameText->setText(info.displayName());
     ui->modsDirText->setText(info.path());
     ui->versionSelect->setCurrentText(info.gameVersion());
@@ -79,7 +79,7 @@ void LocalModPathSettingsDialog::on_modDirButton_clicked()
         }
         ui->modsDirText->setText(path);
         info_.setPath(path);
-        updateAutoName();
+        updateDisplayName();
         return;
     } while(false);
     info_.setPath(resultStr);
@@ -91,41 +91,39 @@ void LocalModPathSettingsDialog::on_buttonBox_accepted()
     emit settingsUpdated(info_, ui->autoLoaderType->isCheckable());
 }
 
-void LocalModPathSettingsDialog::updateAutoName()
+void LocalModPathSettingsDialog::updateDisplayName()
 {
-    if(!ui->useAutoName->isChecked()) return;
-    info_.setName(info_.autoName());
-    ui->nameText->setText(info_.autoName());
+    ui->nameText->setText(info_.displayName());
 }
 
 void LocalModPathSettingsDialog::on_versionSelect_currentIndexChanged(int index)
 {
     if(index < 0) return;
     info_.setGameVersion(index? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any);
-    updateAutoName();
+    updateDisplayName();
 }
 
 void LocalModPathSettingsDialog::on_nameText_textEdited(const QString &arg1)
 {
-    customName = arg1;
+    customName_ = arg1;
     info_.setName(arg1);
 }
 
 
 void LocalModPathSettingsDialog::on_useAutoName_toggled(bool checked)
 {
-    info_.setIsAutoName(checked);
+    info_.setAutoName(checked);
     ui->nameText->setEnabled(!checked);
     if(checked)
-        updateAutoName();
+        updateDisplayName();
     else
-        ui->nameText->setText(customName);
+        ui->nameText->setText(customName_);
 }
 
 void LocalModPathSettingsDialog::on_loaderSelect_currentIndexChanged(int index)
 {
     if(index < 0) return;
     info_.setLoaderType(ModLoaderType::local.at(index));
-    updateAutoName();
+    updateDisplayName();
 }
 
