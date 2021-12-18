@@ -30,18 +30,17 @@ public:
     void nextPage();
     void previesPage();
 
-    DownloadBrowser *downloadBrowser() const;
+//    DownloadBrowser *downloadBrowser() const;
     void addDownloadPage();
 
-    const QList<ExploreBrowser *> &exploreBrowsers() const;
+//    const QList<ExploreBrowser *> &exploreBrowsers() const;
     ExploreBrowser *exploreBrowser(int index) const;
     void addExploreBrowser(ExploreBrowser *browser);
     void removeExploreBrowser(int index);
 
-    const QList<LocalModBrowser *> &localModBrowsers() const;
+//    const QList<LocalModBrowser *> &localModBrowsers() const;
     LocalModBrowser *localModBrowser(int index) const;
     void addLocalBrowser(LocalModBrowser *browser);
-    LocalModBrowser *takeLocalBrowser(int index);
     void removeLocalBrowser(int index);
 
     QPair<int, int> currentCategoryPage() const;
@@ -56,18 +55,23 @@ signals:
 
 public slots:
     void setPage(int category, int page);
+    void syncPathList();
     void updateUi();
 
 private:
     void addBrowser(Browser *browser, BrowserCategory category);
-    QMdiSubWindow *addWidget(QStandardItem *item);
+    QMdiSubWindow *addSubWindowForItem(QStandardItem *item);
+    void removeSubWindowForItem(QStandardItem *item);
     void removeExploreBrowser(ExploreBrowser *exploreBrowser);
+    int findLocalBrowser(LocalModPath *path);
     QMenuBar *menubar_;
     QStandardItemModel model_;
 
-    DownloadBrowser *downloadBrowser_ = nullptr;
-    QList<ExploreBrowser *> exploreBrowsers_;
-    QList<LocalModBrowser *> localModBrowsers_;
+    bool isSyncing_ = false;
+
+//    DownloadBrowser *downloadBrowser_ = nullptr;
+//    QList<ExploreBrowser *> exploreBrowsers_;
+//    QList<LocalModBrowser *> localModBrowsers_;
 };
 
 #endif // PAGESWITCHER_H

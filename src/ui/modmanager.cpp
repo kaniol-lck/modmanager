@@ -81,11 +81,11 @@ ModManager::ModManager(QWidget *parent) :
     pageSwitcher_.addExploreBrowser(new GitHubRepoBrowser(this, info));
 
     //Local
-    syncPathList();
-    connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModManager::syncPathList);
+    pageSwitcher_.syncPathList();
+    connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, &pageSwitcher_, &PageSwitcher::syncPathList);
 
     //default browser
-    if(pageSwitcher_.exploreBrowsers().size())
+    if(pageSwitcher_.model()->item(PageSwitcher::Explore)->hasChildren())
         pageSwitcher_.setPage(PageSwitcher::Explore, 0);
 
     //init versions
@@ -187,45 +187,6 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 }
 #endif //defined (DE_KDE) || defined (Q_OS_WIN)
 
-void ModManager::syncPathList()
-{
-    //remember selected path
-    LocalModBrowser *selectedBrowser = nullptr;
-    if(pageSwitcher_.currentCategory() == PageSwitcher::Local)
-        selectedBrowser = pageSwitcher_.localModBrowser(pageSwitcher_.currentPage());
-
-    auto oldCount = pathList_.size();
-    for(const auto &path : LocalModPathManager::pathList()){
-        if(auto i = pathList_.indexOf(path); i < 0){
-            //not present, new one
-            pathList_ << path;
-            pageSwitcher_.addLocalBrowser(new LocalModBrowser(this, path));
-        } else{
-            //present, move position
-            oldCount--;
-            auto path = pathList_.takeAt(i);
-            pathList_ << path;
-            auto browser = pageSwitcher_.takeLocalBrowser(i);
-            pageSwitcher_.addLocalBrowser(browser);
-        }
-    }
-    //remove remained mod path
-    auto i = oldCount;
-    while (i--) {
-        pathList_.removeAt(i);
-        pageSwitcher_.removeLocalBrowser(i);
-    }
-
-    //they should be same after sync
-    assert(pathList_ == LocalModPathManager::pathList());
-
-    //reset selected path
-    if(!selectedBrowser){
-        if(auto index = pageSwitcher_.localModBrowsers().indexOf(selectedBrowser); index >= 0)
-            pageSwitcher_.setPage(PageSwitcher::Local, index);
-    }
-}
-
 void ModManager::editLocalPath(int index)
 {
     auto pathInfo = LocalModPathManager::pathList().at(index)->info();
@@ -249,7 +210,7 @@ void ModManager::on_actionPreferences_triggered()
 void ModManager::on_actionManage_Browser_triggered()
 {
     auto dialog = new BrowserManagerDialog();
-    connect(dialog, &BrowserManagerDialog::accepted, this, &ModManager::syncPathList);
+//    connect(dialog, &BrowserManagerDialog::accepted, &pageSwitcher_, &PageSwitcher::syncPathList);
     dialog->show();
 }
 
@@ -399,7 +360,8 @@ void ModManager::on_menu_Help_aboutToShow()
             ui->menu_Help->removeAction(action);
     }
     int count = 0;
-    for(auto browser : pageSwitcher_.exploreBrowsers()){
+    for(int index = 0; index < pageSwitcher_.model()->item(PageSwitcher::Explore)->rowCount(); index++){
+        auto browser = pageSwitcher_.exploreBrowser(index);
         auto action = browser->visitWebsiteAction();
         action->setData(true);
         ui->menu_Help->insertAction(ui->menu_Help->actions().at(count++), action);

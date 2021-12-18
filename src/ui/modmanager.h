@@ -39,7 +39,6 @@ private slots:
     void setProxy();
     void updateBrowsers(Browser *previous, Browser *current);
     void updateLockPanels();
-    void syncPathList();
     void editLocalPath(int index);
     void on_actionPreferences_triggered();
     void on_actionManage_Browser_triggered();
