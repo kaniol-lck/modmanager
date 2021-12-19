@@ -16,6 +16,7 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
     mod_(mod)
 {
     ui->setupUi(this);
+    ui->modSummary->setProperty("class", "Description");
     ui->tagsWidget->setIconOnly(true);
     ui->tagsWidget->setMod(mod_);
     ui->downloadProgress->setVisible(false);

@@ -22,6 +22,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
 {
     //init ui
     ui->setupUi(this);
+    ui->modDescription->setProperty("class", "Description");
     ui->updateProgress->setVisible(false);
     ui->updateButton->setVisible(false);
     ui->curseforgeButton->setVisible(false);

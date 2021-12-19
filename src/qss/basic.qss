@@ -22,6 +22,29 @@ QScrollArea, QScrollArea .QWidget {
   margin-left: 5px;
 }
 
+.DateTimeText > * {
+  color: #777;
+  font-size: 12px;
+}
+
+.Description {
+  color: #3f3f3f;
+  font-size: 0.9em;
+  background: transparent;
+}
+
+.GitHubReleaseItemWidget > .PreRelease {
+  color: #fff;
+  background-color: #e7ab34;
+  border-radius:2px;
+  padding:1px 2px;
+}
+
+.GitHubReleaseItemWidget > .TagName {
+  color: gray;
+  font-size: 0.6em;
+}
+
 #maxButton:hover,#minButton:hover {
   background-color: rgb(218, 218, 218);
   border: none;

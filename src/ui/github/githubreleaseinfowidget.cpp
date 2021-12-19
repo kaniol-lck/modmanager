@@ -2,12 +2,14 @@
 #include "ui_githubreleaseinfowidget.h"
 
 #include "github/githubrelease.h"
+#include "util/smoothscrollbar.h"
 
 GitHubReleaseInfoWidget::GitHubReleaseInfoWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GitHubReleaseInfoWidget)
 {
     ui->setupUi(this);
+    ui->body->setVerticalScrollBar(new SmoothScrollBar(this));
 }
 
 GitHubReleaseInfoWidget::~GitHubReleaseInfoWidget()

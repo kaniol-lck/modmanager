@@ -8,6 +8,9 @@ DateTimeText::DateTimeText(QWidget *parent, const QDateTime &dateTime) :
     ui(new Ui::DateTimeText)
 {
     ui->setupUi(this);
+    setProperty("class", "DateTimeText");
+    ui->label->setProperty("class", "TimeHint");
+    ui->fileDateText->setProperty("class", "Time");
     setDateTime(dateTime);
 }
 

@@ -41,14 +41,6 @@
      </item>
      <item>
       <widget class="QLabel" name="tagName">
-       <property name="font">
-        <font>
-         <pointsize>9</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: gray;</string>
-       </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
        </property>
@@ -58,12 +50,6 @@
       <widget class="QLabel" name="prerelease">
        <property name="toolTip">
         <string>This is a pre-release version.</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: #fff;
-background-color: #e7ab34;
-border-radius:2px;
-padding:1px 2px;</string>
        </property>
        <property name="text">
         <string>pre</string>
@@ -239,9 +225,6 @@ padding:1px 2px;</string>
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background: transparent;</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>

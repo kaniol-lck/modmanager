@@ -1,6 +1,8 @@
 #include "githubreleaseitemwidget.h"
 #include "ui_githubreleaseitemwidget.h"
 
+#include <QScrollBar>
+
 #include "util/funcutil.h"
 
 GitHubReleaseItemWidget::GitHubReleaseItemWidget(QWidget *parent, const GitHubReleaseInfo &info) :
@@ -9,6 +11,11 @@ GitHubReleaseItemWidget::GitHubReleaseItemWidget(QWidget *parent, const GitHubRe
     info_(info)
 {
     ui->setupUi(this);
+    setProperty("class", "GitHubReleaseItemWidget");
+    ui->prerelease->setProperty("class", "PreRelease");
+    ui->tagName->setProperty("class", "TagName");
+    ui->body->setProperty("class", "Description");
+    ui->body->verticalScrollBar()->setDisabled(true);
     ui->name->setText(info.name());
     ui->tagName->setText(info.tagName());
     ui->body->setMarkdown(info.body());
@@ -21,7 +28,6 @@ GitHubReleaseItemWidget::GitHubReleaseItemWidget(QWidget *parent, const GitHubRe
     ui->downloadSpeedText->setVisible(false);
     ui->downloadButton->setVisible(false);
 //    ui->downloadSpeedText->setText(sizeConvert(info.size()));
-    setProperty("class", "GitHubReleaseItemWidget");
     setAttribute(Qt::WA_StyledBackground, true);
 }
 
