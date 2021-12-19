@@ -59,6 +59,7 @@ void PageSwitcher::addExploreBrowser(ExploreBrowser *browser)
 
 void PageSwitcher::addLocalBrowser(LocalModBrowser *browser)
 {
+    browser->setPageSwitcher(this);
     addBrowser(browser, Local);
 }
 

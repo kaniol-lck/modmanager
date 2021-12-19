@@ -20,6 +20,8 @@ class LocalModInfoWidget;
 class LocalFileListWidget;
 class LocalStatusBarWidget;
 class QAbstractItemView;
+
+class PageSwitcher;
 namespace Ui {
 class LocalModBrowser;
 }
@@ -42,14 +44,12 @@ public:
 
     QIcon icon() const override;
     QString name() const override;
+    void setPageSwitcher(PageSwitcher *newPageSwitcher);
+
 signals:
     void loadFinished();
     void selectedModsChanged();
 
-    void findNewOnCurseforge(LocalModPathInfo info);
-    void findNewOnModrinth(LocalModPathInfo info);
-    void findNewOnOptifine(LocalModPathInfo info);
-    void findNewOnReplay(LocalModPathInfo info);
 public slots:
     void reload();
     void updateModList();
@@ -105,18 +105,15 @@ private slots:
     void on_actionCheck_Updates_triggered();
     void on_actionUpdate_All_triggered();
     void on_actionLink_Mod_Files_triggered();
-
     void on_actionExport_manifest_json_triggered();
-
     void on_actionExport_modlist_html_Cuseforge_triggered();
-
     void on_actionExport_modlist_html_Modrinth_triggered();
-
     void on_actionOpen_In_GitHub_triggered();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
+    PageSwitcher *pageSwitcher_ = nullptr;
     Ui::LocalModBrowser *ui;
     QStandardItemModel *model_;
     LocalModInfoWidget *infoWidget_;

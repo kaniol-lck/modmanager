@@ -322,6 +322,9 @@
     <property name="title">
      <string>&amp;Mod</string>
     </property>
+    <addaction name="actionSort"/>
+    <addaction name="actionFilter"/>
+    <addaction name="separator"/>
     <addaction name="actionToggle_Enable"/>
     <addaction name="actionToggle_Star"/>
     <addaction name="separator"/>
@@ -340,9 +343,20 @@
     <property name="title">
      <string>&amp;Path</string>
     </property>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <property name="icon">
+      <iconset theme="document-export"/>
+     </property>
+     <addaction name="actionExport_manifest_json"/>
+     <addaction name="actionExport_modlist_html_Cuseforge"/>
+     <addaction name="actionExport_modlist_html_Modrinth"/>
+    </widget>
     <addaction name="actionOpen_Folder"/>
     <addaction name="actionFind_New_Mods"/>
-    <addaction name="actionExport"/>
+    <addaction name="menuExport"/>
     <addaction name="separator"/>
     <addaction name="actionReload_Mods"/>
     <addaction name="actionBatch_Rename"/>
@@ -520,15 +534,6 @@
    </property>
    <property name="text">
     <string>Link Mod Files</string>
-   </property>
-  </action>
-  <action name="actionExport">
-   <property name="icon">
-    <iconset theme="document-export">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>Export</string>
    </property>
   </action>
   <action name="actionExport_manifest_json">

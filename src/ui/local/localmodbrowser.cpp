@@ -41,6 +41,7 @@
 #include "ui/github/githubrepobrowser.h"
 #include "ui/browserdialog.h"
 #include "util/checksheet.h"
+#include "ui/pageswitcher.h"
 
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
@@ -116,27 +117,21 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
         }
     });
 
-    auto exportMenu = new QMenu(this);
-    ui->actionExport->setMenu(exportMenu);
-    exportMenu->setIcon(QIcon::fromTheme("document-export"));
-    exportMenu->addAction(ui->actionExport_manifest_json);
-    exportMenu->addAction(ui->actionExport_modlist_html_Cuseforge);
-    exportMenu->addAction(ui->actionExport_modlist_html_Modrinth);
-
     auto findNewMenu = new QMenu(this);
     ui->actionFind_New_Mods->setMenu(findNewMenu);
     findNewMenu->setIcon(QIcon::fromTheme("search"));
-    findNewMenu->addAction(QIcon(":/image/curseforge.svg"), "Curseforge", this, [=]{
-        emit findNewOnCurseforge(modPath_->info());
-    });
-    findNewMenu->addAction(QIcon(":/image/modrinth.svg"), "Modrinth", this, [=]{
-        emit findNewOnModrinth(modPath_->info());
-    });
-    findNewMenu->addAction(QIcon(":/image/optifine.png"), "OptiFine", this, [=]{
-        emit findNewOnOptifine(modPath_->info());
-    });
-    findNewMenu->addAction(QIcon(":/image/replay.png"), "ReplayMod", this, [=]{
-        emit findNewOnReplay(modPath_->info());
+    connect(findNewMenu, &QMenu::aboutToShow, this, [=]{
+        findNewMenu->clear();
+        if(!pageSwitcher_) return;
+        auto exploreItem = pageSwitcher_->model()->item(PageSwitcher::Explore);
+        for(int row = 0; row < exploreItem->rowCount(); row++){
+            auto item = exploreItem->child(row);
+            auto browser = item->data().value<ExploreBrowser *>();
+            findNewMenu->addAction(browser->icon(), browser->name(), [=]{
+                pageSwitcher_->setPage(PageSwitcher::Explore, row);
+                browser->searchModByPathInfo(modPath_->info());
+            });
+        }
     });
     ui->updateAllButton->setDefaultAction(ui->actionUpdate_All);
 
@@ -302,7 +297,7 @@ void LocalModBrowser::onLoadStarted()
     ui->actionReload_Mods->setEnabled(false);
     ui->actionLink_Mod_Files->setEnabled(false);
     ui->actionCheck_Updates->setEnabled(false);
-    ui->actionExport->setEnabled(false);
+    ui->menuExport->setEnabled(false);
     ui->actionDelete_Old_Files_In_Path->setEnabled(false);
     ui->actionBatch_Rename->setEnabled(false);
     ui->actionUpdate_All->setEnabled(false);
@@ -325,7 +320,7 @@ void LocalModBrowser::onLoadFinished()
         ui->actionCheck_Updates->setEnabled(true);
 //        ui->actionUpdate_All->setEnabled(true);
     }
-    ui->actionExport->setEnabled(true);
+    ui->menuExport->setEnabled(true);
     ui->actionDelete_Old_Files_In_Path->setEnabled(true);
     ui->actionBatch_Rename->setEnabled(true);
     updateStatusText();
@@ -693,6 +688,11 @@ void LocalModBrowser::paintEvent(QPaintEvent *event)
     updateListViewIndexWidget();
     updateTreeViewIndexWidget();
     QWidget::paintEvent(event);
+}
+
+void LocalModBrowser::setPageSwitcher(PageSwitcher *newPageSwitcher)
+{
+    pageSwitcher_ = newPageSwitcher;
 }
 
 QAbstractItemView *LocalModBrowser::currentView()
