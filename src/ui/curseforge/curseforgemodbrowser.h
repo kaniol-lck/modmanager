@@ -3,7 +3,8 @@
 
 #include "ui/explorebrowser.h"
 
-class CurseforgeAPI;
+#include "curseforge/curseforgeapi.h"
+
 class CurseforgeMod;
 class LocalModPath;
 class CurseforgeModInfoWidget;
@@ -22,7 +23,7 @@ class CurseforgeModBrowser : public ExploreBrowser
     Q_OBJECT
 
 public:
-    explicit CurseforgeModBrowser(QWidget *parent = nullptr, LocalMod *mod = nullptr);
+    explicit CurseforgeModBrowser(QWidget *parent = nullptr, LocalMod *mod = nullptr, CurseforgeAPI::Section sectionId = CurseforgeAPI::Mod);
     ~CurseforgeModBrowser();
 
     void load() override;
@@ -60,11 +61,16 @@ private slots:
     void updateIndexWidget();
     void on_sortSelect_currentIndexChanged(int);
     void on_actionOpen_Folder_triggered();
+    void on_actionMod_triggered();
+    void on_actionWorld_triggered();
+    void on_actionModpacks_triggered();
+    void on_actionTexturepacks_triggered();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
     Ui::CurseforgeModBrowser *ui;
+    CurseforgeAPI::Section sectionId_ = CurseforgeAPI::Mod;
     QStandardItemModel *model_;
     CurseforgeModInfoWidget *infoWidget_;
     CurseforgeFileListWidget *fileListWidget_;

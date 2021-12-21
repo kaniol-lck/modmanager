@@ -14,10 +14,11 @@ class CurseforgeAPI : public QObject
     static const QString PREFIX;
 
 public:
+    enum Section { BukkitPlugin = 5/*?*/, Mod = 6, TexturePack = 12, World = 17, Modpack = 4471, Addon = 4559/*?*/, Customization = 4546/*?*/ };
     explicit CurseforgeAPI(QObject *parent = nullptr);
     static CurseforgeAPI *api();
 
-    [[nodiscard]] QMetaObject::Connection searchMods(const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback);
+    [[nodiscard]] QMetaObject::Connection searchMods(int sectionId, const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback);
     [[nodiscard]] QMetaObject::Connection getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback, std::function<void()> noMatch);
     [[nodiscard]] QMetaObject::Connection getDescription(int id, std::function<void(QString)> callback);
     [[nodiscard]] QMetaObject::Connection getChangelog(int id, int FileID, std::function<void (QString)> callback);

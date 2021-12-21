@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QStandardItem>
 #include <QStatusBar>
+#include <QActionGroup>
 
 #include "curseforgemodinfowidget.h"
 #include "curseforgefilelistwidget.h"
@@ -25,9 +26,10 @@
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
 
-CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
+CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, CurseforgeAPI::Section sectionId) :
     ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
     ui(new Ui::CurseforgeModBrowser),
+    sectionId_(sectionId),
     model_(new QStandardItemModel(this)),
     infoWidget_(new CurseforgeModInfoWidget(this)),
     fileListWidget_(new CurseforgeFileListWidget(this)),
@@ -38,6 +40,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
+    ui->menuPath->insertActions(ui->menuPath->actions().first(), pathMenu_->actions());
     ui->modListView->setModel(model_);
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
@@ -63,6 +66,19 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod) :
     for(const auto &type : ModLoaderType::curseforge)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
     ui->loaderSelect->blockSignals(false);
+
+    auto actionGroup = new QActionGroup(this);
+    actionGroup->addAction(ui->actionMod);
+    actionGroup->addAction(ui->actionModpacks);
+    actionGroup->addAction(ui->actionTexturepacks);
+    actionGroup->addAction(ui->actionWorld);
+    ui->actionMod->setData(CurseforgeAPI::Mod);
+    ui->actionModpacks->setData(CurseforgeAPI::Modpack);
+    ui->actionTexturepacks->setData(CurseforgeAPI::TexturePack);
+    ui->actionWorld->setData(CurseforgeAPI::World);
+    for(auto action : actionGroup->actions())
+        if(action->data().toInt() == sectionId_)
+            action->setChecked(true);
 
     updateVersionList();
     updateCategoryList();
@@ -276,7 +292,28 @@ void CurseforgeModBrowser::onSliderChanged(int i)
 
 void CurseforgeModBrowser::updateStatusText()
 {
-    auto str = tr("Loaded %1 mods from Curseforge.").arg(model_->rowCount());
+    QString sectionStr;
+    switch (sectionId_) {
+    case CurseforgeAPI::BukkitPlugin:
+        break;
+    case CurseforgeAPI::Mod:
+        sectionStr = tr("mods");
+        break;
+    case CurseforgeAPI::TexturePack:
+        sectionStr = tr("texturepacks");
+        break;
+    case CurseforgeAPI::World:
+        sectionStr = tr("worlds");
+        break;
+    case CurseforgeAPI::Modpack:
+        sectionStr = tr("modpacks");
+        break;
+    case CurseforgeAPI::Addon:
+        break;
+    case CurseforgeAPI::Customization:
+        break;
+    }
+    auto str = tr("Loaded %1 %2 from Curseforge.").arg(model_->rowCount()).arg(sectionStr);
     ui->statusbar->showMessage(str);
 }
 
@@ -295,7 +332,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
     auto sort = ui->sortSelect->currentIndex();
 
     isSearching_ = true;
-    auto conn = api_->searchMods(gameVersion, index, name, category, sort, [=](const QList<CurseforgeModInfo> &infoList){
+    auto conn = api_->searchMods(sectionId_, gameVersion, index, name, category, sort, [=](const QList<CurseforgeModInfo> &infoList){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);
@@ -463,7 +500,7 @@ QList<QAction *> CurseforgeModBrowser::modActions() const
 
 QList<QAction *> CurseforgeModBrowser::pathActions() const
 {
-    return pathMenu_->actions();
+    return ui->menuPath->actions();
 }
 
 ExploreBrowser *CurseforgeModBrowser::another()
@@ -484,5 +521,29 @@ void CurseforgeModBrowser::on_actionOpen_Folder_triggered()
     else
         path = Config().getDownloadPath();
     openFileInFolder(path);
+}
+
+void CurseforgeModBrowser::on_actionMod_triggered()
+{
+    sectionId_ = CurseforgeAPI::Mod;
+    search();
+}
+
+void CurseforgeModBrowser::on_actionWorld_triggered()
+{
+    sectionId_ = CurseforgeAPI::World;
+    search();
+}
+
+void CurseforgeModBrowser::on_actionModpacks_triggered()
+{
+    sectionId_ = CurseforgeAPI::Modpack;
+    search();
+}
+
+void CurseforgeModBrowser::on_actionTexturepacks_triggered()
+{
+    sectionId_ = CurseforgeAPI::TexturePack;
+    search();
 }
 

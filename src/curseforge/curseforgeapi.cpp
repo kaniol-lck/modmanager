@@ -23,7 +23,7 @@ CurseforgeAPI *CurseforgeAPI::api()
     return &api;
 }
 
-QMetaObject::Connection CurseforgeAPI::searchMods(const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback)
+QMetaObject::Connection CurseforgeAPI::searchMods(int sectionId, const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback)
 {
     QUrl url = PREFIX + "/api/v2/addon/search";
 
@@ -44,7 +44,7 @@ QMetaObject::Connection CurseforgeAPI::searchMods(const GameVersion &version, in
     //search by name
     urlQuery.addQueryItem("searchFilter", searchFilter);
     //mod
-    urlQuery.addQueryItem("sectionId", "6");
+    urlQuery.addQueryItem("sectionId", QString::number(sectionId));
     //sort, 0 for no sort spec
     urlQuery.addQueryItem("sort", QString::number(sort + 1));
 

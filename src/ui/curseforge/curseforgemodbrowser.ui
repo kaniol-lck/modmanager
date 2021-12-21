@@ -268,6 +268,33 @@
     <bool>true</bool>
    </attribute>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuMod">
+    <property name="title">
+     <string>&amp;Mod</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuPath">
+    <property name="title">
+     <string>&amp;Path</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionMod"/>
+    <addaction name="actionModpacks"/>
+    <addaction name="actionTexturepacks"/>
+    <addaction name="actionWorld"/>
+   </widget>
+   <addaction name="menuMod"/>
+   <addaction name="menuPath"/>
+  </widget>
   <action name="actionOpen_Folder">
    <property name="icon">
     <iconset theme="folder">
@@ -275,6 +302,38 @@
    </property>
    <property name="text">
     <string>Open Folder</string>
+   </property>
+  </action>
+  <action name="actionMod">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Mod</string>
+   </property>
+  </action>
+  <action name="actionWorld">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>World</string>
+   </property>
+  </action>
+  <action name="actionModpacks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Modpacks</string>
+   </property>
+  </action>
+  <action name="actionTexturepacks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Texturepacks</string>
    </property>
   </action>
  </widget>
