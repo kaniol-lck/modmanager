@@ -15,6 +15,7 @@ INCLUDEPATH += $$PWD/src
 SOURCES += \
     src/bmclapi.cpp \
     src/curseforge/curseforgeapi.cpp \
+    src/curseforge/curseforgecategoryinfo.cpp \
     src/curseforge/curseforgefileinfo.cpp \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodinfo.cpp \
@@ -130,6 +131,7 @@ HEADERS += \
     src/bmclapi.h \
     src/config.hpp \
     src/curseforge/curseforgeapi.h \
+    src/curseforge/curseforgecategoryinfo.h \
     src/curseforge/curseforgefileinfo.h \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodinfo.h \

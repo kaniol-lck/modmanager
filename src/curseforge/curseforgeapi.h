@@ -7,6 +7,7 @@
 
 #include "gameversion.h"
 #include "curseforgemodinfo.h"
+#include "curseforgecategoryinfo.h"
 
 class CurseforgeAPI : public QObject
 {
@@ -28,6 +29,7 @@ public:
     [[nodiscard]] QMetaObject::Connection getInfo(int id, std::function<void (CurseforgeModInfo)> callback);
     [[nodiscard]] QMetaObject::Connection getTimestamp(std::function<void (QString)> callback);
     [[nodiscard]] QMetaObject::Connection getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback);
+    [[nodiscard]] QMetaObject::Connection getSectionCategories(int sectionId, std::function<void (QList<CurseforgeCategoryInfo>)> callback);
 
     static const QList<std::tuple<int, QString, QString, int> > &getCategories();
 

@@ -50,6 +50,7 @@ private slots:
     void getModList(QString name, int index = 0, int needMore = 20);
     void updateVersionList();
     void updateCategoryList();
+    void updateCategoryList(QList<CurseforgeCategoryInfo> list);
     void updateLocalPathList();
     void search();
     void onSliderChanged(int i);

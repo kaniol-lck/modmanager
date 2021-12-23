@@ -253,6 +253,36 @@ QMetaObject::Connection CurseforgeAPI::getMinecraftVersionList(std::function<voi
     });
 }
 
+QMetaObject::Connection CurseforgeAPI::getSectionCategories(int sectionId, std::function<void (QList<CurseforgeCategoryInfo>)> callback)
+{
+    QUrl url = PREFIX + "/api/v2/category/section/" + QString::number(sectionId);
+
+    QNetworkRequest request(url);
+    MMLogger::network(this) << url;
+    auto reply = accessManager_.get(request);
+    return connect(reply, &QNetworkReply::finished, this, [=]{
+        if(reply->error() != QNetworkReply::NoError) {
+            qDebug() << reply->errorString();
+            return;
+        }
+
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return;
+        }
+        auto list = jsonDocument.toVariant().toList();
+        QList<CurseforgeCategoryInfo> categoryList;
+        for(const auto &entry : qAsConst(list))
+            categoryList << CurseforgeCategoryInfo::fromVariant(entry);
+
+        callback(categoryList);
+        reply->deleteLater();
+    });
+}
+
 const QList<std::tuple<int, QString, QString, int> > &CurseforgeAPI::getCategories()
 {
     static const QList<std::tuple<int, QString, QString, int>> categories{
