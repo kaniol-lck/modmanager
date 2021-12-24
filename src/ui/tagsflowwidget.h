@@ -19,10 +19,11 @@ public:
     void setTagableObject(T* tagableObject)
     {
         isLocalMod_ = std::is_base_of_v<T, LocalMod>;
-        if(tagableObject_) disconnect(tagableObject, &T::tagsChanged, this, &TagsFlowWidget::updateUi);
+        disconnect(conn_);
         tagableObject_ = tagableObject;
         updateUi();
-        connect(tagableObject, &T::tagsChanged, this, &TagsFlowWidget::updateUi);
+        if(tagableObject_)
+            conn_ = connect(tagableObject, &T::tagsChanged, this, &TagsFlowWidget::updateUi);
     }
 
     void updateUi();
@@ -31,6 +32,7 @@ private slots:
     void on_TagsFlowWidget_customContextMenuRequested(const QPoint &pos);
 
 private:
+    QMetaObject::Connection conn_;
     QList<QWidget*> tagWidgets_;
     Tagable *tagableObject_ = nullptr;
     bool isLocalMod_ = false;

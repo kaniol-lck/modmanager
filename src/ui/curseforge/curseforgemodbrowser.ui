@@ -23,6 +23,9 @@
       <height>192</height>
      </rect>
     </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::CustomContextMenu</enum>
+    </property>
     <property name="editTriggers">
      <set>QAbstractItemView::NoEditTriggers</set>
     </property>
@@ -274,13 +277,26 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>29</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMod">
     <property name="title">
      <string>&amp;Mod</string>
     </property>
+    <widget class="QMenu" name="menuDownload">
+     <property name="title">
+      <string>Download</string>
+     </property>
+     <property name="icon">
+      <iconset theme="download">
+       <normaloff>.</normaloff>.</iconset>
+     </property>
+    </widget>
+    <addaction name="actionOpen_Curseforge_Mod_Dialog"/>
+    <addaction name="menuDownload"/>
+    <addaction name="actionOpen_Website_Link"/>
+    <addaction name="actionCopy_Website_Link"/>
    </widget>
    <widget class="QMenu" name="menuPath">
     <property name="title">
@@ -336,7 +352,28 @@
     <string>Texturepacks</string>
    </property>
   </action>
+  <action name="actionCopy_Website_Link">
+   <property name="text">
+    <string>Copy Website Link</string>
+   </property>
+  </action>
+  <action name="actionOpen_Curseforge_Mod_Dialog">
+   <property name="icon">
+    <iconset resource="../../images/image.qrc">
+     <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Curseforge Mod Dialog</string>
+   </property>
+  </action>
+  <action name="actionOpen_Website_Link">
+   <property name="text">
+    <string>Open Website Link</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../images/image.qrc"/>
+ </resources>
  <connections/>
 </ui>

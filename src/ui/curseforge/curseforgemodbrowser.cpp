@@ -5,10 +5,12 @@
 #include <QDir>
 #include <QDebug>
 #include <QAction>
+#include <QClipboard>
 #include <QMenu>
 #include <QStandardItem>
 #include <QStatusBar>
 #include <QActionGroup>
+#include <QDesktopServices>
 
 #include "curseforgemodinfowidget.h"
 #include "curseforgefilelistwidget.h"
@@ -76,7 +78,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     ui->actionModpacks->setData(CurseforgeAPI::Modpack);
     ui->actionTexturepacks->setData(CurseforgeAPI::TexturePack);
     ui->actionWorld->setData(CurseforgeAPI::World);
-    for(auto action : actionGroup->actions())
+    for(const auto &action : actionGroup->actions())
         if(action->data().toInt() == sectionId_)
             action->setChecked(true);
 
@@ -497,18 +499,17 @@ void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 void CurseforgeModBrowser::onItemSelected()
 {
     auto indexes = ui->modListView->selectionModel()->selectedRows();
-    if(indexes.isEmpty()) return;
-    auto index = indexes.first();
-    auto item = model_->itemFromIndex(index);
-    auto mod = item->data().value<CurseforgeMod*>();
-    if(mod){
-        infoWidget_->setMod(mod);
-        fileListWidget_->setMod(mod);
-        if(mod != selectedMod_){
-            selectedMod_ = mod;
-            emit selectedModsChanged(mod);
-        }
-    }
+    if(!indexes.isEmpty()){
+        auto index = indexes.first();
+        auto item = model_->itemFromIndex(index);
+        selectedMod_ = item->data().value<CurseforgeMod*>();
+    } else
+        selectedMod_ = nullptr;
+    ui->menuDownload->setEnabled(selectedMod_);
+    ui->actionCopy_Website_Link->setEnabled(selectedMod_);
+    emit selectedModsChanged(selectedMod_);
+    infoWidget_->setMod(selectedMod_);
+    fileListWidget_->setMod(selectedMod_);
 }
 
 void CurseforgeModBrowser::updateIndexWidget()
@@ -550,7 +551,7 @@ CurseforgeMod *CurseforgeModBrowser::selectedMod() const
 
 QList<QAction *> CurseforgeModBrowser::modActions() const
 {
-    return modMenu_->actions();
+    return ui->menuMod->actions();
 }
 
 QList<QAction *> CurseforgeModBrowser::pathActions() const
@@ -612,5 +613,61 @@ void CurseforgeModBrowser::on_actionTexturepacks_triggered()
     connect(this, &QObject::destroyed, this, disconnecter(
                 CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
 
+}
+
+void CurseforgeModBrowser::on_menuDownload_aboutToShow()
+{
+    ui->menuDownload->clear();
+    ui->menuDownload->setStyleSheet("QMenu { menu-scrollable: 1; }");
+    if(!selectedMod_) return;
+    auto &&files = selectedMod_->modInfo().allFileList().isEmpty()?
+                selectedMod_->modInfo().latestFileList() : selectedMod_->modInfo().allFileList();
+    for(auto &&file : files){
+        ui->menuDownload->addAction(file.displayName() + " ("+ sizeConvert(file.size()) + ")", this, [=]{
+            auto index = ui->modListView->selectionModel()->currentIndex();
+            if(!index.isValid()) return ;
+            auto widget = qobject_cast<CurseforgeModItemWidget*>(ui->modListView->indexWidget(index));
+            if(!widget) return;
+            widget->downloadFile(file);
+        });
+    }
+}
+
+void CurseforgeModBrowser::on_actionCopy_Website_Link_triggered()
+{
+    if(!selectedMod_) return;
+    QApplication::clipboard()->setText(selectedMod_->modInfo().websiteUrl().toString());
+}
+
+void CurseforgeModBrowser::on_actionOpen_Curseforge_Mod_Dialog_triggered()
+{
+    if(!selectedMod_) return;
+    if(selectedMod_ && !selectedMod_->parent()){
+        auto dialog = new CurseforgeModDialog(this, selectedMod_);
+        //set parent
+        selectedMod_->setParent(dialog);
+        dialog->setDownloadPath(downloadPath_);
+        connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
+        connect(dialog, &CurseforgeModDialog::finished, this, [=]{
+            selectedMod_->setParent(nullptr);
+        });
+        dialog->show();
+    }
+}
+
+void CurseforgeModBrowser::on_modListView_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    menu->addAction(ui->actionOpen_Curseforge_Mod_Dialog);
+    menu->addMenu(ui->menuDownload);
+    menu->addAction(ui->actionCopy_Website_Link);
+    menu->addAction(ui->actionOpen_Website_Link);
+    menu->exec(ui->modListView->mapToGlobal(pos));
+}
+
+void CurseforgeModBrowser::on_actionOpen_Website_Link_triggered()
+{
+    if(!selectedMod_) return;
+    QDesktopServices::openUrl(selectedMod_->modInfo().websiteUrl());
 }
 

@@ -24,10 +24,10 @@ public:
 
 public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
+    void downloadFile(const CurseforgeFileInfo &fileInfo);
     void updateUi();
 private slots:
     void updateIcon();
-    void downloadFile(const CurseforgeFileInfo &fileInfo);
     void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
 private:
