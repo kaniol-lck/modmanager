@@ -348,8 +348,10 @@
       <string>Export</string>
      </property>
      <property name="icon">
-      <iconset theme="document-export"/>
+      <iconset theme="document-export">
+       <normaloff>.</normaloff>.</iconset>
      </property>
+     <addaction name="actionExport_Compressed_File"/>
      <addaction name="actionExport_manifest_json"/>
      <addaction name="actionExport_modlist_html_Cuseforge"/>
      <addaction name="actionExport_modlist_html_Modrinth"/>
@@ -584,6 +586,11 @@
    </property>
    <property name="text">
     <string>Open In GitHub</string>
+   </property>
+  </action>
+  <action name="actionExport_Compressed_File">
+   <property name="text">
+    <string>Export Compressed File</string>
    </property>
   </action>
  </widget>

@@ -92,6 +92,12 @@ LocalModPath::~LocalModPath()
     qDeleteAll(modMap_);
 }
 
+QString LocalModPath::modsJsonFilePath() const
+{
+    QDir dir(info_.path());
+    return dir.absoluteFilePath(kFileName);
+}
+
 void LocalModPath::loadMods(bool autoLoaderType)
 {
     if(isLoading_) return;

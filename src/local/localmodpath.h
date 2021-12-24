@@ -20,6 +20,8 @@ public:
     explicit LocalModPath(const LocalModPathInfo &info);
     ~LocalModPath();
 
+    QString modsJsonFilePath() const;
+
     void loadMods(bool autoLoaderType = false);
     void addNormalMod(LocalModFile *file);
     void addOldMod(LocalModFile *file);

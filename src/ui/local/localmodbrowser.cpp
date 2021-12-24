@@ -13,6 +13,9 @@
 #include <QInputDialog>
 #include <QCheckBox>
 #include <QActionGroup>
+#include <QFileDialog>
+#include <JlCompress.h>
+#include <QtConcurrent>
 
 #include "localmodinfowidget.h"
 #include "localfilelistwidget.h"
@@ -918,5 +921,26 @@ void LocalModBrowser::on_actionOpen_In_GitHub_triggered()
     GitHubRepoInfo repoInfo(list.at(1), list.at(2));
     auto browser = new GitHubRepoBrowser(this, repoInfo);
     browser->show();
+}
+
+void LocalModBrowser::on_actionExport_Compressed_File_triggered()
+{
+    //TODO: export configure dialog
+    auto filePath = QFileDialog::getSaveFileName(this, tr("Save your compressed file"),
+                                                  QDir(modPath_->info().path()).filePath("mods.zip"), "*.zip");
+    if(filePath.isEmpty()) return;
+    QStringList list;
+    for(int i = 0; i < model_->rowCount(); i++){
+        auto item = model_->item(i);
+        auto mod = item->data().value<LocalMod*>();
+        list << mod->modFile()->fileInfo().absoluteFilePath();
+    }
+    list << modPath_->modsJsonFilePath();
+    QtConcurrent::run([=]{
+        if(!JlCompress::compressFiles(filePath, list))
+            QMessageBox::warning(this, tr("ZIP Failed"), tr("Failed to create zip file"));
+        else
+            openFileInFolder(filePath);
+    });
 }
 
