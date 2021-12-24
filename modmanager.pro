@@ -387,7 +387,7 @@ unix {
 macx {
   message("macos build")
   INCLUDEPATH += /usr/local/include
-  INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.1/quazip
+  INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.2/quazip
 }
 
 win32 {
