@@ -25,13 +25,11 @@ public:
 public slots:
     void setDownloadPath(LocalModPath *newDownloadPath);
     void updateUi();
+    void downloadFile(const ModrinthFileInfo &fileInfo);
 
 private slots:
     void updateIcon();
     void updateFileList();
-
-    void downloadFile(const ModrinthFileInfo &fileInfo);
-
     void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
 private:

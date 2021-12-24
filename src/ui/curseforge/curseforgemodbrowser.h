@@ -68,11 +68,8 @@ private slots:
     void on_actionTexturepacks_triggered();
     void on_menuDownload_aboutToShow();
     void on_actionCopy_Website_Link_triggered();
-
     void on_actionOpen_Curseforge_Mod_Dialog_triggered();
-
     void on_modListView_customContextMenuRequested(const QPoint &pos);
-
     void on_actionOpen_Website_Link_triggered();
 
 protected:

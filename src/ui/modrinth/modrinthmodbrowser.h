@@ -30,6 +30,8 @@ public:
     QWidget *fileListWidget() const override;
     ModrinthMod *selectedMod() const;
 
+    QList<QAction *> modActions() const override;
+
     ExploreBrowser *another() override;
 
 signals:
@@ -55,6 +57,11 @@ private slots:
     void onItemSelected();
     void updateIndexWidget();
     void on_actionOpen_Folder_triggered();
+    void on_menuDownload_aboutToShow();
+    void on_actionCopy_Website_Link_triggered();
+    void on_actionOpen_Modrinth_Mod_Dialog_triggered();
+    void on_modListView_customContextMenuRequested(const QPoint &pos);
+    void on_actionOpen_Website_Link_triggered();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

@@ -42,7 +42,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
-    ui->menuPath->insertActions(ui->menuPath->actions().first(), pathMenu_->actions());
+    ui->menu_Path->insertActions(ui->menu_Path->actions().first(), pathMenu_->actions());
     ui->modListView->setModel(model_);
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
@@ -82,6 +82,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
         if(action->data().toInt() == sectionId_)
             action->setChecked(true);
 
+    onItemSelected();
     updateVersionList();
     if(sectionId_ == CurseforgeAPI::Mod)
         updateCategoryList();
@@ -505,8 +506,10 @@ void CurseforgeModBrowser::onItemSelected()
         selectedMod_ = item->data().value<CurseforgeMod*>();
     } else
         selectedMod_ = nullptr;
+    ui->actionOpen_Curseforge_Mod_Dialog->setEnabled(selectedMod_);
     ui->menuDownload->setEnabled(selectedMod_);
     ui->actionCopy_Website_Link->setEnabled(selectedMod_);
+    ui->actionOpen_Website_Link->setEnabled(selectedMod_);
     emit selectedModsChanged(selectedMod_);
     infoWidget_->setMod(selectedMod_);
     fileListWidget_->setMod(selectedMod_);
@@ -551,12 +554,12 @@ CurseforgeMod *CurseforgeModBrowser::selectedMod() const
 
 QList<QAction *> CurseforgeModBrowser::modActions() const
 {
-    return ui->menuMod->actions();
+    return ui->menu_Mod->actions();
 }
 
 QList<QAction *> CurseforgeModBrowser::pathActions() const
 {
-    return ui->menuPath->actions();
+    return ui->menu_Path->actions();
 }
 
 ExploreBrowser *CurseforgeModBrowser::another()
@@ -670,4 +673,3 @@ void CurseforgeModBrowser::on_actionOpen_Website_Link_triggered()
     if(!selectedMod_) return;
     QDesktopServices::openUrl(selectedMod_->modInfo().websiteUrl());
 }
-

@@ -280,7 +280,7 @@
      <height>31</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuMod">
+   <widget class="QMenu" name="menu_Mod">
     <property name="title">
      <string>&amp;Mod</string>
     </property>
@@ -298,7 +298,7 @@
     <addaction name="actionOpen_Website_Link"/>
     <addaction name="actionCopy_Website_Link"/>
    </widget>
-   <widget class="QMenu" name="menuPath">
+   <widget class="QMenu" name="menu_Path">
     <property name="title">
      <string>&amp;Path</string>
     </property>
@@ -308,8 +308,8 @@
     <addaction name="actionTexturepacks"/>
     <addaction name="actionWorld"/>
    </widget>
-   <addaction name="menuMod"/>
-   <addaction name="menuPath"/>
+   <addaction name="menu_Mod"/>
+   <addaction name="menu_Path"/>
   </widget>
   <action name="actionOpen_Folder">
    <property name="icon">

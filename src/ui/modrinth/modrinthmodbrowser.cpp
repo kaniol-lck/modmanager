@@ -4,7 +4,9 @@
 #include <QScrollBar>
 #include <QDir>
 #include <QMenu>
+#include <QClipboard>
 #include <QStandardItem>
+#include <QDesktopServices>
 
 #include "modrinthmodinfowidget.h"
 #include "modrinthfilelistwidget.h"
@@ -62,6 +64,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
     ui->loaderSelect->blockSignals(false);
 
+    onItemSelected();
     updateVersionList();
     updateCategoryList();
     updateLocalPathList();
@@ -509,18 +512,19 @@ void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 void ModrinthModBrowser::onItemSelected()
 {
     auto indexes = ui->modListView->selectionModel()->selectedRows();
-    if(indexes.isEmpty()) return;
-    auto index = indexes.first();
-    auto item = model_->itemFromIndex(index);
-    auto mod = item->data().value<ModrinthMod*>();
-    if(mod){
-        infoWidget_->setMod(mod);
-        fileListWidget_->setMod(mod);
-        if(mod != selectedMod_){
-            selectedMod_ = mod;
-            emit selectedModsChanged(mod);
-        }
-    }
+    if(!indexes.isEmpty()){
+        auto index = indexes.first();
+        auto item = model_->itemFromIndex(index);
+        selectedMod_ = item->data().value<ModrinthMod*>();
+    } else
+        selectedMod_ = nullptr;
+    ui->actionOpen_Modrinth_Mod_Dialog->setEnabled(selectedMod_);
+    ui->menuDownload->setEnabled(selectedMod_);
+    ui->actionCopy_Website_Link->setEnabled(selectedMod_);
+    ui->actionOpen_Website_Link->setEnabled(selectedMod_);
+    emit selectedModsChanged(selectedMod_);
+    infoWidget_->setMod(selectedMod_);
+    fileListWidget_->setMod(selectedMod_);
 }
 
 void ModrinthModBrowser::updateIndexWidget()
@@ -558,6 +562,11 @@ ModrinthMod *ModrinthModBrowser::selectedMod() const
     return selectedMod_;
 }
 
+QList<QAction *> ModrinthModBrowser::modActions() const
+{
+    return ui->menu_Mod->actions();
+}
+
 ExploreBrowser *ModrinthModBrowser::another()
 {
     return new ModrinthModBrowser;
@@ -571,4 +580,58 @@ void ModrinthModBrowser::on_actionOpen_Folder_triggered()
     else
         path = Config().getDownloadPath();
     openFileInFolder(path);
+}
+
+void ModrinthModBrowser::on_menuDownload_aboutToShow()
+{
+    ui->menuDownload->clear();
+    ui->menuDownload->setStyleSheet("QMenu { menu-scrollable: 1; }");
+    if(!selectedMod_) return;
+    for(auto &&file : selectedMod_->modInfo().fileList()){
+        ui->menuDownload->addAction(file.displayName(), this, [=]{
+            auto index = ui->modListView->selectionModel()->currentIndex();
+            if(!index.isValid()) return ;
+            auto widget = qobject_cast<ModrinthModItemWidget*>(ui->modListView->indexWidget(index));
+            if(!widget) return;
+            widget->downloadFile(file);
+        });
+    }
+}
+
+void ModrinthModBrowser::on_actionCopy_Website_Link_triggered()
+{
+    if(!selectedMod_) return;
+    QApplication::clipboard()->setText(selectedMod_->modInfo().websiteUrl().toString());
+}
+
+void ModrinthModBrowser::on_actionOpen_Modrinth_Mod_Dialog_triggered()
+{
+    if(!selectedMod_) return;
+    if(selectedMod_ && !selectedMod_->parent()){
+        auto dialog = new ModrinthModDialog(this, selectedMod_);
+        //set parent
+        selectedMod_->setParent(dialog);
+        dialog->setDownloadPath(downloadPath_);
+        connect(this, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
+        connect(dialog, &ModrinthModDialog::finished, this, [=]{
+            selectedMod_->setParent(nullptr);
+        });
+        dialog->show();
+    }
+}
+
+void ModrinthModBrowser::on_modListView_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    menu->addAction(ui->actionOpen_Modrinth_Mod_Dialog);
+    menu->addMenu(ui->menuDownload);
+    menu->addAction(ui->actionCopy_Website_Link);
+    menu->addAction(ui->actionOpen_Website_Link);
+    menu->exec(ui->modListView->mapToGlobal(pos));
+}
+
+void ModrinthModBrowser::on_actionOpen_Website_Link_triggered()
+{
+    if(!selectedMod_) return;
+    QDesktopServices::openUrl(selectedMod_->modInfo().websiteUrl());
 }

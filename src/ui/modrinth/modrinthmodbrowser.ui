@@ -23,6 +23,9 @@
       <height>192</height>
      </rect>
     </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::CustomContextMenu</enum>
+    </property>
     <property name="verticalScrollMode">
      <enum>QAbstractItemView::ScrollPerPixel</enum>
     </property>
@@ -241,6 +244,24 @@
      <height>31</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu_Mod">
+    <property name="title">
+     <string>&amp;Mod</string>
+    </property>
+    <widget class="QMenu" name="menuDownload">
+     <property name="title">
+      <string>Download</string>
+     </property>
+     <property name="icon">
+      <iconset theme="download"/>
+     </property>
+    </widget>
+    <addaction name="actionOpen_Modrinth_Mod_Dialog"/>
+    <addaction name="menuDownload"/>
+    <addaction name="actionOpen_Website_Link"/>
+    <addaction name="actionCopy_Website_Link"/>
+   </widget>
+   <addaction name="menu_Mod"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -254,7 +275,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="actionOpen_Folder"/>
   </widget>
@@ -281,7 +302,28 @@
     <string>Open Folder</string>
    </property>
   </action>
+  <action name="actionCopy_Website_Link">
+   <property name="text">
+    <string>Copy Website Link</string>
+   </property>
+  </action>
+  <action name="actionOpen_Website_Link">
+   <property name="text">
+    <string>Open Website Link</string>
+   </property>
+  </action>
+  <action name="actionOpen_Modrinth_Mod_Dialog">
+   <property name="icon">
+    <iconset resource="../../images/image.qrc">
+     <normaloff>:/image/modrinth.svg</normaloff>:/image/modrinth.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Modrinth Mod Dialog</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../images/image.qrc"/>
+ </resources>
  <connections/>
 </ui>
