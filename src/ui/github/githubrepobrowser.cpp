@@ -157,5 +157,6 @@ QWidget *GitHubRepoBrowser::getIndexWidget(QStandardItem *item)
 //            modItemWidget->setDownloadPath(downloadPath_);
 //            connect(this, &ReplayModBrowser::downloadPathChanged, modItemWidget, &ReplayModItemWidget::setDownloadPath);
         return widget;
-    }
+    } else
+        return nullptr;
 }

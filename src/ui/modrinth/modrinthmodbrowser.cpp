@@ -173,7 +173,7 @@ void ModrinthModBrowser::updateVersionList()
     auto getVersionAction = [=](const GameVersion &version){
         auto versionAction = new QAction(version);
         versionAction->setCheckable(multiSelectionAction->isChecked());
-        connect(versionAction, &QAction::toggled, this, [=](bool checked){
+        connect(versionAction, &QAction::triggered, this, [=](bool checked){
             if(multiSelectionAction->isChecked()){
                 if(checked)
                     currentGameVersions_ << version;
@@ -196,7 +196,7 @@ void ModrinthModBrowser::updateVersionList()
                 QStringList list;
                 for(const auto &version : qAsConst(currentGameVersions_))
                     list << version;
-                ui->versionSelectButton->setText(tr("%1 etc.").arg(version));
+                ui->versionSelectButton->setText(tr("%1 etc.").arg(list.first()));
                 ui->versionSelectButton->setToolTip(list.join(tr(", ")));
             }
         });
@@ -224,8 +224,8 @@ void ModrinthModBrowser::updateVersionList()
         auto submenu = new UnclosedMenu(submenuName);
         if(type != "release")
             submenu->menuAction()->setData(true);
-        submenu->setUnclosed(multiSelectionAction->isChecked());
-        connect(multiSelectionAction, &QAction::triggered, submenu, &UnclosedMenu::setUnclosed);
+//        submenu->setUnclosed(multiSelectionAction->isChecked());
+        connect(multiSelectionAction, &QAction::toggled, submenu, &UnclosedMenu::setUnclosed);
         submenus[submenuName] = submenu;
         keys << submenuName;
     }
@@ -344,7 +344,7 @@ void ModrinthModBrowser::updateCategoryList()
                     }); it != categories.cend())
                         list << std::get<0>(*it);
                 }
-                ui->categorySelectButton->setText(tr("%1 etc.").arg(name));
+                ui->categorySelectButton->setText(tr("%1 etc.").arg(list.first()));
                 ui->categorySelectButton->setToolTip(list.join(tr(", ")));
             }
         });

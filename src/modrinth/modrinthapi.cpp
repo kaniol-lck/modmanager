@@ -4,6 +4,7 @@
 #include <QUrlQuery>
 #include <QJsonDocument>
 #include <QDebug>
+#include <QJsonArray>
 
 #include "util/tutil.hpp"
 #include "util/mmlogger.h"
@@ -54,23 +55,30 @@ QMetaObject::Connection ModrinthAPI::searchMods(const QString name, int index, c
     //search page size
     urlQuery.addQueryItem("limit", QString::number(Config().getSearchResultCount()));
 
-    QStringList facets;
+    QJsonArray facets;
     //game version
+    QJsonArray versionFacets;
     for(const auto &version : versions)
         if(version != GameVersion::Any)
-            facets << "\"versions:" + version + "\"";
+            versionFacets << "versions:" + version;
+    if(!versionFacets.isEmpty())
+        facets << versionFacets;
 
     //loader type
+    QJsonArray categoryFacets;
     if(type != ModLoaderType::Any)
-        facets << "\"categories:" + ModLoaderType::toString(type) + "\"";
+        categoryFacets << "categories:" + ModLoaderType::toString(type);
 
     //loader type
     for(const auto &category : categories)
         if(!category.isEmpty())
-            facets << "\"categories:" + category + "\"";
+            categoryFacets << "categories:" + category;
+
+    if(!categoryFacets.isEmpty())
+        facets << categoryFacets;
 
     if(!facets.isEmpty())
-        urlQuery.addQueryItem("facets", "[[" + facets.join(",") + "]]");
+        urlQuery.addQueryItem("facets", QJsonDocument(facets).toJson(QJsonDocument::Compact));
 
     url.setQuery(urlQuery);
     QNetworkRequest request(url);
@@ -85,7 +93,7 @@ QMetaObject::Connection ModrinthAPI::searchMods(const QString name, int index, c
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
-        if (error.error != QJsonParseError::NoError) {
+        if(error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
             return;
         }
