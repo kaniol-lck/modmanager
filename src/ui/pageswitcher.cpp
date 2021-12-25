@@ -143,9 +143,13 @@ void PageSwitcher::syncPathList()
 
     //reset selected path
     if(selectedBrowser){
-        if(auto index = findLocalBrowser(selectedBrowser->modPath()); index >= 0)
+        if(auto index = findLocalBrowser(selectedBrowser->modPath()); index >= 0){
             setPage(PageSwitcher::Local, index);
+            return;
+        }
     }
+    //fallback
+    setPage(Explore, 0);
 }
 
 void PageSwitcher::updateUi()
