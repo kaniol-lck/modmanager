@@ -21,16 +21,10 @@
 ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/replay.png"), "ReplayMod", QUrl("https://www.replaymod.com")),
     ui(new Ui::ReplayModBrowser),
-    model_(new QStandardItemModel(this)),
-    statusBarWidget_(new ExploreStatusBarWidget(this)),
     api_(new ReplayAPI())
 {
     ui->setupUi(this);
-    ui->modListView->setModel(model_);
-    ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->modListView->setProperty("class", "ModList");
-
-    setCentralWidget(ui->modListView);
+    initUi();
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
@@ -54,7 +48,6 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
     connect(ui->loaderSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
     connect(ui->searchText, &QLineEdit::textChanged, this, &ReplayModBrowser::filterList);
-    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &ReplayModBrowser::updateIndexWidget);
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;
@@ -129,36 +122,6 @@ void ReplayModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     emit downloadPathChanged(downloadPath_);
 }
 
-void ReplayModBrowser::updateIndexWidget()
-{
-    auto beginRow = ui->modListView->indexAt(QPoint(0, 0)).row();
-    if(beginRow < 0) return;
-    auto endRow = ui->modListView->indexAt(QPoint(0, ui->modListView->height())).row();
-    if(endRow < 0)
-        endRow = model_->rowCount() - 1;
-    else
-        //extra 2
-        endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
-        auto index = model_->index(row, 0);
-        if(ui->modListView->indexWidget(index)) continue;
-        auto item = model_->item(row);
-        auto mod = item->data().value<ReplayMod*>();
-        if(mod){
-            auto modItemWidget = new ReplayModItemWidget(this, mod);
-            modItemWidget->setDownloadPath(downloadPath_);
-            connect(this, &ReplayModBrowser::downloadPathChanged, modItemWidget, &ReplayModItemWidget::setDownloadPath);
-            ui->modListView->setIndexWidget(index, modItemWidget);
-        }
-    }
-}
-
-void ReplayModBrowser::paintEvent(QPaintEvent *event)
-{
-    updateIndexWidget();
-    QWidget::paintEvent(event);
-}
-
 void ReplayModBrowser::getModList()
 {
     setCursor(Qt::BusyCursor);
@@ -202,6 +165,15 @@ void ReplayModBrowser::getModList()
     });
 }
 
+QWidget *ReplayModBrowser::getIndexWidget(QStandardItem *item)
+{
+    auto mod = item->data().value<ReplayMod*>();
+    if(mod)
+        return new ReplayModItemWidget(this, mod);
+    else
+        return nullptr;
+}
+
 void ReplayModBrowser::filterList()
 {
     auto gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
@@ -211,10 +183,10 @@ void ReplayModBrowser::filterList()
         auto item = model_->item(row);
         auto mod = item->data().value<ReplayMod*>();
         if(mod){
-            ui->modListView->setRowHidden(row, (loaderType != ModLoaderType::Any && mod->modInfo().loaderType() != loaderType) ||
-                    (gameVersion != GameVersion::Any && gameVersion != mod->modInfo().gameVersion()) ||
-                    !(mod->modInfo().name().toLower().contains(searchText) ||
-                      mod->modInfo().gameVersionString().contains(searchText)));
+//            modListView_->setRowHidden(row, (loaderType != ModLoaderType::Any && mod->modInfo().loaderType() != loaderType) ||
+//                    (gameVersion != GameVersion::Any && gameVersion != mod->modInfo().gameVersion()) ||
+//                    !(mod->modInfo().name().toLower().contains(searchText) ||
+//                      mod->modInfo().gameVersionString().contains(searchText)));
         }
     }
 }

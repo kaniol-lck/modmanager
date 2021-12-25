@@ -22,17 +22,11 @@
 OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/optifine.png"), "OptiFine", QUrl("https://www.optifine.net")),
     ui(new Ui::OptifineModBrowser),
-    model_(new QStandardItemModel(this)),
-    statusBarWidget_(new ExploreStatusBarWidget(this)),
     api_(new OptifineAPI(this)),
     bmclapi_(new BMCLAPI(this))
 {
     ui->setupUi(this);
-    ui->modListView->setModel(model_);
-    ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->modListView->setProperty("class", "ModList");
-
-    setCentralWidget(ui->modListView);
+    initUi();
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
@@ -51,7 +45,6 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     connect(ui->showPreview, &QCheckBox::stateChanged, this, &OptifineModBrowser::filterList);
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &OptifineModBrowser::filterList);
     connect(ui->searchText, &QLineEdit::textChanged, this, &OptifineModBrowser::filterList);
-    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &OptifineModBrowser::updateIndexWidget);
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;
@@ -132,9 +125,9 @@ void OptifineModBrowser::filterList()
         auto item = model_->item(row);
         auto mod = item->data().value<OptifineMod*>();
         if(mod){
-            ui->modListView->setRowHidden(row, (gameVersion != GameVersion::Any && mod->modInfo().gameVersion() != gameVersion) ||
-                                          (!showPreview && mod->modInfo().isPreview()) ||
-                                          !(mod->modInfo().name().toLower().contains(searchText) || mod->modInfo().gameVersion().toString().contains(searchText)));
+//            modListView_->setRowHidden(row, (gameVersion != GameVersion::Any && mod->modInfo().gameVersion() != gameVersion) ||
+//                                          (!showPreview && mod->modInfo().isPreview()) ||
+//                                          !(mod->modInfo().name().toLower().contains(searchText) || mod->modInfo().gameVersion().toString().contains(searchText)));
         }
     }
 }
@@ -171,7 +164,7 @@ void OptifineModBrowser::getModList()
             item->setData(QVariant::fromValue(mod));
             model_->appendRow(item);
             item->setSizeHint(QSize(0, 100));
-            ui->modListView->setRowHidden(item->row(), modInfo.isPreview());
+//            modListView_->setRowHidden(item->row(), modInfo.isPreview());
         }
         ui->versionSelect->clear();
         ui->versionSelect->addItem(tr("Any"));
@@ -195,6 +188,15 @@ void OptifineModBrowser::getModList()
         bmclapi_->getOptifineList(callback);
 }
 
+QWidget *OptifineModBrowser::getIndexWidget(QStandardItem *item)
+{
+    auto mod = item->data().value<OptifineMod*>();
+    if(mod)
+        return new OptifineModItemWidget(this, mod);
+    else
+        return nullptr;
+}
+
 void OptifineModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
 {
     if(index < 0 || index >= ui->downloadPathSelect->count()) return;
@@ -203,36 +205,6 @@ void OptifineModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     else
         downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
     emit downloadPathChanged(downloadPath_);
-}
-
-void OptifineModBrowser::updateIndexWidget()
-{
-    auto beginRow = ui->modListView->indexAt(QPoint(0, 0)).row();
-    if(beginRow < 0) return;
-    auto endRow = ui->modListView->indexAt(QPoint(0, ui->modListView->height())).row();
-    if(endRow < 0)
-        endRow = model_->rowCount() - 1;
-    else
-        //extra 2
-        endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
-        auto index = model_->index(row, 0);
-        if(ui->modListView->indexWidget(index)) continue;
-        auto item = model_->item(row);
-        auto mod = item->data().value<OptifineMod*>();
-        if(mod){
-            auto modItemWidget = new OptifineModItemWidget(this, mod);
-            modItemWidget->setDownloadPath(downloadPath_);
-            connect(this, &OptifineModBrowser::downloadPathChanged, modItemWidget, &OptifineModItemWidget::setDownloadPath);
-            ui->modListView->setIndexWidget(index, modItemWidget);
-        }
-    }
-}
-
-void OptifineModBrowser::paintEvent(QPaintEvent *event)
-{
-    updateIndexWidget();
-    QWidget::paintEvent(event);
 }
 
 void OptifineModBrowser::on_actionGet_OptiFabric_triggered()

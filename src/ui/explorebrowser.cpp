@@ -5,16 +5,33 @@
 #include <QDesktopServices>
 #include <QDockWidget>
 #include <QMenu>
+#include <QStandardItem>
 #include <QUrl>
+
+#include "util/smoothscrollbar.h"
 
 ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString &name, const QUrl &url) :
     Browser(parent),
+    statusBarWidget_(new ExploreStatusBarWidget(this)),
+    model_(new QStandardItemModel(this)),
     modMenu_(new QMenu(this)),
     pathMenu_(new QMenu(this)),
+    modListView_(new QListView(this)),
     icon_(icon),
     name_(name),
     visitWebsiteAction_(new QAction(icon, tr("Visit %1").arg(name), this))
 {
+    modListView_->setModel(model_);
+    modListView_->setVerticalScrollBar(new SmoothScrollBar(this));
+    modListView_->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    modListView_->setProperty("class", "ModList");
+    modListView_->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    connect(modListView_, &QWidget::customContextMenuRequested, this, &ExploreBrowser::onCustomContextMenuRequested);
+    connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onSliderChanged);
+    connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this, &ExploreBrowser::updateIndexWidget);
+    connect(modListView_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExploreBrowser::onItemSelected);
+
     connect(visitWebsiteAction_, &QAction::triggered, this, [=]{
         QDesktopServices::openUrl(url);
     });
@@ -56,4 +73,83 @@ void ExploreBrowser::openDialog()
 //    dialog->setWindowIcon(icon_);
 //    dialog->show();
     another()->show();
+}
+
+void ExploreBrowser::onSliderChanged(int i)
+{
+    if(i >= modListView_->verticalScrollBar()->maximum() - 1000){
+        loadMore();
+    }
+}
+
+void ExploreBrowser::onItemSelected()
+{
+    auto indexes = modListView_->selectionModel()->selectedRows();
+    if(!indexes.isEmpty()){
+        auto index = indexes.first();
+        auto item = model_->itemFromIndex(index);
+        onSelectedItemChanged(item);
+    } else
+        onSelectedItemChanged(nullptr);
+}
+
+void ExploreBrowser::updateIndexWidget()
+{
+    auto beginRow = modListView_->indexAt(QPoint(0, 0)).row();
+    if(beginRow < 0) return;
+    auto endRow = modListView_->indexAt(QPoint(0, modListView_->height())).row();
+    if(endRow < 0)
+        endRow = model_->rowCount() - 1;
+    else
+        //extra 2
+        endRow += 2;
+    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
+        auto index = model_->index(row, 0);
+        if(modListView_->indexWidget(index)) continue;
+        auto item = model_->item(row);
+        if(auto widget = getIndexWidget(item)){
+            modListView_->setIndexWidget(index, widget);
+            item->setSizeHint(QSize(0, widget->height()));
+        }
+//        auto mod = item->data().value<ModrinthMod*>();
+//        if(mod){
+//            auto modItemWidget = new ModrinthModItemWidget(modListView_, mod);
+//            modItemWidget->setDownloadPath(downloadPath_);
+//            connect(this, &ModrinthModBrowser::downloadPathChanged, modItemWidget, &ModrinthModItemWidget::setDownloadPath);
+//        }
+    }
+}
+
+void ExploreBrowser::onCustomContextMenuRequested(const QPoint &pos)
+{
+    if(auto menu = getMenu())
+        menu->exec(modListView_->mapToGlobal(pos));
+}
+
+void ExploreBrowser::paintEvent(QPaintEvent *event)
+{
+    updateIndexWidget();
+    QWidget::paintEvent(event);
+}
+
+void ExploreBrowser::initUi()
+{
+    setCentralWidget(modListView_);
+    onItemSelected();
+}
+
+void ExploreBrowser::loadMore()
+{}
+
+void ExploreBrowser::onSelectedItemChanged(QStandardItem *item)
+{}
+
+QWidget *ExploreBrowser::getIndexWidget(QStandardItem *item)
+{
+    return nullptr;
+}
+
+QMenu *ExploreBrowser::getMenu()
+{
+    return nullptr;
 }

@@ -37,20 +37,16 @@ private slots:
     void filterList();
     void updateStatusText();
     void on_downloadPathSelect_currentIndexChanged(int index);
-    void updateIndexWidget();
     void on_actionOpen_Folder_triggered();
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::ReplayModBrowser *ui;
-    QStandardItemModel *model_;
-    ExploreStatusBarWidget *statusBarWidget_;
     ReplayAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     bool inited_ = false;
 
     void getModList();
+    QWidget *getIndexWidget(QStandardItem *item) override;
 };
 
 #endif // REPLAYMODBROWSER_H

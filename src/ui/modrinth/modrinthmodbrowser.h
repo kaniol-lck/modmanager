@@ -48,29 +48,21 @@ private slots:
     void updateCategoryList();
     void updateLocalPathList();
     void search();
-    void onSliderChanged(int i);
     void updateStatusText();
     void on_modListView_doubleClicked(const QModelIndex &index);
     void on_sortSelect_currentIndexChanged(int);
     void on_loaderSelect_currentIndexChanged(int);
     void on_downloadPathSelect_currentIndexChanged(int index);
-    void onItemSelected();
-    void updateIndexWidget();
     void on_actionOpen_Folder_triggered();
     void on_menuDownload_aboutToShow();
     void on_actionCopy_Website_Link_triggered();
     void on_actionOpen_Modrinth_Mod_Dialog_triggered();
-    void on_modListView_customContextMenuRequested(const QPoint &pos);
     void on_actionOpen_Website_Link_triggered();
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::ModrinthModBrowser *ui;
-    QStandardItemModel *model_;
     ModrinthModInfoWidget *infoWidget_;
     ModrinthFileListWidget *fileListWidget_;
-    ExploreStatusBarWidget *statusBarWidget_;
     ModrinthAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     QString currentName_;
@@ -85,6 +77,10 @@ private:
     LocalMod *localMod_ = nullptr;
     ModrinthMod* selectedMod_ = nullptr;
 
+    void loadMore() override;
+    void onSelectedItemChanged(QStandardItem *item) override;
+    QWidget *getIndexWidget(QStandardItem *item) override;
+    QMenu *getMenu() override;
     void getModList(QString name, int index = 0);
 };
 

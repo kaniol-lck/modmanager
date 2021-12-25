@@ -53,13 +53,10 @@ private slots:
     void updateCategoryList(QList<CurseforgeCategoryInfo> list);
     void updateLocalPathList();
     void search();
-    void onSliderChanged(int i);
     void updateStatusText();
     void on_modListView_doubleClicked(const QModelIndex &index);
     void on_loaderSelect_currentIndexChanged(int index);
     void on_downloadPathSelect_currentIndexChanged(int index);
-    void onItemSelected();
-    void updateIndexWidget();
     void on_sortSelect_currentIndexChanged(int);
     void on_actionOpen_Folder_triggered();
     void on_actionMod_triggered();
@@ -69,18 +66,13 @@ private slots:
     void on_menuDownload_aboutToShow();
     void on_actionCopy_Website_Link_triggered();
     void on_actionOpen_Curseforge_Mod_Dialog_triggered();
-    void on_modListView_customContextMenuRequested(const QPoint &pos);
     void on_actionOpen_Website_Link_triggered();
 
-protected:
-    void paintEvent(QPaintEvent *event) override;
 private:
     Ui::CurseforgeModBrowser *ui;
     CurseforgeAPI::Section sectionId_ = CurseforgeAPI::Mod;
-    QStandardItemModel *model_;
     CurseforgeModInfoWidget *infoWidget_;
     CurseforgeFileListWidget *fileListWidget_;
-    ExploreStatusBarWidget *statusBarWidget_;
     CurseforgeAPI *api_;
     QList<int> idList_;
     LocalModPath *downloadPath_ = nullptr;
@@ -95,6 +87,11 @@ private:
     bool isSearching_ = false;
     bool inited_ = false;
     CurseforgeMod* selectedMod_ = nullptr;
+
+    void loadMore() override;
+    void onSelectedItemChanged(QStandardItem *item) override;
+    QWidget *getIndexWidget(QStandardItem *item) override;
+    QMenu *getMenu() override;
 };
 
 #endif // CURSEFORGEMODBROWSER_H

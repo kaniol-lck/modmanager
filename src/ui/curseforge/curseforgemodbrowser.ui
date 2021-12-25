@@ -14,28 +14,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListView" name="modListView">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>150</y>
-      <width>256</width>
-      <height>192</height>
-     </rect>
-    </property>
-    <property name="contextMenuPolicy">
-     <enum>Qt::CustomContextMenu</enum>
-    </property>
-    <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
-    </property>
-    <property name="selectionBehavior">
-     <enum>QAbstractItemView::SelectRows</enum>
-    </property>
-    <property name="verticalScrollMode">
-     <enum>QAbstractItemView::ScrollPerPixel</enum>
-    </property>
-   </widget>
    <widget class="QToolButton" name="versionSelectButton">
     <property name="geometry">
      <rect>

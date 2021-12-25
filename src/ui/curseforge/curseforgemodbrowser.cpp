@@ -32,10 +32,8 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
     ui(new Ui::CurseforgeModBrowser),
     sectionId_(sectionId),
-    model_(new QStandardItemModel(this)),
     infoWidget_(new CurseforgeModInfoWidget(this)),
     fileListWidget_(new CurseforgeFileListWidget(this)),
-    statusBarWidget_(new ExploreStatusBarWidget(this)),
     api_(new CurseforgeAPI(this)),
     localMod_(mod)
 {
@@ -43,11 +41,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     fileListWidget_->hide();
     ui->setupUi(this);
     ui->menu_Path->insertActions(ui->menu_Path->actions().first(), pathMenu_->actions());
-    ui->modListView->setModel(model_);
-    ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->modListView->setProperty("class", "ModList");
-
-    setCentralWidget(ui->modListView);
+    initUi();
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
@@ -82,7 +76,6 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
         if(action->data().toInt() == sectionId_)
             action->setChecked(true);
 
-    onItemSelected();
     updateVersionList();
     if(sectionId_ == CurseforgeAPI::Mod)
         updateCategoryList();
@@ -93,13 +86,10 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     updateLocalPathList();
     updateStatusText();
 
-    connect(ui->modListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeModBrowser::onSliderChanged);
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
     connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
     connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &CurseforgeModBrowser::updateLocalPathList);
     connect(this, &CurseforgeModBrowser::downloadPathChanged, fileListWidget_, &CurseforgeFileListWidget::setDownloadPath);
-    connect(ui->modListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &CurseforgeModBrowser::onItemSelected);
-    connect(ui->modListView->verticalScrollBar(), &QScrollBar::valueChanged, this, &CurseforgeModBrowser::updateIndexWidget);
 
     if(localMod_){
         currentName_ = localMod_->commonInfo()->id();
@@ -158,10 +148,10 @@ void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 
 void CurseforgeModBrowser::updateUi()
 {
-    for(int i = 0; i < model_->rowCount(); i++){
-        if(auto widget = ui->modListView->indexWidget(model_->index(i, 0)))
-            dynamic_cast<CurseforgeModItemWidget*>(widget)->updateUi();
-    }
+//    for(int i = 0; i < model_->rowCount(); i++){
+//        if(auto widget = modListView_->indexWidget(model_->index(i, 0)))
+//            dynamic_cast<CurseforgeModItemWidget*>(widget)->updateUi();
+//    }
 }
 
 void CurseforgeModBrowser::updateVersionList()
@@ -340,14 +330,6 @@ void CurseforgeModBrowser::search()
     getModList(currentName_);
 }
 
-void CurseforgeModBrowser::onSliderChanged(int i)
-{
-    if(!isSearching_ && hasMore_ && i >= ui->modListView->verticalScrollBar()->maximum() - 1000){
-        currentIndex_ += Config().getSearchResultCount();
-        getModList(currentName_, currentIndex_);
-    }
-}
-
 void CurseforgeModBrowser::updateStatusText()
 {
     QString sectionStr;
@@ -425,7 +407,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             auto isShown = currentLoaderType_ == ModLoaderType::Any || info.loaderTypes().contains(currentLoaderType_);
             if(info.loaderTypes().isEmpty())
                 isShown = true;
-            ui->modListView->setRowHidden(item->row(), !isShown);
+//            modListView_->setRowHidden(item->row(), !isShown);
             if(isShown){
                 shownCount++;
                 mod->acquireIcon();
@@ -472,19 +454,19 @@ void CurseforgeModBrowser::on_modListView_doubleClicked(const QModelIndex &index
 
 void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
 {
-    currentLoaderType_ = ModLoaderType::curseforge.at(index);
-    for(int row = 0; row < model_->rowCount(); row++){
-        auto item = model_->item(row);
-        auto mod = item->data().value<CurseforgeMod*>();
-        auto isShown = currentLoaderType_ == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(currentLoaderType_);
-        if(mod->modInfo().loaderTypes().isEmpty())
-            isShown = true;
-        bool isHidden = ui->modListView->isRowHidden(row);
-        ui->modListView->setRowHidden(row, !isShown);
-        //hidden -> shown, while not have downloaded thumbnail yet
-        if(isHidden && isShown && mod->modInfo().iconBytes().isEmpty())
-            mod->acquireIcon();
-    }
+//    currentLoaderType_ = ModLoaderType::curseforge.at(index);
+//    for(int row = 0; row < model_->rowCount(); row++){
+//        auto item = model_->item(row);
+//        auto mod = item->data().value<CurseforgeMod*>();
+//        auto isShown = currentLoaderType_ == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(currentLoaderType_);
+//        if(mod->modInfo().loaderTypes().isEmpty())
+//            isShown = true;
+//        bool isHidden = modListView_->isRowHidden(row);
+//        modListView_->setRowHidden(row, !isShown);
+//        //hidden -> shown, while not have downloaded thumbnail yet
+//        if(isHidden && isShown && mod->modInfo().iconBytes().isEmpty())
+//            mod->acquireIcon();
+//    }
 }
 
 void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
@@ -497,14 +479,11 @@ void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
     emit downloadPathChanged(downloadPath_);
 }
 
-void CurseforgeModBrowser::onItemSelected()
+void CurseforgeModBrowser::onSelectedItemChanged(QStandardItem *item)
 {
-    auto indexes = ui->modListView->selectionModel()->selectedRows();
-    if(!indexes.isEmpty()){
-        auto index = indexes.first();
-        auto item = model_->itemFromIndex(index);
+    if(item)
         selectedMod_ = item->data().value<CurseforgeMod*>();
-    } else
+    else
         selectedMod_ = nullptr;
     ui->actionOpen_Curseforge_Mod_Dialog->setEnabled(selectedMod_);
     ui->menuDownload->setEnabled(selectedMod_);
@@ -515,35 +494,23 @@ void CurseforgeModBrowser::onItemSelected()
     fileListWidget_->setMod(selectedMod_);
 }
 
-void CurseforgeModBrowser::updateIndexWidget()
+void CurseforgeModBrowser::loadMore()
 {
-    auto beginRow = ui->modListView->indexAt(QPoint(0, 0)).row();
-    if(beginRow < 0) return;
-    auto endRow = ui->modListView->indexAt(QPoint(0, ui->modListView->height())).row();
-    if(endRow < 0)
-        endRow = model_->rowCount() - 1;
-    else
-        //extra 2
-        endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
-        auto index = model_->index(row, 0);
-        if(ui->modListView->indexWidget(index)) continue;
-        auto item = model_->item(row);
-        auto mod = item->data().value<CurseforgeMod*>();
-        if(mod){
-            auto fileInfo = mod->modInfo().latestFileInfo(currentGameVersion_, currentLoaderType_);
-            auto modItemWidget = new CurseforgeModItemWidget(ui->modListView, mod, fileInfo);
-            modItemWidget->setDownloadPath(downloadPath_);
-            connect(this, &CurseforgeModBrowser::downloadPathChanged, modItemWidget, &CurseforgeModItemWidget::setDownloadPath);
-            ui->modListView->setIndexWidget(index, modItemWidget);
-        }
+    if(!isSearching_ && hasMore_){
+        currentIndex_ += Config().getSearchResultCount();
+        getModList(currentName_, currentIndex_);
     }
 }
 
-void CurseforgeModBrowser::paintEvent(QPaintEvent *event)
+QWidget *CurseforgeModBrowser::getIndexWidget(QStandardItem *item)
 {
-    updateIndexWidget();
-    QWidget::paintEvent(event);
+    auto mod = item->data().value<CurseforgeMod*>();
+    if(mod){
+        auto fileInfo = mod->modInfo().latestFileInfo(currentGameVersion_, currentLoaderType_);
+        return new CurseforgeModItemWidget(nullptr, mod, fileInfo);
+    }
+    else
+        return nullptr;
 }
 
 CurseforgeMod *CurseforgeModBrowser::selectedMod() const
@@ -626,13 +593,13 @@ void CurseforgeModBrowser::on_menuDownload_aboutToShow()
     auto &&files = selectedMod_->modInfo().allFileList().isEmpty()?
                 selectedMod_->modInfo().latestFileList() : selectedMod_->modInfo().allFileList();
     for(auto &&file : files){
-        ui->menuDownload->addAction(file.displayName() + " ("+ sizeConvert(file.size()) + ")", this, [=]{
-            auto index = ui->modListView->selectionModel()->currentIndex();
-            if(!index.isValid()) return ;
-            auto widget = qobject_cast<CurseforgeModItemWidget*>(ui->modListView->indexWidget(index));
-            if(!widget) return;
-            widget->downloadFile(file);
-        });
+//        ui->menuDownload->addAction(file.displayName() + " ("+ sizeConvert(file.size()) + ")", this, [=]{
+//            auto index = modListView_->selectionModel()->currentIndex();
+//            if(!index.isValid()) return ;
+//            auto widget = qobject_cast<CurseforgeModItemWidget*>(modListView_->indexWidget(index));
+//            if(!widget) return;
+//            widget->downloadFile(file);
+//        });
     }
 }
 
@@ -658,14 +625,14 @@ void CurseforgeModBrowser::on_actionOpen_Curseforge_Mod_Dialog_triggered()
     }
 }
 
-void CurseforgeModBrowser::on_modListView_customContextMenuRequested(const QPoint &pos)
+QMenu *CurseforgeModBrowser::getMenu()
 {
     auto menu = new QMenu(this);
     menu->addAction(ui->actionOpen_Curseforge_Mod_Dialog);
     menu->addMenu(ui->menuDownload);
     menu->addAction(ui->actionCopy_Website_Link);
     menu->addAction(ui->actionOpen_Website_Link);
-    menu->exec(ui->modListView->mapToGlobal(pos));
+    return menu;
 }
 
 void CurseforgeModBrowser::on_actionOpen_Website_Link_triggered()
