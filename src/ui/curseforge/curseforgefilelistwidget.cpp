@@ -11,7 +11,7 @@
 #include "util/funcutil.h"
 
 CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent) :
-    DockWidgetContent(parent),
+    QWidget(parent),
     ui(new Ui::CurseforgeFileListWidget),
     model_(new QStandardItemModel(this))
 {

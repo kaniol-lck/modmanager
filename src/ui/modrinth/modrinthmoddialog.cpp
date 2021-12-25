@@ -6,7 +6,6 @@
 #include <QDebug>
 #include <QAction>
 #include <QClipboard>
-#include <QStandardItemModel>
 #include <QMenu>
 
 #include "local/localmodpath.h"
@@ -19,16 +18,13 @@
 ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod *localMod) :
     QDialog(parent),
     ui(new Ui::ModrinthModDialog),
-    model_(new QStandardItemModel(this)),
     mod_(mod),
     localMod_(localMod)
 {
     ui->setupUi(this);
+    ui->fileList->setMod(mod_);
     ui->tagsWidget->setTagableObject(mod_);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->fileListView->setModel(model_);
-    ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->fileListView->setProperty("class", "ModList");
 
     connect(mod_, &ModrinthMod::destroyed, this, &QDialog::close);
 
@@ -43,7 +39,6 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
         mod->acquireFullInfo();
     }
     connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthModDialog::updateFullInfo);
-    connect(mod_, &ModrinthMod::fileListReady, this, &ModrinthModDialog::updateFileList);
     connect(mod_, &ModrinthMod::iconReady, this, &ModrinthModDialog::updateIcon);
 
     if(localMod_) setDownloadPath(localMod_->path());
@@ -105,35 +100,6 @@ void ModrinthModDialog::updateFullInfo()
     ui->websiteButton->setVisible(!mod_->modInfo().websiteUrl().isEmpty());
     ui->modDescription->setMarkdown(text);
     ui->modDescription->setCursor(Qt::ArrowCursor);
-
-    //update file list
-    if(!mod_->modInfo().fileList().isEmpty())
-        updateFileList();
-    else {
-        ui->fileListView->setCursor(Qt::BusyCursor);
-        mod_->acquireFileList();
-    }
-}
-
-void ModrinthModDialog::updateFileList()
-{
-    ui->fileListView->setVisible(false);
-    model_->clear();
-    auto files = mod_->modInfo().fileList();
-    for(const auto &fileInfo : qAsConst(files)){
-        auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo, localMod_);
-        itemWidget->setDownloadPath(downloadPath_);
-        connect(this, &ModrinthModDialog::downloadPathChanged, itemWidget, &ModrinthFileItemWidget::setDownloadPath);
-        auto item = new QStandardItem;
-        item->setData(fileInfo.fileDate(), Qt::UserRole);
-        item->setSizeHint(QSize(0, itemWidget->height()));
-        model_->appendRow(item);
-        ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
-    }
-    ui->fileListView->setVisible(true);
-    model_->setSortRole(Qt::UserRole);
-    model_->sort(0, Qt::DescendingOrder);
-    ui->fileListView->setCursor(Qt::ArrowCursor);
 }
 
 void ModrinthModDialog::updateIcon()

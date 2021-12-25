@@ -7,7 +7,6 @@ class CurseforgeMod;
 class LocalMod;
 class LocalModPath;
 class QListWidgetItem;
-class QStandardItemModel;
 namespace Ui {
 class CurseforgeModDialog;
 }
@@ -30,15 +29,12 @@ private slots:
     void updateBasicInfo();
     void updateThumbnail();
     void updateDescription();
-    void updateFileList();
     void on_websiteButton_clicked();
     void on_galleryListWidget_itemClicked(QListWidgetItem *item);
-
     void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::CurseforgeModDialog *ui;
-    QStandardItemModel *model_;
     CurseforgeMod *mod_;
     LocalMod *localMod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;

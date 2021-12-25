@@ -14,6 +14,118 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="2">
+    <widget class="QToolButton" name="websiteButton">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Website</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/image.qrc">
+       <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="3">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="descriptionTab">
+      <attribute name="title">
+       <string>Description</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QTextBrowser" name="modDescription">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="openExternalLinks">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="galleryTab">
+      <attribute name="title">
+       <string>Gallery</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QListWidget" name="galleryListWidget">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>260</width>
+           <height>200</height>
+          </size>
+         </property>
+         <property name="movement">
+          <enum>QListView::Static</enum>
+         </property>
+         <property name="isWrapping" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="resizeMode">
+          <enum>QListView::Adjust</enum>
+         </property>
+         <property name="viewMode">
+          <enum>QListView::IconMode</enum>
+         </property>
+         <property name="uniformItemSizes">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="CurseforgeFileListWidget" name="fileList">
+      <attribute name="title">
+       <string>Files</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="modIcon">
      <property name="sizePolicy">
@@ -138,139 +250,6 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="2">
-    <widget class="QToolButton" name="websiteButton">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>Website</string>
-     </property>
-     <property name="icon">
-      <iconset resource="../../images/image.qrc">
-       <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="3">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="descriptionTab">
-      <attribute name="title">
-       <string>Description</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QTextBrowser" name="modDescription">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="openExternalLinks">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="galleryTab">
-      <attribute name="title">
-       <string>Gallery</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QListWidget" name="galleryListWidget">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>260</width>
-           <height>200</height>
-          </size>
-         </property>
-         <property name="movement">
-          <enum>QListView::Static</enum>
-         </property>
-         <property name="isWrapping" stdset="0">
-          <bool>true</bool>
-         </property>
-         <property name="resizeMode">
-          <enum>QListView::Adjust</enum>
-         </property>
-         <property name="viewMode">
-          <enum>QListView::IconMode</enum>
-         </property>
-         <property name="uniformItemSizes">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="filesTab">
-      <attribute name="title">
-       <string>Files</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QListView" name="fileListView">
-         <property name="verticalScrollMode">
-          <enum>QAbstractItemView::ScrollPerPixel</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -278,6 +257,12 @@
    <class>TagsFlowWidget</class>
    <extends>QWidget</extends>
    <header location="global">ui/tagsflowwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CurseforgeFileListWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/curseforge/curseforgefilelistwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

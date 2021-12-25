@@ -1,7 +1,7 @@
 #ifndef CURSEFORGEFILELISTWIDGET_H
 #define CURSEFORGEFILELISTWIDGET_H
 
-#include "ui/dockwidgetcontent.h"
+#include <QWidget>
 
 class CurseforgeMod;
 class LocalModPath;
@@ -10,7 +10,7 @@ namespace Ui {
 class CurseforgeFileListWidget;
 }
 
-class CurseforgeFileListWidget : public DockWidgetContent
+class CurseforgeFileListWidget : public QWidget
 {
     Q_OBJECT
 

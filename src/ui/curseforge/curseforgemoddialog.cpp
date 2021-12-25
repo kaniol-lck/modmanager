@@ -9,7 +9,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkDiskCache>
 #include <QNetworkReply>
-#include <QStandardItemModel>
 #include <QMenu>
 
 #include "local/localmodpath.h"
@@ -25,17 +24,14 @@
 CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod) :
     QDialog(parent),
     ui(new Ui::CurseforgeModDialog),
-    model_(new QStandardItemModel(this)),
     mod_(mod),
     localMod_(localMod)
 {
     ui->setupUi(this);
+    ui->fileList->setMod(mod_);
     ui->tagsWidget->setTagableObject(mod_);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->galleryListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->fileListView->setModel(model_);
-    ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->fileListView->setProperty("class", "ModList");
     auto action = new QAction(tr("Copy website link"), this);
     connect(action, &QAction::triggered, this, [=]{
         QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());
@@ -58,18 +54,9 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
         mod_->acquireDescription();
     }
 
-    //update file list
-    if(!mod_->modInfo().allFileList().isEmpty())
-        updateFileList();
-    else {
-        ui->fileListView->setCursor(Qt::BusyCursor);
-        mod_->acquireAllFileList();
-    }
-
     connect(mod_, &CurseforgeMod::basicInfoReady, this, &CurseforgeModDialog::updateBasicInfo);
     connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModDialog::updateThumbnail);
     connect(mod_, &CurseforgeMod::descriptionReady, this, &CurseforgeModDialog::updateDescription);
-    connect(mod_, &CurseforgeMod::allFileListReady, this, &CurseforgeModDialog::updateFileList);
 
     if(localMod_) setDownloadPath(localMod_->path());
 }
@@ -153,27 +140,6 @@ void CurseforgeModDialog::updateDescription()
     auto desc = mod_->modInfo().description();
     ui->modDescription->setHtml(desc);
     ui->modDescription->setCursor(Qt::ArrowCursor);
-}
-
-void CurseforgeModDialog::updateFileList()
-{
-    ui->fileListView->setVisible(false);
-    model_->clear();
-    auto files = mod_->modInfo().allFileList();
-    for(const auto &fileInfo : files){
-        auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo, localMod_);
-        itemWidget->setDownloadPath(downloadPath_);
-        connect(this, &CurseforgeModDialog::downloadPathChanged, itemWidget, &CurseforgeFileItemWidget::setDownloadPath);
-        auto item = new QStandardItem;
-        item->setData(fileInfo.fileDate(), Qt::UserRole);
-        item->setSizeHint(QSize(0, itemWidget->height()));
-        model_->appendRow(item);
-        ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
-    }
-    ui->fileListView->setVisible(true);
-    model_->setSortRole(Qt::UserRole);
-    model_->sort(0, Qt::DescendingOrder);
-    ui->fileListView->setCursor(Qt::ArrowCursor);
 }
 
 void CurseforgeModDialog::on_websiteButton_clicked()

@@ -193,31 +193,10 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="filesTab">
+     <widget class="ModrinthFileListWidget" name="fileList">
       <attribute name="title">
        <string>Files</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QListView" name="fileListView">
-         <property name="verticalScrollMode">
-          <enum>QAbstractItemView::ScrollPerPixel</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </widget>
     </widget>
    </item>
@@ -228,6 +207,12 @@
    <class>TagsFlowWidget</class>
    <extends>QWidget</extends>
    <header location="global">ui/tagsflowwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ModrinthFileListWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/modrinth/modrinthfilelistwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -6,7 +6,6 @@
 class ModrinthMod;
 class LocalMod;
 class LocalModPath;
-class QStandardItemModel;
 namespace Ui {
 class ModrinthModDialog;
 }
@@ -28,15 +27,12 @@ public slots:
 private slots:
     void updateBasicInfo();
     void updateFullInfo();
-    void updateFileList();
     void updateIcon();
     void on_websiteButton_clicked();
-
     void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::ModrinthModDialog *ui;
-    QStandardItemModel *model_;
     ModrinthMod *mod_;
     LocalMod *localMod_ = nullptr;
     LocalModPath *downloadPath_ = nullptr;
