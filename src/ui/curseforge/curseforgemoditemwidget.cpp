@@ -82,6 +82,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
         ui->downloadSpeedText->setText(numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
 
     updateUi();
+    connect(mod_, &CurseforgeMod::downloadStarted, this, &CurseforgeModItemWidget::onDownloadStarted);
 }
 
 CurseforgeModItemWidget::~CurseforgeModItemWidget()
@@ -96,38 +97,38 @@ void CurseforgeModItemWidget::updateIcon()
     ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
 }
 
-void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
+void CurseforgeModItemWidget::onDownloadStarted()
 {
     ui->downloadButton->setText(tr("Downloading"));
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
+    connect(mod_->downloader(), &AbstractDownloader::downloadProgress, this, &CurseforgeModItemWidget::onDownloadProgress);
+    connect(mod_->downloader(), &AbstractDownloader::downloadSpeed, this, &CurseforgeModItemWidget::onDownloadProgress);
+    connect(mod_->downloader(), &AbstractDownloader::finished, this, &CurseforgeModItemWidget::onDownloadFinished);
 
-    QAria2Downloader *downloader;
-    DownloadFileInfo info(fileInfo);
-    QPixmap pixelmap;
-    pixelmap.loadFromData(mod_->modInfo().iconBytes());
-    info.setIcon(pixelmap);
-    info.setTitle(mod_->modInfo().name());
-    if(downloadPath_)
-        downloader = downloadPath_->downloadNewMod(info);
-    else{
-        info.setPath(Config().getDownloadPath());
-        downloader = DownloadManager::manager()->download(info);
-    }
+}
 
-    ui->downloadProgress->setMaximum(fileInfo.size());
+void CurseforgeModItemWidget::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+{
+    ui->downloadProgress->setValue(bytesReceived);
+    ui->downloadProgress->setMaximum(bytesTotal);
+}
 
-    connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 /*bytesTotal*/){
-        ui->downloadProgress->setValue(bytesReceived);
-    });
-    connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
-        ui->downloadSpeedText->setText(speedConvert(bytesPerSec));
-    });
-    connect(downloader, &AbstractDownloader::finished, this, [=]{
-        ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(sizeConvert(fileInfo.size()));
-        ui->downloadButton->setText(tr("Downloaded"));
-    });
+void CurseforgeModItemWidget::onDownloadSpeed(qint64 bytesPerSec)
+{
+    ui->downloadSpeedText->setText(speedConvert(bytesPerSec));
+}
+
+void CurseforgeModItemWidget::onDownloadFinished()
+{
+    ui->downloadProgress->setVisible(false);
+//    ui->downloadSpeedText->setText(sizeConvert(fileInfo.size()));
+    ui->downloadButton->setText(tr("Downloaded"));
+}
+
+void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
+{
+    mod_->download(fileInfo, downloadPath_);
 }
 
 CurseforgeMod *CurseforgeModItemWidget::mod() const

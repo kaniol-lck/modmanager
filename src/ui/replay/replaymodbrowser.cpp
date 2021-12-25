@@ -168,9 +168,12 @@ void ReplayModBrowser::getModList()
 QWidget *ReplayModBrowser::getIndexWidget(QStandardItem *item)
 {
     auto mod = item->data().value<ReplayMod*>();
-    if(mod)
-        return new ReplayModItemWidget(this, mod);
-    else
+    if(mod){
+        auto widget = new ReplayModItemWidget(this, mod);
+        widget->setDownloadPath(downloadPath_);
+        connect(this, &ReplayModBrowser::downloadPathChanged, widget, &ReplayModItemWidget::setDownloadPath);
+        return widget;
+    } else
         return nullptr;
 }
 
@@ -183,10 +186,10 @@ void ReplayModBrowser::filterList()
         auto item = model_->item(row);
         auto mod = item->data().value<ReplayMod*>();
         if(mod){
-//            modListView_->setRowHidden(row, (loaderType != ModLoaderType::Any && mod->modInfo().loaderType() != loaderType) ||
-//                    (gameVersion != GameVersion::Any && gameVersion != mod->modInfo().gameVersion()) ||
-//                    !(mod->modInfo().name().toLower().contains(searchText) ||
-//                      mod->modInfo().gameVersionString().contains(searchText)));
+            setRowHidden(row, (loaderType != ModLoaderType::Any && mod->modInfo().loaderType() != loaderType) ||
+                         (gameVersion != GameVersion::Any && gameVersion != mod->modInfo().gameVersion()) ||
+                         !(mod->modInfo().name().toLower().contains(searchText) ||
+                           mod->modInfo().gameVersionString().contains(searchText)));
         }
     }
 }

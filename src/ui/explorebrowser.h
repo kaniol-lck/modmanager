@@ -38,13 +38,17 @@ private slots:
     void onItemSelected();
     void updateIndexWidget();
     void onCustomContextMenuRequested(const QPoint &pos);
+    void onDoubleClicked(const QModelIndex &index);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
     void initUi();
+    bool isRowHidden(int row);
+    void setRowHidden(int row, bool hidden);
     virtual void loadMore();
     virtual void onSelectedItemChanged(QStandardItem *item);
     virtual QWidget *getIndexWidget(QStandardItem *item);
+    virtual QDialog *getDialog(QStandardItem *item);
     virtual QMenu *getMenu();
     ExploreStatusBarWidget *statusBarWidget_;
     QStandardItemModel *model_;

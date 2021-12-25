@@ -49,7 +49,6 @@ private slots:
     void updateLocalPathList();
     void search();
     void updateStatusText();
-    void on_modListView_doubleClicked(const QModelIndex &index);
     void on_sortSelect_currentIndexChanged(int);
     void on_loaderSelect_currentIndexChanged(int);
     void on_downloadPathSelect_currentIndexChanged(int index);
@@ -79,6 +78,7 @@ private:
 
     void loadMore() override;
     void onSelectedItemChanged(QStandardItem *item) override;
+    QDialog *getDialog(QStandardItem *item) override;
     QWidget *getIndexWidget(QStandardItem *item) override;
     QMenu *getMenu() override;
     void getModList(QString name, int index = 0);

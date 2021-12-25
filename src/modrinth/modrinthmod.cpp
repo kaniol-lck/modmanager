@@ -10,8 +10,8 @@
 #include "local/localmod.h"
 #include "util/funcutil.h"
 #include "download/downloadmanager.h"
-
 #include "util/mmlogger.h"
+#include "local/localmodpath.h"
 
 ModrinthMod::ModrinthMod(LocalMod *parent, const QString &id) :
     QObject(parent),
@@ -115,8 +115,30 @@ QMetaObject::Connection ModrinthMod::acquireFileList()
     return conn;
 }
 
+void ModrinthMod::download(const ModrinthFileInfo &fileInfo, LocalModPath *downloadPath)
+{
+    DownloadFileInfo info(fileInfo);
+    QPixmap pixelmap;
+    pixelmap.loadFromData(modInfo_.iconBytes());
+    info.setIcon(pixelmap);
+    info.setTitle(modInfo_.name());
+
+    if(downloadPath)
+        downloader_ = downloadPath->downloadNewMod(info);
+    else{
+        info.setPath(Config().getDownloadPath());
+        downloader_ = DownloadManager::manager()->download(info);
+    }
+    emit downloadStarted();
+}
+
 void ModrinthMod::setModInfo(ModrinthModInfo newModInfo)
 {
     modInfo_ = newModInfo;
     addSubTagable(&modInfo_);
+}
+
+QAria2Downloader *ModrinthMod::downloader() const
+{
+    return downloader_;
 }

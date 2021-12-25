@@ -6,9 +6,10 @@
 #include "modrinthmodinfo.h"
 #include "tag/tagable.h"
 
+class LocalModPath;
 class ModrinthAPI;
 class LocalMod;
-
+class QAria2Downloader;
 class ModrinthMod : public QObject, public Tagable
 {
     Q_OBJECT
@@ -25,7 +26,11 @@ public:
     void acquireFullInfo();
     QMetaObject::Connection acquireFileList();
 
+    void download(const ModrinthFileInfo &fileInfo, LocalModPath *downloadPath = nullptr);
+
     void setModInfo(ModrinthModInfo newModInfo);
+
+    QAria2Downloader *downloader() const;
 
 signals:
     void tagsChanged() override;
@@ -35,12 +40,12 @@ signals:
     void fullInfoReady();
     void fileListReady(QList<ModrinthFileInfo> fileList);
 
-    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void downloadFinished();
+    void downloadStarted();
 
 private:
     ModrinthAPI *api_;
     ModrinthModInfo modInfo_;
+    QAria2Downloader *downloader_;
 
     bool gettingAuthor_ = false;
     bool gettingIcon_ = false;

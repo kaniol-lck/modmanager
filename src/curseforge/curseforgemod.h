@@ -6,6 +6,8 @@
 #include "curseforgemodinfo.h"
 #include "tag/tagable.h"
 
+class LocalModPath;
+class QAria2Downloader;
 class LocalMod;
 class CurseforgeAPI;
 
@@ -25,6 +27,9 @@ public:
     QMetaObject::Connection acquireAllFileList();
 
     const CurseforgeModInfo &modInfo() const;
+    void download(const CurseforgeFileInfo &fileInfo, LocalModPath *downloadPath = nullptr);
+    QAria2Downloader *downloader() const;
+
 signals:
     void tagsChanged() override;
 
@@ -33,9 +38,12 @@ signals:
     void descriptionReady();
     void allFileListReady(QList<CurseforgeFileInfo> fileInfos);
 
+    void downloadStarted();
+
 private:
     CurseforgeAPI *api_;
     CurseforgeModInfo modInfo_;
+    QAria2Downloader *downloader_;
 
     bool gettingBasicInfo_ = false;
     bool gettingIcon_ = false;

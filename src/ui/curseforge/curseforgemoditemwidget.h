@@ -28,6 +28,10 @@ public slots:
     void updateUi();
 private slots:
     void updateIcon();
+    void onDownloadStarted();
+    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void onDownloadSpeed(qint64 bytesPerSec);
+    void onDownloadFinished();
     void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
 private:

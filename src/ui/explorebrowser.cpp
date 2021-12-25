@@ -28,6 +28,7 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     modListView_->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(modListView_, &QWidget::customContextMenuRequested, this, &ExploreBrowser::onCustomContextMenuRequested);
+    connect(modListView_, &QAbstractItemView::doubleClicked, this, &ExploreBrowser::onDoubleClicked);
     connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onSliderChanged);
     connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this, &ExploreBrowser::updateIndexWidget);
     connect(modListView_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExploreBrowser::onItemSelected);
@@ -111,12 +112,6 @@ void ExploreBrowser::updateIndexWidget()
             modListView_->setIndexWidget(index, widget);
             item->setSizeHint(QSize(0, widget->height()));
         }
-//        auto mod = item->data().value<ModrinthMod*>();
-//        if(mod){
-//            auto modItemWidget = new ModrinthModItemWidget(modListView_, mod);
-//            modItemWidget->setDownloadPath(downloadPath_);
-//            connect(this, &ModrinthModBrowser::downloadPathChanged, modItemWidget, &ModrinthModItemWidget::setDownloadPath);
-//        }
     }
 }
 
@@ -124,6 +119,13 @@ void ExploreBrowser::onCustomContextMenuRequested(const QPoint &pos)
 {
     if(auto menu = getMenu())
         menu->exec(modListView_->mapToGlobal(pos));
+}
+
+void ExploreBrowser::onDoubleClicked(const QModelIndex &index)
+{
+    auto item = model_->itemFromIndex(index);
+    if(auto dialog = getDialog(item))
+        dialog->show();
 }
 
 void ExploreBrowser::paintEvent(QPaintEvent *event)
@@ -138,13 +140,28 @@ void ExploreBrowser::initUi()
     onItemSelected();
 }
 
+bool ExploreBrowser::isRowHidden(int row)
+{
+    return modListView_->isRowHidden(row);
+}
+
+void ExploreBrowser::setRowHidden(int row, bool hidden)
+{
+    modListView_->setRowHidden(row, hidden);
+}
+
 void ExploreBrowser::loadMore()
 {}
 
-void ExploreBrowser::onSelectedItemChanged(QStandardItem *item)
+void ExploreBrowser::onSelectedItemChanged(QStandardItem *item[[maybe_unused]])
 {}
 
-QWidget *ExploreBrowser::getIndexWidget(QStandardItem *item)
+QWidget *ExploreBrowser::getIndexWidget(QStandardItem *item[[maybe_unused]])
+{
+    return nullptr;
+}
+
+QDialog *ExploreBrowser::getDialog(QStandardItem *item[[maybe_unused]])
 {
     return nullptr;
 }

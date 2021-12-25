@@ -66,6 +66,7 @@ ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) 
     }
 
     updateUi();
+    connect(mod_, &ModrinthMod::downloadStarted, this, &ModrinthModItemWidget::onDownloadStarted);
 }
 
 ModrinthModItemWidget::~ModrinthModItemWidget()
@@ -110,36 +111,39 @@ void ModrinthModItemWidget::updateFileList()
     setDownloadPath(downloadPath_);
 }
 
-void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
+void ModrinthModItemWidget::onDownloadStarted()
 {
     ui->downloadButton->setText(tr("Downloading"));
     ui->downloadButton->setEnabled(false);
+    ui->downloadButton->setVisible(true);
+    ui->downloadSpeedText->setVisible(true);
     ui->downloadProgress->setVisible(true);
+    connect(mod_->downloader(), &AbstractDownloader::downloadProgress, this, &ModrinthModItemWidget::onDownloadProgress);
+    connect(mod_->downloader(), &AbstractDownloader::downloadSpeed, this, &ModrinthModItemWidget::onDownloadProgress);
+    connect(mod_->downloader(), &AbstractDownloader::finished, this, &ModrinthModItemWidget::onDownloadFinished);
+}
 
-    QAria2Downloader *downloader;
-    DownloadFileInfo info(fileInfo);
-    QPixmap pixelmap;
-    pixelmap.loadFromData(mod_->modInfo().iconBytes());
-    info.setIcon(pixelmap);
-    info.setTitle(mod_->modInfo().name());
-    if(downloadPath_)
-        downloader = downloadPath_->downloadNewMod(info);
-    else{
-        info.setPath(Config().getDownloadPath());
-        downloader = DownloadManager::manager()->download(info);
-    }
-    connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
-        ui->downloadProgress->setValue(bytesReceived);
-        ui->downloadProgress->setMaximum(bytesTotal);
-    });
-    connect(downloader, &AbstractDownloader::downloadSpeed, this, [=](qint64 bytesPerSec){
-        ui->downloadSpeedText->setText(speedConvert(bytesPerSec));
-    });
-    connect(downloader, &AbstractDownloader::finished, this, [=]{
-        ui->downloadProgress->setVisible(false);
-        ui->downloadSpeedText->setText(numberConvert(mod_->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
-        ui->downloadButton->setText(tr("Downloaded"));
-    });
+void ModrinthModItemWidget::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+{
+    ui->downloadProgress->setValue(bytesReceived);
+    ui->downloadProgress->setMaximum(bytesTotal);
+}
+
+void ModrinthModItemWidget::onDownloadSpeed(qint64 bytesPerSec)
+{
+    ui->downloadSpeedText->setText(speedConvert(bytesPerSec));
+}
+
+void ModrinthModItemWidget::onDownloadFinished()
+{
+    ui->downloadProgress->setVisible(false);
+    ui->downloadSpeedText->setText(numberConvert(mod_->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));
+    ui->downloadButton->setText(tr("Downloaded"));
+}
+
+void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
+{
+    mod_->download(fileInfo, downloadPath_);
 }
 
 ModrinthMod *ModrinthModItemWidget::mod() const

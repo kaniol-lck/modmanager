@@ -125,9 +125,9 @@ void OptifineModBrowser::filterList()
         auto item = model_->item(row);
         auto mod = item->data().value<OptifineMod*>();
         if(mod){
-//            modListView_->setRowHidden(row, (gameVersion != GameVersion::Any && mod->modInfo().gameVersion() != gameVersion) ||
-//                                          (!showPreview && mod->modInfo().isPreview()) ||
-//                                          !(mod->modInfo().name().toLower().contains(searchText) || mod->modInfo().gameVersion().toString().contains(searchText)));
+            setRowHidden(row, (gameVersion != GameVersion::Any && mod->modInfo().gameVersion() != gameVersion) ||
+                         (!showPreview && mod->modInfo().isPreview()) ||
+                         !(mod->modInfo().name().toLower().contains(searchText) || mod->modInfo().gameVersion().toString().contains(searchText)));
         }
     }
 }
@@ -164,7 +164,7 @@ void OptifineModBrowser::getModList()
             item->setData(QVariant::fromValue(mod));
             model_->appendRow(item);
             item->setSizeHint(QSize(0, 100));
-//            modListView_->setRowHidden(item->row(), modInfo.isPreview());
+            setRowHidden(item->row(), modInfo.isPreview());
         }
         ui->versionSelect->clear();
         ui->versionSelect->addItem(tr("Any"));
@@ -191,9 +191,12 @@ void OptifineModBrowser::getModList()
 QWidget *OptifineModBrowser::getIndexWidget(QStandardItem *item)
 {
     auto mod = item->data().value<OptifineMod*>();
-    if(mod)
-        return new OptifineModItemWidget(this, mod);
-    else
+    if(mod){
+        auto widget = new OptifineModItemWidget(this, mod);
+        widget->setDownloadPath(downloadPath_);
+        connect(this, &OptifineModBrowser::downloadPathChanged, widget, &OptifineModItemWidget::setDownloadPath);
+        return widget;
+    }else
         return nullptr;
 }
 
@@ -240,4 +243,3 @@ void OptifineModBrowser::on_actionOpen_Folder_triggered()
         path = Config().getDownloadPath();
     openFileInFolder(path);
 }
-

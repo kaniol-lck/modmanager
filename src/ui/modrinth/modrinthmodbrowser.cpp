@@ -434,7 +434,6 @@ void ModrinthModBrowser::getModList(QString name, int index)
             item->setSizeHint(QSize(0, 100));
             model_->appendRow(item);
             mod->acquireIcon();
-//            mod->acquireFileList();
         }
         if(infoList.size() < Config().getSearchResultCount()){
             auto item = new QStandardItem(tr("There is no more mod here..."));
@@ -454,9 +453,8 @@ void ModrinthModBrowser::getModList(QString name, int index)
     });
 }
 
-void ModrinthModBrowser::on_modListView_doubleClicked(const QModelIndex &index)
+QDialog *ModrinthModBrowser::getDialog(QStandardItem *item)
 {
-    auto item = model_->itemFromIndex(index);
     auto mod = item->data().value<ModrinthMod*>();
     if(mod && !mod->parent()){
         auto dialog = new ModrinthModDialog(this, mod);
@@ -467,8 +465,9 @@ void ModrinthModBrowser::on_modListView_doubleClicked(const QModelIndex &index)
         connect(dialog, &ModrinthModDialog::finished, this, [=]{
             mod->setParent(nullptr);
         });
-        dialog->show();
+        return dialog;
     }
+    return nullptr;
 }
 
 void ModrinthModBrowser::on_sortSelect_currentIndexChanged(int)
@@ -509,9 +508,12 @@ void ModrinthModBrowser::onSelectedItemChanged(QStandardItem *item)
 QWidget *ModrinthModBrowser::getIndexWidget(QStandardItem *item)
 {
     auto mod = item->data().value<ModrinthMod*>();
-    if(mod)
-        return new ModrinthModItemWidget(nullptr, mod);
-    else
+    if(mod){
+        auto widget = new ModrinthModItemWidget(nullptr, mod);
+        widget->setDownloadPath(downloadPath_);
+        connect(this, &ModrinthModBrowser::downloadPathChanged, widget, &ModrinthModItemWidget::setDownloadPath);
+        return widget;
+    } else
         return nullptr;
 }
 
@@ -555,9 +557,7 @@ void ModrinthModBrowser::on_menuDownload_aboutToShow()
     if(!selectedMod_) return;
     for(auto &&file : selectedMod_->modInfo().fileList()){
         ui->menuDownload->addAction(file.displayName(), this, [=]{
-//            auto widget = qobject_cast<ModrinthModItemWidget*>(modListView_->indexWidget(index));
-//            if(!widget) return;
-//            widget->downloadFile(file);
+            selectedMod_->download(file, downloadPath_);
         });
     }
 }

@@ -7,6 +7,7 @@
 #include <QDebug>
 
 #include "local/localmod.h"
+#include "local/localmodpath.h"
 #include "curseforge/curseforgeapi.h"
 #include "util/tutil.hpp"
 #include "util/funcutil.h"
@@ -120,4 +121,25 @@ QMetaObject::Connection CurseforgeMod::acquireAllFileList()
 const CurseforgeModInfo &CurseforgeMod::modInfo() const
 {
     return modInfo_;
+}
+
+void CurseforgeMod::download(const CurseforgeFileInfo &fileInfo, LocalModPath *downloadPath)
+{
+    DownloadFileInfo info(fileInfo);
+    QPixmap pixelmap;
+    pixelmap.loadFromData(modInfo_.iconBytes());
+    info.setIcon(pixelmap);
+    info.setTitle(modInfo_.name());
+    if(downloadPath)
+        downloader_ = downloadPath->downloadNewMod(info);
+    else{
+        info.setPath(Config().getDownloadPath());
+        downloader_ = DownloadManager::manager()->download(info);
+    }
+    emit downloadStarted();
+}
+
+QAria2Downloader *CurseforgeMod::downloader() const
+{
+    return downloader_;
 }

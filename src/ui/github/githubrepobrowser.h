@@ -40,24 +40,16 @@ signals:
     void downloadPathChanged(LocalModPath *path);
 
 private slots:
-    void onSliderChanged(int i);
 //    void updateLocalPathList();
 //    void filterList();
     void updateStatusText();
-    void updateIndexWidget();
 //    void on_actionOpen_Folder_triggered();
-    void onItemSelected();
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
 
 private:
     GitHubRepoInfo info_;
     Ui::GitHubRepoBrowser *ui;
-    QStandardItemModel *model_;
     GitHubReleaseInfoWidget *infoWidget_;
     GitHubFileListWidget *fileListWidget_;
-    ExploreStatusBarWidget *statusBarWidget_;
     GitHubAPI *api_;
     LocalModPath *downloadPath_ = nullptr;
     bool inited_ = false;
@@ -67,6 +59,9 @@ private:
     bool isSearching_ = false;
 
     void getReleaseList(int page = 1);
+    void loadMore() override;
+    void onSelectedItemChanged(QStandardItem *item) override;
+    QWidget *getIndexWidget(QStandardItem *item) override;
 };
 
 #endif // GITHUBREPOBROWSER_H
