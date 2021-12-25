@@ -9,7 +9,7 @@
 #include "util/youdaotranslator.h"
 
 ModrinthModInfoWidget::ModrinthModInfoWidget(QWidget *parent) :
-    DockWidgetContent(parent),
+    QWidget(parent),
     ui(new Ui::ModrinthModInfoWidget)
 {
     ui->setupUi(this);

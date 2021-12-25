@@ -13,7 +13,7 @@
 #include "util/funcutil.h"
 
 LocalFileListWidget::LocalFileListWidget(QWidget *parent, LocalModPath *path) :
-    DockWidgetContent(parent),
+    QWidget(parent),
     path_(path),
     ui(new Ui::LocalFileListWidget),
     updateModel_(new QStandardItemModel(this)),

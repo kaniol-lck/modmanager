@@ -8,7 +8,7 @@
 #include "util/smoothscrollbar.h"
 
 GitHubFileListWidget::GitHubFileListWidget(QWidget *parent) :
-    DockWidgetContent(parent),
+    QWidget(parent),
     ui(new Ui::GitHubFileListWidget),
     model_(new QStandardItemModel(this))
 {

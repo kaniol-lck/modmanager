@@ -64,6 +64,8 @@ ModManager::ModManager(QWidget *parent) :
     updateLockPanels();
 
     ui->pageSelectorDock->setWidget(browserSelector_);
+    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock, ui->fileListDock })
+        ui->menu_View->insertAction(ui->menu_View->actions().first(), widget->toggleViewAction());
 
     //Download
     pageSwitcher_.addDownloadPage();
@@ -273,21 +275,6 @@ void ModManager::on_action_About_Mod_Manager_triggered()
     } else
 #endif
         dialog->show();
-}
-
-void ModManager::on_actionPage_Selector_toggled(bool arg1)
-{
-    ui->pageSelectorDock->setVisible(arg1);
-}
-
-void ModManager::on_actionMod_Infomation_toggled(bool arg1)
-{
-    ui->modInfoDock->setVisible(arg1);
-}
-
-void ModManager::on_actionFile_List_toggled(bool arg1)
-{
-    ui->fileListDock->setVisible(arg1);
 }
 
 void ModManager::on_actionOpen_new_path_dialog_triggered()

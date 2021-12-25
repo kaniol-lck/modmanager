@@ -44,7 +44,6 @@ private slots:
     void on_actionManage_Browser_triggered();
     void customContextMenuRequested(const QModelIndex &index, const QPoint &pos);
     void on_action_About_Mod_Manager_triggered();
-    void on_actionPage_Selector_toggled(bool arg1);
     void on_actionOpen_new_path_dialog_triggered();
     void on_actionSelect_A_Directory_triggered();
     void on_actionSelect_Multiple_Directories_triggered();
@@ -67,8 +66,6 @@ private slots:
     void on_actionAbout_Qt_triggered();
 //    void on_modInfoDock_customContextMenuRequested(const QPoint &pos);
 //    void on_fileListDock_customContextMenuRequested(const QPoint &pos);
-    void on_actionMod_Infomation_toggled(bool arg1);
-    void on_actionFile_List_toggled(bool arg1);
     void on_actionLock_Panels_triggered();
     void on_actionClear_Unmatched_File_Link_Caches_triggered();
 

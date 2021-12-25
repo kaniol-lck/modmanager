@@ -11,7 +11,7 @@
 #include "util/funcutil.h"
 
 LocalModInfoWidget::LocalModInfoWidget(QWidget *parent, LocalModPath *path) :
-    DockWidgetContent(parent),
+    QWidget(parent),
     path_(path),
     ui(new Ui::LocalModInfoWidget)
 {

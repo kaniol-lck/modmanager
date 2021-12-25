@@ -1,7 +1,7 @@
 #ifndef GITHUBFILELISTWIDGET_H
 #define GITHUBFILELISTWIDGET_H
 
-#include "ui/dockwidgetcontent.h"
+#include <QWidget>
 
 class GitHubRelease;
 
@@ -10,7 +10,7 @@ namespace Ui {
 class GitHubFileListWidget;
 }
 
-class GitHubFileListWidget : public DockWidgetContent
+class GitHubFileListWidget : public QWidget
 {
     Q_OBJECT
 

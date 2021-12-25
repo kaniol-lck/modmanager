@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>26</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTools">
@@ -104,9 +104,6 @@
        <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
-    <addaction name="actionPage_Selector"/>
-    <addaction name="actionMod_Infomation"/>
-    <addaction name="actionFile_List"/>
     <addaction name="actionLock_Panels"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Mod_Authors"/>
