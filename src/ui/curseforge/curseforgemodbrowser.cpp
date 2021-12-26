@@ -27,6 +27,7 @@
 #include "config.hpp"
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
+#include "download/assetcache.h"
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, CurseforgeAPI::Section sectionId) :
     ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
@@ -77,12 +78,8 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
             action->setChecked(true);
 
     updateVersionList();
-    if(sectionId_ == CurseforgeAPI::Mod)
-        updateCategoryList();
-    else{
-        connect(this, &QObject::destroyed, this, disconnecter(
-                    CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
-    }
+    connect(this, &QObject::destroyed, this, disconnecter(
+                CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
     updateStatusText();
 
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
@@ -198,56 +195,6 @@ void CurseforgeModBrowser::updateVersionList()
     ui->versionSelectButton->setMenu(menu);
 }
 
-void CurseforgeModBrowser::updateCategoryList()
-{
-    auto menu = new QMenu;
-    auto anyCategoryAction = menu->addAction(tr("Any"));
-    connect(anyCategoryAction, &QAction::triggered, this, [=]{
-        currentCategoryId_ = 0;
-        ui->categorySelectButton->setText(tr("Any"));
-        ui->categorySelectButton->setIcon(QIcon());
-    });
-    anyCategoryAction->trigger();
-    menu->addSeparator();
-    QMap<int, QMenu*> submenus;
-    for(auto &&[id, name, iconName, parentId] : CurseforgeAPI::getCategories()){
-        if(parentId == sectionId_){
-            auto submenu = new QMenu(name);
-            submenus[id] = submenu;
-            submenu->setIcon(QIcon(QString(":/image/curseforge/%1.png").arg(iconName)));
-            QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
-            connect(submenu->addAction(icon, name), &QAction::triggered, this, [=, id = id, name = name]{
-                currentCategoryId_ = id;
-                ui->categorySelectButton->setText(name);
-                ui->categorySelectButton->setIcon(icon);
-            });
-        }
-    }
-    for(auto &&[id, name, iconName, parentId] : CurseforgeAPI::getCategories()){
-        if(submenus.contains(parentId)){
-            auto submenu = submenus[parentId];
-            if(submenu->actions().size() == 1)
-                submenu->addSeparator();
-            QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
-            connect(submenu->addAction(icon, name), &QAction::triggered, this, [=, id = id, name = name]{
-                currentCategoryId_ = id;
-                ui->categorySelectButton->setText(name);
-                ui->categorySelectButton->setIcon(icon);
-            });
-        }
-    }
-    for(auto submenu : qAsConst(submenus)){
-        if(submenu->actions().size() == 1)
-            menu->addActions(submenu->actions());
-        else
-            menu->addMenu(submenu);
-    }
-    connect(menu, &QMenu::triggered, this, [=]{
-        getModList(currentName_);
-    });
-    ui->categorySelectButton->setMenu(menu);
-}
-
 void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list)
 {
     auto menu = new QMenu;
@@ -264,13 +211,27 @@ void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list
         if(info.parentGameCategoryId() == sectionId_){
             auto submenu = new QMenu(info.name());
             submenus[info.id()] = submenu;
-//            submenu->setIcon(QIcon(QString(":/image/curseforge/%1.png").arg(iconName)));
-//            QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
-            connect(submenu->addAction(/*icon, */info.name()), &QAction::triggered, this, [=]{
+            auto iconAsset = new AssetCache(this, info.avatarUrl(), info.avatarUrl().fileName(), CurseforgeCategoryInfo::cachePath());
+            bool exists = iconAsset->exists();
+            QIcon icon(iconAsset->destFilePath());
+            QString name = info.name();
+            name.replace("&", "&&");
+            auto action = submenu->addAction(icon, name, this, [=]{
                 currentCategoryId_ = info.id();
-                ui->categorySelectButton->setText(info.name());
-//                ui->categorySelectButton->setIcon(icon);
+                ui->categorySelectButton->setText(name);
+                ui->categorySelectButton->setIcon(icon);
             });
+            if(exists){
+                submenu->setIcon(icon);
+                action->setIcon(icon);
+            } else{
+                iconAsset->download();
+                connect(iconAsset, &AssetCache::assetReady, this, [=]{
+                    QIcon icon(iconAsset->destFilePath());
+                    submenu->setIcon(icon);
+                    action->setIcon(icon);
+                });
+            }
         }
     }
     for(auto &&info : list){
@@ -278,12 +239,26 @@ void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list
             auto submenu = submenus[info.parentGameCategoryId()];
             if(submenu->actions().size() == 1)
                 submenu->addSeparator();
-//            QIcon icon(QString(":/image/curseforge/%1.png").arg(iconName));
-            connect(submenu->addAction(/*icon, */info.name()), &QAction::triggered, this, [=]{
+            auto iconAsset = new AssetCache(this, info.avatarUrl(), info.avatarUrl().fileName(), CurseforgeCategoryInfo::cachePath());
+            bool exists = iconAsset->exists();
+            QIcon icon(iconAsset->destFilePath());
+            QString name = info.name();
+            name.replace("&", "&&");
+            auto action = submenu->addAction(icon, name, this, [=]{
                 currentCategoryId_ = info.id();
-                ui->categorySelectButton->setText(info.name());
-//                ui->categorySelectButton->setIcon(icon);
+                ui->categorySelectButton->setText(name);
+                ui->categorySelectButton->setIcon(icon);
             });
+            if(exists){
+                submenu->setIcon(icon);
+                action->setIcon(icon);
+            } else{
+                iconAsset->download();
+                connect(iconAsset, &AssetCache::assetReady, this, [=]{
+                    QIcon icon(iconAsset->destFilePath());
+                    action->setIcon(icon);
+                });
+            }
         }
     }
     for(auto submenu : qAsConst(submenus)){
@@ -519,6 +494,7 @@ void CurseforgeModBrowser::on_actionOpen_Folder_triggered()
 void CurseforgeModBrowser::on_actionMod_triggered()
 {
     sectionId_ = CurseforgeAPI::Mod;
+    currentCategoryId_ = 0;
     search();
     connect(this, &QObject::destroyed, this, disconnecter(
                 CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
@@ -528,6 +504,7 @@ void CurseforgeModBrowser::on_actionMod_triggered()
 void CurseforgeModBrowser::on_actionWorld_triggered()
 {
     sectionId_ = CurseforgeAPI::World;
+    currentCategoryId_ = 0;
     search();
     connect(this, &QObject::destroyed, this, disconnecter(
                 CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
@@ -537,6 +514,7 @@ void CurseforgeModBrowser::on_actionWorld_triggered()
 void CurseforgeModBrowser::on_actionModpacks_triggered()
 {
     sectionId_ = CurseforgeAPI::Modpack;
+    currentCategoryId_ = 0;
     search();
     connect(this, &QObject::destroyed, this, disconnecter(
                 CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
@@ -546,6 +524,7 @@ void CurseforgeModBrowser::on_actionModpacks_triggered()
 void CurseforgeModBrowser::on_actionTexturepacks_triggered()
 {
     sectionId_ = CurseforgeAPI::TexturePack;
+    currentCategoryId_ = 0;
     search();
     connect(this, &QObject::destroyed, this, disconnecter(
                 CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));

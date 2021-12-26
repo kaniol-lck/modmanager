@@ -32,8 +32,6 @@ public:
     [[nodiscard]] QMetaObject::Connection getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback);
     [[nodiscard]] QMetaObject::Connection getSectionCategories(int sectionId, std::function<void (QList<CurseforgeCategoryInfo>)> callback);
 
-    static const QList<std::tuple<int, QString, QString, int> > &getCategories();
-
 private:
     QNetworkAccessManager accessManager_;
     QNetworkDiskCache diskCache_;

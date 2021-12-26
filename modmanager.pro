@@ -20,6 +20,7 @@ SOURCES += \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodinfo.cpp \
     src/download/abstractdownloader.cpp \
+    src/download/assetcache.cpp \
     src/download/downloadfileinfo.cpp \
     src/download/downloadmanager.cpp \
     src/download/qaria2.cpp \
@@ -136,6 +137,7 @@ HEADERS += \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodinfo.h \
     src/download/abstractdownloader.h \
+    src/download/assetcache.h \
     src/download/downloadfileinfo.h \
     src/download/downloadmanager.h \
     src/download/qaria2.h \

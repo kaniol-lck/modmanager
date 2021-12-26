@@ -4,6 +4,7 @@
 #include <QDebug>
 
 #include "util/tutil.hpp"
+#include "download/assetcache.h"
 
 CurseforgeModInfo::CurseforgeModInfo(int addonId) :
     id_(addonId)
@@ -53,16 +54,10 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
         auto category = CurseforgeCategoryInfo::fromVariant(variant);
         modInfo.categories_ << category;
 
+        AssetCache iconAsset(nullptr, category.avatarUrl(), category.avatarUrl().fileName(), CurseforgeCategoryInfo::cachePath());
         //import as tags
-        auto it = std::find_if(CurseforgeAPI::getCategories().cbegin(), CurseforgeAPI::getCategories().cend(), [=](auto &&t){
-            return std::get<0>(t) == category.id();
-        });
-        if(it != CurseforgeAPI::getCategories().end()){
-            auto [id, name, iconName, parentId] = *it;
-            modInfo.importTag(Tag(name, TagCategory::CurseforgeCategory, ":/image/curseforge/" + iconName));
-        } else
-            modInfo.importTag(Tag(category.name(), TagCategory::CurseforgeCategory));;
-        }
+        modInfo.importTag(Tag(category.name(), TagCategory::CurseforgeCategory, iconAsset.destFilePath()));
+    }
     return modInfo;
 }
 

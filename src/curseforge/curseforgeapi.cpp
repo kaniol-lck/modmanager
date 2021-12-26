@@ -278,61 +278,14 @@ QMetaObject::Connection CurseforgeAPI::getSectionCategories(int sectionId, std::
         }
         auto list = jsonDocument.toVariant().toList();
         QList<CurseforgeCategoryInfo> categoryList;
-        for(const auto &entry : qAsConst(list))
-            categoryList << CurseforgeCategoryInfo::fromVariant(entry);
+        for(const auto &entry : qAsConst(list)){
+            auto category = CurseforgeCategoryInfo::fromVariant(entry);
+            if(category.url().isEmpty() || category.url() == QUrl("https://www.curseforge.com"))
+                continue;
+            categoryList << category;
+        }
 
         callback(categoryList);
         reply->deleteLater();
     });
-}
-
-const QList<std::tuple<int, QString, QString, int> > &CurseforgeAPI::getCategories()
-{
-    static const QList<std::tuple<int, QString, QString, int>> categories{
-        { 423, tr("Map and Information"), "map-information", 6 },
-        { 426, tr("Addons"), "mc-addons", 6 },
-        { 434, tr("Armor, Tools, and Weapons"), "armor-weapons-tools", 6 },
-        { 409, tr("Structures"), "world-structures", 406 },
-        { 4485, tr("Blood Magic"), "blood-magic", 426 },
-        { 429, tr("Industrial Craft"), "addons-industrialcraft", 426 },
-        { 4671, tr("Twitch Integration"), "twitch-integration", 6 },
-        { 428, tr("Tinker's Construct"), "addons-tinkers-construct", 426 },
-        { 419, tr("Magic"), "magic", 6 },
-        { 420, tr("Storage"), "storage", 6 },
-        { 430, tr("Thaumcraft"), "addons-thaumcraft", 426 },
-        { 4486, tr("Lucky Blocks"), "[4486]lucky-blocks", 426 },
-        { 433, tr("Forestry"), "addons-forestry", 426 },
-        { 412, tr("Technology"), "technology", 6 },
-        { 414, tr("Player Transport"), "technology-player-transport", 412 },
-        { 415, tr("Energy, Fluid, and Item Transport"), "technology-item-fluid-energy-transport", 412 },
-        { 432, tr("Buildcraft"), "addons-buildcraft", 426 },
-        { 418, tr("Genetics"), "technology-genetics", 412 },
-        { 408, tr("Ores and Resources"), "world-ores-resources", 406 },
-        { 413, tr("Processing"), "technology-processing", 412 },
-        { 4773, tr("CraftTweaker"), "crafttweaker", 426 },
-        { 416, tr("Farming"), "technology-farming", 412 },
-        { 422, tr("Adventure and RPG"), "adventure-rpg", 6 },
-        { 424, tr("Cosmetic"), "cosmetic", 6 },
-        { 4545, tr("Applied Energistics 2"), "applied-energistics-2", 426 },
-        { 421, tr("API and Library"), "library-api", 6 },
-        { 417, tr("Energy"), "technology-energy", 412 },
-        { 425, tr("Miscellaneous"), "mc-miscellaneous", 6 },
-        { 435, tr("Server Utility"), "server-utility", 6 },
-        { 427, tr("Thermal Expansion"), "addons-thermalexpansion", 426 },
-        { 410, tr("Dimensions"), "world-dimensions", 406 },
-        { 411, tr("Mobs"), "world-mobs", 406 },
-        { 407, tr("Biomes"), "world-biomes", 406 },
-        { 4558, tr("Redstone"), "redstone", 6 },
-        { 406, tr("World Gen"), "world-gen", 6 },
-        { 436, tr("Food"), "mc-food", 6 },
-        { 4843, tr("Automation"), "technology-automation", 412 },
-        { 5192, tr("FancyMenu"), "fancymenu", 6 },
-        { 4906, tr("MCreator"), "mc-creator", 6 },
-        { 5189, tr("Utility & QOL"), "[5189]utility-qol", 6 },
-        { 4780, tr("Fabric"), "[4780]fabric", 6 },
-        { 5129, tr("Vanilla+"), "[5129]vanilla", 6 },
-        { 5190, tr("QoL"), "[5190]qol", 6 },
-        { 5191, tr("Utility"), "utility", 6 }
-    };
-    return categories;
 }

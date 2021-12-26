@@ -48,7 +48,6 @@ public slots:
 private slots:
     void getModList(QString name, int index = 0, int needMore = 20);
     void updateVersionList();
-    void updateCategoryList();
     void updateCategoryList(QList<CurseforgeCategoryInfo> list);
     void search();
     void updateStatusText();
@@ -75,7 +74,7 @@ private:
     LocalMod *localMod_;
     QString currentName_;
     int currentIndex_;
-    int currentCategoryId_;
+    int currentCategoryId_ = 0;
     GameVersion currentGameVersion_;
     ModLoaderType::Type currentLoaderType_ = ModLoaderType::Any;
     bool hasMore_ = false;

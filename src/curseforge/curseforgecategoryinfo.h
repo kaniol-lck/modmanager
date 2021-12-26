@@ -9,6 +9,7 @@
 class CurseforgeCategoryInfo
 {
 public:
+    static const QString &cachePath();
     CurseforgeCategoryInfo() = default;
     static CurseforgeCategoryInfo fromVariant(const QVariant &variant);
 
