@@ -15,6 +15,8 @@ CurseforgeAPI::CurseforgeAPI(QObject *parent) :
     QObject(parent)
 {
     accessManager_.setTransferTimeout(Config().getNetworkRequestTimeout());
+    diskCache_.setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
+    accessManager_.setCache(&diskCache_);
 }
 
 CurseforgeAPI *CurseforgeAPI::api()
@@ -258,6 +260,7 @@ QMetaObject::Connection CurseforgeAPI::getSectionCategories(int sectionId, std::
     QUrl url = PREFIX + "/api/v2/category/section/" + QString::number(sectionId);
 
     QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     return connect(reply, &QNetworkReply::finished, this, [=]{

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <functional>
+#include <QNetworkDiskCache>
 
 #include "gameversion.h"
 #include "curseforgemodinfo.h"
@@ -35,6 +36,7 @@ public:
 
 private:
     QNetworkAccessManager accessManager_;
+    QNetworkDiskCache diskCache_;
 };
 
 #endif // CURSEFORGEAPI_H
