@@ -196,7 +196,7 @@ void ReplayModBrowser::filterList()
 
 void ReplayModBrowser::updateStatusText()
 {
-    auto str = tr("Loaded %1 mods from ReplayMod.").arg(model_->rowCount());
+    auto str = tr("Loaded %1 mods from ReplayMod.").arg(model_->rowCount() - 1);
     ui->statusbar->showMessage(str);
 }
 

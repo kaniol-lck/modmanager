@@ -134,7 +134,7 @@ void OptifineModBrowser::filterList()
 
 void OptifineModBrowser::updateStatusText()
 {
-    auto str = tr("Loaded %1 mods from OptiFine.").arg(model_->rowCount());
+    auto str = tr("Loaded %1 mods from OptiFine.").arg(model_->rowCount() - 1);
     ui->statusbar->showMessage(str);
 }
 

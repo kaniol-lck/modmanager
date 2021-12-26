@@ -77,7 +77,7 @@ ExploreBrowser *GitHubRepoBrowser::another()
 
 void GitHubRepoBrowser::updateStatusText()
 {
-    auto str = tr("Loaded %1 releases from GitHub.").arg(model_->rowCount());
+    auto str = tr("Loaded %1 releases from GitHub.").arg(model_->rowCount() - (hasMore_? 0 : 1));
     ui->statusbar->showMessage(str);
 }
 
