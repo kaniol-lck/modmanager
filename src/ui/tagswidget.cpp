@@ -43,7 +43,7 @@ void TagsWidget::updateUi()
         else
             label->setText(tag.name());
         label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
-        if(!iconOnly_)
+        if(!iconOnly_ || tag.iconName().isEmpty())
             label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
         ui->tagsLayout->addWidget(label);
         tagWidgets_ << label;

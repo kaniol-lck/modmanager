@@ -19,6 +19,7 @@ public:
     const QDateTime &dateModified() const;
     int parentGameCategoryId() const;
     int rootGameCategoryId() const;
+    const QUrl &url() const;
 
 private:
     int id_;
@@ -28,6 +29,7 @@ private:
     QDateTime dateModified_;
     int parentGameCategoryId_;
     int rootGameCategoryId_;
+    QUrl url_;
 };
 
 #endif // CURSEFORGECATEGORYINFO_H

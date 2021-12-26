@@ -50,21 +50,19 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
 
     //categories
     for(auto &&variant : value(variant, "categories").toList()){
-        if(auto categoryId = value(variant, "categoryId").toInt(); !modInfo.categories_.contains(categoryId)){
-            modInfo.categories_ << value(variant, "categoryId").toInt();
+        auto category = CurseforgeCategoryInfo::fromVariant(variant);
+        modInfo.categories_ << category;
 
-            //import as tags
-            auto it = std::find_if(CurseforgeAPI::getCategories().cbegin(), CurseforgeAPI::getCategories().cend(), [=](auto &&t){
-                return std::get<0>(t) == categoryId;
-            });
-            if(it != CurseforgeAPI::getCategories().end()){
-                auto [id, name, iconName, parentId] = *it;
-                modInfo.importTag(Tag(name, TagCategory::CurseforgeCategory, ":/image/curseforge/" + iconName));
-            } else
-                qDebug() << "UNKNOWN CURSEFORGE CATEGORY ID:" << categoryId;
+        //import as tags
+        auto it = std::find_if(CurseforgeAPI::getCategories().cbegin(), CurseforgeAPI::getCategories().cend(), [=](auto &&t){
+            return std::get<0>(t) == category.id();
+        });
+        if(it != CurseforgeAPI::getCategories().end()){
+            auto [id, name, iconName, parentId] = *it;
+            modInfo.importTag(Tag(name, TagCategory::CurseforgeCategory, ":/image/curseforge/" + iconName));
+        } else
+            modInfo.importTag(Tag(category.name(), TagCategory::CurseforgeCategory));;
         }
-    }
-
     return modInfo;
 }
 
@@ -164,6 +162,11 @@ bool CurseforgeModInfo::hasBasicInfo() const
     return basicInfo_;
 }
 
+const QList<CurseforgeCategoryInfo> &CurseforgeModInfo::categories() const
+{
+    return categories_;
+}
+
 const QList<CurseforgeModInfo::Attachment> &CurseforgeModInfo::images() const
 {
     return images_;
@@ -182,9 +185,4 @@ const QDateTime &CurseforgeModInfo::dateCreated() const
 const QDateTime &CurseforgeModInfo::dateReleased() const
 {
     return dateReleased_;
-}
-
-const QList<int> &CurseforgeModInfo::categories() const
-{
-    return categories_;
 }

@@ -7,7 +7,7 @@
 #include <modloadertype.h>
 
 #include "tag/tagable.h"
-
+#include "curseforgecategoryinfo.h"
 #include "curseforgefileinfo.h"
 #include "modloadertype.h"
 
@@ -45,7 +45,7 @@ public:
     const QList<CurseforgeFileInfo> &latestFileList() const;
     std::optional<CurseforgeFileInfo> latestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
     const QList<CurseforgeFileInfo> &allFileList() const;
-    const QList<int> &categories() const;
+    const QList<CurseforgeCategoryInfo> &categories() const;
     const QList<Attachment> &images() const;
     const QDateTime &dateModified() const;
     const QDateTime &dateCreated() const;
@@ -68,7 +68,7 @@ private:
     QList<ModLoaderType::Type> loaderTypes_;
     QList<CurseforgeFileInfo> latestFileList_;
     QList<CurseforgeFileInfo> allFileList_;
-    QList<int> categories_;
+    QList<CurseforgeCategoryInfo> categories_;
     QDateTime dateModified_;
     QDateTime dateCreated_;
     QDateTime dateReleased_;

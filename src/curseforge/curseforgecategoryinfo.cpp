@@ -5,13 +5,17 @@
 CurseforgeCategoryInfo CurseforgeCategoryInfo::fromVariant(const QVariant &variant)
 {
     CurseforgeCategoryInfo info;
-    info.id_ = value(variant, "id").toInt();
+    if(variant.toMap().contains("id"))
+        info.id_ = value(variant, "id").toInt();
+    else
+        info.id_ = value(variant, "categoryId").toInt();
     info.name_ = value(variant, "name").toString();
     info.slug_ = value(variant, "slug").toString();
     info.avatarUrl_ = value(variant, "avatarUrl").toUrl();
     info.dateModified_ = value(variant, "dateModified").toDateTime();
     info.parentGameCategoryId_ = value(variant, "parentGameCategoryId").toInt();
     info.rootGameCategoryId_ = value(variant, "rootGameCategoryId").toInt();
+    info.url_ = value(variant, "url").toUrl();
     return info;
 }
 
@@ -48,4 +52,9 @@ int CurseforgeCategoryInfo::parentGameCategoryId() const
 int CurseforgeCategoryInfo::rootGameCategoryId() const
 {
     return rootGameCategoryId_;
+}
+
+const QUrl &CurseforgeCategoryInfo::url() const
+{
+    return url_;
 }
