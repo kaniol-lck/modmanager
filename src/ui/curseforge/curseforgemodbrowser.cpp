@@ -249,10 +249,9 @@ void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list
                 ui->categorySelectButton->setText(name);
                 ui->categorySelectButton->setIcon(icon);
             });
-            if(exists){
-                submenu->setIcon(icon);
+            if(exists)
                 action->setIcon(icon);
-            } else{
+            else{
                 iconAsset->download();
                 connect(iconAsset, &AssetCache::assetReady, this, [=]{
                     QIcon icon(iconAsset->destFilePath());
