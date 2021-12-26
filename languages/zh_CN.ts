@@ -536,37 +536,37 @@
         <translation type="vanished">从Curseforge上加载了%1个mod。</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="290"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="289"/>
         <source>mods</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="293"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="292"/>
         <source>texturepacks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="296"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="295"/>
         <source>worlds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="299"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="298"/>
         <source>modpacks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="306"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="305"/>
         <source>Loaded %1 %2 from Curseforge.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="317"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="316"/>
         <source>Searching mods...</source>
         <translation>搜索mod中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="367"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="366"/>
         <source>There is no more mod here...</source>
         <translation>这里没有更多的mod了...</translation>
     </message>
@@ -4235,6 +4235,176 @@ By doing this, we will recheck those files unmatched before.</source>
         <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="76"/>
         <source>Utility &amp; QoL</source>
         <translation>工具 &amp; 生活质量</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="77"/>
+        <source>Multiplayer</source>
+        <translation>多人</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="78"/>
+        <source>Mini Game</source>
+        <translation>小游戏</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="79"/>
+        <source>Exploration</source>
+        <translation>探索</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="80"/>
+        <source>Combat / PvP</source>
+        <translation>战斗 / PvP</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="81"/>
+        <source>Small / Light</source>
+        <translation>小型 / 轻量</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="82"/>
+        <source>Sci-Fi</source>
+        <translation>科幻</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="83"/>
+        <source>FTB Official Pack</source>
+        <translation>FTB官方包</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="84"/>
+        <source>Map Based</source>
+        <translation>基于地图的</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="85"/>
+        <source>Skyblock</source>
+        <translation>空岛</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="86"/>
+        <source>Quests</source>
+        <translation>探险</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="87"/>
+        <source>Extra Large</source>
+        <translation>超大</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="88"/>
+        <source>Tech</source>
+        <translation>科技</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="89"/>
+        <source>Hardcore</source>
+        <translation>极限</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="90"/>
+        <source>16x</source>
+        <translation>16x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="91"/>
+        <source>Modern</source>
+        <translation>现代</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="92"/>
+        <source>Traditional</source>
+        <translation>传统</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="93"/>
+        <source>Mod Support</source>
+        <translation>Mod支持</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="94"/>
+        <source>Animated</source>
+        <translation>动态</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="95"/>
+        <source>Photo Realistic</source>
+        <translation>影像真实</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="96"/>
+        <source>Data Packs</source>
+        <translation>数据包</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="97"/>
+        <source>Steampunk</source>
+        <translation>蒸汽朋克</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="98"/>
+        <source>Medieval</source>
+        <translation>中世纪</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="99"/>
+        <source>32x</source>
+        <translation>32x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="100"/>
+        <source>512x and Higher</source>
+        <translation>512x及更高</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="101"/>
+        <source>64x</source>
+        <translation>64x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="102"/>
+        <source>128x</source>
+        <translation>128x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="103"/>
+        <source>256x</source>
+        <translation>256x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="104"/>
+        <source>Game Map</source>
+        <translation>游戏地图</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="105"/>
+        <source>Parkour</source>
+        <translation>跑酷</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="106"/>
+        <source>Modded World</source>
+        <translation>使用Mod的地图</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="107"/>
+        <source>Creation</source>
+        <translation>创造</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="108"/>
+        <source>Survival</source>
+        <translation>生存</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="109"/>
+        <source>Adventure</source>
+        <translation>冒险</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="110"/>
+        <source>Puzzle</source>
+        <translation>解谜</translation>
     </message>
     <message>
         <source>Utility QoL</source>

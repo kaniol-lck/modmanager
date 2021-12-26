@@ -665,37 +665,37 @@
         <translation type="vanished">自定義</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="290"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="289"/>
         <source>mods</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="293"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="292"/>
         <source>texturepacks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="296"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="295"/>
         <source>worlds</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="299"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="298"/>
         <source>modpacks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="306"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="305"/>
         <source>Loaded %1 %2 from Curseforge.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="317"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="316"/>
         <source>Searching mods...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="367"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="366"/>
         <source>There is no more mod here...</source>
         <translation>這裡沒有更多的mod了...</translation>
     </message>
@@ -4153,6 +4153,176 @@ By doing this, we will recheck those files unmatched before.</source>
     <message>
         <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="76"/>
         <source>Utility &amp; QoL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="77"/>
+        <source>Multiplayer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="78"/>
+        <source>Mini Game</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="79"/>
+        <source>Exploration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="80"/>
+        <source>Combat / PvP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="81"/>
+        <source>Small / Light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="82"/>
+        <source>Sci-Fi</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="83"/>
+        <source>FTB Official Pack</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="84"/>
+        <source>Map Based</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="85"/>
+        <source>Skyblock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="86"/>
+        <source>Quests</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="87"/>
+        <source>Extra Large</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="88"/>
+        <source>Tech</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="89"/>
+        <source>Hardcore</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="90"/>
+        <source>16x</source>
+        <translation type="unfinished">16x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="91"/>
+        <source>Modern</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="92"/>
+        <source>Traditional</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="93"/>
+        <source>Mod Support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="94"/>
+        <source>Animated</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="95"/>
+        <source>Photo Realistic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="96"/>
+        <source>Data Packs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="97"/>
+        <source>Steampunk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="98"/>
+        <source>Medieval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="99"/>
+        <source>32x</source>
+        <translation type="unfinished">32x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="100"/>
+        <source>512x and Higher</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="101"/>
+        <source>64x</source>
+        <translation type="unfinished">64x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="102"/>
+        <source>128x</source>
+        <translation type="unfinished">128x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="103"/>
+        <source>256x</source>
+        <translation type="unfinished">256x</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="104"/>
+        <source>Game Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="105"/>
+        <source>Parkour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="106"/>
+        <source>Modded World</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="107"/>
+        <source>Creation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="108"/>
+        <source>Survival</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="109"/>
+        <source>Adventure</source>
+        <translation type="unfinished">冒險</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgecategoryinfo.cpp" line="110"/>
+        <source>Puzzle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
