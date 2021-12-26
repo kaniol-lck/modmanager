@@ -67,7 +67,7 @@ public:
                 releaseTypeCheck = true;
             if(config.getUseBetaUpdate() && file.releaseType() == FileInfoT::Beta)
                 releaseTypeCheck = true;
-            if(config.getUseAlphaUpdate() && file.releaseType() == FileInfoT::Beta)
+            if(config.getUseAlphaUpdate() && file.releaseType() == FileInfoT::Alpha)
                 releaseTypeCheck = true;
             if(!releaseTypeCheck) return false;
             //check version
