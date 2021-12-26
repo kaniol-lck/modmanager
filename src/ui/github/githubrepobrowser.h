@@ -51,7 +51,6 @@ private:
     GitHubReleaseInfoWidget *infoWidget_;
     GitHubFileListWidget *fileListWidget_;
     GitHubAPI *api_;
-    LocalModPath *downloadPath_ = nullptr;
     bool inited_ = false;
     GitHubRelease* selectedRelease_ = nullptr;
     int currentPage_ = 1;

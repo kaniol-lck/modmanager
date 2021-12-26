@@ -35,7 +35,6 @@ public:
     ExploreBrowser *another() override;
 
 signals:
-    void downloadPathChanged(LocalModPath *path);
     void selectedModsChanged(ModrinthMod *selectedMod);
 
 public slots:
@@ -46,12 +45,10 @@ public slots:
 private slots:
     void updateVersionList();
     void updateCategoryList();
-    void updateLocalPathList();
     void search();
     void updateStatusText();
     void on_sortSelect_currentIndexChanged(int);
     void on_loaderSelect_currentIndexChanged(int);
-    void on_downloadPathSelect_currentIndexChanged(int index);
     void on_actionOpen_Folder_triggered();
     void on_menuDownload_aboutToShow();
     void on_actionCopy_Website_Link_triggered();
@@ -63,7 +60,6 @@ private:
     ModrinthModInfoWidget *infoWidget_;
     ModrinthFileListWidget *fileListWidget_;
     ModrinthAPI *api_;
-    LocalModPath *downloadPath_ = nullptr;
     QString currentName_;
     int currentIndex_;
     QStringList lastCategoryIds_;

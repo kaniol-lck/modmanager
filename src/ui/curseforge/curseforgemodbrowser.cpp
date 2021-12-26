@@ -41,7 +41,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     fileListWidget_->hide();
     ui->setupUi(this);
     ui->menu_Path->insertActions(ui->menu_Path->actions().first(), pathMenu_->actions());
-    initUi();
+    initUi(ui->downloadPathSelect);
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
@@ -83,12 +83,10 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
         connect(this, &QObject::destroyed, this, disconnecter(
                     CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
     }
-    updateLocalPathList();
     updateStatusText();
 
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
     connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
-    connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &CurseforgeModBrowser::updateLocalPathList);
     connect(this, &CurseforgeModBrowser::downloadPathChanged, fileListWidget_, &CurseforgeFileListWidget::setDownloadPath);
 
     if(localMod_){
@@ -300,29 +298,6 @@ void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list
     ui->categorySelectButton->setMenu(menu);
 }
 
-void CurseforgeModBrowser::updateLocalPathList()
-{
-    ui->downloadPathSelect->blockSignals(true);
-    //remember selected path
-    LocalModPath *selectedPath = nullptr;
-    auto index = ui->downloadPathSelect->currentIndex();
-    if(index >= 0 && index < LocalModPathManager::pathList().size())
-        selectedPath = LocalModPathManager::pathList().at(ui->downloadPathSelect->currentIndex());
-
-    ui->downloadPathSelect->clear();
-    ui->downloadPathSelect->addItem(tr("Custom"));
-    for(const auto &path : LocalModPathManager::pathList())
-        ui->downloadPathSelect->addItem(path->info().displayName());
-
-    //reset selected path
-    if(selectedPath != nullptr){
-        auto index = LocalModPathManager::pathList().indexOf(selectedPath);
-        if(index >= 0)
-            ui->downloadPathSelect->setCurrentIndex(index);
-    }
-    ui->downloadPathSelect->blockSignals(false);
-}
-
 void CurseforgeModBrowser::search()
 {
 //    if(ui->searchText->text() == currentName_) return;
@@ -467,16 +442,6 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
         if(isHidden && isShown && mod->modInfo().iconBytes().isEmpty())
             mod->acquireIcon();
     }
-}
-
-void CurseforgeModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
-{
-    if(index < 0 || index >= ui->downloadPathSelect->count()) return;
-    if(index == 0)
-        downloadPath_ = nullptr;
-    else
-        downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
-    emit downloadPathChanged(downloadPath_);
 }
 
 void CurseforgeModBrowser::onSelectedItemChanged(QStandardItem *item)

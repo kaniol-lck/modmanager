@@ -7,7 +7,10 @@
 #include <QMenu>
 #include <QStandardItem>
 #include <QUrl>
+#include <QComboBox>
 
+#include "local/localmodpath.h"
+#include "local/localmodpathmanager.h"
 #include "util/smoothscrollbar.h"
 
 ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString &name, const QUrl &url) :
@@ -128,16 +131,53 @@ void ExploreBrowser::onDoubleClicked(const QModelIndex &index)
         dialog->show();
 }
 
+void ExploreBrowser::updateLocalPathList()
+{
+    //remember selected path
+    LocalModPath *selectedPath = nullptr;
+    auto index = downloadPathSelect_->currentIndex();
+    if(index >= 0 && index < LocalModPathManager::pathList().size())
+        selectedPath = LocalModPathManager::pathList().at(downloadPathSelect_->currentIndex());
+
+    downloadPathSelect_->clear();
+    downloadPathSelect_->addItem(tr("Custom"));
+    for(const auto &path : LocalModPathManager::pathList())
+        downloadPathSelect_->addItem(path->info().displayName());
+
+    //reset selected path
+    if(selectedPath != nullptr){
+        auto index = LocalModPathManager::pathList().indexOf(selectedPath);
+        if(index >= 0)
+            downloadPathSelect_->setCurrentIndex(index);
+    }
+}
+
 void ExploreBrowser::paintEvent(QPaintEvent *event)
 {
     updateIndexWidget();
     QWidget::paintEvent(event);
 }
 
-void ExploreBrowser::initUi()
+void ExploreBrowser::initUi(QComboBox *downloadPathSelect)
 {
+    downloadPathSelect_ = downloadPathSelect;
     setCentralWidget(modListView_);
     onItemSelected();
+    if(downloadPathSelect_){
+        updateLocalPathList();
+        connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ExploreBrowser::updateLocalPathList);
+        connect(downloadPathSelect_, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ExploreBrowser::setDownloadPathIndex);
+    }
+}
+
+void ExploreBrowser::setDownloadPathIndex(int i)
+{
+    if(i < 0 || i >= LocalModPathManager::pathList().count()) return;
+    if(i == 0)
+        downloadPath_ = nullptr;
+    else
+        downloadPath_ =  LocalModPathManager::pathList().at(i - 1);
+    emit downloadPathChanged(downloadPath_);
 }
 
 bool ExploreBrowser::isRowHidden(int row)

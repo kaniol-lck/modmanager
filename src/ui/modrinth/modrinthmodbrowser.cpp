@@ -36,7 +36,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
-    initUi();
+    initUi(ui->downloadPathSelect);
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
@@ -60,12 +60,10 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
 
     updateVersionList();
     updateCategoryList();
-    updateLocalPathList();
     updateStatusText();
 
     connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
-    connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ModrinthModBrowser::updateLocalPathList);
     connect(this, &ModrinthModBrowser::downloadPathChanged, fileListWidget_, &ModrinthFileListWidget::setDownloadPath);
 
     if(localMod_){
@@ -361,27 +359,6 @@ void ModrinthModBrowser::updateCategoryList()
     ui->categorySelectButton->setMenu(menu);
 }
 
-void ModrinthModBrowser::updateLocalPathList()
-{
-    //remember selected path
-    LocalModPath *selectedPath = nullptr;
-    auto index = ui->downloadPathSelect->currentIndex();
-    if(index >= 0 && index < LocalModPathManager::pathList().size())
-        selectedPath = LocalModPathManager::pathList().at(ui->downloadPathSelect->currentIndex());
-
-    ui->downloadPathSelect->clear();
-    ui->downloadPathSelect->addItem(tr("Custom"));
-    for(const auto &path : LocalModPathManager::pathList())
-        ui->downloadPathSelect->addItem(path->info().displayName());
-
-    //reset selected path
-    if(selectedPath != nullptr){
-        auto index = LocalModPathManager::pathList().indexOf(selectedPath);
-        if(index >= 0)
-            ui->downloadPathSelect->setCurrentIndex(index);
-    }
-}
-
 void ModrinthModBrowser::search()
 {
 //    if(ui->searchText->text() == currentName_) return;
@@ -478,16 +455,6 @@ void ModrinthModBrowser::on_sortSelect_currentIndexChanged(int)
 void ModrinthModBrowser::on_loaderSelect_currentIndexChanged(int)
 {
     getModList(currentName_);
-}
-
-void ModrinthModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
-{
-    if(index < 0 || index >= ui->downloadPathSelect->count()) return;
-    if(index == 0)
-        downloadPath_ = nullptr;
-    else
-        downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
-    emit downloadPathChanged(downloadPath_);
 }
 
 void ModrinthModBrowser::onSelectedItemChanged(QStandardItem *item)

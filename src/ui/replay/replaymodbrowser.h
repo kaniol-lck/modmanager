@@ -29,20 +29,15 @@ public slots:
 
     ExploreBrowser *another() override;
 
-signals:
-    void downloadPathChanged(LocalModPath *path);
-
 private slots:
     void updateLocalPathList();
     void filterList();
     void updateStatusText();
-    void on_downloadPathSelect_currentIndexChanged(int index);
     void on_actionOpen_Folder_triggered();
 
 private:
     Ui::ReplayModBrowser *ui;
     ReplayAPI *api_;
-    LocalModPath *downloadPath_ = nullptr;
     bool inited_ = false;
 
     void getModList();

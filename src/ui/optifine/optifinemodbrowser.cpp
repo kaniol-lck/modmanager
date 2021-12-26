@@ -26,7 +26,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     bmclapi_(new BMCLAPI(this))
 {
     ui->setupUi(this);
-    initUi();
+    initUi(ui->downloadPathSelect);
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
@@ -39,9 +39,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->label_4);
     ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->downloadPathSelect);
 
-    updateLocalPathList();
     updateStatusText();
-    connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &OptifineModBrowser::updateLocalPathList);
     connect(ui->showPreview, &QCheckBox::stateChanged, this, &OptifineModBrowser::filterList);
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &OptifineModBrowser::filterList);
     connect(ui->searchText, &QLineEdit::textChanged, this, &OptifineModBrowser::filterList);
@@ -93,27 +91,6 @@ void OptifineModBrowser::updateUi()
 ExploreBrowser *OptifineModBrowser::another()
 {
     return new OptifineModBrowser;
-}
-
-void OptifineModBrowser::updateLocalPathList()
-{
-    //remember selected path
-    LocalModPath *selectedPath = nullptr;
-    auto index = ui->downloadPathSelect->currentIndex();
-    if(index >= 0 && index < LocalModPathManager::pathList().size())
-        selectedPath = LocalModPathManager::pathList().at(ui->downloadPathSelect->currentIndex());
-
-    ui->downloadPathSelect->clear();
-    ui->downloadPathSelect->addItem(tr("Custom"));
-    for(const auto &path : LocalModPathManager::pathList())
-        ui->downloadPathSelect->addItem(path->info().displayName());
-
-    //reset selected path
-    if(selectedPath != nullptr){
-        auto index = LocalModPathManager::pathList().indexOf(selectedPath);
-        if(index >= 0)
-            ui->downloadPathSelect->setCurrentIndex(index);
-    }
 }
 
 void OptifineModBrowser::filterList()
@@ -200,16 +177,6 @@ QWidget *OptifineModBrowser::getIndexWidget(QStandardItem *item)
         return nullptr;
 }
 
-void OptifineModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
-{
-    if(index < 0 || index >= ui->downloadPathSelect->count()) return;
-    if(index == 0)
-        downloadPath_ = nullptr;
-    else
-        downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
-    emit downloadPathChanged(downloadPath_);
-}
-
 void OptifineModBrowser::on_actionGet_OptiFabric_triggered()
 {
     //OptiFabric on Curseforge
@@ -221,7 +188,6 @@ void OptifineModBrowser::on_actionGet_OptiFabric_triggered()
     dialog->show();
 }
 
-
 void OptifineModBrowser::on_actionGet_OptiForge_triggered()
 {
     //OptiForge on Curseforge
@@ -232,7 +198,6 @@ void OptifineModBrowser::on_actionGet_OptiForge_triggered()
     connect(this, &OptifineModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
     dialog->show();
 }
-
 
 void OptifineModBrowser::on_actionOpen_Folder_triggered()
 {

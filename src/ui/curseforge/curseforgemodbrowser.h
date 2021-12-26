@@ -38,7 +38,6 @@ public:
     ExploreBrowser *another() override;
 
 signals:
-    void downloadPathChanged(LocalModPath *path);
     void selectedModsChanged(CurseforgeMod *selectedMod);
 
 public slots:
@@ -51,11 +50,9 @@ private slots:
     void updateVersionList();
     void updateCategoryList();
     void updateCategoryList(QList<CurseforgeCategoryInfo> list);
-    void updateLocalPathList();
     void search();
     void updateStatusText();
     void on_loaderSelect_currentIndexChanged(int index);
-    void on_downloadPathSelect_currentIndexChanged(int index);
     void on_sortSelect_currentIndexChanged(int);
     void on_actionOpen_Folder_triggered();
     void on_actionMod_triggered();
@@ -74,7 +71,6 @@ private:
     CurseforgeFileListWidget *fileListWidget_;
     CurseforgeAPI *api_;
     QList<int> idList_;
-    LocalModPath *downloadPath_ = nullptr;
     //open as a dialog to search mod
     LocalMod *localMod_;
     QString currentName_;

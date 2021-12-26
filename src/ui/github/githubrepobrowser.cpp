@@ -21,7 +21,7 @@ GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent, const GitHubRepoInfo &info
     api_(new GitHubAPI())
 {
     ui->setupUi(this);
-    initUi();
+    initUi(nullptr);
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);

@@ -24,7 +24,7 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     api_(new ReplayAPI())
 {
     ui->setupUi(this);
-    initUi();
+    initUi(ui->downloadPathSelect);
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
@@ -110,16 +110,6 @@ void ReplayModBrowser::updateLocalPathList()
         if(index >= 0)
             ui->downloadPathSelect->setCurrentIndex(index);
     }
-}
-
-void ReplayModBrowser::on_downloadPathSelect_currentIndexChanged(int index)
-{
-    if(index < 0 || index >= ui->downloadPathSelect->count()) return;
-    if(index == 0)
-        downloadPath_ = nullptr;
-    else
-        downloadPath_ =  LocalModPathManager::pathList().at(index - 1);
-    emit downloadPathChanged(downloadPath_);
 }
 
 void ReplayModBrowser::getModList()
