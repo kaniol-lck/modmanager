@@ -13,12 +13,6 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     path_(path),
     menu_(new UnclosedMenu(parent)),
     websiteMenu_(new UnclosedMenu(tr("Website source"), parent)),
-    subDirTagMenu_(new UnclosedMenu(tr("Sub-directory tag"), parent)),
-    environmentTagMenu_(new UnclosedMenu(tr("Environment tag"), parent)),
-    languageTagMenu_(new UnclosedMenu(tr("Language tag"), parent)),
-    typeTagMenu_(new UnclosedMenu(tr("Type tag"), parent)),
-    functionalityTagMenu_(new UnclosedMenu(tr("Functionality tag"), parent)),
-    customTagMenu_(new UnclosedMenu(tr("Custom tag"), parent)),
     disableAction_(new QAction(tr("Disabled mods"), parent)),
     showAllAction_(new QAction(tr("Show all"), parent))
 {
@@ -28,46 +22,27 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     connect(showAllAction_, &QAction::triggered, this, [=]{
         for(auto &&action : websiteMenu_->actions())
             action->setChecked(true);
-        for(auto &&action : subDirTagMenu_->actions())
-            action->setChecked(true);
-        for(auto &&action : environmentTagMenu_->actions())
-            action->setChecked(true);
-        for(auto &&action : languageTagMenu_->actions())
-            action->setChecked(true);
-        for(auto &&action : typeTagMenu_->actions())
-            action->setChecked(true);
-        for(auto &&action : functionalityTagMenu_->actions())
-            action->setChecked(true);
-        for(auto &&action : customTagMenu_->actions())
-            action->setChecked(true);
+        for(const auto &menu : qAsConst(tagMenus_))
+            for(auto &&action : menu->actions())
+                action->setChecked(true);
         disableAction_->setChecked(true);
     });
     //hide all
     connect(menu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
         for(auto &&action : websiteMenu_->actions())
             action->setChecked(false);
-        for(auto &&action : subDirTagMenu_->actions())
-            action->setChecked(false);
-        for(auto &&action : environmentTagMenu_->actions())
-            action->setChecked(false);
-        for(auto &&action : languageTagMenu_->actions())
-            action->setChecked(false);
-        for(auto &&action : typeTagMenu_->actions())
-            action->setChecked(false);
-        for(auto &&action : functionalityTagMenu_->actions())
-            action->setChecked(false);
-        for(auto &&action : customTagMenu_->actions())
-            action->setChecked(false);
+        for(const auto &menu : qAsConst(tagMenus_))
+            for(auto &&action : menu->actions())
+                action->setChecked(true);
         disableAction_->setChecked(false);
     });
     menu_->addSeparator();
     menu_->addMenu(websiteMenu_);
-    menu_->addMenu(subDirTagMenu_);
-    menu_->addMenu(environmentTagMenu_);
-    menu_->addMenu(languageTagMenu_);
-    menu_->addMenu(typeTagMenu_);
-    menu_->addMenu(functionalityTagMenu_);
-    menu_->addMenu(customTagMenu_);
+    for(const auto &category : TagCategory::SortableCategories){
+        auto menu = new UnclosedMenu(category.name());
+        tagMenus_.insert(category, menu);
+        menu_->addMenu(menu);
+    }
     menu_->addAction(disableAction_);
 
     //website
@@ -83,40 +58,6 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     websiteMenu_->addAction(QIcon(":/image/curseforge.svg"), "Curseforge")->setCheckable(true);
     websiteMenu_->addAction(QIcon(":/image/modrinth.svg"), "Modrinth")->setCheckable(true);
     auto noneAction = websiteMenu_->addAction(tr("None"));
-    noneAction->setCheckable(true);
-    noneAction->setData(true);
-    //environment tag
-    connect(environmentTagMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
-        for(auto &&action : environmentTagMenu_->actions())
-            action->setChecked(true);
-    });
-    connect(environmentTagMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
-        for(auto &&action : environmentTagMenu_->actions())
-            action->setChecked(false);
-    });
-    environmentTagMenu_->addSeparator();
-    for(auto &&tag : Tag::enironmentTags()){
-        auto action = environmentTagMenu_->addAction(tag.name());
-        action->setCheckable(true);
-    }
-    noneAction = environmentTagMenu_->addAction(tr("None"));
-    noneAction->setCheckable(true);
-    noneAction->setData(true);
-    //type tag
-    connect(typeTagMenu_->addAction(tr("Show all")), &QAction::triggered, this, [=]{
-        for(auto &&action : typeTagMenu_->actions())
-            action->setChecked(true);
-    });
-    connect(typeTagMenu_->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
-        for(auto &&action : typeTagMenu_->actions())
-            action->setChecked(false);
-    });
-    typeTagMenu_->addSeparator();
-    for(auto &&tag : Tag::typeTags()){
-        auto action = typeTagMenu_->addAction(tag.name());
-        action->setCheckable(true);
-    }
-    noneAction = typeTagMenu_->addAction(tr("None"));
     noneAction->setCheckable(true);
     noneAction->setData(true);
 
@@ -151,127 +92,33 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
         if(action->data().toBool() && action->isChecked() && !mod->curseforgeMod() && !mod->modrinthMod())
             showWebsite = true;
     }
-    //sub dir tag
-    bool showSubDirTag = false;
-    for(auto &&action : subDirTagMenu_->actions()){
-        bool hasTag = false;
-        if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tags(TagCategory::SubDirCategory).isEmpty()){
-            showSubDirTag = true;
-            break;
-        }
-        for(auto &&tag : mod->tags(TagCategory::SubDirCategory)){
-            if(action->text() == tag.name()){
-                hasTag = true;
+    bool showTags = true;
+    for(auto it = tagMenus_.cbegin(); it != tagMenus_.cend(); it++){
+        bool showTag = false;
+        for(auto &&action : it.value()->actions()){
+            bool hasTag = false;
+            if(!action->isChecked()) continue;
+            if(action->data().toBool() && mod->tags(it.key()).isEmpty()){
+                showTag = true;
+                break;
+            }
+            for(auto &&tag : mod->tags(it.key())){
+                if(action->text() == tag.name()){
+                    hasTag = true;
+                    break;
+                }
+            }
+            if(hasTag) {
+                showTag = true;
                 break;
             }
         }
-        if(hasTag) {
-            showSubDirTag = true;
+        if(!showTag){
+            showTags = false;
             break;
         }
     }
-    //environment tag
-    bool showEnvironmentTag = false;
-    for(auto &&action : environmentTagMenu_->actions()){
-        bool hasTag = false;
-        if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tags(TagCategory::EnvironmentCategory).isEmpty()){
-            showEnvironmentTag = true;
-            break;
-        }
-        for(auto &&tag : mod->tags(TagCategory::EnvironmentCategory)){
-            if(action->text() == tag.name()){
-                hasTag = true;
-                break;
-            }
-        }
-        if(hasTag) {
-            showEnvironmentTag = true;
-            break;
-        }
-    }
-    //environment tag
-    bool showLanguageTag = false;
-    for(auto &&action : languageTagMenu_->actions()){
-        bool hasTag = false;
-        if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tags(TagCategory::LanguageCategory).isEmpty()){
-            showLanguageTag = true;
-            break;
-        }
-        for(auto &&tag : mod->tags(TagCategory::LanguageCategory)){
-            if(action->text() == tag.name()){
-                hasTag = true;
-                break;
-            }
-        }
-        if(hasTag) {
-            showLanguageTag = true;
-            break;
-        }
-    }
-    //type tag
-    bool showTypeTag = false;
-    for(auto &&action : typeTagMenu_->actions()){
-        bool hasTag = false;
-        if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tags(TagCategory::TypeCategory).isEmpty()){
-            showTypeTag = true;
-            break;
-        }
-        for(auto &&tag : mod->tags(TagCategory::TypeCategory)){
-            if(action->text() == tag.name()){
-                hasTag = true;
-                break;
-            }
-        }
-        if(hasTag) {
-            showTypeTag = true;
-            break;
-        }
-    }
-    //functionality tag
-    bool showFunctionalityTag = false;
-    for(auto &&action : functionalityTagMenu_->actions()){
-        bool hasTag = false;
-        if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tags(TagCategory::FunctionalityCategory).isEmpty()){
-            showFunctionalityTag = true;
-            break;
-        }
-        for(auto &&tag : mod->tags(TagCategory::FunctionalityCategory)){
-            if(action->text() == tag.name()){
-                hasTag = true;
-                break;
-            }
-        }
-        if(hasTag) {
-            showFunctionalityTag = true;
-            break;
-        }
-    }
-    //custom tag
-    bool showCustomTag = false;
-    for(auto &&action : customTagMenu_->actions()){
-        bool hasTag = false;
-        if(!action->isChecked()) continue;
-        if(action->data().toBool() && mod->tags(TagCategory::CustomCategory).isEmpty()){
-            showCustomTag = true;
-            break;
-        }
-        for(auto &&tag : mod->tags(TagCategory::CustomCategory)){
-            if(action->text() == tag.name()){
-                hasTag = true;
-                break;
-            }
-        }
-        if(hasTag) {
-            showCustomTag = true;
-            break;
-        }
-    }
-    return show && showWebsite && showSubDirTag && showEnvironmentTag && showLanguageTag && showTypeTag && showFunctionalityTag && showCustomTag;
+    return show && showWebsite && showTags;
 }
 
 void LocalModFilter::refreshTags() const
@@ -307,12 +154,6 @@ void LocalModFilter::refreshTags() const
         noneAction->setData(true);
     };
     auto &&containedTags = path_->containedTags();
-    //subDir tag
-    addTags(subDirTagMenu_, containedTags.tags(TagCategory::SubDirCategory));
-    //language tag
-    addTags(languageTagMenu_, containedTags.tags(TagCategory::LanguageCategory));
-    //functionality tag
-    addTags(functionalityTagMenu_, containedTags.tags(TagCategory::FunctionalityCategory));
-    //custom tag
-    addTags(customTagMenu_, containedTags.tags(TagCategory::CustomCategory));
+    for(const auto &category : TagCategory::SortableCategories)
+        addTags(tagMenus_[category], containedTags.tags(category));
 }

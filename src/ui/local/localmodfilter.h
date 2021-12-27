@@ -1,7 +1,10 @@
 #ifndef LOCALMODFILTER_H
 #define LOCALMODFILTER_H
 
+#include <QMap>
 #include <QObject>
+
+#include "tag/tagcategory.h"
 
 class LocalMod;
 class LocalModPath;
@@ -23,12 +26,7 @@ private:
     LocalModPath *path_;
     UnclosedMenu *menu_;
     UnclosedMenu *websiteMenu_;
-    UnclosedMenu *subDirTagMenu_;
-    UnclosedMenu *environmentTagMenu_;
-    UnclosedMenu *languageTagMenu_;
-    UnclosedMenu *typeTagMenu_;
-    UnclosedMenu *functionalityTagMenu_;
-    UnclosedMenu *customTagMenu_;
+    QMap<TagCategory, UnclosedMenu *> tagMenus_;
     QAction *disableAction_;
     QAction *showAllAction_;
 };

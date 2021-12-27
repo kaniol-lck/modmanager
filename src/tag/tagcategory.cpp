@@ -30,6 +30,21 @@ const QList<TagCategory> TagCategory::PresetCategories{
     LanguageCategory,
 };
 
+const QList<TagCategory> TagCategory::SortableCategories{
+    SubDirCategory,
+    FileNameCategory,
+    CustomCategory,
+    TypeCategory,
+    TranslationCategory,
+    FunctionalityCategory,
+//    OptiFineCategory,
+    CurseforgeCategory,
+    ModrinthCategory,
+//    NotationCategory,
+    EnvironmentCategory,
+    LanguageCategory,
+};
+
 const QList<TagCategory> TagCategory::CustomizableCategories{
 //    EnvironmentCategory,
 //    CurseforgeCategory,
