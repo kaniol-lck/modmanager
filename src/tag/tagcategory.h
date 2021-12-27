@@ -31,7 +31,7 @@ public:
     static const TagCategory CustomCategory;
 
     static const QList<TagCategory> PresetCategories;
-    static const QList<TagCategory> SortableCategories;
+    static const QList<TagCategory> FilterCategories;
     static const QList<TagCategory> CustomizableCategories;
 
     const QString &id() const;

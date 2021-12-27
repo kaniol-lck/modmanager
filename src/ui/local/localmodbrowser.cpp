@@ -6,7 +6,6 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QScrollBar>
-#include <QStatusBar>
 #include <QProgressBar>
 #include <QStandardItemModel>
 #include <QTreeView>

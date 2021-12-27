@@ -38,7 +38,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     });
     menu_->addSeparator();
     menu_->addMenu(websiteMenu_);
-    for(const auto &category : TagCategory::SortableCategories){
+    for(const auto &category : TagCategory::FilterCategories){
         auto menu = new UnclosedMenu(category.name());
         tagMenus_.insert(category, menu);
         menu_->addMenu(menu);
@@ -154,6 +154,6 @@ void LocalModFilter::refreshTags() const
         noneAction->setData(true);
     };
     auto &&containedTags = path_->containedTags();
-    for(const auto &category : TagCategory::SortableCategories)
+    for(const auto &category : TagCategory::FilterCategories)
         addTags(tagMenus_[category], containedTags.tags(category));
 }

@@ -32,6 +32,7 @@ void AssetCache::download()
         QDir().mkpath(QFileInfo(destFilePath_).absolutePath());
         if(file.open(QIODevice::WriteOnly)){
             file.write(reply->readAll());
+            file.close();
             emit assetReady();
         }
         reply->deleteLater();

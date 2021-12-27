@@ -151,6 +151,7 @@ void CurseforgeModBrowser::updateUi()
 
 void CurseforgeModBrowser::updateVersionList()
 {
+    ui->versionToolBar->clear();
     auto menu = new QMenu;
     menu->setStyleSheet("QMenu { menu-scrollable: 1; }");
     auto anyVersionAction = menu->addAction(tr("Any"));
@@ -176,9 +177,10 @@ void CurseforgeModBrowser::updateVersionList()
             if(submenu->actions().size() == 1)
                 if(GameVersion version = submenu->actions().at(0)->text(); version == version.majorVersion())
                     submenu->addSeparator();
-            connect(submenu->addAction(version), &QAction::triggered, this, [=]{
+            submenu->addAction(version, this, [=]{
                 currentGameVersion_ = version;
                 ui->versionSelectButton->setText(version);
+                getModList(currentName_);
             });
         }
     }
@@ -189,14 +191,19 @@ void CurseforgeModBrowser::updateVersionList()
         else
             menu->addMenu(submenu);
     }
-    connect(menu, &QMenu::triggered, this, [=]{
-        getModList(currentName_);
-    });
+    for(auto &&action : menu->actions()){
+        if(action->isSeparator()) continue;
+        auto button = new QToolButton;
+        button->setDefaultAction(action);
+        button->setPopupMode(QToolButton::InstantPopup);
+        ui->versionToolBar->addWidget(button);
+    }
     ui->versionSelectButton->setMenu(menu);
 }
 
 void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list)
 {
+    ui->categoryToolBar->clear();
     auto menu = new QMenu;
     auto anyCategoryAction = menu->addAction(tr("Any"));
     connect(anyCategoryAction, &QAction::triggered, this, [=]{
@@ -206,69 +213,57 @@ void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list
     });
     anyCategoryAction->trigger();
     menu->addSeparator();
-    QMap<int, QMenu*> submenus;
-    for(auto &&info : list){
-        if(info.parentGameCategoryId() == sectionId_){
-            auto submenu = new QMenu(info.name());
-            submenus[info.id()] = submenu;
-            auto iconAsset = new AssetCache(this, info.avatarUrl(), info.avatarUrl().fileName(), CurseforgeCategoryInfo::cachePath());
-            bool exists = iconAsset->exists();
-            QIcon icon(iconAsset->destFilePath());
-            QString name = info.name();
-            name.replace("&", "&&");
-            auto action = submenu->addAction(icon, name, this, [=]{
-                currentCategoryId_ = info.id();
-                ui->categorySelectButton->setText(name);
-                ui->categorySelectButton->setIcon(icon);
-            });
-            if(exists){
-                submenu->setIcon(icon);
-                action->setIcon(icon);
-            } else{
-                iconAsset->download();
-                connect(iconAsset, &AssetCache::assetReady, this, [=]{
-                    QIcon icon(iconAsset->destFilePath());
-                    submenu->setIcon(icon);
-                    action->setIcon(icon);
-                });
-            }
-        }
-    }
-    for(auto &&info : list){
-        if(submenus.contains(info.parentGameCategoryId())){
-            auto submenu = submenus[info.parentGameCategoryId()];
-            if(submenu->actions().size() == 1)
-                submenu->addSeparator();
-            auto iconAsset = new AssetCache(this, info.avatarUrl(), info.avatarUrl().fileName(), CurseforgeCategoryInfo::cachePath());
-            bool exists = iconAsset->exists();
-            QIcon icon(iconAsset->destFilePath());
-            QString name = info.name();
-            name.replace("&", "&&");
-            auto action = submenu->addAction(icon, name, this, [=]{
-                currentCategoryId_ = info.id();
-                ui->categorySelectButton->setText(name);
-                ui->categorySelectButton->setIcon(icon);
-            });
-            if(exists)
-                action->setIcon(icon);
-            else{
-                iconAsset->download();
-                connect(iconAsset, &AssetCache::assetReady, this, [=]{
-                    QIcon icon(iconAsset->destFilePath());
-                    action->setIcon(icon);
-                });
-            }
-        }
-    }
-    for(auto submenu : qAsConst(submenus)){
-        if(submenu->actions().size() == 1)
-            menu->addActions(submenu->actions());
-        else
-            menu->addMenu(submenu);
-    }
-    connect(menu, &QMenu::triggered, this, [=]{
-        getModList(currentName_);
+    std::sort(list.begin(), list.end(), [=](const auto &info1, const auto &info2){
+        return info1.id() < info2.id();
     });
+    QMap<int, QAction *> actions;
+    for(auto &&info : list){
+        auto iconAsset = new AssetCache(this, info.avatarUrl(), info.avatarUrl().fileName(), CurseforgeCategoryInfo::cachePath());
+        bool exists = iconAsset->exists();
+        QString name = info.name();
+        name.replace("&", "&&");
+        auto action = new QAction(info.name());
+        if(exists){
+            action->setIcon(QIcon(iconAsset->destFilePath()));
+        } else{
+            iconAsset->download();
+            connect(iconAsset, &AssetCache::assetReady, this, [=]{
+                action->setIcon(QIcon(iconAsset->destFilePath()));
+            });
+        }
+        connect(action, &QAction::triggered, this, [=]{
+            currentCategoryId_ = info.id();
+            ui->categorySelectButton->setText(name);
+            ui->categorySelectButton->setIcon(action->icon());
+            getModList(currentName_);
+        });
+        if(auto parentId = info.parentGameCategoryId(); parentId == sectionId_){
+            actions[info.id()] = action;
+        } else if(actions.contains(parentId)){
+            if(actions[parentId]->menu())
+                actions[parentId]->menu()->addAction(action);
+            else {
+                auto parentAction = new QAction(actions[parentId]->icon(), actions[parentId]->text());
+                parentAction->setMenu(new QMenu);
+                parentAction->menu()->addAction(actions[parentId]);
+                parentAction->menu()->addSeparator();
+                parentAction->menu()->addAction(action);
+                actions[parentId] = parentAction;
+                if(!exists)
+                    connect(iconAsset, &AssetCache::assetReady, this, [=]{
+                        parentAction->setIcon(QIcon(iconAsset->destFilePath()));
+                    });
+            }
+        }
+    }
+    menu->addActions(actions.values());
+    for(auto &&action : menu->actions()){
+        if(action->isSeparator()) continue;
+        auto button = new QToolButton;
+        button->setDefaultAction(action);
+        button->setPopupMode(QToolButton::InstantPopup);
+        ui->categoryToolBar->addWidget(button);
+    }
     ui->categorySelectButton->setMenu(menu);
 }
 

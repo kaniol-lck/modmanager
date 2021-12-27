@@ -25,6 +25,7 @@ public:
 
 signals:
     void viewModeChanged(int mode);
+
 private:
     Ui::LocalModStatusBar *ui;
     QButtonGroup *group_;

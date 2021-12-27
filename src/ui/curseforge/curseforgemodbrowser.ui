@@ -289,6 +289,28 @@
    <addaction name="menu_Mod"/>
    <addaction name="menu_Path"/>
   </widget>
+  <widget class="QToolBar" name="categoryToolBar">
+   <property name="windowTitle">
+    <string>Categories</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QToolBar" name="versionToolBar">
+   <property name="windowTitle">
+    <string>Game Versions</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
   <action name="actionOpen_Folder">
    <property name="icon">
     <iconset theme="folder">

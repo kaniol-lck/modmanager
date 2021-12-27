@@ -30,7 +30,7 @@ const QList<TagCategory> TagCategory::PresetCategories{
     LanguageCategory,
 };
 
-const QList<TagCategory> TagCategory::SortableCategories{
+const QList<TagCategory> TagCategory::FilterCategories{
     SubDirCategory,
     FileNameCategory,
     CustomCategory,
