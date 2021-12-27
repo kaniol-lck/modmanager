@@ -5,6 +5,7 @@
 const TagCategory TagCategory::SubDirCategory = TagCategory("sub-dir", QColor(34, 161, 181));
 const TagCategory TagCategory::FileNameCategory = TagCategory("filename", QColor(181, 76, 132));
 const TagCategory TagCategory::EnvironmentCategory = TagCategory("environment", QColor(124, 143, 93));
+const TagCategory TagCategory::LanguageCategory = TagCategory("language", QColor(56, 132, 91));
 const TagCategory TagCategory::CurseforgeCategory = TagCategory("curseforge", QColor(241, 100, 54));
 const TagCategory TagCategory::ModrinthCategory = TagCategory("modrinth", QColor(93, 164, 38));
 const TagCategory TagCategory::OptiFineCategory = TagCategory("optifine", QColor(126, 40, 41));
@@ -17,15 +18,16 @@ const TagCategory TagCategory::CustomCategory = TagCategory("custom", QColor(127
 const QList<TagCategory> TagCategory::PresetCategories{
     SubDirCategory,
     FileNameCategory,
-    EnvironmentCategory,
-    CurseforgeCategory,
-    ModrinthCategory,
-    OptiFineCategory,
+    CustomCategory,
     TypeCategory,
     TranslationCategory,
     FunctionalityCategory,
+    OptiFineCategory,
+    CurseforgeCategory,
+    ModrinthCategory,
     NotationCategory,
-    CustomCategory
+    EnvironmentCategory,
+    LanguageCategory,
 };
 
 const QList<TagCategory> TagCategory::CustomizableCategories{
@@ -91,6 +93,8 @@ QString TagCategory::name() const
         return QObject::tr("File Name Tag");
     if(id_ == "environment")
         return QObject::tr("Environment Tag");
+    if(id_ == "language")
+        return QObject::tr("Language Tag");
     if(id_ == "curseforge")
         return QObject::tr("Curseforge Tag");
     if(id_ == "modrinth")

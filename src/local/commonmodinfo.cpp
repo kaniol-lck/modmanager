@@ -44,3 +44,8 @@ const QUrl &CommonModInfo::issues() const
 {
     return issues_;
 }
+
+const QStringList &CommonModInfo::languages() const
+{
+    return languages_;
+}

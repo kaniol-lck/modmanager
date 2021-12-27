@@ -20,6 +20,7 @@ public:
     static const TagCategory SubDirCategory;
     static const TagCategory FileNameCategory;
     static const TagCategory EnvironmentCategory;
+    static const TagCategory LanguageCategory;
     static const TagCategory CurseforgeCategory;
     static const TagCategory ModrinthCategory;
     static const TagCategory OptiFineCategory;

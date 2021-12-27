@@ -17,6 +17,7 @@ public:
     const QUrl &homepage() const;
     const QUrl &sources() const;
     const QUrl &issues() const;
+    const QStringList &languages() const;
 
 protected:
     //basic
@@ -26,6 +27,7 @@ protected:
     QStringList authors_;
     QString description_;
     QByteArray iconBytes_;
+    QStringList languages_;
 
     //links
     QUrl homepage_;

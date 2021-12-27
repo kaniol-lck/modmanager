@@ -80,6 +80,14 @@ ModLoaderType::Type LocalModFile::loadInfo()
     if(loaderType_ != ModLoaderType::Any && commonInfo()->id() == "optifine")
         importTag(Tag("OptiFine", TagCategory::OptiFineCategory, ":/image/optifine.png"));
 
+    removeTags(TagCategory::LanguageCategory);
+    if(loaderType_ != ModLoaderType::Any){
+        for(const auto &language : commonInfo()->languages()){
+            importTag(Tag(language, TagCategory::LanguageCategory));
+        }
+    }
+
+
     //qDebug() << "finish" << timer->elapsed();
 
     //for count

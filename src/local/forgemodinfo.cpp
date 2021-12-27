@@ -36,6 +36,7 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
     if(match.hasMatch())
         jarVersion = match.captured(1);
 
+
     //modern forge
     zip->setCurrentFile("META-INF/mods.toml");
     if(zipFile.open(QIODevice::ReadOnly)){
@@ -87,6 +88,13 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
 
         QStringList authors = split(config["authors"].value_or(""));
 
+        QStringList languages;
+        for(auto &&fileName : zip->getFileNameList()){
+            QRegularExpression re(R"(lang/(.+?)\.json)");
+            if(auto match = re.match(fileName); match.hasMatch())
+                languages << match.captured(1);
+        }
+
         for(auto &i : *config["mods"].as_array()){
             auto modTable = *i.as_table();
 
@@ -110,6 +118,8 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
 
             if(info.id_ == "optifine")
                 info.version_ = optiFineVersion(zip);
+
+            info.languages_ << languages;
 
             list << info;
         }

@@ -25,6 +25,7 @@ private:
     UnclosedMenu *websiteMenu_;
     UnclosedMenu *subDirTagMenu_;
     UnclosedMenu *environmentTagMenu_;
+    UnclosedMenu *languageTagMenu_;
     UnclosedMenu *typeTagMenu_;
     UnclosedMenu *functionalityTagMenu_;
     UnclosedMenu *customTagMenu_;

@@ -15,6 +15,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     websiteMenu_(new UnclosedMenu(tr("Website source"), parent)),
     subDirTagMenu_(new UnclosedMenu(tr("Sub-directory tag"), parent)),
     environmentTagMenu_(new UnclosedMenu(tr("Environment tag"), parent)),
+    languageTagMenu_(new UnclosedMenu(tr("Language tag"), parent)),
     typeTagMenu_(new UnclosedMenu(tr("Type tag"), parent)),
     functionalityTagMenu_(new UnclosedMenu(tr("Functionality tag"), parent)),
     customTagMenu_(new UnclosedMenu(tr("Custom tag"), parent)),
@@ -30,6 +31,8 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
         for(auto &&action : subDirTagMenu_->actions())
             action->setChecked(true);
         for(auto &&action : environmentTagMenu_->actions())
+            action->setChecked(true);
+        for(auto &&action : languageTagMenu_->actions())
             action->setChecked(true);
         for(auto &&action : typeTagMenu_->actions())
             action->setChecked(true);
@@ -47,6 +50,8 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
             action->setChecked(false);
         for(auto &&action : environmentTagMenu_->actions())
             action->setChecked(false);
+        for(auto &&action : languageTagMenu_->actions())
+            action->setChecked(false);
         for(auto &&action : typeTagMenu_->actions())
             action->setChecked(false);
         for(auto &&action : functionalityTagMenu_->actions())
@@ -59,6 +64,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     menu_->addMenu(websiteMenu_);
     menu_->addMenu(subDirTagMenu_);
     menu_->addMenu(environmentTagMenu_);
+    menu_->addMenu(languageTagMenu_);
     menu_->addMenu(typeTagMenu_);
     menu_->addMenu(functionalityTagMenu_);
     menu_->addMenu(customTagMenu_);
@@ -185,6 +191,26 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
+    //environment tag
+    bool showLanguageTag = false;
+    for(auto &&action : languageTagMenu_->actions()){
+        bool hasTag = false;
+        if(!action->isChecked()) continue;
+        if(action->data().toBool() && mod->tags(TagCategory::LanguageCategory).isEmpty()){
+            showLanguageTag = true;
+            break;
+        }
+        for(auto &&tag : mod->tags(TagCategory::LanguageCategory)){
+            if(action->text() == tag.name()){
+                hasTag = true;
+                break;
+            }
+        }
+        if(hasTag) {
+            showLanguageTag = true;
+            break;
+        }
+    }
     //type tag
     bool showTypeTag = false;
     for(auto &&action : typeTagMenu_->actions()){
@@ -245,7 +271,7 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
-    return show && showWebsite && showSubDirTag && showEnvironmentTag && showTypeTag && showFunctionalityTag && showCustomTag;
+    return show && showWebsite && showSubDirTag && showEnvironmentTag && showLanguageTag && showTypeTag && showFunctionalityTag && showCustomTag;
 }
 
 void LocalModFilter::refreshTags() const
@@ -283,6 +309,8 @@ void LocalModFilter::refreshTags() const
     auto &&containedTags = path_->containedTags();
     //subDir tag
     addTags(subDirTagMenu_, containedTags.tags(TagCategory::SubDirCategory));
+    //language tag
+    addTags(languageTagMenu_, containedTags.tags(TagCategory::LanguageCategory));
     //functionality tag
     addTags(functionalityTagMenu_, containedTags.tags(TagCategory::FunctionalityCategory));
     //custom tag
