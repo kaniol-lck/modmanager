@@ -6,6 +6,60 @@ Soon....
 
 ## 公开测试 Beta Test
 
+### v1.0.0-beta.9
+
+*WIP*
+
+使用MDI主界面布局，更利于分页管理，为各个页面添加了更多的菜单操作。将页面中的按钮改为使用工具栏的形式，使界面更加灵活。
+
+添加了GitHub页面，可以浏览并下载GitHub Releases，也可以直接从本地mod中直接打开Releases页面。
+
+Curseforge页面现在除了Mod之外还支持查看并下载整合包、资源包和存档。
+
+本地Mod管理支持导出一些整合包所用的常用文件：`manifest.json`、`modlist.html`或压缩包。
+
+在本地mod列表的右键菜单中添加了排序的选项。
+
+启用了使用BMCLAPI渠道下载OptiFIne。
+
+支持代理设置。
+
+添加了语言标签，会根据mod内的语言文件自动添加。
+
+链接文件会自动链接所有mod文件（包含旧版文件）。
+
+调整Windows下的安装路径，64位会安装在 Program Files 下而不是 Program Files (x86) 下。
+
+调整了本地mod筛选，拥有更多的筛选选项。
+
+调整了标签的鼠标滚动。
+
+调整了Windows下无边框界面的观感。
+
+将Curseforge的分类调整为动态获取，初次打开可能需要等待图标加载。
+
+调整了UI，调整了样式表。
+
+减小了状态栏的高度。
+
+修复了更新检查卡住。
+
+修复了Modrinth搜索的问题。
+
+修复了打开Curseforge/Modrinth对话框时出现的卡顿。
+
+修复了HiDPI下的图标模糊。
+
+修复了更新检查不检查Alpha版本的问题。
+
+修复了MC样式文本的问题，为样式文本添加更多的支持。
+
+修复了“探索”页面中的计数错误。
+
+修复了mod路径自动命名的一些问题。
+
+修复了一处未翻译的文本。
+
 ### v1.0.0-beta.8
 
 *2021.12.12*
@@ -46,7 +100,7 @@ Added status bar for explore pages.
 Added loader type for Modrinth mods display.
 添加了Modrinth mod的加载器版本显示。
 
-Added OptiFine version detect.
+Added OptiFine version detection.
 添加了OptiFine版本检测。
 
 Update check will show all available updates(not latest).

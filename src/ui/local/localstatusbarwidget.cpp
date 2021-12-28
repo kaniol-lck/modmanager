@@ -8,7 +8,6 @@ LocalStatusBarWidget::LocalStatusBarWidget(QWidget *parent) :
     ui(new Ui::LocalModStatusBar),
     group_(new QButtonGroup(this))
 {
-    setStyleSheet("border: 1px solid black;");
     ui->setupUi(this);
     group_->addButton(ui->listButton, ListMode);
     group_->addButton(ui->iconButton, IconMode);
