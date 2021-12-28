@@ -49,32 +49,39 @@ QString numberConvert(int size, const QString &suffix, int prec, int limit){
 
 void openFileInFolder(const QString &filePath)
 {
+    QProcess process;
+#ifdef Q_OS_UNIX
+    QString fileManager;
+    process.start("xdg-mime", { "query", "default", "inode/directory" });
+    process.waitForFinished();
+    fileManager = process.readAllStandardOutput();
+    if(fileManager.contains("dolphin")){
+        process.startDetached("dolphin", { "--select", filePath });
+        return;
+    } else if(fileManager.contains("dde-file-manager")){
+        process.startDetached("dde-file-manager", { "--show-item", filePath });
+        return;
+    } else if(fileManager.contains("nautilus")){
+        process.startDetached("nautilus", { filePath });
+        return;
+    } else if(fileManager.contains("nemo")){
+        process.startDetached("nemo", { filePath });
+        return;
+    } else if(fileManager.contains("elementary")){
+        process.startDetached("elementary", { filePath });
+        return;
+    }
+#endif
+#ifdef Q_OS_WIN
+    process.startDetached("explorer.exe", { "/select,",  filePath });
+    return;
+#endif
+#ifdef Q_OS_MACOS
+    process.startDetached("open", { "-R",  filePath });
+    return;
+#endif
     QFileInfo info(filePath);
-    QString path = QDir(filePath).absolutePath();
-    //TODO: does not work on windows
-//#if defined(Q_OS_WIN)
-//    QStringList args;
-//    if (!info.isFile())
-//        args << "/select,";
-//    args << QDir::toNativeSeparators(path);
-//    if (QProcess::startDetached("explorer", args))
-//        return;
-//#elif defined(Q_OS_MAC)
-//    QStringList args;
-//    args << "-e";
-//    args << "tell application \"Finder\"";
-//    args << "-e";
-//    args << "activate";
-//    args << "-e";
-//    args << "select POSIX file \"" + path + "\"";
-//    args << "-e";
-//    args << "end tell";
-//    args << "-e";
-//    args << "return";
-//    if (!QProcess::execute("/usr/bin/osascript", args))
-//        return;
-//#endif
-    QDesktopServices::openUrl(QUrl::fromLocalFile(info.isFile()?info.absolutePath() : path));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(info.isFile()? info.absolutePath() : filePath));
 }
 
 bool hasFile(const QString &path, const QString &fileName)
