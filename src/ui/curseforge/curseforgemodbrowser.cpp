@@ -531,7 +531,7 @@ void CurseforgeModBrowser::on_menuDownload_aboutToShow()
     ui->menuDownload->setStyleSheet("QMenu { menu-scrollable: 1; }");
     if(!selectedMod_) return;
     auto &&files = selectedMod_->modInfo().allFileList().isEmpty()?
-                selectedMod_->modInfo().latestFileList() : selectedMod_->modInfo().allFileList();
+                selectedMod_->modInfo().latestFiles() : selectedMod_->modInfo().allFileList();
     for(auto &&file : files){
         ui->menuDownload->addAction(file.displayName() + " ("+ sizeConvert(file.size()) + ")", this, [=]{
             selectedMod_->download(file, downloadPath_);

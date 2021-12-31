@@ -20,6 +20,7 @@ SOURCES += \
     src/curseforge/curseforgefileinfo.cpp \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodinfo.cpp \
+    src/curseforge/curseforgemodinfocaches.cpp \
     src/download/abstractdownloader.cpp \
     src/download/assetcache.cpp \
     src/download/downloadfileinfo.cpp \
@@ -138,6 +139,7 @@ HEADERS += \
     src/curseforge/curseforgefileinfo.h \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodinfo.h \
+    src/curseforge/curseforgemodinfocaches.h \
     src/download/abstractdownloader.h \
     src/download/assetcache.h \
     src/download/downloadfileinfo.h \

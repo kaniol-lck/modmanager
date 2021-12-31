@@ -5,6 +5,7 @@
 
 #include "util/tutil.hpp"
 #include "download/assetcache.h"
+#include "curseforgemodinfocaches.h"
 
 CurseforgeModInfo::CurseforgeModInfo(int addonId) :
     id_(addonId)
@@ -23,6 +24,7 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     modInfo.dateModified_ = value(variant, "dateModified").toDateTime();
     modInfo.dateCreated_ = value(variant, "dateCreated").toDateTime();
     modInfo.dateReleased_ = value(variant, "dateReleased").toDateTime();
+    modInfo.popularityScore_ = value(variant, "popularityScore").toDouble();
 
     for(auto &&str : value(variant, "modLoaders").toStringList())
         modInfo.loaderTypes_ << ModLoaderType::fromString(str);
@@ -49,6 +51,10 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     for(auto &&variant : value(variant, "latestFiles").toList())
         modInfo.latestFileList_ << CurseforgeFileInfo::fromVariant(variant);
 
+    //latest file url
+    for(auto &&variant : value(variant, "gameVersionLatestFiles").toList())
+        modInfo.gameVersionLatestFiles_ << variant;
+
     //categories
     for(auto &&variant : value(variant, "categories").toList()){
         auto category = CurseforgeCategoryInfo::fromVariant(variant);
@@ -58,6 +64,7 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
         //import as tags
         modInfo.importTag(Tag(category.name(), TagCategory::CurseforgeCategory, iconAsset.destFilePath()));
     }
+    CurseforgeModInfoCaches::caches()->addCache(modInfo);
     return modInfo;
 }
 
@@ -126,7 +133,7 @@ bool CurseforgeModInfo::isRiftMod() const
     return loaderTypes_.contains(ModLoaderType::Rift);
 }
 
-const QList<CurseforgeFileInfo> &CurseforgeModInfo::latestFileList() const
+const QList<CurseforgeFileInfo> &CurseforgeModInfo::latestFiles() const
 {
     return latestFileList_;
 }
@@ -157,6 +164,11 @@ bool CurseforgeModInfo::hasBasicInfo() const
     return basicInfo_;
 }
 
+double CurseforgeModInfo::popularityScore() const
+{
+    return popularityScore_;
+}
+
 const QList<CurseforgeCategoryInfo> &CurseforgeModInfo::categories() const
 {
     return categories_;
@@ -181,3 +193,7 @@ const QDateTime &CurseforgeModInfo::dateReleased() const
 {
     return dateReleased_;
 }
+
+
+
+

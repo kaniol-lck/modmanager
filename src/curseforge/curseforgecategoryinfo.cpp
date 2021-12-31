@@ -10,7 +10,7 @@ const QString &CurseforgeCategoryInfo::cachePath()
 {
     static const QString path =
             QDir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation))
-            .absoluteFilePath("curseforge");
+            .absoluteFilePath("curseforge/categories");
     return path;
 }
 

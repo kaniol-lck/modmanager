@@ -5,6 +5,11 @@
 #include <QUrl>
 #include <optional>
 #include <modloadertype.h>
+#include <QFile>
+#include <QStandardPaths>
+#include <QDir>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 #include "tag/tagable.h"
 #include "curseforgecategoryinfo.h"
@@ -42,7 +47,7 @@ public:
     bool isFabricMod() const;
     bool isForgeMod() const;
     bool isRiftMod() const;
-    const QList<CurseforgeFileInfo> &latestFileList() const;
+    const QList<CurseforgeFileInfo> &latestFiles() const;
     std::optional<CurseforgeFileInfo> latestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
     const QList<CurseforgeFileInfo> &allFileList() const;
     const QList<CurseforgeCategoryInfo> &categories() const;
@@ -50,6 +55,7 @@ public:
     const QDateTime &dateModified() const;
     const QDateTime &dateCreated() const;
     const QDateTime &dateReleased() const;
+    double popularityScore() const;
 
     void setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles);
     bool hasBasicInfo() const;
@@ -67,11 +73,13 @@ private:
     int downloadCount_;
     QList<ModLoaderType::Type> loaderTypes_;
     QList<CurseforgeFileInfo> latestFileList_;
+    QList<QVariant> gameVersionLatestFiles_;
     QList<CurseforgeFileInfo> allFileList_;
     QList<CurseforgeCategoryInfo> categories_;
     QDateTime dateModified_;
     QDateTime dateCreated_;
     QDateTime dateReleased_;
+    double popularityScore_;
 
     bool basicInfo_ = false;
 };

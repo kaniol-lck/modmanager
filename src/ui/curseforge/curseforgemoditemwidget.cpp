@@ -33,11 +33,11 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
             downloadFile(*defaultFileInfo_);
         });
 
-        if(!mod->modInfo().latestFileList().isEmpty())
+        if(!mod->modInfo().latestFiles().isEmpty())
             menu->addSeparator();
     }
 
-    for(const auto &fileInfo : mod->modInfo().latestFileList()){
+    for(const auto &fileInfo : mod->modInfo().latestFiles()){
         auto name = fileInfo.displayName() + " ("+ sizeConvert(fileInfo.size()) + ")";
         connect(menu->addAction(name), &QAction::triggered, this, [=]{
             downloadFile(fileInfo);
@@ -146,8 +146,8 @@ void CurseforgeModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
     else{
         if(defaultFileInfo_)
             bl = hasFile(Config().getDownloadPath(), defaultFileInfo_->fileName());
-        if(!mod_->modInfo().latestFileList().isEmpty())
-            for(const auto &fileInfo : mod_->modInfo().latestFileList()){
+        if(!mod_->modInfo().latestFiles().isEmpty())
+            for(const auto &fileInfo : mod_->modInfo().latestFiles()){
                 if(hasFile(Config().getDownloadPath(), fileInfo.fileName())){
                     bl = true;
                     break;
