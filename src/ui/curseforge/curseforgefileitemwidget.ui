@@ -45,6 +45,19 @@
         </widget>
        </item>
        <item>
+        <widget class="QToolButton" name="dependenciesButton">
+         <property name="icon">
+          <iconset theme="help-about"/>
+         </property>
+         <property name="popupMode">
+          <enum>QToolButton::InstantPopup</enum>
+         </property>
+         <property name="autoRaise">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="releaseType">
          <property name="text">
           <string notr="true">ReleaseType</string>

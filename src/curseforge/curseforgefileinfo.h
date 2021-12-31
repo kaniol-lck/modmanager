@@ -8,6 +8,7 @@
 #include "gameversion.h"
 #include "modloadertype.h"
 #include "modwebsitetype.h"
+#include "curseforgedependencyinfo.h"
 
 class CurseforgeFileInfo
 {
@@ -35,6 +36,7 @@ public:
     };
     int releaseType() const;
     const QDateTime &fileDate() const;
+    QList<CurseforgeDependencyInfo> &dependencies();
 
     bool operator==(const CurseforgeFileInfo &info) const;
 
@@ -48,7 +50,7 @@ private:
     QList<ModLoaderType::Type> loaderTypes_;
     int releaseType_;
     QDateTime fileDate_;
-    QList<IdType> dependencies_;
+    QList<CurseforgeDependencyInfo> dependencies_;
 };
 
 #endif // CURSEFORGEMODFILEINFO_H

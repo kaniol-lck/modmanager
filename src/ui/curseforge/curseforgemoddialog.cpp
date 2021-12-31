@@ -61,6 +61,12 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     if(localMod_) setDownloadPath(localMod_->path());
 }
 
+CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, const CurseforgeModInfo &modInfo) :
+    CurseforgeModDialog(parent, new CurseforgeMod(parent, modInfo))
+{
+    mod_->setParent(this);
+}
+
 CurseforgeModDialog::~CurseforgeModDialog()
 {
     delete ui;

@@ -5,10 +5,13 @@
 #include <QMenu>
 #include <QClipboard>
 
+#include "curseforgemoddialog.h"
 #include "local/localmod.h"
 #include "local/localfilelinker.h"
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
+#include "curseforge/curseforgeapi.h"
+#include "curseforge/curseforgedependencyinfo.h"
 #include "util/funcutil.h"
 #include "download/downloadmanager.h"
 
@@ -72,6 +75,37 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
 
     //size
     ui->downloadSpeedText->setText(sizeConvert(fileInfo_.size()));
+
+    //dependencies
+    if(fileInfo_.dependencies().isEmpty())
+        ui->dependenciesButton->setVisible(false);
+    else {
+        auto menu = new QMenu;
+        ui->dependenciesButton->setMenu(menu);
+        connect(menu, &QMenu::aboutToShow, this, [=]{
+            if(!menu->isEmpty()) return;
+            for(auto &dependencyInfo : fileInfo_.dependencies()){
+                if(dependencyInfo.addonId()){
+                    auto action = menu->addAction(tr("Dependency Mod: %1").arg(dependencyInfo.addonId()));
+                    connect(this, &QObject::destroyed, this, disconnecter(
+                                CurseforgeAPI::api()->getInfo(dependencyInfo.addonId(), [=](const CurseforgeModInfo &modInfo){
+                        action->setText(tr("Dependency Mod: %1").arg(modInfo.name()));
+                        connect(action, &QAction::triggered, this, [=]{
+                            auto dialog = new CurseforgeModDialog(this, modInfo);
+                            dialog->show();
+                        });
+                    })));
+                    if(dependencyInfo.fileId()){
+                        connect(this, &QObject::destroyed, this, disconnecter(
+                                    CurseforgeAPI::api()->getFileInfo(dependencyInfo.addonId(), dependencyInfo.fileId(), [=](const CurseforgeFileInfo &fileInfo){
+                            action->setText(action->text() + "\n" +
+                                            tr("Dependency File: %1").arg(fileInfo.fileName()));
+                        })));
+                    }
+                }
+            }
+        });
+    }
 
     updateUi();
 }

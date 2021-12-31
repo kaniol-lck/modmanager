@@ -34,9 +34,8 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
         }
     }
 
-    //fields: addonId id type
     for(auto &&dependency : value(variant, "dependencies").toList())
-        fileInfo.dependencies_ << value(dependency, "fileId").toInt();
+        fileInfo.dependencies_ << CurseforgeDependencyInfo::fromVariant(dependency);
 
     return fileInfo;
 }
@@ -109,4 +108,9 @@ const QDateTime &CurseforgeFileInfo::fileDate() const
 bool CurseforgeFileInfo::operator==(const CurseforgeFileInfo &info) const
 {
     return id_ == info.id_;
+}
+
+QList<CurseforgeDependencyInfo> &CurseforgeFileInfo::dependencies()
+{
+    return dependencies_;
 }

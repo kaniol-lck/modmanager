@@ -7,6 +7,7 @@ class CurseforgeMod;
 class LocalMod;
 class LocalModPath;
 class QListWidgetItem;
+class CurseforgeModInfo;
 namespace Ui {
 class CurseforgeModDialog;
 }
@@ -17,6 +18,7 @@ class CurseforgeModDialog : public QDialog
 
 public:
     explicit CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod = nullptr);
+    explicit CurseforgeModDialog(QWidget *parent, const CurseforgeModInfo &modInfo);
     ~CurseforgeModDialog();
 
 signals:
