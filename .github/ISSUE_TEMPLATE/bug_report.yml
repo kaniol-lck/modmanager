@@ -41,7 +41,7 @@ body:
       required: true
 
   - type: textarea
-    id: repproduce
+    id: reproduce
     attributes:
       label: To Reproduce (复现问题)
       description: |
