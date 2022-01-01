@@ -239,6 +239,44 @@ QAria2Downloader *LocalMod::update()
     }
 }
 
+bool LocalMod::updateTo(LocalModFile *file)
+{
+    file->loadInfo();
+    file->linker()->linkCached();
+    //loader type mismatch
+    if(!file->loaderTypes().contains(modFile_->loaderType())){
+        emit updateFinished(false);
+        return false;
+    }
+
+    bool isDisabled = modFile_->type() == LocalModFile::Disabled;
+
+    //deal with old mod file
+    auto postUpdate = Config().getPostUpdate();
+    if(postUpdate == Config::Delete){
+        //remove old file
+        if(!modFile_->remove())
+            return false;
+        modFile_->deleteLater();
+    } else if(postUpdate == Config::Keep){
+        if(isDisabled)
+            modFile_->setEnabled(true);
+        if(!modFile_->addOld())
+            return false;
+        oldFiles_ << modFile_;
+    }
+
+    modrinthUpdater_.reset();
+    curseforgeUpdater_.reset();
+
+    setModFile(file);
+    if(isDisabled)
+        file->setEnabled(false);
+    emit modInfoChanged();
+
+    return true;
+}
+
 CurseforgeAPI *LocalMod::curseforgeAPI() const
 {
     return curseforgeAPI_;
