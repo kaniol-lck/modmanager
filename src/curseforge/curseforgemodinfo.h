@@ -14,11 +14,12 @@
 #include "tag/tagable.h"
 #include "curseforgecategoryinfo.h"
 #include "curseforgefileinfo.h"
+#include "curseforgemodcacheinfo.h"
 #include "modloadertype.h"
 
 class CurseforgeMod;
 
-class CurseforgeModInfo : Tagable
+class CurseforgeModInfo : public CurseforgeModCacheInfo, Tagable
 {
     friend class CurseforgeMod;
 public:
@@ -34,13 +35,9 @@ public:
 
     static CurseforgeModInfo fromVariant(const QVariant &variant);
 
-    int id() const;
-    const QString &name() const;
-    const QString &summary() const;
     const QUrl &websiteUrl() const;
     const QStringList &authors() const;
     const QUrl &iconUrl() const;
-    const QByteArray &iconBytes() const;
     const QString &description() const;
     int downloadCount() const;
     const QList<ModLoaderType::Type> &loaderTypes() const;
@@ -55,20 +52,14 @@ public:
     const QDateTime &dateModified() const;
     const QDateTime &dateCreated() const;
     const QDateTime &dateReleased() const;
-    double popularityScore() const;
 
     void setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles);
     bool hasBasicInfo() const;
 
 private:
-    int id_;
-    QString name_;
-    QString summary_;
     QUrl websiteUrl_;
     QList<Attachment> images_;
     QStringList authors_;
-    QUrl iconUrl_;
-    QByteArray iconBytes_;
     QString description_;
     int downloadCount_;
     QList<ModLoaderType::Type> loaderTypes_;
@@ -79,7 +70,6 @@ private:
     QDateTime dateModified_;
     QDateTime dateCreated_;
     QDateTime dateReleased_;
-    double popularityScore_;
 
     bool basicInfo_ = false;
 };

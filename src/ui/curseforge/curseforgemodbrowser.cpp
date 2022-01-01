@@ -408,7 +408,7 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
         bool isHidden = isRowHidden(row);
         setRowHidden(row, !isShown);
         //hidden -> shown, while not have downloaded thumbnail yet
-        if(isHidden && isShown && mod->modInfo().iconBytes().isEmpty())
+        if(isHidden && isShown && mod->modInfo().icon().isNull())
             mod->acquireIcon();
     }
 }

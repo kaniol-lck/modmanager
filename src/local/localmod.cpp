@@ -616,10 +616,10 @@ void LocalMod::updateIcon()
         applyIcon();
     }else if(curseforgeMod_){
         auto setCurseforgeIcon = [=]{
-            icon_.loadFromData(curseforgeMod_->modInfo().iconBytes());
+            icon_ = curseforgeMod_->modInfo().icon();
             applyIcon();
         };
-        if(!curseforgeMod_->modInfo().iconBytes().isEmpty())
+        if(!curseforgeMod_->modInfo().icon().isNull())
             setCurseforgeIcon();
         else{
             connect(curseforgeMod_, &CurseforgeMod::basicInfoReady, this, [=]{

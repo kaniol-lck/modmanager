@@ -2,67 +2,15 @@
 
 #include "util/tutil.hpp"
 
-CurseforgeModInfoCaches::CurseforgeModInfoCache CurseforgeModInfoCaches::CurseforgeModInfoCache::fromVariant(const QVariant &variant)
-{
-    CurseforgeModInfoCache info;
-    info.id_ = value(variant, "id").toInt();
-    info.name_ = value(variant, "name").toString();
-    info.summary_ = value(variant, "summary").toString();
-    info.slug_ = value(variant, "slug").toString();
-    info.popularityScore_ = value(variant, "popularityScore").toDouble();
-    return info;
-}
-
-CurseforgeModInfoCaches::CurseforgeModInfoCache CurseforgeModInfoCaches::CurseforgeModInfoCache::fromInfo(const CurseforgeModInfo &modInfo)
-{
-    CurseforgeModInfoCache info;
-    info.id_ = modInfo.id();
-    info.name_ = modInfo.name();
-    info.summary_ = modInfo.summary();
-    info.slug_ = modInfo.websiteUrl().fileName();
-    info.popularityScore_ = modInfo.popularityScore();
-    return info;
-}
-
-QJsonObject CurseforgeModInfoCaches::CurseforgeModInfoCache::toJsonObject() const
-{
-    QJsonObject object;
-    object.insert("id", id_);
-    object.insert("name", name_);
-    object.insert("summary", summary_);
-    object.insert("slug", slug_);
-    object.insert("popularityScore", popularityScore_);
-    return object;
-}
-
-int CurseforgeModInfoCaches::CurseforgeModInfoCache::id() const
-{
-    return id_;
-}
-
-const QString &CurseforgeModInfoCaches::CurseforgeModInfoCache::name() const
-{
-    return name_;
-}
-
-const QString &CurseforgeModInfoCaches::CurseforgeModInfoCache::summary() const
-{
-    return summary_;
-}
-
-const QString &CurseforgeModInfoCaches::CurseforgeModInfoCache::slug() const
-{
-    return slug_;
-}
-
-void CurseforgeModInfoCaches::addCache(const CurseforgeModInfo &info)
+void CurseforgeModInfoCaches::addCache(const CurseforgeModCacheInfo &info)
 {
     if(!info.id()) return;
-    caches()->modCaches_.insert(info.id(), CurseforgeModInfoCache::fromInfo(info));
+    if(caches()->modCaches_.contains(info.id()) && caches()->modCaches_.value(info.id()) == info) return;
+    caches()->modCaches_.insert(info.id(), info);
     caches()->writeToFile();
 }
 
-const QMap<int, CurseforgeModInfoCaches::CurseforgeModInfoCache> &CurseforgeModInfoCaches::modInfos() const
+const QMap<int, CurseforgeModCacheInfo> &CurseforgeModInfoCaches::modInfos() const
 {
     return modCaches_;
 }
@@ -108,8 +56,8 @@ void CurseforgeModInfoCaches::readFromFile()
     }
     modCaches_.clear();
     auto result = jsonDocument.toVariant();
-    for(auto &&variant : result.toList()){
-        auto cache = CurseforgeModInfoCache::fromVariant(variant);
+    for(auto &&variant : result.toMap()){
+        auto cache = CurseforgeModCacheInfo::fromVariant(variant);
         modCaches_.insert(cache.id(), cache);
     }
 }

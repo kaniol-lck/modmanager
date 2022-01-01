@@ -102,7 +102,7 @@ void CurseforgeModInfoWidget::updateBasicInfo()
 
     //update thumbnail
     updateThumbnail();
-    if(mod_->modInfo().iconBytes().isEmpty()){
+    if(mod_->modInfo().icon().isNull()){
         mod_->acquireIcon();
         ui->modIcon->setCursor(Qt::BusyCursor);
     }
@@ -112,9 +112,7 @@ void CurseforgeModInfoWidget::updateBasicInfo()
 
 void CurseforgeModInfoWidget::updateThumbnail()
 {
-    QPixmap pixelmap;
-    pixelmap.loadFromData(mod_->modInfo().iconBytes());
-    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+    ui->modIcon->setPixmap(mod_->modInfo().icon().scaled(80, 80, Qt::KeepAspectRatio));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 }
 

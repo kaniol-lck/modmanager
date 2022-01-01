@@ -8,7 +8,7 @@
 #include "curseforgemodinfocaches.h"
 
 CurseforgeModInfo::CurseforgeModInfo(int addonId) :
-    id_(addonId)
+    CurseforgeModCacheInfo(addonId)
 {}
 
 CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
@@ -20,6 +20,7 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     modInfo.name_ = value(variant, "name").toString();
     modInfo.summary_ = value(variant, "summary").toString();
     modInfo.websiteUrl_ = value(variant, "websiteUrl").toUrl();
+    modInfo.slug_ = modInfo.websiteUrl_.fileName();
     modInfo.downloadCount_ = value(variant, "downloadCount").toInt();
     modInfo.dateModified_ = value(variant, "dateModified").toDateTime();
     modInfo.dateCreated_ = value(variant, "dateCreated").toDateTime();
@@ -64,23 +65,9 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
         //import as tags
         modInfo.importTag(Tag(category.name(), TagCategory::CurseforgeCategory, iconAsset.destFilePath()));
     }
-    CurseforgeModInfoCaches::caches()->addCache(modInfo);
+    if(value(variant, "gameSlug") == "minecraft")
+        CurseforgeModInfoCaches::caches()->addCache(modInfo);
     return modInfo;
-}
-
-int CurseforgeModInfo::id() const
-{
-    return id_;
-}
-
-const QString &CurseforgeModInfo::name() const
-{
-    return name_;
-}
-
-const QString &CurseforgeModInfo::summary() const
-{
-    return summary_;
 }
 
 const QUrl &CurseforgeModInfo::websiteUrl() const
@@ -96,11 +83,6 @@ const QStringList &CurseforgeModInfo::authors() const
 const QUrl &CurseforgeModInfo::iconUrl() const
 {
     return iconUrl_;
-}
-
-const QByteArray &CurseforgeModInfo::iconBytes() const
-{
-    return iconBytes_;
 }
 
 const QString &CurseforgeModInfo::description() const
@@ -164,11 +146,6 @@ bool CurseforgeModInfo::hasBasicInfo() const
     return basicInfo_;
 }
 
-double CurseforgeModInfo::popularityScore() const
-{
-    return popularityScore_;
-}
-
 const QList<CurseforgeCategoryInfo> &CurseforgeModInfo::categories() const
 {
     return categories_;
@@ -193,7 +170,3 @@ const QDateTime &CurseforgeModInfo::dateReleased() const
 {
     return dateReleased_;
 }
-
-
-
-

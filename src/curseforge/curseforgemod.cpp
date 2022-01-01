@@ -6,6 +6,7 @@
 #include <QNetworkReply>
 #include <QDebug>
 
+#include "download/assetcache.h"
 #include "local/localmod.h"
 #include "local/localmodpath.h"
 #include "curseforge/curseforgeapi.h"
@@ -68,22 +69,14 @@ void CurseforgeMod::acquireBasicInfo()
 
 void CurseforgeMod::acquireIcon()
 {
-    if(modInfo_.iconUrl_.isEmpty() || gettingIcon_) return;
+    if(!modInfo_.icon_.isNull() || modInfo_.iconUrl_.isEmpty() || gettingIcon_) return;
     gettingIcon_ = true;
-    QNetworkRequest request(modInfo_.iconUrl_);
-    static QNetworkAccessManager accessManager;
-    static QNetworkDiskCache diskCache;
-    diskCache.setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
-    accessManager.setCache(&diskCache);
-    request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
-    auto reply = accessManager.get(request);
-    connect(reply, &QNetworkReply::finished, this, [=]{
+    auto iconAsset = new AssetCache(this, modInfo_.iconUrl_, modInfo_.iconUrl_.fileName(), CurseforgeModInfo::cachePath());
+    iconAsset->download();
+    connect(iconAsset, &AssetCache::assetReady, this, [=]{
+        modInfo_.icon_.load(iconAsset->destFilePath());
         gettingIcon_ = false;
-        if(reply->error() != QNetworkReply::NoError) return;
-        modInfo_.iconBytes_ = reply->readAll();
-        if(!modInfo_.iconBytes_.isEmpty())
-            emit iconReady();
-        reply->deleteLater();
+        emit iconReady();
     });
 }
 
@@ -126,9 +119,7 @@ const CurseforgeModInfo &CurseforgeMod::modInfo() const
 void CurseforgeMod::download(const CurseforgeFileInfo &fileInfo, LocalModPath *downloadPath)
 {
     DownloadFileInfo info(fileInfo);
-    QPixmap pixelmap;
-    pixelmap.loadFromData(modInfo_.iconBytes());
-    info.setIcon(pixelmap);
+    info.setIcon(modInfo_.icon());
     info.setTitle(modInfo_.name());
     if(downloadPath)
         downloader_ = downloadPath->downloadNewMod(info);

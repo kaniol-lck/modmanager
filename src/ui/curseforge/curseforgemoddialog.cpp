@@ -94,7 +94,7 @@ void CurseforgeModDialog::updateBasicInfo()
 
     //update thumbnail
     //included by basic info
-    if(!mod_->modInfo().iconBytes().isEmpty())
+    if(!mod_->modInfo().icon().isNull())
         updateThumbnail();
     else {
         mod_->acquireIcon();
@@ -134,9 +134,7 @@ void CurseforgeModDialog::updateBasicInfo()
 
 void CurseforgeModDialog::updateThumbnail()
 {
-    QPixmap pixelmap;
-    pixelmap.loadFromData(mod_->modInfo().iconBytes());
-    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+    ui->modIcon->setPixmap(mod_->modInfo().icon().scaled(80, 80, Qt::KeepAspectRatio));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 }
 
