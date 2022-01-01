@@ -17,6 +17,7 @@ public:
     QJsonObject toJsonObject() const;
 
     bool operator==(const CurseforgeModCacheInfo &other) const;
+    bool loadIcon();
 
     int id() const;
     const QString &name() const;

@@ -30,8 +30,7 @@ public:
         QUrl url;
     };
 
-    CurseforgeModInfo() = default;
-    explicit CurseforgeModInfo(int addonId);
+    explicit CurseforgeModInfo(int addonId = 0);
 
     static CurseforgeModInfo fromVariant(const QVariant &variant);
 

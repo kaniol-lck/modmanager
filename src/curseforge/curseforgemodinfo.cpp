@@ -9,7 +9,9 @@
 
 CurseforgeModInfo::CurseforgeModInfo(int addonId) :
     CurseforgeModCacheInfo(addonId)
-{}
+{
+    loadIcon();
+}
 
 CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
 {

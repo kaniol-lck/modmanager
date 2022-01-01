@@ -20,9 +20,6 @@ CurseforgeModCacheInfo CurseforgeModCacheInfo::fromVariant(const QVariant &varia
     if(variant.toMap().contains("slug"))
         info.slug_ = value(variant, "slug").toString();
     info.iconUrl_ = value(variant, "iconUrl").toUrl();
-    AssetCache iconCache(nullptr, info.iconUrl_, info.iconUrl_.fileName(), cachePath());
-    if(iconCache.exists())
-        info.icon_.load(iconCache.destFilePath());
     info.popularityScore_ = value(variant, "popularityScore").toDouble();
     return info;
 }
@@ -42,6 +39,16 @@ QJsonObject CurseforgeModCacheInfo::toJsonObject() const
 bool CurseforgeModCacheInfo::operator==(const CurseforgeModCacheInfo &other) const
 {
     return toJsonObject() == other.toJsonObject();
+}
+
+bool CurseforgeModCacheInfo::loadIcon()
+{
+    AssetCache iconCache(nullptr, iconUrl_, iconUrl_.fileName(), cachePath());
+    if(iconCache.exists()){
+        icon_.load(iconCache.destFilePath());
+        return true;
+    } else
+        return false;
 }
 
 const QString &CurseforgeModCacheInfo::cachePath()
