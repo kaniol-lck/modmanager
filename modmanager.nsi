@@ -63,8 +63,8 @@ Function .onInit
   IfErrors  done
 
   MessageBox MB_YESNOCANCEL|MB_ICONQUESTION \
-    "��⵽�����Ѿ���װ�� ${PRODUCT_NAME}��\
-    $\n$\n�Ƿ���ж���Ѱ�װ�İ汾��" \
+    "检测到本机已经安装了 ${PRODUCT_NAME}。\
+    $\n$\n是否先卸载已安装的版本？" \
       /SD IDYES \
       IDYES uninstall \
       IDNO done
@@ -106,12 +106,12 @@ SectionEnd
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) �ѳɹ��ش���ļ�����Ƴ���"
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) 已成功地从你的计算机移除。"
 FunctionEnd
 
 Function un.onInit
 !insertmacro MUI_UNGETLANGUAGE
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "��ȷʵҪ��ȫ�Ƴ� $(^Name) ���估���е������" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "你确实要完全移除 $(^Name) ，其及所有的组件？" IDYES +2
   Abort
 FunctionEnd
 
