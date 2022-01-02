@@ -8,7 +8,6 @@
 #include <QModelIndex>
 
 class QListWidgetItem;
-class QStandardItemModel;
 class LocalMod;
 class QStandardItem;
 class QMenu;
@@ -20,8 +19,8 @@ class LocalModInfoWidget;
 class LocalFileListWidget;
 class LocalStatusBarWidget;
 class QAbstractItemView;
-
 class PageSwitcher;
+class LocalModPathModel;
 namespace Ui {
 class LocalModBrowser;
 }
@@ -117,7 +116,7 @@ protected:
 private:
     PageSwitcher *pageSwitcher_ = nullptr;
     Ui::LocalModBrowser *ui;
-    QStandardItemModel *model_;
+    LocalModPathModel *model_;
     LocalModInfoWidget *infoWidget_;
     LocalFileListWidget *fileListWidget_;
     LocalStatusBarWidget *statusBarWidget_;

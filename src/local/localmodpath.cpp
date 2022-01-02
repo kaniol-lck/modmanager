@@ -179,6 +179,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
         for(const auto &file : qAsConst(modFileList))
             file->linker()->linkCached();
 
+        //load normal first
         //load normal mods (include duplicate)
         for(const auto &file : qAsConst(modFileList))
             addNormalMod(file);
@@ -611,8 +612,7 @@ QAria2Downloader *LocalModPath::downloadNewMod(DownloadFileInfo &info)
         auto file = new LocalModFile(this, fileInfo.absoluteFilePath());
         file->loadInfo();
         file->linker()->link();
-        addNormalMod(file);
-        addOldMod(file);
+        addModFile(file);
         if(!file->parent())
             file->deleteLater();
         emit modListUpdated();

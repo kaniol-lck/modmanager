@@ -36,6 +36,7 @@
 #include "localmodfilter.h"
 #include "localmodmenu.h"
 #include "local/localmoditem.h"
+#include "ui/local/localmodpathmodel.h"
 #include "ui/curseforge/curseforgemoddialog.h"
 #include "ui/curseforge/curseforgemodbrowser.h"
 #include "ui/modrinth/modrinthmoddialog.h"
@@ -48,7 +49,7 @@
 LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
     ui(new Ui::LocalModBrowser),
-    model_(new QStandardItemModel(this)),
+    model_(new LocalModPathModel(modPath)),
     infoWidget_(new LocalModInfoWidget(this, modPath)),
     fileListWidget_(new LocalFileListWidget(this, modPath)),
     statusBarWidget_(new LocalStatusBarWidget(this)),
@@ -66,6 +67,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->modIconListView->setModel(model_);
     ui->modTreeView->setModel(model_);
     ui->modTreeView->hideColumn(0);
+    ui->modTreeView->hideColumn(0);
+    ui->modIconListView->setModelColumn(LocalModItem::NameColumn);
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
     ui->modIconListView->setVerticalScrollBar(new SmoothScrollBar(this));
@@ -108,8 +111,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
         orderGroup->addAction(descendingAction);
         sortMenu->addSection(tr("Column"));
         for(int column = LocalModItem::ModColumn + 1; column < model_->columnCount(); column++){
-            auto item = model_->horizontalHeaderItem(column);
-            auto action = sortMenu->addAction(item->icon(), item->text(), this, [=]{
+            auto text = model_->headerData(column, Qt::Horizontal, Qt::DisplayRole).toString();
+            auto icon = model_->headerData(column, Qt::Horizontal, Qt::DecorationRole).value<QIcon>();
+            auto action = sortMenu->addAction(icon, text, this, [=]{
                 ui->modTreeView->sortByColumn(column, order);
             });
             action->setCheckable(true);
@@ -276,41 +280,40 @@ void LocalModBrowser::reload()
 
 void LocalModBrowser::updateModList()
 {
-    qDebug() << "model clear";
-    model_->clear();
-    selectedMods_.clear();
-    for(auto &&[column, item] : LocalModItem::headerItems())
-        model_->setHorizontalHeaderItem(column, item);
-    auto list = Config().getLocalModsHeaderSections();
-    auto &&header = ui->modTreeView->header();
-    if(!list.isEmpty()){
-        ui->modTreeView->header()->blockSignals(true);
-        for(int i = 0; i < header->count() - 1; i++){
-            if(i < list.size())
-                header->moveSection(header->visualIndex(list.at(i).toInt()), i + 1);
-            else
-                header->setSectionHidden(header->logicalIndex(i + 1), true);
-        }
-        ui->modTreeView->header()->blockSignals(false);
-    }
+//    qDebug() << "model clear";
+//    model_->clear();
+//    selectedMods_.clear();
+//    for(auto &&[column, item] : LocalModItem::headerItems())
+//        model_->setHorizontalHeaderItem(column, item);
+//    auto list = Config().getLocalModsHeaderSections();
+//    auto &&header = ui->modTreeView->header();
+//    if(!list.isEmpty()){
+//        ui->modTreeView->header()->blockSignals(true);
+//        for(int i = 0; i < header->count() - 1; i++){
+//            if(i < list.size())
+//                header->moveSection(header->visualIndex(list.at(i).toInt()), i + 1);
+//            else
+//                header->setSectionHidden(header->logicalIndex(i + 1), true);
+//        }
+//        ui->modTreeView->header()->blockSignals(false);
+//    }
 
-    for(auto &&map : modPath_->modMaps()){
-        for (auto &&mod : map) {
-            model_->appendRow(LocalModItem::itemsFromMod(mod));
-        }
-    }
-    //TODO: optfine in sub dir
-    if(modPath_->info().loaderType() == ModLoaderType::Fabric)
-        if(auto mod = modPath_->optiFineMod()){
-            model_->appendRow(LocalModItem::itemsFromMod(mod));
-        }
-    ui->modTreeView->sortByColumn(LocalModItem::NameColumn, Qt::AscendingOrder);
-    ui->modIconListView->setModelColumn(LocalModItem::NameColumn);
-    ui->modTreeView->hideColumn(LocalModItem::ModColumn);
-    for(auto &&column : { LocalModItem::EnableColumn, LocalModItem::StarColumn })
-        ui->modTreeView->setColumnWidth(column, 0);
-    filter_->refreshTags();
-    filterList();
+//    for(auto &&map : modPath_->modMaps()){
+//        for (auto &&mod : map) {
+//            model_->appendRow(LocalModItem::itemsFromMod(mod));
+//        }
+//    }
+//    //TODO: optfine in sub dir
+//    if(modPath_->info().loaderType() == ModLoaderType::Fabric)
+//        if(auto mod = modPath_->optiFineMod()){
+//            model_->appendRow(LocalModItem::itemsFromMod(mod));
+//        }
+//    ui->modTreeView->sortByColumn(LocalModItem::NameColumn, Qt::AscendingOrder);
+//    ui->modTreeView->hideColumn(LocalModItem::ModColumn);
+//    for(auto &&column : { LocalModItem::EnableColumn, LocalModItem::StarColumn })
+//        ui->modTreeView->setColumnWidth(column, 0);
+//    filter_->refreshTags();
+//    filterList();
 }
 
 void LocalModBrowser::updateUi()
@@ -461,17 +464,17 @@ void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
 
 void LocalModBrowser::filterList()
 {
-    hiddenCount_ = 0;
-    for(int i = 0; i < model_->rowCount(); i++){
-        auto item = model_->item(i);
-        auto mod = item->data().value<LocalMod*>();
-        auto hidden = !filter_->willShow(mod, ui->searchText->text().toLower());
-        ui->modListView->setRowHidden(i, hidden);
-        ui->modIconListView->setRowHidden(i, hidden);
-        ui->modTreeView->setRowHidden(i, ui->modTreeView->rootIndex(), hidden);
-        if(hidden) hiddenCount_++;
-    }
-    updateStatusText();
+//    hiddenCount_ = 0;
+//    for(int i = 0; i < model_->rowCount(); i++){
+//        auto item = model_->item(i);
+//        auto mod = item->data().value<LocalMod*>();
+//        auto hidden = !filter_->willShow(mod, ui->searchText->text().toLower());
+//        ui->modListView->setRowHidden(i, hidden);
+//        ui->modIconListView->setRowHidden(i, hidden);
+//        ui->modTreeView->setRowHidden(i, ui->modTreeView->rootIndex(), hidden);
+//        if(hidden) hiddenCount_++;
+//    }
+//    updateStatusText();
 }
 
 void LocalModBrowser::updateStatusText()
@@ -557,13 +560,11 @@ void LocalModBrowser::updateListViewIndexWidget()
         auto index = model_->index(row, 0);
         if(ui->modListView->indexWidget(index)) continue;
 //        qDebug() << "new widget at row" << row;
-        auto item = model_->item(row);
-        if(!item) continue;
-        auto mod = item->data().value<LocalMod*>();
+        auto mod = model_->data(index, Qt::UserRole + 1).value<LocalMod*>();
         if(mod){
             auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
             ui->modListView->setIndexWidget(index, modItemWidget);
-            item->setSizeHint(QSize(0, modItemWidget->height()));
+//            item->setSizeHint(QSize(0, modItemWidget->height()));
         }
     }
 }
@@ -579,12 +580,9 @@ void LocalModBrowser::updateTreeViewIndexWidget()
         //extra 2
         endRow += 2;
     for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
-        auto index = model_->index(row, LocalModItem::EnableColumn);
-        if(ui->modTreeView->indexWidget(index)) continue;
+        if(ui->modTreeView->indexWidget(model_->index(row, LocalModItem::EnableColumn))) continue;
 //        qDebug() << "new widget at row" << row;
-        auto item = model_->item(row);
-        if(!item) continue;
-        auto mod = item->data().value<LocalMod*>();
+        auto mod = model_->data(model_->index(row, LocalModItem::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
         if(mod){
             auto enableBox = new QCheckBox(this);
             ui->modTreeView->setIndexWidget(model_->index(row, LocalModItem::EnableColumn), enableBox);
@@ -651,8 +649,8 @@ LocalModPath *LocalModBrowser::modPath() const
 
 void LocalModBrowser::onItemDoubleClicked(const QModelIndex &index)
 {
-    auto item = model_->itemFromIndex(index.siblingAtColumn(LocalModItem::ModColumn));
-    auto mod = item->data().value<LocalMod*>();
+    auto mod = model_->data(index.siblingAtColumn(LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
+    if(!mod) return;
     auto dialog = new LocalModDialog(this, mod);
     dialog->show();
 }
@@ -683,8 +681,9 @@ void LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested(const QPoint
     auto menu = new QMenu(this);
     for(int column = LocalModItem::ModColumn + 1; column < model_->columnCount(); column++){
         if(column == LocalModItem::NameColumn) continue;
-        auto item = model_->horizontalHeaderItem(column);
-        auto action = menu->addAction(item->icon(), item->text());
+        auto text = model_->headerData(column, Qt::Horizontal, Qt::DisplayRole).toString();
+        auto icon = model_->headerData(column, Qt::Horizontal, Qt::DecorationRole).value<QIcon>();
+        auto action = menu->addAction(icon, text);
         action->setCheckable(true);
         action->setChecked(!ui->modTreeView->isColumnHidden(column));
         connect(action, &QAction::toggled, this, [=](bool checked){
@@ -745,7 +744,7 @@ QList<LocalMod *> LocalModBrowser::selectedMods(QAbstractItemView *view)
     if(!view) return {};
     QList<LocalMod *> list;
     for(auto &&index : view->selectionModel()->selectedRows())
-        list << model_->itemFromIndex(index)->data().value<LocalMod*>();
+        list << model_->data(index, Qt::UserRole + 1).value<LocalMod*>();
     return list;
 }
 
@@ -961,8 +960,7 @@ void LocalModBrowser::on_actionExport_Compressed_File_triggered()
     if(filePath.isEmpty()) return;
     QStringList list;
     for(int i = 0; i < model_->rowCount(); i++){
-        auto item = model_->item(i);
-        auto mod = item->data().value<LocalMod*>();
+        auto mod = model_->data(model_->index(i, LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
         list << mod->modFile()->fileInfo().absoluteFilePath();
     }
     list << modPath_->modsJsonFilePath();
