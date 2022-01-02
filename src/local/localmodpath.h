@@ -1,6 +1,7 @@
 #ifndef LOCALMODPATH_H
 #define LOCALMODPATH_H
 
+#include <QFileSystemWatcher>
 #include <QObject>
 
 #include "localmod.h"
@@ -101,12 +102,15 @@ signals:
     void updatesDone(int successCount, int failCount);
 private slots:
     void updateUpdatableCount();
+    void onDirectoryChanged(const QString &file);
+
 private:
     enum FindResultType{ Environmant, Missing, Mismatch, Match, RangeSemverError, VersionSemverError };
     std::tuple<FindResultType, std::optional<FabricModInfo>> findFabricMod(const QString &modid, const QString &range_str) const;
 
     explicit LocalModPath(LocalModPath *path, const QString &subDir);
 
+    QFileSystemWatcher watcher_;
     QStringList relative_;
     QMap<QString, LocalModPath *> subPaths_;
     Tagable containedTags_;

@@ -20,6 +20,8 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info) :
     modrinthAPI_(new ModrinthAPI(this)),
     info_(info)
 {
+    watcher_.addPath(info_.path());
+    connect(&watcher_, &QFileSystemWatcher::directoryChanged, this, &LocalModPath::onDirectoryChanged);
     connect(this, &LocalModPath::loadFinished, [=]{
         auto conn = connect(&modsLinker_, &CheckSheet::finished, this, [=]{
             auto interval = Config().getUpdateCheckInterval();
@@ -47,9 +49,11 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     modrinthAPI_(path->modrinthAPI_),
     info_(path->info_)
 {
+    connect(&watcher_, &QFileSystemWatcher::directoryChanged, this, &LocalModPath::onDirectoryChanged);
     addSubTagable(path);
     importTag(Tag(subDir, TagCategory::SubDirCategory));
     info_.path_.append("/").append(relative_.join("/"));
+    watcher_.addPath(info_.path());
 }
 
 const CheckSheet *LocalModPath::modsLinker() const
@@ -148,7 +152,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
     watcher->setFuture(future);
     connect(watcher, &QFutureWatcher<void>::finished, this, [=]{
         qDebug() << "modMap clear";
-        for(const auto &mod : modMap_)
+        for(const auto &mod : qAsConst(modMap_))
             containedTags_.removeSubTagable(mod);
         qDeleteAll(modMap_);
         modMap_.clear();
@@ -375,6 +379,11 @@ void LocalModPath::updateUpdatableCount()
     emit updatableCountChanged(count);
 }
 
+void LocalModPath::onDirectoryChanged(const QString &file)
+{
+    qDebug() << file;
+}
+
 QList<std::tuple<FabricModInfo, QString, QString, std::optional<FabricModInfo>>> LocalModPath::checkFabricDepends() const
 {
     QList<std::tuple<FabricModInfo, QString, QString, std::optional<FabricModInfo>>> list;
@@ -587,12 +596,17 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader)
 {
     if(info_ == newInfo) return;
 
-    info_ = newInfo;
-    emit infoUpdated();
+    if(info_.path_ != newInfo.path_){
+        watcher_.removePath(info_.path());
+        watcher_.addPath(newInfo.path());
+    }
 
     //path, game version or loader type change will trigger mod reload
     if(info_.path() != newInfo.path() || info_.gameVersion() != newInfo.gameVersion() || info_.loaderType() != newInfo.loaderType())
         loadMods(deduceLoader);
+
+    info_ = newInfo;
+    emit infoUpdated();
 }
 
 Tagable LocalModPath::containedTags()

@@ -330,6 +330,7 @@
     <addaction name="separator"/>
     <addaction name="actionRename_Selected_Mods"/>
     <addaction name="actionRename_to"/>
+    <addaction name="actionShow_This_Mod_in_Directory"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_Mod_Dialog"/>
     <addaction name="actionOpen_Curseforge_Mod_Dialog"/>
@@ -591,6 +592,11 @@
   <action name="actionExport_Compressed_File">
    <property name="text">
     <string>Export Compressed File</string>
+   </property>
+  </action>
+  <action name="actionShow_This_Mod_in_Directory">
+   <property name="text">
+    <string>Show This Mod in Directory</string>
    </property>
   </action>
  </widget>

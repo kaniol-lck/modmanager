@@ -492,6 +492,7 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
             });
             menu->addSeparator();
         }
+        menu->addAction(ui->actionShow_This_Mod_in_Directory);
         menu->addAction(ui->actionOpen_Mod_Dialog);
         if(mod->curseforgeMod())
             menu->addAction(ui->actionOpen_Curseforge_Mod_Dialog);
@@ -791,6 +792,7 @@ void LocalModBrowser::onSelectedModsChanged()
     fileListWidget_->setMods(selectedMods_);
 
     if(selectedMods_.count() == 1){
+        ui->actionShow_This_Mod_in_Directory->setEnabled(true);
         ui->actionOpen_Mod_Dialog->setEnabled(true);
         ui->actionSearch_on_Curseforge->setEnabled(true);
         ui->actionSearch_on_Modrinth->setEnabled(true);
@@ -800,6 +802,7 @@ void LocalModBrowser::onSelectedModsChanged()
         ui->actionOpen_Curseforge_Mod_Dialog->setEnabled(mod->curseforgeMod());
         ui->actionOpen_Modrinth_Mod_Dialog->setEnabled(mod->modrinthMod());
     } else{
+        ui->actionShow_This_Mod_in_Directory->setEnabled(false);
         ui->actionOpen_Mod_Dialog->setEnabled(false);
         ui->actionSearch_on_Curseforge->setEnabled(false);
         ui->actionSearch_on_Modrinth->setEnabled(false);
@@ -941,5 +944,12 @@ void LocalModBrowser::on_actionExport_Compressed_File_triggered()
         else
             openFileInFolder(filePath);
     });
+}
+
+void LocalModBrowser::on_actionShow_This_Mod_in_Directory_triggered()
+{
+    if(selectedMods_.isEmpty()) return;
+    auto mod = selectedMods_.first();
+    openFileInFolder(mod->modFile()->path());
 }
 
