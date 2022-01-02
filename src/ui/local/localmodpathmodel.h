@@ -2,7 +2,9 @@
 #define LOCALMODPATHMODEL_H
 
 #include <QAbstractItemModel>
+#include <QSortFilterProxyModel>
 
+class LocalModFilter;
 class LocalModPath;
 class LocalModPathModel : public QAbstractItemModel
 {
@@ -33,6 +35,23 @@ public:
 
 private:
     LocalModPath *path_;
+};
+
+class LocalModPathFilterProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+public:
+    LocalModPathFilterProxyModel(QObject *parent = nullptr);
+
+    void setFilter(LocalModFilter *filter);
+    void setText(const QString &newText);
+
+protected:
+    virtual bool filterAcceptsRow(int source_row, const QModelIndex &) const override;
+
+private:
+    LocalModFilter *filter_ = nullptr;
+    QString text_;
 };
 
 #endif // LOCALMODPATHMODEL_H

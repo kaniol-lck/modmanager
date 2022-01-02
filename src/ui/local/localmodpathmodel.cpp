@@ -1,3 +1,4 @@
+#include "localmodfilter.h"
 #include "localmodpathmodel.h"
 
 #include "local/localmodpath.h"
@@ -56,6 +57,7 @@ QVariant LocalModPathModel::headerData(int section, Qt::Orientation orientation,
         case LocalModPathModel::DescriptionColumn:
             return tr("Description");
         }
+        break;
     case Qt::DecorationRole:
         switch (section)
         {
@@ -70,6 +72,7 @@ QVariant LocalModPathModel::headerData(int section, Qt::Orientation orientation,
         case LocalModPathModel::ModrinthFileIdColumn:
             return QIcon(":/image/modrinth.svg");
         }
+        break;
     }
     return QVariant();
 }
@@ -199,7 +202,27 @@ QVariant LocalModPathModel::data(const QModelIndex &index, int role) const
         case FileSizeColumn:
             return mod->modFile()->fileInfo().size();
         }
-
+        break;
     }
     return QVariant();
+}
+
+LocalModPathFilterProxyModel::LocalModPathFilterProxyModel(QObject *parent) :
+    QSortFilterProxyModel(parent)
+{}
+
+void LocalModPathFilterProxyModel::setFilter(LocalModFilter *filter)
+{
+    filter_ = filter;
+}
+
+bool LocalModPathFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &) const
+{
+    auto mod = sourceModel()->index(source_row, LocalModPathModel::ModColumn).data(Qt::UserRole + 1).value<LocalMod *>();
+    return filter_->willShow(mod, text_);
+}
+
+void LocalModPathFilterProxyModel::setText(const QString &newText)
+{
+    text_ = newText;
 }

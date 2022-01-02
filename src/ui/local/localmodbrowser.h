@@ -21,6 +21,8 @@ class LocalStatusBarWidget;
 class QAbstractItemView;
 class PageSwitcher;
 class LocalModPathModel;
+
+class LocalModPathFilterProxyModel;
 namespace Ui {
 class LocalModBrowser;
 }
@@ -51,7 +53,6 @@ signals:
 
 public slots:
     void reload();
-    void updateModList();
     void updateUi();
 
 private slots:
@@ -74,7 +75,6 @@ private slots:
     void onUpdatesDoneCountUpdated(int doneCount, int totalCount);
     void onUpdatesDone(int successCount, int failCount);
 
-    void filterList();
     void updateStatusText();
     void updateProgressBar();
     void updateListViewIndexWidget();
@@ -117,6 +117,7 @@ private:
     PageSwitcher *pageSwitcher_ = nullptr;
     Ui::LocalModBrowser *ui;
     LocalModPathModel *model_;
+    LocalModPathFilterProxyModel *proxyModel_;
     LocalModInfoWidget *infoWidget_;
     LocalFileListWidget *fileListWidget_;
     LocalStatusBarWidget *statusBarWidget_;

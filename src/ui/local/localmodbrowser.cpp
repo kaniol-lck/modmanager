@@ -50,6 +50,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     Browser(parent),
     ui(new Ui::LocalModBrowser),
     model_(new LocalModPathModel(modPath)),
+    proxyModel_(new LocalModPathFilterProxyModel(this)),
     infoWidget_(new LocalModInfoWidget(this, modPath)),
     fileListWidget_(new LocalFileListWidget(this, modPath)),
     statusBarWidget_(new LocalStatusBarWidget(this)),
@@ -62,10 +63,12 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     fileListWidget_->hide();
     ui->setupUi(this);
     //setup mod list
+    proxyModel_->setSourceModel(model_);
+    proxyModel_->setFilter(filter_);
     ui->updateWidget->setVisible(false);
-    ui->modListView->setModel(model_);
-    ui->modIconListView->setModel(model_);
-    ui->modTreeView->setModel(model_);
+    ui->modListView->setModel(proxyModel_);
+    ui->modIconListView->setModel(proxyModel_);
+    ui->modTreeView->setModel(proxyModel_);
     ui->modTreeView->hideColumn(0);
     ui->modTreeView->hideColumn(0);
     ui->modIconListView->setModelColumn(LocalModItem::NameColumn);
@@ -141,7 +144,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     });
     ui->updateAllButton->setDefaultAction(ui->actionUpdate_All);
 
-    connect(filter_->menu(), &UnclosedMenu::menuTriggered, this, &LocalModBrowser::filterList);
+    connect(filter_->menu(), &UnclosedMenu::menuTriggered, proxyModel_, &QSortFilterProxyModel::invalidate);
     ui->filterButton->setMenu(filter_->menu());
     filter_->showAll();
 
@@ -202,7 +205,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     });
 
     if(modPath_->modsLoaded())
-        updateModList();
+        filter_->refreshTags();
 
     onSelectedModsChanged();
     onUpdatableCountChanged();
@@ -217,7 +220,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::loadProgress, this, &LocalModBrowser::onLoadProgress);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::onLoadFinished);
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::loadFinished);
-    connect(modPath_, &LocalModPath::modListUpdated, this, &LocalModBrowser::updateModList);
+    connect(modPath_, &LocalModPath::modListUpdated, filter_, &LocalModFilter::refreshTags);
+    connect(modPath_, &LocalModPath::modListUpdated, proxyModel_, &QSortFilterProxyModel::invalidate);
     connect(modPath_->modsLinker(), &CheckSheet::started, this, &LocalModBrowser::onLinkStarted);
     connect(modPath_->modsLinker(), &CheckSheet::progress, this, &LocalModBrowser::onLinkProgress);
     connect(modPath_->modsLinker(), &CheckSheet::finished, this, &LocalModBrowser::onLinkFinished);
@@ -242,7 +246,10 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_->updateChecker(), &CheckSheet::progress, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_->updateChecker(), &CheckSheet::finished, this, &LocalModBrowser::updateProgressBar);
 
-    connect(ui->searchText, &QLineEdit::textChanged, this, &LocalModBrowser::filterList);
+    connect(ui->searchText, &QLineEdit::textChanged, this, [=]{
+        proxyModel_->setText(ui->searchText->text().toLower());
+        proxyModel_->invalidate();
+    });
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modIconListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modTreeView, &QTreeView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
@@ -276,44 +283,6 @@ void LocalModBrowser::reload()
 {
     if(modPath_->isLoading()) return;
     modPath_->loadMods();
-}
-
-void LocalModBrowser::updateModList()
-{
-//    qDebug() << "model clear";
-//    model_->clear();
-//    selectedMods_.clear();
-//    for(auto &&[column, item] : LocalModItem::headerItems())
-//        model_->setHorizontalHeaderItem(column, item);
-//    auto list = Config().getLocalModsHeaderSections();
-//    auto &&header = ui->modTreeView->header();
-//    if(!list.isEmpty()){
-//        ui->modTreeView->header()->blockSignals(true);
-//        for(int i = 0; i < header->count() - 1; i++){
-//            if(i < list.size())
-//                header->moveSection(header->visualIndex(list.at(i).toInt()), i + 1);
-//            else
-//                header->setSectionHidden(header->logicalIndex(i + 1), true);
-//        }
-//        ui->modTreeView->header()->blockSignals(false);
-//    }
-
-//    for(auto &&map : modPath_->modMaps()){
-//        for (auto &&mod : map) {
-//            model_->appendRow(LocalModItem::itemsFromMod(mod));
-//        }
-//    }
-//    //TODO: optfine in sub dir
-//    if(modPath_->info().loaderType() == ModLoaderType::Fabric)
-//        if(auto mod = modPath_->optiFineMod()){
-//            model_->appendRow(LocalModItem::itemsFromMod(mod));
-//        }
-//    ui->modTreeView->sortByColumn(LocalModItem::NameColumn, Qt::AscendingOrder);
-//    ui->modTreeView->hideColumn(LocalModItem::ModColumn);
-//    for(auto &&column : { LocalModItem::EnableColumn, LocalModItem::StarColumn })
-//        ui->modTreeView->setColumnWidth(column, 0);
-//    filter_->refreshTags();
-//    filterList();
 }
 
 void LocalModBrowser::updateUi()
@@ -462,21 +431,6 @@ void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
     onUpdatesReady();
 }
 
-void LocalModBrowser::filterList()
-{
-//    hiddenCount_ = 0;
-//    for(int i = 0; i < model_->rowCount(); i++){
-//        auto item = model_->item(i);
-//        auto mod = item->data().value<LocalMod*>();
-//        auto hidden = !filter_->willShow(mod, ui->searchText->text().toLower());
-//        ui->modListView->setRowHidden(i, hidden);
-//        ui->modIconListView->setRowHidden(i, hidden);
-//        ui->modTreeView->setRowHidden(i, ui->modTreeView->rootIndex(), hidden);
-//        if(hidden) hiddenCount_++;
-//    }
-//    updateStatusText();
-}
-
 void LocalModBrowser::updateStatusText()
 {
     auto str = tr("%1 mods in total. ").arg(modPath_->modCount());
@@ -552,15 +506,15 @@ void LocalModBrowser::updateListViewIndexWidget()
     if(beginRow < 0) return;
     auto endRow = ui->modListView->indexAt(QPoint(0, ui->modListView->height())).row();
     if(endRow < 0)
-        endRow = model_->rowCount() - 1;
+        endRow = proxyModel_->rowCount() - 1;
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
-        auto index = model_->index(row, 0);
+    for(int row = beginRow; row <= endRow && row < proxyModel_->rowCount(); row++){
+        auto index = proxyModel_->index(row, 0);
         if(ui->modListView->indexWidget(index)) continue;
 //        qDebug() << "new widget at row" << row;
-        auto mod = model_->data(index, Qt::UserRole + 1).value<LocalMod*>();
+        auto mod = proxyModel_->data(index, Qt::UserRole + 1).value<LocalMod*>();
         if(mod){
             auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
             ui->modListView->setIndexWidget(index, modItemWidget);
@@ -575,17 +529,17 @@ void LocalModBrowser::updateTreeViewIndexWidget()
     if(beginRow < 0) return;
     auto endRow = ui->modTreeView->indexAt(QPoint(0, ui->modTreeView->height())).row();
     if(endRow < 0)
-        endRow = model_->rowCount() - 1;
+        endRow = proxyModel_->rowCount() - 1;
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
-        if(ui->modTreeView->indexWidget(model_->index(row, LocalModItem::EnableColumn))) continue;
+    for(int row = beginRow; row <= endRow && row < proxyModel_->rowCount(); row++){
+        if(ui->modTreeView->indexWidget(proxyModel_->index(row, LocalModItem::EnableColumn))) continue;
 //        qDebug() << "new widget at row" << row;
-        auto mod = model_->data(model_->index(row, LocalModItem::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
+        auto mod = proxyModel_->data(proxyModel_->index(row, LocalModItem::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
         if(mod){
             auto enableBox = new QCheckBox(this);
-            ui->modTreeView->setIndexWidget(model_->index(row, LocalModItem::EnableColumn), enableBox);
+            ui->modTreeView->setIndexWidget(proxyModel_->index(row, LocalModItem::EnableColumn), enableBox);
             connect(enableBox, &QCheckBox::toggled, mod, &LocalMod::setEnabled);
             auto starButton = new QToolButton(this);
             starButton->setAutoRaise(true);
@@ -593,10 +547,10 @@ void LocalModBrowser::updateTreeViewIndexWidget()
                 auto checked = starButton->icon().name() != "starred-symbolic";
                 mod->setFeatured(checked);
             });
-            ui->modTreeView->setIndexWidget(model_->index(row, LocalModItem::StarColumn), starButton);
+            ui->modTreeView->setIndexWidget(proxyModel_->index(row, LocalModItem::StarColumn), starButton);
             auto tagsWidget = new TagsWidget(this);
             tagsWidget->setMod(mod);
-            ui->modTreeView->setIndexWidget(model_->index(row, LocalModItem::TagsColumn), tagsWidget);
+            ui->modTreeView->setIndexWidget(proxyModel_->index(row, LocalModItem::TagsColumn), tagsWidget);
             auto onModChanged = [=]{
                 enableBox->setChecked(mod->isEnabled());
                 starButton->setIcon(QIcon::fromTheme(mod->isFeatured() ? "starred-symbolic" : "non-starred-symbolic"));
@@ -960,7 +914,7 @@ void LocalModBrowser::on_actionExport_Compressed_File_triggered()
     if(filePath.isEmpty()) return;
     QStringList list;
     for(int i = 0; i < model_->rowCount(); i++){
-        auto mod = model_->data(model_->index(i, LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
+        auto mod = model_->index(i, LocalModPathModel::ModColumn).data(Qt::UserRole + 1).value<LocalMod*>();
         list << mod->modFile()->fileInfo().absoluteFilePath();
     }
     list << modPath_->modsJsonFilePath();
