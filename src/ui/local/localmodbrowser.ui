@@ -331,6 +331,7 @@
     <addaction name="actionRename_Selected_Mods"/>
     <addaction name="actionRename_to"/>
     <addaction name="actionShow_This_Mod_in_Directory"/>
+    <addaction name="actionMove_Selected_Mods_to"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_Mod_Dialog"/>
     <addaction name="actionOpen_Curseforge_Mod_Dialog"/>
@@ -597,6 +598,11 @@
   <action name="actionShow_This_Mod_in_Directory">
    <property name="text">
     <string>Show This Mod in Directory</string>
+   </property>
+  </action>
+  <action name="actionMove_Selected_Mods_to">
+   <property name="text">
+    <string>Move Selected Mods to...</string>
    </property>
   </action>
  </widget>

@@ -110,7 +110,6 @@ private slots:
     void on_actionExport_modlist_html_Modrinth_triggered();
     void on_actionOpen_In_GitHub_triggered();
     void on_actionExport_Compressed_File_triggered();
-
     void on_actionShow_This_Mod_in_Directory_triggered();
 
 protected:

@@ -27,6 +27,11 @@ public:
     void addNormalMod(LocalModFile *file);
     void addOldMod(LocalModFile *file);
 
+    void addModFile(LocalModFile *file);
+    void removeModFile(LocalModFile *file);
+
+    LocalModPath *addSubPath(const QString &relative);
+
     void checkFabric();
 
     //list of <mod, modid, required version, current mod if present>
@@ -75,6 +80,10 @@ public:
 
     QString displayName() const;
     QIcon icon() const;
+
+    const QMap<QString, LocalModPath *> &subPaths() const;
+
+    const QStringList &relative() const;
 
 public slots:
     void writeToFile();

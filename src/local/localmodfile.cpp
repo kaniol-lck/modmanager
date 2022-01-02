@@ -94,6 +94,18 @@ ModLoaderType::Type LocalModFile::loadInfo()
     return loaderType_;
 }
 
+bool LocalModFile::moveTo(LocalModPath *path)
+{
+    QFile file(path_);
+    auto newPath = QDir(path->info().path()).absoluteFilePath(fileInfo_.fileName());
+    auto bl = file.rename(newPath);
+    if(bl){
+        modPath_->removeModFile(this);
+        path->addModFile(this);
+    }
+    return bl;
+}
+
 bool LocalModFile::remove()
 {
     QFile file(path_);

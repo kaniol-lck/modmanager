@@ -61,6 +61,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     noneAction->setCheckable(true);
     noneAction->setData(true);
 
+    refreshTags();
     connect(menu_, &QMenu::aboutToShow, this, &LocalModFilter::refreshTags);
 }
 

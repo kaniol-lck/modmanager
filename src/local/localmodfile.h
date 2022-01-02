@@ -24,6 +24,8 @@ public:
 
     ModLoaderType::Type loadInfo();
 
+    bool moveTo(LocalModPath *path);
+
     bool remove();
     bool rename(const QString newBaseName);
 

@@ -170,6 +170,33 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
         }
     });
 
+    auto moveToMenu = new QMenu(this);
+    ui->actionMove_Selected_Mods_to->setMenu(moveToMenu);
+    auto addMoveToAction = [=](LocalModPath *path){
+        for(const auto &mod : qAsConst(selectedMods_))
+            if(mod->path() == path) return;
+        moveToMenu->addAction(path->relative().isEmpty()? tr("Main Folder") : path->relative().join("/"), this, [=]{
+            for(const auto &mod : qAsConst(selectedMods_)){
+                mod->moveTo(modPath_);
+            }
+        });
+    };
+    connect(moveToMenu, &QMenu::aboutToShow, this, [=]{
+        moveToMenu->clear();
+        addMoveToAction(modPath_);
+        moveToMenu->addSection(tr("Sub Directories"));
+        for(const auto &subPath : modPath_->subPaths()){
+            addMoveToAction(subPath);
+        }
+        moveToMenu->addSeparator();
+        moveToMenu->addAction(tr("New Sub-Directory"), this, [=]{
+            auto pathName = QInputDialog::getText(this, tr("New Sub-Directory"), tr("Sub-Directory Name:"));
+            if(pathName.isEmpty()) return;
+            auto subPath = modPath_->addSubPath(pathName);
+            addMoveToAction(subPath);
+        });
+    });
+
     if(modPath_->modsLoaded())
         updateModList();
 
@@ -507,7 +534,7 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
         menu->addSeparator();
     }
     //multi mods
-    //batch rename
+    menu->addAction(ui->actionMove_Selected_Mods_to);
     menu->addAction(ui->actionToggle_Enable);
     menu->addAction(ui->actionToggle_Star);
     menu->addSeparator();
@@ -778,6 +805,7 @@ void LocalModBrowser::onSelectedModsChanged()
     ui->actionToggle_Star->setEnabled(!noMod);
     ui->actionRename_Selected_Mods->setEnabled(!noMod);
     ui->actionRename_to->setEnabled(!noMod);
+    ui->actionMove_Selected_Mods_to->setEnabled(!noMod);
 
     bool isEnabled = false;
     for(auto &&mod : selectedMods_)

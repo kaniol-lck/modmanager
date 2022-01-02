@@ -604,6 +604,12 @@ LocalModPath *LocalMod::path() const
     return path_;
 }
 
+void LocalMod::moveTo(LocalModPath *path)
+{
+    for(auto &&file : files())
+        file->moveTo(path);
+}
+
 void LocalMod::setModFile(LocalModFile *newModFile)
 {
     if(modFile_) disconnect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modInfoChanged);

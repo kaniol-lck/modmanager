@@ -56,6 +56,16 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     watcher_.addPath(info_.path());
 }
 
+const QStringList &LocalModPath::relative() const
+{
+    return relative_;
+}
+
+const QMap<QString, LocalModPath *> &LocalModPath::subPaths() const
+{
+    return subPaths_;
+}
+
 const CheckSheet *LocalModPath::modsLinker() const
 {
     return &modsLinker_;
@@ -121,6 +131,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
             auto subPath = new LocalModPath(this, fileName);
             subPaths_.insert(fileName, subPath);
             containedTags_.addSubTagable(subPath);
+            containedTags_.addSubTagable(&subPath->containedTags_);
             subPath->loadMods();
         }
     }
@@ -250,6 +261,28 @@ void LocalModPath::addOldMod(LocalModFile *file)
         return;
     }
     //TODO: deal with homeless old mods
+}
+
+void LocalModPath::addModFile(LocalModFile *file)
+{
+    addNormalMod(file);
+    addOldMod(file);
+}
+
+void LocalModPath::removeModFile(LocalModFile *file)
+{
+    //TODO
+}
+
+LocalModPath *LocalModPath::addSubPath(const QString &relative)
+{
+    auto subPath = new LocalModPath(this, relative);
+    QDir().mkpath(subPath->info().path());
+    subPaths_.insert(relative, subPath);
+    containedTags_.addSubTagable(subPath);
+    containedTags_.addSubTagable(&subPath->containedTags_);
+    subPath->loadMods();
+    return subPath;
 }
 
 void LocalModPath::checkFabric()

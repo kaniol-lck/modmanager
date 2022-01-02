@@ -38,6 +38,7 @@ public:
 
     //path
     LocalModPath *path() const;
+    void moveTo(LocalModPath *path);
 
     //link
     //mod basic info start to request after set
