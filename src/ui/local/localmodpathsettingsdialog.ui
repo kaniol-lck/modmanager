@@ -142,9 +142,6 @@
          <property name="text">
           <string>Auto</string>
          </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
         </widget>
        </item>
       </layout>

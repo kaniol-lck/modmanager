@@ -52,8 +52,10 @@ QVariant LocalModPathInfo::toVariant() const
     map["isAutoName"] = isAutoName_;
     map["name"] = name_;
     map["dir"] = path_;
-    map["gameVersion"] = QString(gameVersion_);
-    map["loaderType"] = ModLoaderType::toString(loaderType_);
+    if(gameVersion_ != GameVersion::Any)
+        map["gameVersion"] = gameVersion_.toString();
+    if(loaderType_ != ModLoaderType::Any)
+        map["loaderType"] = ModLoaderType::toString(loaderType_);
 
     return QVariant::fromValue(map);
 }

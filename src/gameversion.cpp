@@ -17,6 +17,8 @@ QList<GameVersion> GameVersion::mojangVersionList_;
 QList<GameVersion> GameVersion::curseforgeVersionList_;
 
 QList<GameVersion> GameVersion::cachedVersionList_{
+    GameVersion(1, 18, 1),
+    GameVersion(1, 18),
     GameVersion(1, 17, 1),
     GameVersion(1, 17),
     GameVersion(1, 16, 5),

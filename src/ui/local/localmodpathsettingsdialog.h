@@ -31,6 +31,8 @@ private slots:
     void on_useAutoName_toggled(bool checked);
     void on_loaderSelect_currentIndexChanged(int index);
 
+    void on_autoLoaderType_stateChanged(int arg1);
+
 private:
     Ui::LocalModPathSettingsDialog *ui;
     LocalModPathInfo info_;

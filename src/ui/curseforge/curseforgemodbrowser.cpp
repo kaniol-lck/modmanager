@@ -135,10 +135,7 @@ void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
     ui->versionSelectButton->setText(info.gameVersion());
     currentLoaderType_ = info.loaderType();
     ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
-    ui->downloadPathSelect->blockSignals(true);
     ui->downloadPathSelect->setCurrentText(info.displayName());
-    ui->downloadPathSelect->blockSignals(false);
-    qDebug() << currentGameVersion_ << currentLoaderType_;
     getModList(currentName_);
 }
 

@@ -88,7 +88,7 @@ void LocalModPathSettingsDialog::on_modDirButton_clicked()
 
 void LocalModPathSettingsDialog::on_buttonBox_accepted()
 {
-    emit settingsUpdated(info_, ui->autoLoaderType->isCheckable());
+    emit settingsUpdated(info_, ui->autoLoaderType->isChecked());
 }
 
 void LocalModPathSettingsDialog::updateDisplayName()
@@ -125,5 +125,10 @@ void LocalModPathSettingsDialog::on_loaderSelect_currentIndexChanged(int index)
     if(index < 0) return;
     info_.setLoaderType(ModLoaderType::local.at(index));
     updateDisplayName();
+}
+
+void LocalModPathSettingsDialog::on_autoLoaderType_stateChanged(int arg1)
+{
+    ui->loaderSelect->setDisabled(arg1);
 }
 

@@ -76,9 +76,7 @@ void OptifineModBrowser::refresh()
 
 void OptifineModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 {
-    ui->versionSelect->blockSignals(true);
     ui->versionSelect->setCurrentText(info.gameVersion());
-    ui->versionSelect->blockSignals(false);
     ui->downloadPathSelect->setCurrentText(info.displayName());
     filterList();
 }
