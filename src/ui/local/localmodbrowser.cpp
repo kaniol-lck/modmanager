@@ -209,7 +209,18 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     onSelectedModsChanged();
     onUpdatableCountChanged();
 
-//    onUpdatableCountChanged();
+    auto list = Config().getLocalModsHeaderSections();
+    auto &&header = ui->modTreeView->header();
+    if(!list.isEmpty()){
+        ui->modTreeView->header()->blockSignals(true);
+        for(int i = 0; i < header->count() - 1; i++){
+            if(i < list.size())
+                header->moveSection(header->visualIndex(list.at(i).toInt()), i + 1);
+            else
+                header->setSectionHidden(header->logicalIndex(i + 1), true);
+        }
+        ui->modTreeView->header()->blockSignals(false);
+    }
 
     ui->modTreeView->header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->modTreeView->header(), &QHeaderView::customContextMenuRequested, this, &LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested);
