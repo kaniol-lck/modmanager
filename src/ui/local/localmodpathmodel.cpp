@@ -216,6 +216,12 @@ QVariant LocalModPathModel::data(const QModelIndex &index, int role) const
         {
         case ModColumn:
             return QVariant::fromValue(mod);
+        case TagsColumn:{
+            QStringList list;
+            for(auto &&tag : mod->tags())
+                list << tag.name();
+            return list.join(" ");
+        }
         case FileDateColumn:
             return mod->modFile()->fileInfo().lastModified();
         case FileSizeColumn:
@@ -263,6 +269,29 @@ bool LocalModPathFilterProxyModel::filterAcceptsRow(int source_row, const QModel
 {
     auto mod = sourceModel()->index(source_row, LocalModPathModel::ModColumn).data(Qt::UserRole + 1).value<LocalMod *>();
     return filter_->willShow(mod, text_);
+}
+
+bool LocalModPathFilterProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
+{
+    auto column = source_left.column();
+    auto mod_left = sourceModel()->data(source_left.siblingAtColumn(LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod *>();
+    auto mod_right = sourceModel()->data(source_right.siblingAtColumn(LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod *>();
+    Config config;
+    if(config.getStarredAtTop()){
+        if(mod_left->isFeatured() && !mod_right->isFeatured()) return false;
+        if(!mod_left->isFeatured() && mod_right->isFeatured()) return true;
+    }
+    if(config.getDisabedAtBottom()){
+        if(mod_left->isDisabled() && !mod_right->isDisabled()) return true;
+        if(!mod_left->isDisabled() && mod_right->isDisabled()) return false;
+    }
+    if(column == LocalModPathModel::FileDateColumn)
+        return sourceModel()->data(source_left, Qt::UserRole + 1).toDateTime() < sourceModel()->data(source_right, Qt::UserRole + 1).toDateTime();
+    if(column == LocalModPathModel::FileSizeColumn)
+        return sourceModel()->data(source_left, Qt::UserRole + 1).toInt() < sourceModel()->data(source_right, Qt::UserRole + 1).toInt();
+    if(column == LocalModPathModel::TagsColumn)
+        return sourceModel()->data(source_left, Qt::UserRole + 1).toString() < sourceModel()->data(source_right, Qt::UserRole + 1).toString();
+    return QSortFilterProxyModel::lessThan(source_left, source_right);
 }
 
 void LocalModPathFilterProxyModel::setText(const QString &newText)

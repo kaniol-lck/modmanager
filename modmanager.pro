@@ -41,7 +41,6 @@ SOURCES += \
     src/local/localfilelinker.cpp \
     src/local/localmod.cpp \
     src/local/localmodfile.cpp \
-    src/local/localmoditem.cpp \
     src/local/localmodpath.cpp \
     src/local/localmodpathinfo.cpp \
     src/local/localmodpathmanager.cpp \
@@ -162,7 +161,6 @@ HEADERS += \
     src/local/localfilelinker.h \
     src/local/localmod.h \
     src/local/localmodfile.h \
-    src/local/localmoditem.h \
     src/local/localmodpath.h \
     src/local/localmodpathinfo.h \
     src/local/localmodpathmanager.h \

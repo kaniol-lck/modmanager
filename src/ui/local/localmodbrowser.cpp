@@ -35,7 +35,6 @@
 #include "util/unclosedmenu.h"
 #include "localmodfilter.h"
 #include "localmodmenu.h"
-#include "local/localmoditem.h"
 #include "ui/local/localmodpathmodel.h"
 #include "ui/curseforge/curseforgemoddialog.h"
 #include "ui/curseforge/curseforgemodbrowser.h"
@@ -71,7 +70,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->modTreeView->setModel(proxyModel_);
     ui->modTreeView->hideColumn(0);
     ui->modTreeView->hideColumn(0);
-    ui->modIconListView->setModelColumn(LocalModItem::NameColumn);
+    ui->modIconListView->setModelColumn(LocalModPathModel::NameColumn);
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");
     ui->modIconListView->setVerticalScrollBar(new SmoothScrollBar(this));
@@ -113,7 +112,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
         orderGroup->addAction(ascendingAction);
         orderGroup->addAction(descendingAction);
         sortMenu->addSection(tr("Column"));
-        for(int column = LocalModItem::ModColumn + 1; column < model_->columnCount(); column++){
+        for(int column = LocalModPathModel::ModColumn + 1; column < model_->columnCount(); column++){
             auto text = model_->headerData(column, Qt::Horizontal, Qt::DisplayRole).toString();
             auto icon = model_->headerData(column, Qt::Horizontal, Qt::DecorationRole).value<QIcon>();
             auto action = sortMenu->addAction(icon, text, this, [=]{
@@ -534,13 +533,13 @@ void LocalModBrowser::updateTreeViewIndexWidget()
         //extra 2
         endRow += 2;
     for(int row = beginRow; row <= endRow && row < proxyModel_->rowCount(); row++){
-        if(ui->modTreeView->indexWidget(proxyModel_->index(row, LocalModItem::TagsColumn))) continue;
+        if(ui->modTreeView->indexWidget(proxyModel_->index(row, LocalModPathModel::TagsColumn))) continue;
 //        qDebug() << "new widget at row" << row;
-        auto mod = proxyModel_->data(proxyModel_->index(row, LocalModItem::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
+        auto mod = proxyModel_->data(proxyModel_->index(row, LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
         if(mod){
             auto tagsWidget = new TagsWidget(this);
             tagsWidget->setMod(mod);
-            ui->modTreeView->setIndexWidget(proxyModel_->index(row, LocalModItem::TagsColumn), tagsWidget);
+            ui->modTreeView->setIndexWidget(proxyModel_->index(row, LocalModPathModel::TagsColumn), tagsWidget);
         }
     }
 }
@@ -617,8 +616,8 @@ void LocalModBrowser::on_modTreeView_customContextMenuRequested(const QPoint &po
 void LocalModBrowser::onModTreeViewHeaderCustomContextMenuRequested(const QPoint &pos)
 {
     auto menu = new QMenu(this);
-    for(int column = LocalModItem::ModColumn + 1; column < model_->columnCount(); column++){
-        if(column == LocalModItem::NameColumn) continue;
+    for(int column = LocalModPathModel::ModColumn + 1; column < model_->columnCount(); column++){
+        if(column == LocalModPathModel::NameColumn) continue;
         auto text = model_->headerData(column, Qt::Horizontal, Qt::DisplayRole).toString();
         auto icon = model_->headerData(column, Qt::Horizontal, Qt::DecorationRole).value<QIcon>();
         auto action = menu->addAction(icon, text);
