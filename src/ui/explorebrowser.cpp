@@ -172,7 +172,7 @@ void ExploreBrowser::initUi(QComboBox *downloadPathSelect)
 
 void ExploreBrowser::setDownloadPathIndex(int i)
 {
-    if(i < 0 || i >= LocalModPathManager::pathList().count()) return;
+    if(i < 0 || i - 1 >= LocalModPathManager::pathList().count()) return;
     if(i == 0)
         downloadPath_ = nullptr;
     else

@@ -138,6 +138,7 @@ void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
     ui->downloadPathSelect->blockSignals(true);
     ui->downloadPathSelect->setCurrentText(info.displayName());
     ui->downloadPathSelect->blockSignals(false);
+    qDebug() << currentGameVersion_ << currentLoaderType_;
     getModList(currentName_);
 }
 
@@ -402,6 +403,7 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
     for(int row = 0; row < model_->rowCount(); row++){
         auto item = model_->item(row);
         auto mod = item->data().value<CurseforgeMod*>();
+        if(!mod) continue;
         auto isShown = currentLoaderType_ == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(currentLoaderType_);
         if(mod->modInfo().loaderTypes().isEmpty())
             isShown = true;
