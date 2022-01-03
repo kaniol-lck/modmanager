@@ -518,7 +518,7 @@ void LocalModBrowser::updateListViewIndexWidget()
         if(mod){
             auto modItemWidget = new LocalModItemWidget(ui->modListView, mod);
             ui->modListView->setIndexWidget(index, modItemWidget);
-//            item->setSizeHint(QSize(0, modItemWidget->height()));
+            model_->setItemHeight(modItemWidget->height());
         }
     }
 }
@@ -534,29 +534,13 @@ void LocalModBrowser::updateTreeViewIndexWidget()
         //extra 2
         endRow += 2;
     for(int row = beginRow; row <= endRow && row < proxyModel_->rowCount(); row++){
-        if(ui->modTreeView->indexWidget(proxyModel_->index(row, LocalModItem::EnableColumn))) continue;
+        if(ui->modTreeView->indexWidget(proxyModel_->index(row, LocalModItem::TagsColumn))) continue;
 //        qDebug() << "new widget at row" << row;
         auto mod = proxyModel_->data(proxyModel_->index(row, LocalModItem::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
         if(mod){
-            auto enableBox = new QCheckBox(this);
-            ui->modTreeView->setIndexWidget(proxyModel_->index(row, LocalModItem::EnableColumn), enableBox);
-            connect(enableBox, &QCheckBox::toggled, mod, &LocalMod::setEnabled);
-            auto starButton = new QToolButton(this);
-            starButton->setAutoRaise(true);
-            connect(starButton, &QToolButton::clicked, this, [=]{
-                auto checked = starButton->icon().name() != "starred-symbolic";
-                mod->setFeatured(checked);
-            });
-            ui->modTreeView->setIndexWidget(proxyModel_->index(row, LocalModItem::StarColumn), starButton);
             auto tagsWidget = new TagsWidget(this);
             tagsWidget->setMod(mod);
             ui->modTreeView->setIndexWidget(proxyModel_->index(row, LocalModItem::TagsColumn), tagsWidget);
-            auto onModChanged = [=]{
-                enableBox->setChecked(mod->isEnabled());
-                starButton->setIcon(QIcon::fromTheme(mod->isFeatured() ? "starred-symbolic" : "non-starred-symbolic"));
-            };
-            onModChanged();
-            QObject::connect(mod, &LocalMod::modInfoChanged, onModChanged);
         }
     }
 }

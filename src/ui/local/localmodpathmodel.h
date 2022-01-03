@@ -14,10 +14,11 @@ public:
     enum c { ModColumn, NameColumn, IdColumn, VersionColumn, EnableColumn, StarColumn, TagsColumn, FileDateColumn, FileSizeColumn, FileNameColumn, CurseforgeIdColumn, CurseforgeFileIdColumn, ModrinthIdColumn, ModrinthFileIdColumn, DescriptionColumn };
     explicit LocalModPathModel(LocalModPath *parent = nullptr);
 
-    // Header:
+
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
-    // Basic functionality:
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
+
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const override;
     QModelIndex parent(const QModelIndex &index) const override;
@@ -32,9 +33,13 @@ public:
 //    void fetchMore(const QModelIndex &parent) override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+
+    void setItemHeight(int newItemHeight);
 
 private:
     LocalModPath *path_;
+    int itemHeight_ = 100;
 };
 
 class LocalModPathFilterProxyModel : public QSortFilterProxyModel

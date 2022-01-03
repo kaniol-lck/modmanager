@@ -77,6 +77,17 @@ QVariant LocalModPathModel::headerData(int section, Qt::Orientation orientation,
     return QVariant();
 }
 
+Qt::ItemFlags LocalModPathModel::flags(const QModelIndex &index) const
+{
+    switch (index.column()) {
+    case EnableColumn:
+    case StarColumn:
+        return QAbstractItemModel::flags(index) | Qt::ItemIsUserCheckable;
+    default:
+        return QAbstractItemModel::flags(index);
+    }
+}
+
 QModelIndex LocalModPathModel::index(int row, int column, const QModelIndex &parent) const
 {
     if(parent.isValid())
@@ -130,6 +141,14 @@ QVariant LocalModPathModel::data(const QModelIndex &index, int role) const
     auto mod = *(path_->modMap().begin() + index.row());
 
     switch (role) {
+    case Qt::CheckStateRole:
+        switch (index.column()) {
+        case EnableColumn:
+            return mod->isEnabled()? Qt::Checked : Qt::Unchecked;
+        case StarColumn:
+            return mod->isFeatured()? Qt::Checked : Qt::Unchecked;
+        }
+        break;
     case Qt::ToolTipRole:
     case Qt::DisplayRole:
         switch (index.column())
@@ -190,7 +209,7 @@ QVariant LocalModPathModel::data(const QModelIndex &index, int role) const
         break;
     case Qt::SizeHintRole:
         if(index.column() == ModColumn)
-            return QSize(0, 100);
+            return QSize(0, itemHeight_);
         break;
     case Qt::UserRole + 1:
         switch (index.column())
@@ -205,6 +224,30 @@ QVariant LocalModPathModel::data(const QModelIndex &index, int role) const
         break;
     }
     return QVariant();
+}
+
+bool LocalModPathModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!index.isValid() || index.row() >= rowCount())
+        return false;
+    auto mod = *(path_->modMap().begin() + index.row());
+    switch (role) {
+    case Qt::CheckStateRole:
+        switch (index.column()) {
+        case EnableColumn:
+            mod->setEnabled(value.toBool());
+            return true;
+        case StarColumn:
+            mod->setFeatured(value.toBool());
+            return true;
+        }
+    }
+    return false;
+}
+
+void LocalModPathModel::setItemHeight(int newItemHeight)
+{
+    itemHeight_ = newItemHeight;
 }
 
 LocalModPathFilterProxyModel::LocalModPathFilterProxyModel(QObject *parent) :

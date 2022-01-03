@@ -30,6 +30,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     ui->disableButton->setVisible(false);
     ui->featuredButton->setVisible(false);
     ui->tagsWidget->setMod(mod_);
+    ui->tagsWidget->setContextMenuPolicy(Qt::DefaultContextMenu);
 
     this->setAttribute(Qt::WA_Hover, true);
     setAttribute(Qt::WA_StyledBackground, true);
