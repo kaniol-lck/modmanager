@@ -64,6 +64,7 @@ public:
     int modCount() const;
     int updatableCount() const;
     const QMap<QString, LocalMod *> &modMap() const;
+    QList<LocalMod *> modList() const;
     QList<QMap<QString, LocalMod *>> modMaps() const;
     void deleteAllOld() const;
 

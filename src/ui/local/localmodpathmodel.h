@@ -4,6 +4,7 @@
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
 
+class LocalMod;
 class LocalModFilter;
 class LocalModPath;
 class LocalModPathModel : public QAbstractItemModel
@@ -13,7 +14,6 @@ class LocalModPathModel : public QAbstractItemModel
 public:
     enum c { ModColumn, NameColumn, IdColumn, VersionColumn, EnableColumn, StarColumn, TagsColumn, FileDateColumn, FileSizeColumn, FileNameColumn, CurseforgeIdColumn, CurseforgeFileIdColumn, ModrinthIdColumn, ModrinthFileIdColumn, DescriptionColumn };
     explicit LocalModPathModel(LocalModPath *parent = nullptr);
-
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 

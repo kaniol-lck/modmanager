@@ -105,7 +105,7 @@ int LocalModPathModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    return path_->modMap().count();
+    return path_->modList().count();
 }
 
 int LocalModPathModel::columnCount(const QModelIndex &parent) const
@@ -138,7 +138,7 @@ QVariant LocalModPathModel::data(const QModelIndex &index, int role) const
 //    qDebug() << index << role;
     if (!index.isValid() || index.row() >= rowCount())
         return QVariant();
-    auto mod = *(path_->modMap().begin() + index.row());
+    auto mod = path_->modList().at(index.row());
 
     switch (role) {
     case Qt::CheckStateRole:
@@ -236,7 +236,7 @@ bool LocalModPathModel::setData(const QModelIndex &index, const QVariant &value,
 {
     if (!index.isValid() || index.row() >= rowCount())
         return false;
-    auto mod = *(path_->modMap().begin() + index.row());
+    auto mod = path_->modList().at(index.row());
     switch (role) {
     case Qt::CheckStateRole:
         switch (index.column()) {
@@ -274,16 +274,16 @@ bool LocalModPathFilterProxyModel::filterAcceptsRow(int source_row, const QModel
 bool LocalModPathFilterProxyModel::lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const
 {
     auto column = source_left.column();
-    auto mod_left = sourceModel()->data(source_left.siblingAtColumn(LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod *>();
-    auto mod_right = sourceModel()->data(source_right.siblingAtColumn(LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod *>();
+    auto mod_left = source_left.siblingAtColumn(LocalModPathModel::ModColumn).data(Qt::UserRole + 1).value<LocalMod *>();
+    auto mod_right = source_right.siblingAtColumn(LocalModPathModel::ModColumn).data(Qt::UserRole + 1).value<LocalMod *>();
     Config config;
     if(config.getStarredAtTop()){
-        if(mod_left->isFeatured() && !mod_right->isFeatured()) return false;
-        if(!mod_left->isFeatured() && mod_right->isFeatured()) return true;
+        if(mod_left->isFeatured() && !mod_right->isFeatured()) return true;
+        if(!mod_left->isFeatured() && mod_right->isFeatured()) return false;
     }
     if(config.getDisabedAtBottom()){
-        if(mod_left->isDisabled() && !mod_right->isDisabled()) return true;
-        if(!mod_left->isDisabled() && mod_right->isDisabled()) return false;
+        if(mod_left->isDisabled() && !mod_right->isDisabled()) return false;
+        if(!mod_left->isDisabled() && mod_right->isDisabled()) return true;
     }
     if(column == LocalModPathModel::FileDateColumn)
         return sourceModel()->data(source_left, Qt::UserRole + 1).toDateTime() < sourceModel()->data(source_right, Qt::UserRole + 1).toDateTime();

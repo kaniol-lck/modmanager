@@ -675,6 +675,15 @@ const QMap<QString, LocalMod *> &LocalModPath::modMap() const
     return modMap_;
 }
 
+QList<LocalMod *> LocalModPath::modList() const
+{
+    auto list = modMap_.values();
+    if(optiFineMod_) list << optiFineMod_;
+    for(auto &&path : subPaths_)
+        list << path->modList();
+    return list;
+}
+
 QList<QMap<QString, LocalMod *>> LocalModPath::modMaps() const
 {
     QList<QMap<QString, LocalMod *>> list;

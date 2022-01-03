@@ -195,7 +195,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
             addMoveToAction(subPath);
         }
         moveToMenu->addSeparator();
-        moveToMenu->addAction(tr("New Sub-Directory"), this, [=]{
+        moveToMenu->addAction(tr("New Sub-Directory..."), this, [=]{
             auto pathName = QInputDialog::getText(this, tr("New Sub-Directory"), tr("Sub-Directory Name:"));
             if(pathName.isEmpty()) return;
             auto subPath = modPath_->addSubPath(pathName);
@@ -232,6 +232,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::loadFinished);
     connect(modPath_, &LocalModPath::modListUpdated, filter_, &LocalModFilter::refreshTags);
     connect(modPath_, &LocalModPath::modListUpdated, proxyModel_, &QSortFilterProxyModel::invalidate);
+    connect(modPath_, &LocalModPath::modListUpdated, this, [=]{
+        proxyModel_->sort(LocalModPathModel::NameColumn);
+    });
     connect(modPath_->modsLinker(), &CheckSheet::started, this, &LocalModBrowser::onLinkStarted);
     connect(modPath_->modsLinker(), &CheckSheet::progress, this, &LocalModBrowser::onLinkProgress);
     connect(modPath_->modsLinker(), &CheckSheet::finished, this, &LocalModBrowser::onLinkFinished);
