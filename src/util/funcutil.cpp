@@ -95,10 +95,9 @@ bool hasFile(const QString &path, const QString &fileName)
 
 bool hasFile(LocalModPath *path, CurseforgeMod *mod)
 {
-    for(auto &&map : path->modMaps())
-        for(const auto &localMod : map)
-            if(localMod->curseforgeMod() && localMod->curseforgeMod()->modInfo().id() == mod->modInfo().id())
-                return true;
+    for(auto &&localMod : path->modList())
+        if(localMod->curseforgeMod() && localMod->curseforgeMod()->modInfo().id() == mod->modInfo().id())
+            return true;
     return false;
 }
 
@@ -106,20 +105,18 @@ bool hasFile(LocalModPath *path, const CurseforgeFileInfo &fileInfo)
 {
     //TODO: old file
     if(hasFile(path->info().path(), fileInfo.fileName())) return true;
-    for(auto &&map : path->modMaps())
-        for(const auto &localMod : map)
-            if(const auto &fileInfo2 =  localMod->modFile()->linker()->curseforgeFileInfo();
-                    fileInfo2 && fileInfo2->id() == fileInfo.id())
-                return true;
+    for(auto &&localMod : path->modList())
+        if(const auto &fileInfo2 =  localMod->modFile()->linker()->curseforgeFileInfo();
+                fileInfo2 && fileInfo2->id() == fileInfo.id())
+            return true;
     return false;
 }
 
 bool hasFile(LocalModPath *path, ModrinthMod *mod)
 {
-    for(auto &&map : path->modMaps())
-        for(const auto &localMod : map)
-            if(localMod->modrinthMod() && localMod->modrinthMod()->modInfo().id() == mod->modInfo().id())
-                return true;
+    for(auto &&localMod : path->modList())
+        if(localMod->modrinthMod() && localMod->modrinthMod()->modInfo().id() == mod->modInfo().id())
+            return true;
     return false;
 }
 
@@ -127,11 +124,10 @@ bool hasFile(LocalModPath *path, const ModrinthFileInfo &fileInfo)
 {
     //TODO: old file
     if(hasFile(path->info().path(), fileInfo.fileName())) return true;
-    for(auto &&map : path->modMaps())
-        for(const auto &localMod : map)
-            if(const auto &fileInfo2 = localMod->modFile()->linker()->modrinthFileInfo();
-                    fileInfo2 &&fileInfo2->id() == fileInfo.id())
-                return true;
+    for(auto &&localMod : path->modList())
+        if(const auto &fileInfo2 = localMod->modFile()->linker()->modrinthFileInfo();
+                fileInfo2 &&fileInfo2->id() == fileInfo.id())
+            return true;
     return false;
 }
 

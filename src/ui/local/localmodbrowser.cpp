@@ -183,7 +183,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
             if(mod->path() == path) return;
         moveToMenu->addAction(path->relative().isEmpty()? tr("Main Folder") : path->relative().join("/"), this, [=]{
             for(const auto &mod : qAsConst(selectedMods_)){
-                mod->moveTo(modPath_);
+                mod->moveTo(path);
             }
         });
     };
@@ -373,7 +373,7 @@ void LocalModBrowser::onCheckUpdatesStarted()
     ui->actionCheck_Updates->setText(tr("Cancel Checking"));
     ui->updateWidget->setVisible(false);
     onUpdateCheckedCountUpdated(0, 0);
-    progressBar_->setMaximum(modPath_->modCount());
+    progressBar_->setMaximum(modPath_->modList().count());
 }
 
 void LocalModBrowser::onCheckCancelled()
@@ -446,12 +446,13 @@ void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
 
 void LocalModBrowser::updateStatusText()
 {
-    auto str = tr("%1 mods in total. ").arg(modPath_->modCount());
+    auto count = modPath_->modList().count();
+    auto str = tr("%1 mods in total. ").arg(count);
     if(hiddenCount_){
-        if(hiddenCount_ < modPath_->modCount() / 2)
+        if(hiddenCount_ < count / 2)
             str.append(tr("(%1 mods are hidden)").arg(hiddenCount_));
         else
-            str.append(tr("(%1 mods are shown)").arg(modPath_->modCount() - hiddenCount_));
+            str.append(tr("(%1 mods are shown)").arg(count - hiddenCount_));
     }
     ui->statusBar->showMessage(str);
 }
@@ -600,7 +601,7 @@ LocalModPath *LocalModBrowser::modPath() const
 
 void LocalModBrowser::onItemDoubleClicked(const QModelIndex &index)
 {
-    auto mod = model_->data(index.siblingAtColumn(LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
+    auto mod = proxyModel_->data(index.siblingAtColumn(LocalModPathModel::ModColumn), Qt::UserRole + 1).value<LocalMod*>();
     if(!mod) return;
     auto dialog = new LocalModDialog(this, mod);
     dialog->show();
@@ -695,7 +696,7 @@ QList<LocalMod *> LocalModBrowser::selectedMods(QAbstractItemView *view)
     if(!view) return {};
     QList<LocalMod *> list;
     for(auto &&index : view->selectionModel()->selectedRows())
-        list << model_->data(index, Qt::UserRole + 1).value<LocalMod*>();
+        list << proxyModel_->data(index, Qt::UserRole + 1).value<LocalMod*>();
     return list;
 }
 

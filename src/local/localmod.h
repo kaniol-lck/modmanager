@@ -25,8 +25,10 @@ class LocalMod : public QObject, public Tagable
     Q_OBJECT
 public:
 //    explicit LocalMod(QObject *parent, LocalModFile *file);
-    explicit LocalMod(LocalModPath *parent, LocalModFile *file);
-    ~LocalMod();
+    explicit LocalMod(LocalModPath *parent, LocalModFile *file = nullptr);
+
+    void addModFile(LocalModFile *file);
+    void removeModFile(LocalModFile *file);
 
     //info
     const CommonModInfo *commonInfo() const;

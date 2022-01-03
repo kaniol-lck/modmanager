@@ -24,9 +24,6 @@ public:
     QString modsJsonFilePath() const;
 
     void loadMods(bool autoLoaderType = false);
-    void addNormalMod(LocalModFile *file);
-    void addOldMod(LocalModFile *file);
-
     void addModFile(LocalModFile *file);
     void removeModFile(LocalModFile *file);
 
@@ -61,11 +58,9 @@ public:
 
     CurseforgeAPI *curseforgeAPI() const;
     ModrinthAPI *modrinthAPI() const;
-    int modCount() const;
     int updatableCount() const;
     const QMap<QString, LocalMod *> &modMap() const;
     QList<LocalMod *> modList() const;
-    QList<QMap<QString, LocalMod *>> modMaps() const;
     void deleteAllOld() const;
 
     LocalMod *optiFineMod() const;

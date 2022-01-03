@@ -41,7 +41,7 @@ ExportManifestJsonDialog::ExportManifestJsonDialog(QWidget *parent, LocalModPath
         model_.setHorizontalHeaderItem(FileIdColumn, new QStandardItem(tr("Curseforge File ID")));
         model_.setHorizontalHeaderItem(RequiredColumn, new QStandardItem(tr("Required")));
 
-        for(auto &&map : modPath_->modMaps()) for(const auto &mod : map){
+        for(const auto &mod : modPath_->modList()){
             auto nameItem = new QStandardItem;
             nameItem->setData(QVariant::fromValue(mod));
             auto idItem = new QStandardItem;
@@ -95,7 +95,7 @@ ExportManifestJsonDialog::ExportManifestJsonDialog(QWidget *parent, LocalModPath
         else
             model_.setHorizontalHeaderItem(WebsiteColumn, new QStandardItem(tr("Modrinth Website")));
 
-        for(auto &&map : modPath_->modMaps()) for(const auto &mod : map){
+        for(const auto &mod : modPath_->modList()){
             auto nameItem = new QStandardItem;
             nameItem->setData(QVariant::fromValue(mod));
             auto authorsItem = new QStandardItem;

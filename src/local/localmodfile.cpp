@@ -99,6 +99,7 @@ bool LocalModFile::moveTo(LocalModPath *path)
     QFile file(path_);
     auto newPath = QDir(path->info().path()).absoluteFilePath(fileInfo_.fileName());
     auto bl = file.rename(newPath);
+    qDebug() << bl << newPath;
     if(bl){
         modPath_->removeModFile(this);
         path->addModFile(this);

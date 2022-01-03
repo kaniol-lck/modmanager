@@ -85,6 +85,7 @@ void LocalModItemWidget::leaveEvent(QEvent *event)
 
 void LocalModItemWidget::paintEvent(QPaintEvent *event[[maybe_unused]])
 {
+    if(!mod_->modFile()) return;
     if(mod_->isDisabled()){
         QPainter p(this);
         p.setPen(Qt::NoPen);

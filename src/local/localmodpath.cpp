@@ -180,13 +180,9 @@ void LocalModPath::loadMods(bool autoLoaderType)
             file->linker()->linkCached();
 
         //load normal first
-        //load normal mods (include duplicate)
+        //load normal mods
         for(const auto &file : qAsConst(modFileList))
-            addNormalMod(file);
-
-        //load old mods
-        for(const auto &file : qAsConst(modFileList))
-            addOldMod(file);
+            addModFile(file);
 
         //delete unused files
         for(const auto &file : qAsConst(modFileList)){
@@ -203,16 +199,19 @@ void LocalModPath::loadMods(bool autoLoaderType)
     });
 }
 
-void LocalModPath::addNormalMod(LocalModFile *file)
+void LocalModPath::addModFile(LocalModFile *file)
 {
-    if(auto type = file->type(); type != LocalModFile::Normal && type != LocalModFile::Disabled ) return;
+    //not mod
+    if(auto type = file->type(); type == LocalModFile::Downloading || type == LocalModFile::NotMod) return;
+    //no fabric / forge info
     if(file->loaderType() == ModLoaderType::Any) return;
     //load optifine seperately under fabric
     if(info_.loaderType() == ModLoaderType::Fabric && file->commonInfo()->id() == "optifine"){
         if(optiFineMod_)
             optiFineMod_->addDuplicateFile(file);
         else{
-            optiFineMod_ = new LocalMod(this, file);
+            optiFineMod_ = new LocalMod(this);
+            optiFineMod_->addModFile(file);
             containedTags_.addSubTagable(optiFineMod_);
             //connect update signal
             connect(optiFineMod_, &LocalMod::updateFinished, this, [=](bool){
@@ -225,13 +224,14 @@ void LocalModPath::addNormalMod(LocalModFile *file)
     }
     if(file->loaderType() != info_.loaderType() && info_.loaderType() != ModLoaderType::Any) return;
     auto id = file->commonInfo()->id();
-    //duplicate
+    //mod in path
     if(modMap_.contains(id)){
-        modMap_[id]->addDuplicateFile(file);
+        modMap_[id]->addModFile(file);
         return;
     }else {
         //new mod
-        auto mod = new LocalMod(this, file);
+        auto mod = new LocalMod(this);
+        mod->addModFile(file);
         //connect update signal
         connect(mod, &LocalMod::updateFinished, this, [=](bool){
             emit updatesReady();
@@ -243,36 +243,20 @@ void LocalModPath::addNormalMod(LocalModFile *file)
     }
 }
 
-void LocalModPath::addOldMod(LocalModFile *file)
-{
-    if(file->type() != LocalModFile::Old) return;
-    if(file->loaderType() == ModLoaderType::Any) return;
-    //load optifine seperately under fabric
-    if(info_.loaderType() == ModLoaderType::Fabric && file->commonInfo()->id() == "optifine"){
-        if(optiFineMod_)
-            optiFineMod_->addOldFile(file);
-        //TODO: deal with homeless old mods
-        return;
-    }
-    if(file->loaderType() != info_.loaderType() && info_.loaderType() != ModLoaderType::Any) return;
-    auto id = file->commonInfo()->id();
-    //old
-    if(modMap_.contains(id)){
-        modMap_[id]->addOldFile(file);
-        return;
-    }
-    //TODO: deal with homeless old mods
-}
-
-void LocalModPath::addModFile(LocalModFile *file)
-{
-    addNormalMod(file);
-    addOldMod(file);
-}
-
 void LocalModPath::removeModFile(LocalModFile *file)
 {
-    //TODO
+    for(const auto &mod : qAsConst(modMap_))
+        if(mod->files().contains(file)){
+            mod->removeModFile(file);
+            if(!mod->modFile())
+                modMap_.remove(file->commonInfo()->id());
+            return;
+        }
+    if(optiFineMod_ && optiFineMod_->files().contains(file)){
+        optiFineMod_->removeModFile(file);
+        if(!optiFineMod_->modFile())
+            optiFineMod_ = nullptr;
+    }
 }
 
 LocalModPath *LocalModPath::addSubPath(const QString &relative)
@@ -344,7 +328,8 @@ void LocalModPath::writeToFile()
     //mods
     QJsonObject modsObject;
     for(auto mod : qAsConst(modMap_))
-        modsObject.insert(mod->commonInfo()->id(), mod->toJsonObject());
+        if(mod->modFile())
+            modsObject.insert(mod->commonInfo()->id(), mod->toJsonObject());
     object.insert("mods", modsObject);
 
     if(optiFineMod_)
@@ -536,7 +521,7 @@ void LocalModPath::linkAllFiles()
 {
     if(modMap_.isEmpty() || modsLinker_.isWaiting()) return;
     modsLinker_.start();
-    for(auto &&map : modMaps()) for(const auto &mod : map) for(const auto &file : mod->files()){
+    for(auto &&mod : modList()) for(const auto &file : mod->files()){
         auto linker = file->linker();
         modsLinker_.add(linker, &LocalFileLinker::linkStarted, &LocalFileLinker::linkFinished);
         linker->link();
@@ -548,7 +533,7 @@ void LocalModPath::checkModUpdates() // force = true by default
 {
     if(modMap_.isEmpty() || updateChecker_.isWaiting()) return;
     updateChecker_.start();
-    for(auto &&map : modMaps()) for(const auto &mod : map){
+    for(auto &&mod : modList()){
         updateChecker_.add(mod->updateChecker(), &CheckSheet::started, &CheckSheet::finished);
         mod->checkUpdates();
     }
@@ -657,14 +642,6 @@ ModrinthAPI *LocalModPath::modrinthAPI() const
     return modrinthAPI_;
 }
 
-int LocalModPath::modCount() const
-{
-    int count = modMap_.size() + (optiFineMod_? 1 : 0);
-    for(auto path : subPaths_)
-        count += path->modCount();
-    return count;
-}
-
 int LocalModPath::updatableCount() const
 {
     return updatableCount_;
@@ -677,19 +654,15 @@ const QMap<QString, LocalMod *> &LocalModPath::modMap() const
 
 QList<LocalMod *> LocalModPath::modList() const
 {
-    auto list = modMap_.values();
-    if(optiFineMod_) list << optiFineMod_;
+    QList<LocalMod *> list;
+    for(auto mod : modMap_){
+        if(mod->modFile())
+            list << mod;
+    }
+    if(optiFineMod_ && optiFineMod_->modFile())
+        list << optiFineMod_;
     for(auto &&path : subPaths_)
         list << path->modList();
-    return list;
-}
-
-QList<QMap<QString, LocalMod *>> LocalModPath::modMaps() const
-{
-    QList<QMap<QString, LocalMod *>> list;
-    list << modMap_;
-    for(auto &&path : subPaths_)
-        list << path->modMaps();
     return list;
 }
 

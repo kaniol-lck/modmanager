@@ -119,7 +119,6 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
-    qDebug() << show << showWebsite << showTags;
     return show && showWebsite && showTags;
 }
 

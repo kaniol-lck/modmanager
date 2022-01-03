@@ -107,7 +107,7 @@ void LocalFileListWidget::onUpdatesReady()
     if(auto count = path_->updatableCount()){
         ui->updateText->setText(tr("%1 mods need update.").arg(count));
         updateModel_->clear();
-        for(auto &&map : path_->modMaps()) for(const auto &mod : map){
+        for(auto &&mod : path_->modList()){
             if(mod->updateTypes().isEmpty()) continue;
             auto item = new QStandardItem;
             item->setData(QVariant::fromValue(mod));

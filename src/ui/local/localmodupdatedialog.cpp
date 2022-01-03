@@ -41,112 +41,111 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
     ui->updateTreeView->header()->setSectionResizeMode(SourceColumn, QHeaderView::Fixed);
     ui->updateTreeView->setColumnWidth(SourceColumn, 140);
 
-    for(auto &&map : modPath_->modMaps())
-        for(const auto &mod : map){
-            auto enabled = !mod->isDisabled();
+    for(auto &&mod : modPath_->modList()){
+        auto enabled = !mod->isDisabled();
 
-            auto type = mod->defaultUpdateType();
-            auto types = mod->updateTypes();
-            if(type == ModWebsiteType::None) continue;
+        auto type = mod->defaultUpdateType();
+        auto types = mod->updateTypes();
+        if(type == ModWebsiteType::None) continue;
 
-            auto nameItem = new QStandardItem();
-            nameItem->setData(QVariant::fromValue(mod));
-            auto beforeItem = new QStandardItem();
-            auto afterItem = new QStandardItem();
-            auto sourceItem = new QStandardItem();
-            model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
+        auto nameItem = new QStandardItem();
+        nameItem->setData(QVariant::fromValue(mod));
+        auto beforeItem = new QStandardItem();
+        auto afterItem = new QStandardItem();
+        auto sourceItem = new QStandardItem();
+        model_.appendRow({nameItem, beforeItem, afterItem, sourceItem});
 
-            nameItem->setText(mod->commonInfo()->name());
-            nameItem->setCheckable(true);
-            nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
-            nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        nameItem->setText(mod->commonInfo()->name());
+        nameItem->setCheckable(true);
+        nameItem->setCheckState(enabled? Qt::Checked : Qt::Unchecked);
+        nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
-            if(type == ModWebsiteType::Curseforge)
-                beforeItem->setText(mod->modFile()->linker()->curseforgeFileInfo()->displayName());
-            else if(type == ModWebsiteType::Modrinth)
-                beforeItem->setText(mod->modFile()->linker()->modrinthFileInfo()->displayName());
-            beforeItem->setForeground(Qt::darkRed);
-            beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            if(type == ModWebsiteType::Curseforge)
-                beforeItem->setToolTip(getToolTip(*mod->modFile()->linker()->curseforgeFileInfo()));
-            else if(type == ModWebsiteType::Modrinth)
-                beforeItem->setToolTip(getToolTip(*mod->modFile()->linker()->modrinthFileInfo()));
+        if(type == ModWebsiteType::Curseforge)
+            beforeItem->setText(mod->modFile()->linker()->curseforgeFileInfo()->displayName());
+        else if(type == ModWebsiteType::Modrinth)
+            beforeItem->setText(mod->modFile()->linker()->modrinthFileInfo()->displayName());
+        beforeItem->setForeground(Qt::darkRed);
+        beforeItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        if(type == ModWebsiteType::Curseforge)
+            beforeItem->setToolTip(getToolTip(*mod->modFile()->linker()->curseforgeFileInfo()));
+        else if(type == ModWebsiteType::Modrinth)
+            beforeItem->setToolTip(getToolTip(*mod->modFile()->linker()->modrinthFileInfo()));
 
-            afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            afterItem->setForeground(Qt::darkGreen);
-            auto setAfterItem = [=](const auto &fileInfo){
-                afterItem->setText(fileInfo.displayName());
-                afterItem->setToolTip(getToolTip(fileInfo));
-            };
-            auto unsetAfterItem = [=]{
-                afterItem->setText("");
-                afterItem->setToolTip("");
-            };
+        afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        afterItem->setForeground(Qt::darkGreen);
+        auto setAfterItem = [=](const auto &fileInfo){
+            afterItem->setText(fileInfo.displayName());
+            afterItem->setToolTip(getToolTip(fileInfo));
+        };
+        auto unsetAfterItem = [=]{
+            afterItem->setText("");
+            afterItem->setToolTip("");
+        };
 
-            auto setType = [=](auto type){
-                afterItem->setData(0);
-                switch (type) {
-                case ModWebsiteType::None:
-                    break;
-                case ModWebsiteType::Curseforge:
-                    if(mod->curseforgeUpdater().updateFileInfos().size() == 1){
-                        setAfterItem(mod->curseforgeUpdater().updateFileInfos().first());
-                        ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), nullptr);
-                    }else if(mod->curseforgeUpdater().updateFileInfos().size() > 1){
-                        unsetAfterItem();
-                        auto comboBox = new QComboBox(this);
-                        comboBox->setStyleSheet("color: darkgreen");
-                        ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), comboBox);
-                        for(const auto &fileInfo : mod->curseforgeUpdater().updateFileInfos())
-                            comboBox->addItem(fileInfo.displayName());
-                        afterItem->setToolTip(getToolTip(mod->curseforgeUpdater().updateFileInfos().first()));
-                        connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
-                            auto &fileInfo = mod->curseforgeUpdater().updateFileInfos().at(index);
-                            afterItem->setData(index);
-                            afterItem->setToolTip(getToolTip(fileInfo));
-                        });
-                    }
-                    break;
-                case ModWebsiteType::Modrinth:
-                    if(mod->modrinthUpdater().updateFileInfos().size() == 1){
-                        setAfterItem(mod->modrinthUpdater().updateFileInfos().first());
-                        ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), nullptr);
-                    }else if(mod->modrinthUpdater().updateFileInfos().size() > 1){
-                        unsetAfterItem();
-                        auto comboBox = new QComboBox(this);
-                        comboBox->setStyleSheet("color: darkgreen");
-                        ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), comboBox);
-                        for(const auto &fileInfo : mod->modrinthUpdater().updateFileInfos())
-                            comboBox->addItem(fileInfo.displayName());
-                        afterItem->setToolTip(getToolTip(mod->curseforgeUpdater().updateFileInfos().first()));
-                        connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
-                            auto &fileInfo = mod->modrinthUpdater().updateFileInfos().at(index);
-                            afterItem->setData(index);
-                            afterItem->setToolTip(getToolTip(fileInfo));
-                        });
-                    }
-                    break;
+        auto setType = [=](auto type){
+            afterItem->setData(0);
+            switch (type) {
+            case ModWebsiteType::None:
+                break;
+            case ModWebsiteType::Curseforge:
+                if(mod->curseforgeUpdater().updateFileInfos().size() == 1){
+                    setAfterItem(mod->curseforgeUpdater().updateFileInfos().first());
+                    ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), nullptr);
+                }else if(mod->curseforgeUpdater().updateFileInfos().size() > 1){
+                    unsetAfterItem();
+                    auto comboBox = new QComboBox(this);
+                    comboBox->setStyleSheet("color: darkgreen");
+                    ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), comboBox);
+                    for(const auto &fileInfo : mod->curseforgeUpdater().updateFileInfos())
+                        comboBox->addItem(fileInfo.displayName());
+                    afterItem->setToolTip(getToolTip(mod->curseforgeUpdater().updateFileInfos().first()));
+                    connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
+                        auto &fileInfo = mod->curseforgeUpdater().updateFileInfos().at(index);
+                        afterItem->setData(index);
+                        afterItem->setToolTip(getToolTip(fileInfo));
+                    });
                 }
-            };
-
-            sourceItem->setData(0);
-            setType(type);
-            if(types.size() == 1){
-                sourceItem->setText(ModWebsite::toString(type));
-                sourceItem->setIcon(ModWebsite::icon(type));
-                sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-            }else if(types.size() > 1){
-                auto comboBox = new QComboBox(this);
-                ui->updateTreeView->setIndexWidget(model_.indexFromItem(sourceItem), comboBox);
-                for(auto &&type : types)
-                    comboBox->addItem(ModWebsite::icon(type), ModWebsite::toString(type));
-                connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
-                    auto type = types.at(index);
-                    sourceItem->setData(index);
-                    setType(type);
-                });
+                break;
+            case ModWebsiteType::Modrinth:
+                if(mod->modrinthUpdater().updateFileInfos().size() == 1){
+                    setAfterItem(mod->modrinthUpdater().updateFileInfos().first());
+                    ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), nullptr);
+                }else if(mod->modrinthUpdater().updateFileInfos().size() > 1){
+                    unsetAfterItem();
+                    auto comboBox = new QComboBox(this);
+                    comboBox->setStyleSheet("color: darkgreen");
+                    ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), comboBox);
+                    for(const auto &fileInfo : mod->modrinthUpdater().updateFileInfos())
+                        comboBox->addItem(fileInfo.displayName());
+                    afterItem->setToolTip(getToolTip(mod->curseforgeUpdater().updateFileInfos().first()));
+                    connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
+                        auto &fileInfo = mod->modrinthUpdater().updateFileInfos().at(index);
+                        afterItem->setData(index);
+                        afterItem->setToolTip(getToolTip(fileInfo));
+                    });
+                }
+                break;
             }
+        };
+
+        sourceItem->setData(0);
+        setType(type);
+        if(types.size() == 1){
+            sourceItem->setText(ModWebsite::toString(type));
+            sourceItem->setIcon(ModWebsite::icon(type));
+            sourceItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        }else if(types.size() > 1){
+            auto comboBox = new QComboBox(this);
+            ui->updateTreeView->setIndexWidget(model_.indexFromItem(sourceItem), comboBox);
+            for(auto &&type : types)
+                comboBox->addItem(ModWebsite::icon(type), ModWebsite::toString(type));
+            connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
+                auto type = types.at(index);
+                sourceItem->setData(index);
+                setType(type);
+            });
         }
+    }
 }
 
 LocalModUpdateDialog::~LocalModUpdateDialog()

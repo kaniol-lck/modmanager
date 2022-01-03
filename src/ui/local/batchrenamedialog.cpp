@@ -66,8 +66,7 @@ BatchRenameDialog::BatchRenameDialog(QWidget *parent, LocalModPath *modPath) :
 {
     auto updateModList = [=]{
         QList<LocalMod *> mods;
-        for(auto &&map : modPath->modMaps())
-            for(const auto &mod : map)
+        for(const auto &mod : modPath->modList())
                 mods << mod;
         setMods(mods);
     };

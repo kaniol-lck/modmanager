@@ -45,7 +45,7 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     connect(this, &LocalMod::modCacheUpdated, path_, &LocalModPath::writeToFile);
     connect(updateChecker_, &CheckSheet::finished, this, &LocalMod::updateReady);
     addSubTagable(path_);
-    setModFile(file);
+    if(file) setModFile(file);
     connect(parent, &LocalModPath::infoUpdated, this, [=]{
         curseforgeUpdater_.setTargetVersion(parent->info().gameVersion());
         curseforgeUpdater_.setTargetType(parent->info().loaderType());
@@ -54,9 +54,36 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
     });
 }
 
-LocalMod::~LocalMod()
+void LocalMod::addModFile(LocalModFile *file)
 {
-    MMLogger::dtor(this) << commonInfo()->id();
+    switch (file->type()) {
+    case LocalModFile::Normal:
+    case LocalModFile::Disabled:
+        if(modFile_)
+            addDuplicateFile(file);
+        else
+            setModFile(file);
+        break;
+    case LocalModFile::Old:
+        addOldFile(file);
+        break;
+    case LocalModFile::Downloading:
+        break;
+    case LocalModFile::NotMod:
+        break;
+    }
+}
+
+void LocalMod::removeModFile(LocalModFile *file)
+{
+    file->setMod(nullptr);
+    if(modFile_ == file)
+        setModFile(nullptr);
+    else if(duplicateFiles_.contains(file))
+        duplicateFiles_.removeAll(file);
+    else if(oldFiles_.contains(file))
+        oldFiles_.removeAll(file);
+    if(modFile_) emit modInfoChanged();
 }
 
 CurseforgeMod *LocalMod::curseforgeMod() const
@@ -91,7 +118,7 @@ void LocalMod::setCurseforgeId(int id, bool cache)
         if(curseforgeMod_){
             curseforgeMod_->acquireBasicInfo();
         }
-        if(cache)
+        if(cache && modFile_)
             IdMapper::addCurseforge(commonInfo()->id(), id);
         updateIcon();
     } else
@@ -353,7 +380,7 @@ void LocalMod::deleteOld(LocalModFile *file)
 
 bool LocalMod::isDisabled()
 {
-    return modFile_->type() == LocalModFile::Disabled;
+    return modFile()->type() == LocalModFile::Disabled;
 }
 
 bool LocalMod::isEnabled()
@@ -402,7 +429,7 @@ LocalModFile *LocalMod::modFile() const
 
 const CommonModInfo *LocalMod::commonInfo() const
 {
-    return modFile_->commonInfo();
+    return modFile()->commonInfo();
 }
 
 QString LocalMod::displayName() const
@@ -606,18 +633,24 @@ LocalModPath *LocalMod::path() const
 
 void LocalMod::moveTo(LocalModPath *path)
 {
-    for(auto &&file : files())
+    for(auto &&file : files()){
         file->moveTo(path);
+        removeModFile(file);
+    }
+    emit path_->modListUpdated();
+    emit path->modListUpdated();
 }
 
 void LocalMod::setModFile(LocalModFile *newModFile)
 {
-    if(modFile_) disconnect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modInfoChanged);
-    removeSubTagable(modFile_);
+    if(modFile_){
+        disconnect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modInfoChanged);
+        removeSubTagable(modFile_);
+    }
     modFile_ = newModFile;
-    modFile_->setMod(this);
-    addSubTagable(modFile_);
     if(modFile_) {
+        modFile_->setMod(this);
+        addSubTagable(modFile_);
         connect(modFile_, &LocalModFile::fileChanged, this, &LocalMod::modInfoChanged);
         modFile_->setParent(this);
     }
@@ -641,6 +674,10 @@ const QPixmap &LocalMod::icon() const
 
 void LocalMod::updateIcon()
 {
+    if(!modFile_){
+        emit modIconUpdated();
+        return;
+    }
     auto applyIcon = [=]{
         if(isDisabled()){
             QImage image(icon_.toImage());
@@ -724,7 +761,7 @@ void LocalMod::setModrinthId(const QString &id, bool cache)
         if(modrinthMod_){
             modrinthMod_->acquireFullInfo();
         }
-        if(cache)
+        if(cache && modFile_)
             IdMapper::addModrinth(commonInfo()->id(), id);
     } else
         emit modrinthReady(false);
