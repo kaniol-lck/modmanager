@@ -50,6 +50,7 @@ QString numberConvert(int size, const QString &suffix, int prec, int limit){
 void openFileInFolder(const QString &filePath)
 {
     QProcess process;
+    QFileInfo info(filePath);
 #ifdef Q_OS_UNIX
     QString fileManager;
     process.start("xdg-mime", { "query", "default", "inode/directory" });
@@ -73,14 +74,15 @@ void openFileInFolder(const QString &filePath)
     }
 #endif
 #ifdef Q_OS_WIN
-    process.startDetached("explorer.exe", { "/select,",  filePath });
-    return;
+    if(info.isFile()){
+        process.startDetached("explorer.exe", { "/select,"+QDir::toNativeSeparators(filePath) });
+        return;
+    }
 #endif
 #ifdef Q_OS_MACOS
     process.startDetached("open", { "-R",  filePath });
     return;
 #endif
-    QFileInfo info(filePath);
     QDesktopServices::openUrl(QUrl::fromLocalFile(info.isFile()? info.absolutePath() : filePath));
 }
 
