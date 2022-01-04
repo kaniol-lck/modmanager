@@ -226,20 +226,20 @@ QString clearFormat(QString str)
 QString timesTo(const QDateTime &dateTime)
 {
     auto currrentTime = QDateTime::currentDateTime();
+    auto years = currrentTime.date().year() - dateTime.date().year();
+    auto months = years * 12 + currrentTime.date().month() - dateTime.date().month();
     if(auto seconds = dateTime.secsTo(currrentTime); seconds < 60)
         return QObject::tr("%1 seconds").arg(seconds);
     else if(auto minutes = seconds / 60; minutes < 60)
         return QObject::tr("%1 minutes").arg(minutes);
     else if(auto hours = minutes / 60; hours < 24)
         return QObject::tr("%1 hours").arg(hours);
-
-    if(auto days = dateTime.daysTo(currrentTime); days < 30)
+    else if(auto days = hours / 24; days < 30)
         return QObject::tr("%1 days").arg(days);
-    if(auto years = currrentTime.date().year() - dateTime.date().year())
-        return QObject::tr("%1 years").arg(years);
-    if(auto months = currrentTime.date().month() - dateTime.date().month())
+    else if(months < 12)
         return QObject::tr("%1 months").arg(months);
-    return "";
+    else
+        return QObject::tr("%1 years").arg(years);
 }
 
 std::function<void ()> disconnecter(QMetaObject::Connection conn){
