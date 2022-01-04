@@ -104,7 +104,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
             ui->modTreeView->sortByColumn(section, Qt::AscendingOrder);
         });
         auto descendingAction = sortMenu->addAction(QIcon::fromTheme("view-sort-descending"), tr("Descending"), this, [=]{
-            model_->sort(section, Qt::DescendingOrder);
+            ui->modTreeView->sortByColumn(section, Qt::DescendingOrder);
         });
         ascendingAction->setCheckable(true);
         descendingAction->setCheckable(true);
@@ -233,7 +233,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::modListUpdated, filter_, &LocalModFilter::refreshTags);
     connect(modPath_, &LocalModPath::modListUpdated, proxyModel_, &QSortFilterProxyModel::invalidate);
     connect(modPath_, &LocalModPath::modListUpdated, this, [=]{
-        proxyModel_->sort(LocalModPathModel::NameColumn);
+        ui->modTreeView->sortByColumn(LocalModPathModel::NameColumn, Qt::AscendingOrder);
     });
     connect(modPath_->modsLinker(), &CheckSheet::started, this, &LocalModBrowser::onLinkStarted);
     connect(modPath_->modsLinker(), &CheckSheet::progress, this, &LocalModBrowser::onLinkProgress);
