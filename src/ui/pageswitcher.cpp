@@ -157,10 +157,8 @@ void PageSwitcher::updateUi()
     for(auto category : { Download, Explore, Local }){
         auto categoryItem = model_.item(category);
         for(int page = 0; page < categoryItem->rowCount(); page ++){
-            if(auto browser = categoryItem->child(page)->data().value<Browser *>()){
-                qDebug() << browser->name();
+            if(auto browser = categoryItem->child(page)->data().value<Browser *>())
                 browser->updateUi();
-            }
         }
     }
 }

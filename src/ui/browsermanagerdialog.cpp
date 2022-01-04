@@ -13,12 +13,21 @@ BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
     ui(new Ui::BrowserManagerDialog)
 {
     ui->setupUi(this);
-
     pathList_ = LocalModPathManager::pathList();
 
     for(const auto &path : qAsConst(pathList_))
-        ui->browserList->addItem(path->info().displayName());
+        ui->browserList->addTopLevelItem(
+                    new QTreeWidgetItem(QStringList{path->info().displayName(),
+                                                    path->info().path(),
+                                                    path->info().gameVersion().toString(),
+                                                    ModLoaderType::toString(path->info().loaderType())}));
 
+    ui->browserList->setHeaderItem(new QTreeWidgetItem(QStringList{tr("Name"),
+                                                                   tr("Path"),
+                                                                   tr("Game Version"),
+                                                                   tr("Loader Type")}));
+    for(int i = 0; i < 4; i++)
+        ui->browserList->resizeColumnToContents(i);
     refreshButton();
 }
 
@@ -29,29 +38,29 @@ BrowserManagerDialog::~BrowserManagerDialog()
 
 void BrowserManagerDialog::on_upButton_clicked()
 {
-    auto row = ui->browserList->currentRow();
+    auto index = ui->browserList->currentIndex();
+    auto row = index.row();
     if(row < 0 || row == 0) return;
 
     pathList_.swapItemsAt(row, row - 1);
-    ui->browserList->insertItem(row - 1, ui->browserList->takeItem(row));
+    ui->browserList->insertTopLevelItem(row - 1, ui->browserList->takeTopLevelItem(row));
 
-    ui->browserList->setCurrentRow(row - 1);
+    ui->browserList->setCurrentIndex(index.siblingAtRow(row - 1));
     refreshButton();
 }
-
 
 void BrowserManagerDialog::on_downButton_clicked()
 {
-    auto row = ui->browserList->currentRow();
+    auto index = ui->browserList->currentIndex();
+    auto row = index.row();
     if(row < 0 || row == pathList_.size() - 1) return;
 
     pathList_.swapItemsAt(row, row + 1);
-    ui->browserList->insertItem(row, ui->browserList->takeItem(row + 1));
+    ui->browserList->insertTopLevelItem(row, ui->browserList->takeTopLevelItem(row + 1));
 
-    ui->browserList->setCurrentRow(row + 1);
+    ui->browserList->setCurrentIndex(index.siblingAtRow(row + 1));
     refreshButton();
 }
-
 
 void BrowserManagerDialog::on_addButton_clicked()
 {
@@ -60,39 +69,35 @@ void BrowserManagerDialog::on_addButton_clicked()
         auto path = new LocalModPath(pathInfo);
         path->loadMods(autoLoaderType);
         pathList_ << path;
-        ui->browserList->addItem(pathInfo.displayName());
+        ui->browserList->addTopLevelItem(
+                    new QTreeWidgetItem(QStringList{path->info().displayName(),
+                                                    path->info().path(),
+                                                    path->info().gameVersion().toString(),
+                                                    ModLoaderType::toString(path->info().loaderType())}));
         refreshButton();
     });
     dialog->exec();
 }
 
-
 void BrowserManagerDialog::on_deleteButton_clicked()
 {
-    auto row = ui->browserList->currentRow();
+    auto index = ui->browserList->currentIndex();
+    auto row = index.row();
     if(row < 0) return;
 
     pathList_.removeAt(row);
-    delete ui->browserList->takeItem(row);
+    delete ui->browserList->takeTopLevelItem(row);
     refreshButton();
 }
-
 
 void BrowserManagerDialog::on_BrowserManagerDialog_accepted()
 {
     LocalModPathManager::setPathList(pathList_);
 }
 
-void BrowserManagerDialog::on_browserList_currentRowChanged(int currentRow)
-{
-    ui->upButton->setEnabled(currentRow >= 0 && currentRow != 0);
-    ui->downButton->setEnabled(currentRow >= 0 && currentRow != pathList_.size() - 1);
-    ui->deleteButton->setEnabled(currentRow >= 0);
-}
-
 void BrowserManagerDialog::refreshButton()
 {
-    on_browserList_currentRowChanged(ui->browserList->currentRow());
+    on_browserList_currentItemChanged(ui->browserList->currentItem());
 }
 
 void BrowserManagerDialog::on_browserList_doubleClicked(const QModelIndex &index)
@@ -104,8 +109,18 @@ void BrowserManagerDialog::on_browserList_doubleClicked(const QModelIndex &index
     auto dialog = new LocalModPathSettingsDialog(this, path->info());
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo, bool autoLoaderType){
         pathList_[row]->setInfo(newInfo, autoLoaderType);
-        ui->browserList->item(row)->setText(newInfo.displayName());
+        ui->browserList->topLevelItem(row)->setText(0, newInfo.displayName());
+        ui->browserList->topLevelItem(row)->setText(1, newInfo.path());
+        ui->browserList->topLevelItem(row)->setText(2, newInfo.gameVersion().toString());
+        ui->browserList->topLevelItem(row)->setText(3, ModLoaderType::toString(newInfo.loaderType()));
     });
     dialog->exec();
 }
 
+void BrowserManagerDialog::on_browserList_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous[[maybe_unused]])
+{
+    auto currentRow = ui->browserList->indexOfTopLevelItem(current);
+    ui->upButton->setEnabled(currentRow >= 0 && currentRow != 0);
+    ui->downButton->setEnabled(currentRow >= 0 && currentRow != pathList_.size() - 1);
+    ui->deleteButton->setEnabled(currentRow >= 0);
+}

@@ -393,7 +393,7 @@ void LocalModBrowser::onUpdatesReady(int failedCount)
     onUpdatableCountChanged();
     updateStatusText();
     if(failedCount)
-        QMessageBox::information(this, tr("Update Checking Imcompleted"), tr("%1 mods failed checking update because of network.").arg(failedCount));
+        QMessageBox::information(this, tr("Update Checking Incompleted"), tr("%1 mods failed checking update because of network.").arg(failedCount));
 }
 
 void LocalModBrowser::onUpdatableCountChanged()

@@ -14,9 +14,6 @@
    <string>Local Mod Browser Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QListWidget" name="browserList"/>
-   </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -31,7 +28,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset theme="go-up"/>
+        <iconset theme="go-up">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -47,7 +45,8 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset theme="go-down"/>
+        <iconset theme="go-down">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -63,7 +62,8 @@
         <string>+</string>
        </property>
        <property name="icon">
-        <iconset theme="list-add"/>
+        <iconset theme="list-add">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -79,7 +79,8 @@
         <string>×</string>
        </property>
        <property name="icon">
-        <iconset theme="list-remove"/>
+        <iconset theme="list-remove">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -93,6 +94,31 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QTreeWidget" name="browserList">
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="columnCount">
+      <number>3</number>
+     </property>
+     <column>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string notr="true">2</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string notr="true">3</string>
+      </property>
+     </column>
     </widget>
    </item>
   </layout>

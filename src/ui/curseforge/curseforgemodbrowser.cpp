@@ -365,7 +365,7 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
         }
         isSearching_ = false;
         if(hasMore_ && shownCount != infoList.count() && shownCount < needMore){
-            currentIndex_ += 20;
+            currentIndex_ += Config().getSearchModsOnStartup();
             getModList(currentName_, currentIndex_, needMore - shownCount);
         }
         updateStatusText();
