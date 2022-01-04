@@ -29,6 +29,9 @@ void Browser::show()
 void Browser::load()
 {}
 
+void Browser::updateUi()
+{}
+
 Browser::~Browser()
 {}
 

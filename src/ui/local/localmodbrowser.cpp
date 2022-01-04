@@ -300,10 +300,8 @@ void LocalModBrowser::reload()
 
 void LocalModBrowser::updateUi()
 {
-    for(int i = 0; i < model_->rowCount(); i++){
-        if(auto widget = ui->modListView->indexWidget(model_->index(i, 0)))
-            dynamic_cast<LocalModItemWidget*>(widget)->updateUi();
-    }
+    for(auto &&widget : findChildren<LocalModItemWidget *>())
+        widget->updateUi();
 }
 
 void LocalModBrowser::onLoadStarted()

@@ -122,10 +122,8 @@ void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 
 void ModrinthModBrowser::updateUi()
 {
-//    for(int i = 0; i < model_->rowCount(); i++){
-//        if(auto widget = modListView_->indexWidget(model_->index(i, 0)))
-//            dynamic_cast<ModrinthModItemWidget*>(widget)->updateUi();
-//    }
+    for(auto &&widget : findChildren<ModrinthModItemWidget *>())
+        widget->updateUi();
 }
 
 void ModrinthModBrowser::updateVersionList()

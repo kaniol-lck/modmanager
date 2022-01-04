@@ -141,10 +141,8 @@ void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 
 void CurseforgeModBrowser::updateUi()
 {
-//    for(int i = 0; i < model_->rowCount(); i++){
-//        if(auto widget = modListView_->indexWidget(model_->index(i, 0)))
-//            dynamic_cast<CurseforgeModItemWidget*>(widget)->updateUi();
-//    }
+    for(auto &&widget : findChildren<CurseforgeModItemWidget *>())
+        widget->updateUi();
 }
 
 void CurseforgeModBrowser::updateVersionList()

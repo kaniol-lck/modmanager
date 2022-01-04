@@ -83,7 +83,8 @@ void OptifineModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
 
 void OptifineModBrowser::updateUi()
 {
-
+//    for(auto &&widget : findChildren<OptifineModItemWidget *>())
+//        widget->updateUi();
 }
 
 ExploreBrowser *OptifineModBrowser::another()

@@ -14,6 +14,8 @@ public:
 
     virtual void load();
 
+    virtual void updateUi();
+
     virtual QWidget *infoWidget() const;
     virtual QWidget *fileListWidget() const;
     virtual QList<QAction *> modActions() const;

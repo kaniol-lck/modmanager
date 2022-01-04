@@ -154,10 +154,15 @@ void PageSwitcher::syncPathList()
 
 void PageSwitcher::updateUi()
 {
-//    for(auto browser : qAsConst(exploreBrowsers_))
-//        browser->updateUi();
-//    for(auto browser : qAsConst(localModBrowsers_))
-//        browser->updateUi();
+    for(auto category : { Download, Explore, Local }){
+        auto categoryItem = model_.item(category);
+        for(int page = 0; page < categoryItem->rowCount(); page ++){
+            if(auto browser = categoryItem->child(page)->data().value<Browser *>()){
+                qDebug() << browser->name();
+                browser->updateUi();
+            }
+        }
+    }
 }
 
 void PageSwitcher::addBrowser(Browser *browser, BrowserCategory category)

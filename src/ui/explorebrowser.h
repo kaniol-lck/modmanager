@@ -31,7 +31,6 @@ public:
 public slots:
     virtual void refresh() = 0;
     virtual void searchModByPathInfo(const LocalModPathInfo &info) = 0;
-    virtual void updateUi() = 0;
 
     void openDialog();
 

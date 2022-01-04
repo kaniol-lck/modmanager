@@ -53,7 +53,7 @@ signals:
 
 public slots:
     void reload();
-    void updateUi();
+    void updateUi() override;
 
 private slots:
     void onLoadStarted();
