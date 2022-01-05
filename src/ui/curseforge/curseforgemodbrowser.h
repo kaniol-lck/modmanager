@@ -81,6 +81,7 @@ private:
     bool isSearching_ = false;
     bool inited_ = false;
     CurseforgeMod* selectedMod_ = nullptr;
+    std::unique_ptr<Reply<QList<CurseforgeCategoryInfo> > > sectionCategoriesGetter_;
 
     void loadMore() override;
     void onSelectedItemChanged(QStandardItem *item) override;

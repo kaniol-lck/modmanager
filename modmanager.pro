@@ -172,6 +172,7 @@ HEADERS += \
     src/modrinth/modrinthmod.h \
     src/modrinth/modrinthmodinfo.h \
     src/modwebsitetype.h \
+    src/network/reply.hpp \
     src/optifine/optifineapi.h \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \

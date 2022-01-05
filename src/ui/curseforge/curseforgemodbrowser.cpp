@@ -78,8 +78,8 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
             action->setChecked(true);
 
     updateVersionList();
-    connect(this, &QObject::destroyed, this, disconnecter(
-                CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
+    sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
+    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
     updateStatusText();
 
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
@@ -487,9 +487,8 @@ void CurseforgeModBrowser::on_actionMod_triggered()
     sectionId_ = CurseforgeAPI::Mod;
     currentCategoryId_ = 0;
     search();
-    connect(this, &QObject::destroyed, this, disconnecter(
-                CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
-
+    sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
+    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
 }
 
 void CurseforgeModBrowser::on_actionWorld_triggered()
@@ -497,9 +496,8 @@ void CurseforgeModBrowser::on_actionWorld_triggered()
     sectionId_ = CurseforgeAPI::World;
     currentCategoryId_ = 0;
     search();
-    connect(this, &QObject::destroyed, this, disconnecter(
-                CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
-
+    sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
+    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
 }
 
 void CurseforgeModBrowser::on_actionModpacks_triggered()
@@ -507,9 +505,8 @@ void CurseforgeModBrowser::on_actionModpacks_triggered()
     sectionId_ = CurseforgeAPI::Modpack;
     currentCategoryId_ = 0;
     search();
-    connect(this, &QObject::destroyed, this, disconnecter(
-                CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
-
+    sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
+    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
 }
 
 void CurseforgeModBrowser::on_actionTexturepacks_triggered()
@@ -517,9 +514,8 @@ void CurseforgeModBrowser::on_actionTexturepacks_triggered()
     sectionId_ = CurseforgeAPI::TexturePack;
     currentCategoryId_ = 0;
     search();
-    connect(this, &QObject::destroyed, this, disconnecter(
-                CurseforgeAPI::api()->getSectionCategories(sectionId_, [=](const auto &list){ updateCategoryList(list); })));
-
+        sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
+    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
 }
 
 void CurseforgeModBrowser::on_menuDownload_aboutToShow()

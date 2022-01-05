@@ -225,37 +225,31 @@ QMetaObject::Connection CurseforgeAPI::getInfo(int id, std::function<void (Curse
     });
 }
 
-QMetaObject::Connection CurseforgeAPI::getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback)
+Reply<QList<GameVersion> > CurseforgeAPI::getMinecraftVersionList()
 {
     QUrl url = PREFIX + "/api/v2/minecraft/version";
 
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
-
+    return Reply<QList<GameVersion> >(reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return QList<GameVersion>{};
         }
         auto list = jsonDocument.toVariant().toList();
         QList<GameVersion> versionList;
         for(const auto &entry : qAsConst(list))
             versionList << value(entry, "versionString").toString();
 
-        callback(versionList);
-        reply->deleteLater();
+        return versionList;
     });
 }
 
-QMetaObject::Connection CurseforgeAPI::getSectionCategories(int sectionId, std::function<void (QList<CurseforgeCategoryInfo>)> callback)
+Reply<QList<CurseforgeCategoryInfo> > CurseforgeAPI::getSectionCategories(int sectionId)
 {
     QUrl url = PREFIX + "/api/v2/category/section/" + QString::number(sectionId);
 
@@ -263,18 +257,13 @@ QMetaObject::Connection CurseforgeAPI::getSectionCategories(int sectionId, std::
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
-
+    return Reply<QList<CurseforgeCategoryInfo> >(reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return QList<CurseforgeCategoryInfo>{};
         }
         auto list = jsonDocument.toVariant().toList();
         QList<CurseforgeCategoryInfo> categoryList;
@@ -285,7 +274,6 @@ QMetaObject::Connection CurseforgeAPI::getSectionCategories(int sectionId, std::
             categoryList << category;
         }
 
-        callback(categoryList);
-        reply->deleteLater();
+        return categoryList;
     });
 }

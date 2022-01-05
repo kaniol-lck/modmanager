@@ -9,6 +9,7 @@
 #include "gameversion.h"
 #include "curseforgemodinfo.h"
 #include "curseforgecategoryinfo.h"
+#include "network/reply.hpp"
 
 class CurseforgeAPI : public QObject
 {
@@ -29,8 +30,8 @@ public:
     [[nodiscard]] QMetaObject::Connection getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback, std::function<void ()> failed = []{});
     [[nodiscard]] QMetaObject::Connection getInfo(int id, std::function<void (CurseforgeModInfo)> callback);
     [[nodiscard]] QMetaObject::Connection getTimestamp(std::function<void (QString)> callback);
-    [[nodiscard]] QMetaObject::Connection getMinecraftVersionList(std::function<void (QList<GameVersion>)> callback);
-    [[nodiscard]] QMetaObject::Connection getSectionCategories(int sectionId, std::function<void (QList<CurseforgeCategoryInfo>)> callback);
+    Reply<QList<GameVersion> > getMinecraftVersionList();
+    Reply<QList<CurseforgeCategoryInfo> > getSectionCategories(int sectionId);
 
 private:
     QNetworkAccessManager accessManager_;
