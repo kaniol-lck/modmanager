@@ -8,7 +8,7 @@ class Browser : public QMainWindow
     Q_OBJECT
 public:
     explicit Browser(QWidget *parent = nullptr);
-    virtual ~Browser() = 0;
+    virtual ~Browser();
 
     void show();
 

@@ -7,6 +7,7 @@
 
 #include "tag/tagcategory.h"
 
+class Browser;
 #define getterAndSetter(name, type, key, defaultValue) \
     void set##name(const decltype(QVariant().to##type()) &key){\
         setValue(#key, key);\
@@ -125,6 +126,19 @@ public:
     getterAndSetter(LockPanel, Bool, LockPanel, true)
     getterAndSetter(Geometry, ByteArray, geometry, QByteArray())
     getterAndSetter(WindowState, ByteArray, windowState, QByteArray())
+
+    void setBrowserWindowState(QObject *browser, const QByteArray &windowState){
+        setValue("browserWindowState/" + browser->objectName(), windowState);
+    }
+    QByteArray getBrowserWindowState(QObject *browser){
+        return value("browserWindowState/" + browser->objectName()).toByteArray();
+    }
+    void setBrowserWindowGeometry(QObject *browser, const QByteArray &windowGeometry){
+        setValue("browserWindowGeometry/" + browser->objectName(), windowGeometry);
+    }
+    QByteArray getBrowserWindowGeometry(QObject *browser){
+        return value("browserWindowGeometry/" + browser->objectName()).toByteArray();
+    }
 #if defined (DE_KDE)
     getterAndSetter(EnableBlurBehind, Bool, enableBlurBehind, true)
 #else

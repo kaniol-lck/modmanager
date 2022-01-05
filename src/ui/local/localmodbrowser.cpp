@@ -61,6 +61,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
+    Config config;
+    restoreGeometry(config.getBrowserWindowState(this));
+    restoreState(config.getBrowserWindowState(this));
     //setup mod list
     proxyModel_->setSourceModel(model_);
     proxyModel_->setFilter(filter_);

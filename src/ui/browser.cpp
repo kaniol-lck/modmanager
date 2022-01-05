@@ -2,6 +2,8 @@
 
 #include <QDockWidget>
 
+#include "config.hpp"
+
 Browser::Browser(QWidget *parent) : QMainWindow(parent)
 {}
 
@@ -33,7 +35,11 @@ void Browser::updateUi()
 {}
 
 Browser::~Browser()
-{}
+{
+    Config config;
+    config.setBrowserWindowState(this, saveGeometry());
+    config.setBrowserWindowState(this, saveState());
+}
 
 QWidget *Browser::infoWidget() const
 {

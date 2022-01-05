@@ -168,6 +168,9 @@ void ExploreBrowser::initUi(QComboBox *downloadPathSelect)
         connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ExploreBrowser::updateLocalPathList);
         connect(downloadPathSelect_, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ExploreBrowser::setDownloadPathIndex);
     }
+    Config config;
+    restoreGeometry(config.getBrowserWindowState(this));
+    restoreState(config.getBrowserWindowState(this));
 }
 
 void ExploreBrowser::setDownloadPathIndex(int i)

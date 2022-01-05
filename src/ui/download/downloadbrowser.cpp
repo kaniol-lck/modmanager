@@ -18,6 +18,9 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
     manager_(DownloadManager::manager())
 {
     ui->setupUi(this);
+    Config config;
+    restoreGeometry(config.getBrowserWindowState(this));
+    restoreState(config.getBrowserWindowState(this));
     ui->downloaderListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->downloaderListWidget->setProperty("class", "ModList");
 
