@@ -6,6 +6,7 @@
 #include "local/localmodpathsettingsdialog.h"
 #include "local/localmodpathmanager.h"
 #include "local/localmodpath.h"
+#include "util/funcutil.h"
 #include "config.hpp"
 
 BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
@@ -15,17 +16,19 @@ BrowserManagerDialog::BrowserManagerDialog(QWidget *parent) :
     ui->setupUi(this);
     pathList_ = LocalModPathManager::pathList();
 
-    for(const auto &path : qAsConst(pathList_))
-        ui->browserList->addTopLevelItem(
-                    new QTreeWidgetItem(QStringList{path->info().displayName(),
-                                                    path->info().path(),
+    for(const auto &path : qAsConst(pathList_)){
+        auto item = new QTreeWidgetItem(QStringList{path->info().displayName(),
                                                     path->info().gameVersion().toString(),
-                                                    ModLoaderType::toString(path->info().loaderType())}));
+                                                    ModLoaderType::toString(path->info().loaderType()),
+                                                    path->info().path()});
+        item->setIcon(2, ModLoaderType::icon(path->info().loaderType()));
+        ui->browserList->addTopLevelItem(item);
+    }
 
     ui->browserList->setHeaderItem(new QTreeWidgetItem(QStringList{tr("Name"),
-                                                                   tr("Path"),
                                                                    tr("Game Version"),
-                                                                   tr("Loader Type")}));
+                                                                   tr("Loader Type"),
+                                                                   tr("Path")}));
     for(int i = 0; i < 4; i++)
         ui->browserList->resizeColumnToContents(i);
     refreshButton();
@@ -69,11 +72,12 @@ void BrowserManagerDialog::on_addButton_clicked()
         auto path = new LocalModPath(pathInfo);
         path->loadMods(autoLoaderType);
         pathList_ << path;
-        ui->browserList->addTopLevelItem(
-                    new QTreeWidgetItem(QStringList{path->info().displayName(),
-                                                    path->info().path(),
+        auto item = new QTreeWidgetItem(QStringList{path->info().displayName(),
                                                     path->info().gameVersion().toString(),
-                                                    ModLoaderType::toString(path->info().loaderType())}));
+                                                    ModLoaderType::toString(path->info().loaderType()),
+                                                    path->info().path()});
+        item->setIcon(2, ModLoaderType::icon(path->info().loaderType()));
+        ui->browserList->addTopLevelItem(item);
         refreshButton();
     });
     dialog->exec();
@@ -110,9 +114,10 @@ void BrowserManagerDialog::on_browserList_doubleClicked(const QModelIndex &index
     connect(dialog, &LocalModPathSettingsDialog::settingsUpdated, this, [=](const LocalModPathInfo &newInfo, bool autoLoaderType){
         pathList_[row]->setInfo(newInfo, autoLoaderType);
         ui->browserList->topLevelItem(row)->setText(0, newInfo.displayName());
-        ui->browserList->topLevelItem(row)->setText(1, newInfo.path());
-        ui->browserList->topLevelItem(row)->setText(2, newInfo.gameVersion().toString());
-        ui->browserList->topLevelItem(row)->setText(3, ModLoaderType::toString(newInfo.loaderType()));
+        ui->browserList->topLevelItem(row)->setText(1, newInfo.gameVersion().toString());
+        ui->browserList->topLevelItem(row)->setText(2, ModLoaderType::toString(newInfo.loaderType()));
+        ui->browserList->topLevelItem(row)->setIcon(2, ModLoaderType::icon(newInfo.loaderType()));
+        ui->browserList->topLevelItem(row)->setText(3, newInfo.path());
     });
     dialog->exec();
 }
@@ -122,5 +127,21 @@ void BrowserManagerDialog::on_browserList_currentItemChanged(QTreeWidgetItem *cu
     auto currentRow = ui->browserList->indexOfTopLevelItem(current);
     ui->upButton->setEnabled(currentRow >= 0 && currentRow != 0);
     ui->downButton->setEnabled(currentRow >= 0 && currentRow != pathList_.size() - 1);
+    ui->openFolderButton->setEnabled(currentRow >= 0);
+    ui->editButton->setEnabled(currentRow >= 0);
     ui->deleteButton->setEnabled(currentRow >= 0);
 }
+
+void BrowserManagerDialog::on_editButton_clicked()
+{
+    on_browserList_doubleClicked(ui->browserList->currentIndex());
+}
+
+void BrowserManagerDialog::on_openFolderButton_clicked()
+{
+    auto row = ui->browserList->currentIndex().row();
+    if(row < 0) return;
+    if(auto path = pathList_.at(row))
+        openFileInFolder(path->info().path());
+}
+

@@ -28,6 +28,10 @@ private slots:
     void on_browserList_doubleClicked(const QModelIndex &index);
     void on_browserList_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous = nullptr);
 
+    void on_editButton_clicked();
+
+    void on_openFolderButton_clicked();
+
 private:
     void refreshButton();
     Ui::BrowserManagerDialog *ui;
