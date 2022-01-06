@@ -44,19 +44,19 @@ ModrinthModInfo ModrinthMod::modInfo() const
     return modInfo_;
 }
 
-void ModrinthMod::acquireAuthor()
-{
-    if(modInfo_.authorId_.isEmpty() || gettingAuthor_) return;
-    gettingAuthor_ = true;
-    auto conn = api_->getAuthor(modInfo_.modId_, [=](const auto &author){
-        gettingAuthor_ = false;
-        modInfo_.author_ = author;
-        emit authorReady();
-    });
-    connect(this, &QObject::destroyed, this, [=]{
-        disconnect(conn);
-    });
-}
+//void ModrinthMod::acquireAuthor()
+//{
+//    if(modInfo_.authorId_.isEmpty() || gettingAuthor_) return;
+//    gettingAuthor_ = true;
+//    auto conn = api_->getAuthor(modInfo_.modId_, [=](const auto &author){
+//        gettingAuthor_ = false;
+//        modInfo_.author_ = author;
+//        emit authorReady();
+//    });
+//    connect(this, &QObject::destroyed, this, [=]{
+//        disconnect(conn);
+//    });
+//}
 
 void ModrinthMod::acquireIcon()
 {
@@ -79,12 +79,11 @@ void ModrinthMod::acquireIcon()
     });
 }
 
-void ModrinthMod::acquireFullInfo()
+std::shared_ptr<Reply<ModrinthModInfo>> ModrinthMod::acquireFullInfo()
 {
-    if(gettingFullInfo_) return;
-    gettingFullInfo_ = true;
-    auto conn = api_->getInfo(modInfo_.modId_, [=](const auto &newInfo){
-        gettingFullInfo_ = false;
+    if(fullInfoGetter_ && fullInfoGetter_->isRunning()) return {};
+    fullInfoGetter_ = api_->getInfo(modInfo_.modId_).asShared();
+    fullInfoGetter_->setOnFinished([=](const auto &newInfo){
         if(modInfo_.basicInfo_){
             modInfo_.description_ = newInfo.description_;
             modInfo_.versionList_ = newInfo.versionList_;
@@ -92,27 +91,20 @@ void ModrinthMod::acquireFullInfo()
             modInfo_ = newInfo;
         emit fullInfoReady();
     });
-    connect(this, &QObject::destroyed, this, [=]{
-        disconnect(conn);
-    });
+    return fullInfoGetter_;
 }
 
-QMetaObject::Connection ModrinthMod::acquireFileList()
+std::shared_ptr<Reply<QList<ModrinthFileInfo> > > ModrinthMod::acquireFileList()
 {
-    if(gettingFileList_) return {};
-    gettingFileList_ = true;
-
-    auto conn = api_->getVersions(modInfo_.modId_, [=](const auto &files){
-        gettingFileList_ = false;
+    if(fileListGetter_ && fileListGetter_->isRunning()) return {};
+    fileListGetter_ = api_->getVersions(modInfo_.modId_).asShared();
+    fileListGetter_->setOnFinished([=](const auto &files){
         modInfo_.fileList_ = files;
         emit fileListReady(files);
     }, [=]{
         emit fileListReady({});
     });
-    connect(this, &QObject::destroyed, this, [=]{
-        disconnect(conn);
-    });
-    return conn;
+    return fileListGetter_;
 }
 
 void ModrinthMod::download(const ModrinthFileInfo &fileInfo, LocalModPath *downloadPath)

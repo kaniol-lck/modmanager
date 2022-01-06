@@ -93,7 +93,7 @@ std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> CurseforgeMod::acquireAllFileL
     allFileListGetter_->setOnFinished([=](const QList<CurseforgeFileInfo> &fileList){
         modInfo_.allFileList_ = fileList;
         emit allFileListReady(fileList);
-    }, [=]{
+    }, [=](auto){
         emit allFileListReady({});
     });
     return allFileListGetter_;

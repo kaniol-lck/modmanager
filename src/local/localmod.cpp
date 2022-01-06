@@ -161,7 +161,7 @@ void LocalMod::checkCurseforgeUpdate(bool force)
         reply->setOnFinished([=](const QList<CurseforgeFileInfo> &){
             curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
             emit curseforgeUpdateReady(true);
-        }, [=]{
+        }, [=](auto){
             emit curseforgeUpdateReady(false);
         });
     }else{

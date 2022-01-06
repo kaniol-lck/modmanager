@@ -24,7 +24,7 @@ ModrinthAPI *ModrinthAPI::api()
     return &api;
 }
 
-QMetaObject::Connection ModrinthAPI::searchMods(const QString name, int index, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort, std::function<void (QList<ModrinthModInfo>)> callback)
+Reply<QList<ModrinthModInfo>> ModrinthAPI::searchMods(const QString name, int index, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort)
 {
     QUrl url = PREFIX + "/api/v1/mod";
 
@@ -84,32 +84,25 @@ QMetaObject::Connection ModrinthAPI::searchMods(const QString name, int index, c
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this,  [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
+    return { reply,  [=]{
+            //parse json
+            QJsonParseError error;
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+            if(error.error != QJsonParseError::NoError) {
+                qDebug("%s", error.errorString().toUtf8().constData());
+                return QList<ModrinthModInfo>{};
+            }
 
-        //parse json
-        QJsonParseError error;
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
-        if(error.error != QJsonParseError::NoError) {
-            qDebug("%s", error.errorString().toUtf8().constData());
-            return;
-        }
+            auto resultList = value(jsonDocument.toVariant(), "hits").toList();
+            QList<ModrinthModInfo> modInfoList;
+            for(const auto &result : qAsConst(resultList))
+                modInfoList << ModrinthModInfo::fromSearchVariant(result);
 
-        auto resultList = value(jsonDocument.toVariant(), "hits").toList();
-
-        QList<ModrinthModInfo> modInfoList;
-        for(const auto &result : qAsConst(resultList))
-            modInfoList << ModrinthModInfo::fromSearchVariant(result);
-
-        callback(modInfoList);
-        reply->deleteLater();
-    });
+            return modInfoList;
+        } };
 }
 
-QMetaObject::Connection ModrinthAPI::getInfo(const QString &id, std::function<void (ModrinthModInfo)> callback)
+Reply<ModrinthModInfo> ModrinthAPI::getInfo(const QString &id)
 {
     //id: "local-xxxxx" ???
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
@@ -117,30 +110,23 @@ QMetaObject::Connection ModrinthAPI::getInfo(const QString &id, std::function<vo
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this,  [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            callback({});
-            return;
-        }
+    return { reply,  [=]{
+            //parse json
+            QJsonParseError error;
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+            if (error.error != QJsonParseError::NoError) {
+                qDebug("%s", error.errorString().toUtf8().constData());
+                return ModrinthModInfo();
+            }
 
-        //parse json
-        QJsonParseError error;
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
-        if (error.error != QJsonParseError::NoError) {
-            qDebug("%s", error.errorString().toUtf8().constData());
-            return;
-        }
+            auto result = jsonDocument.toVariant();
+            auto modrinthModInfo = ModrinthModInfo::fromVariant(result);
 
-        auto result = jsonDocument.toVariant();
-        auto modrinthModInfo = ModrinthModInfo::fromVariant(result);
-
-        callback(modrinthModInfo);
-        reply->deleteLater();
-    });
+            return modrinthModInfo;
+        } };
 }
 
-QMetaObject::Connection ModrinthAPI::getVersions(const QString &id, std::function<void (QList<ModrinthFileInfo>)> callback, std::function<void ()> failed)
+Reply<QList<ModrinthFileInfo> > ModrinthAPI::getVersions(const QString &id)
 {
     //id: "local-xxxxx" ???
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
@@ -149,89 +135,64 @@ QMetaObject::Connection ModrinthAPI::getVersions(const QString &id, std::functio
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this,  [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            failed();
-            return;
-        }
+    return { reply, [=]{
+            //parse json
+            QJsonParseError error;
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+            if (error.error != QJsonParseError::NoError) {
+                qDebug("%s", error.errorString().toUtf8().constData());
+                return QList<ModrinthFileInfo>{};
+            }
 
-        //parse json
-        QJsonParseError error;
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
-        if (error.error != QJsonParseError::NoError) {
-            qDebug("%s", error.errorString().toUtf8().constData());
-            return;
-        }
-
-        auto resultList = jsonDocument.toVariant().toList();
-
-        QList<ModrinthFileInfo> fileInfoList;
-        for(const auto &result : qAsConst(resultList))
-            fileInfoList << ModrinthFileInfo::fromVariant(result);
-
-        callback(fileInfoList);
-        reply->deleteLater();
-    });
+            auto resultList = jsonDocument.toVariant().toList();
+            QList<ModrinthFileInfo> fileInfoList;
+            for(const auto &result : qAsConst(resultList))
+                fileInfoList << ModrinthFileInfo::fromVariant(result);
+            return fileInfoList;
+        } };
 }
 
-QMetaObject::Connection ModrinthAPI::getVersion(const QString &version, std::function<void (ModrinthFileInfo)> callback)
+Reply<ModrinthFileInfo> ModrinthAPI::getVersion(const QString &version)
 {
     QUrl url = PREFIX + "/api/v1/version/" + version;
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this,  [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
+    return { reply, [=]{
+            //parse json
+            QJsonParseError error;
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+            if (error.error != QJsonParseError::NoError) {
+                qDebug("%s", error.errorString().toUtf8().constData());
+                return ModrinthFileInfo();
+            }
 
-        //parse json
-        QJsonParseError error;
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
-        if (error.error != QJsonParseError::NoError) {
-            qDebug("%s", error.errorString().toUtf8().constData());
-            return;
-        }
-
-        auto result = jsonDocument.toVariant();
-        auto modrinthFileInfo = ModrinthFileInfo::fromVariant(result);
-
-        callback(modrinthFileInfo);
-        reply->deleteLater();
-    });
+            auto result = jsonDocument.toVariant();
+            return ModrinthFileInfo::fromVariant(result);
+        } };
 }
 
-QMetaObject::Connection ModrinthAPI::getAuthor(const QString &authorId, std::function<void (QString)> callback)
+Reply<QString> ModrinthAPI::getAuthor(const QString &authorId)
 {
     QUrl url = PREFIX + "/api/v1/user/" + authorId;
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this,  [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
+    return { reply, [=]{
+            //parse json
+            QJsonParseError error;
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+            if (error.error != QJsonParseError::NoError) {
+                qDebug("%s", error.errorString().toUtf8().constData());
+                return QString();
+            }
 
-        //parse json
-        QJsonParseError error;
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
-        if (error.error != QJsonParseError::NoError) {
-            qDebug("%s", error.errorString().toUtf8().constData());
-            return;
-        }
-
-        auto result = jsonDocument.toVariant();
-        auto author = value(result, "name").toString();
-
-        callback(author);
-        reply->deleteLater();
-    });
+            auto result = jsonDocument.toVariant();
+            return value(result, "name").toString();
+        } };
 }
 
-QMetaObject::Connection ModrinthAPI::getVersionFileBySha1(const QString sha1, std::function<void (ModrinthFileInfo)> callback, std::function<void ()> noMatch)
+Reply<ModrinthFileInfo> ModrinthAPI::getVersionFileBySha1(const QString sha1)
 {
     QUrl url = PREFIX + "/api/v1/version_file/" + sha1;
 
@@ -244,28 +205,17 @@ QMetaObject::Connection ModrinthAPI::getVersionFileBySha1(const QString sha1, st
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this,  [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            if(reply->error() == QNetworkReply::ContentNotFoundError)
-                noMatch();
-            else
-                qDebug() << reply->errorString();
-            return;
-        }
-
-        //parse json
-        QJsonParseError error;
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
-        if (error.error != QJsonParseError::NoError) {
-            qDebug("%s", error.errorString().toUtf8().constData());
-            return;
-        }
-        auto result = jsonDocument.toVariant();
-
-        auto modrinthFileInfo = ModrinthFileInfo::fromVariant(result);
-        callback(modrinthFileInfo);
-        reply->deleteLater();
-    });
+    return { reply, [=]{
+            //parse json
+            QJsonParseError error;
+            QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+            if (error.error != QJsonParseError::NoError) {
+                qDebug("%s", error.errorString().toUtf8().constData());
+                return ModrinthFileInfo();
+            }
+            auto result = jsonDocument.toVariant();
+            return ModrinthFileInfo::fromVariant(result);
+        } };
 }
 
 const QList<std::tuple<QString, QString> > &ModrinthAPI::getCategories()

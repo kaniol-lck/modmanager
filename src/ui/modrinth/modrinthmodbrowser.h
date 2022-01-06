@@ -3,6 +3,8 @@
 
 #include "ui/explorebrowser.h"
 
+#include "network/reply.hpp"
+
 class ModrinthAPI;
 class ModrinthMod;
 class LocalModPath;
@@ -12,6 +14,8 @@ class ExploreStatusBarWidget;
 class ExploreStatusBarWidget;
 class QStandardItemModel;
 class LocalMod;
+
+class ModrinthModInfo;
 namespace Ui {
 class ModrinthModBrowser;
 }
@@ -71,6 +75,7 @@ private:
     bool inited_ = false;
     LocalMod *localMod_ = nullptr;
     ModrinthMod* selectedMod_ = nullptr;
+    std::unique_ptr<Reply<QList<ModrinthModInfo>>> searchModsGetter_;
 
     void loadMore() override;
     void onSelectedItemChanged(QStandardItem *item) override;

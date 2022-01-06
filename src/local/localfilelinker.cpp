@@ -85,9 +85,8 @@ void LocalFileLinker::linkCurseforge()
         api = localFile_->modPath()->curseforgeAPI();
     else
         api = CurseforgeAPI::api();
-    auto reply = api->getIdByFingerprint(murmurhash);
-    reply.setRunBackground(true);
-    reply.setOnFinished([=](int id, auto fileInfo, const QList<CurseforgeFileInfo> &fileList[[maybe_unused]]){
+    curseforgeSearcher_ = api->getIdByFingerprint(murmurhash).asUnique();
+    curseforgeSearcher_->setOnFinished([=](int id, auto fileInfo, const QList<CurseforgeFileInfo> &fileList[[maybe_unused]]){
         if(id){
             setCurseforgeFileInfo(fileInfo);
             IdMapper::addCurseforge(localFile_->commonInfo()->id(), id);
@@ -126,18 +125,20 @@ void LocalFileLinker::linkModrinth()
         api = localFile_->modPath()->modrinthAPI();
     else
         api = ModrinthAPI::api();
-    connect(this, &QObject::destroyed, disconnecter(
-                api->getVersionFileBySha1(sha1, [=](const ModrinthFileInfo &fileInfo){
+    modrinthSearcher_ = api->getVersionFileBySha1(sha1).asUnique();
+    modrinthSearcher_->setOnFinished([=](const ModrinthFileInfo &fileInfo){
         setModrinthFileInfo(fileInfo);
         IdMapper::addModrinth(localFile_->commonInfo()->id(), fileInfo.modId());
         KnownFile::addModrinth(sha1, fileInfo);
         qDebug() << "success link modrinth:" << sha1;
         emit linkModrinthFinished(true, fileInfo.modId());
-    }, [=]{
-        qDebug() << "fail link modrinth:" << sha1;
-        KnownFile::addUnmatchedModrinth(sha1);
+    }, [=](const auto &error){
+        if(error == QNetworkReply::ContentNotFoundError){
+            qDebug() << "fail link modrinth:" << sha1;
+            KnownFile::addUnmatchedModrinth(sha1);
+        }
         emit linkModrinthFinished(false);
-    })));
+    });
 }
 
 std::optional<CurseforgeFileInfo> LocalFileLinker::curseforgeFileInfo() const

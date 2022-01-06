@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+#include "network/reply.hpp"
 #include "modrinthmodinfo.h"
 #include "tag/tagable.h"
 
@@ -21,10 +22,10 @@ public:
 
     ModrinthModInfo modInfo() const;
 
-    void acquireAuthor();
+//    void acquireAuthor();
     void acquireIcon();
-    void acquireFullInfo();
-    QMetaObject::Connection acquireFileList();
+    std::shared_ptr<Reply<ModrinthModInfo>> acquireFullInfo();
+    std::shared_ptr<Reply<QList<ModrinthFileInfo>>> acquireFileList();
 
     void download(const ModrinthFileInfo &fileInfo, LocalModPath *downloadPath = nullptr);
 
@@ -47,10 +48,10 @@ private:
     ModrinthModInfo modInfo_;
     QAria2Downloader *downloader_;
 
-    bool gettingAuthor_ = false;
+//    bool gettingAuthor_ = false;
     bool gettingIcon_ = false;
-    bool gettingFullInfo_ = false;
-    bool gettingFileList_ = false;
+    std::shared_ptr<Reply<ModrinthModInfo>> fullInfoGetter_;
+    std::shared_ptr<Reply<QList<ModrinthFileInfo>>> fileListGetter_;
 };
 
 #endif // MODRINTHMOD_H

@@ -73,27 +73,13 @@ public:
     };
 
     template<typename Func1>
-    void setOnFinished(Func1 callback){
+    void setOnFinished(Func1 callback, std::function<void(QNetworkReply::NetworkError)> errorHandler = {}){
         //copy-capture to prevent this deconstructed
         QObject::connect(reply_, &QNetworkReply::finished, [=, reply = reply_, resultInterpreter = resultInterpreter_, runBackground = runBackground_]{
             if(reply->error() != QNetworkReply::NoError) {
                 qDebug() << "error!!";
                 qDebug() << reply->errorString();
-            } else
-                std::apply(callback, resultInterpreter());
-            reply->deleteLater();
-            if(!runBackground) reply_ = nullptr;
-        });
-    };
-
-    template<typename Func1, typename Func2>
-    void setOnFinished(Func1 callback, Func2 errorHandler){
-        //copy-capture to prevent this deconstructed
-        QObject::connect(reply_, &QNetworkReply::finished, [=, reply = reply_, resultInterpreter = resultInterpreter_, runBackground = runBackground_]{
-            if(reply->error() != QNetworkReply::NoError) {
-                qDebug() << "error!!";
-                qDebug() << reply->errorString();
-                errorHandler();
+                if(errorHandler) errorHandler(reply->error());
             } else
                 std::apply(callback, resultInterpreter());
             reply->deleteLater();

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <optional>
 
+#include "network/reply.hpp"
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
 
@@ -45,6 +46,8 @@ private:
 
     bool curseforgeLinked_ = false;
     bool modrinthLinked_ = false;
+    std::unique_ptr<Reply<int, CurseforgeFileInfo, QList<CurseforgeFileInfo>>> curseforgeSearcher_;
+    std::unique_ptr<Reply<ModrinthFileInfo>> modrinthSearcher_;
 };
 
 #endif // LOCALFILELINKER_H
