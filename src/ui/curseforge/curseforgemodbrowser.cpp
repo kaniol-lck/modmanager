@@ -312,7 +312,8 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
     auto sort = ui->sortSelect->currentIndex();
 
     isSearching_ = true;
-    auto conn = api_->searchMods(sectionId_, gameVersion, index, name, category, sort, [=](const QList<CurseforgeModInfo> &infoList){
+    searchModsGetter_ = api_->searchMods(sectionId_, gameVersion, index, name, category, sort).asUnique();
+    searchModsGetter_->setOnFinished([=](const QList<CurseforgeModInfo> &infoList){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);
@@ -369,9 +370,6 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             getModList(currentName_, currentIndex_, needMore - shownCount);
         }
         updateStatusText();
-    });
-    connect(this, &QObject::destroyed, this, [=]{
-        disconnect(conn);
     });
 }
 

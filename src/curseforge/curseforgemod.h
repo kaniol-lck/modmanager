@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include <network/reply.hpp>
+
 #include "curseforgemodinfo.h"
 #include "tag/tagable.h"
 
@@ -24,7 +26,7 @@ public:
     void acquireBasicInfo();
     void acquireIcon();
     void acquireDescription();
-    QMetaObject::Connection acquireAllFileList();
+    void acquireAllFileList();
 
     const CurseforgeModInfo &modInfo() const;
     void download(const CurseforgeFileInfo &fileInfo, LocalModPath *downloadPath = nullptr);
@@ -45,10 +47,10 @@ private:
     CurseforgeModInfo modInfo_;
     QAria2Downloader *downloader_;
 
-    bool gettingBasicInfo_ = false;
+    std::unique_ptr<Reply<CurseforgeModInfo>> basicInfoGetter_;
     bool gettingIcon_ = false;
-    bool gettingDescription_ = false;
-    bool gettingAllFileList_ = false;
+    std::unique_ptr<Reply<QString>> descriptionGetter_;
+    std::unique_ptr<Reply<QList<CurseforgeFileInfo>>> allFileListGetter_;
 };
 
 #endif // CURSEFORGEMOD_H

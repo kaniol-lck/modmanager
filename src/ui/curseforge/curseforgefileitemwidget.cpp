@@ -87,20 +87,22 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
             for(auto &dependencyInfo : fileInfo_.dependencies()){
                 if(dependencyInfo.addonId()){
                     auto action = menu->addAction(tr("Dependency Mod: %1").arg(dependencyInfo.addonId()));
-                    connect(this, &QObject::destroyed, this, disconnecter(
-                                CurseforgeAPI::api()->getInfo(dependencyInfo.addonId(), [=](const CurseforgeModInfo &modInfo){
+                    auto reply = CurseforgeAPI::api()->getInfo(dependencyInfo.addonId());
+                    reply.setRunBackground(true);
+                    reply.setOnFinished([=](const CurseforgeModInfo &modInfo){
                         action->setText(tr("Dependency Mod: %1").arg(modInfo.name()));
                         connect(action, &QAction::triggered, this, [=]{
                             auto dialog = new CurseforgeModDialog(this, modInfo);
                             dialog->show();
                         });
-                    })));
+                    });
                     if(dependencyInfo.fileId()){
-                        connect(this, &QObject::destroyed, this, disconnecter(
-                                    CurseforgeAPI::api()->getFileInfo(dependencyInfo.addonId(), dependencyInfo.fileId(), [=](const CurseforgeFileInfo &fileInfo){
+                        auto reply = CurseforgeAPI::api()->getFileInfo(dependencyInfo.addonId(), dependencyInfo.fileId());
+                        reply.setRunBackground(true);
+                        reply.setOnFinished([=](const CurseforgeFileInfo &fileInfo){
                             action->setText(action->text() + "\n" +
                                             tr("Dependency File: %1").arg(fileInfo.fileName()));
-                        })));
+                        });
                     }
                 }
             }

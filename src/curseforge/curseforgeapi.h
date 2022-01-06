@@ -21,15 +21,15 @@ public:
     explicit CurseforgeAPI(QObject *parent = nullptr);
     static CurseforgeAPI *api();
 
-    [[nodiscard]] QMetaObject::Connection searchMods(int sectionId, const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback);
-    [[nodiscard]] QMetaObject::Connection getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback, std::function<void()> noMatch);
-    [[nodiscard]] QMetaObject::Connection getDescription(int id, std::function<void(QString)> callback);
-    [[nodiscard]] QMetaObject::Connection getChangelog(int id, int FileID, std::function<void (QString)> callback);
-    [[nodiscard]] QMetaObject::Connection getDownloadUrl(int id, int FileID, std::function<void (QString)> callback);
-    [[nodiscard]] QMetaObject::Connection getFileInfo(int id, int FileID, std::function<void(CurseforgeFileInfo)> callback);
-    [[nodiscard]] QMetaObject::Connection getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback, std::function<void ()> failed = []{});
-    [[nodiscard]] QMetaObject::Connection getInfo(int id, std::function<void (CurseforgeModInfo)> callback);
-    [[nodiscard]] QMetaObject::Connection getTimestamp(std::function<void (QString)> callback);
+    Reply<QList<CurseforgeModInfo> > searchMods(int sectionId, const GameVersion &version, int index, const QString &searchFilter, int category, int sort);
+    Reply<int, CurseforgeFileInfo, QList<CurseforgeFileInfo> > getIdByFingerprint(const QString &fingerprint);
+    Reply<QString> getDescription(int id);
+    Reply<QString> getChangelog(int id, int FileID);
+    Reply<QString> getDownloadUrl(int id, int FileID);
+    Reply<CurseforgeFileInfo> getFileInfo(int id, int FileID);
+    Reply<QList<CurseforgeFileInfo> > getFiles(int id);
+    Reply<CurseforgeModInfo> getInfo(int id);
+    Reply<QString> getTimestamp();
     Reply<QList<GameVersion> > getMinecraftVersionList();
     Reply<QList<CurseforgeCategoryInfo> > getSectionCategories(int sectionId);
 

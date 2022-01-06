@@ -85,18 +85,21 @@ void LocalFileLinker::linkCurseforge()
         api = localFile_->modPath()->curseforgeAPI();
     else
         api = CurseforgeAPI::api();
-    connect(this, &QObject::destroyed, disconnecter(
-                api->getIdByFingerprint(murmurhash, [=](int id, auto fileInfo, const QList<CurseforgeFileInfo> &fileList[[maybe_unused]]){
-        setCurseforgeFileInfo(fileInfo);
-        IdMapper::addCurseforge(localFile_->commonInfo()->id(), id);
-        qDebug() << "success link curseforge:" << murmurhash;
-        KnownFile::addCurseforge(murmurhash, fileInfo);
-        emit linkCurseforgeFinished(true, id);
-    }, [=]{
-        qDebug() << "fail link curseforge:" << murmurhash;
-        KnownFile::addUnmatchedCurseforge(murmurhash);
-        emit linkCurseforgeFinished(false);
-    })));
+    auto reply = api->getIdByFingerprint(murmurhash);
+    reply.setRunBackground(true);
+    reply.setOnFinished([=](int id, auto fileInfo, const QList<CurseforgeFileInfo> &fileList[[maybe_unused]]){
+        if(id){
+            setCurseforgeFileInfo(fileInfo);
+            IdMapper::addCurseforge(localFile_->commonInfo()->id(), id);
+            qDebug() << "success link curseforge:" << murmurhash;
+            KnownFile::addCurseforge(murmurhash, fileInfo);
+            emit linkCurseforgeFinished(true, id);
+        } else{
+            qDebug() << "fail link curseforge:" << murmurhash;
+            KnownFile::addUnmatchedCurseforge(murmurhash);
+            emit linkCurseforgeFinished(false);
+        }
+    });
 }
 
 void LocalFileLinker::linkCachedModrinth()

@@ -53,17 +53,13 @@ CurseforgeMod::~CurseforgeMod()
 
 void CurseforgeMod::acquireBasicInfo()
 {
-    if(gettingBasicInfo_) return;
-    gettingBasicInfo_ = true;
-    auto conn = api_->getInfo(modInfo_.id_, [=](const auto &info){
-        gettingBasicInfo_ = false;
+    if(basicInfoGetter_) return;
+    basicInfoGetter_ = api_->getInfo(modInfo_.id_).asUnique();
+    basicInfoGetter_->setOnFinished([=](const auto &info){
         modInfo_ = info;
         addSubTagable(&modInfo_);
         emit basicInfoReady();
         modInfo_.basicInfo_ = true;
-    });
-    connect(this, &QObject::destroyed, this, [=]{
-        disconnect(conn);
     });
 }
 
@@ -82,33 +78,24 @@ void CurseforgeMod::acquireIcon()
 
 void CurseforgeMod::acquireDescription()
 {
-    if(gettingDescription_) return;
-    gettingDescription_ = true;
-    auto conn = api_->getDescription(modInfo_.id(), [=](const QString &description){
-        gettingDescription_ = false;
+    if(descriptionGetter_) return;
+    descriptionGetter_ = api_->getDescription(modInfo_.id()).asUnique();
+    descriptionGetter_->setOnFinished([=](const QString &description){
         modInfo_.description_ = description;
         emit descriptionReady();
     });
-    connect(this, &QObject::destroyed, this, [=]{
-        disconnect(conn);
-    });
 }
 
-QMetaObject::Connection CurseforgeMod::acquireAllFileList()
+void CurseforgeMod::acquireAllFileList()
 {
-    if(gettingAllFileList_) return {};
-    gettingAllFileList_ = true;
-    auto conn = api_->getFiles(modInfo_.id(), [=](const QList<CurseforgeFileInfo> &fileList){
-        gettingAllFileList_ = false;
+    if(allFileListGetter_) return;
+    allFileListGetter_ = api_->getFiles(modInfo_.id()).asUnique();
+    allFileListGetter_->setOnFinished([=](const QList<CurseforgeFileInfo> &fileList){
         modInfo_.allFileList_ = fileList;
         emit allFileListReady(fileList);
     }, [=]{
         emit allFileListReady({});
     });
-    connect(this, &QObject::destroyed, this, [=]{
-        disconnect(conn);
-    });
-    return conn;
 }
 
 const CurseforgeModInfo &CurseforgeMod::modInfo() const

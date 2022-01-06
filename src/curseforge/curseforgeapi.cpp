@@ -25,7 +25,7 @@ CurseforgeAPI *CurseforgeAPI::api()
     return &api;
 }
 
-QMetaObject::Connection CurseforgeAPI::searchMods(int sectionId, const GameVersion &version, int index, const QString &searchFilter, int category, int sort, std::function<void (QList<CurseforgeModInfo>)> callback)
+Reply<QList<CurseforgeModInfo> > CurseforgeAPI::searchMods(int sectionId, const GameVersion &version, int index, const QString &searchFilter, int category, int sort)
 {
     QUrl url = PREFIX + "/api/v2/addon/search";
 
@@ -54,18 +54,13 @@ QMetaObject::Connection CurseforgeAPI::searchMods(int sectionId, const GameVersi
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
-
+    return { reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return QList<CurseforgeModInfo>{};
         }
         auto resultList = jsonDocument.toVariant().toList();
         QList<CurseforgeModInfo> modInfoList;
@@ -73,12 +68,11 @@ QMetaObject::Connection CurseforgeAPI::searchMods(int sectionId, const GameVersi
         for(const auto &result : qAsConst(resultList))
             modInfoList << CurseforgeModInfo::fromVariant(result);
 
-        callback(modInfoList);
-        reply->deleteLater();
-    });
+        return modInfoList;
+    } };
 }
 
-QMetaObject::Connection CurseforgeAPI::getIdByFingerprint(const QString &fingerprint, std::function<void (int, CurseforgeFileInfo, QList<CurseforgeFileInfo>)> callback, std::function<void ()> noMatch)
+Reply<int, CurseforgeFileInfo, QList<CurseforgeFileInfo> > CurseforgeAPI::getIdByFingerprint(const QString &fingerprint)
 {
     QUrl url = PREFIX + "/api/v2/fingerprint";
 
@@ -86,22 +80,17 @@ QMetaObject::Connection CurseforgeAPI::getIdByFingerprint(const QString &fingerp
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     MMLogger::network(this) << url << fingerprint;
     auto reply = accessManager_.post(request, QString("[ %1 ]").arg(fingerprint).toUtf8());
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
-
+    return { reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return std::make_tuple(0, CurseforgeFileInfo(), QList<CurseforgeFileInfo>{});
         }
         auto exactMatchList = value(jsonDocument.toVariant(), "exactMatches").toList();
         if(exactMatchList.isEmpty())
-            noMatch();
+            return std::make_tuple(0, CurseforgeFileInfo(), QList<CurseforgeFileInfo>{});
         else {
             int id = value(exactMatchList.at(0), "id").toInt();
             auto file = CurseforgeFileInfo::fromVariant(value(exactMatchList.at(0), "file"));
@@ -111,79 +100,62 @@ QMetaObject::Connection CurseforgeAPI::getIdByFingerprint(const QString &fingerp
             for (const auto &variant : latestFileList)
                 fileList << CurseforgeFileInfo::fromVariant(variant);
 
-            callback(id, file, fileList);
+            return std::make_tuple(id, file, fileList);
         }
-        reply->deleteLater();
-    });
+    } };
 }
 
-QMetaObject::Connection CurseforgeAPI::getDescription(int id, std::function<void (QString)> callback)
+Reply<QString> CurseforgeAPI::getDescription(int id)
 {
     QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id) + "/description";
 
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
+    return { reply, [=]{
         if(reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
-            return;
+            return QString();
         }
 
-        auto description = reply->readAll();
-        callback(description);
-        reply->deleteLater();
-    });
+        return QString(reply->readAll());
+    } };
 }
 
-QMetaObject::Connection CurseforgeAPI::getFileInfo(int id, int FileID, std::function<void (CurseforgeFileInfo)> callback)
+Reply<CurseforgeFileInfo> CurseforgeAPI::getFileInfo(int id, int FileID)
 {
     QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id) + "/file/" + QString::number(FileID);
 
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
-
+    return { reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return CurseforgeFileInfo();
         }
         auto result = jsonDocument.toVariant();
-
-        auto fileInfo = CurseforgeFileInfo::fromVariant(result);
-        callback(fileInfo);
-        reply->deleteLater();
-    });
+        return CurseforgeFileInfo::fromVariant(result);
+    } };
 }
 
-QMetaObject::Connection CurseforgeAPI::getFiles(int id, std::function<void (QList<CurseforgeFileInfo>)> callback, std::function<void ()> failed)
+Reply<QList<CurseforgeFileInfo> > CurseforgeAPI::getFiles(int id)
 {
     QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id) + "/files";
 
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            failed();
-            return;
-        }
-
+    return { reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return QList<CurseforgeFileInfo>{};
         }
         auto resultList = jsonDocument.toVariant().toList();
 
@@ -191,38 +163,28 @@ QMetaObject::Connection CurseforgeAPI::getFiles(int id, std::function<void (QLis
         for(const auto &result : qAsConst(resultList))
             fileInfoList << CurseforgeFileInfo::fromVariant(result);
 
-        callback(fileInfoList);
-        reply->deleteLater();
-    });
+        return fileInfoList;
+    } };
 }
 
-QMetaObject::Connection CurseforgeAPI::getInfo(int id, std::function<void (CurseforgeModInfo)> callback)
+Reply<CurseforgeModInfo> CurseforgeAPI::getInfo(int id)
 {
     QUrl url = PREFIX + "/api/v2/addon/" + QString::number(id);
 
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
-
+    return { reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return CurseforgeModInfo();
         }
         auto result = jsonDocument.toVariant();
-
-        auto modInfo = CurseforgeModInfo::fromVariant(result);
-
-        callback(modInfo);
-        reply->deleteLater();
-    });
+        return CurseforgeModInfo::fromVariant(result);
+    } };
 }
 
 Reply<QList<GameVersion> > CurseforgeAPI::getMinecraftVersionList()
@@ -257,7 +219,7 @@ Reply<QList<CurseforgeCategoryInfo> > CurseforgeAPI::getSectionCategories(int se
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
-    return Reply<QList<CurseforgeCategoryInfo> >(reply, [=]{
+    return { reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
@@ -273,7 +235,6 @@ Reply<QList<CurseforgeCategoryInfo> > CurseforgeAPI::getSectionCategories(int se
                 continue;
             categoryList << category;
         }
-
         return categoryList;
-    });
+    } };
 }
