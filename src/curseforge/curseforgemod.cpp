@@ -86,9 +86,9 @@ void CurseforgeMod::acquireDescription()
     });
 }
 
-void CurseforgeMod::acquireAllFileList()
+std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> CurseforgeMod::acquireAllFileList()
 {
-    if(allFileListGetter_) return;
+    if(allFileListGetter_ && allFileListGetter_->isRunning()) return {};
     allFileListGetter_ = api_->getFiles(modInfo_.id()).asUnique();
     allFileListGetter_->setOnFinished([=](const QList<CurseforgeFileInfo> &fileList){
         modInfo_.allFileList_ = fileList;
@@ -96,6 +96,7 @@ void CurseforgeMod::acquireAllFileList()
     }, [=]{
         emit allFileListReady({});
     });
+    return allFileListGetter_;
 }
 
 const CurseforgeModInfo &CurseforgeMod::modInfo() const

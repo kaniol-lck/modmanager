@@ -31,7 +31,7 @@ LocalFileListWidget::LocalFileListWidget(QWidget *parent, LocalModPath *path) :
     if(path_){
         onUpdatesReady();
         connect(path_, &LocalModPath::updatableCountChanged, this, &LocalFileListWidget::onUpdatesReady);
-        connect(path_, &LocalModPath::updatesReady, this, &LocalFileListWidget::onUpdatesReady);
+        connect(path_->updateChecker(), &CheckSheet::finished, this, &LocalFileListWidget::onUpdatesReady);
     }
     ui->stackedWidget->setCurrentIndex(0);
 }

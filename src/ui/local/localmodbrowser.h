@@ -67,7 +67,7 @@ private slots:
     void onCheckUpdatesStarted();
     void onCheckCancelled();
     void onUpdateCheckedCountUpdated(int checkedCount, int totalCount);
-    void onUpdatesReady(int failedCount = 0);
+    void onCheckUpdatesFinished(bool success = true);
     void onUpdatableCountChanged();
 
     void onUpdatesStarted();

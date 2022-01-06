@@ -26,7 +26,7 @@ public:
     void acquireBasicInfo();
     void acquireIcon();
     void acquireDescription();
-    void acquireAllFileList();
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> acquireAllFileList();
 
     const CurseforgeModInfo &modInfo() const;
     void download(const CurseforgeFileInfo &fileInfo, LocalModPath *downloadPath = nullptr);
@@ -47,10 +47,10 @@ private:
     CurseforgeModInfo modInfo_;
     QAria2Downloader *downloader_;
 
-    std::unique_ptr<Reply<CurseforgeModInfo>> basicInfoGetter_;
+    std::shared_ptr<Reply<CurseforgeModInfo>> basicInfoGetter_;
     bool gettingIcon_ = false;
-    std::unique_ptr<Reply<QString>> descriptionGetter_;
-    std::unique_ptr<Reply<QList<CurseforgeFileInfo>>> allFileListGetter_;
+    std::shared_ptr<Reply<QString>> descriptionGetter_;
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> allFileListGetter_;
 };
 
 #endif // CURSEFORGEMOD_H

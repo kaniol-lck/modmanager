@@ -51,14 +51,12 @@ void WindowsTitleBar::setIconVisible(bool bl)
 #ifdef Q_OS_WIN
 void WindowsTitleBar::mouseMoveEvent(QMouseEvent *event)
 {
-    qDebug() << "?????" << event->pos();
     if(event->buttons()&Qt::LeftButton)
         parent_->move(event->pos() + parent_->pos() - clickPos_);
 }
 
 void WindowsTitleBar::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << "?????" << event->pos();
     if(event->button()==Qt::LeftButton)
         clickPos_=event->pos();
 }

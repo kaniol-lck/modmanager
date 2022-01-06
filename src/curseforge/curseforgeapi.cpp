@@ -113,11 +113,6 @@ Reply<QString> CurseforgeAPI::getDescription(int id)
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     return { reply, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return QString();
-        }
-
         return QString(reply->readAll());
     } };
 }

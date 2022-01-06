@@ -2,6 +2,7 @@
 #include "ui_localstatusbarwidget.h"
 
 #include <QButtonGroup>
+#include <QDebug>
 
 LocalStatusBarWidget::LocalStatusBarWidget(QWidget *parent) :
     QWidget(parent),

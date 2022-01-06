@@ -214,9 +214,6 @@ void LocalModPath::addModFile(LocalModFile *file)
             optiFineMod_->addModFile(file);
             containedTags_.addSubTagable(optiFineMod_);
             //connect update signal
-            connect(optiFineMod_, &LocalMod::updateFinished, this, [=](bool){
-                emit updatesReady();
-            });
             connect(optiFineMod_, &LocalMod::updateReady, this, &LocalModPath::updateUpdatableCount);
             connect(optiFineMod_, &LocalMod::updateFinished, this, &LocalModPath::updateUpdatableCount);
         }
@@ -233,9 +230,6 @@ void LocalModPath::addModFile(LocalModFile *file)
         auto mod = new LocalMod(this);
         mod->addModFile(file);
         //connect update signal
-        connect(mod, &LocalMod::updateFinished, this, [=](bool){
-            emit updatesReady();
-        });
         connect(mod, &LocalMod::updateReady, this, &LocalModPath::updateUpdatableCount);
         connect(mod, &LocalMod::updateFinished, this, &LocalModPath::updateUpdatableCount);
         modMap_[id] = mod;

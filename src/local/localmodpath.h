@@ -97,8 +97,6 @@ signals:
     void loadFinished();
     void checkCancelled();
 
-    void updatesReady(int failedCount = 0);
-
     //update
     void updatesStarted();
     void updatableCountChanged(int count);

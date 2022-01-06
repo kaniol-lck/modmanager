@@ -22,6 +22,8 @@ public:
 
     bool isWaiting() const;
 
+    int failedCount() const;
+
 public slots:
     void reset();
     void cancel();
@@ -29,15 +31,16 @@ public slots:
 signals:
     void started();
     void progress(int doneCount, int count);
-    void finished();
+    void finished(bool success = true);
 
 private slots:
-    void onOneFinished();
+    void onOneFinished(bool success = true);
 
 private:
     QList<QMetaObject::Connection> startConnections_;
     QList<QMetaObject::Connection> finishConnections_;
     int finishedCount_ = 0;
+    int failedCount_ = 0;
     bool isAdding_ = false;
 };
 

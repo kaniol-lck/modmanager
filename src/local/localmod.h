@@ -140,9 +140,9 @@ signals:
 
     //link
     void curseforgeReady(bool bl);
-    void curseforgeUpdateReady(bool hasUpdate, bool success = true);
+    void curseforgeUpdateReady(bool success = true);
     void modrinthReady(bool bl);
-    void modrinthUpdateReady(bool hasUpdate, bool success = true);
+    void modrinthUpdateReady(bool success = true);
 
     //update
 //    void checkUpdatesStarted();

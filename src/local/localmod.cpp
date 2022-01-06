@@ -151,48 +151,40 @@ void LocalMod::cancelChecking()
 
 void LocalMod::checkCurseforgeUpdate(bool force)
 {
-    emit checkCurseforgeUpdateStarted();
-
-    if(!curseforgeMod_){
-        emit curseforgeUpdateReady(false, false);
+    if(!curseforgeMod_)
         return;
-    }
 
+    emit checkCurseforgeUpdateStarted();
     //update file list
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
-//        connect(this, &LocalMod::checkCancelled, disconnecter(
-        curseforgeMod_->acquireAllFileList();
-        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, [=](const QList<CurseforgeFileInfo> &){
-            bool bl = curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
-            emit curseforgeUpdateReady(bl);
-            //TODO: failed
+        auto reply = curseforgeMod_->acquireAllFileList();
+        reply->setOnFinished([=](const QList<CurseforgeFileInfo> &){
+            curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
+            emit curseforgeUpdateReady(true);
+        }, [=]{
+            emit curseforgeUpdateReady(false);
         });
     }else{
-        bool bl = curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
-        emit curseforgeUpdateReady(bl);
+        curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
+        emit curseforgeUpdateReady(true);
     }
 }
 
 void LocalMod::checkModrinthUpdate(bool force)
 {
-    emit checkModrinthUpdateStarted();
-
-    if(!modrinthMod_){
-        emit modrinthUpdateReady(false, false);
+    if(!modrinthMod_)
         return;
-    }
 
+    emit checkModrinthUpdateStarted();
     auto updateFullInfo = [=]{
         if(!modrinthMod_->modInfo().fileList().isEmpty()){
-            bool bl = modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
-            emit modrinthUpdateReady(bl);
+            modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
+            emit modrinthUpdateReady(true);
         }else {
-//            connect(this, &LocalMod::checkCancelled, disconnecter(
             modrinthMod_->acquireFileList();
             connect(modrinthMod_, &ModrinthMod::fileListReady, this, [=](const QList<ModrinthFileInfo> &){
-                bool bl = modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
-                emit modrinthUpdateReady(bl);
-                //TODO: failed
+                modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
+                emit modrinthUpdateReady(true);
             });
         }
     };

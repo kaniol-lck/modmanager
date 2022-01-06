@@ -40,12 +40,6 @@ public:
 
     ~Reply()
     {
-        if(reply_) {
-            if(!reply_->isRunning() || !runBackground_){
-                qDebug() << "delete reply:" << reply_->url();
-                reply_->deleteLater();
-            }
-        }
         if(loop_) loop_->deleteLater();
     }
 
@@ -64,6 +58,11 @@ public:
         return reply_;
     }
 
+    bool isRunning() const
+    {
+        return reply_? reply_->isRunning() : false;
+    }
+
     void waitForFinished()
     {
         loop_->exec();
@@ -76,23 +75,29 @@ public:
     template<typename Func1>
     void setOnFinished(Func1 callback){
         //copy-capture to prevent this deconstructed
-        QObject::connect(reply_, &QNetworkReply::finished, [=, reply = reply_, resultInterpreter = resultInterpreter_]{
+        QObject::connect(reply_, &QNetworkReply::finished, [=, reply = reply_, resultInterpreter = resultInterpreter_, runBackground = runBackground_]{
             if(reply->error() != QNetworkReply::NoError) {
+                qDebug() << "error!!";
                 qDebug() << reply->errorString();
             } else
                 std::apply(callback, resultInterpreter());
+            reply->deleteLater();
+            if(!runBackground) reply_ = nullptr;
         });
     };
 
     template<typename Func1, typename Func2>
     void setOnFinished(Func1 callback, Func2 errorHandler){
         //copy-capture to prevent this deconstructed
-        QObject::connect(reply_, &QNetworkReply::finished, [=, reply = reply_, resultInterpreter = resultInterpreter_]{
+        QObject::connect(reply_, &QNetworkReply::finished, [=, reply = reply_, resultInterpreter = resultInterpreter_, runBackground = runBackground_]{
             if(reply->error() != QNetworkReply::NoError) {
+                qDebug() << "error!!";
                 qDebug() << reply->errorString();
                 errorHandler();
             } else
                 std::apply(callback, resultInterpreter());
+            reply->deleteLater();
+            if(!runBackground) reply_ = nullptr;
         });
     };
 

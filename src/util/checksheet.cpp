@@ -18,17 +18,17 @@ void CheckSheet::done()
 //    qDebug() << startConnections_.size() << finishConnections_.size();
     if(startConnections_.isEmpty()){
 //        qDebug() << "finished: nothing to do";
-        emit finished();
+        emit finished(!failedCount_);
     } else if(finishedCount_ >= finishConnections_.count()){
 //        qDebug() << "finished";
         reset();
-        emit finished();
+        emit finished(!failedCount_);
     }
 }
 
 bool CheckSheet::isWaiting() const
 {
-    return finishedCount_ < finishConnections_.count();
+    return isAdding_ || finishedCount_ < finishConnections_.count();
 }
 
 void CheckSheet::reset()
@@ -42,6 +42,7 @@ void CheckSheet::reset()
     startConnections_.clear();
     finishConnections_.clear();
     finishedCount_ = 0;
+    failedCount_ = 0;
 }
 
 void CheckSheet::cancel()
@@ -49,15 +50,21 @@ void CheckSheet::cancel()
     reset();
 }
 
-void CheckSheet::onOneFinished()
+void CheckSheet::onOneFinished(bool success)
 {
     finishedCount_ ++;
+    if(!success) failedCount_ ++;
     if(isAdding_) return;
     emit progress(finishedCount_, finishConnections_.count());
 //    qDebug() << finishedCount_ << "/" << finishConnections_.count();
     if(finishedCount_ >= finishConnections_.count()){
 //        qDebug() << "finished";
+        emit finished(!failedCount_);
         reset();
-        emit finished();
     }
+}
+
+int CheckSheet::failedCount() const
+{
+    return failedCount_;
 }

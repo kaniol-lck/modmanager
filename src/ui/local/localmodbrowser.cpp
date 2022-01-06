@@ -242,9 +242,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_->modsLinker(), &CheckSheet::progress, this, &LocalModBrowser::onLinkProgress);
     connect(modPath_->modsLinker(), &CheckSheet::finished, this, &LocalModBrowser::onLinkFinished);
     connect(modPath_->updateChecker(), &CheckSheet::started, this, &LocalModBrowser::onCheckUpdatesStarted);
-    connect(modPath_->updateChecker(), &CheckSheet::finished, this, &LocalModBrowser::onCheckCancelled);
+//    connect(modPath_->updateChecker(), &CheckSheet::finished, this, &LocalModBrowser::onCheckCancelled);
     connect(modPath_->updateChecker(), &CheckSheet::progress, this, &LocalModBrowser::onUpdateCheckedCountUpdated);
-    connect(modPath_, &LocalModPath::updatesReady, this, &LocalModBrowser::onUpdatesReady);
+    connect(modPath_->updateChecker(), &CheckSheet::finished, this, &LocalModBrowser::onCheckUpdatesFinished);
     connect(modPath_, &LocalModPath::updatableCountChanged, this, &LocalModBrowser::onUpdatableCountChanged);
     connect(modPath_, &LocalModPath::updatesStarted, this, &LocalModBrowser::onUpdatesStarted);
     connect(modPath_, &LocalModPath::updatesProgress, this, &LocalModBrowser::onUpdatesProgress);
@@ -375,11 +375,12 @@ void LocalModBrowser::onCheckUpdatesStarted()
     ui->updateWidget->setVisible(false);
     onUpdateCheckedCountUpdated(0, 0);
     progressBar_->setMaximum(modPath_->modList().count());
+    statusBarWidget_->label()->setText(tr("Checking mod updates..."));
 }
 
 void LocalModBrowser::onCheckCancelled()
 {
-    onUpdatesReady();
+//    onCheckUpdatesFinished();
 }
 
 void LocalModBrowser::onUpdateCheckedCountUpdated(int checkedCount, int totalCount)
@@ -389,14 +390,15 @@ void LocalModBrowser::onUpdateCheckedCountUpdated(int checkedCount, int totalCou
     progressBar_->setValue(checkedCount);
 }
 
-void LocalModBrowser::onUpdatesReady(int failedCount)
+void LocalModBrowser::onCheckUpdatesFinished(bool success)
 {
     if(modPath_->isUpdating()) return;
     ui->actionCheck_Updates->setText(tr("Check Updates"));
     onUpdatableCountChanged();
     updateStatusText();
-    if(failedCount)
-        QMessageBox::information(this, tr("Update Checking Incompleted"), tr("%1 mods failed checking update because of network.").arg(failedCount));
+    qDebug() << success << modPath_->updateChecker()->failedCount();
+    if(!success)
+        QMessageBox::information(this, tr("Update Checking Incompleted"), tr("%1 mods failed checking update because of network.").arg(modPath_->updateChecker()->failedCount()));
 }
 
 void LocalModBrowser::onUpdatableCountChanged()
@@ -442,7 +444,7 @@ void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
         str.append("\n").append(tr("You can revert update if find any incompatibility."));
     QMessageBox::information(this, tr("Update Finished"), str);
 
-    onUpdatesReady();
+    onCheckUpdatesFinished();
 }
 
 void LocalModBrowser::updateStatusText()
