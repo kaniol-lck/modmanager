@@ -101,7 +101,7 @@ std::shared_ptr<Reply<QList<ModrinthFileInfo> > > ModrinthMod::acquireFileList()
     fileListGetter_->setOnFinished([=](const auto &files){
         modInfo_.fileList_ = files;
         emit fileListReady(files);
-    }, [=]{
+    }, [=](auto){
         emit fileListReady({});
     });
     return fileListGetter_;
