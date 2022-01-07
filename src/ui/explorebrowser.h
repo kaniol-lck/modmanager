@@ -28,6 +28,8 @@ public:
     QIcon icon() const override;
     QString name() const override;
 
+    LocalModPath *downloadPath() const;
+
 public slots:
     virtual void refresh() = 0;
     virtual void searchModByPathInfo(const LocalModPathInfo &info) = 0;

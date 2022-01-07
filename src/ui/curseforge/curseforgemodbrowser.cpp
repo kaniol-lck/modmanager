@@ -538,7 +538,6 @@ void CurseforgeModBrowser::on_actionCopy_Website_Link_triggered()
 
 void CurseforgeModBrowser::on_actionOpen_Curseforge_Mod_Dialog_triggered()
 {
-    if(!selectedMod_) return;
     if(selectedMod_ && !selectedMod_->parent()){
         auto dialog = new CurseforgeModDialog(this, selectedMod_);
         //set parent

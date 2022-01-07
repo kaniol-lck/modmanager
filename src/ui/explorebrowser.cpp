@@ -213,3 +213,8 @@ QMenu *ExploreBrowser::getMenu()
 {
     return nullptr;
 }
+
+LocalModPath *ExploreBrowser::downloadPath() const
+{
+    return downloadPath_;
+}

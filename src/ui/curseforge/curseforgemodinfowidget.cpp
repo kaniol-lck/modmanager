@@ -1,17 +1,21 @@
+#include "curseforgemoddialog.h"
 #include "curseforgemodinfowidget.h"
 #include "ui_curseforgemodinfowidget.h"
 
 #include <QMenu>
 
+#include "curseforgemodbrowser.h"
 #include "curseforge/curseforgemod.h"
 #include "util/smoothscrollbar.h"
 #include "util/flowlayout.h"
 #include "util/funcutil.h"
 #include "util/youdaotranslator.h"
+#include "local/localmodpath.h"
 
-CurseforgeModInfoWidget::CurseforgeModInfoWidget(QWidget *parent) :
+CurseforgeModInfoWidget::CurseforgeModInfoWidget(CurseforgeModBrowser *parent) :
     QWidget(parent),
-    ui(new Ui::CurseforgeModInfoWidget)
+    ui(new Ui::CurseforgeModInfoWidget),
+    browser_(parent)
 {
     ui->setupUi(this);
     ui->scrollArea->setVisible(false);
@@ -143,5 +147,21 @@ void CurseforgeModInfoWidget::on_modSummary_customContextMenuRequested(const QPo
         });
     }
     menu->exec(ui->modSummary->mapToGlobal(pos));
+}
+
+void CurseforgeModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if(mod_ && !mod_->parent()){
+        auto dialog = new CurseforgeModDialog(browser_, mod_);
+        //set parent
+        mod_->setParent(dialog);
+        dialog->setDownloadPath(browser_->downloadPath());
+        connect(browser_, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
+        connect(dialog, &CurseforgeModDialog::finished, this, [=]{
+            mod_->setParent(nullptr);
+        });
+        dialog->show();
+    }
+    QWidget::mouseDoubleClickEvent(event);
 }
 

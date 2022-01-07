@@ -77,7 +77,6 @@ public:
         //copy-capture to prevent this deconstructed
         QObject::connect(reply_, &QNetworkReply::finished, [=, reply = reply_, resultInterpreter = resultInterpreter_, runBackground = runBackground_]{
             if(reply->error() != QNetworkReply::NoError) {
-                qDebug() << "error!!";
                 qDebug() << reply->errorString();
                 if(errorHandler) errorHandler(reply->error());
             } else

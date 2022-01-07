@@ -3,6 +3,7 @@
 
 #include <QGraphicsDropShadowEffect>
 
+#include "localmoddialog.h"
 #include "local/localmodpath.h"
 #include "local/localmod.h"
 #include "curseforge/curseforgemod.h"
@@ -110,4 +111,13 @@ void LocalModInfoWidget::updatePathInfo()
     ui->path->setText(path_->info().path());
     ui->pathGameVersion->setText(path_->info().gameVersion());
     ui->pathLoaderType->setText(ModLoaderType::toString(path_->info().loaderType()));
+}
+
+void LocalModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if(mod_ && ui->stackedWidget->currentIndex() == 1){
+        auto dialog = new LocalModDialog(this, mod_);
+        dialog->show();
+    }
+    QWidget::mouseDoubleClickEvent(event);
 }

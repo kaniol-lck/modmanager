@@ -3,14 +3,18 @@
 
 #include <QMenu>
 
+#include "modrinthmodbrowser.h"
+#include "modrinthmoddialog.h"
 #include "modrinth/modrinthmod.h"
+#include "local/localmodpath.h"
 #include "util/smoothscrollbar.h"
 #include "util/funcutil.h"
 #include "util/youdaotranslator.h"
 
-ModrinthModInfoWidget::ModrinthModInfoWidget(QWidget *parent) :
+ModrinthModInfoWidget::ModrinthModInfoWidget(ModrinthModBrowser *parent) :
     QWidget(parent),
-    ui(new Ui::ModrinthModInfoWidget)
+    ui(new Ui::ModrinthModInfoWidget),
+    browser_(parent)
 {
     ui->setupUi(this);
     ui->scrollArea->setVisible(false);
@@ -144,5 +148,21 @@ void ModrinthModInfoWidget::on_modSummary_customContextMenuRequested(const QPoin
         });
     }
     menu->exec(ui->modSummary->mapToGlobal(pos));
+}
+
+void ModrinthModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if(mod_ && !mod_->parent()){
+        auto dialog = new ModrinthModDialog(browser_, mod_);
+        //set parent
+        mod_->setParent(dialog);
+        dialog->setDownloadPath(browser_->downloadPath());
+        connect(browser_, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
+        connect(dialog, &ModrinthModDialog::finished, this, [=]{
+            mod_->setParent(nullptr);
+        });
+        dialog->show();
+    }
+    QWidget::mouseDoubleClickEvent(event);
 }
 

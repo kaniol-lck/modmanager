@@ -24,6 +24,10 @@ signals:
 private slots:
     void updateInfo();
     void updatePathInfo();
+
+protected:
+    virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
+
 private:
     LocalModPath *path_ = nullptr;
     Ui::LocalModInfoWidget *ui;
