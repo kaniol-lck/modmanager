@@ -7,6 +7,7 @@
 
 #include <QListView>
 
+class DownloadPathSelectMenu;
 class QComboBox;
 class LocalModPath;
 class QStandardItem;
@@ -32,7 +33,7 @@ public:
 
 public slots:
     virtual void refresh() = 0;
-    virtual void searchModByPathInfo(const LocalModPathInfo &info) = 0;
+    virtual void searchModByPathInfo(LocalModPath *path) = 0;
 
     void openDialog();
 
@@ -50,7 +51,7 @@ private slots:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void initUi(QComboBox *downloadPathSelect);
+    void initUi();
     bool isRowHidden(int row);
     void setRowHidden(int row, bool hidden);
     virtual void loadMore();
@@ -62,10 +63,9 @@ protected:
     QStandardItemModel *model_;
     QMenu *modMenu_;
     QMenu *pathMenu_;
-    //init me!
-    QComboBox *downloadPathSelect_ = nullptr;
+    DownloadPathSelectMenu *downloadPathSelectMenu_;
     //mod download dest
-    LocalModPath *downloadPath_ = nullptr;
+//    LocalModPath *downloadPath_ = nullptr;
 
 private:
     QListView *modListView_;

@@ -26,15 +26,15 @@ public:
         other.resultInterpreter_ = {};
     }
 
-    inline bool runBackground() const
+    bool runBackground() const
     {
         return runBackground_;
     }
 
-    inline void setRunBackground(bool newRunBackground)
+    void setRunBackground(bool newRunBackground)
     {
         runBackground_ = newRunBackground;
-    };
+    }
 
     Reply(const Reply &other) = delete;
 

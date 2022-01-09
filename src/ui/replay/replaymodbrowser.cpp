@@ -8,6 +8,7 @@
 #include <QStandardItem>
 #include <QStatusBar>
 
+#include "ui/downloadpathselectmenu.h"
 #include "ui/explorestatusbarwidget.h"
 #include "replaymoditemwidget.h"
 #include "replay/replayapi.h"
@@ -24,26 +25,23 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     api_(new ReplayAPI())
 {
     ui->setupUi(this);
-    initUi(ui->downloadPathSelect);
+    initUi();
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
     ui->searchBar->addWidget(ui->searchText);
 
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->versionSelect);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_3);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->loaderSelect);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_4);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->downloadPathSelect);
+    ui->toolBar->addWidget(ui->label);
+    ui->toolBar->addWidget(ui->versionSelect);
+    ui->toolBar->addWidget(ui->label_3);
+    ui->toolBar->addWidget(ui->loaderSelect);
+    ui->toolBar->addAction(downloadPathSelectMenu_->menuAction());
 
     for(const auto &type : ModLoaderType::replay)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
 
-    updateLocalPathList();
     updateStatusText();
-    connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ReplayModBrowser::updateLocalPathList);
 
     connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
     connect(ui->loaderSelect, &QComboBox::currentTextChanged, this, &ReplayModBrowser::filterList);
@@ -73,11 +71,11 @@ void ReplayModBrowser::refresh()
     getModList();
 }
 
-void ReplayModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
+void ReplayModBrowser::searchModByPathInfo(LocalModPath *path)
 {
-    ui->versionSelect->setCurrentText(info.gameVersion());
-    ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
-    ui->downloadPathSelect->setCurrentText(info.displayName());
+    ui->versionSelect->setCurrentText(path->info().gameVersion());
+    ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(path->info().loaderType()));
+    downloadPathSelectMenu_->setDownloadPath(path);
     filterList();
 }
 
@@ -89,27 +87,6 @@ void ReplayModBrowser::updateUi()
 ExploreBrowser *ReplayModBrowser::another()
 {
     return new ReplayModBrowser;
-}
-
-void ReplayModBrowser::updateLocalPathList()
-{
-    //remember selected path
-    LocalModPath *selectedPath = nullptr;
-    auto index = ui->downloadPathSelect->currentIndex();
-    if(index >= 0 && index < LocalModPathManager::pathList().size())
-        selectedPath = LocalModPathManager::pathList().at(ui->downloadPathSelect->currentIndex());
-
-    ui->downloadPathSelect->clear();
-    ui->downloadPathSelect->addItem(tr("Custom"));
-    for(const auto &path : LocalModPathManager::pathList())
-        ui->downloadPathSelect->addItem(path->info().displayName());
-
-    //reset selected path
-    if(selectedPath != nullptr){
-        auto index = LocalModPathManager::pathList().indexOf(selectedPath);
-        if(index >= 0)
-            ui->downloadPathSelect->setCurrentIndex(index);
-    }
 }
 
 void ReplayModBrowser::getModList()
@@ -160,7 +137,7 @@ QWidget *ReplayModBrowser::getIndexWidget(QStandardItem *item)
     auto mod = item->data().value<ReplayMod*>();
     if(mod){
         auto widget = new ReplayModItemWidget(this, mod);
-        widget->setDownloadPath(downloadPath_);
+        widget->setDownloadPath(downloadPath());
         connect(this, &ReplayModBrowser::downloadPathChanged, widget, &ReplayModItemWidget::setDownloadPath);
         return widget;
     } else
@@ -189,14 +166,3 @@ void ReplayModBrowser::updateStatusText()
     auto str = tr("Loaded %1 mods from ReplayMod.").arg(model_->rowCount() - 1);
     ui->statusbar->showMessage(str);
 }
-
-void ReplayModBrowser::on_actionOpen_Folder_triggered()
-{
-    QString path;
-    if(downloadPath_)
-        path = downloadPath_->info().path();
-    else
-        path = Config().getDownloadPath();
-    openFileInFolder(path);
-}
-

@@ -12,6 +12,7 @@
 #include <QActionGroup>
 #include <QDesktopServices>
 
+#include "ui/downloadpathselectmenu.h"
 #include "curseforgemodinfowidget.h"
 #include "curseforgefilelistwidget.h"
 #include "ui/explorestatusbarwidget.h"
@@ -42,19 +43,18 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     fileListWidget_->hide();
     ui->setupUi(this);
     ui->menu_Path->insertActions(ui->menu_Path->actions().first(), pathMenu_->actions());
-    initUi(ui->downloadPathSelect);
+    initUi();
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->versionSelectButton);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_5);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->categorySelectButton);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_3);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->loaderSelect);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_4);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->downloadPathSelect);
+    ui->toolBar->addWidget(ui->label);
+    ui->toolBar->addWidget(ui->versionSelectButton);
+    ui->toolBar->addWidget(ui->label_5);
+    ui->toolBar->addWidget(ui->categorySelectButton);
+    ui->toolBar->addWidget(ui->label_3);
+    ui->toolBar->addWidget(ui->loaderSelect);
+    ui->toolBar->addAction(downloadPathSelectMenu_->menuAction());
 
     ui->searchBar->addWidget(ui->searchText);
     ui->searchBar->addWidget(ui->sortSelect);
@@ -129,13 +129,13 @@ void CurseforgeModBrowser::refresh()
     search();
 }
 
-void CurseforgeModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
+void CurseforgeModBrowser::searchModByPathInfo(LocalModPath *path)
 {
-    currentGameVersion_ = info.gameVersion();
-    ui->versionSelectButton->setText(info.gameVersion());
-    currentLoaderType_ = info.loaderType();
-    ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(info.loaderType()));
-    ui->downloadPathSelect->setCurrentText(info.displayName());
+    currentGameVersion_ = path->info().gameVersion();
+    ui->versionSelectButton->setText(path->info().gameVersion());
+    currentLoaderType_ = path->info().loaderType();
+    ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(path->info().loaderType()));
+    downloadPathSelectMenu_->setDownloadPath(path);
     getModList(currentName_);
 }
 
@@ -380,7 +380,7 @@ QDialog *CurseforgeModBrowser::getDialog(QStandardItem *item)
         auto dialog = new CurseforgeModDialog(this, mod);
         //set parent
         mod->setParent(dialog);
-        dialog->setDownloadPath(downloadPath_);
+        dialog->setDownloadPath(downloadPath());
         connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
         connect(dialog, &CurseforgeModDialog::finished, this, [=]{
             mod->setParent(nullptr);
@@ -437,7 +437,7 @@ QWidget *CurseforgeModBrowser::getIndexWidget(QStandardItem *item)
     if(mod){
         auto fileInfo = mod->modInfo().latestFileInfo(currentGameVersion_, currentLoaderType_);
         auto widget = new CurseforgeModItemWidget(nullptr, mod, fileInfo);
-        widget->setDownloadPath(downloadPath_);
+        widget->setDownloadPath(downloadPath());
         connect(this, &CurseforgeModBrowser::downloadPathChanged, widget, &CurseforgeModItemWidget::setDownloadPath);
         return widget;
     } else
@@ -468,16 +468,6 @@ ExploreBrowser *CurseforgeModBrowser::another()
 void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
 {
     getModList(currentName_);
-}
-
-void CurseforgeModBrowser::on_actionOpen_Folder_triggered()
-{
-    QString path;
-    if(downloadPath_)
-        path = downloadPath_->info().path();
-    else
-        path = Config().getDownloadPath();
-    openFileInFolder(path);
 }
 
 void CurseforgeModBrowser::on_actionMod_triggered()
@@ -525,7 +515,7 @@ void CurseforgeModBrowser::on_menuDownload_aboutToShow()
                 selectedMod_->modInfo().latestFiles() : selectedMod_->modInfo().allFileList();
     for(auto &&file : files){
         ui->menuDownload->addAction(file.displayName() + " ("+ sizeConvert(file.size()) + ")", this, [=]{
-            selectedMod_->download(file, downloadPath_);
+            selectedMod_->download(file, downloadPath());
         });
     }
 }
@@ -542,7 +532,7 @@ void CurseforgeModBrowser::on_actionOpen_Curseforge_Mod_Dialog_triggered()
         auto dialog = new CurseforgeModDialog(this, selectedMod_);
         //set parent
         selectedMod_->setParent(dialog);
-        dialog->setDownloadPath(downloadPath_);
+        dialog->setDownloadPath(downloadPath());
         connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
         connect(dialog, &CurseforgeModDialog::finished, this, [=]{
             selectedMod_->setParent(nullptr);

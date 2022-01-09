@@ -84,44 +84,6 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QComboBox" name="downloadPathSelect">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>130</y>
-      <width>102</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>139</y>
-      <width>60</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="text">
-     <string>Save To:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
    <widget class="QToolButton" name="categorySelectButton">
     <property name="geometry">
      <rect>
@@ -233,7 +195,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionOpen_Folder"/>
   </widget>
   <widget class="QToolBar" name="searchBar">
    <property name="windowTitle">
@@ -311,15 +272,6 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <action name="actionOpen_Folder">
-   <property name="icon">
-    <iconset theme="folder">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>Open Folder</string>
-   </property>
-  </action>
   <action name="actionMod">
    <property name="checkable">
     <bool>true</bool>

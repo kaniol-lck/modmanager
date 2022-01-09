@@ -30,28 +30,6 @@
      </sizepolicy>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>182</x>
-      <y>220</y>
-      <width>60</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="text">
-     <string>Save To:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="searchText">
     <property name="geometry">
      <rect>
@@ -85,22 +63,6 @@
     </property>
     <property name="text">
      <string>Show Preview</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="downloadPathSelect">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>220</y>
-      <width>102</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -152,7 +114,6 @@
    </attribute>
    <addaction name="actionGet_OptiFabric"/>
    <addaction name="actionGet_OptiForge"/>
-   <addaction name="actionOpen_Folder"/>
   </widget>
   <widget class="QToolBar" name="searchBar">
    <property name="windowTitle">
@@ -181,15 +142,6 @@
    </property>
    <property name="text">
     <string>Get OptiForge</string>
-   </property>
-  </action>
-  <action name="actionOpen_Folder">
-   <property name="icon">
-    <iconset theme="folder">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>Open Folder</string>
    </property>
   </action>
  </widget>

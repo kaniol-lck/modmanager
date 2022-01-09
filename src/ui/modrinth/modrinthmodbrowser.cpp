@@ -8,6 +8,7 @@
 #include <QStandardItem>
 #include <QDesktopServices>
 
+#include "ui/downloadpathselectmenu.h"
 #include "modrinthmodinfowidget.h"
 #include "modrinthfilelistwidget.h"
 #include "ui/explorestatusbarwidget.h"
@@ -36,19 +37,18 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
-    initUi(ui->downloadPathSelect);
+    initUi();
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->versionSelectButton);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_5);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->categorySelectButton);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_3);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->loaderSelect);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->label_4);
-    ui->toolBar->insertWidget(ui->actionOpen_Folder, ui->downloadPathSelect);
+    ui->toolBar->addWidget(ui->label);
+    ui->toolBar->addWidget(ui->versionSelectButton);
+    ui->toolBar->addWidget(ui->label_5);
+    ui->toolBar->addWidget(ui->categorySelectButton);
+    ui->toolBar->addWidget(ui->label_3);
+    ui->toolBar->addWidget(ui->loaderSelect);
+    ui->toolBar->addAction(downloadPathSelectMenu_->menuAction());
 
     ui->searchBar->addWidget(ui->searchText);
     ui->searchBar->addWidget(ui->sortSelect);
@@ -109,14 +109,14 @@ void ModrinthModBrowser::refresh()
     search();
 }
 
-void ModrinthModBrowser::searchModByPathInfo(const LocalModPathInfo &info)
+void ModrinthModBrowser::searchModByPathInfo(LocalModPath *path)
 {
-    currentGameVersions_ = { info.gameVersion() };
-    ui->versionSelectButton->setText(info.gameVersion());
+    currentGameVersions_ = { path->info().gameVersion() };
+    ui->versionSelectButton->setText(path->info().gameVersion());
     ui->loaderSelect->blockSignals(true);
-    ui->loaderSelect->setCurrentIndex(ModLoaderType::modrinth.indexOf(info.loaderType()));
+    ui->loaderSelect->setCurrentIndex(ModLoaderType::modrinth.indexOf(path->info().loaderType()));
     ui->loaderSelect->blockSignals(false);
-    ui->downloadPathSelect->setCurrentText(info.displayName());
+    downloadPathSelectMenu_->setDownloadPath(path);
     getModList(currentName_);
 }
 
@@ -433,7 +433,7 @@ QDialog *ModrinthModBrowser::getDialog(QStandardItem *item)
         auto dialog = new ModrinthModDialog(this, mod);
         //set parent
         mod->setParent(dialog);
-        dialog->setDownloadPath(downloadPath_);
+        dialog->setDownloadPath(downloadPath());
         connect(this, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
         connect(dialog, &ModrinthModDialog::finished, this, [=]{
             mod->setParent(nullptr);
@@ -473,7 +473,7 @@ QWidget *ModrinthModBrowser::getIndexWidget(QStandardItem *item)
     auto mod = item->data().value<ModrinthMod*>();
     if(mod){
         auto widget = new ModrinthModItemWidget(nullptr, mod);
-        widget->setDownloadPath(downloadPath_);
+        widget->setDownloadPath(downloadPath());
         connect(this, &ModrinthModBrowser::downloadPathChanged, widget, &ModrinthModItemWidget::setDownloadPath);
         return widget;
     } else
@@ -503,16 +503,6 @@ ExploreBrowser *ModrinthModBrowser::another()
     return new ModrinthModBrowser;
 }
 
-void ModrinthModBrowser::on_actionOpen_Folder_triggered()
-{
-    QString path;
-    if(downloadPath_)
-        path = downloadPath_->info().path();
-    else
-        path = Config().getDownloadPath();
-    openFileInFolder(path);
-}
-
 void ModrinthModBrowser::on_menuDownload_aboutToShow()
 {
     ui->menuDownload->clear();
@@ -520,7 +510,7 @@ void ModrinthModBrowser::on_menuDownload_aboutToShow()
     if(!selectedMod_) return;
     for(auto &&file : selectedMod_->modInfo().fileList()){
         ui->menuDownload->addAction(file.displayName(), this, [=]{
-            selectedMod_->download(file, downloadPath_);
+            selectedMod_->download(file, downloadPath());
         });
     }
 }
@@ -538,7 +528,7 @@ void ModrinthModBrowser::on_actionOpen_Modrinth_Mod_Dialog_triggered()
         auto dialog = new ModrinthModDialog(this, selectedMod_);
         //set parent
         selectedMod_->setParent(dialog);
-        dialog->setDownloadPath(downloadPath_);
+        dialog->setDownloadPath(downloadPath());
         connect(this, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
         connect(dialog, &ModrinthModDialog::finished, this, [=]{
             selectedMod_->setParent(nullptr);

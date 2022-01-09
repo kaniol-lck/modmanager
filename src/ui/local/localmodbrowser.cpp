@@ -140,7 +140,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
             auto browser = item->data().value<ExploreBrowser *>();
             findNewMenu->addAction(browser->icon(), browser->name(), [=]{
                 pageSwitcher_->setPage(PageSwitcher::Explore, row);
-                browser->searchModByPathInfo(modPath_->info());
+                browser->searchModByPathInfo(modPath_);
             });
         }
     });

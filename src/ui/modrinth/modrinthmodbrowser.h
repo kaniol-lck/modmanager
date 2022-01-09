@@ -43,7 +43,7 @@ signals:
 
 public slots:
     void refresh() override;
-    void searchModByPathInfo(const LocalModPathInfo &info) override;
+    void searchModByPathInfo(LocalModPath *path) override;
     void updateUi() override;
 
 private slots:
@@ -53,7 +53,6 @@ private slots:
     void updateStatusText();
     void on_sortSelect_currentIndexChanged(int);
     void on_loaderSelect_currentIndexChanged(int);
-    void on_actionOpen_Folder_triggered();
     void on_menuDownload_aboutToShow();
     void on_actionCopy_Website_Link_triggered();
     void on_actionOpen_Modrinth_Mod_Dialog_triggered();

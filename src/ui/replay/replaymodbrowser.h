@@ -24,16 +24,14 @@ public:
 
 public slots:
     void refresh() override;
-    void searchModByPathInfo(const LocalModPathInfo &info) override;
+    void searchModByPathInfo(LocalModPath *path) override;
     void updateUi() override;
 
     ExploreBrowser *another() override;
 
 private slots:
-    void updateLocalPathList();
     void filterList();
     void updateStatusText();
-    void on_actionOpen_Folder_triggered();
 
 private:
     Ui::ReplayModBrowser *ui;

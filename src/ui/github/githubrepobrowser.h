@@ -31,7 +31,7 @@ public:
 
 public slots:
     void refresh() override;
-    void searchModByPathInfo(const LocalModPathInfo &info) override;
+    void searchModByPathInfo(LocalModPath *path) override;
     void updateUi() override;
 
     ExploreBrowser *another() override;
@@ -40,10 +40,8 @@ signals:
     void downloadPathChanged(LocalModPath *path);
 
 private slots:
-//    void updateLocalPathList();
 //    void filterList();
     void updateStatusText();
-//    void on_actionOpen_Folder_triggered();
 
 private:
     GitHubRepoInfo info_;

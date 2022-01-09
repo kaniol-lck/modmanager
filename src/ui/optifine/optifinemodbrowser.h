@@ -25,7 +25,7 @@ public:
 
 public slots:
     void refresh() override;
-    void searchModByPathInfo(const LocalModPathInfo &info) override;
+    void searchModByPathInfo(LocalModPath *path) override;
     void updateUi() override;
 
     ExploreBrowser *another() override;
@@ -35,7 +35,6 @@ private slots:
     void updateStatusText();
     void on_actionGet_OptiFabric_triggered();
     void on_actionGet_OptiForge_triggered();
-    void on_actionOpen_Folder_triggered();
 
 private:
     Ui::OptifineModBrowser *ui;
