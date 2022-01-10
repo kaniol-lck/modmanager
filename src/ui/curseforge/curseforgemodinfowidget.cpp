@@ -155,8 +155,6 @@ void CurseforgeModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)
         auto dialog = new CurseforgeModDialog(browser_, mod_);
         //set parent
         mod_->setParent(dialog);
-        dialog->setDownloadPath(browser_->downloadPath());
-        connect(browser_, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
         connect(dialog, &CurseforgeModDialog::finished, this, [=]{
             mod_->setParent(nullptr);
         });

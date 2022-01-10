@@ -1,3 +1,4 @@
+#include "optifinemodbrowser.h"
 #include "optifinemoditemwidget.h"
 #include "ui_optifinemoditemwidget.h"
 
@@ -7,9 +8,10 @@
 #include "util/funcutil.h"
 #include "config.hpp"
 
-OptifineModItemWidget::OptifineModItemWidget(QWidget *parent, OptifineMod *mod) :
+OptifineModItemWidget::OptifineModItemWidget(OptifineModBrowser *parent, OptifineMod *mod) :
     QWidget(parent),
     ui(new Ui::OptifineModItemWidget),
+    browser_(parent),
     mod_(mod)
 {
     ui->setupUi(this);
@@ -39,8 +41,8 @@ void OptifineModItemWidget::on_downloadButton_clicked()
     ui->downloadProgress->setVisible(true);
     QAria2Downloader *downloader;
     DownloadFileInfo info(mod_->modInfo());
-    if(downloadPath_)
-        downloader = downloadPath_->downloadNewMod(info);
+    if(auto downloadPath = browser_->downloadPath())
+        downloader = downloadPath->downloadNewMod(info);
     else{
         info.setPath(Config().getDownloadPath());
         downloader = DownloadManager::manager()->download(info);
@@ -58,14 +60,12 @@ void OptifineModItemWidget::on_downloadButton_clicked()
     });
 }
 
-void OptifineModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
+void OptifineModItemWidget::onDownloadPathChanged()
 {
-    downloadPath_ = newDownloadPath;
-
     if(mod_->modInfo().downloadUrl().isEmpty()) return;
     bool bl = false;
-    if(downloadPath_)
-        bl = hasFile(downloadPath_->info().path(), mod_->modInfo().fileName()); //TODO
+    if(auto downloadPath = browser_->downloadPath())
+        bl = hasFile(downloadPath->info().path(), mod_->modInfo().fileName()); //TODO
     else
         bl = hasFile(Config().getDownloadPath(), mod_->modInfo().fileName()); //TODO
 

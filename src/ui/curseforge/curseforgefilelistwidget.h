@@ -4,8 +4,10 @@
 #include <QWidget>
 
 class CurseforgeMod;
+class CurseforgeModBrowser;
 class LocalModPath;
 class QStandardItemModel;
+class DownloadPathSelectMenu;
 namespace Ui {
 class CurseforgeFileListWidget;
 }
@@ -15,17 +17,18 @@ class CurseforgeFileListWidget : public QWidget
     Q_OBJECT
 
 public:
+    explicit CurseforgeFileListWidget(CurseforgeModBrowser *parent);
     explicit CurseforgeFileListWidget(QWidget *parent = nullptr);
     ~CurseforgeFileListWidget();
 
     void setMod(CurseforgeMod *mod);
+    void setBrowser(CurseforgeModBrowser *newBrowser);
+    DownloadPathSelectMenu *downloadPathSelectMenu() const;
 
 signals:
     void modChanged();
-    void downloadPathChanged(LocalModPath *path);
 
 public slots:
-    void setDownloadPath(LocalModPath *newDownloadPath);
     void updateUi();
 
 private slots:
@@ -37,9 +40,10 @@ protected:
 
 private:
     Ui::CurseforgeFileListWidget *ui;
+    CurseforgeModBrowser *browser_ = nullptr;
+    DownloadPathSelectMenu *downloadPathSelectMenu_ = nullptr;
     QStandardItemModel *model_;
     CurseforgeMod *mod_ = nullptr;
-    LocalModPath *downloadPath_ = nullptr;
 };
 
 #endif // CURSEFORGEFILELISTWIDGET_H

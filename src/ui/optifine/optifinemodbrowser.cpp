@@ -37,7 +37,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
 
     ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->label);
     ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->versionSelect);
-    ui->toolBar->addAction(downloadPathSelectMenu_->menuAction());
+    ui->toolBar->addMenu(downloadPathSelectMenu_);
 
     updateStatusText();
     connect(ui->showPreview, &QCheckBox::stateChanged, this, &OptifineModBrowser::filterList);
@@ -77,7 +77,6 @@ void OptifineModBrowser::refresh()
 void OptifineModBrowser::searchModByPathInfo(LocalModPath *path)
 {
     ui->versionSelect->setCurrentText(path->info().gameVersion());
-    downloadPathSelectMenu_->setDownloadPath(path);
     downloadPathSelectMenu_->setDownloadPath(path);
     filterList();
 }
@@ -170,8 +169,6 @@ QWidget *OptifineModBrowser::getIndexWidget(QStandardItem *item)
     auto mod = item->data().value<OptifineMod*>();
     if(mod){
         auto widget = new OptifineModItemWidget(this, mod);
-        widget->setDownloadPath(downloadPath());
-        connect(this, &OptifineModBrowser::downloadPathChanged, widget, &OptifineModItemWidget::setDownloadPath);
         return widget;
     }else
         return nullptr;
@@ -183,8 +180,6 @@ void OptifineModBrowser::on_actionGet_OptiFabric_triggered()
     //Project ID 322385
     auto mod = new CurseforgeMod(this, 322385);
     auto dialog = new CurseforgeModDialog(this, mod);
-    dialog->setDownloadPath(downloadPath());
-    connect(this, &OptifineModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
     dialog->show();
 }
 
@@ -194,7 +189,5 @@ void OptifineModBrowser::on_actionGet_OptiForge_triggered()
     //Project ID 372196
     auto mod = new CurseforgeMod(this, 372196);
     auto dialog = new CurseforgeModDialog(this, mod);
-    dialog->setDownloadPath(downloadPath());
-    connect(this, &OptifineModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
     dialog->show();
 }

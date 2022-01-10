@@ -1,3 +1,4 @@
+#include "curseforgemodbrowser.h"
 #include "curseforgemoditemwidget.h"
 #include "ui_curseforgemoditemwidget.h"
 
@@ -11,9 +12,12 @@
 #include "util/funcutil.h"
 #include "util/youdaotranslator.h"
 
-CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload) :
+#include <ui/downloadpathselectmenu.h>
+
+CurseforgeModItemWidget::CurseforgeModItemWidget(CurseforgeModBrowser *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload) :
     QWidget(parent),
     ui(new Ui::CurseforgeModItemWidget),
+    browser_(parent),
     mod_(mod),
     defaultFileInfo_(defaultDownload)
 {
@@ -24,6 +28,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(QWidget *parent, CurseforgeMod 
     ui->tagsWidget->setMod(mod_);
     updateIcon();
     connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModItemWidget::updateIcon);
+    connect(browser_->downloadPathSelectMenu(), &DownloadPathSelectMenu::DownloadPathChanged, this, &CurseforgeModItemWidget::onDownloadPathChanged);
 
     auto menu = new QMenu(this);
 
@@ -126,7 +131,7 @@ void CurseforgeModItemWidget::onDownloadFinished()
 
 void CurseforgeModItemWidget::downloadFile(const CurseforgeFileInfo &fileInfo)
 {
-    mod_->download(fileInfo, downloadPath_);
+    mod_->download(fileInfo, browser_->downloadPath());
 }
 
 CurseforgeMod *CurseforgeModItemWidget::mod() const
@@ -134,13 +139,11 @@ CurseforgeMod *CurseforgeModItemWidget::mod() const
     return mod_;
 }
 
-void CurseforgeModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
+void CurseforgeModItemWidget::onDownloadPathChanged()
 {
-    downloadPath_ = newDownloadPath;
-
     bool bl = false;
-    if(downloadPath_)
-        bl = hasFile(downloadPath_, mod_);
+    if(auto downloadPath = browser_->downloadPath())
+        bl = hasFile(downloadPath, mod_);
     else{
         if(defaultFileInfo_)
             bl = hasFile(Config().getDownloadPath(), defaultFileInfo_->fileName());

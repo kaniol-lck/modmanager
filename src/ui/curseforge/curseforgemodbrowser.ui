@@ -182,7 +182,7 @@
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
+  <widget class="MenuToolBar" name="toolBar">
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -324,6 +324,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MenuToolBar</class>
+   <extends>QToolBar</extends>
+   <header location="global">ui/menutoolbar.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../images/image.qrc"/>
  </resources>

@@ -8,7 +8,7 @@
 class ModrinthMod;
 class LocalMod;
 class LocalModPath;
-
+class ModrinthFileListWidget;
 namespace Ui {
 class ModrinthFileItemWidget;
 }
@@ -18,11 +18,11 @@ class ModrinthFileItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ModrinthFileItemWidget(QWidget *parent, ModrinthMod *mod, const ModrinthFileInfo &info, LocalMod* localMod = nullptr);
+    explicit ModrinthFileItemWidget(ModrinthFileListWidget *parent, ModrinthMod *mod, const ModrinthFileInfo &info, LocalMod* localMod = nullptr);
     ~ModrinthFileItemWidget();
 
 public slots:
-    void setDownloadPath(LocalModPath *newDownloadPath);
+    void onDownloadPathChanged();
 
 private slots:
     void updateLocalInfo();
@@ -33,11 +33,10 @@ private slots:
 
 private:
     Ui::ModrinthFileItemWidget *ui;
+    ModrinthFileListWidget *fileList_ = nullptr;
     ModrinthMod *mod_;
     LocalMod *localMod_ = nullptr;
     ModrinthFileInfo fileInfo_;
-
-    LocalModPath *downloadPath_ = nullptr;
 };
 
 #endif // MODRINTHFILEITEMWIDGET_H

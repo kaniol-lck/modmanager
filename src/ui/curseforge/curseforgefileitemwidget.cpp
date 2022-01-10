@@ -1,10 +1,12 @@
 #include "curseforgefileitemwidget.h"
+#include "curseforgefilelistwidget.h"
 #include "ui_curseforgefileitemwidget.h"
 
 #include <QDebug>
 #include <QMenu>
 #include <QClipboard>
 
+#include "ui/downloadpathselectmenu.h"
 #include "curseforgemoddialog.h"
 #include "local/localmod.h"
 #include "local/localfilelinker.h"
@@ -15,9 +17,10 @@
 #include "util/funcutil.h"
 #include "download/downloadmanager.h"
 
-CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMod *mod, const CurseforgeFileInfo &info, LocalMod *localMod) :
+CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *parent, CurseforgeMod *mod, const CurseforgeFileInfo &info, LocalMod *localMod) :
     QWidget(parent),
     ui(new Ui::CurseforgeFileItemWidget),
+    fileList_(parent),
     mod_(mod),
     localMod_(localMod),
     fileInfo_(info)
@@ -28,6 +31,8 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(QWidget *parent, CurseforgeMo
     updateLocalInfo();
     if(localMod_)
         connect(localMod_, &LocalMod::modCacheUpdated, this, &CurseforgeFileItemWidget::updateLocalInfo);
+
+    connect(fileList_->downloadPathSelectMenu(), &DownloadPathSelectMenu::DownloadPathChanged, this, &CurseforgeFileItemWidget::onDownloadPathChanged);
 
     if(fileInfo_.releaseType() == CurseforgeFileInfo::Release){
         ui->releaseType->setText(tr("Release"));
@@ -133,8 +138,8 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
         info.setIcon(localMod_->icon());
     else
         info.setIcon(mod_->modInfo().icon());
-    if(downloadPath_)
-        downloader = downloadPath_->downloadNewMod(info);
+    if(auto downloadPath = fileList_->downloadPathSelectMenu()->downloadPath())
+        downloader = downloadPath->downloadNewMod(info);
     else if(localMod_)
         downloader = localMod_->downloadOldMod(info);
     else{
@@ -155,14 +160,13 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
     });
 }
 
-void CurseforgeFileItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
+void CurseforgeFileItemWidget::onDownloadPathChanged()
 {
-    downloadPath_ = newDownloadPath;
-
-    bool bl;
-    if(downloadPath_)
-        bl = hasFile(downloadPath_, fileInfo_);
-    else
+    bool bl = false;
+    if(fileList_){
+        if(auto downloadPath = fileList_->downloadPathSelectMenu()->downloadPath())
+            bl = hasFile(downloadPath, fileInfo_);
+    }else
         bl = hasFile(Config().getDownloadPath(), fileInfo_.fileName());
 
     if(bl){
@@ -192,7 +196,7 @@ void CurseforgeFileItemWidget::updateLocalInfo()
             name.prepend("<font color=\"#56a\">" + tr("[Current]") + "</font> ");
     ui->displayNameText->setText(name);
     //refresh downloaded infos
-    setDownloadPath(downloadPath_);
+    onDownloadPathChanged();
 }
 
 void CurseforgeFileItemWidget::on_CurseforgeFileItemWidget_customContextMenuRequested(const QPoint &pos)

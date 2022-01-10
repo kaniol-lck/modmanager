@@ -93,32 +93,6 @@ void ModrinthModInfoWidget::updateFullInfo()
 //        ui->websiteButton->setVisible(!mod_->modInfo().websiteUrl().isEmpty());
     ui->modDescription->setMarkdown(text);
     ui->modDescription->setCursor(Qt::ArrowCursor);
-
-//        //update file list
-//        auto updateFileList = [=]{
-//            ui->fileListWidget->clear();
-//            auto files = mod->modInfo().fileList();
-//            for(const auto &fileInfo : qAsConst(files)){
-//                auto *listItem = new DateTimeSortItem();
-//                listItem->setData(DateTimeSortItem::Role, fileInfo.fileDate());
-//                listItem->setSizeHint(QSize(500, 90));
-//                auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo, localMod_);
-//                itemWidget->setDownloadPath(downloadPath_);
-//                connect(this, &ModrinthModDialog::downloadPathChanged, itemWidget, &ModrinthFileItemWidget::setDownloadPath);
-//                ui->fileListWidget->addItem(listItem);
-//                ui->fileListWidget->setItemWidget(listItem, itemWidget);
-//            }
-//            ui->fileListWidget->sortItems(Qt::DescendingOrder);
-//            ui->fileListWidget->setCursor(Qt::ArrowCursor);
-//        };
-
-//        if(!mod->modInfo().fileList().isEmpty())
-//            updateFileList();
-//        else {
-//            ui->fileListWidget->setCursor(Qt::BusyCursor);
-//            mod->acquireFileList();
-//            connect(mod, &ModrinthMod::fileListReady, this, updateFileList);
-//        }
 }
 
 void ModrinthModInfoWidget::updateIcon()
@@ -156,8 +130,6 @@ void ModrinthModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)
         auto dialog = new ModrinthModDialog(browser_, mod_);
         //set parent
         mod_->setParent(dialog);
-        dialog->setDownloadPath(browser_->downloadPath());
-        connect(browser_, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
         connect(dialog, &ModrinthModDialog::finished, this, [=]{
             mod_->setParent(nullptr);
         });

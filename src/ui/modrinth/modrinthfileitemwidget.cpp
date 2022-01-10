@@ -1,9 +1,11 @@
 #include "modrinthfileitemwidget.h"
+#include "modrinthfilelistwidget.h"
 #include "ui_modrinthfileitemwidget.h"
 
 #include <QMenu>
 #include <QClipboard>
 
+#include "ui/downloadpathselectmenu.h"
 #include "local/localmod.h"
 #include "local/localmodpath.h"
 #include "local/localfilelinker.h"
@@ -11,9 +13,10 @@
 #include "download/downloadmanager.h"
 #include "util/funcutil.h"
 
-ModrinthFileItemWidget::ModrinthFileItemWidget(QWidget *parent, ModrinthMod *mod, const ModrinthFileInfo &info, LocalMod *localMod) :
+ModrinthFileItemWidget::ModrinthFileItemWidget(ModrinthFileListWidget *parent, ModrinthMod *mod, const ModrinthFileInfo &info, LocalMod *localMod) :
     QWidget(parent),
     ui(new Ui::ModrinthFileItemWidget),
+    fileList_(parent),
     mod_(mod),
     localMod_(localMod),
     fileInfo_(info)
@@ -96,8 +99,8 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
         info.setIconBytes(localMod_->commonInfo()->iconBytes());
     else
         info.setIconBytes(mod_->modInfo().iconBytes());
-    if(downloadPath_)
-        downloader = downloadPath_->downloadNewMod(info);
+    if(auto downloadPath = fileList_->downloadPathSelectMenu()->downloadPath())
+        downloader = downloadPath->downloadNewMod(info);
     else if(localMod_)
         downloader = localMod_->downloadOldMod(info);
     else{
@@ -118,14 +121,13 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
     });
 }
 
-void ModrinthFileItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
+void ModrinthFileItemWidget::onDownloadPathChanged()
 {
-    downloadPath_ = newDownloadPath;
-
-    bool bl;
-    if(downloadPath_)
-        bl = hasFile(downloadPath_, fileInfo_);
-    else
+    bool bl = false;
+    if(fileList_){
+        if(auto downloadPath = fileList_->downloadPathSelectMenu()->downloadPath())
+            bl = hasFile(downloadPath, fileInfo_);
+    }else
         bl = hasFile(Config().getDownloadPath(), fileInfo_.fileName());
 
     if(bl){
@@ -146,7 +148,7 @@ void ModrinthFileItemWidget::updateLocalInfo()
         name.prepend("<font color=\"#56a\">" + tr("[Current]") + "</font> ");
     ui->displayNameText->setText(name);
     //refresh downloaded infos
-    setDownloadPath(downloadPath_);
+    onDownloadPathChanged();
 }
 
 void ModrinthFileItemWidget::on_ModrinthFileItemWidget_customContextMenuRequested(const QPoint &pos)

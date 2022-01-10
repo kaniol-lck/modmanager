@@ -1,3 +1,4 @@
+#include "modrinthmodbrowser.h"
 #include "modrinthmoddialog.h"
 #include "ui_modrinthmoddialog.h"
 
@@ -14,6 +15,12 @@
 #include "util/datetimesortitem.h"
 #include "util/smoothscrollbar.h"
 #include "util/youdaotranslator.h"
+
+ModrinthModDialog::ModrinthModDialog(ModrinthModBrowser *parent, ModrinthMod *mod) :
+    ModrinthModDialog(static_cast<QWidget *>(parent), mod)
+{
+    ui->fileList->setBrowser(parent);
+}
 
 ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod *localMod) :
     QDialog(parent),
@@ -41,18 +48,12 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
     connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthModDialog::updateFullInfo);
     connect(mod_, &ModrinthMod::iconReady, this, &ModrinthModDialog::updateIcon);
 
-    if(localMod_) setDownloadPath(localMod_->path());
+//    if(localMod_) setDownloadPath(localMod_->path());
 }
 
 ModrinthModDialog::~ModrinthModDialog()
 {
     delete ui;
-}
-
-void ModrinthModDialog::setDownloadPath(LocalModPath *newDownloadPath)
-{
-    downloadPath_ = newDownloadPath;
-    emit downloadPathChanged(newDownloadPath);
 }
 
 void ModrinthModDialog::updateBasicInfo()

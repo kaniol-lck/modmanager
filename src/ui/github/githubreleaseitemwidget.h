@@ -5,6 +5,7 @@
 
 #include "github/githubreleaseinfo.h"
 
+class GitHubRepoBrowser;
 namespace Ui {
 class GitHubReleaseItemWidget;
 }
@@ -14,14 +15,15 @@ class GitHubReleaseItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit GitHubReleaseItemWidget(QWidget *parent, const GitHubReleaseInfo &info);
+    explicit GitHubReleaseItemWidget(GitHubRepoBrowser *parent, const GitHubReleaseInfo &info);
     ~GitHubReleaseItemWidget();
 
-private slots:
-    void on_downloadButton_clicked();
+//private slots:
+//    void on_downloadButton_clicked();
 
 private:
     Ui::GitHubReleaseItemWidget *ui;
+    GitHubRepoBrowser *browser_ = nullptr;
     GitHubReleaseInfo info_;
 };
 

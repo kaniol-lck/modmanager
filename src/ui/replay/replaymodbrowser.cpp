@@ -36,7 +36,7 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     ui->toolBar->addWidget(ui->versionSelect);
     ui->toolBar->addWidget(ui->label_3);
     ui->toolBar->addWidget(ui->loaderSelect);
-    ui->toolBar->addAction(downloadPathSelectMenu_->menuAction());
+    ui->toolBar->addMenu(downloadPathSelectMenu_);
 
     for(const auto &type : ModLoaderType::replay)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));
@@ -137,8 +137,6 @@ QWidget *ReplayModBrowser::getIndexWidget(QStandardItem *item)
     auto mod = item->data().value<ReplayMod*>();
     if(mod){
         auto widget = new ReplayModItemWidget(this, mod);
-        widget->setDownloadPath(downloadPath());
-        connect(this, &ReplayModBrowser::downloadPathChanged, widget, &ReplayModItemWidget::setDownloadPath);
         return widget;
     } else
         return nullptr;

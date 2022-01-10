@@ -1,11 +1,19 @@
 #include "githubfilelistwidget.h"
+#include "githubrepobrowser.h"
 #include "ui_githubfilelistwidget.h"
 
 #include <QStandardItem>
 
+#include "local/localmodpath.h"
 #include "githubfileitemwidget.h"
 #include "github/githubrelease.h"
 #include "util/smoothscrollbar.h"
+
+GitHubFileListWidget::GitHubFileListWidget(GitHubRepoBrowser *parent) :
+    GitHubFileListWidget(static_cast<QWidget *>(parent))
+{
+    browser_ = parent;
+}
 
 GitHubFileListWidget::GitHubFileListWidget(QWidget *parent) :
     QWidget(parent),
@@ -27,7 +35,7 @@ GitHubFileListWidget::~GitHubFileListWidget()
 void GitHubFileListWidget::setRelease(GitHubRelease *release)
 {
     release_= release;
-    emit modChanged();
+    emit releaseChanged();
 
     ui->fileListView->setVisible(release_);
     if(!release_) return;
@@ -41,7 +49,7 @@ void GitHubFileListWidget::updateFileList()
     for(int i = 0; i < release_->info().assets().size(); i++){
         auto item = new QStandardItem;
         model_->appendRow(item);
-        auto &&fileInfo = release_->info().assets().at(i);
+//        auto &&fileInfo = release_->info().assets().at(i);
 //        item->setData(fileInfo.fileDate(), Qt::UserRole);
         item->setData(i, Qt::UserRole + 1);
         item->setSizeHint(QSize(0, 100));
@@ -68,8 +76,6 @@ void GitHubFileListWidget::updateIndexWidget()
         auto item = model_->item(row);
         auto &&fileInfo = release_->info().assets().at(item->data(Qt::UserRole + 1).toInt());
         auto itemWidget = new GitHubFileItemWidget(this, fileInfo);
-//        itemWidget->setDownloadPath(downloadPath_);
-//        connect(this, &CurseforgeFileListWidget::downloadPathChanged, itemWidget, &CurseforgeFileItemWidget::setDownloadPath);
         ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
         item->setSizeHint(QSize(0, itemWidget->height()));
     }
@@ -79,4 +85,14 @@ void GitHubFileListWidget::paintEvent(QPaintEvent *event)
 {
     updateIndexWidget();
     QWidget::paintEvent(event);
+}
+
+DownloadPathSelectMenu *GitHubFileListWidget::downloadPathSelectMenu() const
+{
+    return browser_? browser_->downloadPathSelectMenu() : downloadPathSelectMenu_;
+}
+
+void GitHubFileListWidget::setBrowser(GitHubRepoBrowser *newBrowser)
+{
+    browser_ = newBrowser;
 }

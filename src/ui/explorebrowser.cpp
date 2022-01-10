@@ -75,10 +75,6 @@ QString ExploreBrowser::name() const
 
 void ExploreBrowser::openDialog()
 {
-//    auto dialog = new BrowserDialog(nullptr, another());
-//    dialog->setWindowTitle(name_);
-//    dialog->setWindowIcon(icon_);
-//    dialog->show();
     another()->show();
 }
 
@@ -134,27 +130,6 @@ void ExploreBrowser::onDoubleClicked(const QModelIndex &index)
         dialog->show();
 }
 
-void ExploreBrowser::updateLocalPathList()
-{
-//    //remember selected path
-//    LocalModPath *selectedPath = nullptr;
-//    auto index = downloadPathSelect_->currentIndex();
-//    if(index >= 0 && index < LocalModPathManager::pathList().size())
-//        selectedPath = LocalModPathManager::pathList().at(downloadPathSelect_->currentIndex());
-
-//    downloadPathSelect_->clear();
-//    downloadPathSelect_->addItem(tr("Custom"));
-//    for(const auto &path : LocalModPathManager::pathList())
-//        downloadPathSelect_->addItem(path->info().displayName());
-
-//    //reset selected path
-//    if(selectedPath != nullptr){
-//        auto index = LocalModPathManager::pathList().indexOf(selectedPath);
-//        if(index >= 0)
-//            downloadPathSelect_->setCurrentIndex(index);
-//    }
-}
-
 void ExploreBrowser::paintEvent(QPaintEvent *event)
 {
     updateIndexWidget();
@@ -163,27 +138,12 @@ void ExploreBrowser::paintEvent(QPaintEvent *event)
 
 void ExploreBrowser::initUi()
 {
-//    downloadPathSelect_ = downloadPathSelect;
     setCentralWidget(modListView_);
     onItemSelected();
-//    if(downloadPathSelect_){
-//        updateLocalPathList();
-//        connect(LocalModPathManager::manager(), &LocalModPathManager::pathListUpdated, this, &ExploreBrowser::updateLocalPathList);
-//        connect(downloadPathSelect_, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ExploreBrowser::setDownloadPathIndex);
-//    }
+
     Config config;
     restoreGeometry(config.getBrowserWindowState(this));
     restoreState(config.getBrowserWindowState(this));
-}
-
-void ExploreBrowser::setDownloadPathIndex(int i)
-{
-//    if(i < 0 || i - 1 >= LocalModPathManager::pathList().count()) return;
-//    if(i == 0)
-//        downloadPath_ = nullptr;
-//    else
-//        downloadPath_ =  LocalModPathManager::pathList().at(i - 1);
-//    emit downloadPathChanged(downloadPath_);
 }
 
 bool ExploreBrowser::isRowHidden(int row)
@@ -215,6 +175,11 @@ QDialog *ExploreBrowser::getDialog(QStandardItem *item[[maybe_unused]])
 QMenu *ExploreBrowser::getMenu()
 {
     return nullptr;
+}
+
+DownloadPathSelectMenu *ExploreBrowser::downloadPathSelectMenu() const
+{
+    return downloadPathSelectMenu_;
 }
 
 LocalModPath *ExploreBrowser::downloadPath() const

@@ -11,8 +11,10 @@ public:
     explicit DownloadPathSelectMenu(QWidget *parent = nullptr);
 
     LocalModPath *downloadPath() const;
-
     void setDownloadPath(LocalModPath *newDownloadPath);
+
+signals:
+    void DownloadPathChanged();
 
 private slots:
     void onAboutToShow();

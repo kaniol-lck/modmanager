@@ -1,3 +1,4 @@
+#include "replaymodbrowser.h"
 #include "replaymoditemwidget.h"
 #include "ui_replaymoditemwidget.h"
 
@@ -8,9 +9,10 @@
 #include "util/funcutil.h"
 #include "config.hpp"
 
-ReplayModItemWidget::ReplayModItemWidget(QWidget *parent, ReplayMod *mod) :
+ReplayModItemWidget::ReplayModItemWidget(ReplayModBrowser *parent, ReplayMod *mod) :
     QWidget(parent),
     ui(new Ui::ReplayModItemWidget),
+    browser_(parent),
     mod_(mod)
 {
     ui->setupUi(this);
@@ -34,13 +36,11 @@ ReplayMod *ReplayModItemWidget::mod() const
     return mod_;
 }
 
-void ReplayModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
+void ReplayModItemWidget::onDownloadPathChanged()
 {
-    downloadPath_ = newDownloadPath;
-
     bool bl;
-    if(downloadPath_)
-        bl = hasFile(downloadPath_->info().path(), mod_->modInfo().fileName()); //TODO
+    if(auto downloadPath = browser_->downloadPath())
+        bl = hasFile(downloadPath->info().path(), mod_->modInfo().fileName()); //TODO
     else
         bl = hasFile(Config().getDownloadPath(), mod_->modInfo().fileName()); //TODO
 
@@ -59,8 +59,8 @@ void ReplayModItemWidget::on_downloadButton_clicked()
     ui->downloadProgress->setVisible(true);
     DownloadFileInfo info(mod_->modInfo());
     AbstractDownloader *downloader;
-    if(downloadPath_)
-        downloader = downloadPath_->downloadNewMod(info);
+    if(auto downloadPath = browser_->downloadPath())
+        downloader = downloadPath->downloadNewMod(info);
     else{
         info.setPath(Config().getDownloadPath());
         downloader = DownloadManager::manager()->download(info);

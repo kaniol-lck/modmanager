@@ -6,6 +6,7 @@
 #include "curseforge/curseforgefileinfo.h"
 
 class CurseforgeMod;
+class CurseforgeModBrowser;
 class LocalModPath;
 
 namespace Ui {
@@ -17,15 +18,16 @@ class CurseforgeModItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit CurseforgeModItemWidget(QWidget *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload);
+    explicit CurseforgeModItemWidget(CurseforgeModBrowser *parent, CurseforgeMod *mod, const std::optional<CurseforgeFileInfo> &defaultDownload);
     ~CurseforgeModItemWidget();
 
     CurseforgeMod *mod() const;
 
 public slots:
-    void setDownloadPath(LocalModPath *newDownloadPath);
+    void onDownloadPathChanged();
     void downloadFile(const CurseforgeFileInfo &fileInfo);
     void updateUi();
+
 private slots:
     void updateIcon();
     void onDownloadStarted();
@@ -36,9 +38,9 @@ private slots:
 
 private:
     Ui::CurseforgeModItemWidget *ui;
+    CurseforgeModBrowser *browser_ = nullptr;
     CurseforgeMod *mod_;
     std::optional<CurseforgeFileInfo> defaultFileInfo_;
-    LocalModPath *downloadPath_;
     bool transltedSummary_ = false;
 };
 

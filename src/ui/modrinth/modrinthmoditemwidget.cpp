@@ -1,3 +1,4 @@
+#include "modrinthmodbrowser.h"
 #include "modrinthmoditemwidget.h"
 #include "ui_modrinthmoditemwidget.h"
 
@@ -10,9 +11,10 @@
 #include "util/youdaotranslator.h"
 #include "config.hpp"
 
-ModrinthModItemWidget::ModrinthModItemWidget(QWidget *parent, ModrinthMod *mod) :
+ModrinthModItemWidget::ModrinthModItemWidget(ModrinthModBrowser *parent, ModrinthMod *mod) :
     QWidget(parent),
     ui(new Ui::ModrinthModItemWidget),
+    browser_(parent),
     mod_(mod)
 {
     ui->setupUi(this);
@@ -108,7 +110,6 @@ void ModrinthModItemWidget::updateFileList()
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setMenu(menu);
     }
-    setDownloadPath(downloadPath_);
 }
 
 void ModrinthModItemWidget::onDownloadStarted()
@@ -143,7 +144,7 @@ void ModrinthModItemWidget::onDownloadFinished()
 
 void ModrinthModItemWidget::downloadFile(const ModrinthFileInfo &fileInfo)
 {
-    mod_->download(fileInfo, downloadPath_);
+    mod_->download(fileInfo, browser_->downloadPath());
 }
 
 ModrinthMod *ModrinthModItemWidget::mod() const
@@ -151,14 +152,13 @@ ModrinthMod *ModrinthModItemWidget::mod() const
     return mod_;
 }
 
-void ModrinthModItemWidget::setDownloadPath(LocalModPath *newDownloadPath)
+void ModrinthModItemWidget::onDownloadPathChanged()
 {
-    downloadPath_ = newDownloadPath;
-
     if(mod_->modInfo().fileList().isEmpty()) return;
+    auto downloadPath = browser_->downloadPath();
     bool bl = false;
-    if(downloadPath_)
-        bl = hasFile(downloadPath_, mod_);
+    if(downloadPath)
+        bl = hasFile(downloadPath, mod_);
     else if(!mod_->modInfo().fileList().isEmpty())
         for(const auto &fileInfo : mod_->modInfo().fileList()){
             if(hasFile(Config().getDownloadPath(), fileInfo.fileName())){

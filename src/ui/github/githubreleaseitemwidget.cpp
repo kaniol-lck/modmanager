@@ -1,13 +1,15 @@
 #include "githubreleaseitemwidget.h"
+#include "githubrepobrowser.h"
 #include "ui_githubreleaseitemwidget.h"
 
 #include <QScrollBar>
 
 #include "util/funcutil.h"
 
-GitHubReleaseItemWidget::GitHubReleaseItemWidget(QWidget *parent, const GitHubReleaseInfo &info) :
+GitHubReleaseItemWidget::GitHubReleaseItemWidget(GitHubRepoBrowser *parent, const GitHubReleaseInfo &info) :
     QWidget(parent),
     ui(new Ui::GitHubReleaseItemWidget),
+    browser_(parent),
     info_(info)
 {
     ui->setupUi(this);
@@ -36,8 +38,7 @@ GitHubReleaseItemWidget::~GitHubReleaseItemWidget()
     delete ui;
 }
 
-void GitHubReleaseItemWidget::on_downloadButton_clicked()
-{
+//void GitHubReleaseItemWidget::on_downloadButton_clicked()
+//{
 
-}
-
+//}

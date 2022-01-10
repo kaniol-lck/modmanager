@@ -48,7 +48,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ui->toolBar->addWidget(ui->categorySelectButton);
     ui->toolBar->addWidget(ui->label_3);
     ui->toolBar->addWidget(ui->loaderSelect);
-    ui->toolBar->addAction(downloadPathSelectMenu_->menuAction());
+    ui->toolBar->addMenu(downloadPathSelectMenu_);
 
     ui->searchBar->addWidget(ui->searchText);
     ui->searchBar->addWidget(ui->sortSelect);
@@ -64,7 +64,6 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
 
     connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
-    connect(this, &ModrinthModBrowser::downloadPathChanged, fileListWidget_, &ModrinthFileListWidget::setDownloadPath);
 
     if(localMod_){
         currentName_ = localMod_->commonInfo()->id();
@@ -433,8 +432,6 @@ QDialog *ModrinthModBrowser::getDialog(QStandardItem *item)
         auto dialog = new ModrinthModDialog(this, mod);
         //set parent
         mod->setParent(dialog);
-        dialog->setDownloadPath(downloadPath());
-        connect(this, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
         connect(dialog, &ModrinthModDialog::finished, this, [=]{
             mod->setParent(nullptr);
         });
@@ -473,8 +470,6 @@ QWidget *ModrinthModBrowser::getIndexWidget(QStandardItem *item)
     auto mod = item->data().value<ModrinthMod*>();
     if(mod){
         auto widget = new ModrinthModItemWidget(nullptr, mod);
-        widget->setDownloadPath(downloadPath());
-        connect(this, &ModrinthModBrowser::downloadPathChanged, widget, &ModrinthModItemWidget::setDownloadPath);
         return widget;
     } else
         return nullptr;
@@ -528,8 +523,6 @@ void ModrinthModBrowser::on_actionOpen_Modrinth_Mod_Dialog_triggered()
         auto dialog = new ModrinthModDialog(this, selectedMod_);
         //set parent
         selectedMod_->setParent(dialog);
-        dialog->setDownloadPath(downloadPath());
-        connect(this, &ModrinthModBrowser::downloadPathChanged, dialog, &ModrinthModDialog::setDownloadPath);
         connect(dialog, &ModrinthModDialog::finished, this, [=]{
             selectedMod_->setParent(nullptr);
         });

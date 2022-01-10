@@ -77,6 +77,7 @@ SOURCES += \
     src/ui/local/localmodinfowidget.cpp \
     src/ui/local/localmodpathmodel.cpp \
     src/ui/local/localstatusbarwidget.cpp \
+    src/ui/menutoolbar.cpp \
     src/ui/modrinth/modrinthfilelistwidget.cpp \
     src/ui/modrinth/modrinthmodinfowidget.cpp \
     src/ui/pageswitcher.cpp \
@@ -200,6 +201,7 @@ HEADERS += \
     src/ui/local/localmodinfowidget.h \
     src/ui/local/localmodpathmodel.h \
     src/ui/local/localstatusbarwidget.h \
+    src/ui/menutoolbar.h \
     src/ui/modrinth/modrinthfilelistwidget.h \
     src/ui/modrinth/modrinthmodinfowidget.h \
     src/ui/pageswitcher.h \

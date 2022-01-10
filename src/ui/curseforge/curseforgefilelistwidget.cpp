@@ -3,12 +3,19 @@
 
 #include <QStandardItemModel>
 
+#include "curseforgemodbrowser.h"
 #include "curseforgefileitemwidget.h"
 #include "curseforge/curseforgemod.h"
 #include "local/localmodpath.h"
 #include "util/datetimesortitem.h"
 #include "util/smoothscrollbar.h"
 #include "util/funcutil.h"
+
+CurseforgeFileListWidget::CurseforgeFileListWidget(CurseforgeModBrowser *parent) :
+    CurseforgeFileListWidget(static_cast<QWidget *>(parent))
+{
+    browser_ = parent;
+}
 
 CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent) :
     QWidget(parent),
@@ -42,12 +49,6 @@ void CurseforgeFileListWidget::setMod(CurseforgeMod *mod)
     }
     connect(this, &CurseforgeFileListWidget::modChanged, this, disconnecter(
                 connect(mod, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList)));
-}
-
-void CurseforgeFileListWidget::setDownloadPath(LocalModPath *newDownloadPath)
-{
-    downloadPath_ = newDownloadPath;
-    emit downloadPathChanged(newDownloadPath);
 }
 
 void CurseforgeFileListWidget::updateUi()
@@ -84,6 +85,16 @@ void CurseforgeFileListWidget::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 }
 
+DownloadPathSelectMenu *CurseforgeFileListWidget::downloadPathSelectMenu() const
+{
+    return browser_? browser_->downloadPathSelectMenu() : downloadPathSelectMenu_;
+}
+
+void CurseforgeFileListWidget::setBrowser(CurseforgeModBrowser *newBrowser)
+{
+    browser_ = newBrowser;
+}
+
 void CurseforgeFileListWidget::updateIndexWidget()
 {
     auto beginRow = ui->fileListView->indexAt(QPoint(0, 0)).row();
@@ -100,8 +111,6 @@ void CurseforgeFileListWidget::updateIndexWidget()
         auto item = model_->item(row);
         auto &&fileInfo = mod_->modInfo().allFileList().at(item->data(Qt::UserRole + 1).toInt());
         auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo);
-        itemWidget->setDownloadPath(downloadPath_);
-        connect(this, &CurseforgeFileListWidget::downloadPathChanged, itemWidget, &CurseforgeFileItemWidget::setDownloadPath);
         ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
         item->setSizeHint(QSize(0, itemWidget->height()));
     }

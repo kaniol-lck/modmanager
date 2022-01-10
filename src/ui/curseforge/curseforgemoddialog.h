@@ -8,6 +8,7 @@ class LocalMod;
 class LocalModPath;
 class QListWidgetItem;
 class CurseforgeModInfo;
+class CurseforgeModBrowser;
 namespace Ui {
 class CurseforgeModDialog;
 }
@@ -17,15 +18,10 @@ class CurseforgeModDialog : public QDialog
     Q_OBJECT
 
 public:
+    explicit CurseforgeModDialog(CurseforgeModBrowser *parent, CurseforgeMod *mod);
     explicit CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod = nullptr);
     explicit CurseforgeModDialog(QWidget *parent, const CurseforgeModInfo &modInfo);
     ~CurseforgeModDialog();
-
-signals:
-    void downloadPathChanged(LocalModPath *path);
-
-public slots:
-    void setDownloadPath(LocalModPath *newDownloadPath);
 
 private slots:
     void updateBasicInfo();
@@ -39,7 +35,6 @@ private:
     Ui::CurseforgeModDialog *ui;
     CurseforgeMod *mod_;
     LocalMod *localMod_ = nullptr;
-    LocalModPath *downloadPath_ = nullptr;
     bool transltedSummary_ = false;
 };
 

@@ -11,6 +11,7 @@
 #include <QNetworkReply>
 #include <QMenu>
 
+#include "curseforgemodbrowser.h"
 #include "local/localmodpath.h"
 #include "curseforge/curseforgemod.h"
 #include "curseforgefileitemwidget.h"
@@ -20,6 +21,12 @@
 #include "util/flowlayout.h"
 #include "util/youdaotranslator.h"
 #include "download/qaria2.h"
+
+CurseforgeModDialog::CurseforgeModDialog(CurseforgeModBrowser *parent, CurseforgeMod *mod) :
+    CurseforgeModDialog(static_cast<QWidget *>(parent), mod)
+{
+    ui->fileList->setBrowser(parent);
+}
 
 CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod) :
     QDialog(parent),
@@ -58,7 +65,7 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModDialog::updateThumbnail);
     connect(mod_, &CurseforgeMod::descriptionReady, this, &CurseforgeModDialog::updateDescription);
 
-    if(localMod_) setDownloadPath(localMod_->path());
+//    if(localMod_) setDownloadPath(localMod_->path());
 }
 
 CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, const CurseforgeModInfo &modInfo) :
@@ -70,12 +77,6 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, const CurseforgeModInf
 CurseforgeModDialog::~CurseforgeModDialog()
 {
     delete ui;
-}
-
-void CurseforgeModDialog::setDownloadPath(LocalModPath *newDownloadPath)
-{
-    downloadPath_ = newDownloadPath;
-    emit downloadPathChanged(newDownloadPath);
 }
 
 void CurseforgeModDialog::updateBasicInfo()

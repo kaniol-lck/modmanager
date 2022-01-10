@@ -4,8 +4,9 @@
 #include <QWidget>
 
 class GitHubRelease;
-
 class QStandardItemModel;
+class GitHubRepoBrowser;
+class DownloadPathSelectMenu;
 namespace Ui {
 class GitHubFileListWidget;
 }
@@ -15,13 +16,17 @@ class GitHubFileListWidget : public QWidget
     Q_OBJECT
 
 public:
+    explicit GitHubFileListWidget(GitHubRepoBrowser *parent);
     explicit GitHubFileListWidget(QWidget *parent = nullptr);
     ~GitHubFileListWidget();
 
     void setRelease(GitHubRelease *release);
+    void setBrowser(GitHubRepoBrowser *newBrowser);
+
+    DownloadPathSelectMenu *downloadPathSelectMenu() const;
 
 signals:
-    void modChanged();
+    void releaseChanged();
 
 private slots:
     void updateFileList();
@@ -32,6 +37,8 @@ protected:
 
 private:
     Ui::GitHubFileListWidget *ui;
+    GitHubRepoBrowser *browser_ = nullptr;
+    DownloadPathSelectMenu *downloadPathSelectMenu_ = nullptr;
     QStandardItemModel *model_;
     GitHubRelease *release_;
 };

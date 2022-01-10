@@ -4,6 +4,7 @@
 #include <QStandardItemModel>
 #include <QUrl>
 
+#include "local/localmodpath.h"
 #include "ui/downloadpathselectmenu.h"
 #include "githubreleaseinfowidget.h"
 #include "githubfilelistwidget.h"
@@ -26,7 +27,7 @@ GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent, const GitHubRepoInfo &info
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
-    ui->toolBar->addAction(downloadPathSelectMenu_->menuAction());
+    ui->toolBar->addMenu(downloadPathSelectMenu_);
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;
@@ -156,8 +157,6 @@ QWidget *GitHubRepoBrowser::getIndexWidget(QStandardItem *item)
     auto release = item->data().value<GitHubRelease*>();
     if(release){
         auto widget = new GitHubReleaseItemWidget(this, release->info());
-//            modItemWidget->setDownloadPath(downloadPath_);
-//            connect(this, &ReplayModBrowser::downloadPathChanged, modItemWidget, &ReplayModItemWidget::setDownloadPath);
         return widget;
     } else
         return nullptr;

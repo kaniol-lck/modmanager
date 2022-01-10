@@ -30,6 +30,7 @@ public:
     QString name() const override;
 
     LocalModPath *downloadPath() const;
+    DownloadPathSelectMenu *downloadPathSelectMenu() const;
 
 public slots:
     virtual void refresh() = 0;
@@ -37,17 +38,12 @@ public slots:
 
     void openDialog();
 
-signals:
-    void downloadPathChanged(LocalModPath *path);
-
 private slots:
     void onSliderChanged(int i);
     void onItemSelected();
     void updateIndexWidget();
     void onCustomContextMenuRequested(const QPoint &pos);
     void onDoubleClicked(const QModelIndex &index);
-    void updateLocalPathList();
-    void setDownloadPathIndex(int i);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -64,8 +60,6 @@ protected:
     QMenu *modMenu_;
     QMenu *pathMenu_;
     DownloadPathSelectMenu *downloadPathSelectMenu_;
-    //mod download dest
-//    LocalModPath *downloadPath_ = nullptr;
 
 private:
     QListView *modListView_;

@@ -1,4 +1,5 @@
 #include "modrinthfilelistwidget.h"
+#include "modrinthmodbrowser.h"
 #include "ui_modrinthfilelistwidget.h"
 
 #include <QStandardItemModel>
@@ -9,6 +10,12 @@
 #include "util/datetimesortitem.h"
 #include "util/smoothscrollbar.h"
 #include "util/funcutil.h"
+
+ModrinthFileListWidget::ModrinthFileListWidget(ModrinthModBrowser *parent) :
+    ModrinthFileListWidget(static_cast<QWidget *>(parent))
+{
+    browser_ = parent;
+}
 
 ModrinthFileListWidget::ModrinthFileListWidget(QWidget *parent) :
     QWidget(parent),
@@ -45,12 +52,6 @@ void ModrinthFileListWidget::setMod(ModrinthMod *mod)
                 connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthFileListWidget::updateFullInfo)));
     connect(this, &ModrinthFileListWidget::modChanged, this, disconnecter(
                 connect(mod_, &ModrinthMod::fileListReady, this, &ModrinthFileListWidget::updateFileList)));
-}
-
-void ModrinthFileListWidget::setDownloadPath(LocalModPath *newDownloadPath)
-{
-    downloadPath_ = newDownloadPath;
-    emit downloadPathChanged(newDownloadPath);
 }
 
 void ModrinthFileListWidget::updateUi()
@@ -91,6 +92,16 @@ void ModrinthFileListWidget::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 }
 
+void ModrinthFileListWidget::setBrowser(ModrinthModBrowser *newBrowser)
+{
+    browser_ = newBrowser;
+}
+
+DownloadPathSelectMenu *ModrinthFileListWidget::downloadPathSelectMenu() const
+{
+    return browser_? browser_->downloadPathSelectMenu() : downloadPathSelectMenu_;
+}
+
 void ModrinthFileListWidget::updateIndexWidget()
 {
     auto beginRow = ui->fileListView->indexAt(QPoint(0, 0)).row();
@@ -107,8 +118,6 @@ void ModrinthFileListWidget::updateIndexWidget()
         auto item = model_->item(row);
         auto &&fileInfo = mod_->modInfo().fileList().at(item->data(Qt::UserRole + 1).toInt());
         auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo);
-        itemWidget->setDownloadPath(downloadPath_);
-        connect(this, &ModrinthFileListWidget::downloadPathChanged, itemWidget, &ModrinthFileItemWidget::setDownloadPath);
         ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
         item->setSizeHint(QSize(0, itemWidget->height()));
     }

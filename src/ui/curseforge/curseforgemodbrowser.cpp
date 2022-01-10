@@ -54,7 +54,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     ui->toolBar->addWidget(ui->categorySelectButton);
     ui->toolBar->addWidget(ui->label_3);
     ui->toolBar->addWidget(ui->loaderSelect);
-    ui->toolBar->addAction(downloadPathSelectMenu_->menuAction());
+    ui->toolBar->addMenu(downloadPathSelectMenu_);
 
     ui->searchBar->addWidget(ui->searchText);
     ui->searchBar->addWidget(ui->sortSelect);
@@ -84,7 +84,6 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
 
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
     connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
-    connect(this, &CurseforgeModBrowser::downloadPathChanged, fileListWidget_, &CurseforgeFileListWidget::setDownloadPath);
 
     if(localMod_){
         currentName_ = localMod_->commonInfo()->id();
@@ -380,8 +379,6 @@ QDialog *CurseforgeModBrowser::getDialog(QStandardItem *item)
         auto dialog = new CurseforgeModDialog(this, mod);
         //set parent
         mod->setParent(dialog);
-        dialog->setDownloadPath(downloadPath());
-        connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
         connect(dialog, &CurseforgeModDialog::finished, this, [=]{
             mod->setParent(nullptr);
         });
@@ -436,9 +433,7 @@ QWidget *CurseforgeModBrowser::getIndexWidget(QStandardItem *item)
     auto mod = item->data().value<CurseforgeMod*>();
     if(mod){
         auto fileInfo = mod->modInfo().latestFileInfo(currentGameVersion_, currentLoaderType_);
-        auto widget = new CurseforgeModItemWidget(nullptr, mod, fileInfo);
-        widget->setDownloadPath(downloadPath());
-        connect(this, &CurseforgeModBrowser::downloadPathChanged, widget, &CurseforgeModItemWidget::setDownloadPath);
+        auto widget = new CurseforgeModItemWidget(this, mod, fileInfo);
         return widget;
     } else
         return nullptr;
@@ -532,8 +527,6 @@ void CurseforgeModBrowser::on_actionOpen_Curseforge_Mod_Dialog_triggered()
         auto dialog = new CurseforgeModDialog(this, selectedMod_);
         //set parent
         selectedMod_->setParent(dialog);
-        dialog->setDownloadPath(downloadPath());
-        connect(this, &CurseforgeModBrowser::downloadPathChanged, dialog, &CurseforgeModDialog::setDownloadPath);
         connect(dialog, &CurseforgeModDialog::finished, this, [=]{
             selectedMod_->setParent(nullptr);
         });
