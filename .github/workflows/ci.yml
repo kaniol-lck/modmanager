@@ -3,13 +3,13 @@ on:
   push:
     paths:
       - "*.pro"
-      - "*.nsi"
+      - "package/**"
       - "src/**"
       - ".github/workflows/ci.yml"
   pull_request:
     paths:
       - "*.pro"
-      - "*.nsi"
+      - "package/**"
       - "src/**"
       - ".github/workflows/ci.yml"
 jobs:

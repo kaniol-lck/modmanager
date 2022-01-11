@@ -351,7 +351,7 @@ unix {
   target.path = $$INSTROOT$$BINDIR
 
   desktop.path = $$DATADIR/applications
-  desktop.files += src/ModManager.desktop
+  desktop.files += deploy/ModManager.desktop
 
   icon.path = $$DATADIR/icons/hicolor/256x256/apps
   icon.files += src/modmanager.png
@@ -368,11 +368,11 @@ CONFIG(debug, debug|release) {
 }
 
 DISTFILES += \
-    src/ModManager.desktop \
+    deploy/ModManager.desktop \
     src/modmanager.png \
     src/qss/qdarkstyle-light/style.qss
 
-win32: RC_ICONS = src/modmanager.ico
+win32: RC_ICONS = package/modmanager.ico
 
 #dependencies
 unix {
