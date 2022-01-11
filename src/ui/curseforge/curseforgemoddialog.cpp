@@ -102,8 +102,8 @@ void CurseforgeModDialog::updateBasicInfo()
     }
 
     //update gallery
-//    if(mod_->modInfo().images().isEmpty())
-//        ui->tabWidget->removeTab(1);
+    if(mod_->modInfo().images().isEmpty())
+        ui->tabWidget->removeTab(1);
     for(const auto &image : mod_->modInfo().images()){
         auto item = new QListWidgetItem();
         item->setText(image.title);

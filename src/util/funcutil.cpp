@@ -73,7 +73,7 @@ void openFileInFolder(const QString &filePath)
     }
 #endif
 #ifdef Q_OS_WIN
-    if(info.isFile()){
+    if(QFileInfo(filePath).isFile()){
         process.startDetached("explorer.exe", { "/select,"+QDir::toNativeSeparators(filePath) });
         return;
     }

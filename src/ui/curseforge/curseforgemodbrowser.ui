@@ -14,22 +14,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QToolButton" name="versionSelectButton">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>0</y>
-      <width>38</width>
-      <height>38</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="popupMode">
-     <enum>QToolButton::InstantPopup</enum>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
@@ -66,41 +50,6 @@
       <horstretch>0</horstretch>
       <verstretch>0</verstretch>
      </sizepolicy>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>72</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Category:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QToolButton" name="categorySelectButton">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>20</y>
-      <width>38</width>
-      <height>38</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="popupMode">
-     <enum>QToolButton::InstantPopup</enum>
-    </property>
-    <property name="toolButtonStyle">
-     <enum>Qt::ToolButtonTextBesideIcon</enum>
     </property>
    </widget>
    <widget class="QLineEdit" name="searchText">
@@ -164,22 +113,6 @@
      </property>
     </item>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>104</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Game Version:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="MenuToolBar" name="toolBar">
@@ -241,6 +174,19 @@
     <property name="title">
      <string>&amp;Path</string>
     </property>
+    <widget class="QMenu" name="menuSelect_Game_Version">
+     <property name="title">
+      <string>Select Game Version</string>
+     </property>
+    </widget>
+    <widget class="QMenu" name="menuSelect_Category">
+     <property name="title">
+      <string>Select Category</string>
+     </property>
+    </widget>
+    <addaction name="separator"/>
+    <addaction name="menuSelect_Game_Version"/>
+    <addaction name="menuSelect_Category"/>
     <addaction name="separator"/>
     <addaction name="actionMod"/>
     <addaction name="actionModpacks"/>
