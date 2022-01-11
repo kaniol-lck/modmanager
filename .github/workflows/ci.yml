@@ -143,7 +143,6 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/
-          cp -r C:/msys64/${{ matrix.mingw_arch }}/ssl deploy/ssl
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe
       - name: x64 dependencies
         if: contains(matrix.mingw_arch, 'mingw64')
@@ -160,7 +159,7 @@ jobs:
           (Get-Content modmanager.nsi).replace('PROGRAMFILES', 'PROGRAMFILES64') | Set-Content modmanager.nsi
       - name: Create installer
         run:
-          makensis modmanager.nsi
+          makensis package/modmanager.nsi
       - uses: actions/upload-artifact@v2
         with:
           name: ModManager${{ matrix.x64_suffix }}-Installer.exe
