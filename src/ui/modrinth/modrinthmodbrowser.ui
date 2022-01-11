@@ -182,6 +182,9 @@
    </attribute>
   </widget>
   <action name="actionCopy_Website_Link">
+   <property name="icon">
+    <iconset theme="edit-copy"/>
+   </property>
    <property name="text">
     <string>Copy Website Link</string>
    </property>

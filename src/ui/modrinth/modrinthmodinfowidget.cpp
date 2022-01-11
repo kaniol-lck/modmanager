@@ -35,7 +35,7 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
     ui->tagsWidget->setTagableObject(mod_);
     if(!mod_) return;
 
-//    auto action = new QAction(tr("Copy website link"), this);
+//    auto action = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy website link"), this);
 //    connect(action, &QAction::triggered, this, [=]{
 //        QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());
 //    });

@@ -157,7 +157,7 @@ void ModrinthFileItemWidget::updateLocalInfo()
 void ModrinthFileItemWidget::on_ModrinthFileItemWidget_customContextMenuRequested(const QPoint &pos)
 {
     auto menu = new QMenu(this);
-    connect(menu->addAction(tr("Copy download link")), &QAction::triggered, this, [=]{
+    connect(menu->addAction(QIcon::fromTheme("edit-copy"), tr("Copy download link")), &QAction::triggered, this, [=]{
         QApplication::clipboard()->setText(fileInfo_.url().toString());
     });
     if(localMod_)
