@@ -106,14 +106,14 @@ jobs:
       - name: Install dependencies
         shell: powershell
         run: |
-          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
-          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip --noconfirm
+          C:/msys64/usr/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
+          C:/msys64/usr/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip --noconfirm
       - name: Qt 5 environment configuration
         if: ${{ startsWith( matrix.qt_ver, 5 ) }}
         shell: pwsh
         run: |
-          Write-Output "${{ env.Qt5_DIR }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          Write-Output "${{ env.Qt5_DIR }}/../../Tools/${{ matrix.qt_tools_mingw_install }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Write-Output "${{ env.Qt5_DIR }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Write-Output "${{ env.Qt5_DIR }}/../../Tools/${{ matrix.qt_tools_mingw_install }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: where is qmake & where is mingw32-make
         shell: pwsh
         run: |
@@ -130,31 +130,30 @@ jobs:
         id: package
         shell: pwsh
         run: |
-          mkdir deploy && mkdir deploy/bin
-          mv release/${{github.event.repository.name}}.exe deploy/bin
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-1_1${{ matrix.x64_suffix }}.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssl-1_1${{ matrix.x64_suffix }}.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libaria2-0.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip5.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libiconv-2.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/zlib1.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcares-4.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libstdc++-6.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/bin/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/bin/
-          cp -r C:/msys64/${{ matrix.mingw_arch }}/ssl deploy/ssl
-          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/bin/${{github.event.repository.name}}.exe
+          mkdir deploy && mkdir deploy
+          mv release/${{github.event.repository.name}}.exe deploy
+          cp C:/msys64/${{ matrix.mingw_arch }}/libcrypto-1_1${{ matrix.x64_suffix }}.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libssl-1_1${{ matrix.x64_suffix }}.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libaria2-0.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libquazip5.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libiconv-2.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/liblzma-5.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libintl-8.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/zlib1.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libcares-4.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libstdc++-6.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libsqlite3-0.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libssh2-1.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libxml2-2.dll deploy/
+          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe
       - name: x64 dependencies
         if: contains(matrix.mingw_arch, 'mingw64')
         run : |
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_seh-1.dll deploy/bin/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libgcc_s_seh-1.dll deploy/
       - name: x32 dependencies
         if: contains(matrix.mingw_arch, 'mingw32')
         run : |
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_dw2-1.dll deploy/bin/
+          cp C:/msys64/${{ matrix.mingw_arch }}/libgcc_s_dw2-1.dll deploy/
       - name: Modify NSIS for x64
         if: contains(matrix.mingw_arch, 'mingw64')
         shell: pwsh
@@ -235,7 +234,7 @@ jobs:
       #- name: Install aria2
         #shell: powershell
         #run: |
-          #C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
+          #C:/msys64/usr/pacman -S mingw-w64-x86_64-aria2 --noconfirm
       #- name: msvc-build
         #id: build
         #shell: cmd
@@ -255,19 +254,19 @@ jobs:
           #$client.DownloadFile('${{ matrix.openssl_url }}', 'openssl-bin.zip')
           #Expand-Archive -Path openssl-bin.zip -DestinationPath openssl
           #cp openssl/*.dll deploy/
-          #cp C:/msys64/mingw64/bin/libaria2-0.dll deploy/
+          #cp C:/msys64/mingw64/libaria2-0.dll deploy/
           #cp LICENSE* deploy/
           #cp *md deploy/
       #- name: Copy zlib 32
         #if: contains(matrix.qt_arch, 'win32_msvc')
         #shell: pwsh
         #run: |
-          #cp "C:/Program Files (x86)/zlib/bin/zlib.dll" deploy/
+          #cp "C:/Program Files (x86)/zlib/zlib.dll" deploy/
       #- name: Copy zlib
         #if: contains(matrix.qt_arch, 'win64_msvc')
         #shell: pwsh
         #run: |
-          #cp "C:/Program Files/zlib/bin/zlib.dll" deploy/
+          #cp "C:/Program Files/zlib/zlib.dll" deploy/
       #- name: package
         #id: package
         #shell: pwsh

@@ -33,7 +33,7 @@ SetCompressor lzma
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\bin\modmanager.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\modmanager.exe"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -63,8 +63,8 @@ Function .onInit
   IfErrors  done
 
   MessageBox MB_YESNOCANCEL|MB_ICONQUESTION \
-    "æ£€æµ‹åˆ°æœ¬æœºå·²ç»å®‰è£…äº† ${PRODUCT_NAME}ã€‚\
-    $\n$\næ˜¯å¦å…ˆå¸è½½å·²å®‰è£…çš„ç‰ˆæœ¬ï¼Ÿ" \
+    "¼ì²âµ½±¾»úÒÑ¾­°²×°ÁË ${PRODUCT_NAME}¡£\
+    $\n$\nÊÇ·ñÏÈĞ¶ÔØÒÑ°²×°µÄ°æ±¾£¿" \
       /SD IDYES \
       IDYES uninstall \
       IDNO done
@@ -106,12 +106,12 @@ SectionEnd
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) å·²æˆåŠŸåœ°ä»ä½ çš„è®¡ç®—æœºç§»é™¤ã€‚"
+  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) ÒÑ³É¹¦µØ´ÓÄãµÄ¼ÆËã»úÒÆ³ı¡£"
 FunctionEnd
 
 Function un.onInit
 !insertmacro MUI_UNGETLANGUAGE
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "ä½ ç¡®å®è¦å®Œå…¨ç§»é™¤ $(^Name) ï¼Œå…¶åŠæ‰€æœ‰çš„ç»„ä»¶ï¼Ÿ" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "ÄãÈ·ÊµÒªÍêÈ«ÒÆ³ı $(^Name) £¬Æä¼°ËùÓĞµÄ×é¼ş£¿" IDYES +2
   Abort
 FunctionEnd
 

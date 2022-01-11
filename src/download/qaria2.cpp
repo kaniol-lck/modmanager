@@ -25,9 +25,9 @@ QAria2::QAria2(QObject *parent) : QObject(parent)
                              "\n" + tr("Error code: %1").arg(code));
     config_.downloadEventCallback = downloadEventCallback;
     config_.keepRunning = true;
-    session_ = aria2::sessionNew(aria2::KeyVals(), config_);
-//    for(auto &&keyVal : aria2::getGlobalOptions(session_))
-//        qDebug() << keyVal.first.data() << keyVal.second.data();
+    aria2::KeyVals options;
+    options.emplace_back(std::make_pair("check-certificate", "false"));
+    session_ = aria2::sessionNew(options, config_);
     QtConcurrent::run([=]{
         aria2::run(session_, aria2::RUN_DEFAULT);
     });
