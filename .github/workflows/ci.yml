@@ -156,7 +156,7 @@ jobs:
         if: contains(matrix.mingw_arch, 'mingw64')
         shell: pwsh
         run: |
-          (Get-Content modmanager.nsi).replace('PROGRAMFILES', 'PROGRAMFILES64') | Set-Content modmanager.nsi
+          (Get-Content package/modmanager.nsi).replace('PROGRAMFILES', 'PROGRAMFILES64') | Set-Content package/modmanager.nsi
       - name: Create installer
         run:
           makensis package/modmanager.nsi
