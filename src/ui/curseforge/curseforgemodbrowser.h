@@ -46,7 +46,7 @@ public slots:
     void updateUi() override;
 
 private slots:
-    void getModList(QString name, int index = 0, int needMore = 20);
+    void getModList(QString name, int index = 0);
     void updateVersionList();
     void updateCategoryList(QList<CurseforgeCategoryInfo> list);
     void search();

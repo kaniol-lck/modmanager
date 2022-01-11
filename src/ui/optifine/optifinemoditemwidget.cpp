@@ -7,6 +7,7 @@
 #include "local/localmodpath.h"
 #include "util/funcutil.h"
 #include "config.hpp"
+#include "ui/downloadpathselectmenu.h"
 
 OptifineModItemWidget::OptifineModItemWidget(OptifineModBrowser *parent, OptifineMod *mod) :
     QWidget(parent),
@@ -21,13 +22,13 @@ OptifineModItemWidget::OptifineModItemWidget(OptifineModBrowser *parent, Optifin
     ui->downloadProgress->setVisible(false);
     ui->downloadButton->setEnabled(false);
 
+    onDownloadPathChanged();
+    connect(browser_->downloadPathSelectMenu(), &DownloadPathSelectMenu::DownloadPathChanged, this, &OptifineModItemWidget::onDownloadPathChanged);
+
     ui->displayNameText->setText(mod_->modInfo().name());
     ui->gameVersion->setText("Minecraft " + mod_->modInfo().gameVersion());
     mod->acquireDownloadUrl();
-    connect(mod_, &OptifineMod::downloadUrlReady, this, [=]{
-        ui->downloadButton->setEnabled(true);
-        ui->downloadButton->setText(tr("Download"));
-    });
+    connect(mod_, &OptifineMod::downloadUrlReady, this, &OptifineModItemWidget::onDownloadPathChanged);
 }
 
 OptifineModItemWidget::~OptifineModItemWidget()

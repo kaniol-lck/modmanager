@@ -17,11 +17,13 @@ public:
 
     const QUrl &url() const;
     const QString &path() const;
+
 signals:
     void redirected(QUrl url);
     void finished();
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadSpeed(qint64 download, qint64 upload = 0);
+
 protected:
     QUrl url_;
     QString path_;

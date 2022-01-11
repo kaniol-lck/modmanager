@@ -9,6 +9,8 @@
 #include "util/funcutil.h"
 #include "config.hpp"
 
+#include "ui/downloadpathselectmenu.h"
+
 ReplayModItemWidget::ReplayModItemWidget(ReplayModBrowser *parent, ReplayMod *mod) :
     QWidget(parent),
     ui(new Ui::ReplayModItemWidget),
@@ -16,6 +18,10 @@ ReplayModItemWidget::ReplayModItemWidget(ReplayModBrowser *parent, ReplayMod *mo
     mod_(mod)
 {
     ui->setupUi(this);
+
+    onDownloadPathChanged();
+    connect(browser_->downloadPathSelectMenu(), &DownloadPathSelectMenu::DownloadPathChanged, this, &ReplayModItemWidget::onDownloadPathChanged);
+
     QPixmap pixmap(":/image/replay.png");
     ui->modIcon->setPixmap(pixmap.scaled(80, 80, Qt::KeepAspectRatio));
     ui->downloadProgress->setVisible(false);

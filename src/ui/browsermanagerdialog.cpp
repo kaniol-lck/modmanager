@@ -142,6 +142,6 @@ void BrowserManagerDialog::on_openFolderButton_clicked()
     auto row = ui->browserList->currentIndex().row();
     if(row < 0) return;
     if(auto path = pathList_.at(row))
-        openFileInFolder(path->info().path());
+        openFolder(path->info().path());
 }
 

@@ -26,6 +26,10 @@ private slots:
     void on_pauseButton_clicked();
     void on_QAria2DownloaderItemWidget_customContextMenuRequested(const QPoint &pos);
 
+    void on_actionShow_Downloaded_File_in_Folder_triggered();
+
+    void on_actionCopy_Download_Link_triggered();
+
 private:
     Ui::QAria2DownloaderItemWidget *ui;
     QAria2Downloader *downloader_;

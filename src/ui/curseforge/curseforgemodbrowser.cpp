@@ -296,7 +296,7 @@ void CurseforgeModBrowser::updateStatusText()
     ui->statusbar->showMessage(str);
 }
 
-void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
+void CurseforgeModBrowser::getModList(QString name, int index)
 {
     if(!index)
         currentIndex_ = 0;
@@ -364,10 +364,10 @@ void CurseforgeModBrowser::getModList(QString name, int index, int needMore)
             hasMore_ = false;
         }
         isSearching_ = false;
-        if(hasMore_ && shownCount != infoList.count() && shownCount < needMore){
-            currentIndex_ += Config().getSearchModsOnStartup();
-            getModList(currentName_, currentIndex_, needMore - shownCount);
-        }
+//        if(hasMore_ && shownCount != infoList.count() && shownCount < needMore){
+//            currentIndex_ += Config().getSearchModsOnStartup();
+//            getModList(currentName_, currentIndex_, needMore - shownCount);
+//        }
         updateStatusText();
     });
 }

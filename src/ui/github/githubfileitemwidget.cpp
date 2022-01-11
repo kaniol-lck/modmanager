@@ -19,6 +19,7 @@ GitHubFileItemWidget::GitHubFileItemWidget(GitHubFileListWidget *parent, const G
     //size
     ui->downloadSpeedText->setText(sizeConvert(info_.size()));
 
+    onDownloadPathChanged();
     connect(fileList_->downloadPathSelectMenu(), &DownloadPathSelectMenu::DownloadPathChanged, this, &GitHubFileItemWidget::onDownloadPathChanged);
 }
 

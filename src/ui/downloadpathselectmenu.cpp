@@ -21,9 +21,9 @@ void DownloadPathSelectMenu::onAboutToShow()
     clear();
     addAction(QIcon::fromTheme("folder"), tr("Open Current Save Folder..."), this, [=]{
         if(downloadPath_)
-            openFileInFolder(downloadPath_->info().path());
+            openFolder(downloadPath_->info().path());
         else
-            openFileInFolder(Config().getDownloadPath());
+            openFolder(Config().getDownloadPath());
     });
     addSeparator();
     addAction(tr("Default Download Path"), this, [=]{
@@ -32,6 +32,7 @@ void DownloadPathSelectMenu::onAboutToShow()
     addAction(tr("Change Default Download Path..."), this, [=]{
         auto dir = QFileDialog::getExistingDirectory(parentWidget(), tr("Change Default Download Path..."), Config().getDownloadPath());
         if(!dir.isEmpty()) Config().setDownloadPath(dir);
+        if(!downloadPath_) emit DownloadPathChanged();
     });
     addSeparator();
     addSection(tr("Local Mod Paths"));

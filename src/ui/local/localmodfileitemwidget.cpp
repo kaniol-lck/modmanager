@@ -40,7 +40,7 @@ void LocalModFileItemWidget::onFileChanged()
     };
     QPixmap pixmap;
     pixmap.loadFromData(file_->commonInfo()->iconBytes());
-    ui->modIcon->setPixmap(pixmap.scaled(80, 80));
+    ui->modIcon->setPixmap(pixmap.scaled(80, 80, Qt::KeepAspectRatio));
     auto name = file_->commonInfo()->name();
     setEffect(ui->modName, name);
     ui->modName->setText(name);

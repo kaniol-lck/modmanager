@@ -15,6 +15,9 @@ QString speedConvert(qint64 byte, int prec = 3, int limit = 900);
 QString numberConvert(int size, const QString &suffix, int prec = 3, int limit = 900);
 
 void openFileInFolder(const QString &filePath);
+void openFileInFolder(const QString &fileName, const QString &filePath);
+
+void openFolder(const QString &path);
 
 bool hasFile(const QString &path, const QString &fileName);
 bool hasFile(LocalModPath *path, CurseforgeMod *mod);

@@ -32,6 +32,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
     if(localMod_)
         connect(localMod_, &LocalMod::modCacheUpdated, this, &CurseforgeFileItemWidget::updateLocalInfo);
 
+    onDownloadPathChanged();
     connect(fileList_->downloadPathSelectMenu(), &DownloadPathSelectMenu::DownloadPathChanged, this, &CurseforgeFileItemWidget::onDownloadPathChanged);
 
     if(fileInfo_.releaseType() == CurseforgeFileInfo::Release){

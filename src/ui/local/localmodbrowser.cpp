@@ -705,7 +705,7 @@ QList<LocalMod *> LocalModBrowser::selectedMods(QAbstractItemView *view)
 
 void LocalModBrowser::on_actionOpen_Folder_triggered()
 {
-    openFileInFolder(modPath_->info().path());
+    openFolder(modPath_->info().path());
 }
 
 void LocalModBrowser::on_actionBatch_Rename_triggered()

@@ -28,6 +28,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(CurseforgeModBrowser *parent, C
     ui->tagsWidget->setMod(mod_);
     updateIcon();
     connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModItemWidget::updateIcon);
+    onDownloadPathChanged();
     connect(browser_->downloadPathSelectMenu(), &DownloadPathSelectMenu::DownloadPathChanged, this, &CurseforgeModItemWidget::onDownloadPathChanged);
 
     auto menu = new QMenu(this);

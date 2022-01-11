@@ -50,7 +50,6 @@ QString numberConvert(int size, const QString &suffix, int prec, int limit){
 void openFileInFolder(const QString &filePath)
 {
     QProcess process;
-    QFileInfo info(filePath);
 #ifdef Q_OS_UNIX
     QString fileManager;
     process.start("xdg-mime", { "query", "default", "inode/directory" });
@@ -83,7 +82,18 @@ void openFileInFolder(const QString &filePath)
     process.startDetached("open", { "-R",  filePath });
     return;
 #endif
-    QDesktopServices::openUrl(QUrl::fromLocalFile(info.isFile()? info.absolutePath() : filePath));
+    openFolder(filePath);
+}
+
+void openFileInFolder(const QString &fileName, const QString &filePath)
+{
+    openFileInFolder(QDir(filePath).absoluteFilePath(fileName));
+}
+
+void openFolder(const QString &path)
+{
+    QFileInfo info(path);
+    QDesktopServices::openUrl(QUrl::fromLocalFile(info.isFile()? info.absolutePath() : path));
 }
 
 bool hasFile(const QString &path, const QString &fileName)

@@ -28,6 +28,9 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(ModrinthFileListWidget *parent, M
     if(localMod_)
         connect(localMod_, &LocalMod::modCacheUpdated, this, &ModrinthFileItemWidget::updateLocalInfo);
 
+    onDownloadPathChanged();
+    connect(fileList_->downloadPathSelectMenu(), &DownloadPathSelectMenu::DownloadPathChanged, this, &ModrinthFileItemWidget::onDownloadPathChanged);
+
     if(fileInfo_.releaseType() == ModrinthFileInfo::Release){
         ui->releaseType->setText(tr("Release"));
         ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #14b866; border-radius:2px; padding:1px 2px;"));
