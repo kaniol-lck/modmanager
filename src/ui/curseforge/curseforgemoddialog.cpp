@@ -36,6 +36,7 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
 {
     ui->setupUi(this);
     ui->fileList->setMod(mod_);
+    ui->fileList->setLocalMod(localMod);
     ui->tagsWidget->setTagableObject(mod_);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->galleryListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
@@ -64,8 +65,6 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, Lo
     connect(mod_, &CurseforgeMod::basicInfoReady, this, &CurseforgeModDialog::updateBasicInfo);
     connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModDialog::updateThumbnail);
     connect(mod_, &CurseforgeMod::descriptionReady, this, &CurseforgeModDialog::updateDescription);
-
-//    if(localMod_) setDownloadPath(localMod_->path());
 }
 
 CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, const CurseforgeModInfo &modInfo) :

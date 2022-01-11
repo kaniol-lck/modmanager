@@ -3,6 +3,7 @@
 
 #include <QStandardItemModel>
 
+#include "ui/downloadpathselectmenu.h"
 #include "curseforgemodbrowser.h"
 #include "curseforgefileitemwidget.h"
 #include "curseforge/curseforgemod.h"
@@ -17,6 +18,12 @@ CurseforgeFileListWidget::CurseforgeFileListWidget(CurseforgeModBrowser *parent)
     browser_ = parent;
 }
 
+CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent, LocalMod *localMod) :
+    CurseforgeFileListWidget(parent)
+{
+    setLocalMod(localMod);
+}
+
 CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CurseforgeFileListWidget),
@@ -27,6 +34,7 @@ CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent) :
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setProperty("class", "ModList");
     connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeFileListWidget::updateIndexWidget);
+    ui->downloadPathSelect->hide();
 }
 
 CurseforgeFileListWidget::~CurseforgeFileListWidget()
@@ -83,6 +91,20 @@ void CurseforgeFileListWidget::paintEvent(QPaintEvent *event)
 {
     updateIndexWidget();
     QWidget::paintEvent(event);
+}
+
+void CurseforgeFileListWidget::setLocalMod(LocalMod *newLocalMod)
+{
+    localMod_ = newLocalMod;
+    if(localMod_){
+        if(!downloadPathSelectMenu_){
+            downloadPathSelectMenu_ = new DownloadPathSelectMenu(this);
+            ui->downloadPathSelect->setDefaultAction(downloadPathSelectMenu_->menuAction());
+            ui->downloadPathSelect->setPopupMode(QToolButton::InstantPopup);
+        }
+        downloadPathSelectMenu_->setDownloadPath(localMod_->path());
+        ui->downloadPathSelect->show();
+    }
 }
 
 DownloadPathSelectMenu *CurseforgeFileListWidget::downloadPathSelectMenu() const

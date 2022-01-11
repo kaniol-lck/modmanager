@@ -10,11 +10,17 @@
 #include "util/datetimesortitem.h"
 #include "util/smoothscrollbar.h"
 #include "util/funcutil.h"
+#include "ui/downloadpathselectmenu.h"
 
 ModrinthFileListWidget::ModrinthFileListWidget(ModrinthModBrowser *parent) :
     ModrinthFileListWidget(static_cast<QWidget *>(parent))
 {
     browser_ = parent;
+}
+
+ModrinthFileListWidget::ModrinthFileListWidget(QWidget *parent, LocalMod *localMod)
+{
+    setLocalMod(localMod);
 }
 
 ModrinthFileListWidget::ModrinthFileListWidget(QWidget *parent) :
@@ -27,6 +33,7 @@ ModrinthFileListWidget::ModrinthFileListWidget(QWidget *parent) :
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setProperty("class", "ModList");
     connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &ModrinthFileListWidget::updateIndexWidget);
+    ui->downloadPathSelect->hide();
 }
 
 ModrinthFileListWidget::~ModrinthFileListWidget()
@@ -90,6 +97,20 @@ void ModrinthFileListWidget::paintEvent(QPaintEvent *event)
 {
     updateIndexWidget();
     QWidget::paintEvent(event);
+}
+
+void ModrinthFileListWidget::setLocalMod(LocalMod *newLocalMod)
+{
+    localMod_ = newLocalMod;
+    if(localMod_){
+        if(!downloadPathSelectMenu_){
+            downloadPathSelectMenu_ = new DownloadPathSelectMenu(this);
+            ui->downloadPathSelect->setDefaultAction(downloadPathSelectMenu_->menuAction());
+            ui->downloadPathSelect->setPopupMode(QToolButton::InstantPopup);
+        }
+        downloadPathSelectMenu_->setDownloadPath(localMod_->path());
+        ui->downloadPathSelect->show();
+    }
 }
 
 void ModrinthFileListWidget::setBrowser(ModrinthModBrowser *newBrowser)

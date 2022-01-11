@@ -8,6 +8,7 @@ class CurseforgeModBrowser;
 class LocalModPath;
 class QStandardItemModel;
 class DownloadPathSelectMenu;
+class LocalMod;
 namespace Ui {
 class CurseforgeFileListWidget;
 }
@@ -18,12 +19,15 @@ class CurseforgeFileListWidget : public QWidget
 
 public:
     explicit CurseforgeFileListWidget(CurseforgeModBrowser *parent);
+    explicit CurseforgeFileListWidget(QWidget *parent, LocalMod *localMod);
     explicit CurseforgeFileListWidget(QWidget *parent = nullptr);
     ~CurseforgeFileListWidget();
 
     void setMod(CurseforgeMod *mod);
     void setBrowser(CurseforgeModBrowser *newBrowser);
     DownloadPathSelectMenu *downloadPathSelectMenu() const;
+
+    void setLocalMod(LocalMod *newLocalMod);
 
 signals:
     void modChanged();
@@ -44,6 +48,7 @@ private:
     DownloadPathSelectMenu *downloadPathSelectMenu_ = nullptr;
     QStandardItemModel *model_;
     CurseforgeMod *mod_ = nullptr;
+    LocalMod *localMod_ = nullptr;
 };
 
 #endif // CURSEFORGEFILELISTWIDGET_H

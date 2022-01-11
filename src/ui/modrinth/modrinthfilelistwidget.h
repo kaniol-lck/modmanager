@@ -8,6 +8,8 @@ class ModrinthModBrowser;
 class LocalModPath;
 class QStandardItemModel;
 class DownloadPathSelectMenu;
+
+class LocalMod;
 namespace Ui {
 class ModrinthFileListWidget;
 }
@@ -18,6 +20,7 @@ class ModrinthFileListWidget : public QWidget
 
 public:
     explicit ModrinthFileListWidget(ModrinthModBrowser *parent);
+    explicit ModrinthFileListWidget(QWidget *parent, LocalMod *localMod);
     explicit ModrinthFileListWidget(QWidget *parent = nullptr);
     ~ModrinthFileListWidget();
 
@@ -25,6 +28,8 @@ public:
     DownloadPathSelectMenu *downloadPathSelectMenu() const;
 
     void setBrowser(ModrinthModBrowser *newBrowser);
+
+    void setLocalMod(LocalMod *newLocalMod);
 
 signals:
     void modChanged();
@@ -46,6 +51,7 @@ private:
     DownloadPathSelectMenu *downloadPathSelectMenu_ = nullptr;
     QStandardItemModel *model_;
     ModrinthMod *mod_ = nullptr;
+    LocalMod *localMod_ = nullptr;
 };
 
 #endif // MODRINTHFILELISTWIDGET_H

@@ -30,6 +30,7 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
 {
     ui->setupUi(this);
     ui->fileList->setMod(mod_);
+    ui->fileList->setLocalMod(localMod);
     ui->tagsWidget->setTagableObject(mod_);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
 
@@ -47,8 +48,6 @@ ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod
     }
     connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthModDialog::updateFullInfo);
     connect(mod_, &ModrinthMod::iconReady, this, &ModrinthModDialog::updateIcon);
-
-//    if(localMod_) setDownloadPath(localMod_->path());
 }
 
 ModrinthModDialog::~ModrinthModDialog()
