@@ -30,25 +30,6 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QToolButton" name="versionSelectButton">
-    <property name="geometry">
-     <rect>
-      <x>172</x>
-      <y>131</y>
-      <width>38</width>
-      <height>38</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="popupMode">
-     <enum>QToolButton::InstantPopup</enum>
-    </property>
-    <property name="toolButtonStyle">
-     <enum>Qt::ToolButtonTextBesideIcon</enum>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
@@ -66,50 +47,6 @@
     </property>
     <property name="text">
      <string>Mod Loader:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_5">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>131</y>
-      <width>72</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="text">
-     <string>Category:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>131</y>
-      <width>104</width>
-      <height>19</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="text">
-     <string>Game Version:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -161,25 +98,6 @@
      </sizepolicy>
     </property>
    </widget>
-   <widget class="QToolButton" name="categorySelectButton">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>131</y>
-      <width>38</width>
-      <height>38</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="popupMode">
-     <enum>QToolButton::InstantPopup</enum>
-    </property>
-    <property name="toolButtonStyle">
-     <enum>Qt::ToolButtonTextBesideIcon</enum>
-    </property>
-   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -208,7 +126,31 @@
     <addaction name="actionOpen_Website_Link"/>
     <addaction name="actionCopy_Website_Link"/>
    </widget>
+   <widget class="QMenu" name="menu_Path">
+    <property name="title">
+     <string>&amp;Path</string>
+    </property>
+    <widget class="UnclosedMenu" name="menuSelect_Game_Version">
+     <property name="styleSheet">
+      <string notr="true">QMenu { menu-scrollable: 1; }</string>
+     </property>
+     <property name="title">
+      <string>Select Game Version</string>
+     </property>
+    </widget>
+    <widget class="UnclosedMenu" name="menuSelect_Category">
+     <property name="styleSheet">
+      <string notr="true">QMenu { menu-scrollable: 1; }</string>
+     </property>
+     <property name="title">
+      <string>Select Category</string>
+     </property>
+    </widget>
+    <addaction name="menuSelect_Game_Version"/>
+    <addaction name="menuSelect_Category"/>
+   </widget>
    <addaction name="menu_Mod"/>
+   <addaction name="menu_Path"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="MenuToolBar" name="toolBar">
@@ -264,6 +206,11 @@
    <class>MenuToolBar</class>
    <extends>QToolBar</extends>
    <header location="global">ui/menutoolbar.h</header>
+  </customwidget>
+  <customwidget>
+   <class>UnclosedMenu</class>
+   <extends>QMenu</extends>
+   <header location="global">util/unclosedmenu.h</header>
   </customwidget>
  </customwidgets>
  <resources>

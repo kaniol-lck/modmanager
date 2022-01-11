@@ -35,6 +35,7 @@ public:
     ModrinthMod *selectedMod() const;
 
     QList<QAction *> modActions() const override;
+    QList<QAction *> pathActions() const override;
 
     ExploreBrowser *another() override;
 
