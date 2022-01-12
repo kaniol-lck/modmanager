@@ -159,6 +159,7 @@ jobs:
           (Get-Content package/modmanager.nsi).replace('PROGRAMFILES', 'PROGRAMFILES64') | Set-Content package/modmanager.nsi
       - name: Create installer
         run:
+          chcp 936
           makensis package/modmanager.nsi
       - uses: actions/upload-artifact@v2
         with:
