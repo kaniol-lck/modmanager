@@ -149,7 +149,7 @@ void CurseforgeModItemWidget::onDownloadPathChanged()
         if(defaultFileInfo_)
             bl = hasFile(Config().getDownloadPath(), defaultFileInfo_->fileName());
         if(!mod_->modInfo().latestFiles().isEmpty())
-            for(const auto &fileInfo : mod_->modInfo().latestFiles()){
+            for(auto &&fileInfo : mod_->modInfo().latestFiles()){
                 if(hasFile(Config().getDownloadPath(), fileInfo.fileName())){
                     bl = true;
                     break;

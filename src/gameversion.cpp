@@ -212,7 +212,7 @@ void VersionManager::initCurseforgeVersionList()
 {
     //get version list
     static auto reply = CurseforgeAPI::api()->getMinecraftVersionList();
-    reply.setOnFinished([=](const auto &versionList){
+    reply.setOnFinished(this, [=](const auto &versionList){
         GameVersion::curseforgeVersionList_ = versionList;
         emit curseforgeVersionListUpdated();
         qDebug() << "curseforge version updated.";

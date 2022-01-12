@@ -55,7 +55,7 @@ void CurseforgeMod::acquireBasicInfo()
 {
     if(basicInfoGetter_) return;
     basicInfoGetter_ = api_->getInfo(modInfo_.id_).asUnique();
-    basicInfoGetter_->setOnFinished([=](const auto &info){
+    basicInfoGetter_->setOnFinished(this, [=](const auto &info){
         modInfo_ = info;
         addSubTagable(&modInfo_);
         emit basicInfoReady();
@@ -80,7 +80,7 @@ void CurseforgeMod::acquireDescription()
 {
     if(descriptionGetter_) return;
     descriptionGetter_ = api_->getDescription(modInfo_.id()).asUnique();
-    descriptionGetter_->setOnFinished([=](const QString &description){
+    descriptionGetter_->setOnFinished(this, [=](const QString &description){
         modInfo_.description_ = description;
         emit descriptionReady();
     });
@@ -90,7 +90,7 @@ std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> CurseforgeMod::acquireAllFileL
 {
     if(allFileListGetter_ && allFileListGetter_->isRunning()) return {};
     allFileListGetter_ = api_->getFiles(modInfo_.id()).asUnique();
-    allFileListGetter_->setOnFinished([=](const QList<CurseforgeFileInfo> &fileList){
+    allFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &fileList){
         modInfo_.allFileList_ = fileList;
         emit allFileListReady(fileList);
     }, [=](auto){

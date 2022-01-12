@@ -95,7 +95,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
                     auto action = menu->addAction(tr("Dependency Mod: %1").arg(dependencyInfo.addonId()));
                     auto reply = CurseforgeAPI::api()->getInfo(dependencyInfo.addonId());
                     reply.setRunBackground(true);
-                    reply.setOnFinished([=](const CurseforgeModInfo &modInfo){
+                    reply.setOnFinished(this, [=](const CurseforgeModInfo &modInfo){
                         action->setText(tr("Dependency Mod: %1").arg(modInfo.name()));
                         connect(action, &QAction::triggered, this, [=]{
                             auto dialog = new CurseforgeModDialog(this, modInfo);
@@ -105,7 +105,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
                     if(dependencyInfo.fileId()){
                         auto reply = CurseforgeAPI::api()->getFileInfo(dependencyInfo.addonId(), dependencyInfo.fileId());
                         reply.setRunBackground(true);
-                        reply.setOnFinished([=](const CurseforgeFileInfo &fileInfo){
+                        reply.setOnFinished(this, [=](const CurseforgeFileInfo &fileInfo){
                             action->setText(action->text() + "\n" +
                                             tr("Dependency File: %1").arg(fileInfo.fileName()));
                         });

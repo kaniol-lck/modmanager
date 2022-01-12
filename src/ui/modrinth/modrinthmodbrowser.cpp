@@ -126,6 +126,7 @@ void ModrinthModBrowser::updateUi()
 
 void ModrinthModBrowser::updateVersionList()
 {
+    ui->versionToolBar->clear();
     ui->menuSelect_Game_Version->clear();
     auto multiSelectionAction = ui->menuSelect_Game_Version->addAction(tr("Multi Selection"));
     multiSelectionAction->setCheckable(true);
@@ -161,6 +162,7 @@ void ModrinthModBrowser::updateVersionList()
         currentGameVersions_.clear();
         ui->menuSelect_Game_Version->setTitle(tr("Game Version : %1").arg(tr("Any")));
         ui->menuSelect_Game_Version->setIcon(QIcon());
+        getModList(currentName_);
     });
     auto getVersionAction = [=](const GameVersion &version){
         auto versionAction = new QAction(version);
@@ -177,8 +179,8 @@ void ModrinthModBrowser::updateVersionList()
                 //only search for single selection
                 if(currentGameVersions_ == lastGameVersions_) return;
                 lastGameVersions_ = currentGameVersions_;
-                getModList(currentName_);
             }
+            getModList(currentName_);
             ui->menuSelect_Game_Version->setToolTip("");
             if(auto size = currentGameVersions_.size(); size == 0)
                 ui->menuSelect_Game_Version->setTitle(tr("Game Version : %1").arg(tr("Any")));
@@ -254,18 +256,26 @@ void ModrinthModBrowser::updateVersionList()
     multiSelectionAction->trigger();
     showSnapshotAction->setChecked(Config().getShowModrinthSnapshot());
     showSnapshotAction->trigger();
-    connect(ui->menuSelect_Game_Version, &QMenu::aboutToHide, this, [=,
-            i = ui->menuSelect_Game_Version->actions().indexOf(multiSelectionAction)]{
-        //only search for multi selection
-        if(!ui->menuSelect_Game_Version->actions().at(i)->isChecked()) return;
-        if(currentGameVersions_ == lastGameVersions_) return;
-        lastGameVersions_ = currentGameVersions_;
-        getModList(currentName_);
-    });
+//    connect(ui->menuSelect_Game_Version, &QMenu::aboutToHide, this, [=,
+//            i = ui->menuSelect_Game_Version->actions().indexOf(multiSelectionAction)]{
+//        //only search for multi selection
+//        if(!ui->menuSelect_Game_Version->actions().at(i)->isChecked()) return;
+//        if(currentGameVersions_ == lastGameVersions_) return;
+//        lastGameVersions_ = currentGameVersions_;
+//        getModList(currentName_);
+//    });
+    for(auto &&action : ui->menuSelect_Game_Version->actions()){
+        if(action->isSeparator()) continue;
+        auto button = new QToolButton;
+        button->setDefaultAction(action);
+        button->setPopupMode(QToolButton::InstantPopup);
+        ui->versionToolBar->addWidget(button);
+    }
 }
 
 void ModrinthModBrowser::updateCategoryList()
 {
+    ui->categoryToolBar->clear();
     ui->menuSelect_Category->clear();
     auto multiSelectionAction = ui->menuSelect_Category->addAction(tr("Multi Selection"));
     multiSelectionAction->setCheckable(true);
@@ -297,6 +307,7 @@ void ModrinthModBrowser::updateCategoryList()
         currentCategoryIds_.clear();
         ui->menuSelect_Category->setTitle(tr("Category : %1").arg(tr("Any")));
         ui->menuSelect_Category->setIcon(QIcon());
+        getModList(currentName_);
     });
     anyCategoryAction->trigger();
     ui->menuSelect_Category->addSeparator();
@@ -316,8 +327,8 @@ void ModrinthModBrowser::updateCategoryList()
                 //only search for single selection
                 if(currentCategoryIds_ == lastCategoryIds_) return;
                 lastCategoryIds_ = currentCategoryIds_;
-                getModList(currentName_);
             }
+            getModList(currentName_);
             ui->menuSelect_Category->setIcon(QIcon());
             ui->menuSelect_Category->setToolTip("");
             if(auto size = currentCategoryIds_.size(); size == 0)
@@ -341,14 +352,21 @@ void ModrinthModBrowser::updateCategoryList()
         connect(multiSelectionAction, &QAction::triggered, categoryAction, &QAction::setCheckable);
         connect(anyCategoryAction, &QAction::triggered, categoryAction, &QAction::setChecked);
     }
-    connect(ui->menuSelect_Category, &QMenu::aboutToHide, this, [=,
-            i = ui->menuSelect_Game_Version->actions().indexOf(multiSelectionAction)]{
-        //only search for multi selection
-        if(!ui->menuSelect_Game_Version->actions().at(i)->isChecked()) return;
-        if(currentCategoryIds_ == lastCategoryIds_) return;
-        lastCategoryIds_ = currentCategoryIds_;
-        getModList(currentName_);
-    });
+//    connect(ui->menuSelect_Category, &QMenu::aboutToHide, this, [=,
+//            i = ui->menuSelect_Game_Version->actions().indexOf(multiSelectionAction)]{
+//        //only search for multi selection
+//        if(!ui->menuSelect_Game_Version->actions().at(i)->isChecked()) return;
+//        if(currentCategoryIds_ == lastCategoryIds_) return;
+//        lastCategoryIds_ = currentCategoryIds_;
+//        getModList(currentName_);
+//    });
+    for(auto &&action : ui->menuSelect_Category->actions()){
+        if(action->isSeparator()) continue;
+        auto button = new QToolButton;
+        button->setDefaultAction(action);
+        button->setPopupMode(QToolButton::InstantPopup);
+        ui->categoryToolBar->addWidget(button);
+    }
 }
 
 void ModrinthModBrowser::search()
@@ -366,9 +384,10 @@ void ModrinthModBrowser::updateStatusText()
 
 void ModrinthModBrowser::getModList(QString name, int index)
 {
+    if(isSearching_) return;
     if(!index)
         currentIndex_ = 0;
-    else if(!hasMore_ || isSearching_)
+    else if(!hasMore_)
         return;
     setCursor(Qt::BusyCursor);
     statusBarWidget_->setText(tr("Searching mods..."));
@@ -379,7 +398,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
 
     isSearching_ = true;
     searchModsGetter_ = api_->searchMods(name, currentIndex_, currentGameVersions_, type, currentCategoryIds_, sort).asUnique();
-    searchModsGetter_->setOnFinished([=](const QList<ModrinthModInfo> &infoList){
+    searchModsGetter_->setOnFinished(this, [=](const QList<ModrinthModInfo> &infoList){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);

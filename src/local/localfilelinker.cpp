@@ -86,7 +86,7 @@ void LocalFileLinker::linkCurseforge()
     else
         api = CurseforgeAPI::api();
     curseforgeSearcher_ = api->getIdByFingerprint(murmurhash).asUnique();
-    curseforgeSearcher_->setOnFinished([=](int id, auto fileInfo, const QList<CurseforgeFileInfo> &fileList[[maybe_unused]]){
+    curseforgeSearcher_->setOnFinished(this, [=](int id, auto fileInfo, const QList<CurseforgeFileInfo> &fileList[[maybe_unused]]){
         if(id){
             setCurseforgeFileInfo(fileInfo);
             IdMapper::addCurseforge(localFile_->commonInfo()->id(), id);
@@ -126,7 +126,7 @@ void LocalFileLinker::linkModrinth()
     else
         api = ModrinthAPI::api();
     modrinthSearcher_ = api->getVersionFileBySha1(sha1).asUnique();
-    modrinthSearcher_->setOnFinished([=](const ModrinthFileInfo &fileInfo){
+    modrinthSearcher_->setOnFinished(this, [=](const ModrinthFileInfo &fileInfo){
         setModrinthFileInfo(fileInfo);
         IdMapper::addModrinth(localFile_->commonInfo()->id(), fileInfo.modId());
         KnownFile::addModrinth(sha1, fileInfo);

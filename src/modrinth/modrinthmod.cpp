@@ -83,7 +83,7 @@ std::shared_ptr<Reply<ModrinthModInfo>> ModrinthMod::acquireFullInfo()
 {
     if(fullInfoGetter_ && fullInfoGetter_->isRunning()) return {};
     fullInfoGetter_ = api_->getInfo(modInfo_.modId_).asShared();
-    fullInfoGetter_->setOnFinished([=](const auto &newInfo){
+    fullInfoGetter_->setOnFinished(this, [=](const auto &newInfo){
         if(modInfo_.basicInfo_){
             modInfo_.description_ = newInfo.description_;
             modInfo_.versionList_ = newInfo.versionList_;
@@ -98,7 +98,7 @@ std::shared_ptr<Reply<QList<ModrinthFileInfo> > > ModrinthMod::acquireFileList()
 {
     if(fileListGetter_ && fileListGetter_->isRunning()) return {};
     fileListGetter_ = api_->getVersions(modInfo_.modId_).asShared();
-    fileListGetter_->setOnFinished([=](const auto &files){
+    fileListGetter_->setOnFinished(this, [=](const auto &files){
         modInfo_.fileList_ = files;
         emit fileListReady(files);
     }, [=](auto){

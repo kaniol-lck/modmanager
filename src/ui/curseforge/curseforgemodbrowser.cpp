@@ -75,7 +75,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
 
     updateVersionList();
     sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
-    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
+    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
     updateStatusText();
 
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
@@ -150,6 +150,7 @@ void CurseforgeModBrowser::updateVersionList()
         currentGameVersion_ = GameVersion::Any;
         ui->menuSelect_Game_Version->setTitle(tr("Game Version : %1").arg(tr("Any")));
         ui->menuSelect_Game_Version->setIcon(QIcon());
+        getModList(currentName_);
     });
     anyVersionAction->trigger();
     ui->menuSelect_Game_Version->addSeparator();
@@ -200,6 +201,7 @@ void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list
         currentCategoryId_ = 0;
         ui->menuSelect_Category->setTitle(tr("Category : %1").arg(tr("Any")));
         ui->menuSelect_Category->setIcon(QIcon());
+        getModList(currentName_);
     });
     anyCategoryAction->trigger();
     ui->menuSelect_Category->addSeparator();
@@ -292,9 +294,10 @@ void CurseforgeModBrowser::updateStatusText()
 
 void CurseforgeModBrowser::getModList(QString name, int index)
 {
+    if(isSearching_) return;
     if(!index)
         currentIndex_ = 0;
-    else if(!hasMore_ || isSearching_)
+    else if(!hasMore_)
         return;
     setCursor(Qt::BusyCursor);
     statusBarWidget_->setText(tr("Searching mods..."));
@@ -306,7 +309,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
 
     isSearching_ = true;
     searchModsGetter_ = api_->searchMods(sectionId_, gameVersion, index, name, category, sort).asUnique();
-    searchModsGetter_->setOnFinished([=](const QList<CurseforgeModInfo> &infoList){
+    searchModsGetter_->setOnFinished(this, [=](const QList<CurseforgeModInfo> &infoList){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);
@@ -465,7 +468,7 @@ void CurseforgeModBrowser::on_actionMod_triggered()
     currentCategoryId_ = 0;
     search();
     sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
-    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
+    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
 }
 
 void CurseforgeModBrowser::on_actionWorld_triggered()
@@ -474,7 +477,7 @@ void CurseforgeModBrowser::on_actionWorld_triggered()
     currentCategoryId_ = 0;
     search();
     sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
-    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
+    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
 }
 
 void CurseforgeModBrowser::on_actionModpacks_triggered()
@@ -483,7 +486,7 @@ void CurseforgeModBrowser::on_actionModpacks_triggered()
     currentCategoryId_ = 0;
     search();
     sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
-    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
+    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
 }
 
 void CurseforgeModBrowser::on_actionTexturepacks_triggered()
@@ -492,7 +495,7 @@ void CurseforgeModBrowser::on_actionTexturepacks_triggered()
     currentCategoryId_ = 0;
     search();
         sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
-    sectionCategoriesGetter_->setOnFinished([=](const auto &list){ updateCategoryList(list); });
+    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
 }
 
 void CurseforgeModBrowser::on_menuDownload_aboutToShow()

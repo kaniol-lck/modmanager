@@ -158,7 +158,7 @@ void LocalMod::checkCurseforgeUpdate(bool force)
     //update file list
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
         auto reply = curseforgeMod_->acquireAllFileList();
-        reply->setOnFinished([=](const QList<CurseforgeFileInfo> &){
+        reply->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &){
             curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
             emit curseforgeUpdateReady(true);
         }, [=](auto){
