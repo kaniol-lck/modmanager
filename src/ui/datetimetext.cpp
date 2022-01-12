@@ -27,5 +27,5 @@ void DateTimeText::setText(const QString &str)
 void DateTimeText::setDateTime(const QDateTime &dateTime)
 {
     ui->fileDateText->setText(tr("%1 ago").arg(timesTo(dateTime)));
-    ui->fileDateText->setToolTip(dateTime.toString());
+    ui->fileDateText->setToolTip(dateTime.toString(QLocale().dateTimeFormat()));
 }

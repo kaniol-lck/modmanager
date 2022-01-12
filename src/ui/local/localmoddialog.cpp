@@ -161,8 +161,8 @@ void LocalModDialog::onCurrentFileChanged()
     ui->fileBaseNameText->setText(baseName);
     ui->fileSuffixText->setText(suffix);
     ui->sizeText->setText(sizeConvert(fileInfo.size()));
-    ui->createdTimeText->setText(fileInfo.fileTime(QFile::FileBirthTime).toString());
-    ui->modifiedTimeText->setText(fileInfo.fileTime(QFile::FileModificationTime).toString());
+    ui->createdTimeText->setText(fileInfo.fileTime(QFile::FileBirthTime).toString(QLocale().dateTimeFormat()));
+    ui->modifiedTimeText->setText(fileInfo.fileTime(QFile::FileModificationTime).toString(QLocale().dateTimeFormat()));
 
     //if disabled
     ui->disableButton->setChecked(mod_->isDisabled());

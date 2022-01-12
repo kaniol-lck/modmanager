@@ -168,7 +168,7 @@ QVariant LocalModPathModel::data(const QModelIndex &index, int role) const
         case LocalModPathModel::TagsColumn:
             return "";
         case LocalModPathModel::FileDateColumn:
-            return mod->modFile()->fileInfo().lastModified().toString();
+            return mod->modFile()->fileInfo().lastModified().toString(QLocale().dateTimeFormat());
         case LocalModPathModel::FileSizeColumn:
             return sizeConvert(mod->modFile()->fileInfo().size());
         case LocalModPathModel::FileNameColumn:
