@@ -7,6 +7,7 @@
 #include "githubrepoinfo.h"
 #include "github/githubreleaseinfo.h"
 #include "github/githubfileinfo.h"
+#include "network/reply.hpp"
 
 class GitHubAPI : public QObject
 {
@@ -15,8 +16,8 @@ public:
     explicit GitHubAPI(QObject *parent = nullptr);
     static GitHubAPI *api();
 
-    [[nodiscard]] QMetaObject::Connection getReleases(const GitHubRepoInfo &info, int page, std::function<void (QList<GitHubReleaseInfo>)> callback);
-    [[nodiscard]] QMetaObject::Connection getAssets(const QUrl assetUrl, std::function<void (QList<GitHubFileInfo>)> callback);
+    Reply<QList<GitHubReleaseInfo> > getReleases(const GitHubRepoInfo &info, int page);
+    Reply<QList<GitHubFileInfo> > getAssets(const QUrl assetUrl);
 
 private:
     QNetworkAccessManager accessManager_;

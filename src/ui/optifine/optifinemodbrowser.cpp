@@ -122,7 +122,12 @@ void OptifineModBrowser::getModList()
     statusBarWidget_->setProgressVisible(true);
     refreshAction_->setEnabled(false);
 
-    auto callback = [=](const auto &list){
+    auto source = Config().getOptifineSource();
+    if(source == Config::OptifineSourceType::Official)
+        searchModsGetter_ = api_->getModList().asUnique();
+    else if (source == Config::OptifineSourceType::BMCLAPI)
+        searchModsGetter_ = bmclapi_->getOptifineList().asUnique();
+    searchModsGetter_->setOnFinished(this, [=](const auto &list){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);
@@ -158,13 +163,12 @@ void OptifineModBrowser::getModList()
         model_->appendRow(item);
 
         updateStatusText();
-    };
-    auto source = Config().getOptifineSource();
-    if(source == Config::OptifineSourceType::Official)
-        connect(this, &QObject::destroyed, disconnecter(
-                    api_->getModList(callback)));
-    else if (source == Config::OptifineSourceType::BMCLAPI)
-        bmclapi_->getOptifineList(callback);
+    }, [=](auto){
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText(tr("Failed loading"));
+        statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
+    });
 }
 
 QWidget *OptifineModBrowser::getIndexWidget(QStandardItem *item)

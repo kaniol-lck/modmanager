@@ -97,7 +97,8 @@ void ReplayModBrowser::getModList()
     statusBarWidget_->setProgressVisible(true);
     refreshAction_->setEnabled(false);
 
-    api_->getModList([=](const auto &list){
+    searchModsGetter_ = api_->getModList().asUnique();
+    searchModsGetter_->setOnFinished(this, [=](const auto &list){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);
@@ -132,6 +133,11 @@ void ReplayModBrowser::getModList()
         model_->appendRow(item);
 
         updateStatusText();
+    }, [=](auto){
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText(tr("Failed loading"));
+        statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
     });
 }
 

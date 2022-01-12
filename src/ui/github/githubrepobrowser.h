@@ -3,7 +3,9 @@
 
 #include "ui/explorebrowser.h"
 
+#include "network/reply.hpp"
 #include "github/githubrepoinfo.h"
+#include "github/githubreleaseinfo.h"
 
 class GitHubFileListWidget;
 class ExploreStatusBarWidget;
@@ -53,6 +55,7 @@ private:
     GitHubRelease* selectedRelease_ = nullptr;
     int currentPage_ = 1;
     bool hasMore_ = false;
+    std::unique_ptr<Reply<QList<GitHubReleaseInfo> > > searchModsGetter_;
 
     void getReleaseList(int page = 1);
     void loadMore() override;

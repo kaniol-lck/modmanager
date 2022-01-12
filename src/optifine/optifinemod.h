@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+#include "network/reply.hpp"
 #include "optifinemodinfo.h"
 
 class OptifineAPI;
@@ -27,7 +28,7 @@ private:
     BMCLAPI *bmclapi_;
     OptifineModInfo modInfo_;
 
-    bool gettingDownloadUrl_ = false;
+    std::unique_ptr<Reply<QUrl>> downloadUrlGetter_;
 };
 
 #endif // OPTIFINEMOD_H

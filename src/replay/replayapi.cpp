@@ -19,16 +19,12 @@ ReplayAPI *ReplayAPI::api()
     return &api;
 }
 
-void ReplayAPI::getModList(std::function<void (QList<ReplayModInfo>)> callback)
+Reply<QList<ReplayModInfo> > ReplayAPI::getModList()
 {
     QUrl url = PREFIX + "/download/";
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError){
-            qDebug() << reply->errorString();
-            return;
-        }
+    return { reply, [=]{
         auto webPage = reply->readAll();
         reply->deleteLater();
         QRegularExpression re(R"((<th>Replay Mod .*?)</tr>)");
@@ -45,6 +41,6 @@ void ReplayAPI::getModList(std::function<void (QList<ReplayModInfo>)> callback)
             }
             list << ReplayModInfo::fromHtml(match.captured(1), gameVersion);
         }
-        callback(list);
-    });
+        return list;
+    } };
 }

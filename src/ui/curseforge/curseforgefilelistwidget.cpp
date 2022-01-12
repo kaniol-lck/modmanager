@@ -13,18 +13,6 @@
 #include "util/funcutil.h"
 
 CurseforgeFileListWidget::CurseforgeFileListWidget(CurseforgeModBrowser *parent) :
-    CurseforgeFileListWidget(static_cast<QWidget *>(parent))
-{
-    browser_ = parent;
-}
-
-CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent, LocalMod *localMod) :
-    CurseforgeFileListWidget(parent)
-{
-    setLocalMod(localMod);
-}
-
-CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::CurseforgeFileListWidget),
     model_(new QStandardItemModel(this))
@@ -35,6 +23,26 @@ CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent) :
     ui->fileListView->setProperty("class", "ModList");
     connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeFileListWidget::updateIndexWidget);
     ui->downloadPathSelect->hide();
+    browser_ = parent;
+}
+
+CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent, LocalMod *localMod) :
+    QWidget(parent),
+    ui(new Ui::CurseforgeFileListWidget),
+    model_(new QStandardItemModel(this))
+{
+    ui->setupUi(this);
+    ui->fileListView->setModel(model_);
+    ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->fileListView->setProperty("class", "ModList");
+    connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeFileListWidget::updateIndexWidget);
+    ui->downloadPathSelect->hide();
+    if(!downloadPathSelectMenu_){
+        downloadPathSelectMenu_ = new DownloadPathSelectMenu(this);
+        ui->downloadPathSelect->setDefaultAction(downloadPathSelectMenu_->menuAction());
+        ui->downloadPathSelect->setPopupMode(QToolButton::InstantPopup);
+    }
+    setLocalMod(localMod);
 }
 
 CurseforgeFileListWidget::~CurseforgeFileListWidget()
@@ -97,11 +105,6 @@ void CurseforgeFileListWidget::setLocalMod(LocalMod *newLocalMod)
 {
     localMod_ = newLocalMod;
     if(localMod_){
-        if(!downloadPathSelectMenu_){
-            downloadPathSelectMenu_ = new DownloadPathSelectMenu(this);
-            ui->downloadPathSelect->setDefaultAction(downloadPathSelectMenu_->menuAction());
-            ui->downloadPathSelect->setPopupMode(QToolButton::InstantPopup);
-        }
         downloadPathSelectMenu_->setDownloadPath(localMod_->path());
         ui->downloadPathSelect->show();
     }

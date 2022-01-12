@@ -16,16 +16,12 @@ OptifineAPI *OptifineAPI::api()
     return &api;
 }
 
-QMetaObject::Connection OptifineAPI::getModList(std::function<void (QList<OptifineModInfo>)> callback)
+Reply<QList<OptifineModInfo> > OptifineAPI::getModList()
 {
     QUrl url = PREFIX + "/downloads";
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError){
-            qDebug() << reply->errorString();
-            return;
-        }
+    return { reply, [=]{
         auto webPage = reply->readAll();
         reply->deleteLater();
 
@@ -44,11 +40,11 @@ QMetaObject::Connection OptifineAPI::getModList(std::function<void (QList<Optifi
             }
             list << OptifineModInfo::fromHtml(match.captured(1), gameVersion);
         }
-        callback(list);
-    });
+        return list;
+    } };
 }
 
-QMetaObject::Connection OptifineAPI::getDownloadUrl(const QString &fileName, std::function<void (QUrl)> callback)
+Reply<QUrl> OptifineAPI::getDownloadUrl(const QString &fileName)
 {
     QUrl url = PREFIX + "/adloadx";
     QUrlQuery urlQuery;
@@ -56,17 +52,13 @@ QMetaObject::Connection OptifineAPI::getDownloadUrl(const QString &fileName, std
     url.setQuery(urlQuery);
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError){
-            qDebug() << reply->errorString();
-            return;
-        }
+    return { reply, [=]{
         auto webPage = reply->readAll();
         reply->deleteLater();
         //TODO: workaround for multiline match
         webPage.replace('\n', "");
         auto str = capture(webPage, R"(<a href='(.*?)' onclick='.*?'>.*?</a>)");
         QUrl downloadUrl = "https://optifine.net/" + str;
-        callback(downloadUrl);
-    });
+        return downloadUrl;
+    } };
 }

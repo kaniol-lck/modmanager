@@ -19,8 +19,7 @@ class CurseforgeFileListWidget : public QWidget
 
 public:
     explicit CurseforgeFileListWidget(CurseforgeModBrowser *parent);
-    explicit CurseforgeFileListWidget(QWidget *parent, LocalMod *localMod);
-    explicit CurseforgeFileListWidget(QWidget *parent = nullptr);
+    explicit CurseforgeFileListWidget(QWidget *parent = nullptr, LocalMod *localMod = nullptr);
     ~CurseforgeFileListWidget();
 
     void setMod(CurseforgeMod *mod);

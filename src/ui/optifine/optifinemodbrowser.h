@@ -3,6 +3,9 @@
 
 #include "ui/explorebrowser.h"
 
+#include "network/reply.hpp"
+#include "optifine/optifinemodinfo.h"
+
 class OptifineAPI;
 class BMCLAPI;
 class LocalModPath;
@@ -41,6 +44,7 @@ private:
     OptifineAPI *api_;
     BMCLAPI *bmclapi_;
     bool inited_ = false;
+    std::unique_ptr<Reply<QList<OptifineModInfo> > > searchModsGetter_;
 
     void getModList();
     QWidget *getIndexWidget(QStandardItem *item) override;

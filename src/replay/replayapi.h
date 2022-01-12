@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "replaymodinfo.h"
+#include "network/reply.hpp"
 
 // technically, it's not an API, I just parse the html doc of replay's website
 class ReplayAPI : public QObject
@@ -17,7 +18,7 @@ public:
     explicit ReplayAPI(QObject *parent = nullptr);
     static ReplayAPI *api();
 
-    void getModList(std::function<void (QList<ReplayModInfo>)> callback);
+    Reply<QList<ReplayModInfo> > getModList();
 
 private:
     QNetworkAccessManager accessManager_;

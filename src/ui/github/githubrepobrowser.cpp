@@ -95,7 +95,8 @@ void GitHubRepoBrowser::getReleaseList(int page)
     statusBarWidget_->setText(tr("Searching mods..."));
     statusBarWidget_->setProgressVisible(true);
     refreshAction_->setEnabled(false);
-    auto conn = api_->getReleases(info_, page, [=](const auto &list){
+    searchModsGetter_ = api_->getReleases(info_, page).asUnique();
+    searchModsGetter_->setOnFinished(this, [=](const auto &list){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);
@@ -123,8 +124,12 @@ void GitHubRepoBrowser::getReleaseList(int page)
             hasMore_ = false;
         }
         updateStatusText();
+    }, [=](auto){
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText(tr("Failed loading"));
+        statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
     });
-
 }
 
 void GitHubRepoBrowser::loadMore()

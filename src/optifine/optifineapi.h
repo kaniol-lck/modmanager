@@ -6,9 +6,9 @@
 #include <functional>
 
 #include "optifinemodinfo.h"
+#include "network/reply.hpp"
 
 // technically, it's not an API, I just parse the html doc of optifine's website
-// TODO: BMCLAPI
 class OptifineAPI : public QObject
 {
     Q_OBJECT
@@ -18,8 +18,8 @@ public:
     explicit OptifineAPI(QObject *parent = nullptr);
     static OptifineAPI *api();
 
-    [[nodiscard]] QMetaObject::Connection getModList(std::function<void (QList<OptifineModInfo>)> callback);
-    [[nodiscard]] QMetaObject::Connection getDownloadUrl(const QString &fileName, std::function<void (QUrl)> callback);
+    Reply<QList<OptifineModInfo> > getModList();
+    Reply<QUrl> getDownloadUrl(const QString &fileName);
 
 private:
     QNetworkAccessManager accessManager_;

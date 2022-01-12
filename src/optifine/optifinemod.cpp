@@ -20,19 +20,19 @@ OptifineMod::OptifineMod(QObject *parent, const OptifineModInfo &info) :
 
 void OptifineMod::acquireDownloadUrl()
 {
-    if(gettingDownloadUrl_) return;
-    gettingDownloadUrl_ = true;
+    if(downloadUrlGetter_) return;
     auto callback = [=](const auto &downloadUrl){
         modInfo_.downloadUrl_ = downloadUrl;
-        gettingDownloadUrl_ = false;
         emit downloadUrlReady();
     };
     auto source = Config().getOptifineSource();
-    if(source == Config::OptifineSourceType::Official)
-        connect(this, &QObject::destroyed, disconnecter(
-                    api_->getDownloadUrl(modInfo_.fileName(), callback)));
-    else if(source == Config::OptifineSourceType::BMCLAPI)
-        bmclapi_->getOptifineDownloadUrl(modInfo_, callback);
+    if(source == Config::OptifineSourceType::Official){
+        downloadUrlGetter_ = api_->getDownloadUrl(modInfo_.fileName()).asUnique();
+        downloadUrlGetter_->setOnFinished(this, callback);
+    }else if(source == Config::OptifineSourceType::BMCLAPI){
+        downloadUrlGetter_ = bmclapi_->getOptifineDownloadUrl(modInfo_).asUnique();
+        downloadUrlGetter_->setOnFinished(this, callback);
+    }
 }
 
 const OptifineModInfo &OptifineMod::modInfo() const

@@ -17,7 +17,7 @@ GitHubAPI *GitHubAPI::api()
     return &api;
 }
 
-QMetaObject::Connection GitHubAPI::getReleases(const GitHubRepoInfo &info, int page, std::function<void (QList<GitHubReleaseInfo>)> callback)
+Reply<QList<GitHubReleaseInfo> > GitHubAPI::getReleases(const GitHubRepoInfo &info, int page)
 {
     QUrl releaseUrl = QString("https://api.github.com/repos/%1/%2/releases").arg(info.user(), info.repo());
 
@@ -33,50 +33,38 @@ QMetaObject::Connection GitHubAPI::getReleases(const GitHubRepoInfo &info, int p
     qDebug() << releaseUrl;
     QNetworkRequest request(releaseUrl);
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError){
-            qDebug() << reply->errorString();
-            return;
-        }
-
+    return { reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return QList<GitHubReleaseInfo>{};
         }
         auto result = jsonDocument.toVariant();
 
         QList<GitHubReleaseInfo> list;
         for(auto &&variant : result.toList())
             list << GitHubReleaseInfo::fromVariant(variant);
-        callback(list);
-    });
+        return list;
+    } };
 }
 
-QMetaObject::Connection GitHubAPI::getAssets(const QUrl assetUrl, std::function<void (QList<GitHubFileInfo>)> callback)
+Reply<QList<GitHubFileInfo> > GitHubAPI::getAssets(const QUrl assetUrl)
 {
     QNetworkRequest request(assetUrl);
     auto reply = accessManager_.get(request);
-    return connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError){
-            qDebug() << reply->errorString();
-            return;
-        }
-
+    return { reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return QList<GitHubFileInfo>{};
         }
-        auto result = jsonDocument.toVariant();
-
         QList<GitHubFileInfo> list;
-        for(auto &&variant : result.toList())
+        for(auto &&variant : jsonDocument.toVariant().toList())
             list << GitHubFileInfo::fromVariant(variant);
-        callback(list);
-    });
+        return list;
+    } };
 }

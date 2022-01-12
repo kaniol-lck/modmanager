@@ -17,36 +17,30 @@ BMCLAPI *BMCLAPI::api()
     return &api;
 }
 
-void BMCLAPI::getOptifineList(std::function<void (QList<OptifineModInfo>)> callback)
+Reply<QList<OptifineModInfo> > BMCLAPI::getOptifineList()
 {
     QUrl url = PREFIX + "/optifine/versionList";
 
     QNetworkRequest request(url);
     auto reply = accessManager_.get(request);
-    connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
-
+    return { reply, [=]{
         //parse json
         QJsonParseError error;
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return;
+            return QList<OptifineModInfo>{};
         }
         auto list = jsonDocument.toVariant().toList();
         QList<OptifineModInfo> optifineList;
         for(const auto &entry : qAsConst(list))
             optifineList << OptifineModInfo::fromVariant(entry);
 
-        callback(optifineList);
-        reply->deleteLater();
-    });
+        return optifineList;
+    } };
 }
 
-void BMCLAPI::getOptifineDownloadUrl(const OptifineModInfo &info, std::function<void (QUrl)> callback)
+Reply<QUrl> BMCLAPI::getOptifineDownloadUrl(const OptifineModInfo &info)
 {
     QUrl url = PREFIX + QString("/optifine/%1/%2/%3").arg(info.gameVersion(), info.type(), info.patch());
     QNetworkRequest request(url);
@@ -57,15 +51,11 @@ void BMCLAPI::getOptifineDownloadUrl(const OptifineModInfo &info, std::function<
 #endif
     static QNetworkAccessManager accessManager;
     auto reply = accessManager.head(request);
-    connect(reply, &QNetworkReply::finished, this, [=]{
-        if(reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
-            return;
-        }
+    return { reply, [=]{
         if(auto redirection = reply->attribute(QNetworkRequest::RedirectionTargetAttribute); !redirection.isNull()){
             QUrl downloadUrl = PREFIX + redirection.toString();
-            callback(downloadUrl);
+            return downloadUrl;
         }
-        reply->deleteLater();
-    });
+        return QUrl{};
+    } };
 }

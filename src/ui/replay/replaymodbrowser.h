@@ -3,6 +3,9 @@
 
 #include "ui/explorebrowser.h"
 
+#include "network/reply.hpp"
+#include "replay/replaymodinfo.h"
+
 class LocalModPath;
 class ReplayAPI;
 class ExploreStatusBarWidget;
@@ -37,6 +40,7 @@ private:
     Ui::ReplayModBrowser *ui;
     ReplayAPI *api_;
     bool inited_ = false;
+    std::unique_ptr<Reply<QList<ReplayModInfo> > > searchModsGetter_;
 
     void getModList();
     QWidget *getIndexWidget(QStandardItem *item) override;
