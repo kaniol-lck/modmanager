@@ -130,18 +130,9 @@ QMenu {
   border: 1px outset rgb(90, 90, 90);
 }
 
-QMenu::item {
-  padding: 5px 10px;
-  margin: 2px;
-}
-
 QMenu::item:selected {
   background:rgb(115, 115, 115);
   color:rgb(255, 255, 255);
-  border-width: 1px;
-  border-radius: 1px;
-  border-color: rgb(58, 58, 58);
-  border-style: inset;
 }
 
 QComboBox{
