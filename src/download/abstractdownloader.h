@@ -1,6 +1,8 @@
 #ifndef ABSTRACTDOWNLOADER_H
 #define ABSTRACTDOWNLOADER_H
 
+#include "downloadfileinfo.h"
+
 #include <QObject>
 #include <QUrl>
 
@@ -9,14 +11,13 @@ class AbstractDownloader : public QObject
     Q_OBJECT
 public:
     explicit AbstractDownloader(QObject *parent = nullptr);
-    explicit AbstractDownloader(QObject *parent, const QUrl &url, const QString &path);
+    explicit AbstractDownloader(QObject *parent, const DownloadFileInfo &info);
     virtual ~AbstractDownloader() = 0;
 
     void handleRedirect();
     static QUrl handleRedirect(const QUrl &url);
 
-    const QUrl &url() const;
-    const QString &path() const;
+    const DownloadFileInfo &info() const;
 
 signals:
     void redirected(QUrl url);
@@ -25,8 +26,7 @@ signals:
     void downloadSpeed(qint64 download, qint64 upload = 0);
 
 protected:
-    QUrl url_;
-    QString path_;
+    DownloadFileInfo info_;
 };
 
 #endif // ABSTRACTDOWNLOADER_H

@@ -11,6 +11,7 @@
 #include "download/qaria2downloader.h"
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
+#include "adddownloaddialog.h"
 
 DownloadBrowser::DownloadBrowser(QWidget *parent) :
     Browser(parent),
@@ -62,3 +63,10 @@ void DownloadBrowser::downloadSpeed(qint64 download, qint64 upload)
             " " + tr("Upload Speed:") + speedConvert(upload);
     ui->statusbar->showMessage(text);
 }
+
+void DownloadBrowser::on_actionAdd_Download_triggered()
+{
+    auto dialog = new AddDownloadDialog(this);
+    dialog->show();
+}
+

@@ -15,10 +15,14 @@ QAria2DownloaderItemWidget::QAria2DownloaderItemWidget(QWidget *parent, QAria2Do
 {
     ui->setupUi(this);
     ui->pauseButton->setVisible(false);
+    //TODO: info changed
+    ui->url->setText(info.url().toString());
     ui->filename->setText(info.fileName());
 
     if(!info.icon().isNull())
         ui->downloadIcon->setPixmap(info.icon().scaled(80, 80, Qt::KeepAspectRatio));
+    else
+        ui->downloadIcon->setPixmap(QPixmap(":/image/modmanager.png").scaled(80, 80, Qt::KeepAspectRatio));
 
     if(!info.title().isEmpty())
         ui->displayNameText->setText(info.title() + R"( <span style="color:gray">()" + info.displayName() + ")</span>");
@@ -114,11 +118,10 @@ void QAria2DownloaderItemWidget::on_QAria2DownloaderItemWidget_customContextMenu
 
 void QAria2DownloaderItemWidget::on_actionShow_Downloaded_File_in_Folder_triggered()
 {
-    openFileInFolder("", downloader_->path());
+    openFileInFolder(downloader_->info().fileName(), downloader_->info().path());
 }
 
 void QAria2DownloaderItemWidget::on_actionCopy_Download_Link_triggered()
 {
-    QApplication::clipboard()->setText(downloader_->url().toString());
+    QApplication::clipboard()->setText(downloader_->info().url().toString());
 }
-

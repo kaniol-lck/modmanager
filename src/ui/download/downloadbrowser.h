@@ -28,6 +28,8 @@ public slots:
 
 private slots:
 
+    void on_actionAdd_Download_triggered();
+
 private:
     Ui::DownloadBrowser *ui;
     DownloadManager *manager_;

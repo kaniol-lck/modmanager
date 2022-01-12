@@ -85,13 +85,13 @@ aria2::Session *QAria2::session() const
 
 QAria2Downloader *QAria2::downloadNoRedirect(const QUrl &url, const QString &path)
 {
-    auto downloader = new QAria2Downloader(url, path);
+    auto downloader = new QAria2Downloader(DownloadFileInfo(url, path));
     return download(downloader);
 }
 
 QAria2Downloader *QAria2::download(const QUrl &url, const QString &path)
 {
-    auto downloader = new QAria2Downloader(url, path);
+    auto downloader = new QAria2Downloader(DownloadFileInfo(url, path));
     //handle redirect
     downloader->handleRedirect();
     connect(downloader, &AbstractDownloader::redirected, this, [=]{
@@ -102,9 +102,9 @@ QAria2Downloader *QAria2::download(const QUrl &url, const QString &path)
 
 QAria2Downloader *QAria2::download(QAria2Downloader *downloader)
 {
-    std::vector<std::string> urls = { downloader->url().toString().toStdString() };
+    std::vector<std::string> urls = { downloader->info().url().toString().toStdString() };
     aria2::KeyVals options;
-    options.emplace_back("dir", downloader->path().toStdString());
+    options.emplace_back("dir", downloader->info().path().toStdString());
     options.emplace_back("continue", "false");
     aria2::A2Gid gid = 0;
     int rv = aria2::addUri(session_, &gid, urls, options);

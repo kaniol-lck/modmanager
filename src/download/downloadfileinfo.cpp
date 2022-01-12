@@ -1,7 +1,11 @@
 #include "downloadfileinfo.h"
 
-DownloadFileInfo::DownloadFileInfo(const QUrl &url) :
-    url_(url)
+DownloadFileInfo::DownloadFileInfo(const QUrl &url, const QString &path) :
+    title_(QObject::tr("Custom Download")),
+    displayName_(url.fileName()),
+    fileName_(url.fileName()),
+    url_(url),
+    path_(path)
 {}
 
 DownloadFileInfo::DownloadFileInfo(const CurseforgeFileInfo &info) :
@@ -95,6 +99,11 @@ const QString &DownloadFileInfo::title() const
 const QString &DownloadFileInfo::displayName() const
 {
     return displayName_;
+}
+
+void DownloadFileInfo::setUrl(const QUrl &newUrl)
+{
+    url_ = newUrl;
 }
 
 void DownloadFileInfo::setTitle(const QString &newTitle)

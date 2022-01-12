@@ -63,6 +63,7 @@ SOURCES += \
     src/ui/curseforge/curseforgemodinfowidget.cpp \
     src/ui/datetimetext.cpp \
     src/ui/dockwidgetcontent.cpp \
+    src/ui/download/adddownloaddialog.cpp \
     src/ui/downloadpathselectmenu.cpp \
     src/ui/explorestatusbarwidget.cpp \
     src/ui/framelesswrapper.cpp \
@@ -187,6 +188,7 @@ HEADERS += \
     src/ui/curseforge/curseforgemodinfowidget.h \
     src/ui/datetimetext.h \
     src/ui/dockwidgetcontent.h \
+    src/ui/download/adddownloaddialog.h \
     src/ui/downloadpathselectmenu.h \
     src/ui/explorestatusbarwidget.h \
     src/ui/framelesswrapper.h \
@@ -262,6 +264,7 @@ HEADERS += \
 FORMS += \
     src/ui/curseforge/curseforgemodbrowser.ui \
     src/ui/datetimetext.ui \
+    src/ui/download/adddownloaddialog.ui \
     src/ui/download/downloadbrowser.ui \
     src/ui/explorestatusbarwidget.ui \
     src/ui/github/githubfileitemwidget.ui \

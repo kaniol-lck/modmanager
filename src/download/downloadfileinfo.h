@@ -16,7 +16,7 @@ public:
     enum SourceType{ Curseforge, Modrinth, Custom };
 
     DownloadFileInfo() = default;
-    explicit DownloadFileInfo(const QUrl &url);
+    explicit DownloadFileInfo(const QUrl &url, const QString &path = QString());
 
     //implicit convert
     DownloadFileInfo(const CurseforgeFileInfo &info);
@@ -27,6 +27,8 @@ public:
 
     const QString &fileName() const;
     const QUrl &url() const;
+    void setUrl(const QUrl &newUrl);
+
     qint64 size() const;
 
     const QString &path() const;
@@ -40,6 +42,7 @@ public:
 
     const QString &title() const;
     const QString &displayName() const;
+
 
 protected:
     QString title_;

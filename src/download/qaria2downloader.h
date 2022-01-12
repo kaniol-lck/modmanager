@@ -11,7 +11,7 @@ class QAria2Downloader : public AbstractDownloader
     friend class QAria2;
 public:
     explicit QAria2Downloader(aria2::A2Gid fid);
-    explicit QAria2Downloader(const QUrl &url, const QString &path);
+    explicit QAria2Downloader(const DownloadFileInfo &info);
     ~QAria2Downloader() = default;
 
     void deleteDownloadHandle();

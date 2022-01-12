@@ -16,7 +16,7 @@ DownloadManager *DownloadManager::manager()
 
 QAria2Downloader *DownloadManager::download(const DownloadFileInfo &info)
 {
-    auto downloader = new QAria2Downloader(info.url(), info.path());
+    auto downloader = new QAria2Downloader(info);
     emit downloaderAdded(info, downloader);
     //handle redirect
     downloader->handleRedirect();

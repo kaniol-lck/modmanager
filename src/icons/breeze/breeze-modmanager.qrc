@@ -41,6 +41,7 @@
         <file>16x16/view-sort-ascending.svg</file>
         <file>16x16/view-sort-descending.svg</file>
         <file>16x16/edit-copy.svg</file>
+        <file>16x16/edit-paste.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

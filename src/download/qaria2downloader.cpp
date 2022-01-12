@@ -10,8 +10,8 @@ QAria2Downloader::QAria2Downloader(aria2::A2Gid gid) :
     gid_(gid)
 {}
 
-QAria2Downloader::QAria2Downloader(const QUrl &url, const QString &path) :
-    AbstractDownloader(QAria2::qaria2(), url, path)
+QAria2Downloader::QAria2Downloader(const DownloadFileInfo &info) :
+    AbstractDownloader(QAria2::qaria2(), info)
 {}
 
 void QAria2Downloader::deleteDownloadHandle()
