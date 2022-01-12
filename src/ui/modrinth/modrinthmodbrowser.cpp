@@ -405,6 +405,7 @@ void ModrinthModBrowser::getModList(QString name, int index)
 
         //new search
         if(currentIndex_ == 0){
+            scrollToTop();
             for(auto row = 0; row < model_->rowCount(); row++){
                 auto item = model_->item(row);
                 auto mod = item->data().value<ModrinthMod*>();

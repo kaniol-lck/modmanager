@@ -156,6 +156,11 @@ void ExploreBrowser::setRowHidden(int row, bool hidden)
     modListView_->setRowHidden(row, hidden);
 }
 
+void ExploreBrowser::scrollToTop()
+{
+    modListView_->scrollToTop();
+}
+
 void ExploreBrowser::loadMore()
 {}
 

@@ -50,6 +50,7 @@ protected:
     void initUi();
     bool isRowHidden(int row);
     void setRowHidden(int row, bool hidden);
+    void scrollToTop();
     virtual void loadMore();
     virtual void onSelectedItemChanged(QStandardItem *item);
     virtual QWidget *getIndexWidget(QStandardItem *item);

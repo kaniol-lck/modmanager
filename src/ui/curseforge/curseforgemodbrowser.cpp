@@ -316,6 +316,7 @@ void CurseforgeModBrowser::getModList(QString name, int index)
 
         //new search
         if(currentIndex_ == 0){
+            scrollToTop();
             idList_.clear();
             for(auto row = 0; row < model_->rowCount(); row++){
                 auto item = model_->item(row);
