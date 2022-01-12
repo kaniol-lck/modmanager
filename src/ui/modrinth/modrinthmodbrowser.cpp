@@ -199,7 +199,6 @@ void ModrinthModBrowser::updateVersionList()
         return versionAction;
     };
 
-    anyVersionAction->trigger();
     ui->menuSelect_Game_Version->addSeparator();
     QMap<QString, QMenu*> submenus;
     QList<QString> keys; //to keep order
@@ -309,7 +308,6 @@ void ModrinthModBrowser::updateCategoryList()
         ui->menuSelect_Category->setIcon(QIcon());
         getModList(currentName_);
     });
-    anyCategoryAction->trigger();
     ui->menuSelect_Category->addSeparator();
     for(auto &&[name, id] : ModrinthAPI::getCategories()){
         QIcon icon(QString(":/image/modrinth/%1.svg").arg(id));

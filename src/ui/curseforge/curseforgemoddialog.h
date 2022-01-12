@@ -9,6 +9,8 @@ class LocalModPath;
 class QListWidgetItem;
 class CurseforgeModInfo;
 class CurseforgeModBrowser;
+
+class DownloadPathSelectMenu;
 namespace Ui {
 class CurseforgeModDialog;
 }
@@ -22,6 +24,8 @@ public:
     explicit CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod = nullptr);
     explicit CurseforgeModDialog(QWidget *parent, const CurseforgeModInfo &modInfo);
     ~CurseforgeModDialog();
+
+    void setDownloadPathSelectMenu(DownloadPathSelectMenu *newDownloadPathSelectMenu);
 
 private slots:
     void updateBasicInfo();

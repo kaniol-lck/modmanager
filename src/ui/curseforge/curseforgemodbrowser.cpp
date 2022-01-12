@@ -152,7 +152,6 @@ void CurseforgeModBrowser::updateVersionList()
         ui->menuSelect_Game_Version->setIcon(QIcon());
         getModList(currentName_);
     });
-    anyVersionAction->trigger();
     ui->menuSelect_Game_Version->addSeparator();
     QMap<QString, QMenu*> submenus;
     QList<QString> keys; //to keep order
@@ -203,7 +202,6 @@ void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list
         ui->menuSelect_Category->setIcon(QIcon());
         getModList(currentName_);
     });
-    anyCategoryAction->trigger();
     ui->menuSelect_Category->addSeparator();
     std::sort(list.begin(), list.end(), [=](const auto &info1, const auto &info2){
         return info1.id() < info2.id();

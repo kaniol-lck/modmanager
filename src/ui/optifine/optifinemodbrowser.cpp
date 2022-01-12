@@ -187,6 +187,7 @@ void OptifineModBrowser::on_actionGet_OptiFabric_triggered()
     //Project ID 322385
     auto mod = new CurseforgeMod(this, 322385);
     auto dialog = new CurseforgeModDialog(this, mod);
+    dialog->setDownloadPathSelectMenu(downloadPathSelectMenu_);
     dialog->show();
 }
 
@@ -196,5 +197,6 @@ void OptifineModBrowser::on_actionGet_OptiForge_triggered()
     //Project ID 372196
     auto mod = new CurseforgeMod(this, 372196);
     auto dialog = new CurseforgeModDialog(this, mod);
+    dialog->setDownloadPathSelectMenu(downloadPathSelectMenu_);
     dialog->show();
 }

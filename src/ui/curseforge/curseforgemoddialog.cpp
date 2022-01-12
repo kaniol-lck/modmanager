@@ -25,7 +25,7 @@
 CurseforgeModDialog::CurseforgeModDialog(CurseforgeModBrowser *parent, CurseforgeMod *mod) :
     CurseforgeModDialog(static_cast<QWidget *>(parent), mod)
 {
-    ui->fileList->setBrowser(parent);
+    ui->fileList->setDownloadPathSelectMenu(parent->downloadPathSelectMenu());
 }
 
 CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, CurseforgeMod *mod, LocalMod *localMod) :
@@ -76,6 +76,11 @@ CurseforgeModDialog::CurseforgeModDialog(QWidget *parent, const CurseforgeModInf
 CurseforgeModDialog::~CurseforgeModDialog()
 {
     delete ui;
+}
+
+void CurseforgeModDialog::setDownloadPathSelectMenu(DownloadPathSelectMenu *newDownloadPathSelectMenu)
+{
+    ui->fileList->setDownloadPathSelectMenu(newDownloadPathSelectMenu);
 }
 
 void CurseforgeModDialog::updateBasicInfo()

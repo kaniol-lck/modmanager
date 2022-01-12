@@ -23,10 +23,10 @@ public:
     ~CurseforgeFileListWidget();
 
     void setMod(CurseforgeMod *mod);
-    void setBrowser(CurseforgeModBrowser *newBrowser);
     DownloadPathSelectMenu *downloadPathSelectMenu() const;
 
     void setLocalMod(LocalMod *newLocalMod);
+    void setDownloadPathSelectMenu(DownloadPathSelectMenu *newDownloadPathSelectMenu);
 
 signals:
     void modChanged();
@@ -43,7 +43,6 @@ protected:
 
 private:
     Ui::CurseforgeFileListWidget *ui;
-    CurseforgeModBrowser *browser_ = nullptr;
     DownloadPathSelectMenu *downloadPathSelectMenu_ = nullptr;
     QStandardItemModel *model_;
     CurseforgeMod *mod_ = nullptr;
