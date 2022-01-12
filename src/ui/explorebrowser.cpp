@@ -41,8 +41,8 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     connect(visitWebsiteAction_, &QAction::triggered, this, [=]{
         QDesktopServices::openUrl(url);
     });
-    pathMenu_->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh Mods"), this, &ExploreBrowser::refresh)
-            ->setShortcut(QKeySequence(Qt::Key_F5));
+    refreshAction_ = pathMenu_->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh Mods"), this, &ExploreBrowser::refresh);
+    refreshAction_->setShortcut(QKeySequence(Qt::Key_F5));
     pathMenu_->addAction(visitWebsiteAction_);
     pathMenu_->addAction(QIcon::fromTheme("window-new"), tr("Open in New Dialog"), this, &ExploreBrowser::openDialog);
     pathMenu_->addMenu(downloadPathSelectMenu_);

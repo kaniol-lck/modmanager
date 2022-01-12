@@ -60,7 +60,7 @@ QWidget *GitHubRepoBrowser::fileListWidget() const
 
 void GitHubRepoBrowser::refresh()
 {
-
+    getReleaseList();
 }
 
 void GitHubRepoBrowser::searchModByPathInfo(LocalModPath *path)
@@ -86,19 +86,20 @@ void GitHubRepoBrowser::updateStatusText()
 
 void GitHubRepoBrowser::getReleaseList(int page)
 {
+    if(!refreshAction_->isEnabled()) return;
     if(page == 1)
         currentPage_ = 1;
-    else if(!hasMore_ || isSearching_)
+    else if(!hasMore_)
         return;
     setCursor(Qt::BusyCursor);
     statusBarWidget_->setText(tr("Searching mods..."));
     statusBarWidget_->setProgressVisible(true);
-
-    isSearching_ = true;
+    refreshAction_->setEnabled(false);
     auto conn = api_->getReleases(info_, page, [=](const auto &list){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
         //new search
         if(currentPage_ == 1){
             model_->clear();
@@ -121,8 +122,6 @@ void GitHubRepoBrowser::getReleaseList(int page)
             model_->appendRow(item);
             hasMore_ = false;
         }
-        isSearching_ = false;
-
         updateStatusText();
     });
 
@@ -130,7 +129,7 @@ void GitHubRepoBrowser::getReleaseList(int page)
 
 void GitHubRepoBrowser::loadMore()
 {
-    if(!isSearching_ && hasMore_){
+    if(refreshAction_->isEnabled() && hasMore_){
         currentPage_ ++;
         getReleaseList(currentPage_);
     }

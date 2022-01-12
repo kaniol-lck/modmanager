@@ -91,14 +91,17 @@ ExploreBrowser *ReplayModBrowser::another()
 
 void ReplayModBrowser::getModList()
 {
+    if(!refreshAction_->isEnabled()) return;
     setCursor(Qt::BusyCursor);
     statusBarWidget_->setText(tr("Searching mods..."));
     statusBarWidget_->setProgressVisible(true);
+    refreshAction_->setEnabled(false);
 
     api_->getModList([=](const auto &list){
         setCursor(Qt::ArrowCursor);
         statusBarWidget_->setText("");
         statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
         for(auto row = 0; row < model_->rowCount(); row++){
             auto item = model_->item(row);
             auto mod = item->data().value<ReplayMod*>();

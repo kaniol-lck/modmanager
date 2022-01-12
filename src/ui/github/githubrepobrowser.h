@@ -53,7 +53,6 @@ private:
     GitHubRelease* selectedRelease_ = nullptr;
     int currentPage_ = 1;
     bool hasMore_ = false;
-    bool isSearching_ = false;
 
     void getReleaseList(int page = 1);
     void loadMore() override;

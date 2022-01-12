@@ -77,7 +77,6 @@ private:
     GameVersion currentGameVersion_;
     ModLoaderType::Type currentLoaderType_ = ModLoaderType::Any;
     bool hasMore_ = false;
-    bool isSearching_ = false;
     bool inited_ = false;
     CurseforgeMod* selectedMod_ = nullptr;
     std::unique_ptr<Reply<QList<CurseforgeModInfo> > > searchModsGetter_;

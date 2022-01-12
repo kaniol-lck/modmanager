@@ -384,7 +384,7 @@ void ModrinthModBrowser::updateStatusText()
 
 void ModrinthModBrowser::getModList(QString name, int index)
 {
-    if(isSearching_) return;
+    if(!refreshAction_->isEnabled()) return;
     if(!index)
         currentIndex_ = 0;
     else if(!hasMore_)
@@ -392,17 +392,13 @@ void ModrinthModBrowser::getModList(QString name, int index)
     setCursor(Qt::BusyCursor);
     statusBarWidget_->setText(tr("Searching mods..."));
     statusBarWidget_->setProgressVisible(true);
+    refreshAction_->setEnabled(false);
 
     auto sort = ui->sortSelect->currentIndex();
     auto type = ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex());
 
-    isSearching_ = true;
     searchModsGetter_ = api_->searchMods(name, currentIndex_, currentGameVersions_, type, currentCategoryIds_, sort).asUnique();
     searchModsGetter_->setOnFinished(this, [=](const QList<ModrinthModInfo> &infoList){
-        setCursor(Qt::ArrowCursor);
-        statusBarWidget_->setText("");
-        statusBarWidget_->setProgressVisible(false);
-
         //new search
         if(currentIndex_ == 0){
             scrollToTop();
@@ -435,8 +431,16 @@ void ModrinthModBrowser::getModList(QString name, int index)
             model_->appendRow(item);
             hasMore_ = false;
         }
-        isSearching_ = false;
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText("");
+        statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
         updateStatusText();
+    }, [=](auto){
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText(tr("Failed loading"));
+        statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
     });
 }
 
@@ -492,7 +496,7 @@ QWidget *ModrinthModBrowser::getIndexWidget(QStandardItem *item)
 
 void ModrinthModBrowser::loadMore()
 {
-    if(!isSearching_ && hasMore_){
+    if(refreshAction_->isEnabled() && hasMore_){
         currentIndex_ += Config().getSearchResultCount();
         getModList(currentName_, currentIndex_);
     }

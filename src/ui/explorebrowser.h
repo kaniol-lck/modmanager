@@ -61,6 +61,7 @@ protected:
     QMenu *modMenu_;
     QMenu *pathMenu_;
     DownloadPathSelectMenu *downloadPathSelectMenu_;
+    QAction *refreshAction_;
 
 private:
     QListView *modListView_;

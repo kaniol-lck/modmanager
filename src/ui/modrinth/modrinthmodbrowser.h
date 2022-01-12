@@ -71,7 +71,6 @@ private:
     QList<GameVersion> lastGameVersions_;
     QList<GameVersion> currentGameVersions_;
     bool hasMore_ = false;
-    bool isSearching_ = false;
     bool inited_ = false;
     LocalMod *localMod_ = nullptr;
     ModrinthMod* selectedMod_ = nullptr;
