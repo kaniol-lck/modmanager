@@ -87,7 +87,10 @@ void openFileInFolder(const QString &filePath)
 
 void openFileInFolder(const QString &fileName, const QString &filePath)
 {
-    openFileInFolder(QDir(filePath).absoluteFilePath(fileName));
+    if(fileName.isEmpty())
+        openFolder(filePath);
+    else
+        openFileInFolder(QDir(filePath).absoluteFilePath(fileName));
 }
 
 void openFolder(const QString &path)

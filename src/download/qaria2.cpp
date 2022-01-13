@@ -33,7 +33,7 @@ QAria2::QAria2(QObject *parent) : QObject(parent)
     });
     MMLogger() << "aria2 start running";
     //interval between refreshing info
-    timer_.start(500);
+    timer_.start(100);
     connect(&timer_, &QTimer::timeout, this, [=]{
         aria2::GlobalStat gstat = aria2::getGlobalStat(session_);
         emit downloadSpeed(gstat.downloadSpeed, gstat.uploadSpeed);
@@ -114,6 +114,7 @@ QAria2Downloader *QAria2::download(QAria2Downloader *downloader)
     if(downloaders_.contains(gid)) return nullptr;
     downloader->setGid(gid);
     downloaders_[gid] = downloader;
+    downloader->update();
     emit downloaderAdded(downloader);
     return downloader;
 }

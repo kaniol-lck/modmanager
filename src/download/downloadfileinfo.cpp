@@ -101,6 +101,11 @@ const QString &DownloadFileInfo::displayName() const
     return displayName_;
 }
 
+void DownloadFileInfo::setFileName(const QString &newFileName)
+{
+    fileName_ = newFileName;
+}
+
 void DownloadFileInfo::setUrl(const QUrl &newUrl)
 {
     url_ = newUrl;

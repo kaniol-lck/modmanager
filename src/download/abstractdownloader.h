@@ -20,6 +20,8 @@ public:
     const DownloadFileInfo &info() const;
 
 signals:
+    void infoChanged();
+
     void redirected(QUrl url);
     void finished();
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);

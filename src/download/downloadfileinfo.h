@@ -26,6 +26,8 @@ public:
     DownloadFileInfo(const GitHubFileInfo &info);
 
     const QString &fileName() const;
+    void setFileName(const QString &newFileName);
+
     const QUrl &url() const;
     void setUrl(const QUrl &newUrl);
 
@@ -42,7 +44,6 @@ public:
 
     const QString &title() const;
     const QString &displayName() const;
-
 
 protected:
     QString title_;

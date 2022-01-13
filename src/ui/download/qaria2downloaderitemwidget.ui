@@ -114,9 +114,6 @@
        <property name="toolTip">
         <string notr="true"/>
        </property>
-       <property name="text">
-        <string>1.11MB</string>
-       </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>

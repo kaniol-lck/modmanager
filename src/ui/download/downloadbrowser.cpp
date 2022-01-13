@@ -69,4 +69,3 @@ void DownloadBrowser::on_actionAdd_Download_triggered()
     auto dialog = new AddDownloadDialog(this);
     dialog->show();
 }
-

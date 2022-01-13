@@ -18,12 +18,6 @@ AbstractDownloader::AbstractDownloader(QObject *parent, const DownloadFileInfo &
     info_(info)
 {}
 
-//AbstractDownloader::AbstractDownloader(QObject *parent, const QUrl &url, const QString &path) :
-//    QObject(parent),
-//    url_(url),
-//    path_(path)
-//{}
-
 AbstractDownloader::~AbstractDownloader()
 {}
 
@@ -35,6 +29,7 @@ void AbstractDownloader::handleRedirect()
     }));
     connect(watcher, &QFutureWatcher<QUrl>::finished, this, [=]{
         info_.setUrl(watcher->result());
+        emit infoChanged();
         emit redirected(info_.url());
     });
 }
