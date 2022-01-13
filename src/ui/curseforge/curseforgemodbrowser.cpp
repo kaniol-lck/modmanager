@@ -506,8 +506,11 @@ void CurseforgeModBrowser::on_menuDownload_aboutToShow()
     ui->menuDownload->clear();
     ui->menuDownload->setStyleSheet("QMenu { menu-scrollable: 1; }");
     if(!selectedMod_) return;
-    auto &&files = selectedMod_->modInfo().allFileList().isEmpty()?
+    auto files = selectedMod_->modInfo().allFileList().isEmpty()?
                 selectedMod_->modInfo().latestFiles() : selectedMod_->modInfo().allFileList();
+    std::sort(files.begin(), files.end(), [=](const auto &file1, const auto &file2){
+        return file1.fileDate() > file2.fileDate();
+    });
     for(auto &&file : files){
         ui->menuDownload->addAction(file.displayName() + " ("+ sizeConvert(file.size()) + ")", this, [=]{
             selectedMod_->download(file, downloadPath());

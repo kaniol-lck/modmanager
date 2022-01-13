@@ -324,7 +324,7 @@
     <message>
         <location filename="../src/ui/browserselectorwidget.cpp" line="43"/>
         <source>Select your mod directories...</source>
-        <translation>选择你的mod路径...</translation>
+        <translation>选择你的mod目录...</translation>
     </message>
     <message>
         <source>Select paths</source>
@@ -1517,7 +1517,7 @@
     <message>
         <location filename="../src/ui/local/localmodbrowser.ui" line="597"/>
         <source>Show This Mod in Directory</source>
-        <translation>在路径中显示该mod</translation>
+        <translation>在目录中显示该mod</translation>
     </message>
     <message>
         <location filename="../src/ui/local/localmodbrowser.ui" line="602"/>
@@ -2484,7 +2484,7 @@
     <message>
         <location filename="../src/ui/local/localmodpathsettingsdialog.cpp" line="58"/>
         <source>Select your mod directory...</source>
-        <translation>选择你的mod路径...</translation>
+        <translation>选择你的mod目录...</translation>
     </message>
 </context>
 <context>
@@ -3968,7 +3968,7 @@ By doing this, we will recheck those files unmatched before.</source>
     <message>
         <location filename="../src/ui/preferences.cpp" line="149"/>
         <source>Select your mod directory...</source>
-        <translation>选择你的mod路径...</translation>
+        <translation>选择你的mod目录...</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.cpp" line="156"/>
