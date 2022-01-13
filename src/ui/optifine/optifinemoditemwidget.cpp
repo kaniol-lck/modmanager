@@ -17,6 +17,7 @@ OptifineModItemWidget::OptifineModItemWidget(OptifineModBrowser *parent, Optifin
 {
     ui->setupUi(this);
     QPixmap pixmap(":/image/optifine.png");
+    ui->displayNameText->setProperty("class", "Title");
     ui->modIcon->setPixmap(pixmap.scaled(80, 80, Qt::KeepAspectRatio));
     ui->downloadSpeedText->setVisible(false);
     ui->downloadProgress->setVisible(false);

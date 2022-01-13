@@ -26,6 +26,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
     fileInfo_(info)
 {
     ui->setupUi(this);
+    ui->displayNameText->setProperty("class", "Title");
     ui->downloadProgress->setVisible(false);
 
     updateLocalInfo();

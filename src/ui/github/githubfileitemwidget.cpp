@@ -14,6 +14,7 @@ GitHubFileItemWidget::GitHubFileItemWidget(GitHubFileListWidget *parent, const G
     info_(info)
 {
     ui->setupUi(this);
+    ui->displayNameText->setProperty("class", "Title");
     ui->displayNameText->setText(info_.name());
     ui->downloadProgress->setVisible(false);
     //size

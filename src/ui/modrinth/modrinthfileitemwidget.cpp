@@ -22,6 +22,7 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(ModrinthFileListWidget *parent, M
     fileInfo_(info)
 {
     ui->setupUi(this);
+    ui->displayNameText->setProperty("class", "Title");
     ui->downloadProgress->setVisible(false);
 
     updateLocalInfo();

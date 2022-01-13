@@ -22,6 +22,7 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(CurseforgeModBrowser *parent, C
     defaultFileInfo_(defaultDownload)
 {
     ui->setupUi(this);
+    ui->modName->setProperty("class", "Title");
     ui->modSummary->setProperty("class", "Description");
     ui->downloadProgress->setVisible(false);
     ui->tagsWidget->setIconOnly(true);

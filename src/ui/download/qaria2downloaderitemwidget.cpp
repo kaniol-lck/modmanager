@@ -14,6 +14,7 @@ QAria2DownloaderItemWidget::QAria2DownloaderItemWidget(QWidget *parent, QAria2Do
     downloader_(downloader)
 {
     ui->setupUi(this);
+    ui->displayNameText->setProperty("class", "Title");
     ui->pauseButton->setVisible(false);
 
     onInfoChanged();

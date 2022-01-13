@@ -40,6 +40,13 @@ QScrollArea, QScrollArea .QWidget {
   font-size: 12px;
 }
 
+.Title {
+  color: black;
+  font-weight: bold;
+  font-size: 20px;
+  background: transparent;
+}
+
 .Description {
   color: #cfcfcf;
   font-size: 0.9em;

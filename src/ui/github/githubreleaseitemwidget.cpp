@@ -13,6 +13,7 @@ GitHubReleaseItemWidget::GitHubReleaseItemWidget(GitHubRepoBrowser *parent, cons
     info_(info)
 {
     ui->setupUi(this);
+    ui->name->setProperty("class", "Title");
     setProperty("class", "GitHubReleaseItemWidget");
     ui->prerelease->setProperty("class", "PreRelease");
     ui->tagName->setProperty("class", "TagName");

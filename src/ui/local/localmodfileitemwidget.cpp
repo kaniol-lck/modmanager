@@ -12,6 +12,7 @@ LocalModFileItemWidget::LocalModFileItemWidget(QWidget *parent, LocalModFile *fi
     file_(file)
 {
     ui->setupUi(this);
+    ui->modName->setProperty("class", "Title");
     onFileChanged();
     connect(file, &LocalModFile::fileChanged, this, &LocalModFileItemWidget::onFileChanged);
 }

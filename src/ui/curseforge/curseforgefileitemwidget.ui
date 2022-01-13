@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>474</width>
-    <height>100</height>
+    <height>104</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -29,25 +29,13 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="toolTip">
-          <string notr="true"/>
-         </property>
-         <property name="text">
-          <string>Name v0.0.0</string>
-         </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="dependenciesButton">
          <property name="icon">
-          <iconset theme="help-about"/>
+          <iconset theme="help-about">
+           <normaloff>.</normaloff>.</iconset>
          </property>
          <property name="popupMode">
           <enum>QToolButton::InstantPopup</enum>

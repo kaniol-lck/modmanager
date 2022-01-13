@@ -18,6 +18,7 @@ ReplayModItemWidget::ReplayModItemWidget(ReplayModBrowser *parent, ReplayMod *mo
     mod_(mod)
 {
     ui->setupUi(this);
+    ui->displayNameText->setProperty("class", "Title");
 
     onDownloadPathChanged();
     connect(browser_->downloadPathSelectMenu(), &DownloadPathSelectMenu::DownloadPathChanged, this, &ReplayModItemWidget::onDownloadPathChanged);

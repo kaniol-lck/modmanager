@@ -22,6 +22,7 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
 {
     //init ui
     ui->setupUi(this);
+    ui->modName->setProperty("class", "Title");
     ui->modDescription->setProperty("class", "Description");
     ui->updateProgress->setVisible(false);
     ui->updateButton->setVisible(false);

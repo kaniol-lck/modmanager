@@ -36,19 +36,6 @@
          <height>28</height>
         </size>
        </property>
-       <property name="font">
-        <font>
-         <pointsize>13</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Name</string>
-       </property>
        <property name="alignment">
         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
        </property>
@@ -364,7 +351,7 @@
   <customwidget>
    <class>TagsWidget</class>
    <extends>QWidget</extends>
-   <header>ui/tagswidget.h</header>
+   <header location="global">ui/tagswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -18,6 +18,7 @@ ModrinthModItemWidget::ModrinthModItemWidget(ModrinthModBrowser *parent, Modrint
     mod_(mod)
 {
     ui->setupUi(this);
+    ui->modName->setProperty("class", "Title");
     ui->modSummary->setProperty("class", "Description");
     ui->tagsWidget->setIconOnly(true);
     ui->tagsWidget->setMod(mod_);
