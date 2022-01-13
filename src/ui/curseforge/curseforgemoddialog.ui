@@ -10,9 +10,6 @@
     <height>640</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Dialog</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="2">
     <widget class="QToolButton" name="websiteButton">
@@ -256,7 +253,7 @@
   <customwidget>
    <class>TagsFlowWidget</class>
    <extends>QWidget</extends>
-   <header location="global">ui/tagsflowwidget.h</header>
+   <header>ui/tagsflowwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
