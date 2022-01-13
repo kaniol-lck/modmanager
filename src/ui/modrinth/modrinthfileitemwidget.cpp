@@ -131,7 +131,8 @@ void ModrinthFileItemWidget::onDownloadPathChanged()
     if(fileList_){
         if(auto downloadPath = fileList_->downloadPathSelectMenu()->downloadPath())
             bl = hasFile(downloadPath, fileInfo_);
-    }else
+    }
+    if(!bl)
         bl = hasFile(Config().getDownloadPath(), fileInfo_.fileName());
 
     if(bl){

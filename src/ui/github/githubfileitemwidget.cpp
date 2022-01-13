@@ -69,7 +69,8 @@ void GitHubFileItemWidget::onDownloadPathChanged()
     if(fileList_){
         if(auto downloadPath = fileList_->downloadPathSelectMenu()->downloadPath())
             bl = hasFile(downloadPath->info().path(), info_.name());
-    }else
+    }
+    if(!bl)
         bl = hasFile(Config().getDownloadPath(), info_.name());
 
     if(bl){
