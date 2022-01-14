@@ -86,20 +86,6 @@ public:
         });
     };
 
-//    template<typename Func1>
-//    void setOnFinished(Func1 callback, std::function<void(QNetworkReply::NetworkError)> errorHandler = {}){
-//        //copy-capture to prevent this deconstructed
-//        QObject::connect(reply_, &QNetworkReply::finished, [=, reply = reply_, resultInterpreter = resultInterpreter_, runBackground = runBackground_]{
-//            if(reply->error() != QNetworkReply::NoError) {
-//                qDebug() << reply->errorString();
-//                if(errorHandler) errorHandler(reply->error());
-//            } else
-//                std::apply(callback, resultInterpreter());
-//            reply->deleteLater();
-//            if(!runBackground) reply_ = nullptr;
-//        });
-//    };
-
 private:
     QEventLoop *loop_;
     QNetworkReply *reply_ = nullptr;

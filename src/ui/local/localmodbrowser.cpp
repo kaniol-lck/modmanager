@@ -933,4 +933,3 @@ void LocalModBrowser::on_actionShow_This_Mod_in_Directory_triggered()
     auto mod = selectedMods_.first();
     openFileInFolder(mod->modFile()->path());
 }
-

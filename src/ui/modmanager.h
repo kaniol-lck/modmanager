@@ -69,6 +69,8 @@ private slots:
     void on_actionLock_Panels_triggered();
     void on_actionClear_Unmatched_File_Link_Caches_triggered();
 
+    void on_actionCurseforge_Modpack_triggered();
+
 private:
     Ui::ModManager *ui;
     PageSwitcher pageSwitcher_;

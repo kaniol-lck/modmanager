@@ -312,7 +312,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>31</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMod">
@@ -380,15 +380,6 @@
    </property>
    <property name="shortcut">
     <string>F5</string>
-   </property>
-  </action>
-  <action name="actionOpen_Folder">
-   <property name="icon">
-    <iconset theme="folder">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>Open Folder</string>
    </property>
   </action>
   <action name="actionBatch_Rename">
@@ -600,6 +591,14 @@
   <action name="actionMove_Selected_Mods_to">
    <property name="text">
     <string>Move Selected Mods to...</string>
+   </property>
+  </action>
+  <action name="actionOpen_Folder">
+   <property name="icon">
+    <iconset theme="folder"/>
+   </property>
+   <property name="text">
+    <string>Open Folder</string>
    </property>
   </action>
  </widget>

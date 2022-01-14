@@ -16,6 +16,7 @@
 #include <KWindowEffects>
 #endif
 
+#include "ui/local/importcurseforgemodpackdialog.h"
 #include "dockwidgetcontent.h"
 #include "ui/aboutdialog.h"
 #include "ui/browserselectorwidget.h"
@@ -470,5 +471,17 @@ void ModManager::on_actionClear_Unmatched_File_Link_Caches_triggered()
     if(QMessageBox::No == QMessageBox::question(this, tr("Clear Caches"), tr("Clear unmatched file links?\n"
                                                                              "By doing this, we will recheck those files unmatched before."))) return;
     KnownFile::clearUnmatched();
+}
+
+
+void ModManager::on_actionCurseforge_Modpack_triggered()
+{
+    auto fileName = QFileDialog::getOpenFileName(this, tr("Select a modpack"), Config().getCommonPath(), "Modpack (*.zip)");
+    if(fileName.isEmpty()) return;
+    auto dialog = new ImportCurseforgeModpackDialog(this, fileName);
+    if(!dialog->fileValid())
+        QMessageBox::information(this, tr("Invalid File"), tr("Selected file is not a modpack"));
+    else
+        dialog->show();
 }
 

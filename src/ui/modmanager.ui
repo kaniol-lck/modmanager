@@ -72,7 +72,7 @@
      <x>0</x>
      <y>0</y>
      <width>1440</width>
-     <height>31</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTools">
@@ -143,8 +143,18 @@
        <normaloff>.</normaloff>.</iconset>
      </property>
     </widget>
+    <widget class="QMenu" name="menuImport">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <property name="icon">
+      <iconset theme="document-import"/>
+     </property>
+     <addaction name="actionCurseforge_Modpack"/>
+    </widget>
     <addaction name="menu_New_Path"/>
     <addaction name="menuPaths"/>
+    <addaction name="menuImport"/>
     <addaction name="actionManage_Browser"/>
     <addaction name="separator"/>
    </widget>
@@ -374,7 +384,18 @@
     <string>Clear Unmatched File Link Caches</string>
    </property>
   </action>
+  <action name="actionCurseforge_Modpack">
+   <property name="icon">
+    <iconset resource="../images/image.qrc">
+     <normaloff>:/image/curseforge.svg</normaloff>:/image/curseforge.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Curseforge Modpack</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../images/image.qrc"/>
+ </resources>
  <connections/>
 </ui>

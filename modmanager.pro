@@ -73,6 +73,7 @@ SOURCES += \
     src/ui/github/githubreleaseitemwidget.cpp \
     src/ui/github/githubrepobrowser.cpp \
     src/ui/local/exportmanifestjsondialog.cpp \
+    src/ui/local/importcurseforgemodpackdialog.cpp \
     src/ui/local/localfilelistwidget.cpp \
     src/ui/local/localmodfileitemwidget.cpp \
     src/ui/local/localmodinfowidget.cpp \
@@ -198,6 +199,7 @@ HEADERS += \
     src/ui/github/githubreleaseitemwidget.h \
     src/ui/github/githubrepobrowser.h \
     src/ui/local/exportmanifestjsondialog.h \
+    src/ui/local/importcurseforgemodpackdialog.h \
     src/ui/local/localfilelistwidget.h \
     src/ui/local/localmodfileitemwidget.h \
     src/ui/local/localmodinfowidget.h \
@@ -273,6 +275,7 @@ FORMS += \
     src/ui/github/githubreleaseitemwidget.ui \
     src/ui/github/githubrepobrowser.ui \
     src/ui/local/exportmanifestjsondialog.ui \
+    src/ui/local/importcurseforgemodpackdialog.ui \
     src/ui/local/localmodbrowser.ui \
     src/ui/local/localstatusbarwidget.ui \
     src/ui/aboutdialog.ui \
