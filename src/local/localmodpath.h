@@ -50,6 +50,7 @@ public:
 
     //download new mod
     QAria2Downloader *downloadNewMod(DownloadFileInfo &info);
+    QAria2Downloader *downloadNewMod(CurseforgeMod *mod, CurseforgeFile *file);
 
     const LocalModPathInfo &info() const;
     void setInfo(const LocalModPathInfo &newInfo, bool deduceLoader = false);

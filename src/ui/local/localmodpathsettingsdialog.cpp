@@ -109,7 +109,6 @@ void LocalModPathSettingsDialog::on_nameText_textEdited(const QString &arg1)
     info_.setName(arg1);
 }
 
-
 void LocalModPathSettingsDialog::on_useAutoName_toggled(bool checked)
 {
     info_.setAutoName(checked);

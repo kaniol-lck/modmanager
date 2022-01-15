@@ -10,7 +10,7 @@ class QAria2Downloader : public AbstractDownloader
     Q_OBJECT
     friend class QAria2;
 public:
-    explicit QAria2Downloader(aria2::A2Gid fid);
+    explicit QAria2Downloader(aria2::A2Gid fid = {});
     explicit QAria2Downloader(const DownloadFileInfo &info);
     ~QAria2Downloader() = default;
 

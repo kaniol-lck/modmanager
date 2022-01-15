@@ -18,6 +18,8 @@ public:
     static QUrl handleRedirect(const QUrl &url);
 
     const DownloadFileInfo &info() const;
+    void setInfo(const DownloadFileInfo &newInfo);
+    void setIcon(const QPixmap &newIcon);
 
 signals:
     void infoChanged();

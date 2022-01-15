@@ -599,6 +599,23 @@ QAria2Downloader *LocalModPath::downloadNewMod(DownloadFileInfo &info)
     return downloader;
 }
 
+QAria2Downloader *LocalModPath::downloadNewMod(CurseforgeMod *mod, CurseforgeFile *file)
+{
+    auto downloader = DownloadManager::manager()->download(mod, file, info_.name(), info_.path());
+    connect(downloader, &AbstractDownloader::finished, this, [=]{
+        QFileInfo fileInfo(info_.path(), downloader->info().fileName());
+        if(!LocalModFile::availableSuffix.contains(fileInfo.suffix())) return;
+        auto file = new LocalModFile(this, fileInfo.absoluteFilePath());
+        file->loadInfo();
+        file->linker()->link();
+        addModFile(file);
+        if(!file->parent())
+            file->deleteLater();
+        emit modListUpdated();
+    });
+    return downloader;
+}
+
 const LocalModPathInfo &LocalModPath::info() const
 {
     return info_;

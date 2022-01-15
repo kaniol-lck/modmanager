@@ -72,3 +72,15 @@ const DownloadFileInfo &AbstractDownloader::info() const
 {
     return info_;
 }
+
+void AbstractDownloader::setInfo(const DownloadFileInfo &newInfo)
+{
+    info_ = newInfo;
+    emit infoChanged();
+}
+
+void AbstractDownloader::setIcon(const QPixmap &newIcon)
+{
+    info_.setIcon(newIcon);
+    emit infoChanged();
+}
