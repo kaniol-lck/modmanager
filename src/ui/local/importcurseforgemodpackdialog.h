@@ -26,15 +26,14 @@ public:
 
 private slots:
     void on_treeView_doubleClicked(const QModelIndex &index);
-
     void on_toolButton_clicked();
-
     void on_ImportCurseforgeModpackDialog_accepted();
 
 private:
     Ui::ImportCurseforgeModpackDialog *ui;
     QStandardItemModel *model_;
     QuaZip zip_;
+    QString overrides_;
     bool fileValid_ = false;
 };
 

@@ -6,6 +6,7 @@
 #include <QProgressBar>
 #include <QStandardItemModel>
 #include <quazipfile.h>
+#include <JlCompress.h>
 
 #include "ui/curseforge/curseforgemoddialog.h"
 #include "curseforge/curseforgeapi.h"
@@ -58,6 +59,7 @@ ImportCurseforgeModpackDialog::ImportCurseforgeModpackDialog(QWidget *parent, co
         ui->gameVersion->setCurrentText(value(minecraftVariant, "version").toString());
         ui->gameVersion->setEnabled(false);
     }
+    overrides_ = value(result, "overrides").toString();
     model_->setHorizontalHeaderItem(0, new QStandardItem(tr("Mod Name")));
     model_->setHorizontalHeaderItem(1, new QStandardItem(tr("Version")));
     model_->setHorizontalHeaderItem(2, new QStandardItem(tr("File Name")));
@@ -126,14 +128,23 @@ void ImportCurseforgeModpackDialog::on_toolButton_clicked()
 void ImportCurseforgeModpackDialog::on_ImportCurseforgeModpackDialog_accepted()
 {
     auto path = new LocalModPath(LocalModPathInfo(ui->name->text(),
-                                                  ui->savePath->text(),
+                                                  ui->savePath->text() + "/mods",
                                                   GameVersion(ui->gameVersion->currentText()),
                                                   ModLoaderType::Any));
     LocalModPathManager::manager()->addPath(path);
+    path->loadMods();
 
     for(int row = 0; row < model_->rowCount(); row++){
         auto mod = model_->item(row, 0)->data().value<CurseforgeMod *>();
         auto file = model_->item(row, 1)->data().value<CurseforgeFile *>();
         path->downloadNewMod(mod, file);
     }
+
+    //extract
+    for(auto &&fileName : zip_.getFileNameList())
+        if(fileName.startsWith(overrides_ + "/") && !fileName.endsWith("/")){
+            auto destFileName = ui->savePath->text() + "/" + fileName.mid(overrides_.size());
+            destFileName.replace("//", "/");
+            JlCompress::extractFile(zip_.getZipName(), fileName, destFileName);
+        }
 }
