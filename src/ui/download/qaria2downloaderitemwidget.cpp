@@ -15,7 +15,6 @@ QAria2DownloaderItemWidget::QAria2DownloaderItemWidget(QWidget *parent, QAria2Do
 {
     ui->setupUi(this);
     ui->displayNameText->setProperty("class", "Title");
-    ui->pauseButton->setVisible(false);
 
     onInfoChanged();
     connect(downloader_, &AbstractDownloader::infoChanged, this, &QAria2DownloaderItemWidget::onInfoChanged);
@@ -62,34 +61,26 @@ void QAria2DownloaderItemWidget::refreshStatus(int status)
     switch (status) {
     case aria2::DOWNLOAD_ACTIVE:
         text = tr("Active");
-        ui->pauseButton->setVisible(true);
         ui->downloadProgress->setVisible(true);
-        ui->pauseButton->setIcon(QIcon::fromTheme("media-playback-pause"));
         break;
     case aria2::DOWNLOAD_WAITING:
         text = tr("Waiting");
-        ui->pauseButton->setVisible(false);
         ui->downloadProgress->setVisible(false);
         break;
     case aria2::DOWNLOAD_PAUSED:
         text = tr("Paused");
-        ui->pauseButton->setVisible(true);
         ui->downloadProgress->setVisible(false);
-        ui->pauseButton->setIcon(QIcon::fromTheme("media-playback-start"));
         break;
     case aria2::DOWNLOAD_COMPLETE:
         text = tr("Complete");
-        ui->pauseButton->setVisible(false);
         ui->downloadProgress->setVisible(false);
         break;
     case aria2::DOWNLOAD_ERROR:
         text = tr("Error");
-        ui->pauseButton->setVisible(false);
         ui->downloadProgress->setVisible(false);
         break;
     case aria2::DOWNLOAD_REMOVED:
         text = tr("Removed");
-        ui->pauseButton->setVisible(false);
         ui->downloadProgress->setVisible(false);
         break;
     }

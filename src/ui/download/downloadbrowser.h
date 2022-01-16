@@ -26,8 +26,11 @@ public slots:
     void downloadSpeed(qint64 download, qint64 upload = 0);
 
 private slots:
+    void onCurrentRowChanged();
     void on_actionAdd_Download_triggered();
     void updateListViewIndexWidget();
+    void on_actionPause_triggered();
+    void on_actionStart_triggered();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -35,6 +38,7 @@ protected:
 private:
     Ui::DownloadBrowser *ui;
     DownloadManager *manager_;
+    QMetaObject::Connection conn_;
 };
 
 #endif // DOWNLOADBROWSER_H

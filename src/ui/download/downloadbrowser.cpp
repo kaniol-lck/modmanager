@@ -32,6 +32,8 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
     });
 //    connect(manager_, &DownloadManager::downloaderAdded, this, &DownloadBrowser::addNewDownloaderItem);
     connect(manager_->qaria2(), &QAria2::downloadSpeed, this, &DownloadBrowser::downloadSpeed);
+    onCurrentRowChanged();
+    connect(ui->downloaderListView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &DownloadBrowser::onCurrentRowChanged);
 }
 
 DownloadBrowser::~DownloadBrowser()
@@ -54,6 +56,23 @@ void DownloadBrowser::downloadSpeed(qint64 download, qint64 upload)
     auto text = tr("Download Speed:") + speedConvert(download) +
             " " + tr("Upload Speed:") + speedConvert(upload);
     ui->statusbar->showMessage(text);
+}
+
+void DownloadBrowser::onCurrentRowChanged()
+{
+    auto row = ui->downloaderListView->currentIndex().row();
+    if(row < 0){
+        ui->actionPause->setEnabled(false);
+        ui->actionStart->setEnabled(false);
+    }
+    auto downloader = manager_->qaria2()->downloaders().at(row);
+    auto updateButtons = [=]{
+        ui->actionPause->setEnabled(downloader->status() == aria2::DOWNLOAD_ACTIVE);
+        ui->actionStart->setEnabled(downloader->status() == aria2::DOWNLOAD_PAUSED);
+    };
+    updateButtons();
+    disconnect(conn_);
+    conn_ = connect(downloader, &QAria2Downloader::statusChanged, this, updateButtons);
 }
 
 void DownloadBrowser::on_actionAdd_Download_triggered()
@@ -91,3 +110,21 @@ void DownloadBrowser::paintEvent(QPaintEvent *event)
     updateListViewIndexWidget();
     QWidget::paintEvent(event);
 }
+
+void DownloadBrowser::on_actionPause_triggered()
+{
+    auto row = ui->downloaderListView->currentIndex().row();
+    if(row < 0) return;
+    auto downloader = manager_->qaria2()->downloaders().at(row);
+    if(downloader) downloader->pause();
+}
+
+
+void DownloadBrowser::on_actionStart_triggered()
+{
+    auto row = ui->downloaderListView->currentIndex().row();
+    if(row < 0) return;
+    auto downloader = manager_->qaria2()->downloaders().at(row);
+    if(downloader) downloader->start();
+}
+

@@ -44,15 +44,15 @@ QWidget *FramelessWrapper::makeFrameless(QMainWindow *window)
 {
     window->menuBar()->hide();
     auto wrapper = new FramelessWrapper(qobject_cast<QWidget *>(window->parent()),
-                                      window,
-                                      window->menuBar());
+                                        window,
+                                        window->menuBar());
     return wrapper;
 }
 
 QWidget *FramelessWrapper::makeFrameless(QDialog *dialog)
 {
     auto wrapper = new FramelessWrapper(qobject_cast<QWidget *>(dialog->parent()),
-                                      dialog);
+                                        dialog);
     return wrapper;
 }
 

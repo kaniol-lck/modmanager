@@ -60,15 +60,33 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionAdd_Download"/>
+   <addaction name="actionAdd"/>
+   <addaction name="actionPause"/>
+   <addaction name="actionStart"/>
   </widget>
-  <action name="actionAdd_Download">
+  <action name="actionAdd">
    <property name="icon">
     <iconset theme="list-add">
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Add Download</string>
+    <string>Add</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="icon">
+    <iconset theme="media-playback-pause"/>
+   </property>
+   <property name="text">
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="actionStart">
+   <property name="icon">
+    <iconset theme="media-playback-start"/>
+   </property>
+   <property name="text">
+    <string>Start</string>
    </property>
   </action>
  </widget>

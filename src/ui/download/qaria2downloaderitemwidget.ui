@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>472</width>
-    <height>102</height>
+    <height>104</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -197,20 +197,6 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="pauseButton">
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="icon">
-        <iconset theme="media-playback-pause">
-         <normaloff>.</normaloff>.</iconset>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
        </property>
       </widget>
      </item>
