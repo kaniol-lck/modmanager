@@ -9,7 +9,8 @@
 
 DownloadManager::DownloadManager(QObject *parent) :
     QObject(parent),
-    qaria2_(QAria2::qaria2())
+    qaria2_(QAria2::qaria2()),
+    model_(new DownloadManagerModel(this))
 {}
 
 DownloadManager *DownloadManager::manager()
@@ -60,7 +61,9 @@ QAria2Downloader *DownloadManager::download(CurseforgeMod *mod, CurseforgeFile *
     else
         setFileInfo();
     connect(downloader, &AbstractDownloader::redirected, this, [=]{
+        model_->beginInsertRows(QModelIndex(), qaria2_->downloaders().size(), qaria2_->downloaders().size());
         qaria2_->download(downloader);
+        model_->endInsertRows();
     });
     return downloader;
 }
@@ -68,4 +71,43 @@ QAria2Downloader *DownloadManager::download(CurseforgeMod *mod, CurseforgeFile *
 QAria2 *DownloadManager::qaria2() const
 {
     return qaria2_;
+}
+
+DownloadManagerModel *DownloadManager::model() const
+{
+    return model_;
+}
+
+DownloadManagerModel::DownloadManagerModel(DownloadManager *manager) :
+    QAbstractListModel(manager),
+    manager_(manager)
+{}
+
+int DownloadManagerModel::rowCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return 0;
+    return manager_->qaria2()->downloaders().size();
+}
+
+QVariant DownloadManagerModel::data(const QModelIndex &index, int role) const
+{
+    //    qDebug() << index << role;
+        if (!index.isValid() || index.row() >= rowCount())
+            return QVariant();
+        auto downloader = manager_->qaria2()->downloaders().at(index.row());
+        switch (role) {
+        case Qt::UserRole + 1:
+            return QVariant::fromValue(downloader);
+            break;
+        case Qt::SizeHintRole:
+            return QSize(0, itemHeight_);
+            break;
+        }
+        return QVariant();
+}
+
+void DownloadManagerModel::setItemHeight(int newItemHeight)
+{
+    itemHeight_ = newItemHeight;
 }

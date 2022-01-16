@@ -24,7 +24,7 @@ public:
     QAria2Downloader *download(QAria2Downloader *downloader);
 
     aria2::Session *session() const;
-    const QMap<aria2::A2Gid, QAria2Downloader *> &downloaders() const;
+    const QList<QAria2Downloader *> &downloaders() const;
 
 public slots:
     void updateOptions();
@@ -42,7 +42,7 @@ private:
     aria2::SessionConfig config_;
     aria2::KeyVals options;
     QTimer timer_;
-    QMap<aria2::A2Gid, QAria2Downloader*> downloaders_;
+    QList<QAria2Downloader*> downloaders_;
 };
 
 #endif // QARIA2_H

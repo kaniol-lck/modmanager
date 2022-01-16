@@ -25,6 +25,7 @@ ImportCurseforgeModpackDialog::ImportCurseforgeModpackDialog(QWidget *parent, co
     zip_(fileName)
 {
     ui->setupUi(this);
+    ui->name->setProperty("class", "Title");
     ui->treeView->setModel(model_);
     for(auto &&gameVersion : GameVersion::mojangVersionList())
         ui->gameVersion->addItem(gameVersion);
@@ -127,17 +128,25 @@ void ImportCurseforgeModpackDialog::on_toolButton_clicked()
 
 void ImportCurseforgeModpackDialog::on_ImportCurseforgeModpackDialog_accepted()
 {
-    auto path = new LocalModPath(LocalModPathInfo(ui->name->text(),
-                                                  ui->savePath->text() + "/mods",
-                                                  GameVersion(ui->gameVersion->currentText()),
-                                                  ModLoaderType::Any));
-    LocalModPathManager::manager()->addPath(path);
-    path->loadMods();
+    if(ui->addToPath->isChecked()){
+        auto path = new LocalModPath(LocalModPathInfo(ui->name->text(),
+                                                      ui->savePath->text() + "/mods",
+                                                      GameVersion(ui->gameVersion->currentText()),
+                                                      ModLoaderType::Any));
+        LocalModPathManager::manager()->addPath(path);
+        path->loadMods();
 
-    for(int row = 0; row < model_->rowCount(); row++){
-        auto mod = model_->item(row, 0)->data().value<CurseforgeMod *>();
-        auto file = model_->item(row, 1)->data().value<CurseforgeFile *>();
-        path->downloadNewMod(mod, file);
+        for(int row = 0; row < model_->rowCount(); row++){
+            auto mod = model_->item(row, 0)->data().value<CurseforgeMod *>();
+            auto file = model_->item(row, 1)->data().value<CurseforgeFile *>();
+            path->downloadNewMod(mod, file);
+        }
+    } else{
+        for(int row = 0; row < model_->rowCount(); row++){
+            auto mod = model_->item(row, 0)->data().value<CurseforgeMod *>();
+            auto file = model_->item(row, 1)->data().value<CurseforgeFile *>();
+            DownloadManager::manager()->download(mod, file, ui->name->text(), ui->savePath->text() + "/mods");
+        }
     }
 
     //extract

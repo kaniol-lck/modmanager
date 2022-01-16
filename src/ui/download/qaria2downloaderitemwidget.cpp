@@ -8,7 +8,7 @@
 #include "download/qaria2downloader.h"
 #include "util/funcutil.h"
 
-QAria2DownloaderItemWidget::QAria2DownloaderItemWidget(QWidget *parent, QAria2Downloader *downloader, const DownloadFileInfo &info) :
+QAria2DownloaderItemWidget::QAria2DownloaderItemWidget(QWidget *parent, QAria2Downloader *downloader) :
     QWidget(parent),
     ui(new Ui::QAria2DownloaderItemWidget),
     downloader_(downloader)
@@ -63,28 +63,34 @@ void QAria2DownloaderItemWidget::refreshStatus(int status)
     case aria2::DOWNLOAD_ACTIVE:
         text = tr("Active");
         ui->pauseButton->setVisible(true);
+        ui->downloadProgress->setVisible(true);
         ui->pauseButton->setIcon(QIcon::fromTheme("media-playback-pause"));
         break;
     case aria2::DOWNLOAD_WAITING:
         text = tr("Waiting");
         ui->pauseButton->setVisible(false);
+        ui->downloadProgress->setVisible(false);
         break;
     case aria2::DOWNLOAD_PAUSED:
         text = tr("Paused");
         ui->pauseButton->setVisible(true);
+        ui->downloadProgress->setVisible(false);
         ui->pauseButton->setIcon(QIcon::fromTheme("media-playback-start"));
         break;
     case aria2::DOWNLOAD_COMPLETE:
         text = tr("Complete");
         ui->pauseButton->setVisible(false);
+        ui->downloadProgress->setVisible(false);
         break;
     case aria2::DOWNLOAD_ERROR:
         text = tr("Error");
         ui->pauseButton->setVisible(false);
+        ui->downloadProgress->setVisible(false);
         break;
     case aria2::DOWNLOAD_REMOVED:
         text = tr("Removed");
         ui->pauseButton->setVisible(false);
+        ui->downloadProgress->setVisible(false);
         break;
     }
     ui->downloaStatus->setText(text);

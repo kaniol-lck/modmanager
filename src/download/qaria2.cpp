@@ -11,10 +11,12 @@
 
 int QAria2::downloadEventCallback(aria2::Session *session[[maybe_unused]], aria2::DownloadEvent event, const aria2::A2Gid gid, void *userData[[maybe_unused]])
 {
-    if(!qaria2()->downloaders_.contains(gid)) return 0;
-    auto downloader = qaria2()->downloaders_.value(gid);
-    downloader->setEvent(event);
-    //callback
+    for(auto &&downloader : qaria2()->downloaders()){
+        if(downloader->gid_ == gid){
+            downloader->setEvent(event);
+            return 0;
+        }
+    }
     return 0;
 }
 
@@ -73,7 +75,7 @@ void QAria2::updateOptions()
     aria2::changeGlobalOption(session_, options);
 }
 
-const QMap<aria2::A2Gid, QAria2Downloader *> &QAria2::downloaders() const
+const QList<QAria2Downloader *> &QAria2::downloaders() const
 {
     return downloaders_;
 }
@@ -111,9 +113,11 @@ QAria2Downloader *QAria2::download(QAria2Downloader *downloader)
     if(rv < 0) {
         qDebug() << "Failed";
     }
-    if(downloaders_.contains(gid)) return nullptr;
+    for(auto &&downloader : downloaders_)
+        if(downloader->gid_ == gid)
+            return nullptr;
     downloader->setGid(gid);
-    downloaders_[gid] = downloader;
+    downloaders_ << downloader;
     downloader->update();
     emit downloaderAdded(downloader);
     return downloader;

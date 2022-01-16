@@ -22,14 +22,15 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
     Config config;
     restoreGeometry(config.getBrowserWindowState(this));
     restoreState(config.getBrowserWindowState(this));
-    ui->downloaderListWidget->setVerticalScrollBar(new SmoothScrollBar(this));
-    ui->downloaderListWidget->setProperty("class", "ModList");
+    ui->downloaderListView->setModel(manager_->model());
+    ui->downloaderListView->setVerticalScrollBar(new SmoothScrollBar(this));
+    ui->downloaderListView->setProperty("class", "ModList");
 
     connect(manager_->qaria2(), &QAria2::started, this, [=]{});
     connect(manager_->qaria2(), &QAria2::finished, this, [=]{
         ui->statusbar->showMessage("Idoling");
     });
-    connect(manager_, &DownloadManager::downloaderAdded, this, &DownloadBrowser::addNewDownloaderItem);
+//    connect(manager_, &DownloadManager::downloaderAdded, this, &DownloadBrowser::addNewDownloaderItem);
     connect(manager_->qaria2(), &QAria2::downloadSpeed, this, &DownloadBrowser::downloadSpeed);
 }
 
@@ -48,15 +49,6 @@ QString DownloadBrowser::name() const
     return tr("Downloader");
 }
 
-void DownloadBrowser::addNewDownloaderItem(const DownloadFileInfo &info, QAria2Downloader *downloader)
-{
-    auto *listItem = new QListWidgetItem();
-    auto widget = new QAria2DownloaderItemWidget(this, downloader, info);
-    listItem->setSizeHint(QSize(0, widget->height()));
-    ui->downloaderListWidget->addItem(listItem);
-    ui->downloaderListWidget->setItemWidget(listItem, widget);
-}
-
 void DownloadBrowser::downloadSpeed(qint64 download, qint64 upload)
 {
     auto text = tr("Download Speed:") + speedConvert(download) +
@@ -68,4 +60,34 @@ void DownloadBrowser::on_actionAdd_Download_triggered()
 {
     auto dialog = new AddDownloadDialog(this);
     dialog->show();
+}
+
+void DownloadBrowser::updateListViewIndexWidget()
+{
+    auto &&model = manager_->model();
+    auto beginRow = ui->downloaderListView->indexAt(QPoint(0, 0)).row();
+//    if(beginRow < 0) return;
+    auto endRow = ui->downloaderListView->indexAt(QPoint(0, ui->downloaderListView->height())).row();
+    if(endRow < 0)
+        endRow = model->rowCount() - 1;
+    else
+        //extra 2
+        endRow += 2;
+    for(int row = beginRow; row <= endRow && row < model->rowCount(); row++){
+        auto index = model->index(row, 0);
+        if(ui->downloaderListView->indexWidget(index)) continue;
+//        qDebug() << "new widget at row" << row;
+        auto downloader = model->data(index, Qt::UserRole + 1).value<QAria2Downloader *>();
+        if(downloader){
+            auto modItemWidget = new QAria2DownloaderItemWidget(ui->downloaderListView, downloader);
+            ui->downloaderListView->setIndexWidget(index, modItemWidget);
+            model->setItemHeight(modItemWidget->height());
+        }
+    }
+}
+
+void DownloadBrowser::paintEvent(QPaintEvent *event)
+{
+    updateListViewIndexWidget();
+    QWidget::paintEvent(event);
 }

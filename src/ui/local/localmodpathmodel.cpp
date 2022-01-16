@@ -12,9 +12,14 @@ LocalModPathModel::LocalModPathModel(LocalModPath *parent) :
     QAbstractItemModel(parent),
     path_(parent)
 {
+    timer_.start();
+    //lag
     connect(path_, &LocalModPath::modListUpdated, this, [=]{
-        beginResetModel();
-        endResetModel();
+//        if(timer_.elapsed() > 1000){
+//            timer_.restart();
+            beginResetModel();
+            endResetModel();
+//        }
     });
 }
 

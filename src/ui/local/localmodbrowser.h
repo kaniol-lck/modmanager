@@ -113,6 +113,7 @@ private slots:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+
 private:
     PageSwitcher *pageSwitcher_ = nullptr;
     Ui::LocalModBrowser *ui;

@@ -606,12 +606,18 @@ QAria2Downloader *LocalModPath::downloadNewMod(CurseforgeMod *mod, CurseforgeFil
         QFileInfo fileInfo(info_.path(), downloader->info().fileName());
         if(!LocalModFile::availableSuffix.contains(fileInfo.suffix())) return;
         auto file = new LocalModFile(this, fileInfo.absoluteFilePath());
-        file->loadInfo();
-        file->linker()->link();
-        addModFile(file);
-        if(!file->parent())
-            file->deleteLater();
-        emit modListUpdated();
+        auto future = QtConcurrent::run([=]{
+            file->loadInfo();
+        });
+        auto watcher = new QFutureWatcher<void>(this);
+        watcher->setFuture(future);
+        connect(watcher, &QFutureWatcher<void>::finished, this, [=]{
+            file->linker()->link();
+            addModFile(file);
+            if(!file->parent())
+                file->deleteLater();
+            emit modListUpdated();
+        });
     });
     return downloader;
 }

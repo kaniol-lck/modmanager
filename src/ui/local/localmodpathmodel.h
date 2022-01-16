@@ -3,6 +3,7 @@
 
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
+#include <QElapsedTimer>
 
 class LocalMod;
 class LocalModFilter;
@@ -38,6 +39,7 @@ public:
     void setItemHeight(int newItemHeight);
 
 private:
+    QElapsedTimer timer_;
     LocalModPath *path_;
     int itemHeight_ = 100;
 };

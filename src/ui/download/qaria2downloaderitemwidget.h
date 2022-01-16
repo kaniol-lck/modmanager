@@ -16,7 +16,7 @@ class QAria2DownloaderItemWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit QAria2DownloaderItemWidget(QWidget *parent, QAria2Downloader *downloader, const DownloadFileInfo &info);
+    explicit QAria2DownloaderItemWidget(QWidget *parent, QAria2Downloader *downloader);
     ~QAria2DownloaderItemWidget();
 
 private slots:

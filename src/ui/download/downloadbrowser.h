@@ -23,12 +23,14 @@ public:
     QIcon icon() const override;
     QString name() const override;
 public slots:
-    void addNewDownloaderItem(const DownloadFileInfo &info, QAria2Downloader *downloader);
     void downloadSpeed(qint64 download, qint64 upload = 0);
 
 private slots:
-
     void on_actionAdd_Download_triggered();
+    void updateListViewIndexWidget();
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
 
 private:
     Ui::DownloadBrowser *ui;
