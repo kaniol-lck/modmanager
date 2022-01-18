@@ -23,6 +23,7 @@ GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent, const GitHubRepoInfo &info
     api_(new GitHubAPI())
 {
     ui->setupUi(this);
+    ui->menu_GitHub->addActions(pathMenu_->actions());
     initUi();
 
     //setup status bar

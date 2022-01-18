@@ -26,6 +26,22 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_GitHub">
+    <property name="title">
+     <string>&amp;GitHub</string>
+    </property>
+   </widget>
+   <addaction name="menu_GitHub"/>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>

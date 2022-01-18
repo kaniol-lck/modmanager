@@ -91,9 +91,15 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>31</height>
+     <height>27</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuOptiFine">
+    <property name="title">
+     <string>&amp;OptiFine</string>
+    </property>
+   </widget>
+   <addaction name="menuOptiFine"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="MenuToolBar" name="toolBar">

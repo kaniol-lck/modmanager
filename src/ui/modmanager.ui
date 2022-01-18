@@ -148,7 +148,8 @@
       <string>Import</string>
      </property>
      <property name="icon">
-      <iconset theme="document-import"/>
+      <iconset theme="document-import">
+       <normaloff>.</normaloff>.</iconset>
      </property>
      <addaction name="actionCurseforge_Modpack"/>
     </widget>
@@ -158,12 +159,6 @@
     <addaction name="actionManage_Browser"/>
     <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="menu_Mod">
-    <property name="title">
-     <string>&amp;Mod</string>
-    </property>
-   </widget>
-   <addaction name="menu_Mod"/>
    <addaction name="menu_Path"/>
    <addaction name="menu_View"/>
    <addaction name="menuTools"/>
@@ -197,20 +192,6 @@
    </property>
    <property name="text">
     <string>&amp;About Mod Manager</string>
-   </property>
-  </action>
-  <action name="actionPage_Selector">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Page Selector</string>
-   </property>
-   <property name="toolTip">
-    <string>Page Selector</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+L</string>
    </property>
   </action>
   <action name="actionNew_Paths">
@@ -259,15 +240,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+N</string>
-   </property>
-  </action>
-  <action name="actionReload">
-   <property name="icon">
-    <iconset theme="view-refresh">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Reload/Refresh</string>
    </property>
   </action>
   <action name="actionShow_Mod_Date_Time">
@@ -332,22 +304,6 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt</string>
-   </property>
-  </action>
-  <action name="actionMod_Infomation">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Mod Infomation</string>
-   </property>
-  </action>
-  <action name="actionFile_List">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>File List</string>
    </property>
   </action>
   <action name="actionShow_Mod_Release_Type">

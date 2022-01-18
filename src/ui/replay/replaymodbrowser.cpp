@@ -25,6 +25,7 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     api_(new ReplayAPI())
 {
     ui->setupUi(this);
+    ui->menuReplayMod->addActions(pathMenu_->actions());
     initUi();
 
     //setup status bar

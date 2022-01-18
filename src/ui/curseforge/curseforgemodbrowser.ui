@@ -146,7 +146,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>31</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Mod">
@@ -167,9 +167,9 @@
     <addaction name="actionOpen_Website_Link"/>
     <addaction name="actionCopy_Website_Link"/>
    </widget>
-   <widget class="QMenu" name="menu_Path">
+   <widget class="QMenu" name="menu_Curseforge">
     <property name="title">
-     <string>&amp;Path</string>
+     <string>&amp;Curseforge</string>
     </property>
     <widget class="QMenu" name="menuSelect_Game_Version">
      <property name="title">
@@ -191,7 +191,7 @@
     <addaction name="actionWorld"/>
    </widget>
    <addaction name="menu_Mod"/>
-   <addaction name="menu_Path"/>
+   <addaction name="menu_Curseforge"/>
   </widget>
   <widget class="QToolBar" name="categoryToolBar">
    <property name="windowTitle">

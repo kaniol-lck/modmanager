@@ -42,7 +42,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
-    ui->menu_Path->insertActions(ui->menu_Path->actions().first(), pathMenu_->actions());
+    ui->menu_Curseforge->insertActions(ui->menu_Curseforge->actions().first(), pathMenu_->actions());
     initUi();
 
     //setup status bar
@@ -452,7 +452,7 @@ QList<QAction *> CurseforgeModBrowser::modActions() const
 
 QList<QAction *> CurseforgeModBrowser::pathActions() const
 {
-    return ui->menu_Path->actions();
+    return ui->menu_Curseforge->actions();
 }
 
 ExploreBrowser *CurseforgeModBrowser::another()

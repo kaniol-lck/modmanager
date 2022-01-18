@@ -37,7 +37,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
-    ui->menu_Path->insertActions(ui->menu_Path->actions().first(), pathMenu_->actions());
+    ui->menu_Modrinth->insertActions(ui->menu_Modrinth->actions().first(), pathMenu_->actions());
     initUi();
 
     //setup status bar
@@ -512,7 +512,7 @@ QList<QAction *> ModrinthModBrowser::modActions() const
 
 QList<QAction *> ModrinthModBrowser::pathActions() const
 {
-    return ui->menu_Path->actions();
+    return ui->menu_Modrinth->actions();
 }
 
 ExploreBrowser *ModrinthModBrowser::another()

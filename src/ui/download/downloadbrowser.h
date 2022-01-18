@@ -27,7 +27,7 @@ public slots:
 
 private slots:
     void onCurrentRowChanged();
-    void on_actionAdd_Download_triggered();
+    void on_actionAdd_triggered();
     void updateListViewIndexWidget();
     void on_actionPause_triggered();
     void on_actionStart_triggered();

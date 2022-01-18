@@ -37,6 +37,7 @@ public slots:
     void updateUi();
 private slots:
     void setProxy();
+    void mergeMenuBar();
     void updateBrowsers(Browser *previous, Browser *current);
     void updateLockPanels();
     void editLocalPath(int index);
@@ -47,14 +48,10 @@ private slots:
     void on_actionOpen_new_path_dialog_triggered();
     void on_actionSelect_A_Directory_triggered();
     void on_actionSelect_Multiple_Directories_triggered();
-    void on_menu_Mod_aboutToShow();
-    void on_menu_Mod_aboutToHide();
-    void on_menu_Path_aboutToShow();
     void on_menu_View_aboutToShow();
     void on_menu_Help_aboutToShow();
     void on_menuPaths_aboutToShow();
     void on_menuTags_aboutToShow();
-    void on_actionReload_triggered();
     void on_actionShow_Mod_Authors_toggled(bool arg1);
     void on_actionShow_Mod_Date_Time_toggled(bool arg1);
     void on_actionShow_Mod_Category_toggled(bool arg1);
@@ -74,6 +71,7 @@ private slots:
 private:
     Ui::ModManager *ui;
     PageSwitcher pageSwitcher_;
+    QMenuBar *menuBar_;
     mutable Config config_;
     BrowserSelectorWidget *browserSelector_;
     QList<LocalModPath*> pathList_;

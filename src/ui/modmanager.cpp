@@ -49,6 +49,8 @@ ModManager::ModManager(QWidget *parent) :
     Config config;
     enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
+    menuBar_ = ui->menubar;
+    ui->menubar = new QMenuBar(this);
     setCentralWidget(&pageSwitcher_);
     DockWidgetContent::lockPanelsAction = ui->actionLock_Panels;
     restoreGeometry(config.getGeometry());
@@ -99,6 +101,7 @@ ModManager::ModManager(QWidget *parent) :
     ui->actionShow_Mod_Category->setChecked(config.getShowModCategory());
     ui->actionShow_Mod_Loader_Type->setChecked(config.getShowModLoaderType());
 
+    mergeMenuBar();
     updateUi();
 }
 
@@ -128,16 +131,47 @@ void ModManager::setProxy()
     QNetworkProxy::setApplicationProxy(proxy);
 }
 
+void ModManager::mergeMenuBar()
+{
+    ui->menubar->clear();
+    QMenu *menuPath;
+    for(auto &&menuAction : menuBar_->actions()){
+        auto menu = ui->menubar->addMenu(menuAction->icon(), menuAction->text());
+        connect(menu, &QMenu::aboutToShow, menuAction->menu(), &QMenu::aboutToShow);
+        connect(menu, &QMenu::aboutToHide, menuAction->menu(), &QMenu::aboutToHide);
+        if(menuAction->menu() == ui->menu_Path)
+            menuPath = menu;
+        menu->addActions(menuAction->menu()->actions());
+    }
+    if(auto browser = pageSwitcher_.currentBrowser())
+        for(auto &&menuAction : browser->menuBar()->actions()){
+            bool merged = false;
+            for(auto &&existedMenuAction : ui->menubar->actions())
+                //merge if has same text
+                if(existedMenuAction->text() == menuAction->text()){
+                    existedMenuAction->menu()->addActions(menuAction->menu()->actions());
+                    merged = true;
+                    break;
+                }
+            if(!merged){
+                auto menu = new QMenu(menuAction->text());
+                ui->menubar->insertMenu(menuPath->menuAction(), menu);
+                menu->addActions(menuAction->menu()->actions());
+            }
+        }
+}
+
 void ModManager::updateBrowsers(Browser *previous, Browser *current)
 {
     ui->modInfoDock->setWidget(current->infoWidget());
     ui->fileListDock->setWidget(current->fileListWidget());
-    ui->menu_Mod->clear();
-    ui->menu_Mod->addActions(current->modActions());
-    ui->menu_Mod->setEnabled(!current->modActions().isEmpty());
-    for(const auto &action : previous->pathActions())
-        ui->menu_Path->removeAction(action);
-    ui->menu_Path->addActions(current->pathActions());
+    mergeMenuBar();
+//    ui->menu_Mod->clear();
+//    ui->menu_Mod->addActions(current->modActions());
+//    ui->menu_Mod->setEnabled(!current->modActions().isEmpty());
+//    for(const auto &action : previous->pathActions())
+//        ui->menu_Path->removeAction(action);
+//    ui->menu_Path->addActions(current->pathActions());
 }
 
 void ModManager::updateLockPanels()
@@ -304,35 +338,8 @@ void ModManager::on_actionSelect_Multiple_Directories_triggered()
     LocalModPathManager::addPaths(paths);
 }
 
-void ModManager::on_menu_Mod_aboutToShow()
-{
-    pageSwitcher_.currentBrowser()->onModMenuAboutToShow();
-}
-
-void ModManager::on_menu_Mod_aboutToHide()
-{
-    pageSwitcher_.currentBrowser()->onModMenuAboutToHide();
-}
-
-void ModManager::on_menu_Path_aboutToShow()
-{
-    if(pageSwitcher_.currentCategory() == PageSwitcher::Download)
-        ui->actionReload->setEnabled(false);
-    if(pageSwitcher_.currentCategory() == PageSwitcher::Local)
-        if(auto localBrowser = pageSwitcher_.localModBrowser(pageSwitcher_.currentPage()); localBrowser && localBrowser->isLoading()){
-            ui->actionReload->setEnabled(false);
-            connect(localBrowser, &LocalModBrowser::loadFinished, this, [=]{
-                ui->actionReload->setEnabled(true);
-            });
-        }
-}
-
 void ModManager::on_menu_View_aboutToShow()
 {
-    ui->actionPage_Selector->setChecked(ui->pageSelectorDock->isVisible());
-    ui->actionMod_Infomation->setChecked(ui->modInfoDock->isVisible());
-    ui->actionFile_List->setChecked(ui->fileListDock->isVisible());
-
     ui->actionShow_Mod_Authors->setChecked(config_.getShowModAuthors());
     ui->actionShow_Mod_Category->setChecked(config_.getShowModCategory());
     ui->actionShow_Mod_Date_Time->setChecked(config_.getShowModDateTime());
@@ -391,14 +398,6 @@ void ModManager::on_menuTags_aboutToShow()
         });
         ui->menuTags->addAction(action);
     }
-}
-
-void ModManager::on_actionReload_triggered()
-{
-    if(auto category = pageSwitcher_.currentCategory(); category == PageSwitcher::Explore)
-        pageSwitcher_.exploreBrowser(pageSwitcher_.currentPage())->refresh();
-    else if(category == PageSwitcher::Local)
-        pageSwitcher_.localModBrowser(pageSwitcher_.currentPage())->reload();
 }
 
 void ModManager::on_actionShow_Mod_Authors_toggled(bool arg1)
@@ -472,7 +471,6 @@ void ModManager::on_actionClear_Unmatched_File_Link_Caches_triggered()
                                                                              "By doing this, we will recheck those files unmatched before."))) return;
     KnownFile::clearUnmatched();
 }
-
 
 void ModManager::on_actionCurseforge_Modpack_triggered()
 {

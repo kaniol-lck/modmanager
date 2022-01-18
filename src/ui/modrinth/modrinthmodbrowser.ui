@@ -102,7 +102,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>31</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Mod">
@@ -123,9 +123,9 @@
     <addaction name="actionOpen_Website_Link"/>
     <addaction name="actionCopy_Website_Link"/>
    </widget>
-   <widget class="QMenu" name="menu_Path">
+   <widget class="QMenu" name="menu_Modrinth">
     <property name="title">
-     <string>&amp;Path</string>
+     <string>M&amp;odrinth</string>
     </property>
     <widget class="UnclosedMenu" name="menuSelect_Game_Version">
      <property name="styleSheet">
@@ -147,7 +147,7 @@
     <addaction name="menuSelect_Category"/>
    </widget>
    <addaction name="menu_Mod"/>
-   <addaction name="menu_Path"/>
+   <addaction name="menu_Modrinth"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="MenuToolBar" name="toolBar">

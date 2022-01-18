@@ -76,7 +76,7 @@ void DownloadBrowser::onCurrentRowChanged()
     conn_ = connect(downloader, &QAria2Downloader::statusChanged, this, updateButtons);
 }
 
-void DownloadBrowser::on_actionAdd_Download_triggered()
+void DownloadBrowser::on_actionAdd_triggered()
 {
     auto dialog = new AddDownloadDialog(this);
     dialog->show();

@@ -27,6 +27,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     bmclapi_(new BMCLAPI(this))
 {
     ui->setupUi(this);
+    ui->menuOptiFine->addActions(pathMenu_->actions());
     initUi();
 
     //setup status bar
