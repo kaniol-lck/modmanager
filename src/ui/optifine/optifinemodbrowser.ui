@@ -99,7 +99,13 @@
      <string>&amp;OptiFine</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+   </widget>
    <addaction name="menuOptiFine"/>
+   <addaction name="menu_View"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="MenuToolBar" name="toolBar">

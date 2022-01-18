@@ -367,8 +367,14 @@
     <addaction name="actionCheck_Updates"/>
     <addaction name="actionUpdate_All"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+   </widget>
    <addaction name="menuMod"/>
    <addaction name="menuPath"/>
+   <addaction name="menu_View"/>
   </widget>
   <action name="actionReload_Mods">
    <property name="icon">
@@ -595,7 +601,8 @@
   </action>
   <action name="actionOpen_Folder">
    <property name="icon">
-    <iconset theme="folder"/>
+    <iconset theme="folder">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Open Folder</string>

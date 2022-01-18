@@ -45,6 +45,9 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     ui->menu_Curseforge->insertActions(ui->menu_Curseforge->actions().first(), pathMenu_->actions());
     initUi();
 
+    for(auto &&toolBar : findChildren<QToolBar *>())
+        ui->menu_View->addAction(toolBar->toggleViewAction());
+
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 

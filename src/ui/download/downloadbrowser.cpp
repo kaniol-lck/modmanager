@@ -19,6 +19,10 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
     manager_(DownloadManager::manager())
 {
     ui->setupUi(this);
+
+    for(auto &&toolBar : findChildren<QToolBar *>())
+        ui->menu_View->addAction(toolBar->toggleViewAction());
+
     Config config;
     restoreGeometry(config.getBrowserWindowState(this));
     restoreState(config.getBrowserWindowState(this));

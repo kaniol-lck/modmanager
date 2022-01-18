@@ -190,8 +190,14 @@
     <addaction name="actionTexturepacks"/>
     <addaction name="actionWorld"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+   </widget>
    <addaction name="menu_Mod"/>
    <addaction name="menu_Curseforge"/>
+   <addaction name="menu_View"/>
   </widget>
   <widget class="QToolBar" name="categoryToolBar">
    <property name="windowTitle">

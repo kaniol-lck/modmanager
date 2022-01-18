@@ -149,6 +149,8 @@ void ModManager::mergeMenuBar()
             for(auto &&existedMenuAction : ui->menubar->actions())
                 //merge if has same text
                 if(existedMenuAction->text() == menuAction->text()){
+                    if(!existedMenuAction->menu()->isEmpty())
+                        existedMenuAction->menu()->addSeparator();
                     existedMenuAction->menu()->addActions(menuAction->menu()->actions());
                     merged = true;
                     break;
@@ -161,17 +163,11 @@ void ModManager::mergeMenuBar()
         }
 }
 
-void ModManager::updateBrowsers(Browser *previous, Browser *current)
+void ModManager::updateBrowsers(Browser *previous[[maybe_unused]], Browser *current)
 {
     ui->modInfoDock->setWidget(current->infoWidget());
     ui->fileListDock->setWidget(current->fileListWidget());
     mergeMenuBar();
-//    ui->menu_Mod->clear();
-//    ui->menu_Mod->addActions(current->modActions());
-//    ui->menu_Mod->setEnabled(!current->modActions().isEmpty());
-//    for(const auto &action : previous->pathActions())
-//        ui->menu_Path->removeAction(action);
-//    ui->menu_Path->addActions(current->pathActions());
 }
 
 void ModManager::updateLockPanels()

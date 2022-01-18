@@ -79,6 +79,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->modIconListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modTreeView->setVerticalScrollBar(new SmoothScrollBar(this));
 
+    for(auto &&toolBar : findChildren<QToolBar *>())
+        ui->menu_View->addAction(toolBar->toggleViewAction());
+
     auto button = new QToolButton(this);
     button->setDefaultAction(ui->actionFind_New_Mods);
     button->setPopupMode(QToolButton::InstantPopup);

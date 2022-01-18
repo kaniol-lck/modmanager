@@ -40,6 +40,9 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ui->menu_Modrinth->insertActions(ui->menu_Modrinth->actions().first(), pathMenu_->actions());
     initUi();
 
+    for(auto &&toolBar : findChildren<QToolBar *>())
+        ui->menu_View->addAction(toolBar->toggleViewAction());
+
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 

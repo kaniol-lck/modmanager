@@ -147,7 +147,13 @@
      <string>&amp;ReplayMod</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+   </widget>
    <addaction name="menuReplayMod"/>
+   <addaction name="menu_View"/>
   </widget>
  </widget>
  <customwidgets>

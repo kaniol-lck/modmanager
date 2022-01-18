@@ -45,6 +45,21 @@
      <height>27</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_Download">
+    <property name="title">
+     <string>&amp;Download</string>
+    </property>
+    <addaction name="actionAdd"/>
+    <addaction name="actionPause"/>
+    <addaction name="actionStart"/>
+   </widget>
+   <addaction name="menu_Download"/>
+   <addaction name="menu_View"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -75,7 +90,8 @@
   </action>
   <action name="actionPause">
    <property name="icon">
-    <iconset theme="media-playback-pause"/>
+    <iconset theme="media-playback-pause">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Pause</string>
@@ -83,7 +99,8 @@
   </action>
   <action name="actionStart">
    <property name="icon">
-    <iconset theme="media-playback-start"/>
+    <iconset theme="media-playback-start">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Start</string>
