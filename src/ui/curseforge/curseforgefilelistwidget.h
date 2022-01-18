@@ -1,12 +1,12 @@
 #ifndef CURSEFORGEFILELISTWIDGET_H
 #define CURSEFORGEFILELISTWIDGET_H
 
+#include <QStandardItemModel>
 #include <QWidget>
 
 class CurseforgeMod;
 class CurseforgeModBrowser;
 class LocalModPath;
-class QStandardItemModel;
 class DownloadPathSelectMenu;
 class LocalMod;
 namespace Ui {
@@ -28,9 +28,6 @@ public:
     void setLocalMod(LocalMod *newLocalMod);
     void setDownloadPathSelectMenu(DownloadPathSelectMenu *newDownloadPathSelectMenu);
 
-signals:
-    void modChanged();
-
 public slots:
     void updateUi();
 
@@ -44,7 +41,7 @@ protected:
 private:
     Ui::CurseforgeFileListWidget *ui;
     DownloadPathSelectMenu *downloadPathSelectMenu_ = nullptr;
-    QStandardItemModel *model_;
+    QStandardItemModel model_;
     CurseforgeMod *mod_ = nullptr;
     LocalMod *localMod_ = nullptr;
 };

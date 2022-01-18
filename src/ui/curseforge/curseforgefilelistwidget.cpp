@@ -14,11 +14,10 @@
 
 CurseforgeFileListWidget::CurseforgeFileListWidget(CurseforgeModBrowser *parent) :
     QWidget(parent),
-    ui(new Ui::CurseforgeFileListWidget),
-    model_(new QStandardItemModel(this))
+    ui(new Ui::CurseforgeFileListWidget)
 {
     ui->setupUi(this);
-    ui->fileListView->setModel(model_);
+    ui->fileListView->setModel(&model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setProperty("class", "ModList");
     connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeFileListWidget::updateIndexWidget);
@@ -28,20 +27,17 @@ CurseforgeFileListWidget::CurseforgeFileListWidget(CurseforgeModBrowser *parent)
 
 CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent, LocalMod *localMod) :
     QWidget(parent),
-    ui(new Ui::CurseforgeFileListWidget),
-    model_(new QStandardItemModel(this))
+    ui(new Ui::CurseforgeFileListWidget)
 {
     ui->setupUi(this);
-    ui->fileListView->setModel(model_);
+    ui->fileListView->setModel(&model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setProperty("class", "ModList");
     connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeFileListWidget::updateIndexWidget);
     ui->downloadPathSelect->hide();
-    if(!downloadPathSelectMenu_){
-        downloadPathSelectMenu_ = new DownloadPathSelectMenu(this);
-        ui->downloadPathSelect->setDefaultAction(downloadPathSelectMenu_->menuAction());
-        ui->downloadPathSelect->setPopupMode(QToolButton::InstantPopup);
-    }
+    downloadPathSelectMenu_ = new DownloadPathSelectMenu(this);
+    ui->downloadPathSelect->setDefaultAction(downloadPathSelectMenu_->menuAction());
+    ui->downloadPathSelect->setPopupMode(QToolButton::InstantPopup);
     setLocalMod(localMod);
 }
 
@@ -52,8 +48,9 @@ CurseforgeFileListWidget::~CurseforgeFileListWidget()
 
 void CurseforgeFileListWidget::setMod(CurseforgeMod *mod)
 {
+    if(mod_) disconnect(mod_, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList);
     mod_ = mod;
-    emit modChanged();
+    if(mod_) connect(mod_, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList);
 
     ui->fileListView->setVisible(mod_);
     if(!mod_) return;
@@ -63,35 +60,27 @@ void CurseforgeFileListWidget::setMod(CurseforgeMod *mod)
         ui->fileListView->setCursor(Qt::BusyCursor);
         mod->acquireAllFileList();
     }
-    connect(this, &CurseforgeFileListWidget::modChanged, this, disconnecter(
-                connect(mod, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList)));
 }
 
 void CurseforgeFileListWidget::updateUi()
 {
-//    for(int i = 0; i < model_->rowCount(); i++){
-//        qDebug() << i;
-//        auto index = model_->index(kLoadSize, 0);
-//        if(auto widget = ui->fileListView->indexWidget(index)){
-//            qobject_cast<CurseforgeFileItemWidget*>(widget)->updateUi();
-//            qDebug() << "update:" << i;
-//        }
-//    }
+    for(auto &&widget : findChildren<CurseforgeFileItemWidget *>())
+        widget->updateUi();
 }
 
 void CurseforgeFileListWidget::updateFileList()
 {
-    model_->clear();
+    model_.clear();
     for(int i = 0; i < mod_->modInfo().allFileList().size(); i++){
         auto item = new QStandardItem;
-        model_->appendRow(item);
+        model_.appendRow(item);
         auto &&fileInfo = mod_->modInfo().allFileList().at(i);
         item->setData(fileInfo.fileDate(), Qt::UserRole);
         item->setData(i, Qt::UserRole + 1);
         item->setSizeHint(QSize(0, 100));
     }
-    model_->setSortRole(Qt::UserRole);
-    model_->sort(0, Qt::DescendingOrder);
+    model_.setSortRole(Qt::UserRole);
+    model_.sort(0, Qt::DescendingOrder);
     ui->fileListView->setCursor(Qt::ArrowCursor);
 }
 
@@ -126,17 +115,17 @@ void CurseforgeFileListWidget::updateIndexWidget()
     if(beginRow < 0) return;
     auto endRow = ui->fileListView->indexAt(QPoint(0, ui->fileListView->height())).row();
     if(endRow < 0)
-        endRow = model_->rowCount() - 1;
+        endRow = model_.rowCount() - 1;
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
-        auto index = model_->index(row, 0);
+    for(int row = beginRow; row <= endRow && row < model_.rowCount(); row++){
+        auto index = model_.index(row, 0);
         if(ui->fileListView->indexWidget(index)) continue;
-        auto item = model_->item(row);
+        auto item = model_.item(row);
         auto &&fileInfo = mod_->modInfo().allFileList().at(item->data(Qt::UserRole + 1).toInt());
         auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo);
-        ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
+        ui->fileListView->setIndexWidget(model_.indexFromItem(item), itemWidget);
         item->setSizeHint(QSize(0, itemWidget->height()));
     }
 }

@@ -18,8 +18,6 @@ public:
     ~CurseforgeModInfoWidget();
 
     void setMod(CurseforgeMod *mod);
-signals:
-    void modChanged();
 
 private slots:
     void updateBasicInfo();

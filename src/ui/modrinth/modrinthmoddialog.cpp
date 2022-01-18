@@ -19,7 +19,7 @@
 ModrinthModDialog::ModrinthModDialog(ModrinthModBrowser *parent, ModrinthMod *mod) :
     ModrinthModDialog(static_cast<QWidget *>(parent), mod)
 {
-    ui->fileList->setBrowser(parent);
+    ui->fileList->setDownloadPathSelectMenu(parent->downloadPathSelectMenu());
 }
 
 ModrinthModDialog::ModrinthModDialog(QWidget *parent, ModrinthMod *mod, LocalMod *localMod) :

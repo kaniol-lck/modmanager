@@ -81,7 +81,7 @@ void ModrinthMod::acquireIcon()
 
 std::shared_ptr<Reply<ModrinthModInfo>> ModrinthMod::acquireFullInfo()
 {
-    if(fullInfoGetter_ && fullInfoGetter_->isRunning()) return {};
+    if(fullInfoGetter_ && fullInfoGetter_->isRunning()) return fullInfoGetter_;
     fullInfoGetter_ = api_->getInfo(modInfo_.modId_).asShared();
     fullInfoGetter_->setOnFinished(this, [=](const auto &newInfo){
         if(modInfo_.basicInfo_){
@@ -96,7 +96,7 @@ std::shared_ptr<Reply<ModrinthModInfo>> ModrinthMod::acquireFullInfo()
 
 std::shared_ptr<Reply<QList<ModrinthFileInfo> > > ModrinthMod::acquireFileList()
 {
-//    if(fileListGetter_ && fileListGetter_->isRunning()) return {};
+    if(fileListGetter_ && fileListGetter_->isRunning()) return fileListGetter_;
     fileListGetter_ = api_->getVersions(modInfo_.modId_).asShared();
     fileListGetter_->setOnFinished(this, [=](const auto &files){
         modInfo_.fileList_ = files;

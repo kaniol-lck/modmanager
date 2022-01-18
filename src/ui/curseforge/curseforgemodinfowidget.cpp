@@ -31,25 +31,26 @@ CurseforgeModInfoWidget::~CurseforgeModInfoWidget()
 
 void CurseforgeModInfoWidget::setMod(CurseforgeMod *mod)
 {
+    if(mod_){
+        disconnect(mod_, &CurseforgeMod::basicInfoReady, this, &CurseforgeModInfoWidget::updateBasicInfo);
+        disconnect(mod_, &CurseforgeMod::descriptionReady, this, &CurseforgeModInfoWidget::updateDescription);
+        disconnect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModInfoWidget::updateThumbnail);
+    }
     mod_ = mod;
-    emit modChanged();
+    if(mod_) {
+        connect(mod_, &CurseforgeMod::basicInfoReady, this, &CurseforgeModInfoWidget::updateBasicInfo);
+        connect(mod_, &CurseforgeMod::descriptionReady, this, &CurseforgeModInfoWidget::updateDescription);
+        connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModInfoWidget::updateThumbnail);
+    }
 
     ui->scrollArea->setVisible(mod_);
     ui->tagsWidget->setTagableObject(mod);
     if(!mod_) return;
 
-//    auto action = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy website link"), this);
-//    connect(action, &QAction::triggered, this, [=]{
-//        QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());
-//    });
-//    ui->websiteButton->addAction(action);
-
     //basic info
     updateBasicInfo();
     if(!mod->modInfo().hasBasicInfo())
         mod->acquireBasicInfo();
-    connect(this, &CurseforgeModInfoWidget::modChanged, this, disconnecter(
-                connect(mod_, &CurseforgeMod::basicInfoReady, this, &CurseforgeModInfoWidget::updateBasicInfo)));
 
     //description
     updateDescription();
@@ -57,8 +58,6 @@ void CurseforgeModInfoWidget::setMod(CurseforgeMod *mod)
         ui->modDescription->setCursor(Qt::BusyCursor);
         mod->acquireDescription();
     }
-    connect(this, &CurseforgeModInfoWidget::modChanged, this, disconnecter(
-                connect(mod, &CurseforgeMod::descriptionReady, this, &CurseforgeModInfoWidget::updateDescription)));
 
 //    //update gallery
 //    if(mod->modInfo().images().isEmpty())
@@ -110,8 +109,6 @@ void CurseforgeModInfoWidget::updateBasicInfo()
         mod_->acquireIcon();
         ui->modIcon->setCursor(Qt::BusyCursor);
     }
-    connect(this, &CurseforgeModInfoWidget::modChanged, this, disconnecter(
-                connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModInfoWidget::updateThumbnail)));
 }
 
 void CurseforgeModInfoWidget::updateThumbnail()
