@@ -26,7 +26,6 @@ public:
 
 public slots:
     void reset();
-    void cancel();
 
 signals:
     void started();

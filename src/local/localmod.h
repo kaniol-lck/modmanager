@@ -182,6 +182,8 @@ private:
     Updater<Modrinth> modrinthUpdater_;
 
     CheckSheet *updateChecker_;
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo> > > curseforgeFileListGetter_;
+    std::shared_ptr<Reply<QList<ModrinthFileInfo> > > modrinthFileListGetter_;
 
     //dependencies
     QList<std::tuple<QString, QString, std::optional<FabricModInfo>>> depends_;

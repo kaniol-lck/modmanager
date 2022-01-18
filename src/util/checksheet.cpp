@@ -34,20 +34,15 @@ bool CheckSheet::isWaiting() const
 void CheckSheet::reset()
 {
     for(auto &&conn : startConnections_){
-        disconnect(conn);
+        if(conn) disconnect(conn);
     }
     for(auto &&conn : finishConnections_){
-        disconnect(conn);
+        if(conn) disconnect(conn);
     }
     startConnections_.clear();
     finishConnections_.clear();
     finishedCount_ = 0;
     failedCount_ = 0;
-}
-
-void CheckSheet::cancel()
-{
-    reset();
 }
 
 void CheckSheet::onOneFinished(bool success)

@@ -68,6 +68,11 @@ public:
         loop_->exec();
     }
 
+    void stop()
+    {
+        if(reply_) reply_->abort();
+    }
+
     void setInterpreter(std::function<std::tuple<Result...> ()> func){
         resultInterpreter_ = func;
     };

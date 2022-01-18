@@ -536,7 +536,10 @@ void LocalModPath::checkModUpdates() // force = true by default
 
 void LocalModPath::cancelChecking()
 {
-    updateChecker_.cancel();
+    for(auto &&mod : modList())
+        mod->cancelChecking();
+    updateChecker_.reset();
+    emit updateChecker_.finished();
     emit checkCancelled();
 }
 

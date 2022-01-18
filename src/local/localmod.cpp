@@ -146,7 +146,9 @@ void LocalMod::checkUpdates(bool force)
 
 void LocalMod::cancelChecking()
 {
-//    emit checkCancelled();
+    updateChecker_->reset();
+    if(modrinthFileListGetter_) modrinthFileListGetter_->stop();
+    if(curseforgeFileListGetter_) curseforgeFileListGetter_->stop();
 }
 
 void LocalMod::checkCurseforgeUpdate(bool force)
@@ -157,14 +159,14 @@ void LocalMod::checkCurseforgeUpdate(bool force)
     emit checkCurseforgeUpdateStarted();
     //update file list
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
-        auto reply = curseforgeMod_->acquireAllFileList();
-        reply->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &){
+        curseforgeFileListGetter_ = curseforgeMod_->acquireAllFileList();
+        curseforgeFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &){
             curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
             emit curseforgeUpdateReady(true);
         }, [=](auto){
             emit curseforgeUpdateReady(false);
         });
-    }else{
+    }else {
         curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
         emit curseforgeUpdateReady(true);
     }
@@ -176,32 +178,19 @@ void LocalMod::checkModrinthUpdate(bool force)
         return;
 
     emit checkModrinthUpdateStarted();
-    auto updateFullInfo = [=]{
-        if(!modrinthMod_->modInfo().fileList().isEmpty()){
+
+    if(force || modrinthMod_->modInfo().fileList().isEmpty()){
+        modrinthFileListGetter_ = modrinthMod_->acquireFileList();
+        modrinthFileListGetter_->setOnFinished(this, [=](const QList<ModrinthFileInfo> &){
             modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
             emit modrinthUpdateReady(true);
-        }else {
-            modrinthMod_->acquireFileList();
-            connect(modrinthMod_, &ModrinthMod::fileListReady, this, [=](const QList<ModrinthFileInfo> &){
-                modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
-                emit modrinthUpdateReady(true);
-            });
-        }
-    };
-
-    //always acquire
-//    if(modrinthMod_->modInfo().hasFullInfo())
-//        updateFullInfo();
-//    else {
-    if(force || modrinthMod_->modInfo().fileList().isEmpty()){
-        if(modrinthMod_->modInfo().hasFullInfo())
-            updateFullInfo();
-        else{
-            modrinthMod_->acquireFullInfo();
-            connect(modrinthMod_, &ModrinthMod::fullInfoReady, this, updateFullInfo);
-        }
+        }, [=](auto){
+            emit modrinthUpdateReady(false);
+        });
+    }else {
+        modrinthUpdater_.findUpdate(modFile_->linker()->modrinthFileInfo());
+        emit modrinthUpdateReady(true);
     }
-    //    }
 }
 
 QAria2Downloader *LocalMod::downloadOldMod(DownloadFileInfo &info)

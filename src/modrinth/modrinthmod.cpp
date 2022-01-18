@@ -96,7 +96,7 @@ std::shared_ptr<Reply<ModrinthModInfo>> ModrinthMod::acquireFullInfo()
 
 std::shared_ptr<Reply<QList<ModrinthFileInfo> > > ModrinthMod::acquireFileList()
 {
-    if(fileListGetter_ && fileListGetter_->isRunning()) return {};
+//    if(fileListGetter_ && fileListGetter_->isRunning()) return {};
     fileListGetter_ = api_->getVersions(modInfo_.modId_).asShared();
     fileListGetter_->setOnFinished(this, [=](const auto &files){
         modInfo_.fileList_ = files;

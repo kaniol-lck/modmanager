@@ -64,6 +64,7 @@ void DownloadBrowser::onCurrentRowChanged()
     if(row < 0){
         ui->actionPause->setEnabled(false);
         ui->actionStart->setEnabled(false);
+        return;
     }
     auto downloader = manager_->qaria2()->downloaders().at(row);
     auto updateButtons = [=]{
