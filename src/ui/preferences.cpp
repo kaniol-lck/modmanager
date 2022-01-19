@@ -47,6 +47,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->searchModsOnStartup->setChecked(config.getSearchModsOnStartup());
     ui->autoFetchModrinthFileList->setChecked(config.getAutoFetchModrinthFileList());
     ui->optifineVersionSource->setCurrentIndex(config.getOptifineSource());
+    ui->showCatVerInToolBar->setChecked(config.getShowCatVerInToolBar());
     ui->showCurseforge->setChecked(config.getShowCurseforge());
     ui->showModrinth->setChecked(config.getShowModrinth());
     ui->showOptiFine->setChecked(config.getShowOptiFine());
@@ -112,6 +113,7 @@ void Preferences::on_Preferences_accepted()
     config.setSearchModsOnStartup(ui->searchModsOnStartup->isChecked());
     config.setAutoFetchModrinthFileList(ui->autoFetchModrinthFileList->isChecked());
     config.setOptifineSource(ui->optifineVersionSource->currentIndex());
+    config.setShowCatVerInToolBar(ui->showCatVerInToolBar->isChecked());
     config.setShowCurseforge(ui->showCurseforge->isChecked());
     config.setShowModrinth(ui->showModrinth->isChecked());
     config.setShowOptiFine(ui->showOptiFine->isChecked());

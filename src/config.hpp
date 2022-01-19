@@ -77,6 +77,7 @@ public:
     getterAndSetter(SearchResultCount, Int, searchResultCount, 30)
     enum OptifineSourceType{ Official, BMCLAPI };
     getterAndSetter(OptifineSource, Int, optifineSource, Official)
+    getterAndSetter(ShowCatVerInToolBar, Bool, showCatVerInToolBar, false)
     getterAndSetter(ShowModrinthSnapshot, Bool, showModrinthSnapshot, false)
     getterAndSetter(ShowCurseforge, Bool, ShowCurseforge, true)
     getterAndSetter(ShowModrinth, Bool, showModrinth, true)

@@ -46,8 +46,10 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
-    ui->toolBar->addMenu(ui->menuSelect_Game_Version);
-    ui->toolBar->addMenu(ui->menuSelect_Category);
+    if(Config().getShowCatVerInToolBar()){
+        ui->toolBar->addMenu(ui->menuSelect_Game_Version);
+        ui->toolBar->addMenu(ui->menuSelect_Category);
+    }
     ui->toolBar->addWidget(ui->label_3);
     ui->toolBar->addWidget(ui->loaderSelect);
     ui->toolBar->addMenu(downloadPathSelectMenu_);

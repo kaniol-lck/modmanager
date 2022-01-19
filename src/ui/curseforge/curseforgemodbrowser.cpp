@@ -51,6 +51,10 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
+    if(Config().getShowCatVerInToolBar()){
+        ui->toolBar->addMenu(ui->menuSelect_Category);
+        ui->toolBar->addMenu(ui->menuSelect_Game_Version);
+    }
     ui->toolBar->addWidget(ui->label_3);
     ui->toolBar->addWidget(ui->loaderSelect);
     ui->toolBar->addMenu(downloadPathSelectMenu_);
