@@ -55,8 +55,6 @@ QUrl AbstractDownloader::handleRedirect(const QUrl &url)
         if(reply->error() != QNetworkReply::NoError) continue;
 
         //size_ = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
-        //TODO: some download link does not get redirected
-        //bmclapi
         QUrl redirected;
         if(auto redirection = reply->attribute(QNetworkRequest::RedirectionTargetAttribute); !redirection.isNull())
             redirected = handleRedirect(redirection.toString());

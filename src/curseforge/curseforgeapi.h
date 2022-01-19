@@ -32,10 +32,13 @@ public:
     Reply<QString> getTimestamp();
     Reply<QList<GameVersion> > getMinecraftVersionList();
     Reply<QList<CurseforgeCategoryInfo> > getSectionCategories(int sectionId);
+    static QList<CurseforgeCategoryInfo> cachedSectionCategories(int sectionId);
 
 private:
     QNetworkAccessManager accessManager_;
     QNetworkDiskCache diskCache_;
+
+    static QString cachedCategoriesFilePath(int sectionId);
 };
 
 #endif // CURSEFORGEAPI_H

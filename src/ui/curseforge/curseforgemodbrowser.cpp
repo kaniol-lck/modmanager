@@ -77,6 +77,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
             action->setChecked(true);
 
     updateVersionList();
+    updateCategoryList(CurseforgeAPI::cachedSectionCategories(sectionId_));
     sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
     sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
     updateStatusText();
@@ -141,6 +142,15 @@ void CurseforgeModBrowser::updateUi()
 {
     for(auto &&widget : findChildren<CurseforgeModItemWidget *>())
         widget->updateUi();
+}
+
+void CurseforgeModBrowser::switchSection()
+{
+    currentCategoryId_ = 0;
+    search();
+    updateCategoryList(CurseforgeAPI::cachedSectionCategories(sectionId_));
+    sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
+    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
 }
 
 void CurseforgeModBrowser::updateVersionList()
@@ -471,37 +481,25 @@ void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)
 void CurseforgeModBrowser::on_actionMod_triggered()
 {
     sectionId_ = CurseforgeAPI::Mod;
-    currentCategoryId_ = 0;
-    search();
-    sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
-    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
+    switchSection();
 }
 
 void CurseforgeModBrowser::on_actionWorld_triggered()
 {
     sectionId_ = CurseforgeAPI::World;
-    currentCategoryId_ = 0;
-    search();
-    sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
-    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
+    switchSection();
 }
 
 void CurseforgeModBrowser::on_actionModpacks_triggered()
 {
     sectionId_ = CurseforgeAPI::Modpack;
-    currentCategoryId_ = 0;
-    search();
-    sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
-    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
+    switchSection();
 }
 
 void CurseforgeModBrowser::on_actionTexturepacks_triggered()
 {
     sectionId_ = CurseforgeAPI::TexturePack;
-    currentCategoryId_ = 0;
-    search();
-        sectionCategoriesGetter_ = CurseforgeAPI::api()->getSectionCategories(sectionId_).asUnique();
-    sectionCategoriesGetter_->setOnFinished(this, [=](const auto &list){ updateCategoryList(list); });
+    switchSection();
 }
 
 void CurseforgeModBrowser::on_menuDownload_aboutToShow()

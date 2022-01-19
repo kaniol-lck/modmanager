@@ -222,6 +222,11 @@ Reply<QList<CurseforgeCategoryInfo> > CurseforgeAPI::getSectionCategories(int se
             qDebug("%s", error.errorString().toUtf8().constData());
             return QList<CurseforgeCategoryInfo>{};
         }
+        QFile cachedFile(cachedCategoriesFilePath(sectionId));
+        if(cachedFile.open(QIODevice::WriteOnly)){
+            cachedFile.write(jsonDocument.toJson());
+            cachedFile.close();
+        }
         auto list = jsonDocument.toVariant().toList();
         QList<CurseforgeCategoryInfo> categoryList;
         for(const auto &entry : qAsConst(list)){
@@ -231,5 +236,34 @@ Reply<QList<CurseforgeCategoryInfo> > CurseforgeAPI::getSectionCategories(int se
             categoryList << category;
         }
         return categoryList;
-    } };
+        } };
+}
+
+QList<CurseforgeCategoryInfo> CurseforgeAPI::cachedSectionCategories(int sectionId)
+{
+    QByteArray bytes;
+    QFile cachedFile(cachedCategoriesFilePath(sectionId));
+    if(!cachedFile.open(QIODevice::ReadOnly)) return {};
+    bytes = cachedFile.readAll();
+    QJsonParseError error;
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(bytes, &error);
+    if (error.error != QJsonParseError::NoError) {
+        qDebug("%s", error.errorString().toUtf8().constData());
+        return QList<CurseforgeCategoryInfo>{};
+    }
+    auto list = jsonDocument.toVariant().toList();
+    QList<CurseforgeCategoryInfo> categoryList;
+    for(const auto &entry : qAsConst(list)){
+        auto category = CurseforgeCategoryInfo::fromVariant(entry);
+        if(category.url().isEmpty() || category.url() == QUrl("https://www.curseforge.com"))
+            continue;
+        categoryList << category;
+    }
+    return categoryList;
+}
+
+QString CurseforgeAPI::cachedCategoriesFilePath(int sectionId)
+{
+    return QDir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation))
+            .absoluteFilePath("curseforge/section-%1-categories.json").arg(sectionId);
 }
