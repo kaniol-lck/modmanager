@@ -98,6 +98,8 @@
     <property name="title">
      <string>&amp;OptiFine</string>
     </property>
+    <addaction name="actionGet_OptiFabric"/>
+    <addaction name="actionGet_OptiForge"/>
    </widget>
    <widget class="QMenu" name="menu_View">
     <property name="title">

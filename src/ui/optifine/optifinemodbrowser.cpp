@@ -27,7 +27,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     bmclapi_(new BMCLAPI(this))
 {
     ui->setupUi(this);
-    ui->menuOptiFine->addActions(pathMenu_->actions());
+    ui->menuOptiFine->insertActions(ui->menuOptiFine->actions().first(), pathMenu_->actions());
     initUi();
 
     for(auto &&toolBar : findChildren<QToolBar *>())
