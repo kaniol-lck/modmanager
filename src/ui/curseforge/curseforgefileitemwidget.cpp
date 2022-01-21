@@ -93,11 +93,11 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
             if(!menu->isEmpty()) return;
             for(auto &dependencyInfo : fileInfo_.dependencies()){
                 if(dependencyInfo.addonId()){
-                    auto action = menu->addAction(tr("Dependency Mod: %1").arg(dependencyInfo.addonId()));
+                    auto action = menu->addAction(tr("%1 Mod: %2").arg(dependencyInfo.typeString()).arg(dependencyInfo.addonId()));
                     auto reply = CurseforgeAPI::api()->getInfo(dependencyInfo.addonId());
                     reply.setRunBackground(true);
                     reply.setOnFinished(this, [=](const CurseforgeModInfo &modInfo){
-                        action->setText(tr("Dependency Mod: %1").arg(modInfo.name()));
+                        action->setText(tr("%1 Mod: %2").arg(dependencyInfo.typeString()).arg(modInfo.name()));
                         connect(action, &QAction::triggered, this, [=]{
                             auto dialog = new CurseforgeModDialog(this, modInfo);
                             dialog->show();

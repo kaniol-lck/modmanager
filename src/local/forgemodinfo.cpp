@@ -125,49 +125,48 @@ QList<ForgeModInfo> ForgeModInfo::fromZip(QuaZip *zip)
         }
     }
 
-    //legacy forge
-    zip->setCurrentFile("mcmod.info");
-    if(zipFile.open(QIODevice::ReadOnly)){
-        QByteArray bytes = zipFile.readAll();
-        zipFile.close();
+    for(auto &&fileName : zip->getFileNameList())
+        if(fileName.endsWith("mcmod.info")){
+            //legacy forge
+            zip->setCurrentFile(fileName);
+            if(zipFile.open(QIODevice::ReadOnly)){
+                QByteArray bytes = zipFile.readAll();
+                zipFile.close();
 
-        //parse json
-        QJsonParseError error;
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(bytes, &error);
-        if (error.error != QJsonParseError::NoError) {
-            qDebug("%s", error.errorString().toUtf8().constData());
-            return {};
-        }
+                //parse json
+                QJsonParseError error;
+                QJsonDocument jsonDocument = QJsonDocument::fromJson(bytes, &error);
+                if (error.error != QJsonParseError::NoError) {
+                    qDebug("%s", error.errorString().toUtf8().constData());
+                    return {};
+                }
+                if(!jsonDocument.isArray()) return {};
+                for(auto &&result : jsonDocument.toVariant().toList()){
+                    ForgeModInfo info;
+                    info.id_ = value(result, "modid").toString();
+                    info.name_ = value(result, "name").toString();
+                    info.version_ = value(result, "version").toString();
+                    info.authors_ = value(result, "authors").toStringList();
+                    info.description_ = value(result, "description").toString();
+                    info.homepage_ = value(result, "url").toUrl();
+                    info.credits_ = value(result, "credits").toString();
+                    info.updateUrl_ = value(result, "updateUrl").toUrl();
 
-        if(!jsonDocument.isArray()) return {};
+                    //icon
+                    if(auto iconFilePath = value(result, "logoFile").toString(); !iconFilePath.isEmpty()){
+                        zip->setCurrentFile(iconFilePath);
+                        if(zipFile.open(QIODevice::ReadOnly)){
+                            info.iconBytes_ = zipFile.readAll();
+                            zipFile.close();
+                        }
+                    }
 
-        for(auto &&result : jsonDocument.toVariant().toList()){
-            ForgeModInfo info;
-            info.id_ = value(result, "modid").toString();
-            info.name_ = value(result, "name").toString();
-            info.version_ = value(result, "version").toString();
-            info.authors_ = value(result, "authors").toStringList();
-            info.description_ = value(result, "description").toString();
-            info.homepage_ = value(result, "url").toUrl();
-            info.credits_ = value(result, "credits").toString();
-            info.updateUrl_ = value(result, "updateUrl").toUrl();
-
-            //icon
-            if(auto iconFilePath = value(result, "logoFile").toString(); !iconFilePath.isEmpty()){
-                zip->setCurrentFile(iconFilePath);
-                if(zipFile.open(QIODevice::ReadOnly)){
-                    info.iconBytes_ = zipFile.readAll();
-                    zipFile.close();
+                    if(info.id_ == "optifine")
+                        info.version_ = optiFineVersion(zip);
+                    list << info;
                 }
             }
-
-            if(info.id_ == "optifine")
-                info.version_ = optiFineVersion(zip);
-
-            list << info;
         }
-    }
-
     return list;
 }
 
