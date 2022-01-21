@@ -400,8 +400,17 @@ void LocalModBrowser::onCheckUpdatesFinished(bool success)
     onUpdatableCountChanged();
     updateStatusText();
     qDebug() << success << modPath_->updateChecker()->failedCount();
-    if(!success)
-        QMessageBox::information(this, tr("Update Checking Incompleted"), tr("%1 mods failed checking update because of network.").arg(modPath_->updateChecker()->failedCount()));
+    if(!success) {
+        auto &&failedObjects = modPath_->updateChecker()->failedObjects();
+        QStringList stringlist;
+        for(auto &&object : failedObjects){
+            if(auto mod = qobject_cast<const LocalMod *>(object))
+                stringlist << "<li>" + mod->displayName() + "</li>";
+        }
+        QMessageBox::information(this, tr("Update Checking Incompleted"), tr("%1 mods failed checking update because of network: <ul>%2</ul>")
+                                 .arg(modPath_->updateChecker()->failedCount())
+                                 .arg(stringlist.join("")));
+    }
 }
 
 void LocalModBrowser::onUpdatableCountChanged()

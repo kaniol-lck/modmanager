@@ -3,6 +3,7 @@
 
 #include <QMap>
 #include <QObject>
+#include <QDebug>
 
 class CheckSheet : public QObject
 {
@@ -14,12 +15,12 @@ public:
     void done();
 
     template <typename Func1, typename Func2>
-    void add(const typename QtPrivate::FunctionPointer<Func1>::Object *sender, Func1 startSignal, Func2 finishSignal)
+    void add(const typename QtPrivate::FunctionPointer<Func1>::Object *object, Func1 startSignal, Func2 finishSignal)
     {
-        startConnections_ << connect(sender, startSignal, this, [=]{
-            objects_.insert(sender, { false, false });
-            finishConnections_ << connect(sender, finishSignal, [=](bool success){
-                objects_[sender] = { true, success };
+        startConnections_ << connect(object, startSignal, this, [=]{
+            objects_.insert(object, { false, false });
+            finishConnections_ << connect(object, finishSignal, [=](bool success){
+                objects_[object] = { true, success };
                 if(isAdding_) return;
                 emit progress(finishedCount(), objects_.count());
                 if(allFinished()){

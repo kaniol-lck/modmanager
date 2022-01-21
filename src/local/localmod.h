@@ -145,13 +145,11 @@ signals:
     void modrinthUpdateReady(bool success = true);
 
     //update
-//    void checkUpdatesStarted();
-//    void checkCancelled();
+    void checkUpdateStarted();
+    void checkUpdateFinished(bool success);
     void updateReady();
 
-    void checkCurseforgeStarted();
     void checkCurseforgeUpdateStarted();
-    void checkModrinthStarted();
     void checkModrinthUpdateStarted();
 
     void updateStarted();

@@ -48,11 +48,9 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
 
     connect(mod_, &LocalMod::updateReady, this, &LocalModItemWidget::updateReady);
 
-    connect(mod_, &LocalMod::checkCurseforgeStarted, this, &LocalModItemWidget::startCheckCurseforge);
     connect(mod_, &LocalMod::curseforgeReady, this, &LocalModItemWidget::curseforgeReady);
     connect(mod_, &LocalMod::checkCurseforgeUpdateStarted, this, &LocalModItemWidget::startCheckCurseforgeUpdate);
 
-    connect(mod_, &LocalMod::checkModrinthStarted, this, &LocalModItemWidget::startCheckModrinth);
     connect(mod_, &LocalMod::modrinthReady, this, &LocalModItemWidget::modrinthReady);
     connect(mod_, &LocalMod::checkModrinthUpdateStarted, this, &LocalModItemWidget::startCheckModrinthUpdate);
 

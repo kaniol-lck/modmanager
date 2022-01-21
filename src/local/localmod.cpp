@@ -43,6 +43,8 @@ LocalMod::LocalMod(LocalModPath *parent, LocalModFile *file) :
 {
     connect(this, &LocalMod::tagsEditted, path_, &LocalModPath::writeToFile);
     connect(this, &LocalMod::modCacheUpdated, path_, &LocalModPath::writeToFile);
+    connect(updateChecker_, &CheckSheet::started, this, &LocalMod::checkUpdateStarted);
+    connect(updateChecker_, &CheckSheet::finished, this, &LocalMod::checkUpdateFinished);
     connect(updateChecker_, &CheckSheet::finished, this, &LocalMod::updateReady);
     addSubTagable(path_);
     if(file) setModFile(file);

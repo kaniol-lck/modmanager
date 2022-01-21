@@ -528,7 +528,7 @@ void LocalModPath::checkModUpdates() // force = true by default
     if(modMap_.isEmpty() || updateChecker_.isWaiting()) return;
     updateChecker_.start();
     for(auto &&mod : modList()){
-        updateChecker_.add(mod->updateChecker(), &CheckSheet::started, &CheckSheet::finished);
+        updateChecker_.add(mod, &LocalMod::checkUpdateStarted, &LocalMod::checkUpdateFinished);
         mod->checkUpdates();
     }
     updateChecker_.done();
