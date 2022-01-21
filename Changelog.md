@@ -2,63 +2,110 @@
 
 ## 正式发布 Release
 
-Soon....
+### v1.0.0
 
-## 公开测试 Beta Test
+*2022.01.22*
 
-### v1.0.0-beta.9
-
-*WIP*
-
+Used MDI mainwindow layout for better subpage management, and added much more menu actions for each page. Changed buttons in pages to tool bar to make it more flexible.
 使用MDI主界面布局，更利于分页管理，为各个页面添加了更多的菜单操作。将页面中的按钮改为使用工具栏的形式，使界面更加灵活。
 
+Added standable categories/ game versions tool bars for Curseforge/Modrinth.
+为 Curseforge/Modrinth 添加了独立的类别、游戏版本工具栏。
+
+Added GitHub page, you can view and download GitHub Releases of modmanager, or open releases page in local mod page.
 添加了GitHub页面，可以浏览并下载GitHub Releases，也可以直接从本地mod中直接打开Releases页面。
 
+Curseforge page now can not only explore mod but also modpacks, resourcepacks and worlds.
 Curseforge页面现在除了Mod之外还支持查看并下载整合包、资源包和存档。
 
+Added support for local mod exporting some useful files for modpacks: `manifest.json`, `modlist.html`or compressed file.
 本地Mod管理支持导出一些整合包所用的常用文件：`manifest.json`、`modlist.html`或压缩包。
 
+Added supprt for import and download Curseforge modpacks.
+支持导入并下载下载Curseforge整合包。
+
+Added supprt to embedded aria2 downloader for custom download.
+内嵌的aria2下载器支持自定义下载。
+
+Added sort action in context menu of local mod list.
 在本地mod列表的右键菜单中添加了排序的选项。
 
+Enabled OptiFine download from BMCLAPI.
 启用了使用BMCLAPI渠道下载OptiFIne。
 
+Added support to proxy settings.
 支持代理设置。
 
+Added lanaguage tags, added automatically by lang file in mod.
 添加了语言标签，会根据mod内的语言文件自动添加。
 
+Link file now linked all mod files, including old files.
 链接文件会自动链接所有mod文件（包含旧版文件）。
 
+Tweaked date time format to make it more readable.
+修改了日期时间格式，提升可读性。
+
+Tweaked install directory under windows: x64-arch modmanager will be installed under Program Files not Program Files (x86). 
 调整Windows下的安装路径，64位会安装在 Program Files 下而不是 Program Files (x86) 下。
 
+Tweaked local mod filter, it has more filter options now.
 调整了本地mod筛选，拥有更多的筛选选项。
 
-调整了标签的鼠标滚动。
+Tweaked local mod paths manager dialog.
+调整了本地mod路径管理器对话框。
 
+Tweaked mouse scrolling of tags.
+调整了鼠标滚动在标签上的滚动。
+
+Tweaked Frameless UI for Windows.
 调整了Windows下无边框界面的观感。
 
+Curseforge categories is fetched dynamically, you may need to wait icon loading when firstly use.
 将Curseforge的分类调整为动态获取，初次打开可能需要等待图标加载。
 
+Tweaked UI and stylesheet.
 调整了UI，调整了样式表。
 
+Reduced height of status bar.
 减小了状态栏的高度。
 
-修复了更新检查卡住。
+Update check failure will show failed mod.
+更新检查失败会显示失败的mod。
 
+Fixed update check stuck (?).
+修复了更新检查卡住（？）。
+
+Fixed cancel update checking.
+修复了取消检查更新。
+
+Fixed search issue of Modrinth.
 修复了Modrinth搜索的问题。
 
-修复了打开Curseforge/Modrinth对话框时出现的卡顿。
+Fixed lag when opening Curseforge/Modrinth dialog.
+修复了打开 Curseforge/Modrinth 对话框时出现的卡顿。
 
+Fixed icon blurred uder HiDPI.
 修复了HiDPI下的图标模糊。
 
+Fixed update checking not check Alpha version.
 修复了更新检查不检查Alpha版本的问题。
 
+Fixed some forge mods not loaded.
+修复了一些forge mod没有被加载。
+
+Fixed issue of Minecraft formatted code, added more support for formatted code.
 修复了MC样式文本的问题，为样式文本添加更多的支持。
 
+Fixed count error in Explore pages.
 修复了“探索”页面中的计数错误。
 
+Fixed some issues of local mod path auto naming.
 修复了mod路径自动命名的一些问题。
 
+Fixed an untranslated text.
 修复了一处未翻译的文本。
+
+## 公开测试 Beta Test
 
 ### v1.0.0-beta.8
 
@@ -435,4 +482,4 @@ Details are not listed.
 
 ### v1.0.0-alpha.1
 
-*2021.09.10*
+##### *2021.09.10*
