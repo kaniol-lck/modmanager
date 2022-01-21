@@ -158,7 +158,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="MenuToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Tool Bar</string>
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -172,7 +172,7 @@
   </widget>
   <widget class="QToolBar" name="searchBar">
    <property name="windowTitle">
-    <string>toolBar_2</string>
+    <string>Search Bar</string>
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -186,7 +186,7 @@
   </widget>
   <widget class="QToolBar" name="categoryToolBar">
    <property name="windowTitle">
-    <string>toolBar_2</string>
+    <string>Categories</string>
    </property>
    <attribute name="toolBarArea">
     <enum>LeftToolBarArea</enum>
@@ -197,7 +197,7 @@
   </widget>
   <widget class="QToolBar" name="versionToolBar">
    <property name="windowTitle">
-    <string>toolBar_2</string>
+    <string>Game Versions</string>
    </property>
    <attribute name="toolBarArea">
     <enum>LeftToolBarArea</enum>

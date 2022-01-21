@@ -97,7 +97,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
                     auto reply = CurseforgeAPI::api()->getInfo(dependencyInfo.addonId());
                     reply.setRunBackground(true);
                     reply.setOnFinished(this, [=](const CurseforgeModInfo &modInfo){
-                        action->setText(tr("%1 Mod: %2").arg(dependencyInfo.typeString()).arg(modInfo.name()));
+                        action->setText(tr("%1 Mod: %2").arg(dependencyInfo.typeString(), modInfo.name()));
                         connect(action, &QAction::triggered, this, [=]{
                             auto dialog = new CurseforgeModDialog(this, modInfo);
                             dialog->show();
@@ -108,7 +108,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
                         reply.setRunBackground(true);
                         reply.setOnFinished(this, [=](const CurseforgeFileInfo &fileInfo){
                             action->setText(action->text() + "\n" +
-                                            tr("Dependency File: %1").arg(fileInfo.fileName()));
+                                            tr("%1 File: %2").arg(dependencyInfo.typeString(), fileInfo.fileName()));
                         });
                     }
                 }
