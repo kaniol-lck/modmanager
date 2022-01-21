@@ -18,17 +18,51 @@ void CheckSheet::done()
 //    qDebug() << startConnections_.size() << finishConnections_.size();
     if(startConnections_.isEmpty()){
 //        qDebug() << "finished: nothing to do";
-        emit finished(!failedCount_);
-    } else if(finishedCount_ >= finishConnections_.count()){
+        emit finished(!failedCount());
+    } else if(allFinished()){
 //        qDebug() << "finished";
+        emit finished(!failedCount());
         reset();
-        emit finished(!failedCount_);
     }
 }
 
 bool CheckSheet::isWaiting() const
 {
-    return isAdding_ || finishedCount_ < finishConnections_.count();
+    return isAdding_ || !allFinished();
+}
+
+QList<const QObject *> CheckSheet::finishedObjects() const
+{
+    QList<const QObject *> list;
+    for(auto it = objects_.begin(); it != objects_.end(); it ++)
+        if(std::get<Finished>(*it)) list << it.key();
+    return list;
+}
+
+int CheckSheet::finishedCount() const
+{
+    return finishedObjects().count();
+}
+
+QList<const QObject *> CheckSheet::unfinishedObjects() const
+{
+    QList<const QObject *> list;
+    for(auto it = objects_.begin(); it != objects_.end(); it ++)
+        if(!std::get<Finished>(*it)) list << it.key();
+    return list;
+}
+
+int CheckSheet::unfinishedCount() const
+{
+    return unfinishedObjects().size();
+}
+
+QList<const QObject *> CheckSheet::failedObjects() const
+{
+    QList<const QObject *> list;
+    for(auto it = objects_.begin(); it != objects_.end(); it ++)
+        if(!std::get<Success>(*it)) list << it.key();
+    return list;
 }
 
 void CheckSheet::reset()
@@ -37,29 +71,21 @@ void CheckSheet::reset()
         if(conn) disconnect(conn);
     }
     for(auto &&conn : finishConnections_){
-        if(conn) disconnect(conn);
+        disconnect(conn);
     }
     startConnections_.clear();
     finishConnections_.clear();
-    finishedCount_ = 0;
-    failedCount_ = 0;
+    objects_.clear();
 }
 
-void CheckSheet::onOneFinished(bool success)
+bool CheckSheet::allFinished() const
 {
-    finishedCount_ ++;
-    if(!success) failedCount_ ++;
-    if(isAdding_) return;
-    emit progress(finishedCount_, finishConnections_.count());
-//    qDebug() << finishedCount_ << "/" << finishConnections_.count();
-    if(finishedCount_ >= finishConnections_.count()){
-//        qDebug() << "finished";
-        emit finished(!failedCount_);
-        reset();
-    }
+    for(auto &&[finished, success] : objects_)
+        if(!finished) return false;
+    return true;
 }
 
 int CheckSheet::failedCount() const
 {
-    return failedCount_;
+    return failedObjects().size();
 }
