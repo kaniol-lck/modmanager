@@ -104,6 +104,7 @@ jobs:
       - name: Set Env
         run: |
           setx VERSION((Get-Content src/version.h) -match 'kVersion = "(.+)"' -replace '.*kVersion = "(.+)".*','$1')
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Install dependencies
         shell: powershell
         run: |
