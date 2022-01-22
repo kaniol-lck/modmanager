@@ -37,6 +37,15 @@ QString timesTo(const QDateTime &dateTime);
 
 std::function<void ()> disconnecter(QMetaObject::Connection conn);
 
+template <typename... Args>
+std::function<void ()> disconnecter(QMetaObject::Connection conn, Args... args)
+{
+    return [=]{
+        QObject::disconnect(conn);
+        disconnecter(args...)();
+    };
+}
+
 void tweakWidgetFontPointSize(QWidget *widget, int pointSize);
 
 //murmurhash: https://github.com/aappleby/smhasher

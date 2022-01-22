@@ -19,6 +19,9 @@ public:
 
     void setMod(CurseforgeMod *mod);
 
+signals:
+    void modChanged();
+
 private slots:
     void updateBasicInfo();
     void updateThumbnail();

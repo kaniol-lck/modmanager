@@ -21,8 +21,8 @@ Curseforge页面现在除了Mod之外还支持查看并下载整合包、资源�
 Added support for local mod exporting some useful files for modpacks: `manifest.json`, `modlist.html`or compressed file.
 本地Mod管理支持导出一些整合包所用的常用文件：`manifest.json`、`modlist.html`或压缩包。
 
-Added supprt for import and download Curseforge modpacks.
-支持导入并下载下载Curseforge整合包。
+Added support for import and download Curseforge modpacks.
+支持导入并下载Curseforge整合包。
 
 Added supprt to embedded aria2 downloader for custom download.
 内嵌的aria2下载器支持自定义下载。
@@ -482,4 +482,4 @@ Details are not listed.
 
 ### v1.0.0-alpha.1
 
-##### *2021.09.10*
+*2021.09.10*

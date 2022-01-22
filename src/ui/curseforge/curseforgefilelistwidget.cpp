@@ -48,9 +48,10 @@ CurseforgeFileListWidget::~CurseforgeFileListWidget()
 
 void CurseforgeFileListWidget::setMod(CurseforgeMod *mod)
 {
-    if(mod_) disconnect(mod_, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList);
     mod_ = mod;
-    if(mod_) connect(mod_, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList);
+    emit modChanged();
+    connect(this, &CurseforgeFileListWidget::modChanged, disconnecter(
+                connect(mod_, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList)));
 
     ui->fileListView->setVisible(mod_);
     if(!mod_) return;

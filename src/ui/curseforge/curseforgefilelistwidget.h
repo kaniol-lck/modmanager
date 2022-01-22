@@ -28,6 +28,9 @@ public:
     void setLocalMod(LocalMod *newLocalMod);
     void setDownloadPathSelectMenu(DownloadPathSelectMenu *newDownloadPathSelectMenu);
 
+signals:
+    void modChanged();
+
 public slots:
     void updateUi();
 
