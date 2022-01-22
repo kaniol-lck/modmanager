@@ -50,7 +50,7 @@ ModManager::ModManager(QWidget *parent) :
     enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
     menuBar_ = ui->menubar;
-    menuBar_->hide();
+    if(Config().getUseFramelessWindow()) menuBar_->hide();
     ui->menubar = new QMenuBar(this);
     setCentralWidget(&pageSwitcher_);
     DockWidgetContent::lockPanelsAction = ui->actionLock_Panels;
