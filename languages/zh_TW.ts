@@ -887,12 +887,12 @@
         <translation type="obsolete"> - Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="132"/>
+        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="127"/>
         <source>Translate summary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="142"/>
+        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="137"/>
         <source>Untranslate summary</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2732,7 +2732,7 @@
     </message>
     <message>
         <location filename="../src/ui/modmanager.ui" line="331"/>
-        <location filename="../src/ui/modmanager.cpp" line="184"/>
+        <location filename="../src/ui/modmanager.cpp" line="185"/>
         <source>Lock Panels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2866,7 +2866,7 @@
         <translation type="vanished">下載器</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="255"/>
+        <location filename="../src/ui/modmanager.cpp" line="256"/>
         <source>New Mod Path</source>
         <translation>新建mod路徑</translation>
     </message>
@@ -2875,64 +2875,64 @@
         <translation type="vanished">刷新</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="177"/>
+        <location filename="../src/ui/modmanager.cpp" line="178"/>
         <source>Unlock Panels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="275"/>
+        <location filename="../src/ui/modmanager.cpp" line="276"/>
         <source>Edit</source>
         <translation>編輯</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="278"/>
+        <location filename="../src/ui/modmanager.cpp" line="279"/>
         <source>Reload</source>
         <translation>重新加載</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="288"/>
         <location filename="../src/ui/modmanager.cpp" line="289"/>
+        <location filename="../src/ui/modmanager.cpp" line="290"/>
         <source>Delete</source>
         <translation>刪除</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="289"/>
+        <location filename="../src/ui/modmanager.cpp" line="290"/>
         <source>Delete this mod path?</source>
         <translation>刪除該mod路徑？</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="324"/>
+        <location filename="../src/ui/modmanager.cpp" line="325"/>
         <source>Select your mod directory...</source>
         <translation>選擇你的mod路徑...</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="333"/>
+        <location filename="../src/ui/modmanager.cpp" line="334"/>
         <source>Select your mod directories...</source>
         <translation>選擇你的mod路徑...</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="466"/>
+        <location filename="../src/ui/modmanager.cpp" line="467"/>
         <source>Clear Caches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="466"/>
+        <location filename="../src/ui/modmanager.cpp" line="467"/>
         <source>Clear unmatched file links?
 By doing this, we will recheck those files unmatched before.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="473"/>
+        <location filename="../src/ui/modmanager.cpp" line="474"/>
         <source>Select a modpack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="477"/>
+        <location filename="../src/ui/modmanager.cpp" line="478"/>
         <source>Invalid File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="477"/>
+        <location filename="../src/ui/modmanager.cpp" line="478"/>
         <source>Selected file is not a modpack</source>
         <translation type="unfinished"></translation>
     </message>

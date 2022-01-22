@@ -21,6 +21,8 @@ public:
 
     void setIconVisible(bool bl);
 
+    void setParentWidget(QWidget *newParentWidget);
+
 public slots:
     void updateMenuBar();
 
@@ -37,7 +39,7 @@ private slots:
 
 private:
     Ui::WindowsTitleBar *ui;
-    QWidget *parent_;
+    QWidget *parentWidget_;
     QMenuBar *menuBar_;
     QPoint clickPos_;
     QList<QToolButton *> menuButtons_;

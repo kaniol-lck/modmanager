@@ -2,6 +2,16 @@
 
 ## 正式发布 Release
 
+### v1.0.1
+
+*2022.01.22*
+
+Fixed Curseforge Page crash.
+修复了Curseforge页面中的崩溃。
+
+Fixed menu bar in framess UI.
+修复了无边框界面中的菜单栏。
+
 ### v1.0.0
 
 *2022.01.22*

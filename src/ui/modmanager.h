@@ -28,6 +28,8 @@ public:
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
 
+    QMenuBar *menuBar() const;
+
 signals:
     void menuBarChanged();
 
@@ -38,6 +40,7 @@ protected:
 #endif //defined (DE_KDE) || defined (Q_OS_WIN)
 public slots:
     void updateUi();
+
 private slots:
     void setProxy();
     void mergeMenuBar();

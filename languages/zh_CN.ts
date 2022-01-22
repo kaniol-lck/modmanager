@@ -895,12 +895,12 @@
         <translation type="vanished">%1：%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="132"/>
+        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="127"/>
         <source>Translate summary</source>
         <translation>翻译简介</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="142"/>
+        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="137"/>
         <source>Untranslate summary</source>
         <translation>取消翻译简介</translation>
     </message>
@@ -2784,7 +2784,7 @@
     </message>
     <message>
         <location filename="../src/ui/modmanager.ui" line="331"/>
-        <location filename="../src/ui/modmanager.cpp" line="184"/>
+        <location filename="../src/ui/modmanager.cpp" line="185"/>
         <source>Lock Panels</source>
         <translation>锁定面板</translation>
     </message>
@@ -2926,12 +2926,12 @@
         <translation type="vanished">下载器</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="255"/>
+        <location filename="../src/ui/modmanager.cpp" line="256"/>
         <source>New Mod Path</source>
         <translation>新建mod路径</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="275"/>
+        <location filename="../src/ui/modmanager.cpp" line="276"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
@@ -2940,60 +2940,60 @@
         <translation type="vanished">刷新</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="177"/>
+        <location filename="../src/ui/modmanager.cpp" line="178"/>
         <source>Unlock Panels</source>
         <translation>解锁面板</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="278"/>
+        <location filename="../src/ui/modmanager.cpp" line="279"/>
         <source>Reload</source>
         <translation>重新加载</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="288"/>
         <location filename="../src/ui/modmanager.cpp" line="289"/>
+        <location filename="../src/ui/modmanager.cpp" line="290"/>
         <source>Delete</source>
         <translation>删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="289"/>
+        <location filename="../src/ui/modmanager.cpp" line="290"/>
         <source>Delete this mod path?</source>
         <translation>删除该mod路径？</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="324"/>
+        <location filename="../src/ui/modmanager.cpp" line="325"/>
         <source>Select your mod directory...</source>
         <translation>选择你的mod路径...</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="333"/>
+        <location filename="../src/ui/modmanager.cpp" line="334"/>
         <source>Select your mod directories...</source>
         <translation>选择你的mod路径...</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="466"/>
+        <location filename="../src/ui/modmanager.cpp" line="467"/>
         <source>Clear Caches</source>
         <translation>清除缓存</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="466"/>
+        <location filename="../src/ui/modmanager.cpp" line="467"/>
         <source>Clear unmatched file links?
 By doing this, we will recheck those files unmatched before.</source>
         <translation>清除未匹配的文件链接？
 这么做之后，我们会重新检查之前未匹配的文件。</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="473"/>
+        <location filename="../src/ui/modmanager.cpp" line="474"/>
         <source>Select a modpack</source>
         <translation>选择一个整合包</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="477"/>
+        <location filename="../src/ui/modmanager.cpp" line="478"/>
         <source>Invalid File</source>
         <translation>无效文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="477"/>
+        <location filename="../src/ui/modmanager.cpp" line="478"/>
         <source>Selected file is not a modpack</source>
         <translation>选择的文件不是整合包</translation>
     </message>
@@ -3718,7 +3718,7 @@ By doing this, we will recheck those files unmatched before.</source>
     <message>
         <location filename="../src/ui/preferences.ui" line="30"/>
         <source>Some changed only get applied after restart</source>
-        <translation>一些更新只有重启后才会应用</translation>
+        <translation>一些更改只有重启后才会应用</translation>
     </message>
     <message>
         <location filename="../src/ui/preferences.ui" line="80"/>
