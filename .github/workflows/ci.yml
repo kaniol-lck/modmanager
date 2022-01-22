@@ -103,7 +103,7 @@ jobs:
           submodules: recursive
       - name: Set Env
         run: |
-          (Get-Content src/version.h) -match 'kVersion = "(.+)"' -replace '.*kVersion = "(.+)".*','$1' | Out-File -FilePath $env:VERSION
+          $env:VERSION = ((Get-Content src/version.h) -match 'kVersion = "(.+)"' -replace '.*kVersion = "(.+)".*','$1')
       - name: Install dependencies
         shell: powershell
         run: |
