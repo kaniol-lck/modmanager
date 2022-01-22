@@ -5,6 +5,8 @@
 
 class QMenuBar;
 
+
+class QToolButton;
 namespace Ui {
 class WindowsTitleBar;
 }
@@ -18,6 +20,10 @@ public:
     ~WindowsTitleBar();
 
     void setIconVisible(bool bl);
+
+public slots:
+    void updateMenuBar();
+
 protected:
 #ifdef Q_OS_WIN
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -32,7 +38,9 @@ private slots:
 private:
     Ui::WindowsTitleBar *ui;
     QWidget *parent_;
+    QMenuBar *menuBar_;
     QPoint clickPos_;
+    QList<QToolButton *> menuButtons_;
 };
 
 #endif // WINDOWSTITLEBAR_H

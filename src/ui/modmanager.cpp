@@ -161,6 +161,7 @@ void ModManager::mergeMenuBar()
                 menu->addActions(menuAction->menu()->actions());
             }
         }
+    emit menuBarChanged();
 }
 
 void ModManager::updateBrowsers(Browser *previous[[maybe_unused]], Browser *current)

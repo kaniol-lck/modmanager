@@ -17,7 +17,12 @@
 #include "config.hpp"
 
 FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, QMenuBar *menuBar) :
-    QMainWindow(parent)
+    FramelessWrapper(parent, widget, new WindowsTitleBar(this, widget->windowTitle(), menuBar))
+{}
+
+FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, WindowsTitleBar *titleBar) :
+    QMainWindow(parent),
+    titleBar_(titleBar)
 {
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowMaximizeButtonHint);
 
@@ -25,7 +30,6 @@ FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, QMenuBar *m
     auto layout = new QVBoxLayout;
     layout->setMargin(0);
     layout->setSpacing(0);
-    titleBar_ = new WindowsTitleBar(this, widget->windowTitle(), menuBar);
     layout->addWidget(titleBar_);
     layout->addWidget(widget);
     w->setLayout(layout);

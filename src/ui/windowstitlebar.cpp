@@ -14,28 +14,15 @@
 WindowsTitleBar::WindowsTitleBar(QWidget *parent, const QString &title, QMenuBar *menuBar) :
     QWidget(parent),
     ui(new Ui::WindowsTitleBar),
-    parent_(parent)
+    parent_(parent),
+    menuBar_(menuBar)
 {
     ui->setupUi(this);
     ui->closeButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarCloseButton));
     ui->maxButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMaxButton));
     ui->minButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMinButton));
     ui->titleText->setText(title);
-    if(menuBar){
-        menuBar->hide();
-        for(auto &&action : menuBar->actions()){
-            auto button = new QToolButton(this);
-            button->setAutoRaise(true);
-            button->setProperty("class", "MenuButton");
-            button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-            button->setDefaultAction(action);
-            button->setPopupMode(QToolButton::InstantPopup);
-            button->setStyleSheet("QToolButton::menu-indicator{image:none;}");
-            ui->menuLayout->addWidget(button);
-        }
-        //    menuBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        //    menuBar->adjustSize();
-    }
+    updateMenuBar();
 }
 
 WindowsTitleBar::~WindowsTitleBar()
@@ -46,6 +33,28 @@ WindowsTitleBar::~WindowsTitleBar()
 void WindowsTitleBar::setIconVisible(bool bl)
 {
     ui->icon->setVisible(bl);
+}
+
+void WindowsTitleBar::updateMenuBar()
+{
+    if(menuBar_){
+        menuBar_->hide();
+        for(auto &&widget : menuButtons_)
+            ui->menuLayout->removeWidget(widget);
+        for(auto &&action : menuBar_->actions()){
+            auto button = new QToolButton(this);
+            button->setAutoRaise(true);
+            button->setProperty("class", "MenuButton");
+            button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+            button->setDefaultAction(action);
+            button->setPopupMode(QToolButton::InstantPopup);
+            button->setStyleSheet("QToolButton::menu-indicator{image:none;}");
+            ui->menuLayout->addWidget(button);
+            menuButtons_ << button;
+        }
+        //    menuBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        //    menuBar->adjustSize();
+    }
 }
 
 #ifdef Q_OS_WIN

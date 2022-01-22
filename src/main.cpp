@@ -7,6 +7,8 @@
 #include "ui/framelesswrapper.h"
 #include "config.hpp"
 
+#include <ui/windowstitlebar.h>
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, false);
@@ -44,8 +46,10 @@ int main(int argc, char *argv[])
 
 #ifdef Q_OS_WIN
     if(Config().getUseFramelessWindow()){
-        auto frameless = FramelessWrapper::makeFrameless(&w);
-        frameless->show();
+        WindowsTitleBar titleBar(nullptr, w.windowTitle(), w.menuBar());
+        QObject::connect(&w, &ModManager::menuBarChanged, &titleBar, &WindowsTitleBar::updateMenuBar);
+        FramelessWrapper frameless(nullptr, &w, &titleBar);
+        frameless.show();
     } else
 #endif
         w.show();

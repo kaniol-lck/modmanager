@@ -28,6 +28,9 @@ public:
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
 
+signals:
+    void menuBarChanged();
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 #if defined (DE_KDE) || defined (Q_OS_WIN)
