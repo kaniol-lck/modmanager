@@ -111,6 +111,8 @@ private slots:
     void on_actionExport_Compressed_File_triggered();
     void on_actionShow_This_Mod_in_Directory_triggered();
 
+    void on_actionCheck_Updates_for_Selected_Mods_triggered();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 

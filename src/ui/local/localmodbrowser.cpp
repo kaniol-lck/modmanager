@@ -82,13 +82,9 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
 
-    auto button = new QToolButton(this);
-    button->setDefaultAction(ui->actionFind_New_Mods);
-    button->setPopupMode(QToolButton::InstantPopup);
-    button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    ui->toolBar->insertWidget(ui->actionCheck_Updates, button);
+    ui->toolBar->insertMenu(ui->actionCheck_Updates, ui->actionFind_New_Mods);
     ui->searchBar->addWidget(ui->searchText);
-    ui->searchBar->addWidget(ui->filterButton);
+    ui->searchBar->addMenu(ui->actionFilter);
 
     //setup status bar
     ui->statusBar->addPermanentWidget(statusBarWidget_);
@@ -150,7 +146,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->updateAllButton->setDefaultAction(ui->actionUpdate_All);
 
     connect(filter_->menu(), &UnclosedMenu::menuTriggered, proxyModel_, &QSortFilterProxyModel::invalidate);
-    ui->filterButton->setMenu(filter_->menu());
+    ui->actionFilter->setMenu(filter_->menu());
     filter_->showAll();
 
     auto renameToMenu = new QMenu(this);
@@ -482,50 +478,9 @@ void LocalModBrowser::updateProgressBar()
 QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
 {
     auto menu = new QMenu(this);
-    menu->addAction(ui->actionSort);
-    menu->addSeparator();
-    bool isSingleMod = mods.count() == 1;
-    if(isSingleMod){
-        //single mod
-        auto mod = mods.first();
-        auto localModMenu = new LocalModMenu(this, mod);
-        menu->addAction(QIcon::fromTheme("entry-edit"), tr("Set Alias"), this, [=]{
-            bool ok;
-            auto alias = QInputDialog::getText(this, tr("Set mod alias"), tr("Alias of <b>%1</b> mod:").arg(mod->commonInfo()->name()), QLineEdit::Normal, mod->alias(), &ok);
-            if(ok)
-                mod->setAlias(alias);
-        });
-        menu->addMenu(localModMenu->addTagMenu());
-        if(!mod->customizableTags().isEmpty())
-            menu->addMenu(localModMenu->removeTagmenu());
-        menu->addSeparator();
-        if(!mod->curseforgeUpdater().ignores().isEmpty() || !mod->modrinthUpdater().ignores().isEmpty()){
-            menu->addAction(tr("Clear update ignores"), this, [=]{
-                mod->clearIgnores();
-            });
-            menu->addSeparator();
-        }
-        menu->addAction(ui->actionShow_This_Mod_in_Directory);
-        menu->addAction(ui->actionOpen_Mod_Dialog);
-        if(mod->curseforgeMod())
-            menu->addAction(ui->actionOpen_Curseforge_Mod_Dialog);
-        else
-            menu->addAction(ui->actionSearch_on_Curseforge);
-        if(mod->modrinthMod())
-            menu->addAction(ui->actionOpen_Modrinth_Mod_Dialog);
-        else
-            menu->addAction(ui->actionSearch_on_Modrinth);
-        if(ui->actionOpen_In_GitHub->isEnabled())
-            menu->addAction(ui->actionOpen_In_GitHub);
-        menu->addSeparator();
-    }
-    //multi mods
-    menu->addAction(ui->actionMove_Selected_Mods_to);
-    menu->addAction(ui->actionToggle_Enable);
-    menu->addAction(ui->actionToggle_Star);
-    menu->addSeparator();
-    menu->addAction(ui->actionRename_Selected_Mods);
-    menu->addAction(ui->actionRename_to);
+    for(auto &&action : ui->menuMod->actions())
+        if(action->isEnabled()) menu->addAction(action);
+
     return menu;
 }
 
@@ -772,6 +727,7 @@ void LocalModBrowser::onSelectedModsChanged()
     ui->actionRename_Selected_Mods->setEnabled(!noMod);
     ui->actionRename_to->setEnabled(!noMod);
     ui->actionMove_Selected_Mods_to->setEnabled(!noMod);
+    ui->actionCheck_Updates_for_Selected_Mods->setEnabled(!noMod);
 
     bool isEnabled = false;
     for(auto &&mod : selectedMods_)
@@ -945,3 +901,11 @@ void LocalModBrowser::on_actionShow_This_Mod_in_Directory_triggered()
     auto mod = selectedMods_.first();
     openFileInFolder(mod->modFile()->path());
 }
+
+void LocalModBrowser::on_actionCheck_Updates_for_Selected_Mods_triggered()
+{
+    if(selectedMods_.isEmpty()) return;
+    for(auto &&mod : selectedMods_)
+        mod->checkUpdates();
+}
+

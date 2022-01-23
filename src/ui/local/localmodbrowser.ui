@@ -107,23 +107,6 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QToolButton" name="filterButton">
-      <property name="text">
-       <string>Filter</string>
-      </property>
-      <property name="icon">
-       <iconset theme="view-filter">
-        <normaloff>.</normaloff>.</iconset>
-      </property>
-      <property name="popupMode">
-       <enum>QToolButton::InstantPopup</enum>
-      </property>
-      <property name="toolButtonStyle">
-       <enum>Qt::ToolButtonTextBesideIcon</enum>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="0" colspan="2">
      <widget class="QStackedWidget" name="stackedWidget">
       <widget class="QWidget" name="page">
@@ -275,7 +258,7 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QToolBar" name="toolBar">
+  <widget class="MenuToolBar" name="toolBar">
    <property name="windowTitle">
     <string>Tool Bar</string>
    </property>
@@ -295,9 +278,12 @@
    <addaction name="actionBatch_Rename"/>
    <addaction name="actionDelete_Old_Files_In_Path"/>
   </widget>
-  <widget class="QToolBar" name="searchBar">
+  <widget class="MenuToolBar" name="searchBar">
    <property name="windowTitle">
     <string>Search Bar</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -329,6 +315,7 @@
     <addaction name="actionRename_to"/>
     <addaction name="actionShow_This_Mod_in_Directory"/>
     <addaction name="actionMove_Selected_Mods_to"/>
+    <addaction name="actionCheck_Updates_for_Selected_Mods"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_Mod_Dialog"/>
     <addaction name="actionOpen_Curseforge_Mod_Dialog"/>
@@ -571,6 +558,9 @@
    </property>
   </action>
   <action name="actionFilter">
+   <property name="icon">
+    <iconset theme="view-filter"/>
+   </property>
    <property name="text">
     <string>Filter</string>
    </property>
@@ -608,7 +598,22 @@
     <string>Open Folder</string>
    </property>
   </action>
+  <action name="actionCheck_Updates_for_Selected_Mods">
+   <property name="icon">
+    <iconset theme="update-none"/>
+   </property>
+   <property name="text">
+    <string>Check Updates for Selected Mods</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MenuToolBar</class>
+   <extends>QToolBar</extends>
+   <header location="global">ui/menutoolbar.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../images/image.qrc"/>
  </resources>
