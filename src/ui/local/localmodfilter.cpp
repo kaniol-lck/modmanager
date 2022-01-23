@@ -62,6 +62,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     noneAction->setData(true);
 
     refreshTags();
+    connect(path_, &LocalModPath::containedTagsChanged, this, &LocalModFilter::refreshTags);
     connect(menu_, &QMenu::aboutToShow, this, &LocalModFilter::refreshTags);
 }
 
@@ -96,7 +97,8 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
     bool showTags = true;
     for(auto it = tagMenus_.cbegin(); it != tagMenus_.cend(); it++){
         bool showTag = false;
-        for(auto &&action : it.value()->actions()){
+        for(auto it2 = it.value()->actions().cbegin() + 3; it2 < it.value()->actions().cend(); it2++){
+            auto &&action = *it2;
             bool hasTag = false;
             if(!action->isChecked()) continue;
             if(action->data().toBool() && mod->tags(it.key()).isEmpty()){
@@ -119,6 +121,7 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             break;
         }
     }
+//    qDebug() << show << showWebsite << showTags;
     return show && showWebsite && showTags;
 }
 
@@ -154,7 +157,6 @@ void LocalModFilter::refreshTags() const
             noneAction->setChecked(true);
         noneAction->setData(true);
     };
-    auto &&containedTags = path_->containedTags();
     for(const auto &category : TagCategory::FilterCategories)
-        addTags(tagMenus_[category], containedTags.tags(category));
+        addTags(tagMenus_[category], path_->containedTags().tags(category));
 }

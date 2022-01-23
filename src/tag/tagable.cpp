@@ -123,7 +123,9 @@ void Tagable::removeSubTagable(Tagable *child)
 }
 
 void Tagable::tagsChanged()
-{}
+{
+    if(onTagsChanged_) onTagsChanged_();
+}
 
 void Tagable::tagsEditted()
 {}
@@ -138,4 +140,9 @@ void Tagable::setTagsChanged()
 void Tagable::setTagsEditted()
 {
     tagsEditted();
+}
+
+void Tagable::setOnTagsChanged(const std::function<void ()> &newOnTagsChanged)
+{
+    onTagsChanged_ = newOnTagsChanged;
 }

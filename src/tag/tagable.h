@@ -21,6 +21,7 @@ public:
     void removeTags(const TagCategory &category);
     Tagable &operator<<(const Tag &tag);
     Tagable &operator<<(const Tagable &tags);
+    Tagable &operator=(const Tagable &tags) = default;
 
     QList<Tag> tags(const QList<TagCategory> &categories = TagCategory::PresetCategories, bool self = false) const;
     QList<Tag> tags(const TagCategory &category, bool self = false) const;
@@ -28,6 +29,8 @@ public:
 
     void addSubTagable(Tagable *child);
     void removeSubTagable(Tagable *child);
+
+    void setOnTagsChanged(const std::function<void ()> &newOnTagsChanged);
 
 protected:
     virtual void tagsChanged();
@@ -40,6 +43,7 @@ private:
     QMap<TagCategory, QList<Tag>> tagMap_;
     QList<Tagable *> parents_ = {};
     QList<Tagable *> children_ = {};
+    std::function<void ()> onTagsChanged_;
 };
 
 #endif // TAGABLE_H

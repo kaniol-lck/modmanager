@@ -22,6 +22,7 @@ public:
     bool willShow(LocalMod *mod, const QString searchText) const;
 public slots:
     void refreshTags() const;
+
 private:
     LocalModPath *path_;
     UnclosedMenu *menu_;
