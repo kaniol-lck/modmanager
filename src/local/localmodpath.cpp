@@ -20,7 +20,6 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info) :
     modrinthAPI_(new ModrinthAPI(this)),
     info_(info)
 {
-    containedTags_.setOnTagsChanged([=]{ emit containedTagsChanged(); });
     watcher_.addPath(info_.path());
     connect(&watcher_, &QFileSystemWatcher::directoryChanged, this, &LocalModPath::onDirectoryChanged);
     connect(this, &LocalModPath::loadFinished, [=]{
@@ -50,7 +49,6 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     modrinthAPI_(path->modrinthAPI_),
     info_(path->info_)
 {
-    containedTags_.setOnTagsChanged([=]{ emit containedTagsChanged(); });
     connect(&watcher_, &QFileSystemWatcher::directoryChanged, this, &LocalModPath::onDirectoryChanged);
     addSubTagable(path);
     importTag(Tag(subDir, TagCategory::SubDirCategory));
@@ -649,7 +647,7 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader)
     emit infoUpdated();
 }
 
-const Tagable &LocalModPath::containedTags()
+Tagable &LocalModPath::containedTags()
 {
     return containedTags_;
 }

@@ -55,7 +55,7 @@ public:
     const LocalModPathInfo &info() const;
     void setInfo(const LocalModPathInfo &newInfo, bool deduceLoader = false);
 
-    const Tagable &containedTags();
+    Tagable &containedTags();
 
     CurseforgeAPI *curseforgeAPI() const;
     ModrinthAPI *modrinthAPI() const;
@@ -88,7 +88,6 @@ public slots:
 
 signals:
     void tagsChanged() override;
-    void containedTagsChanged();
 
     void infoUpdated();
     void modListUpdated();

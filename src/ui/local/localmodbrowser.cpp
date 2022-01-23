@@ -146,6 +146,8 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->updateAllButton->setDefaultAction(ui->actionUpdate_All);
 
     connect(filter_->menu(), &UnclosedMenu::menuTriggered, proxyModel_, &QSortFilterProxyModel::invalidate);
+    connect(filter_->menu(), &UnclosedMenu::menuTriggered, this, &LocalModBrowser::updateListViewIndexWidget);
+    connect(filter_->menu(), &UnclosedMenu::menuTriggered, this, &LocalModBrowser::updateTreeViewIndexWidget);
     ui->actionFilter->setMenu(filter_->menu());
     filter_->showAll();
 

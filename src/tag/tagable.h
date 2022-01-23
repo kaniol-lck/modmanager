@@ -30,8 +30,6 @@ public:
     void addSubTagable(Tagable *child);
     void removeSubTagable(Tagable *child);
 
-    void setOnTagsChanged(const std::function<void ()> &newOnTagsChanged);
-
 protected:
     virtual void tagsChanged();
     virtual void tagsEditted();
@@ -43,7 +41,6 @@ private:
     QMap<TagCategory, QList<Tag>> tagMap_;
     QList<Tagable *> parents_ = {};
     QList<Tagable *> children_ = {};
-    std::function<void ()> onTagsChanged_;
 };
 
 #endif // TAGABLE_H

@@ -16,6 +16,7 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     disableAction_(new QAction(tr("Disabled mods"), parent)),
     showAllAction_(new QAction(tr("Show all"), parent))
 {
+    addSubTagable(&path_->containedTags());
     disableAction_->setCheckable(true);
     menu_->addAction(showAllAction_);
     //show all
@@ -61,8 +62,8 @@ LocalModFilter::LocalModFilter(QWidget *parent, LocalModPath *path) :
     noneAction->setCheckable(true);
     noneAction->setData(true);
 
-    refreshTags();
-    connect(path_, &LocalModPath::containedTagsChanged, this, &LocalModFilter::refreshTags);
+//    refreshTags();
+//    connect(this, &LocalModFilter::tagsChanged, this, &LocalModFilter::refreshTags);
     connect(menu_, &QMenu::aboutToShow, this, &LocalModFilter::refreshTags);
 }
 
@@ -95,8 +96,24 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             showWebsite = true;
     }
     bool showTags = true;
+    //for every category
     for(auto it = tagMenus_.cbegin(); it != tagMenus_.cend(); it++){
         bool showTag = false;
+        for(auto &&tag : mod->tags(it.key())){
+            bool hasTag = false;
+            for(auto &&action : it.value()->actions())
+                if(action->text() == tag.name()){
+                    hasTag = true;
+                    break;
+                }
+            if(!hasTag){
+                showTag = true;
+                break;
+            }
+        }
+        if(showTag) continue;
+
+        //for every tag
         for(auto it2 = it.value()->actions().cbegin() + 3; it2 < it.value()->actions().cend(); it2++){
             auto &&action = *it2;
             bool hasTag = false;
@@ -117,6 +134,7 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
             }
         }
         if(!showTag){
+//            qDebug() << mod->displayName() << it.value()->menuAction()->text() << "not satisfy";
             showTags = false;
             break;
         }
@@ -127,16 +145,17 @@ bool LocalModFilter::willShow(LocalMod *mod, const QString searchText) const
 
 void LocalModFilter::refreshTags() const
 {
+    qDebug() << "refreshTags";
     auto addTags = [=](UnclosedMenu *menu, const QList<Tag> &tags){
         QMap<QString, bool> map;
         for(auto &&action : menu->actions())
             map[action->text()] = action->isChecked();
         menu->clear();
-        connect(menu->addAction(tr("Show all")), &QAction::triggered, this, [=]{
+        menu->addAction(tr("Show all"), this, [=]{
             for(auto &&action : menu->actions())
                 action->setChecked(true);
         });
-        connect(menu->addAction(tr("Hide all")), &QAction::triggered, this, [=]{
+        menu->addAction(tr("Hide all"), this, [=]{
             for(auto &&action : menu->actions())
                 action->setChecked(false);
         });
@@ -158,5 +177,5 @@ void LocalModFilter::refreshTags() const
         noneAction->setData(true);
     };
     for(const auto &category : TagCategory::FilterCategories)
-        addTags(tagMenus_[category], path_->containedTags().tags(category));
+        addTags(tagMenus_[category], tags(category));
 }
