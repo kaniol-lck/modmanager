@@ -36,7 +36,7 @@ jobs:
       - name: Set Env
         run: |
           export ARCH=x86_64
-          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
+          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.${{ env.GITHUB_RUN_NUMBER }}
           export RELEASE_TEXT=$(grep -Pzo "### ${VERSION}\n(\n|.)+?\n##" Changelog.md | sed '$ d')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "RELEASE_TEXT<<EOF" >> $GITHUB_ENV
@@ -104,7 +104,7 @@ jobs:
       - name: Set Env
         shell: bash
         run: |
-          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
+          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.${{ env.GITHUB_RUN_NUMBER }}
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Install dependencies
         shell: powershell
@@ -321,6 +321,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+      - name: Set Env
+        shell: bash
+        run: |
+          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.${{ env.GITHUB_RUN_NUMBER }}
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: build macos
         run: |
           qmake
@@ -331,7 +336,7 @@ jobs:
         shell: sh
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager_${{ matrix.os }}_${{matrix.qt_ver}}.dmg
+          name: ModManager_${{ env.VERSION }}.dmg
           path: modmanager.dmg
       - name: uploadRelease
         if: startsWith(github.event.ref, 'refs/tags/')
@@ -339,6 +344,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: modmanager.dmg
-          asset_name: ModManager_${{ matrix.os }}_${{ matrix.qt_ver }}.dmg
+          asset_name: ModManager_${{ env.VERSION }}.dmg
           tag: ${{ github.ref }}
           overwrite: true
