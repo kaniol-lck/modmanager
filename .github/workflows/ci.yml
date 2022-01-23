@@ -102,8 +102,9 @@ jobs:
           fetch-depth: 1
           submodules: recursive
       - name: Set Env
+        shell: bash
         run: |
-          setx VERSION((Get-Content src/version.h) -match 'kVersion = "(.+)"' -replace '.*kVersion = "(.+)".*','$1')
+          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Install dependencies
         shell: powershell
