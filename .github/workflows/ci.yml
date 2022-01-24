@@ -36,7 +36,7 @@ jobs:
       - name: Set Env
         run: |
           export ARCH=x86_64
-          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.${{ env.GITHUB_RUN_NUMBER }}
+          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.$GITHUB_RUN_NUMBER
           export RELEASE_TEXT=$(grep -Pzo "### ${VERSION}\n(\n|.)+?\n##" Changelog.md | sed '$ d')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "RELEASE_TEXT<<EOF" >> $GITHUB_ENV
@@ -104,7 +104,7 @@ jobs:
       - name: Set Env
         shell: bash
         run: |
-          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.${{ env.GITHUB_RUN_NUMBER }}
+          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.$GITHUB_RUN_NUMBER
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Install dependencies
         shell: powershell
@@ -324,7 +324,7 @@ jobs:
       - name: Set Env
         shell: bash
         run: |
-          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.${{ env.GITHUB_RUN_NUMBER }}
+          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.$GITHUB_RUN_NUMBER
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: build macos
         run: |
