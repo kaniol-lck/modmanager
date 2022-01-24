@@ -4,7 +4,7 @@
 
 ### v1.0.2
 
-*WIP*
+*2022.01.24*
 
 Added update check for Mod Manager itself.
 添加了对Mod管理器自身的更新检查。

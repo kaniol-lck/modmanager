@@ -40,6 +40,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->customStyle->setCurrentText(styleSheets().value(config.getCustomStyle()));
     ui->autoTranslate->setChecked(config.getAutoTranslate());
     ui->useSystemIconTheme->setChecked(config.getUseSystemIconTheme());
+    ui->autoCheckModManagerUpdate->setChecked(config.getAutoCheckModManagerUpdate());
 
     //Explore
     ui->downloadPathText->setText(config.getDownloadPath());
@@ -106,6 +107,7 @@ void Preferences::on_Preferences_accepted()
     config.setCustomStyle(ui->customStyle->currentData().toString());
     config.setAutoTranslate(ui->autoTranslate->isChecked());
     config.setUseSystemIconTheme(ui->useSystemIconTheme->isChecked());
+    config.setAutoCheckModManagerUpdate(ui->autoCheckModManagerUpdate->isChecked());
 
     //Explore
     config.setDownloadPath(ui->downloadPathText->text());

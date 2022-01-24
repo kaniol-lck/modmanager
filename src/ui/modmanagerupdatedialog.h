@@ -30,6 +30,8 @@ signals:
 private slots:
     void on_ModManagerUpdateDialog_accepted();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::ModManagerUpdateDialog *ui;
     std::unique_ptr<Reply<QList<GitHubReleaseInfo> > > checkUpdateReply_;

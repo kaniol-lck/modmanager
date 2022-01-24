@@ -46,7 +46,7 @@ void ModManagerUpdateDialog::checkVersion()
             if(!updateFile_.name().isEmpty())
                 ui->downloadFile->setText(tr("Update File: %1").arg(updateFile_.name()));
             else
-                ui->downloadFile->setText(tr("No auto update available for your platform, please update it mamually."));
+                ui->downloadFile->setText(tr("No auto update available for your platform, please update it manually."));
             emit updateChecked(true);
         } else{
             qDebug() << "no update";
@@ -70,3 +70,10 @@ void ModManagerUpdateDialog::on_ModManagerUpdateDialog_accepted()
     if(updateFile_.name().isEmpty()) return;
     emit updateConfirmed(updateFile_);
 }
+
+void ModManagerUpdateDialog::on_pushButton_clicked()
+{
+    Config().setAutoCheckModManagerUpdate(false);
+    close();
+}
+
