@@ -19,9 +19,12 @@ public:
 
     aria2::DownloadStatus status() const;
 
+    bool isStarted() const override;
+    bool isPaused() const override;
+
 public slots:
-    void pause();
-    void start();
+    void pause() override;
+    void start() override;
 
 signals:
     void statusChanged(int);

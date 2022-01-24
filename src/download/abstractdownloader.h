@@ -14,15 +14,24 @@ public:
     explicit AbstractDownloader(QObject *parent, const DownloadFileInfo &info);
     virtual ~AbstractDownloader() = 0;
 
+    virtual bool isStarted() const = 0;
+    virtual bool isPaused() const = 0;
+
+    const DownloadFileInfo &info() const;
+
+public slots:
+    virtual void pause() = 0;
+    virtual void start() = 0;
+
     void handleRedirect();
     static QUrl handleRedirect(const QUrl &url);
 
-    const DownloadFileInfo &info() const;
     void setInfo(const DownloadFileInfo &newInfo);
     void setIcon(const QPixmap &newIcon);
 
 signals:
     void infoChanged();
+    void statusChanged(int);
 
     void redirected(QUrl url);
     void finished();

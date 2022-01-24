@@ -482,7 +482,6 @@ QMenu *LocalModBrowser::getMenu(QList<LocalMod *> mods)
     auto menu = new QMenu(this);
     for(auto &&action : ui->menuMod->actions())
         if(action->isEnabled()) menu->addAction(action);
-
     return menu;
 }
 

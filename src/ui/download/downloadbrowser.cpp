@@ -76,14 +76,14 @@ void DownloadBrowser::onCurrentRowChanged()
         ui->actionCopy_Download_Link->setEnabled(true);
         ui->actionShow_in_Folder->setEnabled(true);
     }
-    auto downloader = manager_->qaria2()->downloaders().at(row);
+    auto downloader = manager_->downloaders().at(row);
     auto updateButtons = [=]{
-        ui->actionPause->setEnabled(downloader->status() == aria2::DOWNLOAD_ACTIVE);
-        ui->actionStart->setEnabled(downloader->status() == aria2::DOWNLOAD_PAUSED);
+        ui->actionPause->setEnabled(downloader->isStarted());
+        ui->actionStart->setEnabled(downloader->isPaused());
     };
     updateButtons();
     disconnect(conn_);
-    conn_ = connect(downloader, &QAria2Downloader::statusChanged, this, updateButtons);
+    conn_ = connect(downloader, &AbstractDownloader::statusChanged, this, updateButtons);
 }
 
 void DownloadBrowser::on_actionAdd_triggered()
@@ -154,3 +154,10 @@ void DownloadBrowser::on_actionShow_in_Folder_triggered()
     openFileInFolder(downloader->info().fileName(), downloader->info().path());
 }
 
+void DownloadBrowser::on_downloaderListView_customContextMenuRequested(const QPoint &pos)
+{
+    auto menu = new QMenu(this);
+    for(auto &&action : ui->menu_Download->actions())
+        if(action->isEnabled()) menu->addAction(action);
+    menu->exec(ui->downloaderListView->viewport()->mapToGlobal(pos));
+}

@@ -6,6 +6,7 @@
 
 #include "downloadfileinfo.h"
 
+class AbstractDownloader;
 class CurseforgeFile;
 class QAria2;
 class QAria2Downloader;
@@ -24,11 +25,14 @@ public:
 
     DownloadManagerModel *model() const;
 
+    const QList<AbstractDownloader *> &downloaders() const;
+
 signals:
     void downloaderAdded(DownloadFileInfo info, QAria2Downloader *downloader);
 
 private:
     QAria2 *qaria2_;
+    QList<AbstractDownloader*> downloaders_;
     DownloadManagerModel *model_ = nullptr;
 };
 

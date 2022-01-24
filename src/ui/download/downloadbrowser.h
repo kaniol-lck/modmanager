@@ -36,6 +36,8 @@ private slots:
 
     void on_actionShow_in_Folder_triggered();
 
+    void on_downloaderListView_customContextMenuRequested(const QPoint &pos);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 

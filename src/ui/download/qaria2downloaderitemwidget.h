@@ -24,9 +24,6 @@ private slots:
     void refreshStatus(int status);
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadSpeed(qint64 download, qint64 upload);
-    void on_pauseButton_clicked();
-    void on_actionShow_Downloaded_File_in_Folder_triggered();
-    void on_actionCopy_Download_Link_triggered();
 
 private:
     Ui::QAria2DownloaderItemWidget *ui;

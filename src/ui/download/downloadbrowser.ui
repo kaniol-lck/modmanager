@@ -29,6 +29,9 @@
     </property>
     <item row="0" column="0">
      <widget class="QListView" name="downloaderListView">
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
       <property name="verticalScrollMode">
        <enum>QAbstractItemView::ScrollPerPixel</enum>
       </property>
@@ -57,6 +60,8 @@
     <addaction name="actionAdd"/>
     <addaction name="actionPause"/>
     <addaction name="actionStart"/>
+    <addaction name="actionCopy_Download_Link"/>
+    <addaction name="actionShow_in_Folder"/>
    </widget>
    <addaction name="menu_Download"/>
    <addaction name="menu_View"/>
@@ -119,7 +124,8 @@
   </action>
   <action name="actionShow_in_Folder">
    <property name="icon">
-    <iconset theme="folder"/>
+    <iconset theme="folder">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Show in Folder</string>

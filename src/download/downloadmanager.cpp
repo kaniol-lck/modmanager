@@ -22,6 +22,9 @@ DownloadManager *DownloadManager::manager()
 QAria2Downloader *DownloadManager::download(const DownloadFileInfo &info)
 {
     auto downloader = new QAria2Downloader(info);
+    model_->beginInsertRows(QModelIndex(), downloaders_.size(), downloaders_.size());
+    downloaders_ << downloader;
+    model_->endInsertRows();
     qDebug() << "new download job" << info.displayName();
     emit downloaderAdded(info, downloader);
     //handle redirect
@@ -37,6 +40,9 @@ QAria2Downloader *DownloadManager::download(CurseforgeMod *mod, CurseforgeFile *
     DownloadFileInfo info;
     info.setTitle(name);
     auto downloader = new QAria2Downloader(info);
+    model_->beginInsertRows(QModelIndex(), downloaders_.size(), downloaders_.size());
+    downloaders_ << downloader;
+    model_->endInsertRows();
     emit downloaderAdded(info, downloader);
     auto setIcon = [=]{
         downloader->setIcon(mod->modInfo().icon().scaled(96, 96, Qt::KeepAspectRatio));
@@ -62,9 +68,7 @@ QAria2Downloader *DownloadManager::download(CurseforgeMod *mod, CurseforgeFile *
     else
         setFileInfo();
     connect(downloader, &AbstractDownloader::redirected, this, [=]{
-        model_->beginInsertRows(QModelIndex(), qaria2_->downloaders().size(), qaria2_->downloaders().size());
         qaria2_->download(downloader);
-        model_->endInsertRows();
     });
     return downloader;
 }
@@ -79,6 +83,11 @@ DownloadManagerModel *DownloadManager::model() const
     return model_;
 }
 
+const QList<AbstractDownloader *> &DownloadManager::downloaders() const
+{
+    return downloaders_;
+}
+
 DownloadManagerModel::DownloadManagerModel(DownloadManager *manager) :
     QAbstractListModel(manager),
     manager_(manager)
@@ -88,7 +97,7 @@ int DownloadManagerModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    return manager_->qaria2()->downloaders().size();
+    return manager_->downloaders().size();
 }
 
 QVariant DownloadManagerModel::data(const QModelIndex &index, int role) const
@@ -96,7 +105,7 @@ QVariant DownloadManagerModel::data(const QModelIndex &index, int role) const
     //    qDebug() << index << role;
         if (!index.isValid() || index.row() >= rowCount())
             return QVariant();
-        auto downloader = manager_->qaria2()->downloaders().at(index.row());
+        auto downloader = manager_->downloaders().at(index.row());
         switch (role) {
         case Qt::UserRole + 1:
             return QVariant::fromValue(downloader);

@@ -103,21 +103,3 @@ void QAria2DownloaderItemWidget::downloadSpeed(qint64 download, qint64 upload)
     if(upload)
         ui->uploadSpeedText->setText(speedConvert(upload));
 }
-
-void QAria2DownloaderItemWidget::on_pauseButton_clicked()
-{
-    if(downloader_->status() == aria2::DOWNLOAD_ACTIVE)
-        downloader_->pause();
-    else if(downloader_->status() == aria2::DOWNLOAD_PAUSED)
-        downloader_->start();
-}
-
-void QAria2DownloaderItemWidget::on_actionShow_Downloaded_File_in_Folder_triggered()
-{
-    openFileInFolder(downloader_->info().fileName(), downloader_->info().path());
-}
-
-void QAria2DownloaderItemWidget::on_actionCopy_Download_Link_triggered()
-{
-    QApplication::clipboard()->setText(downloader_->info().url().toString());
-}

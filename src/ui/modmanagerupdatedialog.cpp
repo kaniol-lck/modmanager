@@ -28,7 +28,7 @@ void ModManagerUpdateDialog::checkVersion()
         auto latesteRelease = list.first();
         if(semver::gt(latesteRelease.tagName().toStdString(), kVersion)){
             updateRelease_ = latesteRelease;
-            qDebug() << updateRelease_.tagName();
+            setWindowTitle(updateRelease_.tagName());
             ui->name->setText(updateRelease_.name());
             ui->body->setMarkdown(updateRelease_.body());
             for(auto &asset : updateRelease_.assets()){

@@ -42,6 +42,16 @@ aria2::DownloadStatus QAria2Downloader::status() const
     return status_;
 }
 
+bool QAria2Downloader::isStarted() const
+{
+    return status_ == aria2::DOWNLOAD_ACTIVE;
+}
+
+bool QAria2Downloader::isPaused() const
+{
+    return status_ == aria2::DOWNLOAD_PAUSED;
+}
+
 void QAria2Downloader::setEvent(const aria2::DownloadEvent &event)
 {
     qDebug() << gid_ << "event:" << event;

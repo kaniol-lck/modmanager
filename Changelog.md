@@ -2,6 +2,25 @@
 
 ## 正式发布 Release
 
+### v1.0.2
+
+*WIP*
+
+Added update check for Mod Manager itself.
+添加了对Mod管理器自身的更新检查。
+
+Download item will show in download list immediately when added now. Tweaked actions in download pages.
+下载任务现在在添加后会立即显示在下载列表中。调整了下载页面中的一些操作。
+
+Tweaked context menu in local mod pages.
+调整了本地mod页面中的上下文菜单。
+
+Fixed menu bar in non-frameless UI.
+修复了非无边框界面中的菜单栏。
+
+Fixed tags filter in local mod pages.
+修复了本地mod页面中标签筛选的问题。
+
 ### v1.0.1
 
 *2022.01.22*
