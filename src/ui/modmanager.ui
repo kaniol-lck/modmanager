@@ -88,6 +88,8 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionCheck_Mod_Manager_Update"/>
+    <addaction name="separator"/>
     <addaction name="action_About_Mod_Manager"/>
     <addaction name="actionAbout_Qt"/>
    </widget>
@@ -347,6 +349,15 @@
    </property>
    <property name="text">
     <string>Curseforge Modpack</string>
+   </property>
+  </action>
+  <action name="actionCheck_Mod_Manager_Update">
+   <property name="icon">
+    <iconset resource="../images/image.qrc">
+     <normaloff>:/image/modmanager.png</normaloff>:/image/modmanager.png</iconset>
+   </property>
+   <property name="text">
+    <string>Check Mod Manager Update</string>
    </property>
   </action>
  </widget>

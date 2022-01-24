@@ -12,6 +12,7 @@
 #include <QToolButton>
 #include <QPainter>
 #include <QNetworkProxy>
+#include <QProcess>
 #ifdef DE_KDE
 #include <KWindowEffects>
 #endif
@@ -40,6 +41,13 @@
 #include "qss/stylesheets.h"
 #include "ui/browserdialog.h"
 #include "local/knownfile.h"
+#include "ui/modmanagerupdatedialog.h"
+
+const GitHubRepoInfo &ModManager::githubInfo()
+{
+    static GitHubRepoInfo info("kaniol-lck", "modmanager", tr("Mod Manager"), QIcon(":/image/modmanager.png"));
+    return info;
+}
 
 ModManager::ModManager(QWidget *parent) :
     QMainWindow(parent),
@@ -83,8 +91,7 @@ ModManager::ModManager(QWidget *parent) :
     if(config.getShowReplayMod())
         pageSwitcher_.addExploreBrowser(new ReplayModBrowser(this));
 
-    GitHubRepoInfo info("kaniol-lck", "modmanager", windowTitle(), QIcon(":/image/modmanager.png"));
-    pageSwitcher_.addExploreBrowser(new GitHubRepoBrowser(this, info));
+    pageSwitcher_.addExploreBrowser(new GitHubRepoBrowser(this, githubInfo()));
 
     //Local
     pageSwitcher_.syncPathList();
@@ -96,6 +103,9 @@ ModManager::ModManager(QWidget *parent) :
 
     //init versions
     VersionManager::initVersionLists();
+
+    if(config_.getAutoCheckModManagerUpdate())
+        ui->actionCheck_Mod_Manager_Update->trigger();
 
     ui->actionShow_Mod_Authors->setChecked(config.getShowModAuthors());
     ui->actionShow_Mod_Date_Time->setChecked(config.getShowModDateTime());
@@ -486,3 +496,27 @@ void ModManager::on_actionCurseforge_Modpack_triggered()
         dialog->show();
 }
 
+
+void ModManager::on_actionCheck_Mod_Manager_Update_triggered()
+{
+    auto dialog = new ModManagerUpdateDialog(this);
+    dialog->checkVersion();
+    connect(dialog, &ModManagerUpdateDialog::updateChecked, this, [=](bool hasUpdate){
+        if(hasUpdate){
+            ui->actionCheck_Mod_Manager_Update->setText(tr("Update Mod Manager: %1").arg(dialog->updateVersion()));
+            dialog->show();
+        } else
+            ui->actionCheck_Mod_Manager_Update->setText(tr("Mod Manager is Latest"));
+    });
+    connect(dialog, &ModManagerUpdateDialog::updateConfirmed, this, [=](const GitHubFileInfo &fileInfo){
+        auto downloader = DownloadManager::manager()->download(fileInfo);
+        connect(downloader, &AbstractDownloader::finished, this, [=]{
+            if (QMessageBox::Yes == QMessageBox::question(this, tr("Update Ready"), tr("Update Mod Manager to %1 now?").arg(dialog->updateVersion()))){
+                qDebug() << downloader->info().path();
+                //TODO: filePath
+//                QProcess().startDetached(downloader->info().fileName());
+                close();
+            }
+        });
+    });
+}

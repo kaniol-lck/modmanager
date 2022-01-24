@@ -35,6 +35,8 @@ QString clearFormat(QString str);
 
 QString timesTo(const QDateTime &dateTime);
 
+QString installerSuffix();
+
 std::function<void ()> disconnecter(QMetaObject::Connection conn);
 
 template <typename... Args>

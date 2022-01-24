@@ -122,6 +122,7 @@ public:
     getterAndSetter(DownloaderList, List, downloaderList, QVariant())
 
     //others
+    getterAndSetter(AutoCheckModManagerUpdate, Bool, autoCheckModManagerUpdate, true)
     getterAndSetter(ModrinthMultiVersion, Bool, modrinthMultiVersion, false)
     getterAndSetter(ModrinthMultiCategory, Bool, modrinthMultiCategory, false)
     getterAndSetter(LockPanel, Bool, LockPanel, true)

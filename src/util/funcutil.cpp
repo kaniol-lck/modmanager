@@ -320,3 +320,15 @@ uint32_t filteredMurmurHash2(const QByteArray &bytes)
 
   return h;
 }
+
+QString installerSuffix()
+{
+#ifdef Q_OS_WIN
+    return "exe";
+#endif
+#ifdef Q_OS_MAC
+    return "dmg";
+#endif
+    //linux is unavailable
+    return "";
+}

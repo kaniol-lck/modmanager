@@ -81,6 +81,7 @@ SOURCES += \
     src/ui/local/localmodpathmodel.cpp \
     src/ui/local/localstatusbarwidget.cpp \
     src/ui/menutoolbar.cpp \
+    src/ui/modmanagerupdatedialog.cpp \
     src/ui/modrinth/modrinthfilelistwidget.cpp \
     src/ui/modrinth/modrinthmodinfowidget.cpp \
     src/ui/pageswitcher.cpp \
@@ -208,6 +209,7 @@ HEADERS += \
     src/ui/local/localmodpathmodel.h \
     src/ui/local/localstatusbarwidget.h \
     src/ui/menutoolbar.h \
+    src/ui/modmanagerupdatedialog.h \
     src/ui/modrinth/modrinthfilelistwidget.h \
     src/ui/modrinth/modrinthmodinfowidget.h \
     src/ui/pageswitcher.h \
@@ -304,6 +306,7 @@ FORMS += \
     src/ui/local/localmodupdatedialog.ui \
     src/ui/local/localmodinfowidget.ui \
     src/ui/modmanager.ui \
+    src/ui/modmanagerupdatedialog.ui \
     src/ui/modrinth/modrinthfileitemwidget.ui \
     src/ui/modrinth/modrinthfilelistwidget.ui \
     src/ui/modrinth/modrinthmodbrowser.ui \

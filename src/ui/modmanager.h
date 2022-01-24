@@ -25,6 +25,8 @@ class ModManager : public QMainWindow
     Q_OBJECT
 
 public:
+    static const GitHubRepoInfo &githubInfo();
+
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
 
@@ -73,6 +75,8 @@ private slots:
     void on_actionClear_Unmatched_File_Link_Caches_triggered();
 
     void on_actionCurseforge_Modpack_triggered();
+
+    void on_actionCheck_Mod_Manager_Update_triggered();
 
 private:
     Ui::ModManager *ui;

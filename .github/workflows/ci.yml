@@ -336,7 +336,7 @@ jobs:
         shell: sh
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager_${{ env.VERSION }}.dmg
+          name: ModManager-${{ env.VERSION }}.dmg
           path: modmanager.dmg
       - name: uploadRelease
         if: startsWith(github.event.ref, 'refs/tags/')
@@ -344,6 +344,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: modmanager.dmg
-          asset_name: ModManager_${{ env.VERSION }}.dmg
+          asset_name: ModManager-${{ env.VERSION }}.dmg
           tag: ${{ github.ref }}
           overwrite: true
