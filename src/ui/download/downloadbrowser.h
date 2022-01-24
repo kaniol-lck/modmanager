@@ -32,6 +32,10 @@ private slots:
     void on_actionPause_triggered();
     void on_actionStart_triggered();
 
+    void on_actionCopy_Download_Link_triggered();
+
+    void on_actionShow_in_Folder_triggered();
+
 protected:
     void paintEvent(QPaintEvent *event) override;
 

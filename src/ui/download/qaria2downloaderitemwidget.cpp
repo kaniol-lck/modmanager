@@ -112,14 +112,6 @@ void QAria2DownloaderItemWidget::on_pauseButton_clicked()
         downloader_->start();
 }
 
-void QAria2DownloaderItemWidget::on_QAria2DownloaderItemWidget_customContextMenuRequested(const QPoint &pos)
-{
-    auto menu = new QMenu(this);
-    menu->addAction(ui->actionCopy_Download_Link);
-    menu->addAction(ui->actionShow_Downloaded_File_in_Folder);
-    menu->exec(mapToGlobal(pos));
-}
-
 void QAria2DownloaderItemWidget::on_actionShow_Downloaded_File_in_Folder_triggered()
 {
     openFileInFolder(downloader_->info().fileName(), downloader_->info().path());

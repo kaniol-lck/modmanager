@@ -512,9 +512,9 @@ void ModManager::on_actionCheck_Mod_Manager_Update_triggered()
         auto downloader = DownloadManager::manager()->download(fileInfo);
         connect(downloader, &AbstractDownloader::finished, this, [=]{
             if (QMessageBox::Yes == QMessageBox::question(this, tr("Update Ready"), tr("Update Mod Manager to %1 now?").arg(dialog->updateVersion()))){
-                qDebug() << downloader->info().path();
+                qDebug() << downloader->info().filePath();
                 //TODO: filePath
-//                QProcess().startDetached(downloader->info().fileName());
+                QProcess().startDetached(downloader->info().filePath(), {});
                 close();
             }
         });

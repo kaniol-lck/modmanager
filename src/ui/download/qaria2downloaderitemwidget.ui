@@ -222,24 +222,6 @@
     <widget class="QLabel" name="url"/>
    </item>
   </layout>
-  <action name="actionCopy_Download_Link">
-   <property name="icon">
-    <iconset theme="edit-copy">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>Copy Download Link</string>
-   </property>
-  </action>
-  <action name="actionShow_Downloaded_File_in_Folder">
-   <property name="icon">
-    <iconset theme="folder">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
-   <property name="text">
-    <string>Show Downloaded File in Folder</string>
-   </property>
-  </action>
  </widget>
  <resources/>
  <connections/>

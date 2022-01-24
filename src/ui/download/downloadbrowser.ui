@@ -78,6 +78,8 @@
    <addaction name="actionAdd"/>
    <addaction name="actionPause"/>
    <addaction name="actionStart"/>
+   <addaction name="actionCopy_Download_Link"/>
+   <addaction name="actionShow_in_Folder"/>
   </widget>
   <action name="actionAdd">
    <property name="icon">
@@ -104,6 +106,23 @@
    </property>
    <property name="text">
     <string>Start</string>
+   </property>
+  </action>
+  <action name="actionCopy_Download_Link">
+   <property name="icon">
+    <iconset theme="edit-copy">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Copy Download Link</string>
+   </property>
+  </action>
+  <action name="actionShow_in_Folder">
+   <property name="icon">
+    <iconset theme="folder"/>
+   </property>
+   <property name="text">
+    <string>Show in Folder</string>
    </property>
   </action>
  </widget>

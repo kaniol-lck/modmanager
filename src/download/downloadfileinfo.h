@@ -33,6 +33,8 @@ public:
 
     qint64 size() const;
 
+    QString filePath() const;
+
     const QString &path() const;
     void setPath(const QString &newPath);
 

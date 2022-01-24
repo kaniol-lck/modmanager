@@ -1,5 +1,7 @@
 #include "downloadfileinfo.h"
 
+#include <QDir>
+
 DownloadFileInfo::DownloadFileInfo(const QUrl &url, const QString &path) :
     title_(QObject::tr("Custom Download")),
     displayName_(url.fileName()),
@@ -69,6 +71,11 @@ const QUrl &DownloadFileInfo::url() const
 qint64 DownloadFileInfo::size() const
 {
     return size_;
+}
+
+QString DownloadFileInfo::filePath() const
+{
+    return QDir(path()).absoluteFilePath(fileName());
 }
 
 const QString &DownloadFileInfo::path() const

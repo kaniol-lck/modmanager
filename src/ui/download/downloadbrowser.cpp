@@ -4,6 +4,7 @@
 #include <QInputDialog>
 #include <QDebug>
 #include <QToolBar>
+#include <QClipboard>
 
 #include "ui/download/qaria2downloaderitemwidget.h"
 #include "download/downloadmanager.h"
@@ -68,7 +69,12 @@ void DownloadBrowser::onCurrentRowChanged()
     if(row < 0){
         ui->actionPause->setEnabled(false);
         ui->actionStart->setEnabled(false);
+        ui->actionCopy_Download_Link->setEnabled(false);
+        ui->actionShow_in_Folder->setEnabled(false);
         return;
+    } else{
+        ui->actionCopy_Download_Link->setEnabled(true);
+        ui->actionShow_in_Folder->setEnabled(true);
     }
     auto downloader = manager_->qaria2()->downloaders().at(row);
     auto updateButtons = [=]{
@@ -124,12 +130,27 @@ void DownloadBrowser::on_actionPause_triggered()
     if(downloader) downloader->pause();
 }
 
-
 void DownloadBrowser::on_actionStart_triggered()
 {
     auto row = ui->downloaderListView->currentIndex().row();
     if(row < 0) return;
     auto downloader = manager_->qaria2()->downloaders().at(row);
     if(downloader) downloader->start();
+}
+
+void DownloadBrowser::on_actionCopy_Download_Link_triggered()
+{
+    auto row = ui->downloaderListView->currentIndex().row();
+    if(row < 0) return;
+    auto downloader = manager_->qaria2()->downloaders().at(row);
+    QApplication::clipboard()->setText(downloader->info().url().toString());
+}
+
+void DownloadBrowser::on_actionShow_in_Folder_triggered()
+{
+    auto row = ui->downloaderListView->currentIndex().row();
+    if(row < 0) return;
+    auto downloader = manager_->qaria2()->downloaders().at(row);
+    openFileInFolder(downloader->info().fileName(), downloader->info().path());
 }
 

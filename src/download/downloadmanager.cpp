@@ -22,6 +22,7 @@ DownloadManager *DownloadManager::manager()
 QAria2Downloader *DownloadManager::download(const DownloadFileInfo &info)
 {
     auto downloader = new QAria2Downloader(info);
+    qDebug() << "new download job" << info.displayName();
     emit downloaderAdded(info, downloader);
     //handle redirect
     downloader->handleRedirect();
