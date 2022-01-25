@@ -31,12 +31,12 @@ private slots:
     void updateListViewIndexWidget();
     void on_actionPause_triggered();
     void on_actionStart_triggered();
-
     void on_actionCopy_Download_Link_triggered();
-
     void on_actionShow_in_Folder_triggered();
-
     void on_downloaderListView_customContextMenuRequested(const QPoint &pos);
+    void on_actionForce_Pause_triggered();
+    void on_actionStop_triggered();
+    void on_actionForce_Stop_triggered();
 
 protected:
     void paintEvent(QPaintEvent *event) override;

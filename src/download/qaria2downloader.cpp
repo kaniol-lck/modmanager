@@ -52,6 +52,11 @@ bool QAria2Downloader::isPaused() const
     return status_ == aria2::DOWNLOAD_PAUSED;
 }
 
+bool QAria2Downloader::isStopped() const
+{
+    return status_ == aria2::DOWNLOAD_REMOVED;
+}
+
 void QAria2Downloader::setEvent(const aria2::DownloadEvent &event)
 {
     qDebug() << gid_ << "event:" << event;
@@ -86,14 +91,19 @@ void QAria2Downloader::setGid(aria2::A2Gid newGid)
     gid_ = newGid;
 }
 
-void QAria2Downloader::pause()
+int QAria2Downloader::pause(bool force)
 {
-    if(status_ != aria2::DOWNLOAD_ACTIVE) return;
-    pauseDownload(QAria2::qaria2()->session(), gid_);
+    if(status_ != aria2::DOWNLOAD_ACTIVE) return -1;
+    return pauseDownload(QAria2::qaria2()->session(), gid_, force);
 }
 
-void QAria2Downloader::start()
+int QAria2Downloader::start()
 {
-    if(status_ != aria2::DOWNLOAD_PAUSED) return;
-    unpauseDownload(QAria2::qaria2()->session(), gid_);
+    if(status_ != aria2::DOWNLOAD_PAUSED) return -1;
+    return unpauseDownload(QAria2::qaria2()->session(), gid_);
+}
+
+int QAria2Downloader::stop(bool force)
+{
+    return removeDownload(QAria2::qaria2()->session(), gid_, force);
 }

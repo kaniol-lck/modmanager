@@ -59,7 +59,11 @@
     </property>
     <addaction name="actionAdd"/>
     <addaction name="actionPause"/>
+    <addaction name="actionForce_Pause"/>
     <addaction name="actionStart"/>
+    <addaction name="actionStop"/>
+    <addaction name="actionForce_Stop"/>
+    <addaction name="separator"/>
     <addaction name="actionCopy_Download_Link"/>
     <addaction name="actionShow_in_Folder"/>
    </widget>
@@ -83,6 +87,7 @@
    <addaction name="actionAdd"/>
    <addaction name="actionPause"/>
    <addaction name="actionStart"/>
+   <addaction name="actionStop"/>
    <addaction name="actionCopy_Download_Link"/>
    <addaction name="actionShow_in_Folder"/>
   </widget>
@@ -129,6 +134,41 @@
    </property>
    <property name="text">
     <string>Show in Folder</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="icon">
+    <iconset theme="media-playback-stop"/>
+   </property>
+   <property name="text">
+    <string>Stop</string>
+   </property>
+   <property name="toolTip">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="actionForce_Pause">
+   <property name="icon">
+    <iconset theme="media-playback-pause">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Force Pause</string>
+   </property>
+   <property name="toolTip">
+    <string>Force Pause</string>
+   </property>
+  </action>
+  <action name="actionForce_Stop">
+   <property name="icon">
+    <iconset theme="media-playback-stop">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Force Stop</string>
+   </property>
+   <property name="toolTip">
+    <string>Dorce Stop</string>
    </property>
   </action>
  </widget>

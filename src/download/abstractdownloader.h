@@ -16,12 +16,14 @@ public:
 
     virtual bool isStarted() const = 0;
     virtual bool isPaused() const = 0;
+    virtual bool isStopped() const = 0;
 
     const DownloadFileInfo &info() const;
 
 public slots:
-    virtual void pause() = 0;
-    virtual void start() = 0;
+    virtual int pause(bool force = false) = 0;
+    virtual int start() = 0;
+    virtual int stop(bool force = false) = 0;
 
     void handleRedirect();
     static QUrl handleRedirect(const QUrl &url);

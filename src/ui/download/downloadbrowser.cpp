@@ -68,7 +68,10 @@ void DownloadBrowser::onCurrentRowChanged()
     auto row = ui->downloaderListView->currentIndex().row();
     if(row < 0){
         ui->actionPause->setEnabled(false);
+        ui->actionForce_Pause->setEnabled(false);
         ui->actionStart->setEnabled(false);
+        ui->actionStop->setEnabled(false);
+        ui->actionForce_Stop->setEnabled(false);
         ui->actionCopy_Download_Link->setEnabled(false);
         ui->actionShow_in_Folder->setEnabled(false);
         return;
@@ -79,7 +82,10 @@ void DownloadBrowser::onCurrentRowChanged()
     auto downloader = manager_->downloaders().at(row);
     auto updateButtons = [=]{
         ui->actionPause->setEnabled(downloader->isStarted());
+        ui->actionForce_Pause->setEnabled(downloader->isStarted());
         ui->actionStart->setEnabled(downloader->isPaused());
+        ui->actionStop->setEnabled(!downloader->isStopped());
+        ui->actionForce_Stop->setEnabled(!downloader->isStopped());
     };
     updateButtons();
     disconnect(conn_);
@@ -126,7 +132,7 @@ void DownloadBrowser::on_actionPause_triggered()
 {
     auto row = ui->downloaderListView->currentIndex().row();
     if(row < 0) return;
-    auto downloader = manager_->qaria2()->downloaders().at(row);
+    auto downloader = manager_->downloaders().at(row);
     if(downloader) downloader->pause();
 }
 
@@ -134,7 +140,7 @@ void DownloadBrowser::on_actionStart_triggered()
 {
     auto row = ui->downloaderListView->currentIndex().row();
     if(row < 0) return;
-    auto downloader = manager_->qaria2()->downloaders().at(row);
+    auto downloader = manager_->downloaders().at(row);
     if(downloader) downloader->start();
 }
 
@@ -142,7 +148,7 @@ void DownloadBrowser::on_actionCopy_Download_Link_triggered()
 {
     auto row = ui->downloaderListView->currentIndex().row();
     if(row < 0) return;
-    auto downloader = manager_->qaria2()->downloaders().at(row);
+    auto downloader = manager_->downloaders().at(row);
     QApplication::clipboard()->setText(downloader->info().url().toString());
 }
 
@@ -150,7 +156,7 @@ void DownloadBrowser::on_actionShow_in_Folder_triggered()
 {
     auto row = ui->downloaderListView->currentIndex().row();
     if(row < 0) return;
-    auto downloader = manager_->qaria2()->downloaders().at(row);
+    auto downloader = manager_->downloaders().at(row);
     openFileInFolder(downloader->info().fileName(), downloader->info().path());
 }
 
@@ -160,4 +166,30 @@ void DownloadBrowser::on_downloaderListView_customContextMenuRequested(const QPo
     for(auto &&action : ui->menu_Download->actions())
         if(action->isEnabled()) menu->addAction(action);
     menu->exec(ui->downloaderListView->viewport()->mapToGlobal(pos));
+}
+
+void DownloadBrowser::on_actionForce_Pause_triggered()
+{
+    auto row = ui->downloaderListView->currentIndex().row();
+    if(row < 0) return;
+    auto downloader = manager_->downloaders().at(row);
+    if(downloader) downloader->pause(true);
+
+}
+
+void DownloadBrowser::on_actionStop_triggered()
+{
+    auto row = ui->downloaderListView->currentIndex().row();
+    if(row < 0) return;
+    auto downloader = manager_->downloaders().at(row);
+    if(downloader) downloader->stop();
+}
+
+void DownloadBrowser::on_actionForce_Stop_triggered()
+{
+    auto row = ui->downloaderListView->currentIndex().row();
+    if(row < 0) return;
+    auto downloader = manager_->downloaders().at(row);
+    if(downloader) downloader->stop(true);
+
 }

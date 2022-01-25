@@ -21,13 +21,15 @@ public:
 
     bool isStarted() const override;
     bool isPaused() const override;
+    bool isStopped() const override;
 
 public slots:
-    void pause() override;
-    void start() override;
+    int pause(bool force = false) override;
+    int start() override;
+    int stop(bool force = false) override;
 
 signals:
-    void statusChanged(int);
+//    void statusChanged(int);
 
 private:
     void setGid(aria2::A2Gid newGid);
