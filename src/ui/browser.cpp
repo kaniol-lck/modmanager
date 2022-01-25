@@ -5,7 +5,9 @@
 #include "config.hpp"
 
 Browser::Browser(QWidget *parent) : QMainWindow(parent)
-{}
+{
+    setDockNestingEnabled(true);
+}
 
 void Browser::show()
 {
@@ -15,13 +17,13 @@ void Browser::show()
     if(infoWidget()){
         auto infoDock = new QDockWidget(tr("Infomation"), this);
         infoDock->setWidget(infoWidget());
-        infoDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        infoDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
         addDockWidget(Qt::RightDockWidgetArea, infoDock);
     }
     if(fileListWidget()){
         auto fileListDock = new QDockWidget(tr("File List"), this);
         fileListDock->setWidget(fileListWidget());
-        fileListDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
+        fileListDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable);
         addDockWidget(Qt::RightDockWidgetArea, fileListDock);
     }
     load();
