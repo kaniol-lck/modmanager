@@ -7,6 +7,7 @@
 #include "network/reply.hpp"
 #include "curseforge/curseforgefileinfo.h"
 #include "modrinth/modrinthfileinfo.h"
+#include "util/checksheet.h"
 
 class LocalModFile;
 class LocalFileLinker : public QObject

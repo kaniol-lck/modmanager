@@ -129,7 +129,6 @@ private:
     LocalModPath *modPath_;
     LocalModFilter *filter_;
     QList<LocalMod*> selectedMods_;
-    int hiddenCount_ = 0;
 
     QAbstractItemView *currentView();
     QList<LocalMod *> selectedMods(QAbstractItemView *view = nullptr);

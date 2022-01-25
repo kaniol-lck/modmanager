@@ -56,6 +56,11 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     watcher_.addPath(info_.path());
 }
 
+const QStringList &LocalModPath::nonModFiles() const
+{
+    return nonModFiles_;
+}
+
 const QStringList &LocalModPath::relative() const
 {
     return relative_;
@@ -185,9 +190,12 @@ void LocalModPath::loadMods(bool autoLoaderType)
             addModFile(file);
 
         //delete unused files
+        nonModFiles_.clear();
         for(const auto &file : qAsConst(modFileList)){
-            if(!file->parent())
+            if(!file->parent()){
+                nonModFiles_ << file->fileInfo().fileName();
                 file->deleteLater();
+            }
         }
 
         //restore cached info

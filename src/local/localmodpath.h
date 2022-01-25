@@ -82,6 +82,8 @@ public:
 
     const QStringList &relative() const;
 
+    const QStringList &nonModFiles() const;
+
 public slots:
     void writeToFile();
     void readFromFile();
@@ -115,6 +117,7 @@ private:
     explicit LocalModPath(LocalModPath *path, const QString &subDir);
 
     QFileSystemWatcher watcher_;
+    QStringList nonModFiles_;
     QStringList relative_;
     QMap<QString, LocalModPath *> subPaths_;
     Tagable containedTags_;

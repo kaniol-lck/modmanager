@@ -98,6 +98,8 @@ void LocalFileLinker::linkCurseforge()
             KnownFile::addUnmatchedCurseforge(murmurhash);
             emit linkCurseforgeFinished(false);
         }
+    }, [=](auto){
+        emit linkCurseforgeFinished(false);
     });
 }
 

@@ -111,6 +111,10 @@ void LocalModInfoWidget::updatePathInfo()
     ui->path->setText(path_->info().path());
     ui->pathGameVersion->setText(path_->info().gameVersion());
     ui->pathLoaderType->setText(ModLoaderType::toString(path_->info().loaderType()));
+    bool hasUnloaded = !path_->nonModFiles().isEmpty();
+    ui->label_3->setVisible(hasUnloaded);
+    ui->nonModFiles->setVisible(hasUnloaded);
+    ui->nonModFiles->setText(path_->nonModFiles().join("\n"));
 }
 
 void LocalModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)

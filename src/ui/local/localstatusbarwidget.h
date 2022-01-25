@@ -7,6 +7,7 @@ class QButtonGroup;
 
 class QLabel;
 class QProgressBar;
+
 namespace Ui {
 class LocalModStatusBar;
 }
@@ -22,6 +23,8 @@ public:
 
     QLabel *label() const;
     QProgressBar *progressBar() const;
+
+    void setModCount(int hiddenCount, int totalCount);
 
 signals:
     void viewModeChanged(int mode);

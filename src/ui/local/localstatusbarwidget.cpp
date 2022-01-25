@@ -31,3 +31,9 @@ QProgressBar *LocalStatusBarWidget::progressBar() const
 {
     return ui->progressBar;
 }
+
+void LocalStatusBarWidget::setModCount(int shownCount, int totalCount)
+{
+    ui->shownCount->setText(tr("Shown: %1").arg(shownCount));
+    ui->totalCount->setText(tr("Total: %1").arg(totalCount));
+}

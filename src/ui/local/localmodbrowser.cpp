@@ -146,6 +146,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->updateAllButton->setDefaultAction(ui->actionUpdate_All);
 
     connect(filter_->menu(), &UnclosedMenu::menuTriggered, proxyModel_, &QSortFilterProxyModel::invalidate);
+    connect(filter_->menu(), &UnclosedMenu::menuTriggered, this, &LocalModBrowser::updateStatusText);
     connect(filter_->menu(), &UnclosedMenu::menuTriggered, this, &LocalModBrowser::updateListViewIndexWidget);
     connect(filter_->menu(), &UnclosedMenu::menuTriggered, this, &LocalModBrowser::updateTreeViewIndexWidget);
     ui->actionFilter->setMenu(filter_->menu());
@@ -236,6 +237,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::loadFinished, this, &LocalModBrowser::loadFinished);
     connect(modPath_, &LocalModPath::modListUpdated, filter_, &LocalModFilter::refreshTags);
     connect(modPath_, &LocalModPath::modListUpdated, proxyModel_, &QSortFilterProxyModel::invalidate);
+    connect(modPath_, &LocalModPath::modListUpdated, this, &LocalModBrowser::updateStatusText);
     connect(modPath_, &LocalModPath::modListUpdated, this, [=]{
         ui->modTreeView->sortByColumn(LocalModPathModel::NameColumn, Qt::AscendingOrder);
     });
@@ -266,6 +268,7 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(ui->searchText, &QLineEdit::textChanged, this, [=]{
         proxyModel_->setText(ui->searchText->text().toLower());
         proxyModel_->invalidate();
+        updateStatusText();
     });
     connect(ui->modListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
     connect(ui->modIconListView, &QListView::doubleClicked, this, &LocalModBrowser::onItemDoubleClicked);
@@ -459,15 +462,8 @@ void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
 
 void LocalModBrowser::updateStatusText()
 {
-    auto count = modPath_->modList().count();
-    auto str = tr("%1 mods in total. ").arg(count);
-    if(hiddenCount_){
-        if(hiddenCount_ < count / 2)
-            str.append(tr("(%1 mods are hidden)").arg(hiddenCount_));
-        else
-            str.append(tr("(%1 mods are shown)").arg(count - hiddenCount_));
-    }
-    ui->statusBar->showMessage(str);
+    qDebug() << proxyModel_->rowCount() << model_->rowCount();
+    statusBarWidget_->setModCount(proxyModel_->rowCount(), model_->rowCount());
 }
 
 void LocalModBrowser::updateProgressBar()
