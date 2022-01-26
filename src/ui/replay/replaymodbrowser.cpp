@@ -22,11 +22,12 @@
 ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/replay.png"), "ReplayMod", QUrl("https://www.replaymod.com")),
     ui(new Ui::ReplayModBrowser),
+    model_(new QStandardItemModel(this)),
     api_(new ReplayAPI())
 {
     ui->setupUi(this);
     ui->menuReplayMod->addActions(menu_->actions());
-    initUi();
+    initUi(model_);
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -148,9 +149,9 @@ void ReplayModBrowser::getModList()
     });
 }
 
-QWidget *ReplayModBrowser::getIndexWidget(QStandardItem *item)
+QWidget *ReplayModBrowser::getIndexWidget(const QModelIndex &index)
 {
-    auto mod = item->data().value<ReplayMod*>();
+    auto mod = index.data(Qt::UserRole + 1).value<ReplayMod*>();
     if(mod){
         auto widget = new ReplayModItemWidget(this, mod);
         return widget;

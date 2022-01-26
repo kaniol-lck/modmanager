@@ -18,17 +18,21 @@ GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent, const GitHubRepoInfo &info
     ExploreBrowser(parent, info.icon(), info.name() + " (GitHub)", info.url()),
     info_(info),
     ui(new Ui::GitHubRepoBrowser),
+    model_(new QStandardItemModel(this)),
     infoWidget_(new GitHubReleaseInfoWidget(this)),
     fileListWidget_(new GitHubFileListWidget(this)),
     api_(new GitHubAPI())
 {
     ui->setupUi(this);
     ui->menu_GitHub->addActions(menu_->actions());
-    initUi();
+    initUi(model_);
 
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
     ui->toolBar->addMenu(downloadPathSelectMenu_);
+    ui->toolBar->addAction(refreshAction_);
+    ui->toolBar->addAction(visitWebsiteAction_);
+    ui->toolBar->addAction(openDialogAction_);
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;
@@ -141,10 +145,10 @@ void GitHubRepoBrowser::loadMore()
     }
 }
 
-void GitHubRepoBrowser::onSelectedItemChanged(QStandardItem *item)
+void GitHubRepoBrowser::onSelectedItemChanged(const QModelIndex &index)
 {
-    if(item){
-        auto release = item->data().value<GitHubRelease*>();
+    if(index.isValid()){
+        auto release = index.data(Qt::UserRole + 1).value<GitHubRelease*>();
         if(release){
             infoWidget_->setRelease(release);
             fileListWidget_->setRelease(release);
@@ -157,9 +161,9 @@ void GitHubRepoBrowser::onSelectedItemChanged(QStandardItem *item)
         selectedRelease_ = nullptr;
 }
 
-QWidget *GitHubRepoBrowser::getIndexWidget(QStandardItem *item)
+QWidget *GitHubRepoBrowser::getIndexWidget(const QModelIndex &index)
 {
-    auto release = item->data().value<GitHubRelease*>();
+    auto release = index.data(Qt::UserRole + 1).value<GitHubRelease*>();
     if(release){
         auto widget = new GitHubReleaseItemWidget(this, release->info());
         return widget;

@@ -62,6 +62,7 @@ private slots:
 
 private:
     Ui::CurseforgeModBrowser *ui;
+    QStandardItemModel *model_;
     CurseforgeAPI::Section sectionId_ = CurseforgeAPI::Mod;
     CurseforgeModInfoWidget *infoWidget_;
     CurseforgeFileListWidget *fileListWidget_;
@@ -81,9 +82,9 @@ private:
     std::unique_ptr<Reply<QList<CurseforgeCategoryInfo> > > sectionCategoriesGetter_;
 
     void loadMore() override;
-    void onSelectedItemChanged(QStandardItem *item) override;
-    QDialog *getDialog(QStandardItem *item) override;
-    QWidget *getIndexWidget(QStandardItem *item) override;
+    void onSelectedItemChanged(const QModelIndex &index) override;
+    QDialog *getDialog(const QModelIndex &index) override;
+    QWidget *getIndexWidget(const QModelIndex &index) override;
     QMenu *getCustomContextMenu() override;
 };
 

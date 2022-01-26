@@ -17,14 +17,12 @@
 ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString &name, const QUrl &url) :
     Browser(parent),
     statusBarWidget_(new ExploreStatusBarWidget(this)),
-    model_(new QStandardItemModel(this)),
     menu_(new QMenu(this)),
     downloadPathSelectMenu_(new DownloadPathSelectMenu(this)),
     modListView_(new QListView(this)),
     icon_(icon),
     name_(name)
 {
-    modListView_->setModel(model_);
     modListView_->setVerticalScrollBar(new SmoothScrollBar(this));
     modListView_->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     modListView_->setProperty("class", "ModList");
@@ -34,7 +32,6 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     connect(modListView_, &QAbstractItemView::doubleClicked, this, &ExploreBrowser::onDoubleClicked);
     connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onSliderChanged);
     connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this, &ExploreBrowser::updateIndexWidget);
-    connect(modListView_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExploreBrowser::onItemSelected);
 
     refreshAction_ = menu_->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh Mods"), this, &ExploreBrowser::refresh);
     refreshAction_->setShortcut(QKeySequence(Qt::Key_F5));
@@ -74,10 +71,9 @@ void ExploreBrowser::onItemSelected()
     auto indexes = modListView_->selectionModel()->selectedRows();
     if(!indexes.isEmpty()){
         auto index = indexes.first();
-        auto item = model_->itemFromIndex(index);
-        onSelectedItemChanged(item);
+        onSelectedItemChanged(index);
     } else
-        onSelectedItemChanged(nullptr);
+        onSelectedItemChanged(QModelIndex());
 }
 
 void ExploreBrowser::updateIndexWidget()
@@ -86,17 +82,16 @@ void ExploreBrowser::updateIndexWidget()
     if(beginRow < 0) return;
     auto endRow = modListView_->indexAt(QPoint(0, modListView_->height())).row();
     if(endRow < 0)
-        endRow = model_->rowCount() - 1;
+        endRow = model()->rowCount() - 1;
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
-        auto index = model_->index(row, 0);
+    for(int row = beginRow; row <= endRow && row < model()->rowCount(); row++){
+        auto index = model()->index(row, 0);
         if(modListView_->indexWidget(index)) continue;
-        auto item = model_->item(row);
-        if(auto widget = getIndexWidget(item)){
+        if(auto widget = getIndexWidget(index)){
             modListView_->setIndexWidget(index, widget);
-            item->setSizeHint(QSize(0, widget->height()));
+//            item->setSizeHint(QSize(0, widget->height()));
         }
     }
 }
@@ -109,8 +104,7 @@ void ExploreBrowser::onCustomContextMenuRequested(const QPoint &pos)
 
 void ExploreBrowser::onDoubleClicked(const QModelIndex &index)
 {
-    auto item = model_->itemFromIndex(index);
-    if(auto dialog = getDialog(item))
+    if(auto dialog = getDialog(index))
         dialog->show();
 }
 
@@ -120,9 +114,11 @@ void ExploreBrowser::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 }
 
-void ExploreBrowser::initUi()
+void ExploreBrowser::initUi(QAbstractItemModel *model)
 {
     setCentralWidget(modListView_);
+    modListView_->setModel(model);
+    connect(modListView_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExploreBrowser::onItemSelected);
     onItemSelected();
 
     Config config;
@@ -148,15 +144,15 @@ void ExploreBrowser::scrollToTop()
 void ExploreBrowser::loadMore()
 {}
 
-void ExploreBrowser::onSelectedItemChanged(QStandardItem *item[[maybe_unused]])
+void ExploreBrowser::onSelectedItemChanged(const QModelIndex &index[[maybe_unused]])
 {}
 
-QWidget *ExploreBrowser::getIndexWidget(QStandardItem *item[[maybe_unused]])
+QWidget *ExploreBrowser::getIndexWidget(const QModelIndex &index[[maybe_unused]])
 {
     return nullptr;
 }
 
-QDialog *ExploreBrowser::getDialog(QStandardItem *item[[maybe_unused]])
+QDialog *ExploreBrowser::getDialog(const QModelIndex &index[[maybe_unused]])
 {
     return nullptr;
 }
@@ -164,6 +160,11 @@ QDialog *ExploreBrowser::getDialog(QStandardItem *item[[maybe_unused]])
 QMenu *ExploreBrowser::getCustomContextMenu()
 {
     return nullptr;
+}
+
+QAbstractItemModel *ExploreBrowser::model() const
+{
+    return modListView_->model();
 }
 
 QMenu *ExploreBrowser::menu() const

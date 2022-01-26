@@ -48,6 +48,7 @@ private slots:
 private:
     GitHubRepoInfo info_;
     Ui::GitHubRepoBrowser *ui;
+    QStandardItemModel *model_;
     GitHubReleaseInfoWidget *infoWidget_;
     GitHubFileListWidget *fileListWidget_;
     GitHubAPI *api_;
@@ -59,8 +60,8 @@ private:
 
     void getReleaseList(int page = 1);
     void loadMore() override;
-    void onSelectedItemChanged(QStandardItem *item) override;
-    QWidget *getIndexWidget(QStandardItem *item) override;
+    void onSelectedItemChanged(const QModelIndex &index) override;
+    QWidget *getIndexWidget(const QModelIndex &index) override;
 };
 
 #endif // GITHUBREPOBROWSER_H

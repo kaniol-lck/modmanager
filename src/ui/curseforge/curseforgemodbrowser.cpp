@@ -33,6 +33,7 @@
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, CurseforgeAPI::Section sectionId) :
     ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
     ui(new Ui::CurseforgeModBrowser),
+    model_(new QStandardItemModel(this)),
     sectionId_(sectionId),
     infoWidget_(new CurseforgeModInfoWidget(this)),
     fileListWidget_(new CurseforgeFileListWidget(this)),
@@ -43,7 +44,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     fileListWidget_->hide();
     ui->setupUi(this);
     ui->menu_Curseforge->insertActions(ui->menu_Curseforge->actions().first(), menu_->actions());
-    initUi();
+    initUi(model_);
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -392,9 +393,9 @@ void CurseforgeModBrowser::getModList(QString name, int index)
     });
 }
 
-QDialog *CurseforgeModBrowser::getDialog(QStandardItem *item)
+QDialog *CurseforgeModBrowser::getDialog(const QModelIndex &index)
 {
-    auto mod = item->data().value<CurseforgeMod*>();
+    auto mod = index.data(Qt::UserRole + 1).value<CurseforgeMod*>();
     if(mod && !mod->parent()){
         auto dialog = new CurseforgeModDialog(this, mod);
         //set parent
@@ -411,8 +412,7 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
 {
     currentLoaderType_ = ModLoaderType::curseforge.at(index);
     for(int row = 0; row < model_->rowCount(); row++){
-        auto item = model_->item(row);
-        auto mod = item->data().value<CurseforgeMod*>();
+        auto mod = model_->index(row, 0).data(Qt::UserRole + 1).value<CurseforgeMod*>();
         if(!mod) continue;
         auto isShown = currentLoaderType_ == ModLoaderType::Any || mod->modInfo().loaderTypes().contains(currentLoaderType_);
         if(mod->modInfo().loaderTypes().isEmpty())
@@ -425,10 +425,10 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
     }
 }
 
-void CurseforgeModBrowser::onSelectedItemChanged(QStandardItem *item)
+void CurseforgeModBrowser::onSelectedItemChanged(const QModelIndex &index)
 {
-    if(item)
-        selectedMod_ = item->data().value<CurseforgeMod*>();
+    if(index.isValid())
+        selectedMod_ = index.data(Qt::UserRole + 1).value<CurseforgeMod*>();
     else
         selectedMod_ = nullptr;
     ui->actionOpen_Curseforge_Mod_Dialog->setEnabled(selectedMod_);
@@ -448,9 +448,9 @@ void CurseforgeModBrowser::loadMore()
     }
 }
 
-QWidget *CurseforgeModBrowser::getIndexWidget(QStandardItem *item)
+QWidget *CurseforgeModBrowser::getIndexWidget(const QModelIndex &index)
 {
-    auto mod = item->data().value<CurseforgeMod*>();
+    auto mod = index.data(Qt::UserRole + 1).value<CurseforgeMod*>();
     if(mod){
         auto fileInfo = mod->modInfo().latestFileInfo(currentGameVersion_, currentLoaderType_);
         auto widget = new CurseforgeModItemWidget(this, mod, fileInfo);

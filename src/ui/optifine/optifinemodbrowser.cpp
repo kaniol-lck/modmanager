@@ -23,12 +23,13 @@
 OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/optifine.png"), "OptiFine", QUrl("https://www.optifine.net")),
     ui(new Ui::OptifineModBrowser),
+    model_(new QStandardItemModel(this)),
     api_(new OptifineAPI(this)),
     bmclapi_(new BMCLAPI(this))
 {
     ui->setupUi(this);
     ui->menuOptiFine->insertActions(ui->menuOptiFine->actions().first(), menu_->actions());
-    initUi();
+    initUi(model_);
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -62,8 +63,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
 OptifineModBrowser::~OptifineModBrowser()
 {
     for(auto row = 0; row < model_->rowCount(); row++){
-        auto item = model_->item(row);
-        auto mod = item->data().value<OptifineMod*>();
+        auto mod = model_->index(row, 0).data(Qt::UserRole + 1).value<OptifineMod*>();
         if(mod && !mod->parent())
             mod->deleteLater();
     }
@@ -107,8 +107,7 @@ void OptifineModBrowser::filterList()
     auto showPreview = ui->showPreview->isChecked();
     auto searchText = ui->searchText->text().toLower();
     for(int row = 0; row < model_->rowCount(); row++){
-        auto item = model_->item(row);
-        auto mod = item->data().value<OptifineMod*>();
+        auto mod = model_->index(row, 0).data(Qt::UserRole + 1).value<OptifineMod*>();
         if(mod){
             setRowHidden(row, (gameVersion != GameVersion::Any && mod->modInfo().gameVersion() != gameVersion) ||
                          (!showPreview && mod->modInfo().isPreview()) ||
@@ -180,9 +179,9 @@ void OptifineModBrowser::getModList()
     });
 }
 
-QWidget *OptifineModBrowser::getIndexWidget(QStandardItem *item)
+QWidget *OptifineModBrowser::getIndexWidget(const QModelIndex &index)
 {
-    auto mod = item->data().value<OptifineMod*>();
+    auto mod = index.data(Qt::UserRole + 1).value<OptifineMod*>();
     if(mod){
         auto widget = new OptifineModItemWidget(this, mod);
         return widget;

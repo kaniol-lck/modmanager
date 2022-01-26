@@ -33,7 +33,7 @@ void BrowserSelectorWidget::setModel(QAbstractItemModel *model)
     ui->browserTreeView->expandAll();
 }
 
-void BrowserSelectorWidget::setCurrentIndex(QModelIndex index)
+void BrowserSelectorWidget::setCurrentIndex(const QModelIndex &index)
 {
     ui->browserTreeView->setCurrentIndex(index);
 }

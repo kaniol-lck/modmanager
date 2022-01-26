@@ -38,12 +38,13 @@ private slots:
 
 private:
     Ui::ReplayModBrowser *ui;
+    QStandardItemModel *model_;
     ReplayAPI *api_;
     bool inited_ = false;
     std::unique_ptr<Reply<QList<ReplayModInfo> > > searchModsGetter_;
 
     void getModList();
-    QWidget *getIndexWidget(QStandardItem *item) override;
+    QWidget *getIndexWidget(const QModelIndex &index) override;
 };
 
 #endif // REPLAYMODBROWSER_H

@@ -41,13 +41,14 @@ private slots:
 
 private:
     Ui::OptifineModBrowser *ui;
+    QStandardItemModel *model_;
     OptifineAPI *api_;
     BMCLAPI *bmclapi_;
     bool inited_ = false;
     std::unique_ptr<Reply<QList<OptifineModInfo> > > searchModsGetter_;
 
     void getModList();
-    QWidget *getIndexWidget(QStandardItem *item) override;
+    QWidget *getIndexWidget(const QModelIndex &index) override;
 };
 
 #endif // OPTIFINEMODBROWSER_H

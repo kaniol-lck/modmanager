@@ -29,6 +29,7 @@
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ExploreBrowser(parent, QIcon(":/image/modrinth.svg"), "Modrinth", QUrl("https://modrinth.com/mods")),
     ui(new Ui::ModrinthModBrowser),
+    model_(new QStandardItemModel(this)),
     infoWidget_(new ModrinthModInfoWidget(this)),
     fileListWidget_(new ModrinthFileListWidget(this)),
     api_(new ModrinthAPI(this)),
@@ -38,7 +39,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     fileListWidget_->hide();
     ui->setupUi(this);
     ui->menu_Modrinth->insertActions(ui->menu_Modrinth->actions().first(), menu_->actions());
-    initUi();
+    initUi(model_);
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -450,9 +451,9 @@ void ModrinthModBrowser::getModList(QString name, int index)
     });
 }
 
-QDialog *ModrinthModBrowser::getDialog(QStandardItem *item)
+QDialog *ModrinthModBrowser::getDialog(const QModelIndex &index)
 {
-    auto mod = item->data().value<ModrinthMod*>();
+    auto mod = index.data(Qt::UserRole + 1).value<ModrinthMod*>();
     if(mod && !mod->parent()){
         auto dialog = new ModrinthModDialog(this, mod);
         //set parent
@@ -475,10 +476,10 @@ void ModrinthModBrowser::on_loaderSelect_currentIndexChanged(int)
     getModList(currentName_);
 }
 
-void ModrinthModBrowser::onSelectedItemChanged(QStandardItem *item)
+void ModrinthModBrowser::onSelectedItemChanged(const QModelIndex &index)
 {
-    if(item)
-        selectedMod_ = item->data().value<ModrinthMod*>();
+    if(index.isValid())
+        selectedMod_ = index.data(Qt::UserRole + 1).value<ModrinthMod*>();
     else
         selectedMod_ = nullptr;
     ui->actionOpen_Modrinth_Mod_Dialog->setEnabled(selectedMod_);
@@ -490,9 +491,9 @@ void ModrinthModBrowser::onSelectedItemChanged(QStandardItem *item)
     fileListWidget_->setMod(selectedMod_);
 }
 
-QWidget *ModrinthModBrowser::getIndexWidget(QStandardItem *item)
+QWidget *ModrinthModBrowser::getIndexWidget(const QModelIndex &index)
 {
-    auto mod = item->data().value<ModrinthMod*>();
+    auto mod = index.data(Qt::UserRole + 1).value<ModrinthMod*>();
     if(mod){
         auto widget = new ModrinthModItemWidget(nullptr, mod);
         return widget;

@@ -44,17 +44,16 @@ private slots:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void initUi();
+    void initUi(QAbstractItemModel *model);
     bool isRowHidden(int row);
     void setRowHidden(int row, bool hidden);
     void scrollToTop();
     virtual void loadMore();
-    virtual void onSelectedItemChanged(QStandardItem *item);
-    virtual QWidget *getIndexWidget(QStandardItem *item);
-    virtual QDialog *getDialog(QStandardItem *item);
+    virtual void onSelectedItemChanged(const QModelIndex &index);
+    virtual QWidget *getIndexWidget(const QModelIndex &index);
+    virtual QDialog *getDialog(const QModelIndex &index);
     virtual QMenu *getCustomContextMenu();
     ExploreStatusBarWidget *statusBarWidget_;
-    QStandardItemModel *model_;
     QMenu *menu_;
     DownloadPathSelectMenu *downloadPathSelectMenu_;
     QAction *visitWebsiteAction_;
@@ -62,6 +61,7 @@ protected:
     QAction *openDialogAction_;
 
 private:
+    QAbstractItemModel *model() const;
     QListView *modListView_;
     QIcon icon_;
     QString name_;

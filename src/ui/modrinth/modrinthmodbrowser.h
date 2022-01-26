@@ -58,6 +58,7 @@ private slots:
 
 private:
     Ui::ModrinthModBrowser *ui;
+    QStandardItemModel *model_;
     ModrinthModInfoWidget *infoWidget_;
     ModrinthFileListWidget *fileListWidget_;
     ModrinthAPI *api_;
@@ -74,9 +75,9 @@ private:
     std::unique_ptr<Reply<QList<ModrinthModInfo>>> searchModsGetter_;
 
     void loadMore() override;
-    void onSelectedItemChanged(QStandardItem *item) override;
-    QDialog *getDialog(QStandardItem *item) override;
-    QWidget *getIndexWidget(QStandardItem *item) override;
+    void onSelectedItemChanged(const QModelIndex &index) override;
+    QDialog *getDialog(const QModelIndex &index) override;
+    QWidget *getIndexWidget(const QModelIndex &index) override;
     QMenu *getCustomContextMenu() override;
     void getModList(QString name, int index = 0);
 };
