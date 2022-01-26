@@ -34,9 +34,6 @@ public:
     QWidget *fileListWidget() const override;
     ModrinthMod *selectedMod() const;
 
-    QList<QAction *> modActions() const override;
-    QList<QAction *> pathActions() const override;
-
     ExploreBrowser *another() override;
 
 signals:
@@ -80,7 +77,7 @@ private:
     void onSelectedItemChanged(QStandardItem *item) override;
     QDialog *getDialog(QStandardItem *item) override;
     QWidget *getIndexWidget(QStandardItem *item) override;
-    QMenu *getMenu() override;
+    QMenu *getCustomContextMenu() override;
     void getModList(QString name, int index = 0);
 };
 

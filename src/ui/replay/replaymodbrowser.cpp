@@ -25,7 +25,7 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     api_(new ReplayAPI())
 {
     ui->setupUi(this);
-    ui->menuReplayMod->addActions(pathMenu_->actions());
+    ui->menuReplayMod->addActions(menu_->actions());
     initUi();
 
     for(auto &&toolBar : findChildren<QToolBar *>())
@@ -34,13 +34,16 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
-    ui->searchBar->addWidget(ui->searchText);
-
-    ui->toolBar->addWidget(ui->label);
-    ui->toolBar->addWidget(ui->versionSelect);
-    ui->toolBar->addWidget(ui->label_3);
-    ui->toolBar->addWidget(ui->loaderSelect);
     ui->toolBar->addMenu(downloadPathSelectMenu_);
+    ui->toolBar->addAction(refreshAction_);
+    ui->toolBar->addAction(visitWebsiteAction_);
+    ui->toolBar->addAction(openDialogAction_);
+
+    ui->searchBar->addWidget(ui->label);
+    ui->searchBar->addWidget(ui->versionSelect);
+    ui->searchBar->addWidget(ui->label_3);
+    ui->searchBar->addWidget(ui->loaderSelect);
+    ui->searchBar->addWidget(ui->searchText);
 
     for(const auto &type : ModLoaderType::replay)
         ui->loaderSelect->addItem(ModLoaderType::icon(type), ModLoaderType::toString(type));

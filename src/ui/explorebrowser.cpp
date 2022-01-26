@@ -18,13 +18,11 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     Browser(parent),
     statusBarWidget_(new ExploreStatusBarWidget(this)),
     model_(new QStandardItemModel(this)),
-    modMenu_(new QMenu(this)),
-    pathMenu_(new QMenu(this)),
+    menu_(new QMenu(this)),
     downloadPathSelectMenu_(new DownloadPathSelectMenu(this)),
     modListView_(new QListView(this)),
     icon_(icon),
-    name_(name),
-    visitWebsiteAction_(new QAction(icon, tr("Visit %1").arg(name), this))
+    name_(name)
 {
     modListView_->setModel(model_);
     modListView_->setVerticalScrollBar(new SmoothScrollBar(this));
@@ -38,24 +36,15 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this, &ExploreBrowser::updateIndexWidget);
     connect(modListView_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExploreBrowser::onItemSelected);
 
-    connect(visitWebsiteAction_, &QAction::triggered, this, [=]{
+    refreshAction_ = menu_->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh Mods"), this, &ExploreBrowser::refresh);
+    refreshAction_->setShortcut(QKeySequence(Qt::Key_F5));
+    visitWebsiteAction_ = menu_->addAction(icon, tr("Visit %1").arg(name), [=]{
         QDesktopServices::openUrl(url);
     });
-    refreshAction_ = pathMenu_->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh Mods"), this, &ExploreBrowser::refresh);
-    refreshAction_->setShortcut(QKeySequence(Qt::Key_F5));
-    pathMenu_->addAction(visitWebsiteAction_);
-    pathMenu_->addAction(QIcon::fromTheme("window-new"), tr("Open in New Dialog"), this, &ExploreBrowser::openDialog);
-    pathMenu_->addMenu(downloadPathSelectMenu_);
-}
-
-QList<QAction *> ExploreBrowser::modActions() const
-{
-    return modMenu_->actions();
-}
-
-QList<QAction *> ExploreBrowser::pathActions() const
-{
-    return pathMenu_->actions();
+    openDialogAction_ = menu_->addAction(QIcon::fromTheme("window-new"), tr("Open in New Dialog"), this, [=]{
+        another()->show();
+    });
+    menu_->addMenu(downloadPathSelectMenu_);
 }
 
 QAction *ExploreBrowser::visitWebsiteAction() const
@@ -71,11 +60,6 @@ QIcon ExploreBrowser::icon() const
 QString ExploreBrowser::name() const
 {
     return name_;
-}
-
-void ExploreBrowser::openDialog()
-{
-    another()->show();
 }
 
 void ExploreBrowser::onSliderChanged(int i)
@@ -119,7 +103,7 @@ void ExploreBrowser::updateIndexWidget()
 
 void ExploreBrowser::onCustomContextMenuRequested(const QPoint &pos)
 {
-    if(auto menu = getMenu())
+    if(auto menu = getCustomContextMenu())
         menu->exec(modListView_->mapToGlobal(pos));
 }
 
@@ -177,9 +161,14 @@ QDialog *ExploreBrowser::getDialog(QStandardItem *item[[maybe_unused]])
     return nullptr;
 }
 
-QMenu *ExploreBrowser::getMenu()
+QMenu *ExploreBrowser::getCustomContextMenu()
 {
     return nullptr;
+}
+
+QMenu *ExploreBrowser::menu() const
+{
+    return menu_;
 }
 
 DownloadPathSelectMenu *ExploreBrowser::downloadPathSelectMenu() const

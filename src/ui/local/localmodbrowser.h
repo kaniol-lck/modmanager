@@ -40,9 +40,6 @@ public:
     QWidget *infoWidget() const override;
     QWidget *fileListWidget() const override;
 
-    QList<QAction *> modActions() const override;
-    QList<QAction *> pathActions() const override;
-
     QIcon icon() const override;
     QString name() const override;
     void setPageSwitcher(PageSwitcher *newPageSwitcher);

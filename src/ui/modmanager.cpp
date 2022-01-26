@@ -285,7 +285,7 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
     } else if(index.parent().row() == PageSwitcher::Explore){
         // on one of explore items
         auto exploreBrowser = pageSwitcher_.exploreBrowser(index.row());
-        menu->addActions(exploreBrowser->pathActions());
+        menu->addActions(exploreBrowser->menu()->actions());
     } else if(index.parent().row() == PageSwitcher::Local){
         // on one of local items
         auto localBrowser = pageSwitcher_.localModBrowser(index.row());

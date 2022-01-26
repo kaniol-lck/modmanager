@@ -35,7 +35,6 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
     connect(manager_->qaria2(), &QAria2::finished, this, [=]{
         ui->statusbar->showMessage("Idoling");
     });
-//    connect(manager_, &DownloadManager::downloaderAdded, this, &DownloadBrowser::addNewDownloaderItem);
     connect(manager_->qaria2(), &QAria2::downloadSpeed, this, &DownloadBrowser::downloadSpeed);
     onCurrentRowChanged();
     connect(ui->downloaderListView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &DownloadBrowser::onCurrentRowChanged);

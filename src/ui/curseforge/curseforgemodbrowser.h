@@ -32,9 +32,6 @@ public:
     QWidget *fileListWidget() const override;
     CurseforgeMod *selectedMod() const;
 
-    QList<QAction *> modActions() const override;
-    QList<QAction *> pathActions() const override;
-
     ExploreBrowser *another() override;
 
 signals:
@@ -87,7 +84,7 @@ private:
     void onSelectedItemChanged(QStandardItem *item) override;
     QDialog *getDialog(QStandardItem *item) override;
     QWidget *getIndexWidget(QStandardItem *item) override;
-    QMenu *getMenu() override;
+    QMenu *getCustomContextMenu() override;
 };
 
 #endif // CURSEFORGEMODBROWSER_H

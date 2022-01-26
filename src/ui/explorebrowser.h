@@ -22,9 +22,6 @@ public:
 
     virtual ExploreBrowser *another() = 0;
 
-    QList<QAction *> modActions() const override;
-    QList<QAction *> pathActions() const override;
-
     QAction *visitWebsiteAction() const;
     QIcon icon() const override;
     QString name() const override;
@@ -32,11 +29,11 @@ public:
     LocalModPath *downloadPath() const;
     DownloadPathSelectMenu *downloadPathSelectMenu() const;
 
+    QMenu *menu() const;
+
 public slots:
     virtual void refresh() = 0;
     virtual void searchModByPathInfo(LocalModPath *path) = 0;
-
-    void openDialog();
 
 private slots:
     void onSliderChanged(int i);
@@ -55,19 +52,19 @@ protected:
     virtual void onSelectedItemChanged(QStandardItem *item);
     virtual QWidget *getIndexWidget(QStandardItem *item);
     virtual QDialog *getDialog(QStandardItem *item);
-    virtual QMenu *getMenu();
+    virtual QMenu *getCustomContextMenu();
     ExploreStatusBarWidget *statusBarWidget_;
     QStandardItemModel *model_;
-    QMenu *modMenu_;
-    QMenu *pathMenu_;
+    QMenu *menu_;
     DownloadPathSelectMenu *downloadPathSelectMenu_;
+    QAction *visitWebsiteAction_;
     QAction *refreshAction_;
+    QAction *openDialogAction_;
 
 private:
     QListView *modListView_;
     QIcon icon_;
     QString name_;
-    QAction *visitWebsiteAction_;
 };
 
 #endif // EXPLOREBROWSER_H

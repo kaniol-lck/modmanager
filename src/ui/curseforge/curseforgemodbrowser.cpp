@@ -42,7 +42,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
-    ui->menu_Curseforge->insertActions(ui->menu_Curseforge->actions().first(), pathMenu_->actions());
+    ui->menu_Curseforge->insertActions(ui->menu_Curseforge->actions().first(), menu_->actions());
     initUi();
 
     for(auto &&toolBar : findChildren<QToolBar *>())
@@ -55,10 +55,13 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
         ui->toolBar->addMenu(ui->menuSelect_Category);
         ui->toolBar->addMenu(ui->menuSelect_Game_Version);
     }
-    ui->toolBar->addWidget(ui->label_3);
-    ui->toolBar->addWidget(ui->loaderSelect);
     ui->toolBar->addMenu(downloadPathSelectMenu_);
+    ui->toolBar->addAction(refreshAction_);
+    ui->toolBar->addAction(visitWebsiteAction_);
+    ui->toolBar->addAction(openDialogAction_);
 
+    ui->searchBar->addWidget(ui->label_3);
+    ui->searchBar->addWidget(ui->loaderSelect);
     ui->searchBar->addWidget(ui->searchText);
     ui->searchBar->addWidget(ui->sortSelect);
 
@@ -462,16 +465,6 @@ CurseforgeMod *CurseforgeModBrowser::selectedMod() const
     return selectedMod_;
 }
 
-QList<QAction *> CurseforgeModBrowser::modActions() const
-{
-    return ui->menu_Mod->actions();
-}
-
-QList<QAction *> CurseforgeModBrowser::pathActions() const
-{
-    return ui->menu_Curseforge->actions();
-}
-
 ExploreBrowser *CurseforgeModBrowser::another()
 {
     return new CurseforgeModBrowser;
@@ -542,7 +535,7 @@ void CurseforgeModBrowser::on_actionOpen_Curseforge_Mod_Dialog_triggered()
     }
 }
 
-QMenu *CurseforgeModBrowser::getMenu()
+QMenu *CurseforgeModBrowser::getCustomContextMenu()
 {
     auto menu = new QMenu(this);
     menu->addAction(ui->actionOpen_Curseforge_Mod_Dialog);

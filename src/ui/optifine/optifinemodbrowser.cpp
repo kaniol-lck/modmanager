@@ -27,7 +27,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     bmclapi_(new BMCLAPI(this))
 {
     ui->setupUi(this);
-    ui->menuOptiFine->insertActions(ui->menuOptiFine->actions().first(), pathMenu_->actions());
+    ui->menuOptiFine->insertActions(ui->menuOptiFine->actions().first(), menu_->actions());
     initUi();
 
     for(auto &&toolBar : findChildren<QToolBar *>())
@@ -36,12 +36,17 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     //setup status bar
     ui->statusbar->addPermanentWidget(statusBarWidget_);
 
+    ui->toolBar->addMenu(downloadPathSelectMenu_);
+    ui->toolBar->addAction(refreshAction_);
+    ui->toolBar->addAction(visitWebsiteAction_);
+    ui->toolBar->addAction(openDialogAction_);
+    ui->toolBar->addAction(ui->actionGet_OptiFabric);
+    ui->toolBar->addAction(ui->actionGet_OptiForge);
+
+    ui->searchBar->addWidget(ui->label);
+    ui->searchBar->addWidget(ui->versionSelect);
     ui->searchBar->addWidget(ui->searchText);
     ui->searchBar->addWidget(ui->showPreview);
-
-    ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->label);
-    ui->toolBar->insertWidget(ui->actionGet_OptiFabric, ui->versionSelect);
-    ui->toolBar->addMenu(downloadPathSelectMenu_);
 
     updateStatusText();
     connect(ui->showPreview, &QCheckBox::stateChanged, this, &OptifineModBrowser::filterList);

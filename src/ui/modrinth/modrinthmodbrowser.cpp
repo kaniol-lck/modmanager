@@ -37,7 +37,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
-    ui->menu_Modrinth->insertActions(ui->menu_Modrinth->actions().first(), pathMenu_->actions());
+    ui->menu_Modrinth->insertActions(ui->menu_Modrinth->actions().first(), menu_->actions());
     initUi();
 
     for(auto &&toolBar : findChildren<QToolBar *>())
@@ -50,10 +50,13 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
         ui->toolBar->addMenu(ui->menuSelect_Game_Version);
         ui->toolBar->addMenu(ui->menuSelect_Category);
     }
-    ui->toolBar->addWidget(ui->label_3);
-    ui->toolBar->addWidget(ui->loaderSelect);
     ui->toolBar->addMenu(downloadPathSelectMenu_);
+    ui->toolBar->addAction(refreshAction_);
+    ui->toolBar->addAction(visitWebsiteAction_);
+    ui->toolBar->addAction(openDialogAction_);
 
+    ui->searchBar->addWidget(ui->label_3);
+    ui->searchBar->addWidget(ui->loaderSelect);
     ui->searchBar->addWidget(ui->searchText);
     ui->searchBar->addWidget(ui->sortSelect);
 
@@ -510,16 +513,6 @@ ModrinthMod *ModrinthModBrowser::selectedMod() const
     return selectedMod_;
 }
 
-QList<QAction *> ModrinthModBrowser::modActions() const
-{
-    return ui->menu_Mod->actions();
-}
-
-QList<QAction *> ModrinthModBrowser::pathActions() const
-{
-    return ui->menu_Modrinth->actions();
-}
-
 ExploreBrowser *ModrinthModBrowser::another()
 {
     return new ModrinthModBrowser;
@@ -557,7 +550,7 @@ void ModrinthModBrowser::on_actionOpen_Modrinth_Mod_Dialog_triggered()
     }
 }
 
-QMenu *ModrinthModBrowser::getMenu()
+QMenu *ModrinthModBrowser::getCustomContextMenu()
 {
     auto menu = new QMenu(this);
     menu->addAction(ui->actionOpen_Modrinth_Mod_Dialog);

@@ -541,16 +541,6 @@ QWidget *LocalModBrowser::fileListWidget() const
     return fileListWidget_;
 }
 
-QList<QAction *> LocalModBrowser::modActions() const
-{
-    return ui->menuMod->actions();
-}
-
-QList<QAction *> LocalModBrowser::pathActions() const
-{
-    return ui->menuPath->actions();
-}
-
 QIcon LocalModBrowser::icon() const
 {
     return modPath_->info().icon();
