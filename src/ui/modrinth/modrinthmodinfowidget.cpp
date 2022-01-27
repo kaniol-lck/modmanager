@@ -30,6 +30,11 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
 {
     mod_ = mod;
     emit modChanged();
+    connect(this, &ModrinthModInfoWidget::modChanged, this, disconnecter(
+                connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthModInfoWidget::updateFullInfo),
+                connect(mod_, &ModrinthMod::iconReady, this, &ModrinthModInfoWidget::updateIcon),
+                connect(mod_, &QObject::destroyed, this, [=]{ setMod(nullptr); })));
+
 
     ui->scrollArea->setVisible(mod_);
     ui->tagsWidget->setTagableObject(mod_);
@@ -49,9 +54,6 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
         ui->modDescription->setCursor(Qt::BusyCursor);
         mod_->acquireFullInfo();
     }
-
-    connect(this, &ModrinthModInfoWidget::modChanged, this, disconnecter(
-                connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthModInfoWidget::updateFullInfo)));
 }
 
 void ModrinthModInfoWidget::updateBasicInfo()
@@ -81,8 +83,6 @@ void ModrinthModInfoWidget::updateBasicInfo()
         mod_->acquireIcon();
         ui->modIcon->setCursor(Qt::BusyCursor);
     }
-    connect(this, &ModrinthModInfoWidget::modChanged, this, disconnecter(
-                connect(mod_, &ModrinthMod::iconReady, this, &ModrinthModInfoWidget::updateIcon)));
 }
 
 void ModrinthModInfoWidget::updateFullInfo()

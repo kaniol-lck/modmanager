@@ -51,7 +51,8 @@ void CurseforgeFileListWidget::setMod(CurseforgeMod *mod)
     mod_ = mod;
     emit modChanged();
     connect(this, &CurseforgeFileListWidget::modChanged, disconnecter(
-                connect(mod_, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList)));
+                connect(mod_, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList),
+                connect(mod_, &QObject::destroyed, this, [=]{ setMod(nullptr); })));
 
     ui->fileListView->setVisible(mod_);
     if(!mod_) return;

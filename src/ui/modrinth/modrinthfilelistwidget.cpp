@@ -61,9 +61,9 @@ void ModrinthFileListWidget::setMod(ModrinthMod *mod)
     }
 
     connect(this, &ModrinthFileListWidget::modChanged, this, disconnecter(
-                connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthFileListWidget::updateFullInfo)));
-    connect(this, &ModrinthFileListWidget::modChanged, this, disconnecter(
-                connect(mod_, &ModrinthMod::fileListReady, this, &ModrinthFileListWidget::updateFileList)));
+                connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthFileListWidget::updateFullInfo),
+                connect(mod_, &ModrinthMod::fileListReady, this, &ModrinthFileListWidget::updateFileList),
+                connect(mod_, &QObject::destroyed, this, [=]{ setMod(nullptr); })));
 }
 
 void ModrinthFileListWidget::updateUi()

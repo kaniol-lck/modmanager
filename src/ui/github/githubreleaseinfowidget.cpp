@@ -3,6 +3,7 @@
 
 #include "github/githubrelease.h"
 #include "util/smoothscrollbar.h"
+#include "util/funcutil.h"
 
 GitHubReleaseInfoWidget::GitHubReleaseInfoWidget(QWidget *parent) :
     QWidget(parent),
@@ -22,6 +23,8 @@ void GitHubReleaseInfoWidget::setRelease(GitHubRelease *release)
 
     auto release_ = release;
     emit releaseChanged();
+    connect(this, &GitHubReleaseInfoWidget::releaseChanged, disconnecter(
+                connect(release_, &QObject::destroyed, this, [=]{setRelease(nullptr); })));
     if(!release_) return;
 
     ui->name->setText(release_->info().name());

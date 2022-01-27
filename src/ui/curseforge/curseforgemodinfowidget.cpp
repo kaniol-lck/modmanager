@@ -36,7 +36,8 @@ void CurseforgeModInfoWidget::setMod(CurseforgeMod *mod)
     connect(this, &CurseforgeModInfoWidget::modChanged, disconnecter(
                 connect(mod_, &CurseforgeMod::basicInfoReady, this, &CurseforgeModInfoWidget::updateBasicInfo),
                 connect(mod_, &CurseforgeMod::descriptionReady, this, &CurseforgeModInfoWidget::updateDescription),
-                connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModInfoWidget::updateThumbnail)));
+                connect(mod_, &CurseforgeMod::iconReady, this, &CurseforgeModInfoWidget::updateThumbnail),
+                connect(mod_, &QObject::destroyed, this, [=]{ setMod(nullptr); })));
 
     ui->scrollArea->setVisible(mod_);
     ui->tagsWidget->setTagableObject(mod);
