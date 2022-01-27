@@ -208,6 +208,98 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
         });
     });
 
+    auto addTagMenu = new QMenu(this);
+    ui->actionAdd_Tag->setMenu(addTagMenu);
+    connect(addTagMenu, &QMenu::aboutToShow, this, [=]{
+        addTagMenu->clear();
+        addTagMenu->setIcon(QIcon::fromTheme("tag"));
+        //Type category
+        auto addTypeTagmenu = addTagMenu->addMenu(QIcon::fromTheme("tag"), QObject::tr("Type tag"));
+        for(const auto &tag : Tag::typeTags())
+            addTypeTagmenu->addAction(QIcon::fromTheme("tag"), tag.name(), [=]{
+                for(auto &&mod : selectedMods_)
+                    mod->addTag(tag);
+            });
+        //Functionality category
+        auto addFunctionalityTagmenu = addTagMenu->addMenu(QIcon::fromTheme("tag"), QObject::tr("Functionality tag"));
+        auto &&tagManager = modPath_->containedTags();
+        for(auto &&tag : Config().getRightClickTagMenu()? tagManager.tags(TagCategory::FunctionalityCategory) : Tag::functionalityTags().values())
+            addFunctionalityTagmenu->addAction(QIcon::fromTheme("tag"), tag.name(), [=]{
+                for(auto &&mod : selectedMods_)
+                    mod->addTag(tag);
+            });
+        if(!addFunctionalityTagmenu->isEmpty())
+            addFunctionalityTagmenu->addSeparator();
+        addFunctionalityTagmenu->addAction(QIcon::fromTheme("tag-new"), QObject::tr("New functionality tag..."), [=]{
+            bool ok;
+            auto name = QInputDialog::getText(parent, QObject::tr("New tag"), QObject::tr("Functionality:"), QLineEdit::Normal, "", &ok);
+            if(ok && !name.isEmpty())
+                for(auto &&mod : selectedMods_)
+                    mod->addTag(Tag(name, TagCategory::FunctionalityCategory));
+        });
+        //TODO: other categories
+        if(selectedMods_.size() == 1){
+            auto &&mod = selectedMods_.first();
+            //Translation category
+            addTagMenu->addAction(QIcon::fromTheme("tag-edit"), QObject::tr("Translation tag"), [=]{
+                bool ok;
+                QString str;
+                if(auto translationTag = mod->tags(TagCategory::TranslationCategory); !translationTag.isEmpty())
+                    str = translationTag.first().name();
+                auto name = QInputDialog::getText(parent, QObject::tr("Translation tag"), QObject::tr("Translation:"), QLineEdit::Normal, str, &ok);
+                if(ok && !name.isEmpty()){
+                    mod->removeTags(TagCategory::TranslationCategory);
+                    mod->addTag(Tag(name, TagCategory::TranslationCategory));
+                }
+            });
+            //Notation category
+            addTagMenu->addAction(QIcon::fromTheme("tag-edit"), QObject::tr("Notation tag"), [=]{
+                bool ok;
+                QString str;
+                if(auto notationTag = mod->tags(TagCategory::NotationCategory); !notationTag.isEmpty())
+                    str = notationTag.first().name();
+                auto name = QInputDialog::getText(parent, QObject::tr("Notation tag"), QObject::tr("Notation:"), QLineEdit::Normal, str, &ok);
+                if(ok && !name.isEmpty()){
+                    mod->removeTags(TagCategory::NotationCategory);
+                    mod->addTag(Tag(name, TagCategory::NotationCategory));
+                }
+            });
+        }
+        //Custom category
+        for(auto &&tag : Tag::customTags())
+            addTagMenu->addAction(QIcon::fromTheme("tag"), tag.name(), [=]{
+                for(auto &&mod : selectedMods_)
+                    mod->addTag(tag);
+            });
+        addTagMenu->addSeparator();
+        addTagMenu->addAction(QIcon::fromTheme("tag-new"), QObject::tr("New custom tag..."), [=]{
+            bool ok;
+            auto name = QInputDialog::getText(parent, QObject::tr("New tag"), QObject::tr("New tag name:"), QLineEdit::Normal, "", &ok);
+            if(ok)
+                for(auto &&mod : selectedMods_)
+                    mod->addTag(Tag(name));
+        });
+    });
+
+    auto removeTagMenu = new QMenu(this);
+    ui->actionRemove_Tag->setMenu(removeTagMenu);
+    connect(removeTagMenu, &QMenu::aboutToShow, this, [=]{
+        removeTagMenu->clear();
+        removeTagMenu->setIcon(QIcon::fromTheme("tag-delete"));
+        if(selectedMods_.isEmpty()) return;
+        QList<Tag> tagList;
+        for(auto &&mod : selectedMods_){
+            for(auto &&tag : mod->tags(TagCategory::CustomizableCategories)){
+                if(tagList.contains(tag)) continue;
+                tagList << tag;
+                removeTagMenu->addAction(QIcon::fromTheme("tag-delete"), tag.name(), [=]{
+                    for(auto &&mod : selectedMods_)
+                        mod->removeTag(tag);
+                });
+            }
+        }
+    });
+
     if(modPath_->modsLoaded())
         filter_->refreshTags();
 
@@ -715,6 +807,11 @@ void LocalModBrowser::onSelectedModsChanged()
     ui->actionRename_to->setEnabled(!noMod);
     ui->actionMove_Selected_Mods_to->setEnabled(!noMod);
     ui->actionCheck_Updates_for_Selected_Mods->setEnabled(!noMod);
+
+    ui->actionAdd_Tag->setEnabled(!noMod);
+    ui->actionRemove_Tag->setEnabled(!std::all_of(selectedMods_.cbegin(), selectedMods_.cend(), [=](const auto &mod){
+        return mod->tags(TagCategory::CustomizableCategories).isEmpty();
+    }));
 
     bool isEnabled = false;
     for(auto &&mod : selectedMods_)

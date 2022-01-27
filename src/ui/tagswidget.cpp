@@ -75,10 +75,9 @@ void TagsWidget::on_TagsWidget_customContextMenuRequested(const QPoint &pos)
     if(isLocalMod_){
         auto mod = dynamic_cast<LocalMod *>(tagableObject_);
         auto menu = new QMenu(this);
-        auto localModMenu = new LocalModMenu(this, mod);
-        menu->addMenu(localModMenu->addTagMenu());
+        menu->addMenu(LocalModMenu::addTagMenu(this, mod));
         if(!mod->tags(TagCategory::CustomizableCategories).isEmpty())
-            menu->addMenu(localModMenu->removeTagmenu());
+            menu->addMenu(LocalModMenu::removeTagmenu(this, mod));
         menu->exec(mapToGlobal(pos));
     }
 }

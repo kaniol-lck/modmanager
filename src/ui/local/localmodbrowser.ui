@@ -311,6 +311,9 @@
     <addaction name="actionToggle_Enable"/>
     <addaction name="actionToggle_Star"/>
     <addaction name="separator"/>
+    <addaction name="actionAdd_Tag"/>
+    <addaction name="actionRemove_Tag"/>
+    <addaction name="separator"/>
     <addaction name="actionRename_Selected_Mods"/>
     <addaction name="actionRename_to"/>
     <addaction name="actionShow_This_Mod_in_Directory"/>
@@ -559,7 +562,8 @@
   </action>
   <action name="actionFilter">
    <property name="icon">
-    <iconset theme="view-filter"/>
+    <iconset theme="view-filter">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Filter</string>
@@ -600,10 +604,27 @@
   </action>
   <action name="actionCheck_Updates_for_Selected_Mods">
    <property name="icon">
-    <iconset theme="update-none"/>
+    <iconset theme="update-none">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Check Updates for Selected Mods</string>
+   </property>
+  </action>
+  <action name="actionAdd_Tag">
+   <property name="icon">
+    <iconset theme="tag"/>
+   </property>
+   <property name="text">
+    <string>Add Tag</string>
+   </property>
+  </action>
+  <action name="actionRemove_Tag">
+   <property name="icon">
+    <iconset theme="tag-delete"/>
+   </property>
+   <property name="text">
+    <string>Remove Tag</string>
    </property>
   </action>
  </widget>
