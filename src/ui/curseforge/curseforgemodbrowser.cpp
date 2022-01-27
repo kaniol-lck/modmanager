@@ -307,8 +307,7 @@ void CurseforgeModBrowser::updateStatusText()
     case CurseforgeAPI::Customization:
         break;
     }
-    auto str = tr("Loaded %1 %2 from Curseforge.").arg(model_->rowCount() - (hasMore_? 0 : 1)).arg(sectionStr);
-    ui->statusbar->showMessage(str);
+    statusBarWidget_->setModCount(model_->rowCount() - (hasMore_? 0 : 1));
 }
 
 void CurseforgeModBrowser::getModList(QString name, int index)

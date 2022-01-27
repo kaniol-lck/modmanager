@@ -385,8 +385,7 @@ void ModrinthModBrowser::search()
 
 void ModrinthModBrowser::updateStatusText()
 {
-    auto str = tr("Loaded %1 mods from Modrinth.").arg(model_->rowCount() - (hasMore_? 0 : 1));
-    ui->statusbar->showMessage(str);
+    statusBarWidget_->setModCount(model_->rowCount() - (hasMore_? 0 : 1));
 }
 
 void ModrinthModBrowser::getModList(QString name, int index)

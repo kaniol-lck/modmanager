@@ -18,6 +18,8 @@ public:
 public slots:
     void setProgressVisible(bool visible);
     void setText(const QString &text);
+    void setModCount(int loadCount);
+
 private:
     Ui::ExploreStatusBarWidget *ui;
 };
