@@ -725,6 +725,8 @@ void LocalModBrowser::onSelectedModsChanged()
         if(mod->isFeatured()) isStarred = true;
     ui->actionToggle_Star->setChecked(isStarred);
 
+    if(!noMod && selectedMods_.first()->modFile())
+        statusBar()->showMessage(selectedMods_.first()->modFile()->fileInfo().fileName());
     infoWidget_->setMods(selectedMods_);
     fileListWidget_->setMods(selectedMods_);
 
