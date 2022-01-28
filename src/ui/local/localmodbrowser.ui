@@ -316,7 +316,7 @@
     <addaction name="separator"/>
     <addaction name="actionRename_Selected_Mods"/>
     <addaction name="actionRename_to"/>
-    <addaction name="actionShow_This_Mod_in_Directory"/>
+    <addaction name="actionShow_in_Folder"/>
     <addaction name="actionMove_Selected_Mods_to"/>
     <addaction name="actionCheck_Updates_for_Selected_Mods"/>
     <addaction name="separator"/>
@@ -583,9 +583,12 @@
     <string>Export Compressed File</string>
    </property>
   </action>
-  <action name="actionShow_This_Mod_in_Directory">
+  <action name="actionShow_in_Folder">
    <property name="text">
-    <string>Show This Mod in Directory</string>
+    <string>Show in Folder</string>
+   </property>
+   <property name="toolTip">
+    <string>Show in Folder</string>
    </property>
   </action>
   <action name="actionMove_Selected_Mods_to">
@@ -613,7 +616,8 @@
   </action>
   <action name="actionAdd_Tag">
    <property name="icon">
-    <iconset theme="tag"/>
+    <iconset theme="tag">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Add Tag</string>
@@ -621,7 +625,8 @@
   </action>
   <action name="actionRemove_Tag">
    <property name="icon">
-    <iconset theme="tag-delete"/>
+    <iconset theme="tag-delete">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Remove Tag</string>

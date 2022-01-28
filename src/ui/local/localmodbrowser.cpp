@@ -813,14 +813,12 @@ void LocalModBrowser::onSelectedModsChanged()
         return mod->tags(TagCategory::CustomizableCategories).isEmpty();
     }));
 
-    bool isEnabled = false;
-    for(auto &&mod : selectedMods_)
-        if(mod->isEnabled()) isEnabled = true;
-    ui->actionToggle_Enable->setChecked(isEnabled);
-    bool isStarred = false;
-    for(auto &&mod : selectedMods_)
-        if(mod->isFeatured()) isStarred = true;
-    ui->actionToggle_Star->setChecked(isStarred);
+    ui->actionToggle_Enable->setChecked(std::all_of(selectedMods_.cbegin(), selectedMods_.cend(), [=](const auto &mod){
+        return mod->isEnabled();
+    }));
+    ui->actionToggle_Star->setChecked(std::all_of(selectedMods_.cbegin(), selectedMods_.cend(), [=](const auto &mod){
+        return mod->isFeatured();
+    }));
 
     if(!noMod && selectedMods_.first()->modFile())
         statusBar()->showMessage(selectedMods_.first()->modFile()->fileInfo().fileName());
@@ -828,7 +826,7 @@ void LocalModBrowser::onSelectedModsChanged()
     fileListWidget_->setMods(selectedMods_);
 
     if(selectedMods_.count() == 1){
-        ui->actionShow_This_Mod_in_Directory->setEnabled(true);
+        ui->actionShow_in_Folder->setEnabled(true);
         ui->actionOpen_Mod_Dialog->setEnabled(true);
         ui->actionSearch_on_Curseforge->setEnabled(true);
         ui->actionSearch_on_Modrinth->setEnabled(true);
@@ -838,7 +836,7 @@ void LocalModBrowser::onSelectedModsChanged()
         ui->actionOpen_Curseforge_Mod_Dialog->setEnabled(mod->curseforgeMod());
         ui->actionOpen_Modrinth_Mod_Dialog->setEnabled(mod->modrinthMod());
     } else{
-        ui->actionShow_This_Mod_in_Directory->setEnabled(false);
+        ui->actionShow_in_Folder->setEnabled(false);
         ui->actionOpen_Mod_Dialog->setEnabled(false);
         ui->actionSearch_on_Curseforge->setEnabled(false);
         ui->actionSearch_on_Modrinth->setEnabled(false);
@@ -981,7 +979,7 @@ void LocalModBrowser::on_actionExport_Compressed_File_triggered()
     });
 }
 
-void LocalModBrowser::on_actionShow_This_Mod_in_Directory_triggered()
+void LocalModBrowser::on_actionShow_in_Folder_triggered()
 {
     if(selectedMods_.isEmpty()) return;
     auto mod = selectedMods_.first();
@@ -994,4 +992,3 @@ void LocalModBrowser::on_actionCheck_Updates_for_Selected_Mods_triggered()
     for(auto &&mod : selectedMods_)
         mod->checkUpdates();
 }
-

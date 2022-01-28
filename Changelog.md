@@ -1,6 +1,28 @@
-# Changelog
+# Mod Manager Changelog
 
 ## 正式发布 Release
+
+### v1.0.3
+
+*2022.01.28*
+
+Tweaked status bar, moved mod count to right side.
+调整了状态栏，将mod计数移动至右侧。
+
+Tweaked tool bar and search bar in explore page.
+调整了浏览页面中的工具栏和搜索栏。
+
+Tweaked add/remove tag actions in local mod pages, it can operate on multi-mods now.
+调整了添加/移除标签
+
+Added more actions to downloader.
+为下载器添加了更多操作。
+
+Fixed crash caused by actions on refreshed mod in explore pages.
+修复了由在浏览页面中已刷新的mod上进行操作产生的崩溃。
+
+Fixed mod link stuck.
+修复了mod链接卡住。
 
 ### v1.0.2
 
