@@ -34,6 +34,7 @@ public:
 
 signals:
     void menuBarChanged();
+    void closed();
 
 protected:
     void closeEvent(QCloseEvent *event) override;

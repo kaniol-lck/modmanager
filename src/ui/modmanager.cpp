@@ -208,6 +208,7 @@ void ModManager::updateLockPanels()
 
 void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
 {
+    emit closed();
 //    qDebug() << "closed";
 }
 

@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
         auto titleBar = new WindowsTitleBar(&w, w.windowTitle(), w.menuBar());
         QObject::connect(&w, &ModManager::menuBarChanged, titleBar, &WindowsTitleBar::updateMenuBar);
         auto frameless = new FramelessWrapper(nullptr, &w, titleBar);
+        QObject::connect(&w, &ModManager::closed, frameless, &FramelessWrapper::close);
         titleBar->setParentWidget(frameless);
         frameless->show();
     } else
