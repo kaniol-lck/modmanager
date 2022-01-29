@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QNetworkProxy>
 #include <QProcess>
+#include <QToolBar>
 #ifdef DE_KDE
 #include <KWindowEffects>
 #endif
@@ -222,19 +223,12 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
 #endif
     QPainter p(this);
     p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock, ui->fileListDock }){
+    for(auto &&widget : findChildren<QDockWidget *>()){
         if(!widget->isVisible()) continue;
         auto rect = widget->rect();
         rect.translate(widget->pos());
         p.fillRect(rect, QBrush(QColor(255, 255, 255, 191)));
     }
-#ifdef Q_OS_WIN
-//    if(titleBar_){
-//        auto rect2 = titleBar_->rect();
-//        rect2.translate(titleBar_->pos());
-//        p.fillRect(rect2, QBrush(QColor(255, 255, 255, 127)));
-//    }
-#endif //Q_OS_WIN
 }
 #endif //defined (DE_KDE) || defined (Q_OS_WIN)
 

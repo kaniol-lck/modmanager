@@ -160,10 +160,10 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
             AdjustWindowRectEx(&frame, WS_OVERLAPPEDWINDOW, FALSE, 0);
             frame.left = abs(frame.left);
             frame.top = abs(frame.bottom);
-            this->setContentsMargins(frame.left, frame.top, frame.right, frame.bottom);
+            setContentsMargins(frame.left, frame.top, frame.right, frame.bottom);
             titleBar_->setMaximumed();
         } else{
-            this->setContentsMargins(0, 0, 0, 0);
+            setContentsMargins(0, 0, 0, 0);
             titleBar_->setNormal();
         }
         *result = ::DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
@@ -182,7 +182,10 @@ void FramelessWrapper::paintEvent(QPaintEvent *event[[maybe_unused]])
     for(auto &&widget : { titleBar_ }){
         if(!widget->isVisible()) continue;
         auto rect = widget->rect();
-        rect.translate(widget->pos());
+        auto pos = widget->pos();
+        pos.setX(pos.x() + contentsMargins().left());
+        pos.setY(pos.y() + contentsMargins().top());
+        rect.translate(pos);
         p.fillRect(rect, QBrush(QColor(255, 255, 255, 215)));
     }
 }

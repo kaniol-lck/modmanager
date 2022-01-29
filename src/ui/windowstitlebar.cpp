@@ -101,7 +101,6 @@ void WindowsTitleBar::on_maxButton_clicked()
     }
 }
 
-
 void WindowsTitleBar::on_minButton_clicked()
 {
     parentWidget_->showMinimized();
