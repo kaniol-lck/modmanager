@@ -26,6 +26,9 @@ public:
 public slots:
     void updateMenuBar();
 
+    void setMaximumed();
+    void setNormal();
+
 protected:
 #ifdef Q_OS_WIN
     void mouseMoveEvent(QMouseEvent *event) override;

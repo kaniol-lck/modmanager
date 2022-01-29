@@ -161,8 +161,10 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
             frame.left = abs(frame.left);
             frame.top = abs(frame.bottom);
             this->setContentsMargins(frame.left, frame.top, frame.right, frame.bottom);
+            titleBar_->setMaximumed();
         } else{
             this->setContentsMargins(0, 0, 0, 0);
+            titleBar_->setNormal();
         }
         *result = ::DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
          break;

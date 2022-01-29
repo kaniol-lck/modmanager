@@ -51,12 +51,23 @@ void WindowsTitleBar::updateMenuBar()
             button->setDefaultAction(action);
             button->setPopupMode(QToolButton::InstantPopup);
             button->setStyleSheet("QToolButton::menu-indicator{image:none;}");
+            button->setFocusPolicy(Qt::NoFocus);
             ui->menuLayout->addWidget(button);
             menuButtons_ << button;
         }
         //    menuBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         //    menuBar->adjustSize();
     }
+}
+
+void WindowsTitleBar::setMaximumed()
+{
+    ui->maxButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarNormalButton));
+}
+
+void WindowsTitleBar::setNormal()
+{
+    ui->maxButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMaxButton));
 }
 
 #ifdef Q_OS_WIN
@@ -95,7 +106,6 @@ void WindowsTitleBar::on_minButton_clicked()
 {
     parentWidget_->showMinimized();
 }
-
 
 void WindowsTitleBar::on_WindowsTitleBar_customContextMenuRequested(const QPoint &pos)
 {
