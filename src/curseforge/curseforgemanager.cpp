@@ -50,7 +50,8 @@ void CurseforgeManager::getModList()
         if(currentIndex_ == 0){
             emit scrollToTop();
             model_->beginResetModel();
-            qDeleteAll(mods_);
+            for(auto &&mod : mods_)
+                if(mod->parent() == this) mod->deleteLater();
             mods_.clear();
             model_->endResetModel();
             hasMore_ = true;
@@ -123,6 +124,6 @@ bool CurseforgeManagerProxyModel::filterAcceptsRow(int source_row, const QModelI
 {
     if(loaderType_ == ModLoaderType::Any) return true;
     auto mod = sourceModel()->index(source_row, CurseforgeManager::ModColumn).data(Qt::UserRole + 1).value<CurseforgeMod *>();
-    if(!mod) return true;
+    if(!mod) return false;
     return mod->modInfo().loaderTypes().contains(loaderType_) || mod->modInfo().loaderTypes().isEmpty();
 }

@@ -107,6 +107,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
         statusBarWidget_->setProgressVisible(false);
         refreshAction_->setEnabled(true);
         updateStatusText();
+        proxyModel_->invalidate();
     });
     connect(manager_, &CurseforgeManager::scrollToTop, this, [=]{
         scrollToTop();
@@ -305,12 +306,13 @@ void CurseforgeModBrowser::updateStatusText()
 QDialog *CurseforgeModBrowser::getDialog(const QModelIndex &index)
 {
     auto mod = index.data(Qt::UserRole + 1).value<CurseforgeMod*>();
-    if(mod && !mod->parent()){
+    if(mod && mod->parent() == manager_){
         auto dialog = new CurseforgeModDialog(this, mod);
         //set parent
         mod->setParent(dialog);
         connect(dialog, &CurseforgeModDialog::finished, this, [=]{
-            mod->setParent(nullptr);
+            if(manager_->mods().contains(mod))
+                mod->setParent(manager_);
         });
         return dialog;
     } else
@@ -425,12 +427,13 @@ void CurseforgeModBrowser::on_actionCopy_Website_Link_triggered()
 
 void CurseforgeModBrowser::on_actionOpen_Curseforge_Mod_Dialog_triggered()
 {
-    if(selectedMod_ && !selectedMod_->parent()){
+    if(selectedMod_ && selectedMod_->parent() == manager_){
         auto dialog = new CurseforgeModDialog(this, selectedMod_);
         //set parent
         selectedMod_->setParent(dialog);
-        connect(dialog, &CurseforgeModDialog::finished, this, [=]{
-            selectedMod_->setParent(nullptr);
+        connect(dialog, &CurseforgeModDialog::finished, this, [=, mod = selectedMod_]{
+            if(manager_->mods().contains(mod))
+                mod->setParent(manager_);
         });
         dialog->show();
     }
