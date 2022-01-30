@@ -11,9 +11,11 @@ class CurseforgeModInfoWidget;
 class CurseforgeFileListWidget;
 class ExploreStatusBarWidget;
 class QStatusBar;
-class QStandardItemModel;
+class CurseforgeManager;
 class LocalMod;
 class QMenu;
+
+class CurseforgeManagerProxyModel;
 namespace Ui {
 class CurseforgeModBrowser;
 }
@@ -44,7 +46,6 @@ public slots:
 
 private slots:
     void switchSection();
-    void getModList(QString name, int index = 0);
     void updateVersionList();
     void updateCategoryList(QList<CurseforgeCategoryInfo> list);
     void search();
@@ -62,24 +63,21 @@ private slots:
 
 private:
     Ui::CurseforgeModBrowser *ui;
-    QStandardItemModel *model_;
-    CurseforgeAPI::Section sectionId_ = CurseforgeAPI::Mod;
+    CurseforgeManager *manager_;
+    CurseforgeManagerProxyModel *proxyModel_;
+    CurseforgeAPI::Section sectionId_;
     CurseforgeModInfoWidget *infoWidget_;
     CurseforgeFileListWidget *fileListWidget_;
-    CurseforgeAPI *api_;
     QList<int> idList_;
     //open as a dialog to search mod
     LocalMod *localMod_;
-    QString currentName_;
-    int currentIndex_;
-    int currentCategoryId_ = 0;
-    GameVersion currentGameVersion_;
     ModLoaderType::Type currentLoaderType_ = ModLoaderType::Any;
-    bool hasMore_ = false;
     bool inited_ = false;
     CurseforgeMod* selectedMod_ = nullptr;
-    std::unique_ptr<Reply<QList<CurseforgeModInfo> > > searchModsGetter_;
     std::unique_ptr<Reply<QList<CurseforgeCategoryInfo> > > sectionCategoriesGetter_;
+
+    int currentCategoryId_ = 0;
+    GameVersion currentGameVersion_;
 
     void loadMore() override;
     void onSelectedItemChanged(const QModelIndex &index) override;

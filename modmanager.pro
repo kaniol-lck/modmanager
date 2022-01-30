@@ -19,6 +19,7 @@ SOURCES += \
     src/curseforge/curseforgedependencyinfo.cpp \
     src/curseforge/curseforgefile.cpp \
     src/curseforge/curseforgefileinfo.cpp \
+    src/curseforge/curseforgemanager.cpp \
     src/curseforge/curseforgemod.cpp \
     src/curseforge/curseforgemodcacheinfo.cpp \
     src/curseforge/curseforgemodinfo.cpp \
@@ -145,6 +146,7 @@ HEADERS += \
     src/curseforge/curseforgedependencyinfo.h \
     src/curseforge/curseforgefile.h \
     src/curseforge/curseforgefileinfo.h \
+    src/curseforge/curseforgemanager.h \
     src/curseforge/curseforgemod.h \
     src/curseforge/curseforgemodcacheinfo.h \
     src/curseforge/curseforgemodinfo.h \
