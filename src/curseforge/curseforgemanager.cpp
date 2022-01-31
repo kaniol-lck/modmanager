@@ -1,8 +1,7 @@
 #include "curseforgemanager.h"
 
 #include "curseforgemod.h"
-
-#include <config.hpp>
+#include "config.hpp"
 
 CurseforgeManager::CurseforgeManager(QObject *parent, CurseforgeAPI::Section sectionId) :
     QObject(parent),
@@ -23,6 +22,11 @@ void CurseforgeManager::search(const QString &name, int categoryId, GameVersion 
 void CurseforgeManager::searchMore()
 {
     currentIndex_ += Config().getSearchResultCount();
+    getModList();
+}
+
+void CurseforgeManager::refresh()
+{
     getModList();
 }
 

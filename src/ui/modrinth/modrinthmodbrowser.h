@@ -3,10 +3,9 @@
 
 #include "ui/explorebrowser.h"
 
-#include "network/reply.hpp"
-
 class ModrinthAPI;
 class ModrinthMod;
+class ModrinthManager;
 class LocalModPath;
 class ModrinthModInfoWidget;
 class ModrinthFileListWidget;
@@ -58,28 +57,22 @@ private slots:
 
 private:
     Ui::ModrinthModBrowser *ui;
-    QStandardItemModel *model_;
+    ModrinthManager *manager_;
     ModrinthModInfoWidget *infoWidget_;
     ModrinthFileListWidget *fileListWidget_;
-    ModrinthAPI *api_;
-    QString currentName_;
-    int currentIndex_;
     QStringList lastCategoryIds_;
     QStringList currentCategoryIds_;
     QList<GameVersion> lastGameVersions_;
     QList<GameVersion> currentGameVersions_;
-    bool hasMore_ = false;
     bool inited_ = false;
     LocalMod *localMod_ = nullptr;
     ModrinthMod* selectedMod_ = nullptr;
-    std::unique_ptr<Reply<QList<ModrinthModInfo>>> searchModsGetter_;
 
     void loadMore() override;
     void onSelectedItemChanged(const QModelIndex &index) override;
     QDialog *getDialog(const QModelIndex &index) override;
     QWidget *getIndexWidget(const QModelIndex &index) override;
     QMenu *getCustomContextMenu() override;
-    void getModList(QString name, int index = 0);
 };
 
 #endif // MODRINTHMODBROWSER_H

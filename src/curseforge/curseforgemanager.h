@@ -5,7 +5,7 @@
 #include <QObject>
 #include <QSortFilterProxyModel>
 
-#include "curseforge/curseforgeapi.h"
+#include "curseforgeapi.h"
 
 class CurseforgeMod;
 class CurseforgeManagerModel;

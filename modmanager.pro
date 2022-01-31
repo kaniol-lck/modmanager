@@ -50,6 +50,7 @@ SOURCES += \
     src/modloadertype.cpp \
     src/modrinth/modrinthapi.cpp \
     src/modrinth/modrinthfileinfo.cpp \
+    src/modrinth/modrinthmanager.cpp \
     src/modrinth/modrinthmod.cpp \
     src/modrinth/modrinthmodinfo.cpp \
     src/modwebsitetype.cpp \
@@ -178,6 +179,7 @@ HEADERS += \
     src/modloadertype.h \
     src/modrinth/modrinthapi.h \
     src/modrinth/modrinthfileinfo.h \
+    src/modrinth/modrinthmanager.h \
     src/modrinth/modrinthmod.h \
     src/modrinth/modrinthmodinfo.h \
     src/modwebsitetype.h \

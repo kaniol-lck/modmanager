@@ -2,7 +2,6 @@
 #define CURSEFORGEMODBROWSER_H
 
 #include "ui/explorebrowser.h"
-
 #include "curseforge/curseforgeapi.h"
 
 class CurseforgeMod;

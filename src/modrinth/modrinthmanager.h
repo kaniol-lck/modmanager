@@ -1,0 +1,64 @@
+#ifndef MODRINTHMANAGER_H
+#define MODRINTHMANAGER_H
+
+#include <QAbstractListModel>
+#include <QObject>
+
+#include "modrinthapi.h"
+
+class ModrinthMod;
+class ModrinthManagerModel;
+
+class ModrinthManager : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ModrinthManager(QObject *parent = nullptr);
+
+    void search(const QString name, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort);
+    void searchMore();
+    void refresh();
+
+    ModrinthManagerModel *model() const;
+
+    const QList<ModrinthMod *> &mods() const;
+
+signals:
+    void searchStarted();
+    void searchFinished(bool success = true);
+    void scrollToTop();
+
+private:
+    ModrinthAPI api_;
+    ModrinthManagerModel *model_;
+    QList<ModrinthMod *> mods_;
+    QString currentName_;
+    int currentIndex_;
+    QStringList currentCategoryIds_;
+    QList<GameVersion> currentGameVersions_;
+    ModLoaderType::Type currentType_;
+    int currentSort_;
+    bool hasMore_ = false;
+    std::unique_ptr<Reply<QList<ModrinthModInfo>>> searchModsGetter_;
+
+    void getModList();
+};
+
+class ModrinthManagerModel : public QAbstractListModel
+{
+    Q_OBJECT
+    friend class ModrinthManager;
+public:
+    ModrinthManagerModel(ModrinthManager *manager);
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    void setItemHeight(int newItemHeight);
+
+private:
+    ModrinthManager *manager_;
+    int itemHeight_ = 100;
+};
+
+#endif // MODRINTHMANAGER_H

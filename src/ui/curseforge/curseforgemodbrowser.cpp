@@ -292,6 +292,7 @@ void CurseforgeModBrowser::updateCategoryList(QList<CurseforgeCategoryInfo> list
 
 void CurseforgeModBrowser::search()
 {
+    if(!refreshAction_->isEnabled()) return;
     manager_->search(ui->searchText->text(),
                      currentCategoryId_,
                      currentGameVersion_,

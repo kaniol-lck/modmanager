@@ -8,6 +8,7 @@
 #include <QStandardItem>
 #include <QDesktopServices>
 
+#include "modrinth/modrinthmanager.h"
 #include "ui/downloadpathselectmenu.h"
 #include "modrinthmodinfowidget.h"
 #include "modrinthfilelistwidget.h"
@@ -29,17 +30,16 @@
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ExploreBrowser(parent, QIcon(":/image/modrinth.svg"), "Modrinth", QUrl("https://modrinth.com/mods")),
     ui(new Ui::ModrinthModBrowser),
-    model_(new QStandardItemModel(this)),
+    manager_(new ModrinthManager(this)),
     infoWidget_(new ModrinthModInfoWidget(this)),
     fileListWidget_(new ModrinthFileListWidget(this)),
-    api_(new ModrinthAPI(this)),
     localMod_(localMod)
 {
     infoWidget_->hide();
     fileListWidget_->hide();
     ui->setupUi(this);
     ui->menu_Modrinth->insertActions(ui->menu_Modrinth->actions().first(), menu_->actions());
-    initUi(model_);
+    initUi(manager_->model());
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -73,31 +73,41 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
 
+    connect(manager_, &ModrinthManager::searchStarted, this, [=]{
+        setCursor(Qt::BusyCursor);
+        statusBarWidget_->setText(tr("Searching mods..."));
+        statusBarWidget_->setProgressVisible(true);
+        refreshAction_->setEnabled(false);
+    });
+    connect(manager_, &ModrinthManager::searchFinished, this, [=](bool success){
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText(success? "" : tr("Failed loading"));
+        statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
+        updateStatusText();
+    });
+    connect(manager_, &ModrinthManager::scrollToTop, this, [=]{
+        scrollToTop();
+    });
+
     if(localMod_){
-        currentName_ = localMod_->commonInfo()->id();
-        ui->searchText->setText(currentName_);
+        ui->searchText->setText(localMod_->commonInfo()->id());
     } else if(Config().getSearchModsOnStartup()){
         inited_ = true;
-        getModList(currentName_);
+        search();
     }
 }
 
 ModrinthModBrowser::~ModrinthModBrowser()
 {
     delete ui;
-    for(auto row = 0; row < model_->rowCount(); row++){
-        auto item = model_->item(row);
-        auto mod = item->data().value<ModrinthMod*>();
-        if(mod && !mod->parent())
-            mod->deleteLater();
-    }
 }
 
 void ModrinthModBrowser::load()
 {
     if(!inited_){
         inited_ = true;
-        getModList(currentName_);
+        search();
     }
 }
 
@@ -124,7 +134,7 @@ void ModrinthModBrowser::searchModByPathInfo(LocalModPath *path)
     ui->loaderSelect->setCurrentIndex(ModLoaderType::modrinth.indexOf(path->info().loaderType()));
     ui->loaderSelect->blockSignals(false);
     downloadPathSelectMenu_->setDownloadPath(path);
-    getModList(currentName_);
+    search();
 }
 
 void ModrinthModBrowser::updateUi()
@@ -147,7 +157,7 @@ void ModrinthModBrowser::updateVersionList()
             ui->menuSelect_Game_Version->setTitle(tr("Game Version : %1").arg(version));
             currentGameVersions_ = { version };
             lastGameVersions_ = currentGameVersions_;
-            getModList(currentName_);
+            search();
         }
     });
     auto showSnapshotAction = ui->menuSelect_Game_Version->addAction(tr("Show Snapshot"));
@@ -171,7 +181,7 @@ void ModrinthModBrowser::updateVersionList()
         currentGameVersions_.clear();
         ui->menuSelect_Game_Version->setTitle(tr("Game Version : %1").arg(tr("Any")));
         ui->menuSelect_Game_Version->setIcon(QIcon());
-        getModList(currentName_);
+        search();
     });
     auto getVersionAction = [=](const GameVersion &version){
         auto versionAction = new QAction(version);
@@ -189,7 +199,7 @@ void ModrinthModBrowser::updateVersionList()
                 if(currentGameVersions_ == lastGameVersions_) return;
                 lastGameVersions_ = currentGameVersions_;
             }
-            getModList(currentName_);
+            search();
             ui->menuSelect_Game_Version->setToolTip("");
             if(auto size = currentGameVersions_.size(); size == 0)
                 ui->menuSelect_Game_Version->setTitle(tr("Game Version : %1").arg(tr("Any")));
@@ -306,7 +316,7 @@ void ModrinthModBrowser::updateCategoryList()
             currentCategoryIds_.clear();
             currentCategoryIds_ << categoryId;
             lastCategoryIds_ = currentCategoryIds_;
-            getModList(currentName_);
+            search();
         }
     });
     ui->menuSelect_Category->addSeparator();
@@ -315,7 +325,7 @@ void ModrinthModBrowser::updateCategoryList()
         currentCategoryIds_.clear();
         ui->menuSelect_Category->setTitle(tr("Category : %1").arg(tr("Any")));
         ui->menuSelect_Category->setIcon(QIcon());
-        getModList(currentName_);
+        search();
     });
     ui->menuSelect_Category->addSeparator();
     for(auto &&[name, id] : ModrinthAPI::getCategories()){
@@ -335,7 +345,7 @@ void ModrinthModBrowser::updateCategoryList()
                 if(currentCategoryIds_ == lastCategoryIds_) return;
                 lastCategoryIds_ = currentCategoryIds_;
             }
-            getModList(currentName_);
+            search();
             ui->menuSelect_Category->setIcon(QIcon());
             ui->menuSelect_Category->setToolTip("");
             if(auto size = currentCategoryIds_.size(); size == 0)
@@ -378,87 +388,29 @@ void ModrinthModBrowser::updateCategoryList()
 
 void ModrinthModBrowser::search()
 {
-//    if(ui->searchText->text() == currentName_) return;
-    currentName_ = ui->searchText->text();
-    getModList(currentName_);
+    if(!refreshAction_->isEnabled()) return;
+    manager_->search(ui->searchText->text(),
+                     currentGameVersions_,
+                     ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex()),
+                     currentCategoryIds_,
+                     ui->sortSelect->currentIndex());
 }
 
 void ModrinthModBrowser::updateStatusText()
 {
-    statusBarWidget_->setModCount(model_->rowCount() - (hasMore_? 0 : 1));
-}
-
-void ModrinthModBrowser::getModList(QString name, int index)
-{
-    if(!refreshAction_->isEnabled()) return;
-    if(!index)
-        currentIndex_ = 0;
-    else if(!hasMore_)
-        return;
-    setCursor(Qt::BusyCursor);
-    statusBarWidget_->setText(tr("Searching mods..."));
-    statusBarWidget_->setProgressVisible(true);
-    refreshAction_->setEnabled(false);
-
-    auto sort = ui->sortSelect->currentIndex();
-    auto type = ModLoaderType::modrinth.at(ui->loaderSelect->currentIndex());
-
-    searchModsGetter_ = api_->searchMods(name, currentIndex_, currentGameVersions_, type, currentCategoryIds_, sort).asUnique();
-    searchModsGetter_->setOnFinished(this, [=](const QList<ModrinthModInfo> &infoList){
-        //new search
-        if(currentIndex_ == 0){
-            scrollToTop();
-            for(auto row = 0; row < model_->rowCount(); row++){
-                auto item = model_->item(row);
-                auto mod = item->data().value<ModrinthMod*>();
-                if(mod && !mod->parent())
-                    mod->deleteLater();
-            }
-            model_->clear();
-            hasMore_ = true;
-        }
-
-        //show them
-        for(const auto &info : qAsConst(infoList)){
-            auto mod = new ModrinthMod((QObject*)nullptr, info);
-            auto *item = new QStandardItem();
-            item->setData(QVariant::fromValue(mod));
-            item->setSizeHint(QSize(0, 100));
-            model_->appendRow(item);
-            mod->acquireIcon();
-        }
-        if(infoList.size() < Config().getSearchResultCount()){
-            auto item = new QStandardItem(tr("There is no more mod here..."));
-            item->setSizeHint(QSize(0, 108));
-            auto font = qApp->font();
-            font.setPointSize(20);
-            item->setFont(font);
-            item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            model_->appendRow(item);
-            hasMore_ = false;
-        }
-        setCursor(Qt::ArrowCursor);
-        statusBarWidget_->setText("");
-        statusBarWidget_->setProgressVisible(false);
-        refreshAction_->setEnabled(true);
-        updateStatusText();
-    }, [=](auto){
-        setCursor(Qt::ArrowCursor);
-        statusBarWidget_->setText(tr("Failed loading"));
-        statusBarWidget_->setProgressVisible(false);
-        refreshAction_->setEnabled(true);
-    });
+    statusBarWidget_->setModCount(manager_->mods().size());
 }
 
 QDialog *ModrinthModBrowser::getDialog(const QModelIndex &index)
 {
     auto mod = index.data(Qt::UserRole + 1).value<ModrinthMod*>();
-    if(mod && !mod->parent()){
+    if(mod && mod->parent() == manager_){
         auto dialog = new ModrinthModDialog(this, mod);
         //set parent
         mod->setParent(dialog);
         connect(dialog, &ModrinthModDialog::finished, this, [=]{
-            mod->setParent(nullptr);
+            if(manager_->mods().contains(mod))
+                mod->setParent(nullptr);
         });
         return dialog;
     }
@@ -467,12 +419,12 @@ QDialog *ModrinthModBrowser::getDialog(const QModelIndex &index)
 
 void ModrinthModBrowser::on_sortSelect_currentIndexChanged(int)
 {
-    getModList(currentName_);
+    search();
 }
 
 void ModrinthModBrowser::on_loaderSelect_currentIndexChanged(int)
 {
-    getModList(currentName_);
+    search();
 }
 
 void ModrinthModBrowser::onSelectedItemChanged(const QModelIndex &index)
@@ -502,10 +454,8 @@ QWidget *ModrinthModBrowser::getIndexWidget(const QModelIndex &index)
 
 void ModrinthModBrowser::loadMore()
 {
-    if(refreshAction_->isEnabled() && hasMore_){
-        currentIndex_ += Config().getSearchResultCount();
-        getModList(currentName_, currentIndex_);
-    }
+    if(refreshAction_->isEnabled())
+        manager_->searchMore();
 }
 
 ModrinthMod *ModrinthModBrowser::selectedMod() const
@@ -539,12 +489,13 @@ void ModrinthModBrowser::on_actionCopy_Website_Link_triggered()
 void ModrinthModBrowser::on_actionOpen_Modrinth_Mod_Dialog_triggered()
 {
     if(!selectedMod_) return;
-    if(selectedMod_ && !selectedMod_->parent()){
+    if(selectedMod_ && selectedMod_->parent() == manager_){
         auto dialog = new ModrinthModDialog(this, selectedMod_);
         //set parent
         selectedMod_->setParent(dialog);
-        connect(dialog, &ModrinthModDialog::finished, this, [=]{
-            selectedMod_->setParent(nullptr);
+        connect(dialog, &ModrinthModDialog::finished, this, [=, mod = selectedMod_]{
+            if(manager_->mods().contains(mod))
+                selectedMod_->setParent(nullptr);
         });
         dialog->show();
     }
