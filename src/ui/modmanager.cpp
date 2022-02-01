@@ -463,7 +463,8 @@ void ModManager::updateBlur() const
 {
 #ifdef DE_KDE
     //TODO: disable blur under intel graphical card
-    KWindowEffects::enableBlurBehind(windowHandle(), config_.getEnableBlurBehind());
+    if(auto window = windowHandle())
+        KWindowEffects::enableBlurBehind(window, config_.getEnableBlurBehind());
 #endif
 }
 
