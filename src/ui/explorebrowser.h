@@ -7,12 +7,14 @@
 
 #include <QListView>
 
+class ExploreManager;
 class DownloadPathSelectMenu;
 class QComboBox;
 class LocalModPath;
 class QStandardItem;
 class QStandardItemModel;
 class QMenu;
+class QSortFilterProxyModel;
 class ExploreBrowser : public Browser
 {
     Q_OBJECT
@@ -44,7 +46,9 @@ private slots:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void initUi(QAbstractItemModel *model);
+    void initUi(ExploreManager *manager, QAbstractItemModel *model);
+    void initUi(ExploreManager *manager);
+    void initUi(ExploreManager *manager, QSortFilterProxyModel *model);
     bool isRowHidden(int row);
     void setRowHidden(int row, bool hidden);
     void scrollToTop();
@@ -65,6 +69,8 @@ private:
     QListView *modListView_;
     QIcon icon_;
     QString name_;
+
+    virtual void updateStatusText() = 0;
 };
 
 #endif // EXPLOREBROWSER_H

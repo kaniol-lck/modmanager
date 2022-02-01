@@ -9,7 +9,9 @@
 #include <QStandardItem>
 #include <QUrl>
 #include <QComboBox>
+#include <QSortFilterProxyModel>
 
+#include "exploremanager.h"
 #include "local/localmodpath.h"
 #include "local/localmodpathmanager.h"
 #include "util/smoothscrollbar.h"
@@ -114,7 +116,7 @@ void ExploreBrowser::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 }
 
-void ExploreBrowser::initUi(QAbstractItemModel *model)
+void ExploreBrowser::initUi(ExploreManager *manager, QAbstractItemModel *model)
 {
     setCentralWidget(modListView_);
     modListView_->setModel(model);
@@ -124,6 +126,36 @@ void ExploreBrowser::initUi(QAbstractItemModel *model)
     Config config;
     restoreGeometry(config.getBrowserWindowState(this));
     restoreState(config.getBrowserWindowState(this));
+
+    connect(manager, &ExploreManager::searchStarted, this, [=]{
+        setCursor(Qt::BusyCursor);
+        statusBarWidget_->setText(tr("Searching mods..."));
+        statusBarWidget_->setProgressVisible(true);
+        refreshAction_->setEnabled(false);
+    });
+    connect(manager, &ExploreManager::searchFinished, this, [=](bool success){
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText(success? "" : tr("Failed loading"));
+        statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
+        updateStatusText();
+    });
+    connect(manager, &ExploreManager::scrollToTop, this, [=]{
+        scrollToTop();
+    });
+}
+
+void ExploreBrowser::initUi(ExploreManager *manager)
+{
+    initUi(manager, manager->model());
+}
+
+void ExploreBrowser::initUi(ExploreManager *manager, QSortFilterProxyModel *model)
+{
+    initUi(manager, qobject_cast<QAbstractItemModel *>(model));
+    connect(manager, &ExploreManager::searchFinished, this, [=](bool){
+        model->invalidate();
+    });
 }
 
 bool ExploreBrowser::isRowHidden(int row)

@@ -46,7 +46,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     ui->setupUi(this);
     ui->menu_Curseforge->insertActions(ui->menu_Curseforge->actions().first(), menu_->actions());
     proxyModel_->setSourceModel(manager_->model());
-    initUi(proxyModel_);
+    initUi(manager_, proxyModel_);
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -94,24 +94,6 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
 
     connect(ui->searchText, &QLineEdit::returnPressed, this, &CurseforgeModBrowser::search);
     connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeModBrowser::updateVersionList);
-
-    connect(manager_, &CurseforgeManager::searchStarted, this, [=]{
-        setCursor(Qt::BusyCursor);
-        statusBarWidget_->setText(tr("Searching mods..."));
-        statusBarWidget_->setProgressVisible(true);
-        refreshAction_->setEnabled(false);
-    });
-    connect(manager_, &CurseforgeManager::searchFinished, this, [=](bool success){
-        setCursor(Qt::ArrowCursor);
-        statusBarWidget_->setText(success? "" : tr("Failed loading"));
-        statusBarWidget_->setProgressVisible(false);
-        refreshAction_->setEnabled(true);
-        updateStatusText();
-        proxyModel_->invalidate();
-    });
-    connect(manager_, &CurseforgeManager::scrollToTop, this, [=]{
-        scrollToTop();
-    });
 
     if(localMod_){
         ui->searchText->setText(localMod_->commonInfo()->id());

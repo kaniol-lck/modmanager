@@ -27,7 +27,7 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->menuReplayMod->addActions(menu_->actions());
-    initUi(manager_->model());
+    initUi(manager_);
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());

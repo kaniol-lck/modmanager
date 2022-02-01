@@ -34,7 +34,7 @@ public slots:
     ExploreBrowser *another() override;
 
 private slots:
-    void updateStatusText();
+    void updateStatusText() override;
     void on_actionGet_OptiFabric_triggered();
     void on_actionGet_OptiForge_triggered();
 

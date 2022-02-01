@@ -28,7 +28,7 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->menuOptiFine->insertActions(ui->menuOptiFine->actions().first(), menu_->actions());
-    initUi(manager_->model());
+    initUi(manager_);
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -49,23 +49,6 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ui->searchBar->addWidget(ui->showPreview);
 
     updateStatusText();
-    connect(manager_, &OptifineManager::searchStarted, this, [=]{
-        setCursor(Qt::BusyCursor);
-        statusBarWidget_->setText(tr("Searching mods..."));
-        statusBarWidget_->setProgressVisible(true);
-        refreshAction_->setEnabled(false);
-    });
-    connect(manager_, &OptifineManager::searchFinished, this, [=](bool success){
-        setCursor(Qt::ArrowCursor);
-        statusBarWidget_->setText(success? "" : tr("Failed loading"));
-        statusBarWidget_->setProgressVisible(false);
-        refreshAction_->setEnabled(true);
-        updateStatusText();
-    });
-    connect(manager_, &OptifineManager::scrollToTop, this, [=]{
-        scrollToTop();
-    });
-
     if(Config().getSearchModsOnStartup()){
         inited_ = true;
         refresh();

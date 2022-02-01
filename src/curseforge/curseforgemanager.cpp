@@ -61,8 +61,7 @@ void CurseforgeManager::getModList()
             model_->endResetModel();
             hasMore_ = true;
         }
-
-        //show them
+ //show them
         model_->beginInsertRows({}, mods_.size(), mods_.size() + infoList.size());
         qDebug() << "info list size" <<  infoList.size();
         for(const auto &info : qAsConst(infoList)){

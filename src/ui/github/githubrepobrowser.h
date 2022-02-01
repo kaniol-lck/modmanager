@@ -45,7 +45,7 @@ signals:
 
 private slots:
 //    void filterList();
-    void updateStatusText();
+    void updateStatusText() override;
 
 private:
     GitHubRepoInfo info_;

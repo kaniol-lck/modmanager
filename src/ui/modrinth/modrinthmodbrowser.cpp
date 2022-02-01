@@ -39,7 +39,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     fileListWidget_->hide();
     ui->setupUi(this);
     ui->menu_Modrinth->insertActions(ui->menu_Modrinth->actions().first(), menu_->actions());
-    initUi(manager_->model());
+    initUi(manager_);
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -72,23 +72,6 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
 
     connect(ui->searchText, &QLineEdit::returnPressed, this, &ModrinthModBrowser::search);
     connect(VersionManager::manager(), &VersionManager::modrinthVersionListUpdated, this, &ModrinthModBrowser::updateVersionList);
-
-    connect(manager_, &ModrinthManager::searchStarted, this, [=]{
-        setCursor(Qt::BusyCursor);
-        statusBarWidget_->setText(tr("Searching mods..."));
-        statusBarWidget_->setProgressVisible(true);
-        refreshAction_->setEnabled(false);
-    });
-    connect(manager_, &ModrinthManager::searchFinished, this, [=](bool success){
-        setCursor(Qt::ArrowCursor);
-        statusBarWidget_->setText(success? "" : tr("Failed loading"));
-        statusBarWidget_->setProgressVisible(false);
-        refreshAction_->setEnabled(true);
-        updateStatusText();
-    });
-    connect(manager_, &ModrinthManager::scrollToTop, this, [=]{
-        scrollToTop();
-    });
 
     if(localMod_){
         ui->searchText->setText(localMod_->commonInfo()->id());
