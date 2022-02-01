@@ -21,8 +21,8 @@ AboutDialog::AboutDialog(QWidget *parent) :
     setAttribute(Qt::WA_DeleteOnClose);
 #ifdef DE_KDE
     //TODO: window not blur in next show
-    KWindowEffects::enableBlurBehind(QWindow::fromWinId(winId()));
-    qDebug() << winId();
+    if(auto window = QWindow::fromWinId(winId()))
+        KWindowEffects::enableBlurBehind(window);
 #endif
 }
 
