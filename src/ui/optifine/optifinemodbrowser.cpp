@@ -6,6 +6,7 @@
 #include <QStandardItem>
 #include <QStatusBar>
 
+#include "optifine/optifinemanager.h"
 #include "ui/downloadpathselectmenu.h"
 #include "ui/explorestatusbarwidget.h"
 #include "optifinemoditemwidget.h"
@@ -23,13 +24,11 @@
 OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/optifine.png"), "OptiFine", QUrl("https://www.optifine.net")),
     ui(new Ui::OptifineModBrowser),
-    model_(new QStandardItemModel(this)),
-    api_(new OptifineAPI(this)),
-    bmclapi_(new BMCLAPI(this))
+    manager_(new OptifineManager(this))
 {
     ui->setupUi(this);
     ui->menuOptiFine->insertActions(ui->menuOptiFine->actions().first(), menu_->actions());
-    initUi(model_);
+    initUi(manager_->model());
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -50,23 +49,31 @@ OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ui->searchBar->addWidget(ui->showPreview);
 
     updateStatusText();
-    connect(ui->showPreview, &QCheckBox::stateChanged, this, &OptifineModBrowser::filterList);
-    connect(ui->versionSelect, &QComboBox::currentTextChanged, this, &OptifineModBrowser::filterList);
-    connect(ui->searchText, &QLineEdit::textChanged, this, &OptifineModBrowser::filterList);
+    connect(manager_, &OptifineManager::searchStarted, this, [=]{
+        setCursor(Qt::BusyCursor);
+        statusBarWidget_->setText(tr("Searching mods..."));
+        statusBarWidget_->setProgressVisible(true);
+        refreshAction_->setEnabled(false);
+    });
+    connect(manager_, &OptifineManager::searchFinished, this, [=](bool success){
+        setCursor(Qt::ArrowCursor);
+        statusBarWidget_->setText(success? "" : tr("Failed loading"));
+        statusBarWidget_->setProgressVisible(false);
+        refreshAction_->setEnabled(true);
+        updateStatusText();
+    });
+    connect(manager_, &OptifineManager::scrollToTop, this, [=]{
+        scrollToTop();
+    });
 
     if(Config().getSearchModsOnStartup()){
         inited_ = true;
-        getModList();
+        refresh();
     }
 }
 
 OptifineModBrowser::~OptifineModBrowser()
 {
-    for(auto row = 0; row < model_->rowCount(); row++){
-        auto mod = model_->index(row, 0).data(Qt::UserRole + 1).value<OptifineMod*>();
-        if(mod && !mod->parent())
-            mod->deleteLater();
-    }
     delete ui;
 }
 
@@ -74,20 +81,19 @@ void OptifineModBrowser::load()
 {
     if(!inited_){
         inited_ = true;
-        getModList();
+        refresh();
     }
 }
 
 void OptifineModBrowser::refresh()
 {
-    getModList();
+    manager_->search();
 }
 
 void OptifineModBrowser::searchModByPathInfo(LocalModPath *path)
 {
     ui->versionSelect->setCurrentText(path->info().gameVersion());
     downloadPathSelectMenu_->setDownloadPath(path);
-    filterList();
 }
 
 void OptifineModBrowser::updateUi()
@@ -101,81 +107,9 @@ ExploreBrowser *OptifineModBrowser::another()
     return new OptifineModBrowser;
 }
 
-void OptifineModBrowser::filterList()
-{
-    auto gameVersion = ui->versionSelect->currentIndex()? GameVersion(ui->versionSelect->currentText()) : GameVersion::Any;
-    auto showPreview = ui->showPreview->isChecked();
-    auto searchText = ui->searchText->text().toLower();
-    for(int row = 0; row < model_->rowCount(); row++){
-        auto mod = model_->index(row, 0).data(Qt::UserRole + 1).value<OptifineMod*>();
-        if(mod){
-            setRowHidden(row, (gameVersion != GameVersion::Any && mod->modInfo().gameVersion() != gameVersion) ||
-                         (!showPreview && mod->modInfo().isPreview()) ||
-                         !(mod->modInfo().name().toLower().contains(searchText) || mod->modInfo().gameVersion().toString().contains(searchText)));
-        }
-    }
-}
-
 void OptifineModBrowser::updateStatusText()
 {
-    statusBarWidget_->setModCount(model_->rowCount() - 1);
-}
-
-void OptifineModBrowser::getModList()
-{
-    if(!refreshAction_->isEnabled()) return;
-    setCursor(Qt::BusyCursor);
-    statusBarWidget_->setText(tr("Searching mods..."));
-    statusBarWidget_->setProgressVisible(true);
-    refreshAction_->setEnabled(false);
-
-    auto source = Config().getOptifineSource();
-    if(source == Config::OptifineSourceType::Official)
-        searchModsGetter_ = api_->getModList().asUnique();
-    else if (source == Config::OptifineSourceType::BMCLAPI)
-        searchModsGetter_ = bmclapi_->getOptifineList().asUnique();
-    searchModsGetter_->setOnFinished(this, [=](const auto &list){
-        setCursor(Qt::ArrowCursor);
-        statusBarWidget_->setText("");
-        statusBarWidget_->setProgressVisible(false);
-        refreshAction_->setEnabled(true);
-        for(auto row = 0; row < model_->rowCount(); row++){
-            auto item = model_->item(row);
-            auto mod = item->data().value<OptifineMod*>();
-            if(mod && !mod->parent())
-                mod->deleteLater();
-        }
-        model_->clear();
-        QStringList gameVersions;
-        for(auto modInfo : list){
-            if(!gameVersions.contains(modInfo.gameVersion()))
-                gameVersions << modInfo.gameVersion();
-            auto mod = new OptifineMod(nullptr, modInfo);
-            auto item = new QStandardItem;
-            item->setData(QVariant::fromValue(mod));
-            model_->appendRow(item);
-            item->setSizeHint(QSize(0, 100));
-            setRowHidden(item->row(), modInfo.isPreview());
-        }
-        ui->versionSelect->clear();
-        ui->versionSelect->addItem(tr("Any"));
-        ui->versionSelect->addItems(gameVersions);
-
-        auto item = new QStandardItem(tr("There is no more mod here..."));
-        item->setSizeHint(QSize(0, 108));
-        auto font = qApp->font();
-        font.setPointSize(20);
-        item->setFont(font);
-        item->setTextAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-        model_->appendRow(item);
-
-        updateStatusText();
-    }, [=](auto){
-        setCursor(Qt::ArrowCursor);
-        statusBarWidget_->setText(tr("Failed loading"));
-        statusBarWidget_->setProgressVisible(false);
-        refreshAction_->setEnabled(true);
-    });
+    statusBarWidget_->setModCount(manager_->mods().size());
 }
 
 QWidget *OptifineModBrowser::getIndexWidget(const QModelIndex &index)
@@ -183,6 +117,7 @@ QWidget *OptifineModBrowser::getIndexWidget(const QModelIndex &index)
     auto mod = index.data(Qt::UserRole + 1).value<OptifineMod*>();
     if(mod){
         auto widget = new OptifineModItemWidget(this, mod);
+        manager_->model()->setItemHeight(widget->height());
         return widget;
     }else
         return nullptr;

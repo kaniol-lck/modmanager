@@ -10,7 +10,7 @@ class LocalModPath;
 class ReplayAPI;
 class ExploreStatusBarWidget;
 class QStatusBar;
-class QStandardItemModel;
+class ReplayManager;
 namespace Ui {
 class ReplayModBrowser;
 }
@@ -33,17 +33,14 @@ public slots:
     ExploreBrowser *another() override;
 
 private slots:
-    void filterList();
     void updateStatusText();
 
 private:
     Ui::ReplayModBrowser *ui;
-    QStandardItemModel *model_;
-    ReplayAPI *api_;
+    ReplayManager *manager_;
     bool inited_ = false;
     std::unique_ptr<Reply<QList<ReplayModInfo> > > searchModsGetter_;
 
-    void getModList();
     QWidget *getIndexWidget(const QModelIndex &index) override;
 };
 

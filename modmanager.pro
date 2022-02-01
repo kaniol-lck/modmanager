@@ -30,8 +30,10 @@ SOURCES += \
     src/download/downloadmanager.cpp \
     src/download/qaria2.cpp \
     src/download/qaria2downloader.cpp \
+    src/exploremanager.cpp \
     src/github/githubapi.cpp \
     src/github/githubfileinfo.cpp \
+    src/github/githubmanager.cpp \
     src/github/githubrelease.cpp \
     src/github/githubreleaseinfo.cpp \
     src/github/githubrepoinfo.cpp \
@@ -55,9 +57,11 @@ SOURCES += \
     src/modrinth/modrinthmodinfo.cpp \
     src/modwebsitetype.cpp \
     src/optifine/optifineapi.cpp \
+    src/optifine/optifinemanager.cpp \
     src/optifine/optifinemod.cpp \
     src/optifine/optifinemodinfo.cpp \
     src/qss/stylesheets.cpp \
+    src/replay/replaymanager.cpp \
     src/tag/tagable.cpp \
     src/ui/browser.cpp \
     src/ui/browserdialog.cpp \
@@ -158,8 +162,10 @@ HEADERS += \
     src/download/downloadmanager.h \
     src/download/qaria2.h \
     src/download/qaria2downloader.h \
+    src/exploremanager.h \
     src/github/githubapi.h \
     src/github/githubfileinfo.h \
+    src/github/githubmanager.h \
     src/github/githubrelease.h \
     src/github/githubreleaseinfo.h \
     src/github/githubrepoinfo.h \
@@ -185,9 +191,11 @@ HEADERS += \
     src/modwebsitetype.h \
     src/network/reply.hpp \
     src/optifine/optifineapi.h \
+    src/optifine/optifinemanager.h \
     src/optifine/optifinemod.h \
     src/optifine/optifinemodinfo.h \
     src/qss/stylesheets.h \
+    src/replay/replaymanager.h \
     src/tag/tagable.h \
     src/ui/browser.h \
     src/ui/browserdialog.h \

@@ -4,7 +4,7 @@
 #include "config.hpp"
 
 CurseforgeManager::CurseforgeManager(QObject *parent, CurseforgeAPI::Section sectionId) :
-    QObject(parent),
+    ExploreManager(parent),
     model_(new CurseforgeManagerModel(this)),
     sectionId_(sectionId)
 {}
@@ -21,6 +21,7 @@ void CurseforgeManager::search(const QString &name, int categoryId, GameVersion 
 
 void CurseforgeManager::searchMore()
 {
+    if(!hasMore_) return;
     currentIndex_ += Config().getSearchResultCount();
     getModList();
 }

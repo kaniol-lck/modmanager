@@ -14,6 +14,8 @@ class QStandardItemModel;
 class GitHubAPI;
 class GitHubReleaseInfoWidget;
 class GitHubRelease;
+
+class GitHubManager;
 namespace Ui {
 class GitHubRepoBrowser;
 }
@@ -48,17 +50,12 @@ private slots:
 private:
     GitHubRepoInfo info_;
     Ui::GitHubRepoBrowser *ui;
-    QStandardItemModel *model_;
+    GitHubManager *manager_;
     GitHubReleaseInfoWidget *infoWidget_;
     GitHubFileListWidget *fileListWidget_;
-    GitHubAPI *api_;
     bool inited_ = false;
     GitHubRelease* selectedRelease_ = nullptr;
-    int currentPage_ = 1;
-    bool hasMore_ = false;
-    std::unique_ptr<Reply<QList<GitHubReleaseInfo> > > searchModsGetter_;
 
-    void getReleaseList(int page = 1);
     void loadMore() override;
     void onSelectedItemChanged(const QModelIndex &index) override;
     QWidget *getIndexWidget(const QModelIndex &index) override;

@@ -2,48 +2,12 @@
 #define MODRINTHMANAGER_H
 
 #include <QAbstractListModel>
-#include <QObject>
 
+#include "exploremanager.h"
 #include "modrinthapi.h"
 
 class ModrinthMod;
-class ModrinthManagerModel;
-
-class ModrinthManager : public QObject
-{
-    Q_OBJECT
-public:
-    explicit ModrinthManager(QObject *parent = nullptr);
-
-    void search(const QString name, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort);
-    void searchMore();
-    void refresh();
-
-    ModrinthManagerModel *model() const;
-
-    const QList<ModrinthMod *> &mods() const;
-
-signals:
-    void searchStarted();
-    void searchFinished(bool success = true);
-    void scrollToTop();
-
-private:
-    ModrinthAPI api_;
-    ModrinthManagerModel *model_;
-    QList<ModrinthMod *> mods_;
-    QString currentName_;
-    int currentIndex_;
-    QStringList currentCategoryIds_;
-    QList<GameVersion> currentGameVersions_;
-    ModLoaderType::Type currentType_;
-    int currentSort_;
-    bool hasMore_ = false;
-    std::unique_ptr<Reply<QList<ModrinthModInfo>>> searchModsGetter_;
-
-    void getModList();
-};
-
+class ModrinthManager;
 class ModrinthManagerModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -59,6 +23,35 @@ public:
 private:
     ModrinthManager *manager_;
     int itemHeight_ = 100;
+};
+
+class ModrinthManager : public ExploreManager
+{
+    Q_OBJECT
+public:
+    explicit ModrinthManager(QObject *parent = nullptr);
+
+    void search(const QString name, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort);
+    void searchMore();
+    void refresh();
+
+    ModrinthManagerModel *model() const override;
+    const QList<ModrinthMod *> &mods() const;
+
+private:
+    ModrinthAPI api_;
+    ModrinthManagerModel *model_;
+    QList<ModrinthMod *> mods_;
+    QString currentName_;
+    int currentIndex_;
+    QStringList currentCategoryIds_;
+    QList<GameVersion> currentGameVersions_;
+    ModLoaderType::Type currentType_;
+    int currentSort_;
+    bool hasMore_ = false;
+    std::unique_ptr<Reply<QList<ModrinthModInfo>>> searchModsGetter_;
+
+    void getModList() override;
 };
 
 #endif // MODRINTHMANAGER_H

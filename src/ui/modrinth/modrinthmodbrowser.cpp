@@ -447,6 +447,7 @@ QWidget *ModrinthModBrowser::getIndexWidget(const QModelIndex &index)
     auto mod = index.data(Qt::UserRole + 1).value<ModrinthMod*>();
     if(mod){
         auto widget = new ModrinthModItemWidget(nullptr, mod);
+        manager_->model()->setItemHeight(widget->height());
         return widget;
     } else
         return nullptr;

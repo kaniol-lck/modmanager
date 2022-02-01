@@ -4,7 +4,7 @@
 #include "config.hpp"
 
 ModrinthManager::ModrinthManager(QObject *parent) :
-    QObject(parent),
+    ExploreManager(parent),
     model_(new ModrinthManagerModel(this))
 {}
 
@@ -21,6 +21,7 @@ void ModrinthManager::search(const QString name, const QList<GameVersion> &versi
 
 void ModrinthManager::searchMore()
 {
+    if(!hasMore_) return;
     currentIndex_ += Config().getSearchResultCount();
     getModList();
 }

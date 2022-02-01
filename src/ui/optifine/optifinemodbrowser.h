@@ -11,7 +11,7 @@ class BMCLAPI;
 class LocalModPath;
 class ExploreStatusBarWidget;
 class QStatusBar;
-class QStandardItemModel;
+class OptifineManager;
 namespace Ui {
 class OptifineModBrowser;
 }
@@ -34,20 +34,15 @@ public slots:
     ExploreBrowser *another() override;
 
 private slots:
-    void filterList();
     void updateStatusText();
     void on_actionGet_OptiFabric_triggered();
     void on_actionGet_OptiForge_triggered();
 
 private:
     Ui::OptifineModBrowser *ui;
-    QStandardItemModel *model_;
-    OptifineAPI *api_;
-    BMCLAPI *bmclapi_;
+    OptifineManager *manager_;
     bool inited_ = false;
-    std::unique_ptr<Reply<QList<OptifineModInfo> > > searchModsGetter_;
 
-    void getModList();
     QWidget *getIndexWidget(const QModelIndex &index) override;
 };
 
