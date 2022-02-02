@@ -23,11 +23,24 @@
 ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/replay.png"), "ReplayMod", QUrl("https://www.replaymod.com")),
     ui(new Ui::ReplayModBrowser),
-    manager_(new ReplayManager(this))
+    manager_(new ReplayManager(this)),
+    proxyModel_(new ReplayManagerProxyModel(this))
 {
     ui->setupUi(this);
     ui->menuReplayMod->addActions(menu_->actions());
-    initUi(manager_);
+    proxyModel_->setSourceModel(manager_->model());
+    initUi(manager_, proxyModel_);
+
+    connect(manager_, &ExploreManager::searchFinished, this, [=]{
+        gameVersions_.clear();
+        gameVersions_ << GameVersion::Any;
+        for(auto &&mod : manager_->mods())
+            if(auto version = mod->modInfo().gameVersion(); !gameVersions_.contains(version))
+                gameVersions_ << version;
+        ui->versionSelect->clear();
+        for(auto &&version : gameVersions_)
+            ui->versionSelect->addItem(version);
+    });
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -106,3 +119,23 @@ void ReplayModBrowser::updateStatusText()
 {
     statusBarWidget_->setModCount(manager_->mods().size());
 }
+
+void ReplayModBrowser::on_versionSelect_currentIndexChanged(int index)
+{
+    if(index < 0 || index >= gameVersions_.size()) return;
+    proxyModel_->setGameVersion(gameVersions_.at(index));
+    proxyModel_->invalidate();
+}
+
+void ReplayModBrowser::on_loaderSelect_currentIndexChanged(int index)
+{
+    proxyModel_->setLoaderType(ModLoaderType::replay.at(index));
+    proxyModel_->invalidate();
+}
+
+void ReplayModBrowser::on_searchText_textChanged(const QString &arg1)
+{
+    proxyModel_->setText(arg1);
+    proxyModel_->invalidate();
+}
+

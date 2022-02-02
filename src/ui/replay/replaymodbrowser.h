@@ -11,6 +11,8 @@ class ReplayAPI;
 class ExploreStatusBarWidget;
 class QStatusBar;
 class ReplayManager;
+
+class ReplayManagerProxyModel;
 namespace Ui {
 class ReplayModBrowser;
 }
@@ -34,10 +36,15 @@ public slots:
 
 private slots:
     void updateStatusText();
+    void on_versionSelect_currentIndexChanged(int index);
+    void on_loaderSelect_currentIndexChanged(int index);
+    void on_searchText_textChanged(const QString &arg1);
 
 private:
     Ui::ReplayModBrowser *ui;
     ReplayManager *manager_;
+    ReplayManagerProxyModel *proxyModel_;
+    QList<GameVersion> gameVersions_;
     bool inited_ = false;
     std::unique_ptr<Reply<QList<ReplayModInfo> > > searchModsGetter_;
 

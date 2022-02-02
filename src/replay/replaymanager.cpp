@@ -74,3 +74,32 @@ void ReplayManagerModel::setItemHeight(int newItemHeight)
 {
     itemHeight_ = newItemHeight;
 }
+
+ReplayManagerProxyModel::ReplayManagerProxyModel(QObject *parent) :
+    QSortFilterProxyModel(parent)
+{}
+
+void ReplayManagerProxyModel::setGameVersion(const GameVersion &newGameVersion)
+{
+    gameVersion_ = newGameVersion;
+}
+
+void ReplayManagerProxyModel::setLoaderType(ModLoaderType::Type newLoaderType)
+{
+    loaderType_ = newLoaderType;
+}
+
+void ReplayManagerProxyModel::setText(const QString &newText)
+{
+    text_ = newText;
+}
+
+bool ReplayManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex &) const
+{
+    auto mod = sourceModel()->index(source_row, ReplayManager::ModColumn).data(Qt::UserRole + 1).value<ReplayMod *>();
+    if(gameVersion_ != GameVersion::Any && gameVersion_ != mod->modInfo().gameVersion()) return false;
+    if(auto loaderType = mod->modInfo().loaderType(); loaderType_ != ModLoaderType::Any && loaderType !=ModLoaderType::Any &&
+            loaderType_ != loaderType) return false;
+    if(!mod->modInfo().fileName().contains(text_)) return false;
+    return true;
+}

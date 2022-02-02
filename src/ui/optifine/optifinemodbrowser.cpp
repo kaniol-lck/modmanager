@@ -24,11 +24,24 @@
 OptifineModBrowser::OptifineModBrowser(QWidget *parent) :
     ExploreBrowser(parent, QIcon(":/image/optifine.png"), "OptiFine", QUrl("https://www.optifine.net")),
     ui(new Ui::OptifineModBrowser),
-    manager_(new OptifineManager(this))
+    manager_(new OptifineManager(this)),
+    proxyModel_(new OptifineManagerProxyModel(this))
 {
     ui->setupUi(this);
     ui->menuOptiFine->insertActions(ui->menuOptiFine->actions().first(), menu_->actions());
-    initUi(manager_);
+    proxyModel_->setSourceModel(manager_->model());
+    initUi(manager_, proxyModel_);
+
+    connect(manager_, &ExploreManager::searchFinished, this, [=]{
+        gameVersions_.clear();
+        gameVersions_ << GameVersion::Any;
+        for(auto &&mod : manager_->mods())
+            if(auto version = mod->modInfo().gameVersion(); !gameVersions_.contains(version))
+                gameVersions_ << version;
+        ui->versionSelect->clear();
+        for(auto &&version : gameVersions_)
+            ui->versionSelect->addItem(version);
+    });
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -124,4 +137,23 @@ void OptifineModBrowser::on_actionGet_OptiForge_triggered()
     auto dialog = new CurseforgeModDialog(this, mod);
     dialog->setDownloadPathSelectMenu(downloadPathSelectMenu_);
     dialog->show();
+}
+
+void OptifineModBrowser::on_versionSelect_currentIndexChanged(int index)
+{
+    if(index < 0 || index >= gameVersions_.size()) return;
+    proxyModel_->setGameVersion(gameVersions_.at(index));
+    proxyModel_->invalidate();
+}
+
+void OptifineModBrowser::on_searchText_textChanged(const QString &arg1)
+{
+    proxyModel_->setText(arg1);
+    proxyModel_->invalidate();
+}
+
+void OptifineModBrowser::on_showPreview_toggled(bool checked)
+{
+    proxyModel_->setShowPreview(checked);
+    proxyModel_->invalidate();
 }

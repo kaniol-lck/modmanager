@@ -1,9 +1,9 @@
 #include "optifinemanager.h"
 
+#include <QSize>
+
 #include "optifinemod.h"
 #include "config.hpp"
-
-#include <QSize>
 
 OptifineManager::OptifineManager(QObject *parent) :
     ExploreManager(parent),
@@ -80,4 +80,32 @@ QVariant OptifineManagerModel::data(const QModelIndex &index, int role) const
 void OptifineManagerModel::setItemHeight(int newItemHeight)
 {
     itemHeight_ = newItemHeight;
+}
+
+OptifineManagerProxyModel::OptifineManagerProxyModel(QObject *parent) :
+    QSortFilterProxyModel(parent)
+{}
+
+void OptifineManagerProxyModel::setGameVersion(const GameVersion &newGameVersion)
+{
+    gameVersion_ = newGameVersion;
+}
+
+bool OptifineManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex &) const
+{
+    auto mod = sourceModel()->index(source_row, OptifineManager::ModColumn).data(Qt::UserRole + 1).value<OptifineMod *>();
+    if(gameVersion_ != GameVersion::Any && gameVersion_ != mod->modInfo().gameVersion()) return false;
+    if(!mod->modInfo().fileName().contains(text_)) return false;
+    if(!showPreview_ && mod->modInfo().isPreview()) return false;
+    return true;
+}
+
+void OptifineManagerProxyModel::setShowPreview(bool newShowPreview)
+{
+    showPreview_ = newShowPreview;
+}
+
+void OptifineManagerProxyModel::setText(const QString &newText)
+{
+    text_ = newText;
 }

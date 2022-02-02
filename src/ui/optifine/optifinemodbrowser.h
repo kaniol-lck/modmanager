@@ -12,6 +12,8 @@ class LocalModPath;
 class ExploreStatusBarWidget;
 class QStatusBar;
 class OptifineManager;
+
+class OptifineManagerProxyModel;
 namespace Ui {
 class OptifineModBrowser;
 }
@@ -37,10 +39,15 @@ private slots:
     void updateStatusText() override;
     void on_actionGet_OptiFabric_triggered();
     void on_actionGet_OptiForge_triggered();
+    void on_versionSelect_currentIndexChanged(int index);
+    void on_searchText_textChanged(const QString &arg1);
+    void on_showPreview_toggled(bool checked);
 
 private:
     Ui::OptifineModBrowser *ui;
     OptifineManager *manager_;
+    OptifineManagerProxyModel *proxyModel_;
+    QList<GameVersion> gameVersions_;
     bool inited_ = false;
 
     QWidget *getIndexWidget(const QModelIndex &index) override;

@@ -7,6 +7,7 @@
 #include "exploremanager.h"
 #include "optifineapi.h"
 #include "bmclapi.h"
+#include "modloadertype.h"
 
 class OptifineMod;
 class OptifineManager;
@@ -50,6 +51,25 @@ private:
     std::unique_ptr<Reply<QList<OptifineModInfo> > > searchModsGetter_;
 
     void getModList() override;
+};
+
+class OptifineManagerProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+public:
+    OptifineManagerProxyModel(QObject *parent = nullptr);
+
+    void setGameVersion(const GameVersion &newGameVersion);
+    void setText(const QString &newStr);
+    void setShowPreview(bool newShowPreview);
+
+protected:
+    virtual bool filterAcceptsRow(int source_row, const QModelIndex &) const override;
+
+private:
+    GameVersion gameVersion_;
+    QString text_;
+    bool showPreview_;
 };
 
 #endif // OPTIFINEMANAGER_H
