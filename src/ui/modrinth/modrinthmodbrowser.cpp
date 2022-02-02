@@ -44,9 +44,6 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
 
-    //setup status bar
-    ui->statusbar->addPermanentWidget(statusBarWidget_);
-
     if(Config().getShowCatVerInToolBar()){
         ui->toolBar->addMenu(ui->menuSelect_Game_Version);
         ui->toolBar->addMenu(ui->menuSelect_Category);

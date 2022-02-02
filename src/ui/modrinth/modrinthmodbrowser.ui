@@ -149,7 +149,6 @@
    <addaction name="menu_Modrinth"/>
    <addaction name="menu_View"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <widget class="MenuToolBar" name="toolBar">
    <property name="windowTitle">
     <string>Tool Bar</string>

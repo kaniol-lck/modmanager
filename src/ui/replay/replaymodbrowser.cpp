@@ -45,9 +45,6 @@ ReplayModBrowser::ReplayModBrowser(QWidget *parent) :
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
 
-    //setup status bar
-    ui->statusbar->addPermanentWidget(statusBarWidget_);
-
     ui->toolBar->addMenu(downloadPathSelectMenu_);
     ui->toolBar->addAction(refreshAction_);
     ui->toolBar->addAction(visitWebsiteAction_);

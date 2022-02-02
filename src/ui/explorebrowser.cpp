@@ -10,6 +10,9 @@
 #include <QUrl>
 #include <QComboBox>
 #include <QSortFilterProxyModel>
+#include <QTreeView>
+#include <QStatusBar>
+#include <QStackedWidget>
 
 #include "exploremanager.h"
 #include "local/localmodpath.h"
@@ -18,17 +21,31 @@
 
 ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString &name, const QUrl &url) :
     Browser(parent),
+    statusBar_(new QStatusBar(this)),
     statusBarWidget_(new ExploreStatusBarWidget(this)),
     menu_(new QMenu(this)),
     downloadPathSelectMenu_(new DownloadPathSelectMenu(this)),
+    stackedWidget_(new QStackedWidget(this)),
     modListView_(new QListView(this)),
+    modIconListView_(new QListView(this)),
+    modTreeView_(new QTreeView(this)),
     icon_(icon),
     name_(name)
 {
+    stackedWidget_->addWidget(modListView_);
+    stackedWidget_->addWidget(modIconListView_);
+    stackedWidget_->addWidget(modTreeView_);
+    modIconListView_->setViewMode(QListView::IconMode);
+    modTreeView_->hideColumn(0);
+
     modListView_->setVerticalScrollBar(new SmoothScrollBar(this));
     modListView_->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     modListView_->setProperty("class", "ModList");
     modListView_->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    setStatusBar(statusBar_);
+    statusBar_->addPermanentWidget(statusBarWidget_);
+    connect(statusBarWidget_, &ExploreStatusBarWidget::viewModeChanged, stackedWidget_, &QStackedWidget::setCurrentIndex);
 
     connect(modListView_, &QWidget::customContextMenuRequested, this, &ExploreBrowser::onCustomContextMenuRequested);
     connect(modListView_, &QAbstractItemView::doubleClicked, this, &ExploreBrowser::onDoubleClicked);
@@ -119,8 +136,10 @@ void ExploreBrowser::paintEvent(QPaintEvent *event)
 void ExploreBrowser::initUi(ExploreManager *manager, QAbstractItemModel *model)
 {
     manager_ = manager;
-    setCentralWidget(modListView_);
+    setCentralWidget(stackedWidget_);
     modListView_->setModel(model);
+    modIconListView_->setModel(model);
+    modTreeView_->setModel(model);
     connect(modListView_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExploreBrowser::onItemSelected);
     onItemSelected();
 

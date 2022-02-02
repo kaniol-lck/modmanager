@@ -7,6 +7,8 @@
 
 #include <QListView>
 
+class QStackedWidget;
+class QTreeView;
 class ExploreManager;
 class DownloadPathSelectMenu;
 class QComboBox;
@@ -60,6 +62,7 @@ protected:
     virtual QMenu *getCustomContextMenu();
     ExploreManager *manager_ = nullptr;
     QSortFilterProxyModel *proxyModel_ = nullptr;
+    QStatusBar *statusBar_;
     ExploreStatusBarWidget *statusBarWidget_;
     QMenu *menu_;
     DownloadPathSelectMenu *downloadPathSelectMenu_;
@@ -69,7 +72,10 @@ protected:
 
 private:
     QAbstractItemModel *model() const;
+    QStackedWidget *stackedWidget_;
     QListView *modListView_;
+    QListView *modIconListView_;
+    QTreeView *modTreeView_;
     QIcon icon_;
     QString name_;
 };

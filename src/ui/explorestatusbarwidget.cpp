@@ -1,11 +1,19 @@
 #include "explorestatusbarwidget.h"
 #include "ui_explorestatusbarwidget.h"
 
+#include <QButtonGroup>
+
 ExploreStatusBarWidget::ExploreStatusBarWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ExploreStatusBarWidget)
+    ui(new Ui::ExploreStatusBarWidget),
+    group_(new QButtonGroup(this))
 {
     ui->setupUi(this);
+    group_->addButton(ui->listButton, ListMode);
+    group_->addButton(ui->iconButton, IconMode);
+    group_->addButton(ui->detailButton, DetailMode);
+    connect(group_, &QButtonGroup::idClicked, this, &ExploreStatusBarWidget::viewModeChanged);
+    ui->listButton->setChecked(true);
     ui->progressBar->setVisible(false);
 }
 

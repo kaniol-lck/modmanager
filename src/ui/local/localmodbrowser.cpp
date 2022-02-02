@@ -72,7 +72,6 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     ui->modIconListView->setModel(proxyModel_);
     ui->modTreeView->setModel(proxyModel_);
     ui->modTreeView->hideColumn(0);
-    ui->modTreeView->hideColumn(0);
     ui->modIconListView->setModelColumn(LocalModPathModel::NameColumn);
     ui->modListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->modListView->setProperty("class", "ModList");

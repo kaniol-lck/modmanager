@@ -27,8 +27,6 @@ GitHubRepoBrowser::GitHubRepoBrowser(QWidget *parent, const GitHubRepoInfo &info
     ui->menu_GitHub->addActions(menu_->actions());
     initUi(manager_);
 
-    //setup status bar
-    ui->statusbar->addPermanentWidget(statusBarWidget_);
     ui->toolBar->addMenu(downloadPathSelectMenu_);
     ui->toolBar->addAction(refreshAction_);
     ui->toolBar->addAction(visitWebsiteAction_);
