@@ -35,7 +35,6 @@ public slots:
     ExploreBrowser *another() override;
 
 private slots:
-    void updateStatusText();
     void on_versionSelect_currentIndexChanged(int index);
     void on_loaderSelect_currentIndexChanged(int index);
     void on_searchText_textChanged(const QString &arg1);

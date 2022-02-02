@@ -379,11 +379,6 @@ void ModrinthModBrowser::search()
                      ui->sortSelect->currentIndex());
 }
 
-void ModrinthModBrowser::updateStatusText()
-{
-    statusBarWidget_->setModCount(manager_->mods().size());
-}
-
 QDialog *ModrinthModBrowser::getDialog(const QModelIndex &index)
 {
     auto mod = index.data(Qt::UserRole + 1).value<ModrinthMod*>();

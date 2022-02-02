@@ -43,10 +43,6 @@ public slots:
 signals:
     void downloadPathChanged(LocalModPath *path);
 
-private slots:
-//    void filterList();
-    void updateStatusText() override;
-
 private:
     GitHubRepoInfo info_;
     Ui::GitHubRepoBrowser *ui;

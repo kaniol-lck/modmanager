@@ -281,11 +281,6 @@ void CurseforgeModBrowser::search()
                      ui->sortSelect->currentIndex());
 }
 
-void CurseforgeModBrowser::updateStatusText()
-{
-    statusBarWidget_->setModCount(manager_->mods().size());
-}
-
 QDialog *CurseforgeModBrowser::getDialog(const QModelIndex &index)
 {
     auto mod = index.data(Qt::UserRole + 1).value<CurseforgeMod*>();
@@ -306,6 +301,7 @@ void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
 {
     proxyModel_->setLoaderType(ModLoaderType::curseforge.at(index));
     proxyModel_->invalidate();
+    updateStatusText();
 }
 
 void CurseforgeModBrowser::onSelectedItemChanged(const QModelIndex &index)

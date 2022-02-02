@@ -103,11 +103,6 @@ ExploreBrowser *OptifineModBrowser::another()
     return new OptifineModBrowser;
 }
 
-void OptifineModBrowser::updateStatusText()
-{
-    statusBarWidget_->setModCount(manager_->mods().size());
-}
-
 QWidget *OptifineModBrowser::getIndexWidget(const QModelIndex &index)
 {
     auto mod = index.data(Qt::UserRole + 1).value<OptifineMod*>();
@@ -144,16 +139,19 @@ void OptifineModBrowser::on_versionSelect_currentIndexChanged(int index)
     if(index < 0 || index >= gameVersions_.size()) return;
     proxyModel_->setGameVersion(gameVersions_.at(index));
     proxyModel_->invalidate();
+    updateStatusText();
 }
 
 void OptifineModBrowser::on_searchText_textChanged(const QString &arg1)
 {
     proxyModel_->setText(arg1);
     proxyModel_->invalidate();
+    updateStatusText();
 }
 
 void OptifineModBrowser::on_showPreview_toggled(bool checked)
 {
     proxyModel_->setShowPreview(checked);
     proxyModel_->invalidate();
+    updateStatusText();
 }

@@ -115,27 +115,24 @@ QWidget *ReplayModBrowser::getIndexWidget(const QModelIndex &index)
         return nullptr;
 }
 
-void ReplayModBrowser::updateStatusText()
-{
-    statusBarWidget_->setModCount(manager_->mods().size());
-}
-
 void ReplayModBrowser::on_versionSelect_currentIndexChanged(int index)
 {
     if(index < 0 || index >= gameVersions_.size()) return;
     proxyModel_->setGameVersion(gameVersions_.at(index));
     proxyModel_->invalidate();
+    updateStatusText();
 }
 
 void ReplayModBrowser::on_loaderSelect_currentIndexChanged(int index)
 {
     proxyModel_->setLoaderType(ModLoaderType::replay.at(index));
     proxyModel_->invalidate();
+    updateStatusText();
 }
 
 void ReplayModBrowser::on_searchText_textChanged(const QString &arg1)
 {
     proxyModel_->setText(arg1);
     proxyModel_->invalidate();
+    updateStatusText();
 }
-

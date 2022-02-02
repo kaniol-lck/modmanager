@@ -48,7 +48,6 @@ private slots:
     void updateVersionList();
     void updateCategoryList(QList<CurseforgeCategoryInfo> list);
     void search();
-    void updateStatusText() override;
     void on_loaderSelect_currentIndexChanged(int index);
     void on_sortSelect_currentIndexChanged(int);
     void on_actionMod_triggered();

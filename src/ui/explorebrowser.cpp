@@ -118,6 +118,7 @@ void ExploreBrowser::paintEvent(QPaintEvent *event)
 
 void ExploreBrowser::initUi(ExploreManager *manager, QAbstractItemModel *model)
 {
+    manager_ = manager;
     setCentralWidget(modListView_);
     modListView_->setModel(model);
     connect(modListView_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExploreBrowser::onItemSelected);
@@ -150,11 +151,13 @@ void ExploreBrowser::initUi(ExploreManager *manager)
     initUi(manager, manager->model());
 }
 
-void ExploreBrowser::initUi(ExploreManager *manager, QSortFilterProxyModel *model)
+void ExploreBrowser::initUi(ExploreManager *manager, QSortFilterProxyModel *proxyModel)
 {
-    initUi(manager, qobject_cast<QAbstractItemModel *>(model));
+    proxyModel_ = proxyModel;
+    initUi(manager, qobject_cast<QAbstractItemModel *>(proxyModel));
     connect(manager, &ExploreManager::searchFinished, this, [=](bool){
-        model->invalidate();
+        proxyModel->invalidate();
+        updateStatusText();
     });
 }
 
@@ -197,6 +200,14 @@ QMenu *ExploreBrowser::getCustomContextMenu()
 QAbstractItemModel *ExploreBrowser::model() const
 {
     return modListView_->model();
+}
+
+void ExploreBrowser::updateStatusText()
+{
+    if(proxyModel_)
+        statusBarWidget_->setModCount(proxyModel_->rowCount(), manager_->model()->rowCount());
+    else
+        statusBarWidget_->setModCount(manager_->model()->rowCount(), manager_->model()->rowCount());
 }
 
 QMenu *ExploreBrowser::menu() const

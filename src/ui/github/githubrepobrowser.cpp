@@ -83,11 +83,6 @@ ExploreBrowser *GitHubRepoBrowser::another()
     return new GitHubRepoBrowser(nullptr, info_);
 }
 
-void GitHubRepoBrowser::updateStatusText()
-{
-    statusBarWidget_->setModCount(manager_->releases().size());
-}
-
 void GitHubRepoBrowser::loadMore()
 {
     if(refreshAction_->isEnabled())

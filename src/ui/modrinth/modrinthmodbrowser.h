@@ -47,7 +47,6 @@ private slots:
     void updateVersionList();
     void updateCategoryList();
     void search();
-    void updateStatusText();
     void on_sortSelect_currentIndexChanged(int);
     void on_loaderSelect_currentIndexChanged(int);
     void on_menuDownload_aboutToShow();

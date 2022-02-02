@@ -24,7 +24,8 @@ void ExploreStatusBarWidget::setText(const QString &text)
     ui->label->setText(text);
 }
 
-void ExploreStatusBarWidget::setModCount(int loadCount)
+void ExploreStatusBarWidget::setModCount(int shownCount, int loadCount)
 {
+    ui->shownCount->setText(tr("Shown: %1").arg(shownCount));
     ui->loadCount->setText(tr("Loaded: %1").arg(loadCount));
 }

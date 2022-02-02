@@ -48,15 +48,18 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     void initUi(ExploreManager *manager, QAbstractItemModel *model);
     void initUi(ExploreManager *manager);
-    void initUi(ExploreManager *manager, QSortFilterProxyModel *model);
+    void initUi(ExploreManager *manager, QSortFilterProxyModel *proxyModel);
     bool isRowHidden(int row);
     void setRowHidden(int row, bool hidden);
     void scrollToTop();
+    void updateStatusText();
     virtual void loadMore();
     virtual void onSelectedItemChanged(const QModelIndex &index);
     virtual QWidget *getIndexWidget(const QModelIndex &index);
     virtual QDialog *getDialog(const QModelIndex &index);
     virtual QMenu *getCustomContextMenu();
+    ExploreManager *manager_ = nullptr;
+    QSortFilterProxyModel *proxyModel_ = nullptr;
     ExploreStatusBarWidget *statusBarWidget_;
     QMenu *menu_;
     DownloadPathSelectMenu *downloadPathSelectMenu_;
@@ -69,8 +72,6 @@ private:
     QListView *modListView_;
     QIcon icon_;
     QString name_;
-
-    virtual void updateStatusText() = 0;
 };
 
 #endif // EXPLOREBROWSER_H
