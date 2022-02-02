@@ -8,14 +8,17 @@
 
 class CurseforgeMod;
 class CurseforgeManager;
-class CurseforgeManagerModel : public QAbstractListModel
+class CurseforgeManagerModel : public QAbstractTableModel
 {
     Q_OBJECT
     friend class CurseforgeManager;
 public:
+    enum Column { ModColumn, NameColumn, ProjectIDColumn, WebsiteColumn, UpdateDateColumn, CreateDateColumn, ReleaseDateColumn, SummaryColumn };
     CurseforgeManagerModel(CurseforgeManager *manager);
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     void setItemHeight(int newItemHeight);
@@ -29,8 +32,6 @@ class CurseforgeManager : public ExploreManager
 {
     Q_OBJECT
 public:
-    enum Column { ModColumn };
-
     CurseforgeManager(QObject *parent = nullptr, CurseforgeAPI::Section sectionId = CurseforgeAPI::Mod);
 
     void search(const QString &name, int categoryId, GameVersion version, int sort);

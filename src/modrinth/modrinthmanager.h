@@ -13,9 +13,12 @@ class ModrinthManagerModel : public QAbstractListModel
     Q_OBJECT
     friend class ModrinthManager;
 public:
+    enum Column { ModColumn, NameColumn, IDColumn, WebsiteColumn, UpdateDateColumn, CreateDateColumn, SummaryColumn };
     ModrinthManagerModel(ModrinthManager *manager);
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     void setItemHeight(int newItemHeight);

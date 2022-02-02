@@ -40,7 +40,9 @@ public slots:
     virtual void searchModByPathInfo(LocalModPath *path) = 0;
 
 private slots:
-    void onSliderChanged(int i);
+    void onListSliderChanged(int i);
+    void onIconListSliderChanged(int i);
+    void onTreeSliderChanged(int i);
     void onItemSelected();
     void updateIndexWidget();
     void onCustomContextMenuRequested(const QPoint &pos);

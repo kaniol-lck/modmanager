@@ -184,9 +184,6 @@
           <property name="verticalScrollMode">
            <enum>QAbstractItemView::ScrollPerPixel</enum>
           </property>
-          <property name="movement">
-           <enum>QListView::Static</enum>
-          </property>
           <property name="resizeMode">
            <enum>QListView::Adjust</enum>
           </property>

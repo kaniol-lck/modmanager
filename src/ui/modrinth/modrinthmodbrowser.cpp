@@ -378,7 +378,7 @@ void ModrinthModBrowser::search()
 
 QDialog *ModrinthModBrowser::getDialog(const QModelIndex &index)
 {
-    auto mod = index.data(Qt::UserRole + 1).value<ModrinthMod*>();
+    auto mod = index.siblingAtColumn(ModrinthManagerModel::ModColumn).data(Qt::UserRole + 1).value<ModrinthMod*>();
     if(mod && mod->parent() == manager_){
         auto dialog = new ModrinthModDialog(this, mod);
         //set parent

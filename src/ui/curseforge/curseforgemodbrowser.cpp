@@ -280,7 +280,7 @@ void CurseforgeModBrowser::search()
 
 QDialog *CurseforgeModBrowser::getDialog(const QModelIndex &index)
 {
-    auto mod = index.data(Qt::UserRole + 1).value<CurseforgeMod*>();
+    auto mod = index.siblingAtColumn(CurseforgeManagerModel::ModColumn).data(Qt::UserRole + 1).value<CurseforgeMod*>();
     if(mod && mod->parent() == manager_){
         auto dialog = new CurseforgeModDialog(this, mod);
         //set parent

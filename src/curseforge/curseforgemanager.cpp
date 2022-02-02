@@ -82,15 +82,58 @@ void CurseforgeManager::getModList()
 }
 
 CurseforgeManagerModel::CurseforgeManagerModel(CurseforgeManager *manager) :
-    QAbstractListModel(manager),
+    QAbstractTableModel(manager),
     manager_(manager)
 {}
+
+QVariant CurseforgeManagerModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(orientation != Qt::Horizontal) return QVariant();
+    switch (role) {
+    case Qt::ToolTipRole:
+    case Qt::DisplayRole:
+        switch (section)
+        {
+        case ModColumn:
+            return QVariant();
+        case NameColumn:
+            return tr("Name");
+        case ProjectIDColumn:
+            return tr("Project ID");
+        case WebsiteColumn:
+            return tr("Website Link");
+        case UpdateDateColumn:
+            return tr("Date Modified");
+        case CreateDateColumn:
+            return tr("Date Created");
+        case ReleaseDateColumn:
+            return tr("Date Released");
+        case SummaryColumn:
+            return tr("Summary");
+            break;
+        }
+        break;
+    case Qt::DecorationRole:
+        switch (section)
+        {
+        }
+        break;
+    }
+    return QVariant();
+}
 
 int CurseforgeManagerModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
     return manager_->mods().size();
+}
+
+int CurseforgeManagerModel::columnCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return 0;
+    return SummaryColumn + 1;
 }
 
 QVariant CurseforgeManagerModel::data(const QModelIndex &index, int role) const
@@ -100,11 +143,46 @@ QVariant CurseforgeManagerModel::data(const QModelIndex &index, int role) const
             return QVariant();
         auto mod = manager_->mods().at(index.row());
         switch (role) {
+        case Qt::ToolTipRole:
+        case Qt::DisplayRole:
+            switch (index.column())
+            {
+            case ModColumn:
+                break;
+            case NameColumn:
+                return mod->modInfo().name();
+            case ProjectIDColumn:
+                return mod->modInfo().id();
+            case WebsiteColumn:
+                return mod->modInfo().websiteUrl();
+            case UpdateDateColumn:
+                return mod->modInfo().dateModified().toString(QLocale().dateTimeFormat());
+            case CreateDateColumn:
+                return mod->modInfo().dateCreated().toString(QLocale().dateTimeFormat());
+            case ReleaseDateColumn:
+                return mod->modInfo().dateReleased().toString(QLocale().dateTimeFormat());
+            case SummaryColumn:
+                return mod->modInfo().summary();
+                break;
+            }
+            break;
+        case Qt::DecorationRole:
+            switch (index.column())
+            {
+            case NameColumn:
+                return QIcon(mod->modInfo().icon().scaled(96, 96, Qt::KeepAspectRatio));
+            }
+            break;
         case Qt::UserRole + 1:
-            return QVariant::fromValue(mod);
+            switch (index.column())
+            {
+            case ModColumn:
+                return QVariant::fromValue(mod);
+            }
             break;
         case Qt::SizeHintRole:
-            return QSize(0, itemHeight_);
+            if(index.column() == ModColumn)
+                return QSize(0, itemHeight_);
             break;
         }
         return QVariant();
@@ -127,7 +205,7 @@ void CurseforgeManagerProxyModel::setLoaderType(ModLoaderType::Type newLoaderTyp
 bool CurseforgeManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex &) const
 {
     if(loaderType_ == ModLoaderType::Any) return true;
-    auto mod = sourceModel()->index(source_row, CurseforgeManager::ModColumn).data(Qt::UserRole + 1).value<CurseforgeMod *>();
+    auto mod = sourceModel()->index(source_row, CurseforgeManagerModel::ModColumn).data(Qt::UserRole + 1).value<CurseforgeMod *>();
     if(!mod) return false;
     return mod->modInfo().loaderTypes().contains(loaderType_) || mod->modInfo().loaderTypes().isEmpty();
 }

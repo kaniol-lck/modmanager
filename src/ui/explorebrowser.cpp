@@ -32,24 +32,31 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     icon_(icon),
     name_(name)
 {
-    stackedWidget_->addWidget(modListView_);
-    stackedWidget_->addWidget(modIconListView_);
-    stackedWidget_->addWidget(modTreeView_);
     modIconListView_->setViewMode(QListView::IconMode);
-    modTreeView_->hideColumn(0);
+    modIconListView_->setIconSize(QSize(96, 96));
+    modIconListView_->setResizeMode(QListView::Adjust);
+    modIconListView_->setSpacing(10);
+    modIconListView_->setUniformItemSizes(true);
+    modTreeView_->setAlternatingRowColors(true);
 
-    modListView_->setVerticalScrollBar(new SmoothScrollBar(this));
-    modListView_->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+    for(auto &&widget : QList<QAbstractItemView *>{ modListView_, modIconListView_, modTreeView_ }){
+        stackedWidget_->addWidget(widget);
+        widget->setSelectionBehavior(QAbstractItemView::SelectRows);
+        widget->setVerticalScrollBar(new SmoothScrollBar(this));
+        widget->setContextMenuPolicy(Qt::CustomContextMenu);
+        widget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+        connect(widget, &QAbstractItemView::doubleClicked, this, &ExploreBrowser::onDoubleClicked);
+    }
     modListView_->setProperty("class", "ModList");
-    modListView_->setContextMenuPolicy(Qt::CustomContextMenu);
 
     setStatusBar(statusBar_);
     statusBar_->addPermanentWidget(statusBarWidget_);
     connect(statusBarWidget_, &ExploreStatusBarWidget::viewModeChanged, stackedWidget_, &QStackedWidget::setCurrentIndex);
 
     connect(modListView_, &QWidget::customContextMenuRequested, this, &ExploreBrowser::onCustomContextMenuRequested);
-    connect(modListView_, &QAbstractItemView::doubleClicked, this, &ExploreBrowser::onDoubleClicked);
-    connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onSliderChanged);
+    connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onListSliderChanged);
+    connect(modIconListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onIconListSliderChanged);
+    connect(modTreeView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onTreeSliderChanged);
     connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this, &ExploreBrowser::updateIndexWidget);
 
     refreshAction_ = menu_->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh Mods"), this, &ExploreBrowser::refresh);
@@ -78,9 +85,23 @@ QString ExploreBrowser::name() const
     return name_;
 }
 
-void ExploreBrowser::onSliderChanged(int i)
+void ExploreBrowser::onListSliderChanged(int i)
 {
     if(i >= modListView_->verticalScrollBar()->maximum() - 1000){
+        loadMore();
+    }
+}
+
+void ExploreBrowser::onIconListSliderChanged(int i)
+{
+    if(i >= modIconListView_->verticalScrollBar()->maximum() - 100){
+        loadMore();
+    }
+}
+
+void ExploreBrowser::onTreeSliderChanged(int i)
+{
+    if(i >= modTreeView_->verticalScrollBar()->maximum() - 100){
         loadMore();
     }
 }
@@ -88,6 +109,7 @@ void ExploreBrowser::onSliderChanged(int i)
 void ExploreBrowser::onItemSelected()
 {
     auto indexes = modListView_->selectionModel()->selectedRows();
+    qDebug() << indexes;
     if(!indexes.isEmpty()){
         auto index = indexes.first();
         onSelectedItemChanged(index);
@@ -140,7 +162,12 @@ void ExploreBrowser::initUi(ExploreManager *manager, QAbstractItemModel *model)
     modListView_->setModel(model);
     modIconListView_->setModel(model);
     modTreeView_->setModel(model);
-    connect(modListView_->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExploreBrowser::onItemSelected);
+    modIconListView_->setModelColumn(1);
+    modTreeView_->hideColumn(0);
+    auto selectionModel = modListView_->selectionModel();
+    modIconListView_->setSelectionModel(selectionModel);
+    modTreeView_->setSelectionModel(selectionModel);
+    connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &ExploreBrowser::onItemSelected);
     onItemSelected();
 
     Config config;
