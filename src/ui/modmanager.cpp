@@ -14,6 +14,7 @@
 #include <QNetworkProxy>
 #include <QProcess>
 #include <QToolBar>
+#include <QWindow>
 #ifdef DE_KDE
 #include <KWindowEffects>
 #endif
@@ -463,7 +464,7 @@ void ModManager::updateBlur() const
 {
 #ifdef DE_KDE
     //TODO: disable blur under intel graphical card
-    if(auto window = windowHandle())
+    if(auto window = QWindow::fromWinId(winId()))
         KWindowEffects::enableBlurBehind(window, config_.getEnableBlurBehind());
 #endif
 }
