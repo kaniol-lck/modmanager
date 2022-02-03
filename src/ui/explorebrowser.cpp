@@ -57,7 +57,8 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onListSliderChanged);
     connect(modIconListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onIconListSliderChanged);
     connect(modTreeView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onTreeSliderChanged);
-    connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this, &ExploreBrowser::updateIndexWidget);
+    connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this, &ExploreBrowser::updateListViewIndexWidget);
+    connect(modTreeView_->verticalScrollBar(), &QScrollBar::valueChanged, this, &ExploreBrowser::updateTreeViewIndexWidget);
 
     refreshAction_ = menu_->addAction(QIcon::fromTheme("view-refresh"), tr("Refresh Mods"), this, &ExploreBrowser::refresh);
     refreshAction_->setShortcut(QKeySequence(Qt::Key_F5));
@@ -117,7 +118,7 @@ void ExploreBrowser::onItemSelected()
         onSelectedItemChanged(QModelIndex());
 }
 
-void ExploreBrowser::updateIndexWidget()
+void ExploreBrowser::updateListViewIndexWidget()
 {
     auto beginRow = modListView_->indexAt(QPoint(0, 0)).row();
     if(beginRow < 0) return;
@@ -130,9 +131,28 @@ void ExploreBrowser::updateIndexWidget()
     for(int row = beginRow; row <= endRow && row < model()->rowCount(); row++){
         auto index = model()->index(row, 0);
         if(modListView_->indexWidget(index)) continue;
-        if(auto widget = getIndexWidget(index)){
+        if(auto widget = getListViewIndexWidget(index)){
             modListView_->setIndexWidget(index, widget);
-//            item->setSizeHint(QSize(0, widget->height()));
+        }
+    }
+}
+
+void ExploreBrowser::updateTreeViewIndexWidget()
+{
+    if(treeViewIndexWidgetColumn_ < 0) return;
+    auto beginRow = modTreeView_->indexAt(QPoint(0, 0)).row();
+    if(beginRow < 0) return;
+    auto endRow = modTreeView_->indexAt(QPoint(0, modTreeView_->height())).row();
+    if(endRow < 0)
+        endRow = model()->rowCount() - 1;
+    else
+        //extra 2
+        endRow += 2;
+    for(int row = beginRow; row <= endRow && row < model()->rowCount(); row++){
+        auto index = model()->index(row, treeViewIndexWidgetColumn_);
+        if(modTreeView_->indexWidget(index)) continue;
+        if(auto widget = getTreeViewIndexWidget(index)){
+            modTreeView_->setIndexWidget(index, widget);
         }
     }
 }
@@ -151,7 +171,8 @@ void ExploreBrowser::onDoubleClicked(const QModelIndex &index)
 
 void ExploreBrowser::paintEvent(QPaintEvent *event)
 {
-    updateIndexWidget();
+    updateListViewIndexWidget();
+    updateTreeViewIndexWidget();
     QWidget::paintEvent(event);
 }
 
@@ -220,18 +241,25 @@ void ExploreBrowser::setRowHidden(int row, bool hidden)
 void ExploreBrowser::scrollToTop()
 {
     modListView_->scrollToTop();
+    modIconListView_->scrollToTop();
+    modTreeView_->scrollToTop();
 }
 
 void ExploreBrowser::loadMore()
 {}
 
-void ExploreBrowser::onSelectedItemChanged(const QModelIndex &index[[maybe_unused]])
-{}
-
-QWidget *ExploreBrowser::getIndexWidget(const QModelIndex &index[[maybe_unused]])
+QWidget *ExploreBrowser::getListViewIndexWidget(const QModelIndex &index[[maybe_unused]])
 {
     return nullptr;
 }
+
+QWidget *ExploreBrowser::getTreeViewIndexWidget(const QModelIndex &index[[maybe_unused]])
+{
+    return nullptr;
+}
+
+void ExploreBrowser::onSelectedItemChanged(const QModelIndex &index[[maybe_unused]])
+{}
 
 QDialog *ExploreBrowser::getDialog(const QModelIndex &index[[maybe_unused]])
 {

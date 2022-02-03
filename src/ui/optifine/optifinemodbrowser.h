@@ -49,7 +49,7 @@ private:
     QList<GameVersion> gameVersions_;
     bool inited_ = false;
 
-    QWidget *getIndexWidget(const QModelIndex &index) override;
+    QWidget *getListViewIndexWidget(const QModelIndex &index) override;
 };
 
 #endif // OPTIFINEMODBROWSER_H

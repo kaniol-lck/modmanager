@@ -100,6 +100,12 @@ QVariant CurseforgeManagerModel::headerData(int section, Qt::Orientation orienta
             return tr("Name");
         case ProjectIDColumn:
             return tr("Project ID");
+        case SlugColumn:
+            return tr("Slug");
+        case AuthorsColumn:
+            return tr("Authors");
+        case CategoryColumn:
+            return tr("Categories");
         case WebsiteColumn:
             return tr("Website Link");
         case UpdateDateColumn:
@@ -108,6 +114,12 @@ QVariant CurseforgeManagerModel::headerData(int section, Qt::Orientation orienta
             return tr("Date Created");
         case ReleaseDateColumn:
             return tr("Date Released");
+        case LoaderTypesColumn:
+            return tr("Loader Types");
+        case DownloadCountColumn:
+            return tr("Download Count");
+        case PopularityScoreColumn:
+            return tr("Popularity Score");
         case SummaryColumn:
             return tr("Summary");
             break;
@@ -116,6 +128,8 @@ QVariant CurseforgeManagerModel::headerData(int section, Qt::Orientation orienta
     case Qt::DecorationRole:
         switch (section)
         {
+        case CategoryColumn:
+            return QIcon::fromTheme("tag");
         }
         break;
     }
@@ -153,6 +167,12 @@ QVariant CurseforgeManagerModel::data(const QModelIndex &index, int role) const
                 return mod->modInfo().name();
             case ProjectIDColumn:
                 return mod->modInfo().id();
+            case SlugColumn:
+                return mod->modInfo().slug();
+            case AuthorsColumn:
+                return mod->modInfo().authors().join(", ");
+            case CategoryColumn:
+                break;
             case WebsiteColumn:
                 return mod->modInfo().websiteUrl();
             case UpdateDateColumn:
@@ -161,6 +181,16 @@ QVariant CurseforgeManagerModel::data(const QModelIndex &index, int role) const
                 return mod->modInfo().dateCreated().toString(QLocale().dateTimeFormat());
             case ReleaseDateColumn:
                 return mod->modInfo().dateReleased().toString(QLocale().dateTimeFormat());
+            case LoaderTypesColumn:{
+                QStringList stringList;
+                for(auto &&loaderType : mod->modInfo().loaderTypes())
+                    stringList << ModLoaderType::toString(loaderType);
+                return stringList.join(", ");
+            }
+            case DownloadCountColumn:
+                return mod->modInfo().downloadCount();
+            case PopularityScoreColumn:
+                return mod->modInfo().popularityScore();
             case SummaryColumn:
                 return mod->modInfo().summary();
                 break;

@@ -30,6 +30,7 @@
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
 #include "download/assetcache.h"
+#include "ui/tagswidget.h"
 
 CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, CurseforgeAPI::Section sectionId) :
     ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
@@ -47,6 +48,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     ui->menu_Curseforge->insertActions(ui->menu_Curseforge->actions().first(), menu_->actions());
     proxyModel_->setSourceModel(manager_->model());
     initUi(manager_, proxyModel_);
+    treeViewIndexWidgetColumn_ = CurseforgeManagerModel::CategoryColumn;
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -322,7 +324,7 @@ void CurseforgeModBrowser::loadMore()
         manager_->searchMore();
 }
 
-QWidget *CurseforgeModBrowser::getIndexWidget(const QModelIndex &index)
+QWidget *CurseforgeModBrowser::getListViewIndexWidget(const QModelIndex &index)
 {
     auto mod = index.data(Qt::UserRole + 1).value<CurseforgeMod*>();
     if(mod){
@@ -330,6 +332,17 @@ QWidget *CurseforgeModBrowser::getIndexWidget(const QModelIndex &index)
         auto widget = new CurseforgeModItemWidget(this, mod, fileInfo);
         manager_->model()->setItemHeight(widget->height());
         return widget;
+    } else
+        return nullptr;
+}
+
+QWidget *CurseforgeModBrowser::getTreeViewIndexWidget(const QModelIndex &index)
+{
+    auto mod = index.siblingAtColumn(CurseforgeManagerModel::ModColumn).data(Qt::UserRole + 1).value<CurseforgeMod*>();
+    if(mod){
+        auto tagsWidget = new TagsWidget(this);
+        tagsWidget->setMod(mod);
+        return tagsWidget;
     } else
         return nullptr;
 }

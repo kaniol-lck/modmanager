@@ -102,7 +102,7 @@ ExploreBrowser *ReplayModBrowser::another()
     return new ReplayModBrowser;
 }
 
-QWidget *ReplayModBrowser::getIndexWidget(const QModelIndex &index)
+QWidget *ReplayModBrowser::getListViewIndexWidget(const QModelIndex &index)
 {
     auto mod = index.data(Qt::UserRole + 1).value<ReplayMod*>();
     if(mod){

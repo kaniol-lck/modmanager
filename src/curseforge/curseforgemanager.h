@@ -13,7 +13,7 @@ class CurseforgeManagerModel : public QAbstractTableModel
     Q_OBJECT
     friend class CurseforgeManager;
 public:
-    enum Column { ModColumn, NameColumn, ProjectIDColumn, WebsiteColumn, UpdateDateColumn, CreateDateColumn, ReleaseDateColumn, SummaryColumn };
+    enum Column { ModColumn, NameColumn, ProjectIDColumn, SlugColumn, AuthorsColumn, CategoryColumn, WebsiteColumn, UpdateDateColumn, CreateDateColumn, ReleaseDateColumn, LoaderTypesColumn, DownloadCountColumn, PopularityScoreColumn, SummaryColumn };
     CurseforgeManagerModel(CurseforgeManager *manager);
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;

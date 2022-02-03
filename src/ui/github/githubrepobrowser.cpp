@@ -103,7 +103,7 @@ void GitHubRepoBrowser::onSelectedItemChanged(const QModelIndex &index)
         selectedRelease_ = nullptr;
 }
 
-QWidget *GitHubRepoBrowser::getIndexWidget(const QModelIndex &index)
+QWidget *GitHubRepoBrowser::getListViewIndexWidget(const QModelIndex &index)
 {
     auto release = index.data(Qt::UserRole + 1).value<GitHubRelease*>();
     if(release){

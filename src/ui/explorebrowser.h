@@ -44,7 +44,8 @@ private slots:
     void onIconListSliderChanged(int i);
     void onTreeSliderChanged(int i);
     void onItemSelected();
-    void updateIndexWidget();
+    void updateListViewIndexWidget();
+    void updateTreeViewIndexWidget();
     void onCustomContextMenuRequested(const QPoint &pos);
     void onDoubleClicked(const QModelIndex &index);
 
@@ -59,7 +60,8 @@ protected:
     void updateStatusText();
     virtual void loadMore();
     virtual void onSelectedItemChanged(const QModelIndex &index);
-    virtual QWidget *getIndexWidget(const QModelIndex &index);
+    virtual QWidget *getListViewIndexWidget(const QModelIndex &index);
+    virtual QWidget *getTreeViewIndexWidget(const QModelIndex &index);
     virtual QDialog *getDialog(const QModelIndex &index);
     virtual QMenu *getCustomContextMenu();
     ExploreManager *manager_ = nullptr;
@@ -71,6 +73,7 @@ protected:
     QAction *visitWebsiteAction_;
     QAction *refreshAction_;
     QAction *openDialogAction_;
+    int treeViewIndexWidgetColumn_ = -1;
 
 private:
     QAbstractItemModel *model() const;

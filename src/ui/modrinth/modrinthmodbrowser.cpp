@@ -26,6 +26,7 @@
 #include "util/smoothscrollbar.h"
 #include "util/unclosedmenu.h"
 #include "local/localmod.h"
+#include "ui/tagswidget.h"
 
 ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ExploreBrowser(parent, QIcon(":/image/modrinth.svg"), "Modrinth", QUrl("https://modrinth.com/mods")),
@@ -40,6 +41,7 @@ ModrinthModBrowser::ModrinthModBrowser(QWidget *parent, LocalMod *localMod) :
     ui->setupUi(this);
     ui->menu_Modrinth->insertActions(ui->menu_Modrinth->actions().first(), menu_->actions());
     initUi(manager_);
+    treeViewIndexWidgetColumn_ = ModrinthManagerModel::CategoryColumn;
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -417,13 +419,24 @@ void ModrinthModBrowser::onSelectedItemChanged(const QModelIndex &index)
     fileListWidget_->setMod(selectedMod_);
 }
 
-QWidget *ModrinthModBrowser::getIndexWidget(const QModelIndex &index)
+QWidget *ModrinthModBrowser::getListViewIndexWidget(const QModelIndex &index)
 {
     auto mod = index.data(Qt::UserRole + 1).value<ModrinthMod*>();
     if(mod){
         auto widget = new ModrinthModItemWidget(nullptr, mod);
         manager_->model()->setItemHeight(widget->height());
         return widget;
+    } else
+        return nullptr;
+}
+
+QWidget *ModrinthModBrowser::getTreeViewIndexWidget(const QModelIndex &index)
+{
+    auto mod = index.siblingAtColumn(ModrinthManagerModel::ModColumn).data(Qt::UserRole + 1).value<ModrinthMod*>();
+    if(mod){
+        auto tagsWidget = new TagsWidget(this);
+        tagsWidget->setMod(mod);
+        return tagsWidget;
     } else
         return nullptr;
 }

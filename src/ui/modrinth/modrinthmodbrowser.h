@@ -70,7 +70,8 @@ private:
     void loadMore() override;
     void onSelectedItemChanged(const QModelIndex &index) override;
     QDialog *getDialog(const QModelIndex &index) override;
-    QWidget *getIndexWidget(const QModelIndex &index) override;
+    QWidget *getListViewIndexWidget(const QModelIndex &index) override;
+    QWidget *getTreeViewIndexWidget(const QModelIndex &index) override;
     QMenu *getCustomContextMenu() override;
 };
 

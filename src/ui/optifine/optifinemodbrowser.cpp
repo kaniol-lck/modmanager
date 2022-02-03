@@ -100,7 +100,7 @@ ExploreBrowser *OptifineModBrowser::another()
     return new OptifineModBrowser;
 }
 
-QWidget *OptifineModBrowser::getIndexWidget(const QModelIndex &index)
+QWidget *OptifineModBrowser::getListViewIndexWidget(const QModelIndex &index)
 {
     auto mod = index.data(Qt::UserRole + 1).value<OptifineMod*>();
     if(mod){

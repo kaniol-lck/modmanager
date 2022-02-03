@@ -47,7 +47,7 @@ private:
     bool inited_ = false;
     std::unique_ptr<Reply<QList<ReplayModInfo> > > searchModsGetter_;
 
-    QWidget *getIndexWidget(const QModelIndex &index) override;
+    QWidget *getListViewIndexWidget(const QModelIndex &index) override;
 };
 
 #endif // REPLAYMODBROWSER_H

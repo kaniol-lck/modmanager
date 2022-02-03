@@ -54,7 +54,7 @@ private:
 
     void loadMore() override;
     void onSelectedItemChanged(const QModelIndex &index) override;
-    QWidget *getIndexWidget(const QModelIndex &index) override;
+    QWidget *getListViewIndexWidget(const QModelIndex &index) override;
 };
 
 #endif // GITHUBREPOBROWSER_H
