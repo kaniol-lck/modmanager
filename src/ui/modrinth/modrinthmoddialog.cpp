@@ -84,7 +84,7 @@ void ModrinthModDialog::updateBasicInfo()
 
     //update icon
     //included by basic info
-    if(!mod_->modInfo().iconBytes().isEmpty())
+    if(!mod_->modInfo().icon().isNull())
         updateIcon();
     else {
         mod_->acquireIcon();
@@ -104,9 +104,7 @@ void ModrinthModDialog::updateFullInfo()
 
 void ModrinthModDialog::updateIcon()
 {
-    QPixmap pixelmap;
-    pixelmap.loadFromData(mod_->modInfo().iconBytes());
-    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+    ui->modIcon->setPixmap(mod_->modInfo().icon().scaled(80, 80, Qt::KeepAspectRatio));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 }
 

@@ -79,7 +79,7 @@ void ModrinthModInfoWidget::updateBasicInfo()
     //update icon
     //included by basic info
     updateIcon();
-    if(mod_->modInfo().iconBytes().isEmpty()){
+    if(mod_->modInfo().icon().isNull()){
         mod_->acquireIcon();
         ui->modIcon->setCursor(Qt::BusyCursor);
     }
@@ -97,9 +97,7 @@ void ModrinthModInfoWidget::updateFullInfo()
 
 void ModrinthModInfoWidget::updateIcon()
 {
-    QPixmap pixelmap;
-    pixelmap.loadFromData(mod_->modInfo().iconBytes());
-    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+    ui->modIcon->setPixmap(mod_->modInfo().icon().scaled(80, 80, Qt::KeepAspectRatio));
     ui->modIcon->setCursor(Qt::ArrowCursor);
 }
 

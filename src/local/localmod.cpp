@@ -694,10 +694,10 @@ void LocalMod::updateIcon()
         }
     } else if(modrinthMod_){
         auto setModrinthIcon = [=]{
-            icon_.loadFromData(modrinthMod_->modInfo().iconBytes());
+            icon_ = modrinthMod_->modInfo().icon();
             applyIcon();
         };
-        if(!modrinthMod_->modInfo().iconBytes().isEmpty())
+        if(!modrinthMod_->modInfo().icon().isNull())
             setModrinthIcon();
         else{
             modrinthMod_->acquireFullInfo();

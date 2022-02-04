@@ -177,9 +177,7 @@ QVariant ModrinthManagerModel::data(const QModelIndex &index, int role) const
         switch (index.column())
         {
         case NameColumn:
-            QPixmap pixmap;
-            pixmap.loadFromData(mod->modInfo().iconBytes());
-            return QIcon(pixmap.scaled(96, 96, Qt::KeepAspectRatio));
+            return QIcon(mod->modInfo().icon().scaled(96, 96, Qt::KeepAspectRatio));
         }
         break;
     case Qt::UserRole + 1:

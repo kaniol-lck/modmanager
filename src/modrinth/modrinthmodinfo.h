@@ -15,6 +15,8 @@ public:
     ModrinthModInfo() = default;
     explicit ModrinthModInfo(const QString &id);
 
+    static const QString &cachePath();
+
     static ModrinthModInfo fromSearchVariant(const QVariant &variant);
     static ModrinthModInfo fromVariant(const QVariant &variant);
 
@@ -26,8 +28,8 @@ public:
     const QStringList &versions() const;
     int downloadCount() const;
     const QList<ModLoaderType::Type> &loaderTypes() const;
+    const QPixmap &icon() const;
     const QUrl &iconUrl() const;
-    const QByteArray &iconBytes() const;
     const QString &summary() const;
     const QUrl &websiteUrl() const;
     const QList<ModrinthFileInfo> &fileList() const;
@@ -52,7 +54,7 @@ private:
     QList<ModLoaderType::Type> loaderTypes_;
     QUrl websiteUrl_;
     QUrl iconUrl_;
-    QByteArray iconBytes_;
+    QPixmap icon_;
     QStringList categories_;
     QDateTime dateCreated_;
     QDateTime dateModified_;

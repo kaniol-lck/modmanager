@@ -68,12 +68,17 @@ void CurseforgeMod::acquireIcon()
     if(!modInfo_.icon_.isNull() || modInfo_.iconUrl_.isEmpty() || gettingIcon_) return;
     gettingIcon_ = true;
     auto iconAsset = new AssetCache(this, modInfo_.iconUrl_, modInfo_.iconUrl_.fileName(), CurseforgeModInfo::cachePath());
-    iconAsset->download();
-    connect(iconAsset, &AssetCache::assetReady, this, [=]{
+    auto foo = [=]{
         modInfo_.icon_.load(iconAsset->destFilePath());
         gettingIcon_ = false;
         emit iconReady();
-    });
+    };
+    if(iconAsset->exists())
+        foo();
+    else{
+        iconAsset->download();
+        connect(iconAsset, &AssetCache::assetReady, this, foo);
+    }
 }
 
 void CurseforgeMod::acquireDescription()

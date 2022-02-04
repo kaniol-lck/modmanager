@@ -95,14 +95,12 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
 
     QAria2Downloader *downloader;
     DownloadFileInfo info(fileInfo_);
-    QPixmap pixelmap;
-    pixelmap.loadFromData(mod_->modInfo().iconBytes());
-    info.setIcon(pixelmap);
+    info.setIcon(mod_->modInfo().icon());
     info.setTitle(mod_->modInfo().name());
     if(localMod_)
         info.setIconBytes(localMod_->commonInfo()->iconBytes());
     else
-        info.setIconBytes(mod_->modInfo().iconBytes());
+        info.setIcon(mod_->modInfo().icon());
     if(auto downloadPath = fileList_->downloadPathSelectMenu()->downloadPath())
         downloader = downloadPath->downloadNewMod(info);
     else if(localMod_)

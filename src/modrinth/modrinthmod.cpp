@@ -12,6 +12,7 @@
 #include "download/downloadmanager.h"
 #include "util/mmlogger.h"
 #include "local/localmodpath.h"
+#include "download/assetcache.h"
 
 ModrinthMod::ModrinthMod(LocalMod *parent, const QString &id) :
     QObject(parent),
@@ -60,23 +61,21 @@ ModrinthModInfo ModrinthMod::modInfo() const
 
 void ModrinthMod::acquireIcon()
 {
-    if(modInfo_.iconUrl_.isEmpty() || gettingIcon_) return;
+    if(!modInfo_.icon_.isNull() || modInfo_.iconUrl_.isEmpty() || gettingIcon_) return;
     gettingIcon_ = true;
-    QNetworkRequest request(modInfo_.iconUrl_);
-    static QNetworkAccessManager accessManager;
-    static QNetworkDiskCache diskCache;
-    diskCache.setCacheDirectory(QStandardPaths::writableLocation(QStandardPaths::CacheLocation));
-    accessManager.setCache(&diskCache);
-    request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
-    auto reply = accessManager.get(request);
-    connect(reply, &QNetworkReply::finished, this, [=]{
+    auto fileName = modInfo_.id() + "." + QFileInfo(modInfo_.iconUrl_.fileName()).suffix();
+    auto iconAsset = new AssetCache(this, modInfo_.iconUrl_, fileName, ModrinthModInfo::cachePath());
+    auto foo = [=]{
+        modInfo_.icon_.load(iconAsset->destFilePath());
         gettingIcon_ = false;
-        if(reply->error() != QNetworkReply::NoError) return;
-        modInfo_.iconBytes_ = reply->readAll();
-        if(!modInfo_.iconBytes_.isEmpty())
-            emit iconReady();
-        reply->deleteLater();
-    });
+        emit iconReady();
+    };
+    if(iconAsset->exists())
+        foo();
+    else{
+        iconAsset->download();
+        connect(iconAsset, &AssetCache::assetReady, this, foo);
+    }
 }
 
 std::shared_ptr<Reply<ModrinthModInfo>> ModrinthMod::acquireFullInfo()
@@ -110,9 +109,7 @@ std::shared_ptr<Reply<QList<ModrinthFileInfo> > > ModrinthMod::acquireFileList()
 void ModrinthMod::download(const ModrinthFileInfo &fileInfo, LocalModPath *downloadPath)
 {
     DownloadFileInfo info(fileInfo);
-    QPixmap pixelmap;
-    pixelmap.loadFromData(modInfo_.iconBytes());
-    info.setIcon(pixelmap);
+    info.setIcon(modInfo_.icon());
     info.setTitle(modInfo_.name());
 
     if(downloadPath)

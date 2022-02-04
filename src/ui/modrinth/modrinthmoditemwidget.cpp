@@ -54,7 +54,7 @@ ModrinthModItemWidget::ModrinthModItemWidget(ModrinthModBrowser *parent, Modrint
         ui->loadersLayout->addWidget(label);
     }
 
-    if(!mod_->modInfo().iconBytes().isEmpty())
+    if(!mod_->modInfo().icon().isNull())
         updateIcon();
 
     connect(mod, &ModrinthMod::iconReady, this, &ModrinthModItemWidget::updateIcon);
@@ -79,9 +79,7 @@ ModrinthModItemWidget::~ModrinthModItemWidget()
 
 void ModrinthModItemWidget::updateIcon()
 {
-    QPixmap pixelmap;
-    pixelmap.loadFromData(mod_->modInfo().iconBytes());
-    ui->modIcon->setPixmap(pixelmap.scaled(80, 80, Qt::KeepAspectRatio));
+    ui->modIcon->setPixmap(mod_->modInfo().icon().scaled(80, 80, Qt::KeepAspectRatio));
 }
 
 void ModrinthModItemWidget::updateFileList()

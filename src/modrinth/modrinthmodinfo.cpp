@@ -1,6 +1,8 @@
 #include "modrinthmodinfo.h"
 
 #include <QDebug>
+#include <QDir>
+#include <QStandardPaths>
 
 #include "modrinthapi.h"
 #include "util/tutil.hpp"
@@ -8,6 +10,14 @@
 ModrinthModInfo::ModrinthModInfo(const QString &id) :
     modId_(id)
 {}
+
+const QString &ModrinthModInfo::cachePath()
+{
+    static const QString path =
+            QDir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation))
+            .absoluteFilePath("modrinth/mods");
+    return path;
+}
 
 ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
 {
@@ -120,11 +130,6 @@ const QUrl &ModrinthModInfo::iconUrl() const
     return iconUrl_;
 }
 
-const QByteArray &ModrinthModInfo::iconBytes() const
-{
-    return iconBytes_;
-}
-
 const QString &ModrinthModInfo::summary() const
 {
     return summary_;
@@ -166,6 +171,11 @@ bool ModrinthModInfo::hasBasicInfo() const
 bool ModrinthModInfo::hasFullInfo() const
 {
     return fullInfo_;
+}
+
+const QPixmap &ModrinthModInfo::icon() const
+{
+    return icon_;
 }
 
 const QList<ModLoaderType::Type> &ModrinthModInfo::loaderTypes() const
