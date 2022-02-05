@@ -152,7 +152,6 @@ int CurseforgeManagerModel::columnCount(const QModelIndex &parent) const
 
 QVariant CurseforgeManagerModel::data(const QModelIndex &index, int role) const
 {
-    //    qDebug() << index << role;
         if (!index.isValid() || index.row() >= rowCount())
             return QVariant();
         auto mod = manager_->mods().at(index.row());

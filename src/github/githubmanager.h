@@ -11,9 +11,12 @@ class GitHubManagerModel : public QAbstractListModel
     Q_OBJECT
     friend class GitHubManager;
 public:
+    enum Column { ModColumn, NameColumn, TagNameColumn, PreReleaseColumn, CreateColumn, PublishColumn, ReleaseLinkColumn, BodyColumn };
     GitHubManagerModel(GitHubManager *manager);
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     void setItemHeight(int newItemHeight);
@@ -26,8 +29,6 @@ private:
 class GitHubManager : public ExploreManager
 {
 public:
-    enum Column { ModColumn };
-
     GitHubManager(QObject *parent, const GitHubRepoInfo &info);
 
     void search();
@@ -35,6 +36,8 @@ public:
 
     GitHubManagerModel *model() const override;
     const QList<GitHubRelease *> &releases() const;
+
+    const GitHubRepoInfo &info() const;
 
 private:
     GitHubRepoInfo info_;

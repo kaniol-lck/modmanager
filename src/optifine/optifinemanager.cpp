@@ -50,9 +50,40 @@ void OptifineManager::getModList()
 }
 
 OptifineManagerModel::OptifineManagerModel(OptifineManager *manager) :
-    QAbstractListModel(manager),
+    QAbstractTableModel(manager),
     manager_(manager)
 {}
+
+QVariant OptifineManagerModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(orientation != Qt::Horizontal) return QVariant();
+    switch (role) {
+    case Qt::ToolTipRole:
+    case Qt::DisplayRole:
+        switch (section)
+        {
+        case ModColumn:
+            return QVariant();
+        case NameColumn:
+            return tr("Name");
+        case GameVersionColumn:
+            return tr("Game Version");
+        case FileNameColumn:
+            return tr("File Name");
+        case PreviewColumn:
+            return tr("Preview");
+        case MirrorLinkColumn:
+            return tr("Mirror Link");
+        }
+        break;
+    case Qt::DecorationRole:
+        switch (section)
+        {
+        }
+        break;
+    }
+    return QVariant();
+}
 
 int OptifineManagerModel::rowCount(const QModelIndex &parent) const
 {
@@ -61,17 +92,64 @@ int OptifineManagerModel::rowCount(const QModelIndex &parent) const
     return manager_->mods().size();
 }
 
+int OptifineManagerModel::columnCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return 0;
+    return MirrorLinkColumn + 1;
+}
+
 QVariant OptifineManagerModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() >= rowCount())
         return QVariant();
     auto mod = manager_->mods().at(index.row());
     switch (role) {
+    case Qt::CheckStateRole:
+        switch (index.column()) {
+        case PreviewColumn:
+            return mod->modInfo().isPreview()? Qt::Checked : Qt::Unchecked;
+        }
+        break;
+    case Qt::ToolTipRole:
+    case Qt::DisplayRole:
+        switch (index.column())
+        {
+        case ModColumn:
+            break;
+        case NameColumn:
+            return mod->modInfo().name();
+//        case PatchColumn:
+//            return mod->modInfo().patch();
+//        case TypeColumn:
+//            return mod->modInfo().type();
+        case GameVersionColumn:
+            return mod->modInfo().gameVersion().toString();
+        case FileNameColumn:
+            return mod->modInfo().fileName();
+        case PreviewColumn:
+            break;
+        case MirrorLinkColumn:
+            return mod->modInfo().mirrorUrl();
+        }
+        break;
+    case Qt::DecorationRole:
+        switch (index.column())
+        {
+        case NameColumn:
+            return QIcon(":/image/optifine.png");
+        }
+        break;
     case Qt::UserRole + 1:
-        return QVariant::fromValue(mod);
+        switch (index.column())
+        {
+        case ModColumn:
+            return QVariant::fromValue(mod);
+        }
         break;
     case Qt::SizeHintRole:
-        return QSize(0, itemHeight_);
+        if(index.column() == ModColumn)
+            return QSize(0, itemHeight_);
         break;
     }
     return QVariant();
@@ -93,7 +171,7 @@ void OptifineManagerProxyModel::setGameVersion(const GameVersion &newGameVersion
 
 bool OptifineManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex &) const
 {
-    auto mod = sourceModel()->index(source_row, OptifineManager::ModColumn).data(Qt::UserRole + 1).value<OptifineMod *>();
+    auto mod = sourceModel()->index(source_row, OptifineManagerModel::ModColumn).data(Qt::UserRole + 1).value<OptifineMod *>();
     if(gameVersion_ != GameVersion::Any && gameVersion_ != mod->modInfo().gameVersion()) return false;
     if(!mod->modInfo().fileName().contains(text_)) return false;
     if(!showPreview_ && mod->modInfo().isPreview()) return false;

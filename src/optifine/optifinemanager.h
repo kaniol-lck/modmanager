@@ -1,7 +1,6 @@
 #ifndef OPTIFINEMANAGER_H
 #define OPTIFINEMANAGER_H
 
-#include <QAbstractListModel>
 #include <QSortFilterProxyModel>
 
 #include "exploremanager.h"
@@ -11,14 +10,17 @@
 
 class OptifineMod;
 class OptifineManager;
-class OptifineManagerModel : public QAbstractListModel
+class OptifineManagerModel : public QAbstractTableModel
 {
     Q_OBJECT
     friend class OptifineManager;
 public:
+    enum Column { ModColumn, NameColumn/*, PatchColumn, TypeColumn*/, GameVersionColumn, FileNameColumn, PreviewColumn, MirrorLinkColumn };
     OptifineManagerModel(OptifineManager *manager);
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     void setItemHeight(int newItemHeight);
@@ -32,7 +34,6 @@ class OptifineManager : public ExploreManager
 {
     Q_OBJECT
 public:
-    enum Column { ModColumn };
     explicit OptifineManager(QObject *parent = nullptr);
 
     void search();

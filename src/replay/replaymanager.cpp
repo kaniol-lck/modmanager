@@ -47,11 +47,49 @@ ReplayManagerModel::ReplayManagerModel(ReplayManager *manager) :
     manager_(manager)
 {}
 
+QVariant ReplayManagerModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(orientation != Qt::Horizontal) return QVariant();
+    switch (role) {
+    case Qt::ToolTipRole:
+    case Qt::DisplayRole:
+        switch (section)
+        {
+        case ModColumn:
+            return QVariant();
+        case NameColumn:
+            return tr("Name");
+        case GameVersionColumn:
+            return tr("Game Version");
+        case LoaderTypeColumn:
+            return tr("Loader Type");
+        case FileNameColumn:
+            return tr("File Name");
+        case DownloadCountColumn:
+            return tr("Download Count");
+        }
+        break;
+    case Qt::DecorationRole:
+        switch (section)
+        {
+        }
+        break;
+    }
+    return QVariant();
+}
+
 int ReplayManagerModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
     return manager_->mods().size();
+}
+
+int ReplayManagerModel::columnCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return 0;
+    return DownloadCountColumn + 1;
 }
 
 QVariant ReplayManagerModel::data(const QModelIndex &index, int role) const
@@ -60,11 +98,41 @@ QVariant ReplayManagerModel::data(const QModelIndex &index, int role) const
         return QVariant();
     auto mod = manager_->mods().at(index.row());
     switch (role) {
+    case Qt::ToolTipRole:
+    case Qt::DisplayRole:
+        switch (index.column())
+        {
+        case ModColumn:
+            break;
+        case NameColumn:
+            return mod->modInfo().name();
+        case GameVersionColumn:
+            return mod->modInfo().gameVersionString();
+        case LoaderTypeColumn:
+            return ModLoaderType::toString(mod->modInfo().loaderType());
+        case FileNameColumn:
+            return mod->modInfo().fileName();
+        case DownloadCountColumn:
+            return mod->modInfo().downloadCount();
+        }
+        break;
+    case Qt::DecorationRole:
+        switch (index.column())
+        {
+        case NameColumn:
+            return QIcon(":/image/replay.png");
+        }
+        break;
     case Qt::UserRole + 1:
-        return QVariant::fromValue(mod);
+        switch (index.column())
+        {
+        case ModColumn:
+            return QVariant::fromValue(mod);
+        }
         break;
     case Qt::SizeHintRole:
-        return QSize(0, itemHeight_);
+        if(index.column() == ModColumn)
+            return QSize(0, itemHeight_);
         break;
     }
     return QVariant();
@@ -96,7 +164,7 @@ void ReplayManagerProxyModel::setText(const QString &newText)
 
 bool ReplayManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex &) const
 {
-    auto mod = sourceModel()->index(source_row, ReplayManager::ModColumn).data(Qt::UserRole + 1).value<ReplayMod *>();
+    auto mod = sourceModel()->index(source_row, ReplayManagerModel::ModColumn).data(Qt::UserRole + 1).value<ReplayMod *>();
     if(gameVersion_ != GameVersion::Any && gameVersion_ != mod->modInfo().gameVersion()) return false;
     if(auto loaderType = mod->modInfo().loaderType(); loaderType_ != ModLoaderType::Any && loaderType !=ModLoaderType::Any &&
             loaderType_ != loaderType) return false;

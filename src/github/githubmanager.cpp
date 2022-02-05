@@ -8,6 +8,11 @@ const QList<GitHubRelease *> &GitHubManager::releases() const
     return releases_;
 }
 
+const GitHubRepoInfo &GitHubManager::info() const
+{
+    return info_;
+}
+
 void GitHubManager::getModList()
 {
     emit searchStarted();
@@ -65,6 +70,41 @@ GitHubManagerModel::GitHubManagerModel(GitHubManager *manager) :
     manager_(manager)
 {}
 
+QVariant GitHubManagerModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if(orientation != Qt::Horizontal) return QVariant();
+    switch (role) {
+    case Qt::ToolTipRole:
+    case Qt::DisplayRole:
+        switch (section)
+        {
+        case ModColumn:
+            return QVariant();
+        case NameColumn:
+            return tr("Name");
+        case TagNameColumn:
+            return tr("Tag Name");
+        case PreReleaseColumn:
+            return tr("Pre Release");
+        case CreateColumn:
+            return tr("Date Created");
+        case PublishColumn:
+            return tr("Date Published");
+        case ReleaseLinkColumn:
+            return tr("Release Link");
+        case BodyColumn:
+            return tr("Body");
+        }
+        break;
+    case Qt::DecorationRole:
+        switch (section)
+        {
+        }
+        break;
+    }
+    return QVariant();
+}
+
 int GitHubManagerModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
@@ -72,18 +112,63 @@ int GitHubManagerModel::rowCount(const QModelIndex &parent) const
     return manager_->releases().size();
 }
 
+int GitHubManagerModel::columnCount(const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return 0;
+    return BodyColumn + 1;
+}
+
 QVariant GitHubManagerModel::data(const QModelIndex &index, int role) const
 {
     //    qDebug() << index << role;
         if (!index.isValid() || index.row() >= rowCount())
             return QVariant();
-        auto mod = manager_->releases().at(index.row());
+        auto release = manager_->releases().at(index.row());
         switch (role) {
+        case Qt::CheckStateRole:
+            switch (index.column()) {
+            case PreReleaseColumn:
+                return release->info().prerelease()? Qt::Checked : Qt::Unchecked;
+            }
+            break;
+        case Qt::ToolTipRole:
+        case Qt::DisplayRole:
+            switch (index.column())
+            {
+            case ModColumn:
+                break;
+            case NameColumn:
+                return release->info().name();
+            case TagNameColumn:
+                return release->info().tagName();
+            case CreateColumn:
+                return release->info().created().toString(QLocale().dateTimeFormat());
+            case PublishColumn:
+                return release->info().published().toString(QLocale().dateTimeFormat());
+            case ReleaseLinkColumn:
+                return release->info().url();
+            case BodyColumn:
+                return release->info().body();
+            }
+            break;
+        case Qt::DecorationRole:
+            switch (index.column())
+            {
+            case NameColumn:
+                return manager_->info().icon();
+            }
+            break;
         case Qt::UserRole + 1:
-            return QVariant::fromValue(mod);
+            switch (index.column())
+            {
+            case ModColumn:
+                return QVariant::fromValue(release);
+            }
             break;
         case Qt::SizeHintRole:
-            return QSize(0, itemHeight_);
+            if(index.column() == ModColumn)
+                return QSize(0, itemHeight_);
             break;
         }
         return QVariant();

@@ -12,9 +12,12 @@ class ReplayManagerModel : public QAbstractListModel
     Q_OBJECT
     friend class ReplayManager;
 public:
+    enum Column { ModColumn, NameColumn, GameVersionColumn, LoaderTypeColumn, FileNameColumn, DownloadCountColumn };
     ReplayManagerModel(ReplayManager *manager);
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
     void setItemHeight(int newItemHeight);
@@ -28,7 +31,6 @@ class ReplayManager : public ExploreManager
 {
     Q_OBJECT
 public:
-    enum Column { ModColumn };
     explicit ReplayManager(QObject *parent = nullptr);
 
     void search();
