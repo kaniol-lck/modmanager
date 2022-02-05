@@ -587,6 +587,74 @@
     </message>
 </context>
 <context>
+    <name>CurseforgeManagerModel</name>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="100"/>
+        <source>Name</source>
+        <translation type="unfinished">名稱</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="102"/>
+        <source>Project ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="104"/>
+        <source>Slug</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="106"/>
+        <source>Authors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="108"/>
+        <source>Categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="110"/>
+        <source>Website Link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="112"/>
+        <source>Date Modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="114"/>
+        <source>Date Created</source>
+        <translation type="unfinished">創建時間</translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="116"/>
+        <source>Date Released</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="118"/>
+        <source>Loader Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="120"/>
+        <source>Download Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="122"/>
+        <source>Popularity Score</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/curseforge/curseforgemanager.cpp" line="124"/>
+        <source>Summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CurseforgeModBrowser</name>
     <message>
         <source>Form</source>
@@ -610,12 +678,12 @@
         <translation type="vanished">保存至：</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="148"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="147"/>
         <source>&amp;Mod</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="152"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="151"/>
         <source>Download</source>
         <translation type="unfinished">下載</translation>
     </message>
@@ -628,77 +696,77 @@
         <translation type="obsolete">打開文件夾</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="111"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="110"/>
         <source>Tool Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="125"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="124"/>
         <source>Search Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="166"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="165"/>
         <source>&amp;Curseforge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="170"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="169"/>
         <source>Select Game Version</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="175"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="174"/>
         <source>Select Category</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="189"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="188"/>
         <source>&amp;View</source>
         <translation type="unfinished">視圖 (&amp;V)</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="198"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="197"/>
         <source>Categories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="209"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="208"/>
         <source>Game Versions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="223"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="222"/>
         <source>Mod</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="231"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="230"/>
         <source>World</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="239"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="238"/>
         <source>Modpacks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="247"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="246"/>
         <source>Texturepacks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="256"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="255"/>
         <source>Copy Website Link</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="265"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="264"/>
         <source>Open Curseforge Mod Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="270"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.ui" line="269"/>
         <source>Open Website Link</source>
         <translation type="unfinished"></translation>
     </message>
@@ -759,10 +827,10 @@
         <translation>下載總量</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="169"/>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="172"/>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="219"/>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="222"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="163"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="166"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="213"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="216"/>
         <source>Any</source>
         <translation>任意</translation>
     </message>
@@ -771,52 +839,21 @@
         <translation type="vanished">自定義</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="142"/>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="172"/>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="194"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="136"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="166"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="188"/>
         <source>Game Version : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="222"/>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="247"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="216"/>
+        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="241"/>
         <source>Category : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="294"/>
-        <source>mods</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="297"/>
-        <source>texturepacks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="300"/>
-        <source>worlds</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="303"/>
-        <source>modpacks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="321"/>
-        <source>Searching mods...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="369"/>
         <source>There is no more mod here...</source>
-        <translation>這裡沒有更多的mod了...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/curseforge/curseforgemodbrowser.cpp" line="389"/>
-        <source>Failed loading</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">這裡沒有更多的mod了...</translation>
     </message>
 </context>
 <context>
@@ -1038,25 +1075,21 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/download/downloadbrowser.ui" line="144"/>
-        <location filename="../src/ui/download/downloadbrowser.ui" line="147"/>
+        <location filename="../src/ui/download/downloadbrowser.ui" line="145"/>
+        <location filename="../src/ui/download/downloadbrowser.ui" line="148"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/download/downloadbrowser.ui" line="156"/>
-        <location filename="../src/ui/download/downloadbrowser.ui" line="159"/>
+        <location filename="../src/ui/download/downloadbrowser.ui" line="157"/>
+        <location filename="../src/ui/download/downloadbrowser.ui" line="160"/>
         <source>Force Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/download/downloadbrowser.ui" line="168"/>
+        <location filename="../src/ui/download/downloadbrowser.ui" line="169"/>
+        <location filename="../src/ui/download/downloadbrowser.ui" line="172"/>
         <source>Force Stop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/download/downloadbrowser.ui" line="171"/>
-        <source>Dorce Stop</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1155,18 +1188,28 @@
 <context>
     <name>ExploreBrowser</name>
     <message>
-        <location filename="../src/ui/explorebrowser.cpp" line="38"/>
+        <location filename="../src/ui/explorebrowser.cpp" line="65"/>
         <source>Visit %1</source>
         <translation>訪問%1</translation>
     </message>
     <message>
-        <location filename="../src/ui/explorebrowser.cpp" line="36"/>
+        <location filename="../src/ui/explorebrowser.cpp" line="63"/>
         <source>Refresh Mods</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/explorebrowser.cpp" line="41"/>
+        <location filename="../src/ui/explorebrowser.cpp" line="68"/>
         <source>Open in New Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/explorebrowser.cpp" line="200"/>
+        <source>Searching mods...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/explorebrowser.cpp" line="206"/>
+        <source>Failed loading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1181,8 +1224,43 @@
         <translation type="obsolete">Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/explorestatusbarwidget.cpp" line="29"/>
+        <location filename="../src/ui/explorestatusbarwidget.cpp" line="37"/>
+        <source>Shown: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/explorestatusbarwidget.cpp" line="38"/>
         <source>Loaded: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/explorestatusbarwidget.ui" line="127"/>
+        <source>List Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/explorestatusbarwidget.ui" line="134"/>
+        <source>Ctrl+1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/explorestatusbarwidget.ui" line="153"/>
+        <source>Icon Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/explorestatusbarwidget.ui" line="160"/>
+        <source>Ctrl+2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/explorestatusbarwidget.ui" line="179"/>
+        <source>Detail Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/explorestatusbarwidget.ui" line="186"/>
+        <source>Ctrl+3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1331,6 +1409,44 @@
     </message>
 </context>
 <context>
+    <name>GitHubManagerModel</name>
+    <message>
+        <location filename="../src/github/githubmanager.cpp" line="84"/>
+        <source>Name</source>
+        <translation type="unfinished">名稱</translation>
+    </message>
+    <message>
+        <location filename="../src/github/githubmanager.cpp" line="86"/>
+        <source>Tag Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/github/githubmanager.cpp" line="88"/>
+        <source>Pre Release</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/github/githubmanager.cpp" line="90"/>
+        <source>Date Created</source>
+        <translation type="unfinished">創建時間</translation>
+    </message>
+    <message>
+        <location filename="../src/github/githubmanager.cpp" line="92"/>
+        <source>Date Published</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/github/githubmanager.cpp" line="94"/>
+        <source>Release Link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/github/githubmanager.cpp" line="96"/>
+        <source>Body</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>GitHubReleaseInfoWidget</name>
     <message>
         <source>Form</source>
@@ -1381,29 +1497,18 @@
 <context>
     <name>GitHubRepoBrowser</name>
     <message>
-        <location filename="../src/ui/github/githubrepobrowser.ui" line="17"/>
+        <location filename="../src/ui/github/githubrepobrowser.ui" line="16"/>
         <source>Tool Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/github/githubrepobrowser.ui" line="40"/>
+        <location filename="../src/ui/github/githubrepobrowser.ui" line="39"/>
         <source>&amp;GitHub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/github/githubrepobrowser.cpp" line="99"/>
-        <source>Searching mods...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/github/githubrepobrowser.cpp" line="121"/>
         <source>There is no more mod here...</source>
-        <translation type="unfinished">這裡沒有更多的mod了...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/github/githubrepobrowser.cpp" line="133"/>
-        <source>Failed loading</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">這裡沒有更多的mod了...</translation>
     </message>
 </context>
 <context>
@@ -1493,7 +1598,7 @@
         <translation>在本地文件夾中搜索mod...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="569"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="566"/>
         <source>Filter</source>
         <translation>篩選</translation>
     </message>
@@ -1536,126 +1641,127 @@
         <translation>隱藏</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="306"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="303"/>
         <source>&amp;Mod</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="333"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="330"/>
         <source>&amp;Path</source>
         <translation type="unfinished">路徑 (&amp;P)</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="362"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="359"/>
         <source>&amp;View</source>
         <translation type="unfinished">視圖 (&amp;V)</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="375"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="372"/>
         <source>Reload Mods</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="378"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="375"/>
         <source>F5</source>
         <translation type="unfinished">F5</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="387"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="384"/>
         <source>Batch Rename</source>
         <translation type="unfinished">批量重命名</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="396"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="393"/>
         <source>Delete Old Files In Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="405"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="402"/>
         <source>Find New Mods in...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="417"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="414"/>
         <source>Enable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="420"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="417"/>
         <source>Ctrl+D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="435"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="432"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="444"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="441"/>
         <source>Rename Selected Mods</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="447"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="444"/>
         <source>Ctrl+B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="456"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="453"/>
         <source>Rename to...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="465"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="462"/>
         <source>Open Curseforge Mod Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="474"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="471"/>
         <source>Open Modrinth Mod Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="479"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="476"/>
         <source>Open Mod Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="488"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="485"/>
         <source>Search on Curseforge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="497"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="494"/>
         <source>Search on Modrinth</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="506"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="438"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="492"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="503"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="437"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="491"/>
         <source>Check Updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="515"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="516"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="512"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="515"/>
         <source>Update All</source>
         <translation>更新全部</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="524"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="521"/>
         <source>Link Mod Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="583"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="580"/>
         <source>Export Compressed File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="585"/>
         <location filename="../src/ui/local/localmodbrowser.ui" line="588"/>
-        <source>Show This Mod in Directory</source>
+        <source>Show in Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1669,52 +1775,52 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="619"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="620"/>
         <source>Add Tag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="627"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="629"/>
         <source>Remove Tag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="337"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="334"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="263"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="260"/>
         <source>Tool Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="283"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="280"/>
         <source>Search Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="533"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="530"/>
         <source>Export manifest.json</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="542"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="539"/>
         <source>Export modlist.html (Cuseforge)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="551"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="548"/>
         <source>Export modlist.html (Modrinth)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="560"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="557"/>
         <source>Sort</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="578"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="575"/>
         <source>Open In GitHub</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1731,12 +1837,12 @@
         <translation type="vanished">刪除舊版</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="765"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="764"/>
         <source>Delete</source>
         <translation>刪除</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="765"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="764"/>
         <source>Delete all old file?</source>
         <translation>刪除所有舊版文件？</translation>
     </message>
@@ -1745,12 +1851,12 @@
         <translation type="vanished">共計%1個mod。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="416"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="415"/>
         <source>Loading mod files...</source>
         <translation>加載mod文件中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="421"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="420"/>
         <source>Loading mod files.. (Loaded %1/%2 mod files)</source>
         <translation>加載mod文件中...（已加載%1/%2個mod文件）</translation>
     </message>
@@ -1799,7 +1905,7 @@
         <translation type="obsolete">清除更新忽略</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.ui" line="432"/>
+        <location filename="../src/ui/local/localmodbrowser.ui" line="429"/>
         <source>Star</source>
         <translation type="unfinished">星標</translation>
     </message>
@@ -1812,102 +1918,102 @@
         <translation type="vanished">檢查更新中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="104"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="103"/>
         <source>Order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="105"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="104"/>
         <source>Ascending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="108"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="107"/>
         <source>Descending</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="116"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="115"/>
         <source>Column</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="175"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="174"/>
         <source>No Rename History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="178"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="177"/>
         <source>Clear History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="189"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="188"/>
         <source>Main Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="198"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="197"/>
         <source>Sub Directories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="203"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="202"/>
         <source>New Sub-Directory...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="204"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="203"/>
         <source>New Sub-Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="204"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="203"/>
         <source>Sub-Directory Name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="447"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="446"/>
         <source>Linking mod files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="452"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="451"/>
         <source>Linkinig mod files.. (Linked %1/%2 mod files)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="470"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="469"/>
         <source>Cancel Checking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="474"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="473"/>
         <source>Checking mod updates...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="485"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="484"/>
         <source>%1 mods need update... (Checked %2/%3 mods)</source>
         <translation>%1個mod需要更新（已檢查%2/%3個mod...）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="503"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="502"/>
         <source>Update Checking Incompleted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="503"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="502"/>
         <source>%1 mods failed checking update because of network: &lt;ul&gt;%2&lt;/ul&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="517"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="516"/>
         <source>%1 mods need update.</source>
         <translation>%1個mod需要更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="521"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="520"/>
         <source>Nothing to Update</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1924,32 +2030,32 @@
         <translation type="vanished">（已顯示%1個mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="696"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="695"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="886"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="885"/>
         <source>Select corresponding mod on Curseforge...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="901"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="900"/>
         <source>Select corresponding mod on Modrinth...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="965"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="964"/>
         <source>Save your compressed file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="976"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="975"/>
         <source>ZIP Failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="976"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="975"/>
         <source>Failed to create zip file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1958,32 +2064,32 @@
         <translation type="vanished">太棒了！所有的mod都是最新版。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="529"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="528"/>
         <source>Updating...</source>
         <translation>更新中...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="540"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="539"/>
         <source>Updating... (Updated %1/%2 mods)</source>
         <translation>更新中...（已更新%1/%2個mod）</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="545"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="544"/>
         <source>%1 mods in %2 has been updated. Enjoy it!</source>
         <translation>%2中的%1個mod已更新。去遊戲裡體驗一下更新吧！</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="547"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="546"/>
         <source>Sadly, %1 mods failed to update.</source>
         <translation>很遺憾，%1個mod更新失敗了。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="549"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="548"/>
         <source>You can revert update if find any incompatibility.</source>
         <translation>如果發現有mod不兼容可以及時回退更新。</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="550"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="549"/>
         <source>Update Finished</source>
         <translation>更新完成</translation>
     </message>
@@ -2768,7 +2874,7 @@
     </message>
     <message>
         <location filename="../src/ui/modmanager.ui" line="333"/>
-        <location filename="../src/ui/modmanager.cpp" line="201"/>
+        <location filename="../src/ui/modmanager.cpp" line="203"/>
         <source>Lock Panels</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2907,7 +3013,7 @@
         <translation type="vanished">下載器</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="272"/>
+        <location filename="../src/ui/modmanager.cpp" line="268"/>
         <source>New Mod Path</source>
         <translation>新建mod路徑</translation>
     </message>
@@ -2916,89 +3022,89 @@
         <translation type="vanished">刷新</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="48"/>
+        <location filename="../src/ui/modmanager.cpp" line="50"/>
         <source>Mod Manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="194"/>
+        <location filename="../src/ui/modmanager.cpp" line="196"/>
         <source>Unlock Panels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="292"/>
+        <location filename="../src/ui/modmanager.cpp" line="288"/>
         <source>Edit</source>
         <translation>編輯</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="295"/>
+        <location filename="../src/ui/modmanager.cpp" line="291"/>
         <source>Reload</source>
         <translation>重新加載</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="305"/>
-        <location filename="../src/ui/modmanager.cpp" line="306"/>
+        <location filename="../src/ui/modmanager.cpp" line="301"/>
+        <location filename="../src/ui/modmanager.cpp" line="302"/>
         <source>Delete</source>
         <translation>刪除</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="306"/>
+        <location filename="../src/ui/modmanager.cpp" line="302"/>
         <source>Delete this mod path?</source>
         <translation>刪除該mod路徑？</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="341"/>
+        <location filename="../src/ui/modmanager.cpp" line="337"/>
         <source>Select your mod directory...</source>
         <translation>選擇你的mod路徑...</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="350"/>
+        <location filename="../src/ui/modmanager.cpp" line="346"/>
         <source>Select your mod directories...</source>
         <translation>選擇你的mod路徑...</translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="483"/>
+        <location filename="../src/ui/modmanager.cpp" line="480"/>
         <source>Clear Caches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="483"/>
+        <location filename="../src/ui/modmanager.cpp" line="480"/>
         <source>Clear unmatched file links?
 By doing this, we will recheck those files unmatched before.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="490"/>
+        <location filename="../src/ui/modmanager.cpp" line="487"/>
         <source>Select a modpack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="494"/>
+        <location filename="../src/ui/modmanager.cpp" line="491"/>
         <source>Invalid File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="494"/>
+        <location filename="../src/ui/modmanager.cpp" line="491"/>
         <source>Selected file is not a modpack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="506"/>
+        <location filename="../src/ui/modmanager.cpp" line="503"/>
         <source>Update Mod Manager: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="509"/>
+        <location filename="../src/ui/modmanager.cpp" line="506"/>
         <source>Mod Manager is Latest</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="514"/>
+        <location filename="../src/ui/modmanager.cpp" line="511"/>
         <source>Update Ready</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modmanager.cpp" line="514"/>
+        <location filename="../src/ui/modmanager.cpp" line="511"/>
         <source>Update Mod Manager to %1 now?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3109,7 +3215,7 @@ By doing this, we will recheck those files unmatched before.</source>
     </message>
     <message>
         <location filename="../src/ui/modrinth/modrinthfileitemwidget.ui" line="109"/>
-        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="143"/>
+        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="141"/>
         <source>Download</source>
         <translation>下載</translation>
     </message>
@@ -3138,23 +3244,23 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation>下載中</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="124"/>
-        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="140"/>
+        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="122"/>
+        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="138"/>
         <source>Downloaded</source>
         <translation>已下載</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="153"/>
+        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="151"/>
         <source>[Current]</source>
         <translation>[當前]</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="162"/>
+        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="160"/>
         <source>Copy download link</source>
         <translation>複製下載鏈接</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="168"/>
+        <location filename="../src/ui/modrinth/modrinthfileitemwidget.cpp" line="166"/>
         <source>Set as current</source>
         <translation>設為當前</translation>
     </message>
@@ -3164,6 +3270,59 @@ By doing this, we will recheck those files unmatched before.</source>
     <message>
         <source>Form</source>
         <translation type="obsolete">Form</translation>
+    </message>
+</context>
+<context>
+    <name>ModrinthManagerModel</name>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="90"/>
+        <source>Name</source>
+        <translation type="unfinished">名稱</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="92"/>
+        <source>Project ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="94"/>
+        <source>Author</source>
+        <translation type="unfinished">作者</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="96"/>
+        <source>Categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="98"/>
+        <source>Website Link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="100"/>
+        <source>Date Modified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="102"/>
+        <source>Date Created</source>
+        <translation type="unfinished">創建時間</translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="104"/>
+        <source>Loader Types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="106"/>
+        <source>Download Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/modrinth/modrinthmanager.cpp" line="108"/>
+        <source>Summary</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3222,22 +3381,22 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="155"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="154"/>
         <source>Tool Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="169"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="168"/>
         <source>Search Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="183"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="182"/>
         <source>Categories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="194"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="193"/>
         <source>Game Versions</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3265,17 +3424,17 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="obsolete">打開文件夾</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="209"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="208"/>
         <source>Copy Website Link</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="214"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="213"/>
         <source>Open Website Link</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="223"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.ui" line="222"/>
         <source>Open Modrinth Mod Dialog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3296,56 +3455,51 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">遊戲版本：</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="122"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="147"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="172"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="195"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="197"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="114"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="139"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="164"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="187"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="189"/>
         <source>Game Version : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="140"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="288"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="132"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="280"/>
         <source>Multi Selection</source>
         <translation>多項選擇</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="153"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="145"/>
         <source>Show Snapshot</source>
         <translation>顯示快照</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="169"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="172"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="195"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="313"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="316"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="342"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="161"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="164"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="187"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="305"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="308"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="334"/>
         <source>Any</source>
         <translation>任意</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="202"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="194"/>
         <source>Game Version : %1 etc.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="302"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="316"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="342"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="344"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="294"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="308"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="334"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="336"/>
         <source>Category : %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="355"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="347"/>
         <source>Category : %1 etc.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="447"/>
-        <source>Failed loading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3353,14 +3507,14 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">%1等</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="203"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="356"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="195"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="348"/>
         <source>, </source>
         <translation>、</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="219"/>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="239"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="211"/>
+        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="231"/>
         <source>Future Version</source>
         <translation>未来版本</translation>
     </message>
@@ -3369,14 +3523,8 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">自定義</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="399"/>
-        <source>Searching mods...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/modrinth/modrinthmodbrowser.cpp" line="431"/>
         <source>There is no more mod here...</source>
-        <translation>這裡沒有更多的mod了...</translation>
+        <translation type="vanished">這裡沒有更多的mod了...</translation>
     </message>
 </context>
 <context>
@@ -3416,12 +3564,12 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation> - Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="122"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="120"/>
         <source>Translate summary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="132"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="130"/>
         <source>Untranslate summary</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3437,12 +3585,12 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="obsolete"> - Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodinfowidget.cpp" line="110"/>
+        <location filename="../src/ui/modrinth/modrinthmodinfowidget.cpp" line="108"/>
         <source>Translate summary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodinfowidget.cpp" line="120"/>
+        <location filename="../src/ui/modrinth/modrinthmodinfowidget.cpp" line="118"/>
         <source>Untranslate summary</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3488,7 +3636,7 @@ By doing this, we will recheck those files unmatched before.</source>
     </message>
     <message>
         <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="65"/>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="142"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="140"/>
         <source> Downloads</source>
         <translation> 次下載</translation>
     </message>
@@ -3497,29 +3645,57 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">%1前</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="118"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="116"/>
         <source>Downloading</source>
         <translation>下載中</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="143"/>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="172"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="141"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="170"/>
         <source>Downloaded</source>
         <translation>已下載</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="175"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="173"/>
         <source>Download</source>
         <translation>下載</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="192"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="190"/>
         <source>Translate summary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="202"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="200"/>
         <source>Untranslate summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OptifineManagerModel</name>
+    <message>
+        <location filename="../src/optifine/optifinemanager.cpp" line="68"/>
+        <source>Name</source>
+        <translation type="unfinished">名稱</translation>
+    </message>
+    <message>
+        <location filename="../src/optifine/optifinemanager.cpp" line="70"/>
+        <source>Game Version</source>
+        <translation type="unfinished">遊戲版本</translation>
+    </message>
+    <message>
+        <location filename="../src/optifine/optifinemanager.cpp" line="72"/>
+        <source>File Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/optifine/optifinemanager.cpp" line="74"/>
+        <source>Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/optifine/optifinemanager.cpp" line="76"/>
+        <source>Mirror Link</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3555,12 +3731,12 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="unfinished">視圖 (&amp;V)</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="109"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="108"/>
         <source>Tool Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="123"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="122"/>
         <source>Search Bar</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3577,12 +3753,12 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">...</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="147"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="146"/>
         <source>Get OptiForge</source>
         <translation>獲取OptiForge</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="138"/>
+        <location filename="../src/ui/optifine/optifinemodbrowser.ui" line="137"/>
         <source>Get OptiFabric</source>
         <translation>獲取OptiFabric</translation>
     </message>
@@ -3591,24 +3767,12 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">自定義</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="128"/>
-        <source>Searching mods...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="161"/>
         <source>Any</source>
-        <translation>任意</translation>
+        <translation type="vanished">任意</translation>
     </message>
     <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="164"/>
         <source>There is no more mod here...</source>
-        <translation>這裡沒有更多的mod了...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/optifine/optifinemodbrowser.cpp" line="175"/>
-        <source>Failed loading</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">這裡沒有更多的mod了...</translation>
     </message>
 </context>
 <context>
@@ -4164,8 +4328,8 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">Name v0.0.0</translation>
     </message>
     <message>
-        <location filename="../src/ui/download/qaria2downloaderitemwidget.ui" line="172"/>
-        <location filename="../src/ui/download/qaria2downloaderitemwidget.ui" line="196"/>
+        <location filename="../src/ui/download/qaria2downloaderitemwidget.ui" line="169"/>
+        <location filename="../src/ui/download/qaria2downloaderitemwidget.ui" line="193"/>
         <source>0 KB/s</source>
         <translation>0 KB/s</translation>
     </message>
@@ -4803,73 +4967,73 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="217"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="216"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="16"/>
         <source>Type tag</source>
         <translation type="unfinished">類型標籤</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="224"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="223"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="22"/>
         <source>Functionality tag</source>
         <translation type="unfinished">功能標籤</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="233"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="232"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="30"/>
         <source>New functionality tag...</source>
         <translation type="unfinished">新建功能標籤...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="235"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="277"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="234"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="276"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="32"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="69"/>
         <source>New tag</source>
         <translation type="unfinished">新建標籤</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="235"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="234"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="32"/>
         <source>Functionality:</source>
         <translation type="unfinished">功能：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="244"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="249"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="243"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="248"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="38"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="43"/>
         <source>Translation tag</source>
         <translation type="unfinished">譯名標籤</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="249"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="248"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="43"/>
         <source>Translation:</source>
         <translation type="unfinished">譯名：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="256"/>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="261"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="255"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="260"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="50"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="55"/>
         <source>Notation tag</source>
         <translation type="unfinished">註釋標籤</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="261"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="260"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="55"/>
         <source>Notation:</source>
         <translation type="unfinished">註釋：</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="275"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="274"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="67"/>
         <source>New custom tag...</source>
         <translation type="unfinished">新建自定義標籤...</translation>
     </message>
     <message>
-        <location filename="../src/ui/local/localmodbrowser.cpp" line="277"/>
+        <location filename="../src/ui/local/localmodbrowser.cpp" line="276"/>
         <location filename="../src/ui/local/localmodmenu.cpp" line="69"/>
         <source>New tag name:</source>
         <translation type="unfinished">新建標籤名稱:</translation>
@@ -4883,6 +5047,34 @@ By doing this, we will recheck those files unmatched before.</source>
         <location filename="../src/ui/local/localmodmenu.cpp" line="78"/>
         <source>Remove tag</source>
         <translation type="unfinished">移除標籤</translation>
+    </message>
+</context>
+<context>
+    <name>ReplayManagerModel</name>
+    <message>
+        <location filename="../src/replay/replaymanager.cpp" line="61"/>
+        <source>Name</source>
+        <translation type="unfinished">名稱</translation>
+    </message>
+    <message>
+        <location filename="../src/replay/replaymanager.cpp" line="63"/>
+        <source>Game Version</source>
+        <translation type="unfinished">遊戲版本</translation>
+    </message>
+    <message>
+        <location filename="../src/replay/replaymanager.cpp" line="65"/>
+        <source>Loader Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/replay/replaymanager.cpp" line="67"/>
+        <source>File Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/replay/replaymanager.cpp" line="69"/>
+        <source>Download Count</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4902,22 +5094,22 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation>mod加載器：</translation>
     </message>
     <message>
-        <location filename="../src/ui/replay/replaymodbrowser.ui" line="98"/>
+        <location filename="../src/ui/replay/replaymodbrowser.ui" line="97"/>
         <source>Tool Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/replay/replaymodbrowser.ui" line="112"/>
+        <location filename="../src/ui/replay/replaymodbrowser.ui" line="111"/>
         <source>Search Bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/replay/replaymodbrowser.ui" line="135"/>
+        <location filename="../src/ui/replay/replaymodbrowser.ui" line="134"/>
         <source>&amp;ReplayMod</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/replay/replaymodbrowser.ui" line="140"/>
+        <location filename="../src/ui/replay/replaymodbrowser.ui" line="139"/>
         <source>&amp;View</source>
         <translation type="unfinished">視圖 (&amp;V)</translation>
     </message>
@@ -4943,24 +5135,12 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">自定義</translation>
     </message>
     <message>
-        <location filename="../src/ui/replay/replaymodbrowser.cpp" line="104"/>
-        <source>Searching mods...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/replay/replaymodbrowser.cpp" line="132"/>
         <source>Any</source>
-        <translation>任意</translation>
+        <translation type="vanished">任意</translation>
     </message>
     <message>
-        <location filename="../src/ui/replay/replaymodbrowser.cpp" line="135"/>
         <source>There is no more mod here...</source>
-        <translation>這裡沒有更多的mod了...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/replay/replaymodbrowser.cpp" line="146"/>
-        <source>Failed loading</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">這裡沒有更多的mod了...</translation>
     </message>
 </context>
 <context>

@@ -2,6 +2,31 @@
 
 ## 正式发布 Release
 
+### v1.0.4
+
+*2022.02.05*
+
+Added icon/detail mode for explore mod pages, as local mod pages.
+为浏览mod页面添加了图标与细节模式，与本地mod页面保持一致。
+
+Added cache for Modrinth icons.
+为Modrinth的图标添加了缓存。
+
+Fixed title bar may uncolsed when close window in frameless UI.
+修复了无边框界面中标题栏没有随窗口关闭的问题。
+
+Fixed 'Max/Min Window' button in frameless UI.
+修复了无边框界面中的“最大化/最小化窗口”的按钮。
+
+Fixed title bar blur offset when maximumized in frameless UI.
+修复了无边框界面中最大化时标题栏背景模糊的偏移。
+
+Fixed crash on about dialog in frameless UI.
+修复了无边框界面中关于对话框的崩溃。
+
+Fixed potential crash under KF5.
+修复了KF5下潜在的崩溃。
+
 ### v1.0.3
 
 *2022.01.28*

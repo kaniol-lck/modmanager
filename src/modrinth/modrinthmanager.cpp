@@ -95,7 +95,7 @@ QVariant ModrinthManagerModel::headerData(int section, Qt::Orientation orientati
         case CategoryColumn:
             return tr("Categories");
         case WebsiteColumn:
-            return tr("Website URL");
+            return tr("Website Link");
         case UpdateDateColumn:
             return tr("Date Modified");
         case CreateDateColumn:
