@@ -106,6 +106,7 @@ void ModrinthModItemWidget::updateFileList()
     }
 
     if(!menu->actions().isEmpty()){
+        ui->downloadButton->setText(tr("Download"));
         ui->downloadButton->setEnabled(true);
         ui->downloadButton->setMenu(menu);
     }
