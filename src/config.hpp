@@ -45,6 +45,7 @@ public:
     getterAndSetter(ShowModReleaseType, Bool, showModReleaseType, true)
     getterAndSetter(ShowModGameVersion, Bool, showModGameVersion, true)
     getterAndSetter(AutoTranslate, Bool, autoTranslate, false)
+    getterAndSetter(Language, String, language, "")
 
 #ifdef DE_KDE
     getterAndSetter(UseSystemIconTheme, Bool, useSystemIconTheme, true)
@@ -55,7 +56,7 @@ public:
     void setShowTagCategories(const QList<TagCategory> &categories)
     {
         QList<QVariant> list;
-        for(auto category : categories)
+        for(auto &&category : categories)
             list << category.id();
         setValue("showCategories", list);
     }

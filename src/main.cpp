@@ -21,12 +21,17 @@ int main(int argc, char *argv[])
 
     //setup translator
     QTranslator translator;
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
-        const QString baseName = QLocale(locale).name();
-        if (translator.load(":/i18n/" + baseName)) {
-            a.installTranslator(&translator);
-            break;
+    if(auto language = Config().getLanguage();
+            !language.isEmpty() && translator.load(":/i18n/" + language)){
+        a.installTranslator(&translator);
+    } else if(language != "en_US"){
+        const QStringList uiLanguages = QLocale::system().uiLanguages();
+        for (const QString &locale : uiLanguages) {
+            const QString baseName = QLocale(locale).name();
+            if (translator.load(":/i18n/" + baseName)) {
+                a.installTranslator(&translator);
+                break;
+            }
         }
     }
 

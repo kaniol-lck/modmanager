@@ -22,6 +22,12 @@ Preferences::Preferences(QWidget *parent) :
         ui->customStyle->setItemData(ui->customStyle->count() - 1, it.key());
     }
 
+    ui->language->addItem(tr("Follow System"));
+    for(auto &&str : { "en_US", "zh_CN", "zh_TW" }){
+        QLocale locale(str);
+        ui->language->addItem(locale.nativeLanguageName(), str);
+    }
+
     Config config;
     //General
     ui->smoothScroll->setChecked(config.getSmoothScroll());
@@ -41,6 +47,12 @@ Preferences::Preferences(QWidget *parent) :
     ui->autoTranslate->setChecked(config.getAutoTranslate());
     ui->useSystemIconTheme->setChecked(config.getUseSystemIconTheme());
     ui->autoCheckModManagerUpdate->setChecked(config.getAutoCheckModManagerUpdate());
+    for(int i = 0; i < ui->language->count(); i++){
+        if(ui->language->itemData(i).toString() == config.getLanguage()){
+            ui->language->setCurrentIndex(i);
+            break;
+        }
+    }
 
     //Explore
     ui->downloadPathText->setText(config.getDownloadPath());
@@ -108,6 +120,7 @@ void Preferences::on_Preferences_accepted()
     config.setAutoTranslate(ui->autoTranslate->isChecked());
     config.setUseSystemIconTheme(ui->useSystemIconTheme->isChecked());
     config.setAutoCheckModManagerUpdate(ui->autoCheckModManagerUpdate->isChecked());
+    config.setLanguage(ui->language->currentData().toString());
 
     //Explore
     config.setDownloadPath(ui->downloadPathText->text());
