@@ -491,7 +491,6 @@ void LocalModBrowser::onCheckUpdatesFinished(bool success)
     ui->actionCheck_Updates->setText(tr("Check Updates"));
     onUpdatableCountChanged();
     updateStatusText();
-    qDebug() << success << modPath_->updateChecker()->failedCount();
     if(!success) {
         auto &&failedObjects = modPath_->updateChecker()->failedObjects();
         QStringList stringlist;
@@ -553,7 +552,6 @@ void LocalModBrowser::onUpdatesDone(int successCount, int failCount)
 
 void LocalModBrowser::updateStatusText()
 {
-    qDebug() << proxyModel_->rowCount() << model_->rowCount();
     statusBarWidget_->setModCount(proxyModel_->rowCount(), model_->rowCount());
 }
 

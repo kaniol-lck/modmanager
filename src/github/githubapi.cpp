@@ -30,7 +30,6 @@ Reply<QList<GitHubReleaseInfo> > GitHubAPI::getReleases(const GitHubRepoInfo &in
     urlQuery.addQueryItem("per_page", QString::number(Config().getSearchResultCount()));
 
     releaseUrl.setQuery(urlQuery);
-    qDebug() << releaseUrl;
     QNetworkRequest request(releaseUrl);
     auto reply = accessManager_.get(request);
     return { reply, [=]{

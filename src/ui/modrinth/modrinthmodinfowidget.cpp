@@ -30,15 +30,13 @@ void ModrinthModInfoWidget::setMod(ModrinthMod *mod)
 {
     mod_ = mod;
     emit modChanged();
+    ui->scrollArea->setVisible(mod_);
+    ui->tagsWidget->setTagableObject(mod_);
+    if(!mod_) return;
     connect(this, &ModrinthModInfoWidget::modChanged, this, disconnecter(
                 connect(mod_, &ModrinthMod::fullInfoReady, this, &ModrinthModInfoWidget::updateFullInfo),
                 connect(mod_, &ModrinthMod::iconReady, this, &ModrinthModInfoWidget::updateIcon),
                 connect(mod_, &QObject::destroyed, this, [=]{ setMod(nullptr); })));
-
-
-    ui->scrollArea->setVisible(mod_);
-    ui->tagsWidget->setTagableObject(mod_);
-    if(!mod_) return;
 
 //    auto action = new QAction(QIcon::fromTheme("edit-copy"), tr("Copy website link"), this);
 //    connect(action, &QAction::triggered, this, [=]{

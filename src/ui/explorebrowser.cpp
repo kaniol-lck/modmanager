@@ -110,7 +110,6 @@ void ExploreBrowser::onTreeSliderChanged(int i)
 void ExploreBrowser::onItemSelected()
 {
     auto indexes = modListView_->selectionModel()->selectedRows();
-    qDebug() << indexes;
     if(!indexes.isEmpty()){
         auto index = indexes.first();
         onSelectedItemChanged(index);

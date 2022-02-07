@@ -49,7 +49,6 @@ void ModManagerUpdateDialog::checkVersion()
                 ui->downloadFile->setText(tr("No auto update available for your platform, please update it manually."));
             emit updateChecked(true);
         } else{
-            qDebug() << "no update";
             emit updateChecked(false);
         }
     });

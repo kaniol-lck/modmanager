@@ -63,7 +63,6 @@ void CurseforgeManager::getModList()
         }
  //show them
         model_->beginInsertRows({}, mods_.size(), mods_.size() + infoList.size());
-        qDebug() << "info list size" <<  infoList.size();
         for(const auto &info : qAsConst(infoList)){
             //do not load duplicate mod
 //            if(std::find_if(mods_.cbegin(), mods_.cend(), [&](auto &&mod){
