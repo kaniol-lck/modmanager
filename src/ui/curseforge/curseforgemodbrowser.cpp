@@ -443,3 +443,8 @@ void CurseforgeModBrowser::on_actionOpen_Website_Link_triggered()
     if(!selectedMod_) return;
     QDesktopServices::openUrl(selectedMod_->modInfo().websiteUrl());
 }
+
+CurseforgeManager *CurseforgeModBrowser::manager() const
+{
+    return manager_;
+}

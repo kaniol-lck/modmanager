@@ -27,6 +27,9 @@ private slots:
     void updateThumbnail();
     void updateDescription();
     void on_modSummary_customContextMenuRequested(const QPoint &pos);
+    void on_actionOpen_Curseforge_Mod_Dialog_triggered();
+    void on_actionOpen_Website_Link_triggered();
+    void on_actionCopy_Website_Link_triggered();
 
 protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event) override;

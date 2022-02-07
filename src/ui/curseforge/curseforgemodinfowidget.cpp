@@ -2,6 +2,8 @@
 #include "curseforgemodinfowidget.h"
 #include "ui_curseforgemodinfowidget.h"
 
+#include <QDesktopServices>
+#include <QClipboard>
 #include <QMenu>
 
 #include "curseforgemodbrowser.h"
@@ -11,6 +13,7 @@
 #include "util/funcutil.h"
 #include "util/youdaotranslator.h"
 #include "local/localmodpath.h"
+#include "curseforge/curseforgemanager.h"
 
 CurseforgeModInfoWidget::CurseforgeModInfoWidget(CurseforgeModBrowser *parent) :
     QWidget(parent),
@@ -18,6 +21,9 @@ CurseforgeModInfoWidget::CurseforgeModInfoWidget(CurseforgeModBrowser *parent) :
     browser_(parent)
 {
     ui->setupUi(this);
+    ui->modName->addAction(ui->actionOpen_Curseforge_Mod_Dialog);
+    ui->modName->addAction(ui->actionOpen_Website_Link);
+    ui->modName->addAction(ui->actionCopy_Website_Link);
     ui->scrollArea->setVisible(false);
     //lag
 //    ui->scrollArea->setVerticalScrollBar(new SmoothScrollBar(this));
@@ -143,15 +149,34 @@ void CurseforgeModInfoWidget::on_modSummary_customContextMenuRequested(const QPo
 
 void CurseforgeModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if(mod_ && !mod_->parent()){
+    ui->actionOpen_Curseforge_Mod_Dialog->trigger();
+    QWidget::mouseDoubleClickEvent(event);
+}
+
+void CurseforgeModInfoWidget::on_actionOpen_Curseforge_Mod_Dialog_triggered()
+{
+    if(!mod_) return;
+    if(mod_->parent() == browser_->manager()){
         auto dialog = new CurseforgeModDialog(browser_, mod_);
         //set parent
         mod_->setParent(dialog);
         connect(dialog, &CurseforgeModDialog::finished, this, [=]{
-            mod_->setParent(nullptr);
+            if(browser_->manager()->mods().contains(mod_))
+                mod_->setParent(browser_->manager());
         });
         dialog->show();
     }
-    QWidget::mouseDoubleClickEvent(event);
 }
 
+void CurseforgeModInfoWidget::on_actionOpen_Website_Link_triggered()
+{
+    if(!mod_) return;
+    QDesktopServices::openUrl(mod_->modInfo().websiteUrl());
+}
+
+
+void CurseforgeModInfoWidget::on_actionCopy_Website_Link_triggered()
+{
+    if(!mod_) return;
+    QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());
+}

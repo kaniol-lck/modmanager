@@ -26,6 +26,12 @@ private slots:
     void updateIcon();
     void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
+    void on_actionOpen_Website_Link_triggered();
+
+    void on_actionCopy_Website_Link_triggered();
+
+    void on_actionOpen_Modrinth_Mod_Dialog_triggered();
+
 protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event) override;
 

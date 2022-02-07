@@ -35,6 +35,8 @@ public:
 
     ExploreBrowser *another() override;
 
+    CurseforgeManager *manager() const;
+
 signals:
     void selectedModsChanged(CurseforgeMod *selectedMod);
 

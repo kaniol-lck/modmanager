@@ -35,6 +35,8 @@ public:
 
     ExploreBrowser *another() override;
 
+    ModrinthManager *manager() const;
+
 signals:
     void selectedModsChanged(ModrinthMod *selectedMod);
 

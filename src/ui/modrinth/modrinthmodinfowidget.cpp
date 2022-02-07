@@ -1,9 +1,12 @@
 #include "modrinthmodinfowidget.h"
 #include "ui_modrinthmodinfowidget.h"
 
+#include <QDesktopServices>
+#include <QClipboard>
 #include <QMenu>
 
 #include "modrinthmodbrowser.h"
+#include "modrinth/modrinthmanager.h"
 #include "modrinthmoddialog.h"
 #include "modrinth/modrinthmod.h"
 #include "local/localmodpath.h"
@@ -17,6 +20,9 @@ ModrinthModInfoWidget::ModrinthModInfoWidget(ModrinthModBrowser *parent) :
     browser_(parent)
 {
     ui->setupUi(this);
+    ui->modName->addAction(ui->actionOpen_Modrinth_Mod_Dialog);
+    ui->modName->addAction(ui->actionOpen_Website_Link);
+    ui->modName->addAction(ui->actionCopy_Website_Link);
     ui->scrollArea->setVisible(false);
     ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
 }
@@ -122,15 +128,35 @@ void ModrinthModInfoWidget::on_modSummary_customContextMenuRequested(const QPoin
 
 void ModrinthModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if(mod_ && !mod_->parent()){
-        auto dialog = new ModrinthModDialog(browser_, mod_);
+    ui->actionOpen_Modrinth_Mod_Dialog->trigger();
+    QWidget::mouseDoubleClickEvent(event);
+}
+
+void ModrinthModInfoWidget::on_actionOpen_Website_Link_triggered()
+{
+
+    if(!mod_) return;
+    if(mod_ && mod_->parent() == browser_->manager()){
+        auto dialog = new ModrinthModDialog(this, mod_);
         //set parent
         mod_->setParent(dialog);
-        connect(dialog, &ModrinthModDialog::finished, this, [=]{
-            mod_->setParent(nullptr);
+        connect(dialog, &ModrinthModDialog::finished, this, [=, mod = mod_]{
+            if(browser_->manager()->mods().contains(mod))
+                mod_->setParent(nullptr);
         });
         dialog->show();
     }
-    QWidget::mouseDoubleClickEvent(event);
+}
+
+void ModrinthModInfoWidget::on_actionCopy_Website_Link_triggered()
+{
+    if(!mod_) return;
+    QApplication::clipboard()->setText(mod_->modInfo().websiteUrl().toString());
+}
+
+void ModrinthModInfoWidget::on_actionOpen_Modrinth_Mod_Dialog_triggered()
+{
+    if(!mod_) return;
+    QDesktopServices::openUrl(mod_->modInfo().websiteUrl());
 }
 

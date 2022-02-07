@@ -505,3 +505,8 @@ void ModrinthModBrowser::on_actionOpen_Website_Link_triggered()
     if(!selectedMod_) return;
     QDesktopServices::openUrl(selectedMod_->modInfo().websiteUrl());
 }
+
+ModrinthManager *ModrinthModBrowser::manager() const
+{
+    return manager_;
+}
