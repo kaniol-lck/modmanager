@@ -13,6 +13,54 @@ on:
       - "src/**"
       - ".github/workflows/ci.yml"
 jobs:
+  create-release:
+    name: Create Pre-Release
+    runs-on: ubuntu-latest
+    needs:
+      - build-on-ubuntu
+      - build-on-win-mingw
+      - build-on-osx
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: recursive
+      - name: Set Env
+        shell: bash
+        run: |
+          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.$GITHUB_RUN_NUMBER
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: etc/usr/artifacts/
+      - name: Process artifacts
+        run: |
+          mkdir -p /home/runner/work/modmanager/modmanager/etc/usr/publish
+          cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-packed
+          zip -q -r ModManager-${{ env.VERSION }}-packed.zip *
+          cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-x64-packed
+          zip -q -r ModManager-${{ env.VERSION }}-x64-packed.zip *
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-packed/ModManager-${{ env.VERSION }}-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-packed.zip
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-x64-packed/ModManager-${{ env.VERSION }}-x64-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-packed.zip
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-Installer.exe
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-Installer.exe
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x86_64.AppImage/Mod_Manager-${{ env.VERSION }}-x86_64.AppImage /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.AppImage
+      - name: Get short commit sha
+        id: get_short_sha
+        run: |
+          short_sha=$(echo ${GITHUB_SHA} | cut -c1-7)
+          echo "::set-output name=short_sha::$short_sha"
+      - name: Create Github release
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "dev/${{ steps.get_short_sha.outputs.short_sha }}"
+          prerelease: true
+          title: "dev-${{ steps.get_short_sha.outputs.short_sha }}"
+          files: |
+            etc/usr/publish/**
   build-on-ubuntu:
     name: Build On Ubuntu
     runs-on: ubuntu-latest # for libaria2-0 available
