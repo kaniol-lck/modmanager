@@ -57,7 +57,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ env.VERSION }}-dev.${{ steps.get_short_sha.outputs.short_sha }}"
+          automatic_release_tag: "${{ env.VERSION }}"
           prerelease: true
           title: "Mod Manager Dev ${{ env.VERSION }} (${{ steps.get_short_sha.outputs.short_sha }})"
           files: |
