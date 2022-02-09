@@ -46,7 +46,7 @@ Preferences::Preferences(QWidget *parent) :
     ui->customStyle->setCurrentText(styleSheets().value(config.getCustomStyle()));
     ui->autoTranslate->setChecked(config.getAutoTranslate());
     ui->useSystemIconTheme->setChecked(config.getUseSystemIconTheme());
-    ui->autoCheckModManagerUpdate->setChecked(config.getAutoCheckModManagerUpdate());
+    ui->autoCheckModManagerUpdate->setCurrentIndex(config.getAutoCheckModManagerUpdate());
     for(int i = 0; i < ui->language->count(); i++){
         if(ui->language->itemData(i).toString() == config.getLanguage()){
             ui->language->setCurrentIndex(i);
@@ -119,7 +119,7 @@ void Preferences::on_Preferences_accepted()
     config.setCustomStyle(ui->customStyle->currentData().toString());
     config.setAutoTranslate(ui->autoTranslate->isChecked());
     config.setUseSystemIconTheme(ui->useSystemIconTheme->isChecked());
-    config.setAutoCheckModManagerUpdate(ui->autoCheckModManagerUpdate->isChecked());
+    config.setAutoCheckModManagerUpdate(ui->autoCheckModManagerUpdate->currentIndex());
     config.setLanguage(ui->language->currentData().toString());
 
     //Explore

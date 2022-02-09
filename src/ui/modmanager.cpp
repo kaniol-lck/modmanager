@@ -493,7 +493,6 @@ void ModManager::on_actionCurseforge_Modpack_triggered()
         dialog->show();
 }
 
-
 void ModManager::on_actionCheck_Mod_Manager_Update_triggered()
 {
     auto dialog = new ModManagerUpdateDialog(this);

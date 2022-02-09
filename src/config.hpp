@@ -123,7 +123,8 @@ public:
     getterAndSetter(DownloaderList, List, downloaderList, QVariant())
 
     //others
-    getterAndSetter(AutoCheckModManagerUpdate, Bool, autoCheckModManagerUpdate, true)
+    enum ModManagerUpdate{ NoUpdate, Release, Dev };
+    getterAndSetter(AutoCheckModManagerUpdate, Int, autoCheckModManagerUpdate, Release)
     getterAndSetter(ModrinthMultiVersion, Bool, modrinthMultiVersion, false)
     getterAndSetter(ModrinthMultiCategory, Bool, modrinthMultiCategory, false)
     getterAndSetter(LockPanel, Bool, LockPanel, true)

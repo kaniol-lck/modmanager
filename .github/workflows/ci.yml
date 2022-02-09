@@ -57,7 +57,7 @@ jobs:
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "dev/${{ env.VERSION }}-dev.${{ steps.get_short_sha.outputs.short_sha }}"
+          automatic_release_tag: "${{ env.VERSION }}-dev.${{ steps.get_short_sha.outputs.short_sha }}"
           prerelease: true
           title: "Mod Manager Dev ${{ env.VERSION }} (${{ steps.get_short_sha.outputs.short_sha }})"
           files: |
@@ -380,7 +380,7 @@ jobs:
           rm -rf lib/ include/ *.zip
       - name: Install dependencies
         run: |
-          brew install quazip
+          brew install quazip gnu-sed
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
@@ -395,7 +395,7 @@ jobs:
         if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
         shell: bash
         run: |
-          sed -i "s/$RAW_VERSION/$VERSION/" src/version.h
+          gsed -i "s/$RAW_VERSION/$VERSION/" src/version.h
       - name: build macos
         run: |
           qmake

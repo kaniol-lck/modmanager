@@ -70,7 +70,7 @@
             <x>0</x>
             <y>0</y>
             <width>560</width>
-            <height>587</height>
+            <height>589</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -180,13 +180,6 @@
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="autoCheckModManagerUpdate">
-             <property name="text">
-              <string>Check Mod Manager update on startup</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QCheckBox" name="autoTranslate">
              <property name="text">
               <string>Auto translate</string>
@@ -216,25 +209,51 @@
            </item>
            <item>
             <layout class="QFormLayout" name="formLayout_4">
-             <item row="0" column="1">
+             <item row="1" column="1">
               <widget class="QComboBox" name="customStyle"/>
              </item>
-             <item row="0" column="0">
+             <item row="1" column="0">
               <widget class="QLabel" name="label_4">
                <property name="text">
                 <string>UI style:</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
+             <item row="2" column="0">
               <widget class="QLabel" name="label_24">
                <property name="text">
                 <string>Language:</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item row="2" column="1">
               <widget class="QComboBox" name="language"/>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="autoCheckModManagerUpdate">
+               <item>
+                <property name="text">
+                 <string>No Update</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Release</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Develop</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_25">
+               <property name="text">
+                <string>Mod Manager update:</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
