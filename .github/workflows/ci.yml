@@ -14,6 +14,7 @@ on:
       - ".github/workflows/ci.yml"
 jobs:
   create-release:
+    if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
     name: Create Pre-Release
     runs-on: ubuntu-latest
     needs:
@@ -56,9 +57,9 @@ jobs:
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "dev/${{ steps.get_short_sha.outputs.short_sha }}"
+          automatic_release_tag: "dev/${{ env.VERSION }}-dev.${{ steps.get_short_sha.outputs.short_sha }}"
           prerelease: true
-          title: "dev-${{ steps.get_short_sha.outputs.short_sha }}"
+          title: "dev-${{ steps.get_short_sha.outputs.short_sha }} (${{ env.VERSION }})"
           files: |
             etc/usr/publish/**
   build-on-ubuntu:
