@@ -85,12 +85,18 @@ jobs:
       - name: Set Env
         run: |
           export ARCH=x86_64
-          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.$GITHUB_RUN_NUMBER
+          export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
+          export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
           export RELEASE_TEXT=$(grep -Pzo "### ${VERSION}\n(\n|.)+?\n##" Changelog.md | sed '$ d')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "RELEASE_TEXT<<EOF" >> $GITHUB_ENV
           echo "${RELEASE_TEXT}" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+      - name: Modify version number
+        if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
+        shell: bash
+        run: |
+          sed -i "s/$RAW_VERSION/$VERSION/" src/version.h
       - name: build ubuntu
         run: |
           qmake
@@ -153,8 +159,14 @@ jobs:
       - name: Set Env
         shell: bash
         run: |
-          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.$GITHUB_RUN_NUMBER
+          export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
+          export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
+      - name: Modify version number
+        if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
+        shell: bash
+        run: |
+          sed -i "s/$RAW_VERSION/$VERSION/" src/version.h
       - name: Install dependencies
         shell: powershell
         run: |
@@ -373,8 +385,14 @@ jobs:
       - name: Set Env
         shell: bash
         run: |
-          export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.$GITHUB_RUN_NUMBER
+          export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
+          export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
+      - name: Modify version number
+        if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
+        shell: bash
+        run: |
+          sed -i "s/$RAW_VERSION/$VERSION/" src/version.h
       - name: build macos
         run: |
           qmake
