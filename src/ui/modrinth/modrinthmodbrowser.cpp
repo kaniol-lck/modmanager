@@ -387,7 +387,7 @@ QDialog *ModrinthModBrowser::getDialog(const QModelIndex &index)
         mod->setParent(dialog);
         connect(dialog, &ModrinthModDialog::finished, this, [=]{
             if(manager_->mods().contains(mod))
-                mod->setParent(nullptr);
+                mod->setParent(manager_);
         });
         return dialog;
     }

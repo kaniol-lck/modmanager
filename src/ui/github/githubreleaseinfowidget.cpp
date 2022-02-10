@@ -20,13 +20,12 @@ GitHubReleaseInfoWidget::~GitHubReleaseInfoWidget()
 
 void GitHubReleaseInfoWidget::setRelease(GitHubRelease *release)
 {
-
-    auto release_ = release;
+    release_ = release;
     emit releaseChanged();
+    if(!release_) return;
     connect(this, &GitHubReleaseInfoWidget::releaseChanged, disconnecter(
                 connect(release_, &QObject::destroyed, this, [=]{setRelease(nullptr); })));
-    if(!release_) return;
 
     ui->name->setText(release_->info().name());
-    ui->body->setMarkdown(release->info().body());
+    ui->body->setMarkdown(release_->info().body());
 }
