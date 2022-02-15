@@ -2,6 +2,10 @@ QWidget:focus{
   outline: none;
 }
 
+Widget {
+  background-color: #fff;
+}
+
 QScrollArea, QScrollArea .QWidget {
   background-color: transparent;
   border-color: transparent;
@@ -30,8 +34,13 @@ QScrollArea, QScrollArea .QWidget {
 .Title {
   color: black;
   font-weight: bold;
-  font-size: 14pt;
+  font-size: 13pt;
   background: transparent;
+}
+
+.CurseforgeFileListWidget .Title, .ModrinthFileListWidget .Title,
+.GitHubFileListWidget .Title, .LocalFileListWidget .Title {
+  font-size: 11pt;
 }
 
 .Description {
@@ -149,6 +158,7 @@ QToolButton[autoRaise=false][popupMode="2"]::menu-indicator, QPushButton::menu-i
 QTreeView::item {
   min-height: 35px;
 }
+
 QTreeView.PageSelector::item {
   min-height: 40px;
 }

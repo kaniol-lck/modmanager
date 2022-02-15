@@ -30,8 +30,13 @@ QScrollArea, QScrollArea .QWidget {
 .Title {
   color: black;
   font-weight: bold;
-  font-size: 14pt;
+  font-size: 13pt;
   background: transparent;
+}
+
+.CurseforgeFileListWidget .Title, .ModrinthFileListWidget .Title,
+.GitHubFileListWidget .Title, .LocalFileListWidget .Title {
+  font-size: 11pt;
 }
 
 .Description {
