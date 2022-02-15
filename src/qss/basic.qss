@@ -24,19 +24,19 @@ QScrollArea, QScrollArea .QWidget {
 
 .DateTimeText > * {
   color: #777;
-  font-size: 12px;
+  font-size: 9pt;
 }
 
 .Title {
   color: black;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 14pt;
   background: transparent;
 }
 
 .Description {
   color: #3f3f3f;
-  font-size: 0.9em;
+  font-size: 10pt;
   background: transparent;
 }
 
@@ -49,7 +49,7 @@ QScrollArea, QScrollArea .QWidget {
 
 .GitHubReleaseItemWidget > .TagName {
   color: gray;
-  font-size: 0.6em;
+  font-size: 10pt;
 }
 
 #maxButton:hover,#minButton:hover {
@@ -63,10 +63,13 @@ QScrollArea, QScrollArea .QWidget {
 }
 
 QTreeView::item {
-  min-height: 40px;
-  font-size: 20px;
+  min-height: 35px;
 }
 
-QTreeView::item::selected {
+QTreeView.PageSelector::item {
+  min-height: 40px;
+}
+
+QTreeView.PageSelector::item::selected {
   color: black;
 }

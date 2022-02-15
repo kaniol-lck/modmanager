@@ -24,19 +24,19 @@ QScrollArea, QScrollArea .QWidget {
 
 .DateTimeText > * {
   color: #777;
-  font-size: 12px;
+  font-size: 9pt;
 }
 
 .Title {
   color: black;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 14pt;
   background: transparent;
 }
 
 .Description {
   color: #3f3f3f;
-  font-size: 0.9em;
+  font-size: 10pt;
   background: transparent;
 }
 
@@ -49,7 +49,7 @@ QScrollArea, QScrollArea .QWidget {
 
 .GitHubReleaseItemWidget > .TagName {
   color: gray;
-  font-size: 0.6em;
+  font-size: 10pt;
 }
 
 .MenuButton, #maxButton, #minButton, #closeButton{
@@ -147,11 +147,13 @@ QToolButton[autoRaise=false][popupMode="2"]::menu-indicator, QPushButton::menu-i
 }
 
 QTreeView::item {
+  min-height: 35px;
+}
+QTreeView.PageSelector::item {
   min-height: 40px;
-  font-size: 20px;
 }
 
-QTreeView::item::selected {
+QTreeView.PageSelector::item::selected {
   color: black;
 }
 
@@ -170,9 +172,9 @@ QTabBar::tab {
   border: none;
   background-color: transparent;
   max-width: 75px;
-  min-width:75px;
-  min-height:25px;
-  font-size:14px;
+  min-width: 75px;
+  min-height: 25px;
+  font-size: 11pt;
   padding: 5px 10px;
   margin: 4px 10px;
 }

@@ -16,6 +16,7 @@ BrowserSelectorWidget::BrowserSelectorWidget(QWidget *parent) :
     ui(new Ui::BrowserSelectorWidget)
 {
     ui->setupUi(this);
+    ui->browserTreeView->setProperty("class", "PageSelector");
     auto action = new QAction(tr("Add multiple paths"), this);
     connect(action, &QAction::triggered, this, &BrowserSelectorWidget::addMultiple, Qt::QueuedConnection);
     ui->addButton->addAction(action);
