@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>413</width>
-    <height>330</height>
+    <height>158</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -213,12 +213,6 @@
    </item>
    <item row="2" column="0">
     <widget class="QTextBrowser" name="body">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>

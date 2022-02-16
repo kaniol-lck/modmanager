@@ -167,14 +167,18 @@ QVariant GitHubManagerModel::data(const QModelIndex &index, int role) const
             }
             break;
         case Qt::SizeHintRole:
-            if(index.column() == ModColumn)
-                return QSize(0, itemHeight_);
+            if(index.column() == ModColumn){
+                if(auto height = itemHeights_[index])
+                    return QSize(0, height);
+                else
+                    return QSize(0, 200);
+            }
             break;
         }
         return QVariant();
 }
 
-void GitHubManagerModel::setItemHeight(int newItemHeight)
+void GitHubManagerModel::setItemHeight(const QModelIndex &index, int newItemHeight)
 {
-    itemHeight_ = newItemHeight;
+    itemHeights_[index] = newItemHeight;
 }

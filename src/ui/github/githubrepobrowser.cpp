@@ -108,7 +108,7 @@ QWidget *GitHubRepoBrowser::getListViewIndexWidget(const QModelIndex &index)
     auto release = index.data(Qt::UserRole + 1).value<GitHubRelease*>();
     if(release){
         auto widget = new GitHubReleaseItemWidget(this, release->info());
-        manager_->model()->setItemHeight(widget->height());
+        manager_->model()->setItemHeight(index, widget->height());
         return widget;
     } else
         return nullptr;

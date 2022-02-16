@@ -37,11 +37,10 @@ void GitHubFileListWidget::setRelease(GitHubRelease *release)
 {
     release_= release;
     emit releaseChanged();
-    connect(this, &GitHubFileListWidget::releaseChanged, disconnecter(
-                connect(release_, &QObject::destroyed, this, [=]{setRelease(nullptr); })));
-
     ui->fileListView->setVisible(release_);
     if(!release_) return;
+    connect(this, &GitHubFileListWidget::releaseChanged, disconnecter(
+                connect(release_, &QObject::destroyed, this, [=]{setRelease(nullptr); })));
 
     updateFileList();
 }

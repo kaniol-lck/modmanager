@@ -22,6 +22,7 @@ GitHubReleaseItemWidget::GitHubReleaseItemWidget(GitHubRepoBrowser *parent, cons
     ui->name->setText(info.name());
     ui->tagName->setText(info.tagName());
     ui->body->setMarkdown(info.body());
+    setFixedHeight(textEditSize(ui->body, 50, 500) + 40);
     ui->createDateTime->setText(tr("Created"));
     ui->createDateTime->setDateTime(info.created());
     ui->publishDateTime->setText(tr("Published"));

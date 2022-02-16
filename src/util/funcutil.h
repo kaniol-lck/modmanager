@@ -6,6 +6,8 @@
 #include "curseforge/curseforgemodinfo.h"
 #include "modrinth/modrinthmodinfo.h"
 
+class QTextEdit;
+class QTextDocument;
 class LocalModPath;
 class CurseforgeMod;
 class ModrinthMod;
@@ -49,6 +51,8 @@ std::function<void ()> disconnecter(QMetaObject::Connection conn, Args... args)
 }
 
 void tweakWidgetFontPointSize(QWidget *widget, int pointSize);
+
+int textEditSize(QTextEdit *textEdit, int minHeight, int maxHeight);
 
 //murmurhash: https://github.com/aappleby/smhasher
 uint32_t filteredMurmurHash2(const QByteArray &bytes);

@@ -11,6 +11,7 @@
 #include <QTreeView>
 #include <QDateTime>
 #include <QStack>
+#include <QTextEdit>
 
 #include "local/localmodpath.h"
 #include "local/localfilelinker.h"
@@ -331,4 +332,17 @@ QString installerSuffix()
 #endif
     //linux is unavailable
     return "";
+}
+
+int textEditSize(QTextEdit *textEdit, int minHeight, int maxHeight)
+{
+    auto *doc = textEdit->document();
+    doc->adjustSize();
+    int height = doc->size().height();
+    if(height < minHeight)
+        return minHeight;
+    else if(height > maxHeight)
+        return maxHeight;
+    else
+        return height;
 }

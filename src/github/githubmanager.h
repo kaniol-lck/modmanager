@@ -19,11 +19,11 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-    void setItemHeight(int newItemHeight);
+    void setItemHeight(const QModelIndex &index, int newItemHeight);
 
 private:
     GitHubManager *manager_;
-    int itemHeight_ = 100;
+    QMap<QModelIndex, int> itemHeights_;
 };
 
 class GitHubManager : public ExploreManager
