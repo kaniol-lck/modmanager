@@ -46,9 +46,9 @@ private slots:
     void onItemSelected();
     void updateListViewIndexWidget();
     void updateTreeViewIndexWidget();
-    void on_modListView_customContextMenuRequested(const QPoint &pos);
-    void on_modIconListView_customContextMenuRequested(const QPoint &pos);
-    void on_modTreeView_customContextMenuRequested(const QPoint &pos);
+    void on_modListViewCustomContextMenuRequested(const QPoint &pos);
+    void on_modIconListViewCustomContextMenuRequested(const QPoint &pos);
+    void on_modTreeViewCustomContextMenuRequested(const QPoint &pos);
     void onDoubleClicked(const QModelIndex &index);
 
 protected:
