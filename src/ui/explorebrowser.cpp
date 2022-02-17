@@ -53,7 +53,9 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     statusBar_->addPermanentWidget(statusBarWidget_);
     connect(statusBarWidget_, &ExploreStatusBarWidget::viewModeChanged, stackedWidget_, &QStackedWidget::setCurrentIndex);
 
-    connect(modListView_, &QWidget::customContextMenuRequested, this, &ExploreBrowser::onCustomContextMenuRequested);
+    connect(modListView_, &QWidget::customContextMenuRequested, this, &ExploreBrowser::on_modListView_customContextMenuRequested);
+    connect(modIconListView_, &QWidget::customContextMenuRequested, this, &ExploreBrowser::on_modIconListView_customContextMenuRequested);
+    connect(modTreeView_, &QWidget::customContextMenuRequested, this, &ExploreBrowser::on_modTreeView_customContextMenuRequested);
     connect(modListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onListSliderChanged);
     connect(modIconListView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onIconListSliderChanged);
     connect(modTreeView_->verticalScrollBar(), &QScrollBar::valueChanged, this , &ExploreBrowser::onTreeSliderChanged);
@@ -156,10 +158,22 @@ void ExploreBrowser::updateTreeViewIndexWidget()
     }
 }
 
-void ExploreBrowser::onCustomContextMenuRequested(const QPoint &pos)
+void ExploreBrowser::on_modListView_customContextMenuRequested(const QPoint &pos)
 {
     if(auto menu = getCustomContextMenu())
-        menu->exec(modListView_->mapToGlobal(pos));
+        menu->exec(modListView_->viewport()->mapToGlobal(pos));
+}
+
+void ExploreBrowser::on_modIconListView_customContextMenuRequested(const QPoint &pos)
+{
+    if(auto menu = getCustomContextMenu())
+        menu->exec(modIconListView_->viewport()->mapToGlobal(pos));
+}
+
+void ExploreBrowser::on_modTreeView_customContextMenuRequested(const QPoint &pos)
+{
+    if(auto menu = getCustomContextMenu())
+        menu->exec(modTreeView_->viewport()->mapToGlobal(pos));
 }
 
 void ExploreBrowser::onDoubleClicked(const QModelIndex &index)

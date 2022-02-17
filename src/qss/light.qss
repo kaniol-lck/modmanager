@@ -3,7 +3,11 @@ QWidget:focus{
 }
 
 Widget {
-  background-color: #fff;
+  background-color: #ffffff;
+}
+
+QWidget[enabled=false] {
+  background-color: #cfcfcf;
 }
 
 QScrollArea, QScrollArea .QWidget {
@@ -192,8 +196,4 @@ QTabBar::tab {
 QTabBar::tab:selected {
   border: 1px solid gray;
   background-color: white;
-}
-
-QWidget[enabled=false] {
-  background-color: #cfcfcf;
 }
