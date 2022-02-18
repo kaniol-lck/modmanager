@@ -11,7 +11,7 @@ class DownloadBrowser;
 class DownloadManager;
 class QAria2Downloader;
 class QAria2;
-
+class DownloadStatusBarWidget;
 class DownloadBrowser : public Browser
 {
     Q_OBJECT
@@ -22,8 +22,6 @@ public:
 
     QIcon icon() const override;
     QString name() const override;
-public slots:
-    void downloadSpeed(qint64 download, qint64 upload = 0);
 
 private slots:
     void onCurrentRowChanged();
@@ -45,6 +43,7 @@ private:
     Ui::DownloadBrowser *ui;
     DownloadManager *manager_;
     QMetaObject::Connection conn_;
+    DownloadStatusBarWidget *statusBarWidget_;
 };
 
 #endif // DOWNLOADBROWSER_H

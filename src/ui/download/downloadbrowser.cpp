@@ -6,6 +6,7 @@
 #include <QToolBar>
 #include <QClipboard>
 
+#include "downloadstatusbarwidget.h"
 #include "ui/download/qaria2downloaderitemwidget.h"
 #include "download/downloadmanager.h"
 #include "download/qaria2.h"
@@ -17,9 +18,11 @@
 DownloadBrowser::DownloadBrowser(QWidget *parent) :
     Browser(parent),
     ui(new Ui::DownloadBrowser),
-    manager_(DownloadManager::manager())
+    manager_(DownloadManager::manager()),
+    statusBarWidget_(new DownloadStatusBarWidget(this))
 {
     ui->setupUi(this);
+    ui->statusbar->addPermanentWidget(statusBarWidget_);
 
     for(auto &&toolBar : findChildren<QToolBar *>())
         ui->menu_View->addAction(toolBar->toggleViewAction());
@@ -35,7 +38,7 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
     connect(manager_->qaria2(), &QAria2::finished, this, [=]{
         ui->statusbar->showMessage("Idoling");
     });
-    connect(manager_->qaria2(), &QAria2::downloadSpeed, this, &DownloadBrowser::downloadSpeed);
+    connect(manager_->qaria2(), &QAria2::downloadSpeed, statusBarWidget_, &DownloadStatusBarWidget::setDownloadSpeed);
     onCurrentRowChanged();
     connect(ui->downloaderListView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &DownloadBrowser::onCurrentRowChanged);
 }
@@ -53,13 +56,6 @@ QIcon DownloadBrowser::icon() const
 QString DownloadBrowser::name() const
 {
     return tr("Downloader");
-}
-
-void DownloadBrowser::downloadSpeed(qint64 download, qint64 upload)
-{
-    auto text = tr("Download Speed:") + speedConvert(download) +
-            " " + tr("Upload Speed:") + speedConvert(upload);
-    ui->statusbar->showMessage(text);
 }
 
 void DownloadBrowser::onCurrentRowChanged()
