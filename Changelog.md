@@ -2,6 +2,34 @@
 
 ## 正式发布 Release
 
+### v1.0.5
+
+*2022.02.18*
+
+Mod Manager is auto released after new commit.
+Mod管理器会在新的提交后自动发布版本。
+
+Fixed context menu in other view mode in explore pages.
+修复了浏览页面中其他显示模式中的右键菜单。
+
+Added button to open curseforge/modrinth website in info widget.
+在信息窗体上添加了按钮来打开Curseforge/Modrinth的网页。
+
+Languages setting is in preferences now.
+语言设置现在在偏好设置里了。
+
+Releases in GitHub pages has coressponding height to its content.
+GitHub页面中的发布拥有与内容一致的高度了。
+
+Tweaked stylesheets.
+调整了样式表。
+
+Tweaked status bar in download page.
+调整了下载页面中的状态栏。
+
+Fixed download button in modrinth page.
+修复了Modrinth页面中的下载按钮。
+
 ### v1.0.4
 
 *2022.02.05*
