@@ -48,6 +48,7 @@
            <property name="font">
             <font>
              <pointsize>15</pointsize>
+             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -129,9 +130,6 @@
        </item>
        <item>
         <widget class="QTextBrowser" name="modDescription">
-         <property name="styleSheet">
-          <string notr="true">background-color: transparent;</string>
-         </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>

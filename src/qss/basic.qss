@@ -2,7 +2,7 @@ QWidget:focus{
   outline: none;
 }
 
-QScrollArea, QScrollArea .QWidget {
+QTextBrowser, QScrollArea, QScrollArea .QWidget {
   background-color: transparent;
   border-color: transparent;
 }

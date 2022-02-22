@@ -29,7 +29,7 @@
    <item row="0" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page_3">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -44,6 +44,7 @@
          <property name="font">
           <font>
            <pointsize>15</pointsize>
+           <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
@@ -200,8 +201,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>102</width>
-            <height>399</height>
+            <width>433</width>
+            <height>419</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -216,6 +217,7 @@
              <property name="font">
               <font>
                <pointsize>15</pointsize>
+               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
@@ -271,9 +273,6 @@
            </item>
            <item>
             <widget class="QTextBrowser" name="modDescription">
-             <property name="styleSheet">
-              <string notr="true">background-color: transparent;</string>
-             </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -309,7 +308,7 @@
   <customwidget>
    <class>TagsFlowWidget</class>
    <extends>QWidget</extends>
-   <header>ui/tagsflowwidget.h</header>
+   <header location="global">ui/tagsflowwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

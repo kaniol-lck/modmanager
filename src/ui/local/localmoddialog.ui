@@ -280,9 +280,6 @@
          </item>
          <item row="2" column="1">
           <widget class="QTextBrowser" name="modDescription">
-           <property name="styleSheet">
-            <string notr="true">background-color: transparent;</string>
-           </property>
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
@@ -440,7 +437,7 @@
   <customwidget>
    <class>TagsFlowWidget</class>
    <extends>QWidget</extends>
-   <header>ui/tagsflowwidget.h</header>
+   <header location="global">ui/tagsflowwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
