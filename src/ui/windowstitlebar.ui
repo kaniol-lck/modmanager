@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>583</width>
-    <height>40</height>
+    <height>36</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>0</width>
-    <height>40</height>
+    <height>36</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>40</height>
+    <height>36</height>
    </size>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <property name="leftMargin">
-    <number>0</number>
+    <number>4</number>
    </property>
    <property name="topMargin">
     <number>0</number>
@@ -48,7 +48,7 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="menuLayout"/>
+      <layout class="QVBoxLayout" name="verticalLayout"/>
      </item>
      <item>
       <spacer name="horizontalSpacer_4">
@@ -67,6 +67,9 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
@@ -104,6 +107,9 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -127,7 +133,7 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>40</width>
+         <width>36</width>
          <height>0</height>
         </size>
        </property>
@@ -155,7 +161,7 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>40</width>
+         <width>36</width>
          <height>0</height>
         </size>
        </property>
@@ -183,7 +189,7 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>40</width>
+         <width>36</width>
          <height>0</height>
         </size>
        </property>

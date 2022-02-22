@@ -4,8 +4,6 @@
 #include <QWidget>
 
 class QMenuBar;
-
-
 class QToolButton;
 namespace Ui {
 class WindowsTitleBar;
@@ -20,8 +18,11 @@ public:
     ~WindowsTitleBar();
 
     void setIconVisible(bool bl);
-
     void setParentWidget(QWidget *newParentWidget);
+
+#ifdef Q_OS_WIN
+    bool hitTest(QPoint pos, long *result);
+#endif //Q_OS_WIN
 
 public slots:
     void updateMenuBar();
@@ -38,14 +39,12 @@ private slots:
     void on_closeButton_clicked();
     void on_maxButton_clicked();
     void on_minButton_clicked();
-    void on_WindowsTitleBar_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::WindowsTitleBar *ui;
     QWidget *parentWidget_;
     QMenuBar *menuBar_;
     QPoint clickPos_;
-    QList<QToolButton *> menuButtons_;
 };
 
 #endif // WINDOWSTITLEBAR_H

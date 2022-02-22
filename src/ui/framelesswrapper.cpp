@@ -1,6 +1,7 @@
 #include "framelesswrapper.h"
 
 #include <QDialog>
+#include <QLabel>
 #include <QMainWindow>
 #include <QMdiArea>
 #include <QPainter>
@@ -26,7 +27,7 @@ FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, WindowsTitl
     QMainWindow(parent),
     titleBar_(titleBar)
 {
-    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowMaximizeButtonHint);
+//    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowMaximizeButtonHint);
 
     auto w = new QWidget(this);
     auto layout = new QVBoxLayout;
@@ -40,9 +41,9 @@ FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, WindowsTitl
     updateBlur();
 
 #ifdef Q_OS_WIN
-    HWND hwnd = (HWND)winId();
-    DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
-    ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
+//    HWND hwnd = (HWND)winId();
+//    DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
+//    ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
 #endif //Q_OS_WIN
 }
 
@@ -94,25 +95,10 @@ void FramelessWrapper::updateBlur()
 bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, long *result)
 {
     MSG* msg = (MSG*)message;
-    int boundaryWidth = 10;
+    float boundaryWidth = 4;
 //    qDebug() << msg->message;
     switch(msg->message){
-//    case WM_ENTERSIZEMOVE:{
-//        if(!isMoving_){
-//            isMoving_ = true;
-//            updateBlur();
-//        }
-//        return true;
-//    }
-//    case WM_EXITSIZEMOVE:{
-//        if(isMoving_){
-//            isMoving_ = false;
-//            updateBlur();
-//        }
-//        return true;
-//    }
     case WM_NCCALCSIZE:{
-//        qDebug() << "WM_NCCALCSIZE";
         NCCALCSIZE_PARAMS& params = *reinterpret_cast<NCCALCSIZE_PARAMS*>(msg->lParam);
         if (params.rgrc[0].top != 0)
             params.rgrc[0].top -= 1;
@@ -121,24 +107,26 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
         return true;
     }
     case WM_NCHITTEST:{
-        int xPos = GET_X_LPARAM(msg->lParam) - this->frameGeometry().x();
-        int yPos = GET_Y_LPARAM(msg->lParam) - this->frameGeometry().y();
-//        qDebug() << "WM_NCHITTEST" << xPos << yPos;
-        if(xPos < boundaryWidth && yPos<boundaryWidth)
+        auto mousePos = mapFromGlobal(QPoint(GET_X_LPARAM(msg->lParam), GET_Y_LPARAM(msg->lParam)));
+        bool left = mousePos.x() < boundaryWidth;
+        bool right = mousePos.x() > width() - boundaryWidth;
+        bool top = mousePos.y() < boundaryWidth;
+        bool bottom = mousePos.y() > height() - boundaryWidth;
+        if(left && top)
             *result = HTTOPLEFT;
-        else if(xPos >= width()-boundaryWidth&&yPos<boundaryWidth)
+        else if(right && top)
             *result = HTTOPRIGHT;
-        else if(xPos<boundaryWidth&&yPos >= height()-boundaryWidth)
+        else if(left && bottom)
             *result = HTBOTTOMLEFT;
-        else if(xPos>=width()-boundaryWidth&&yPos>=height()-boundaryWidth)
+        else if(right && bottom)
             *result = HTBOTTOMRIGHT;
-        else if(xPos < boundaryWidth)
-            *result =  HTLEFT;
-        else if(xPos>=width() - boundaryWidth)
+        else if(left)
+            *result = HTLEFT;
+        else if(right)
             *result = HTRIGHT;
-        else if(yPos < boundaryWidth)
+        else if(top)
             *result = HTTOP;
-        else if(yPos >= height() - boundaryWidth)
+        else if(bottom)
             *result = HTBOTTOM;
         if(*result) return true;
 
@@ -149,14 +137,9 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
         QPoint pos = titleBar_->mapFromGlobal(QPoint(x/dpr,y/dpr));
 
         if (!titleBar_->rect().contains(pos)) return false;
-        QWidget* child = titleBar_->childAt(pos);
-        if (!qobject_cast<QToolButton*>(child)){
-            *result = HTCAPTION;
-            return true;
-        }
+        return titleBar_->hitTest(pos, result);
     }
     case WM_GETMINMAXINFO: {
-//        qDebug() << "WM_GETMINMAXINFO" << ::IsZoomed(msg->hwnd);
         if (::IsZoomed(msg->hwnd)) {
             RECT frame = { 0, 0, 0, 0 };
             AdjustWindowRectEx(&frame, WS_OVERLAPPEDWINDOW, FALSE, 0);

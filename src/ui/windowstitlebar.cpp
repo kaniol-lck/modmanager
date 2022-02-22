@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include <QToolBar>
+#include <QPainter>
+#include <QStyleOptionMenuItem>
 #ifdef Q_OS_WIN
 #include <windowsx.h>
 #include <dwmapi.h>
@@ -18,6 +20,7 @@ WindowsTitleBar::WindowsTitleBar(QWidget *parent, const QString &title, QMenuBar
     menuBar_(menuBar)
 {
     ui->setupUi(this);
+//    setMouseTracking(true);
     ui->closeButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarCloseButton));
     ui->maxButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMaxButton));
     ui->minButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMinButton));
@@ -38,25 +41,9 @@ void WindowsTitleBar::setIconVisible(bool bl)
 void WindowsTitleBar::updateMenuBar()
 {
     if(menuBar_){
-        menuBar_->hide();
-        for(auto &&widget : menuButtons_)
-            ui->menuLayout->removeWidget(widget);
-        qDeleteAll(menuButtons_);
-        menuButtons_.clear();
-        for(auto &&action : menuBar_->actions()){
-            auto button = new QToolButton(this);
-            button->setAutoRaise(true);
-            button->setProperty("class", "MenuButton");
-            button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-            button->setDefaultAction(action);
-            button->setPopupMode(QToolButton::InstantPopup);
-            button->setStyleSheet("QToolButton::menu-indicator{image:none;}");
-            button->setFocusPolicy(Qt::NoFocus);
-            ui->menuLayout->addWidget(button);
-            menuButtons_ << button;
-        }
-        //    menuBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-        //    menuBar->adjustSize();
+        ui->verticalLayout->addWidget(menuBar_);
+        // I don't know why 5px + 31px, but it works!
+        menuBar_->setStyleSheet("QMenuBar {background-color: transparent; margin-bottom: 5px; min-height:31px;}");
     }
 }
 
@@ -106,13 +93,21 @@ void WindowsTitleBar::on_minButton_clicked()
     parentWidget_->showMinimized();
 }
 
-void WindowsTitleBar::on_WindowsTitleBar_customContextMenuRequested(const QPoint &pos)
-{
-    //    parent_->menu
-}
-
 void WindowsTitleBar::setParentWidget(QWidget *newParentWidget)
 {
     parentWidget_ = newParentWidget;
 }
 
+bool WindowsTitleBar::hitTest(QPoint pos, long *result)
+{
+    QWidget* child = childAt(pos);
+    if(auto label = qobject_cast<QLabel*>(child); label == ui->icon){
+        *result = HTSYSMENU;
+        return true;
+    }
+    if(!qobject_cast<QToolButton*>(child) && !qobject_cast<QMenuBar*>(child)){
+        *result = HTCAPTION;
+        return true;
+    }
+    return false;
+}
