@@ -98,6 +98,7 @@ void WindowsTitleBar::setParentWidget(QWidget *newParentWidget)
     parentWidget_ = newParentWidget;
 }
 
+#ifdef Q_OS_WIN
 bool WindowsTitleBar::hitTest(QPoint pos, long *result)
 {
     QWidget* child = childAt(pos);
@@ -111,3 +112,4 @@ bool WindowsTitleBar::hitTest(QPoint pos, long *result)
     }
     return false;
 }
+#endif //Q_OS_WIN
