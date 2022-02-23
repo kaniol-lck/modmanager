@@ -2,7 +2,10 @@
 #define STYLESHEETS_H
 #include <QMap>
 
-const QMap<QString, QString> &styleSheets();
+const QString &styleSheetsPath();
+
+const QMap<QString, QString> &builtinStyleSheets();
+QMap<QString, QString> styleSheets();
 
 QString styleSheetPath(const QString &name);
 #endif // STYLESHEETS_H

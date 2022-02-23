@@ -17,7 +17,8 @@ Preferences::Preferences(QWidget *parent) :
 #if !defined (Q_OS_WIN)
     ui->useFramelessWindow->setVisible(false);
 #endif
-    for(auto it = styleSheets().cbegin(); it != styleSheets().cend(); it++){
+    auto s = styleSheets();
+    for(auto it = s.cbegin(); it != s.cend(); it++){
         ui->customStyle->addItem(it.value());
         ui->customStyle->setItemData(ui->customStyle->count() - 1, it.key());
     }

@@ -120,7 +120,6 @@ QString LocalModPath::modsJsonFilePath() const
 void LocalModPath::loadMods(bool autoLoaderType)
 {
     if(isLoading_) return;
-    qDebug() << "load" << info_.displayName();
     loaded_ = true;
     isLoading_ = true;
     modsLinker_.reset();
