@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1080</width>
+    <width>726</width>
     <height>720</height>
    </rect>
   </property>
@@ -46,9 +46,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_2">
           <property name="font">
-           <font>
-            <family>Consolas ligaturized v2</family>
-           </font>
+           <font/>
           </property>
           <property name="text">
            <string notr="true">&lt;filename&gt;</string>
@@ -89,9 +87,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="label_5">
           <property name="font">
-           <font>
-            <family>Consolas ligaturized v2</family>
-           </font>
+           <font/>
           </property>
           <property name="text">
            <string notr="true">&lt;id&gt;</string>
@@ -132,9 +128,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="label_7">
           <property name="font">
-           <font>
-            <family>Consolas ligaturized v2</family>
-           </font>
+           <font/>
           </property>
           <property name="text">
            <string notr="true">&lt;name&gt;</string>
@@ -179,9 +173,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_9">
           <property name="font">
-           <font>
-            <family>Consolas ligaturized v2</family>
-           </font>
+           <font/>
           </property>
           <property name="text">
            <string notr="true">&lt;version&gt;</string>
@@ -222,9 +214,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="label_13">
           <property name="font">
-           <font>
-            <family>Consolas ligaturized v2</family>
-           </font>
+           <font/>
           </property>
           <property name="text">
            <string notr="true">&lt;tags|...|...&gt;</string>
@@ -330,7 +320,8 @@
      <item>
       <widget class="QToolButton" name="historyButton">
        <property name="icon">
-        <iconset theme="edit-undo-history"/>
+        <iconset theme="edit-undo-history">
+         <normaloff>.</normaloff>.</iconset>
        </property>
        <property name="popupMode">
         <enum>QToolButton::InstantPopup</enum>
