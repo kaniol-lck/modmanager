@@ -116,6 +116,7 @@ ModManager::ModManager(QWidget *parent) :
 
     mergeMenuBar();
     updateUi();
+    qApp->setStyleSheet(styleSheetPath(config_.getCustomStyle()));
 }
 
 ModManager::~ModManager()
@@ -133,7 +134,6 @@ QMenuBar *ModManager::menuBar() const
 
 void ModManager::updateUi()
 {
-    qApp->setStyleSheet(styleSheetPath(config_.getCustomStyle()));
     pageSwitcher_.updateUi();
     updateBlur();
 }
@@ -247,10 +247,15 @@ void ModManager::editLocalPath(int index)
 void ModManager::on_actionPreferences_triggered()
 {
     auto preferences = new Preferences(this);
-    preferences->exec();
+    auto style = config_.getCustomStyle();
+    connect(preferences, &Preferences::accepted, this, [=]{
+        if(auto afterStyle = config_.getCustomStyle(); afterStyle != style)
+            qApp->setStyleSheet(styleSheetPath(afterStyle));
+    });
     connect(preferences, &Preferences::accepted, this, &ModManager::updateUi, Qt::UniqueConnection);
     connect(preferences, &Preferences::accepted, this, &ModManager::setProxy, Qt::UniqueConnection);
     connect(preferences, &Preferences::accepted, QAria2::qaria2(), &QAria2::updateOptions, Qt::UniqueConnection);
+    preferences->exec();
 }
 
 void ModManager::on_actionManage_Browser_triggered()

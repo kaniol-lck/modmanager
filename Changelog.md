@@ -2,6 +2,26 @@
 
 ## 正式发布 Release
 
+### v1.1.0
+
+*2022.03.02*
+
+Stylesheets can be customized under app config directory.
+样式表可以在应用配置目录下自定义。
+
+Changed shortcut of prefereneces to `ctrl + ,` .
+将偏好设置的快捷键更改为了`ctrl + ,` 。
+
+Tweaks on frameless UI:
+无边框界面上的修改：
+
+- Window title is at center now.
+  窗口标题现在是居中的了。
+- Fixed window resize handler.
+  修复了窗口缩放的控制。
+- Added system menu on app icon.
+  在应用图标上添加了系统菜单。
+
 ### v1.0.5
 
 *2022.02.18*
