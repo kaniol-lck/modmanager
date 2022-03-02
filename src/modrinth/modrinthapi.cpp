@@ -231,6 +231,7 @@ const QList<std::tuple<QString, QString> > &ModrinthAPI::getCategories()
         { tr("Utility"), "utility" },
         { tr("Decoration"), "decoration" },
         { tr("Miscellaneous"), "misc" },
+        { tr("Optimization"), "optimization" },
         { tr("Equipment"), "equipment" },
         { tr("Cursed"), "cursed" }
     };

@@ -21,6 +21,7 @@
         <file>modrinth/worldgen.svg</file>
         <file>modmanager.png</file>
         <file>gitlab.svg</file>
+        <file>modrinth/optimization.svg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>
