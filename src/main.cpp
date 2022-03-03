@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
     a.setWindowIcon(QIcon(":/image/modmanager.png"));
     a.setOrganizationName("kaniol");
     a.setApplicationName("Mod Manager");
+    a.setApplicationDisplayName(QObject::tr("Mod Manager"));
 
     //setup translator
     QTranslator translator;

@@ -184,6 +184,7 @@ void ModManager::mergeMenuBar()
 
 void ModManager::updateBrowsers(Browser *previous[[maybe_unused]], Browser *current)
 {
+    setWindowTitle(current->name());
     ui->modInfoDock->setWidget(current->infoWidget());
     ui->fileListDock->setWidget(current->fileListWidget());
     mergeMenuBar();
