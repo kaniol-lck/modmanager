@@ -57,6 +57,8 @@ void QAria2DownloaderItemWidget::onInfoChanged()
 
 void QAria2DownloaderItemWidget::refreshStatus(int status)
 {
+    if(status != aria2::DOWNLOAD_ACTIVE)
+        downloadSpeed(0, 0);
     QString text;
     switch (status) {
     case aria2::DOWNLOAD_ACTIVE:

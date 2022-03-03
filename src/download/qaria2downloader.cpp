@@ -23,7 +23,7 @@ void QAria2Downloader::deleteDownloadHandle()
 
 void QAria2Downloader::update()
 {
-    if(!handle_) handle_ = aria2::getDownloadHandle(QAria2::qaria2()->session(), gid_);
+    handle_ = aria2::getDownloadHandle(QAria2::qaria2()->session(), gid_);
     if(!handle_) return;
     if(status_ != aria2::DOWNLOAD_ACTIVE) return;
     if(auto files = handle_->getFiles(); !files.empty()){
@@ -35,6 +35,11 @@ void QAria2Downloader::update()
     }
     emit downloadProgress(handle_->getCompletedLength(), handle_->getTotalLength());
     emit downloadSpeed(handle_->getDownloadSpeed(), handle_->getUploadSpeed());
+    qDebug() << QString::fromStdString(aria2::gidToHex(gid_))
+             << handle_->getCompletedLength() << handle_->getTotalLength()
+             << handle_->getDownloadSpeed() << handle_->getUploadSpeed()
+             << handle_->getConnections() << handle_->getNumPieces()
+             << handle_->getPieceLength() << handle_->getStatus();
 }
 
 aria2::DownloadStatus QAria2Downloader::status() const
