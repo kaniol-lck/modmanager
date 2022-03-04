@@ -206,7 +206,7 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/zlib1.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcares-4.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcares-5.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libstdc++-6.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
