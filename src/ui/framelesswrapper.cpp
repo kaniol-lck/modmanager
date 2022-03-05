@@ -18,7 +18,7 @@
 #include "config.hpp"
 
 FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, QMenuBar *menuBar) :
-    FramelessWrapper(parent, widget, new WindowsTitleBar(nullptr, widget->windowTitle(), menuBar))
+    FramelessWrapper(parent, widget, new WindowsTitleBar(widget, menuBar))
 {
     titleBar_->setParentWidget(this);
 }
@@ -45,22 +45,6 @@ FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, WindowsTitl
 //    DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
 //    ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
 #endif //Q_OS_WIN
-}
-
-QWidget *FramelessWrapper::makeFrameless(QMainWindow *window)
-{
-    window->menuBar()->hide();
-    auto wrapper = new FramelessWrapper(qobject_cast<QWidget *>(window->parent()),
-                                        window,
-                                        window->menuBar());
-    return wrapper;
-}
-
-QWidget *FramelessWrapper::makeFrameless(QDialog *dialog)
-{
-    auto wrapper = new FramelessWrapper(qobject_cast<QWidget *>(dialog->parent()),
-                                        dialog);
-    return wrapper;
 }
 
 void FramelessWrapper::updateBlur()

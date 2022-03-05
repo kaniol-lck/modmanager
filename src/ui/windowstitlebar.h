@@ -14,19 +14,17 @@ class WindowsTitleBar : public QWidget
     Q_OBJECT
 
 public:
-    explicit WindowsTitleBar(QWidget *parent = nullptr, const QString &title = QString(), QMenuBar *menuBar = nullptr);
+    explicit WindowsTitleBar(QWidget *parent = nullptr, QMenuBar *menuBar = nullptr);
     ~WindowsTitleBar();
 
     void setIconVisible(bool bl);
     void setParentWidget(QWidget *newParentWidget);
-
 #ifdef Q_OS_WIN
     bool hitTest(QPoint pos, long *result);
 #endif //Q_OS_WIN
 
 public slots:
     void updateMenuBar();
-
     void setMaximumed();
     void setNormal();
 

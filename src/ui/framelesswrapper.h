@@ -14,8 +14,6 @@ class FramelessWrapper : public QMainWindow
 public:
     FramelessWrapper(QWidget *parent, QWidget *widget, QMenuBar *menuBar = nullptr);
     FramelessWrapper(QWidget *parent, QWidget *widget, WindowsTitleBar *titleBar);
-    static QWidget *makeFrameless(QMainWindow *window);
-    static QWidget *makeFrameless(QDialog *dialog);
 
 private slots:
     void updateBlur();

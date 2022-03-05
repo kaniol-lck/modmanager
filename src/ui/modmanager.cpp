@@ -320,7 +320,7 @@ void ModManager::on_action_About_Mod_Manager_triggered()
     auto dialog = new AboutDialog(this);
 #ifdef Q_OS_WIN
     if(config_.getUseFramelessWindow()){
-        auto frameless = FramelessWrapper::makeFrameless(dialog);
+        auto frameless = new FramelessWrapper(this, dialog);
         frameless->show();
     } else
 #endif

@@ -13,19 +13,23 @@
 #include <dwmapi.h>
 #endif
 
-WindowsTitleBar::WindowsTitleBar(QWidget *parent, const QString &title, QMenuBar *menuBar) :
+WindowsTitleBar::WindowsTitleBar(QWidget *parent, QMenuBar *menuBar) :
     QWidget(parent),
     ui(new Ui::WindowsTitleBar),
     parentWidget_(parent),
     menuBar_(menuBar)
 {
     ui->setupUi(this);
-//    setMouseTracking(true);
     ui->closeButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarCloseButton));
     ui->maxButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMaxButton));
     ui->minButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMinButton));
-    ui->titleText->setText(title);
     updateMenuBar();
+    auto updateWindowTitle = [=]{
+        ui->titleText->setText(parent->windowTitle() + " - " +
+                               qApp->applicationDisplayName());
+    };
+    updateWindowTitle();
+    connect(parent, &QWidget::windowTitleChanged, this, updateWindowTitle);
 }
 
 WindowsTitleBar::~WindowsTitleBar()
