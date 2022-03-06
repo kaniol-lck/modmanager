@@ -15,32 +15,6 @@ DownloaderSpeedWidget::DownloaderSpeedWidget(QWidget *parent) : QGraphicsView(pa
         pen.setStyle(Qt::SolidLine);
         pen.setWidthF(1);
     }
-    //update speed point every 1s
-    timer_.start(1000);
-    connect(&timer_, &QTimer::timeout, this, [=]{
-        if(downloader_){
-            if(downloader_->isStarted())
-                addSpeedPoint(downloader_->downSpeed_, downloader_->upSpeed_);
-            else
-                addSpeedPoint(0, 0);
-        }
-    });
-}
-
-void DownloaderSpeedWidget::addSpeedPoint(qint64 downSpeed, qint64 upSpeed)
-{
-    AbstractDownloader::PointData point;
-    point.x = QDateTime::currentMSecsSinceEpoch() / 1000;
-    point.y[AbstractDownloader::Download] = downSpeed;
-    point.y[AbstractDownloader::Upload] = upSpeed;
-
-    downloader_->dataCollection_.push_back(point);
-
-    while (downloader_->dataCollection_.length() > VIEWABLE)
-    {
-        downloader_->dataCollection_.removeFirst();
-    }
-    replot();
 }
 
 // use binary prefix standards from IEC 60027-2
@@ -140,11 +114,6 @@ QString formatLabel(const double argValue, const SizeUnit unit)
     return QLocale::system().toString(argValue, 'f', precision) + " " + unitString(unit, true);
 }
 
-void DownloaderSpeedWidget::clear()
-{
-    downloader_->dataCollection_.clear();
-    replot();
-}
 void DownloaderSpeedWidget::replot()
 {
     viewport()->update();
@@ -154,9 +123,9 @@ qint64 DownloaderSpeedWidget::maxYValue()
 {
     qint64 maxYValue = 0;
     for(int id = 0; id < 2; id++)
-        for (int i = downloader_->dataCollection_.size() - 1, j = 0; (i >= 0) && (j <= VIEWABLE); --i, ++j){
-            if (downloader_->dataCollection_[i].y[id] > maxYValue)
-                maxYValue = downloader_->dataCollection_[i].y[id];
+        for (int i = downloader_->dataCollection().size() - 1, j = 0; (i >= 0) && (j <= AbstractDownloader::DATA_MAXSIZE); --i, ++j){
+            if (downloader_->dataCollection()[i].y[id] > maxYValue)
+                maxYValue = downloader_->dataCollection()[i].y[id];
         }
 
     return maxYValue;
@@ -169,7 +138,9 @@ AbstractDownloader *DownloaderSpeedWidget::downloader() const
 
 void DownloaderSpeedWidget::setDownloader(AbstractDownloader *newDownloader)
 {
+    disconnect(downloader_, &AbstractDownloader::dataUpdated, this, &DownloaderSpeedWidget::replot);
     downloader_ = newDownloader;
+    connect(downloader_, &AbstractDownloader::dataUpdated, this, &DownloaderSpeedWidget::replot);
     replot();
 }
 
@@ -234,14 +205,14 @@ void DownloaderSpeedWidget::paintEvent(QPaintEvent *)
     rect.adjust(3, 0, 0, 0);
     //
     const double yMultiplier = (niceScale.arg == 0.0) ? 0.0 : (static_cast<double>(rect.height()) / niceScale.sizeInBytes());
-    const double xTickSize = static_cast<double>(rect.width()) / VIEWABLE;
+    const double xTickSize = static_cast<double>(rect.width()) / AbstractDownloader::DATA_MAXSIZE;
 
     for(int id = 0; id < pens_.size(); id++){
         QVector<QPoint> points;
-        for (int i = static_cast<int>(downloader_->dataCollection_.size()) - 1, j = 0; (i >= 0) && (j <= VIEWABLE); --i, ++j)
+        for (int i = downloader_->dataCollection().size() - 1, j = 0; (i >= 0) && (j <= AbstractDownloader::DATA_MAXSIZE); --i, ++j)
         {
             const int newX = rect.right() - j * xTickSize;
-            const int newY = rect.bottom() - downloader_->dataCollection_[i].y[id] * yMultiplier;
+            const int newY = rect.bottom() - downloader_->dataCollection()[i].y[id] * yMultiplier;
             points.push_back({ newX, newY });
         }
         painter.setPen(pens_.at(id).second);

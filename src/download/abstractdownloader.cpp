@@ -17,6 +17,14 @@ AbstractDownloader::AbstractDownloader(QObject *parent, const DownloadFileInfo &
         downSpeed_ = download;
         upSpeed_ = upload;
     });
+    //update speed point every 1s
+    timer_.start(1000);
+    connect(&timer_, &QTimer::timeout, this, [=]{
+        if(isStarted())
+            addData(downSpeed_, upSpeed_);
+        else
+            addData(0, 0);
+    });
 }
 
 AbstractDownloader::~AbstractDownloader()
@@ -85,6 +93,21 @@ void AbstractDownloader::setIcon(const QPixmap &newIcon)
 {
     info_.setIcon(newIcon);
     emit infoChanged();
+}
+
+void AbstractDownloader::addData(qint64 downSpeed, qint64 upSpeed)
+{
+    PointData point;
+    point.x = QDateTime::currentMSecsSinceEpoch() / 1000;
+    point.y[Download] = downSpeed;
+    point.y[Upload] = upSpeed;
+
+    dataCollection_.push_back(point);
+
+    while (dataCollection_.length() > DATA_MAXSIZE)
+        dataCollection_.removeFirst();
+
+    emit dataUpdated();
 }
 
 const QList<AbstractDownloader::PointData> &AbstractDownloader::dataCollection() const
