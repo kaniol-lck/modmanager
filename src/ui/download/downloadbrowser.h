@@ -12,13 +12,15 @@ class DownloadManager;
 class QAria2Downloader;
 class QAria2;
 class DownloadStatusBarWidget;
+class DownloaderInfoWidget;
 class DownloadBrowser : public Browser
 {
     Q_OBJECT
-
 public:
     explicit DownloadBrowser(QWidget *parent = nullptr);
     ~DownloadBrowser();
+
+    QWidget *infoWidget() const override;
 
     QIcon icon() const override;
     QString name() const override;
@@ -44,6 +46,7 @@ private:
     DownloadManager *manager_;
     QMetaObject::Connection conn_;
     DownloadStatusBarWidget *statusBarWidget_;
+    DownloaderInfoWidget *infoWidget_;
 };
 
 #endif // DOWNLOADBROWSER_H

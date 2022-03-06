@@ -9,14 +9,15 @@
 #include <QtConcurrent>
 #include <QDebug>
 
-AbstractDownloader::AbstractDownloader(QObject *parent) :
-    QObject(parent)
-{}
-
 AbstractDownloader::AbstractDownloader(QObject *parent, const DownloadFileInfo &info) :
     QObject(parent),
     info_(info)
-{}
+{
+    connect(this, &AbstractDownloader::downloadSpeed, [=](qint64 download, qint64 upload){
+        downSpeed_ = download;
+        upSpeed_ = upload;
+    });
+}
 
 AbstractDownloader::~AbstractDownloader()
 {}
@@ -47,6 +48,7 @@ QUrl AbstractDownloader::handleRedirect(const QUrl &url)
 #endif
         QNetworkAccessManager accessManager;
         auto reply = accessManager.head(request);
+        qDebug() << "redirect:" << url;
         if(!reply) continue;
         QEventLoop loop;
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
@@ -56,13 +58,15 @@ QUrl AbstractDownloader::handleRedirect(const QUrl &url)
 
         //size_ = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
         QUrl redirected;
-        if(auto redirection = reply->attribute(QNetworkRequest::RedirectionTargetAttribute); !redirection.isNull())
-            redirected = handleRedirect(redirection.toString());
+        if(auto redirection = reply->attribute(QNetworkRequest::RedirectionTargetAttribute); !redirection.isNull()/* && redirection.toUrl() == url*/)
+            redirected = handleRedirect(redirection.toUrl());
         else
             redirected = url;
         reply->deleteLater();
+        qDebug() << "rediect ended";
         return redirected;
     }
+    qDebug() << "rediect ended.";
     return url;
 }
 
@@ -81,4 +85,14 @@ void AbstractDownloader::setIcon(const QPixmap &newIcon)
 {
     info_.setIcon(newIcon);
     emit infoChanged();
+}
+
+const QList<AbstractDownloader::PointData> &AbstractDownloader::dataCollection() const
+{
+    return dataCollection_;
+}
+
+void AbstractDownloader::setDataCollection(const QList<PointData> &newDataCollection)
+{
+    dataCollection_ = newDataCollection;
 }

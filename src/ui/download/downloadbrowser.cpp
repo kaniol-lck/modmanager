@@ -14,12 +14,14 @@
 #include "util/funcutil.h"
 #include "util/smoothscrollbar.h"
 #include "adddownloaddialog.h"
+#include "downloaderinfowidget.h"
 
 DownloadBrowser::DownloadBrowser(QWidget *parent) :
     Browser(parent),
     ui(new Ui::DownloadBrowser),
     manager_(DownloadManager::manager()),
-    statusBarWidget_(new DownloadStatusBarWidget(this))
+    statusBarWidget_(new DownloadStatusBarWidget(this)),
+    infoWidget_(new DownloaderInfoWidget(this))
 {
     ui->setupUi(this);
     ui->statusbar->addPermanentWidget(statusBarWidget_);
@@ -46,6 +48,11 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
 DownloadBrowser::~DownloadBrowser()
 {
     delete ui;
+}
+
+QWidget *DownloadBrowser::infoWidget() const
+{
+    return infoWidget_;
 }
 
 QIcon DownloadBrowser::icon() const
@@ -75,6 +82,7 @@ void DownloadBrowser::onCurrentRowChanged()
         ui->actionShow_in_Folder->setEnabled(true);
     }
     auto downloader = manager_->downloaders().at(row);
+    infoWidget_->setDownloader(downloader);
     auto updateButtons = [=]{
         ui->actionPause->setEnabled(downloader->isStarted());
         ui->actionForce_Pause->setEnabled(downloader->isStarted());

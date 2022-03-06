@@ -71,6 +71,8 @@ SOURCES += \
     src/ui/datetimetext.cpp \
     src/ui/dockwidgetcontent.cpp \
     src/ui/download/adddownloaddialog.cpp \
+    src/ui/download/downloaderinfowidget.cpp \
+    src/ui/download/downloaderspeedwidget.cpp \
     src/ui/download/downloadstatusbarwidget.cpp \
     src/ui/downloadpathselectmenu.cpp \
     src/ui/explorestatusbarwidget.cpp \
@@ -206,6 +208,8 @@ HEADERS += \
     src/ui/datetimetext.h \
     src/ui/dockwidgetcontent.h \
     src/ui/download/adddownloaddialog.h \
+    src/ui/download/downloaderinfowidget.h \
+    src/ui/download/downloaderspeedwidget.h \
     src/ui/download/downloadstatusbarwidget.h \
     src/ui/downloadpathselectmenu.h \
     src/ui/explorestatusbarwidget.h \
@@ -286,6 +290,7 @@ FORMS += \
     src/ui/datetimetext.ui \
     src/ui/download/adddownloaddialog.ui \
     src/ui/download/downloadbrowser.ui \
+    src/ui/download/downloaderinfowidget.ui \
     src/ui/download/downloadstatusbarwidget.ui \
     src/ui/explorestatusbarwidget.ui \
     src/ui/github/githubfileitemwidget.ui \
