@@ -23,12 +23,15 @@ public:
     bool isPaused() const override;
     bool isStopped() const override;
 
+    aria2::DownloadHandle *handle() const;
+
 public slots:
     int pause(bool force = false) override;
     int start() override;
     int stop(bool force = false) override;
 
 signals:
+    void handleUpdated();
 //    void statusChanged(int);
 
 private:

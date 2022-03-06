@@ -21,6 +21,11 @@ public:
 signals:
     void downloaderChanged();
 
+private slots:
+    void onInfoChanged();
+    void onStatusChanged(int status);
+    void onHandleUpdated();
+
 private:
     Ui::DownloaderInfoWidget *ui;
     AbstractDownloader *downloader_;

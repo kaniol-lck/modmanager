@@ -24,8 +24,9 @@ void QAria2Downloader::deleteDownloadHandle()
 void QAria2Downloader::update()
 {
     handle_ = aria2::getDownloadHandle(QAria2::qaria2()->session(), gid_);
-    if(!handle_) return;
-    if(status_ != aria2::DOWNLOAD_ACTIVE) return;
+    emit handleUpdated();
+//    if(!handle_) return;
+//    if(status_ != aria2::DOWNLOAD_ACTIVE) return;
     if(auto files = handle_->getFiles(); !files.empty()){
         auto &&file = files.front();
         if(QFileInfo path = QString::fromStdString(file.path); path.isFile()){
@@ -89,6 +90,11 @@ void QAria2Downloader::setEvent(const aria2::DownloadEvent &event)
         break;
     }
     emit statusChanged(status_);
+}
+
+aria2::DownloadHandle *QAria2Downloader::handle() const
+{
+    return handle_;
 }
 
 void QAria2Downloader::setGid(aria2::A2Gid newGid)
