@@ -26,7 +26,7 @@ public:
     QString name() const override;
 
 private slots:
-    void onCurrentRowChanged();
+    void onSelectionChanged();
     void on_actionAdd_triggered();
     void updateListViewIndexWidget();
     void on_actionPause_triggered();

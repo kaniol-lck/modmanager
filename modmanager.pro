@@ -30,6 +30,7 @@ SOURCES += \
     src/download/downloadmanager.cpp \
     src/download/qaria2.cpp \
     src/download/qaria2downloader.cpp \
+    src/download/speedrecorder.cpp \
     src/exploremanager.cpp \
     src/github/githubapi.cpp \
     src/github/githubfileinfo.cpp \
@@ -165,6 +166,7 @@ HEADERS += \
     src/download/downloadmanager.h \
     src/download/qaria2.h \
     src/download/qaria2downloader.h \
+    src/download/speedrecorder.h \
     src/exploremanager.h \
     src/github/githubapi.h \
     src/github/githubfileinfo.h \

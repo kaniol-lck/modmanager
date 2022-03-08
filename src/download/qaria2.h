@@ -2,14 +2,15 @@
 #define QARIA2_H
 
 #include <QMap>
-#include <QObject>
 #include <QTimer>
 #include <QUrl>
 #include <aria2/aria2.h>
 
+#include "speedrecorder.h"
+
 class QAria2Downloader;
 
-class QAria2 : public QObject
+class QAria2 : public SpeedRecorder
 {
     Q_OBJECT
     static int downloadEventCallback(aria2::Session* session, aria2::DownloadEvent event, const aria2::A2Gid gid, void* userData);
@@ -31,9 +32,7 @@ public slots:
 signals:
     void downloaderAdded(QAria2Downloader *downloader);
     void started();
-    void finished();
 
-    void downloadSpeed(qint64 download, qint64 upload);
     void globalDownloadStat(int inactive, int active, int gdl, int gup);
     void downloadStatPerItem(uint id, int completed, int total,int perDl, int perUp);
 private:
