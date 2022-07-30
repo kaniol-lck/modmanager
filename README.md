@@ -25,7 +25,7 @@ This repository has deployed [GitHub Actions](https://github.com/kaniol-lck/modm
 Clone this repository: 
 
 ```bash
-git clone git@github.com:kaniol-lck/modmanager.git
+$ git clone git@github.com:kaniol-lck/modmanager.git
 ```
 
 #### Install dependencies
@@ -41,25 +41,30 @@ Depends on your OS and package managers:
 - Ubuntu (apt-get):
 
   ```sh
-  apt-get install libaria2-0-dev libquazip5-dev
+  # apt-get install libaria2-0-dev libquazip5-dev
   ```
 
 - Archlinux:
 
   ```sh
-  pacman -S aria2 quazip
+  # pacman -S aria2 quazip
+  ```
+- Fedora/RHEL:
+
+  ```sh
+  # dnf install aria2 quazip
   ```
 
 - Windows (MSYS2):
 
   ```sh
-  pacman -S mingw-w64-x86_64-aria2 mingw-w64-x86_64-quazip
+  # pacman -S mingw-w64-x86_64-aria2 mingw-w64-x86_64-quazip
   ```
 
 - MacOS:
   
   ```sh
-  brew install quazip
+  $ brew install quazip
   ```
   libaria2: see [kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases/tag/release-1.36.0) for install instructions.
   
@@ -67,7 +72,7 @@ Depends on your OS and package managers:
 #### Compile
 
 ```bash
-qmake && make
+$ qmake && make
 ```
 
 ## Usage
