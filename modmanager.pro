@@ -448,6 +448,6 @@ win32 {
     message("win32 x86 build")
     INCLUDEPATH += C:/msys64/mingw32/include
     INCLUDEPATH += C:/msys64/mingw32/include/QuaZip-Qt5-1.3/quazip
-    LIBS += -L$$quote(C:/msys64/mingw32/lib) -laria2 -lquazip1-qt5
+    LIBS += -L$$quote(C:/msys64/mingw32/bin) -laria2 -lquazip1-qt5
   }
 }
