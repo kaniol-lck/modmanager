@@ -20,7 +20,7 @@ int QAria2::downloadEventCallback(aria2::Session *session[[maybe_unused]], aria2
     return 0;
 }
 
-QAria2::QAria2(QObject *parent) : SpeedRecorder(parent)
+QAria2::QAria2(QObject *parent) : QObject(parent)
 {
     if(auto code = aria2::libraryInit())
         QMessageBox::warning(0, tr("Aria2 Error"), tr("Aria2 downloader init failed, download function may not work.") +

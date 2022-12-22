@@ -23,10 +23,10 @@ CurseforgeCategoryInfo CurseforgeCategoryInfo::fromVariant(const QVariant &varia
         info.id_ = value(variant, "categoryId").toInt();
     info.name_ = value(variant, "name").toString();
     info.slug_ = value(variant, "slug").toString();
-    info.avatarUrl_ = value(variant, "avatarUrl").toUrl();
+    info.avatarUrl_ = value(variant, "iconUrl").toUrl();//update to iconUrl
     info.dateModified_ = value(variant, "dateModified").toDateTime();
-    info.parentGameCategoryId_ = value(variant, "parentGameCategoryId").toInt();
-    info.rootGameCategoryId_ = value(variant, "rootGameCategoryId").toInt();
+    info.parentGameCategoryId_ = value(variant, "parentCategoryId").toInt();//update to parentCategoryId
+    info.rootGameCategoryId_ = value(variant, "classId").toInt();//update to classId
     info.url_ = value(variant, "url").toUrl();
 
     static QMap<QString, QString> replaceMap{

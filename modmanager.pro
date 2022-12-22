@@ -4,6 +4,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
 QMAKE_CXXFLAGS += -std=c++17
+DEFINES += QT_NO_VERSION_TAGGING
 DEFINES += _LIBCPP_DISABLE_AVAILABILITY
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -30,7 +31,6 @@ SOURCES += \
     src/download/downloadmanager.cpp \
     src/download/qaria2.cpp \
     src/download/qaria2downloader.cpp \
-    src/download/speedrecorder.cpp \
     src/exploremanager.cpp \
     src/github/githubapi.cpp \
     src/github/githubfileinfo.cpp \
@@ -166,7 +166,6 @@ HEADERS += \
     src/download/downloadmanager.h \
     src/download/qaria2.h \
     src/download/qaria2downloader.h \
-    src/download/speedrecorder.h \
     src/exploremanager.h \
     src/github/githubapi.h \
     src/github/githubfileinfo.h \
@@ -441,12 +440,14 @@ win32 {
   contains(QMAKE_HOST.arch, x86_64) {
     message("win32 x86_64 build")
     INCLUDEPATH += C:/msys64/mingw64/include
-    INCLUDEPATH += C:/msys64/mingw64/include/quazip5
-    LIBS += -L$$quote(C:/msys64/mingw64/lib) -laria2 -lquazip5
+    INCLUDEPATH += C:/msys64/mingw64/include/QuaZip-Qt5-1.3/quazip
+    LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt5
+    #LIBS += "C:/msys64/mingw64/lib/libaria2.dll.a"
+    #LIBS += "C:/msys64/mingw64/lib/libquazip1-qt5.dll.a"
   } else {
     message("win32 x86 build")
     INCLUDEPATH += C:/msys64/mingw32/include
-    INCLUDEPATH += C:/msys64/mingw32/include/quazip5
-    LIBS += -L$$quote(C:/msys64/mingw32/lib) -laria2 -lquazip5
+    INCLUDEPATH += C:/msys64/mingw32/include/QuaZip-Qt5-1.3/quazip
+    LIBS += -L$$quote(C:/msys64/mingw32/lib) -laria2 -lquazip1-qt5
   }
 }

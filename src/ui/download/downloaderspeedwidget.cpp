@@ -123,30 +123,30 @@ qint64 DownloaderSpeedWidget::maxYValue()
 {
     qint64 maxYValue = 0;
     for(int id = 0; id < 2; id++)
-        for (int i = speedRecorder_->dataCollection().size() - 1, j = 0; (i >= 0) && (j <= SpeedRecorder::DATA_MAXSIZE); --i, ++j){
-            if (speedRecorder_->dataCollection()[i].y[id] > maxYValue)
-                maxYValue = speedRecorder_->dataCollection()[i].y[id];
+        for (int i = downloader_->dataCollection().size() - 1, j = 0; (i >= 0) && (j <= AbstractDownloader::DATA_MAXSIZE); --i, ++j){
+            if (downloader_->dataCollection()[i].y[id] > maxYValue)
+                maxYValue = downloader_->dataCollection()[i].y[id];
         }
 
     return maxYValue;
 }
 
-SpeedRecorder *DownloaderSpeedWidget::speedrecorder() const
+AbstractDownloader *DownloaderSpeedWidget::downloader() const
 {
-    return speedRecorder_;
+    return downloader_;
 }
 
-void DownloaderSpeedWidget::setSpeedRecorder(SpeedRecorder *newSpeedRecorder)
+void DownloaderSpeedWidget::setDownloader(AbstractDownloader *newDownloader)
 {
-    disconnect(speedRecorder_, &SpeedRecorder::dataUpdated, this, &DownloaderSpeedWidget::replot);
-    speedRecorder_ = newSpeedRecorder;
-    connect(speedRecorder_, &SpeedRecorder::dataUpdated, this, &DownloaderSpeedWidget::replot);
+    disconnect(downloader_, &AbstractDownloader::dataUpdated, this, &DownloaderSpeedWidget::replot);
+    downloader_ = newDownloader;
+    connect(downloader_, &AbstractDownloader::dataUpdated, this, &DownloaderSpeedWidget::replot);
     replot();
 }
 
 void DownloaderSpeedWidget::paintEvent(QPaintEvent *)
 {
-    if(!speedRecorder_) return;
+    if(!downloader_) return;
     const auto fullRect = viewport()->rect();
     auto rect = viewport()->rect();
     rect.adjust(4, 4, 0, -4); // Add padding
@@ -172,7 +172,8 @@ void DownloaderSpeedWidget::paintEvent(QPaintEvent *)
             yAxisWidth = fontMetrics.horizontalAdvance(label);
 
     int i = 0;
-    for(const auto &label : speedLabels){
+    for (const auto &label : speedLabels)
+    {
         QRectF labelRect(rect.topLeft() + QPointF(-yAxisWidth, (i++) * 0.25 * rect.height() - fontMetrics.height()),
                          QSizeF(2 * yAxisWidth, fontMetrics.height()));
         painter.drawText(labelRect, label, Qt::AlignRight | Qt::AlignTop);
@@ -193,7 +194,8 @@ void DownloaderSpeedWidget::paintEvent(QPaintEvent *)
     painter.drawLine(fullRect.left(), rect.bottom(), rect.right(), rect.bottom());
 
     constexpr auto TIME_AXIS_DIVISIONS = 6;
-    for(int i = 0; i < TIME_AXIS_DIVISIONS; ++i){
+    for (int i = 0; i < TIME_AXIS_DIVISIONS; ++i)
+    {
         const int x = rect.left() + (i * rect.width()) / TIME_AXIS_DIVISIONS;
         painter.drawLine(x, fullRect.top(), x, fullRect.bottom());
     }
@@ -203,13 +205,14 @@ void DownloaderSpeedWidget::paintEvent(QPaintEvent *)
     rect.adjust(3, 0, 0, 0);
     //
     const double yMultiplier = (niceScale.arg == 0.0) ? 0.0 : (static_cast<double>(rect.height()) / niceScale.sizeInBytes());
-    const double xTickSize = static_cast<double>(rect.width()) / SpeedRecorder::DATA_MAXSIZE;
+    const double xTickSize = static_cast<double>(rect.width()) / AbstractDownloader::DATA_MAXSIZE;
 
     for(int id = 0; id < pens_.size(); id++){
         QVector<QPoint> points;
-        for(int i = speedRecorder_->dataCollection().size() - 1, j = 0; (i >= 0) && (j <= SpeedRecorder::DATA_MAXSIZE); --i, ++j){
+        for (int i = downloader_->dataCollection().size() - 1, j = 0; (i >= 0) && (j <= AbstractDownloader::DATA_MAXSIZE); --i, ++j)
+        {
             const int newX = rect.right() - j * xTickSize;
-            const int newY = rect.bottom() - speedRecorder_->dataCollection()[i].y[id] * yMultiplier;
+            const int newY = rect.bottom() - downloader_->dataCollection()[i].y[id] * yMultiplier;
             points.push_back({ newX, newY });
         }
         painter.setPen(pens_.at(id).second);

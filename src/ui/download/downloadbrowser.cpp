@@ -21,7 +21,7 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
     ui(new Ui::DownloadBrowser),
     manager_(DownloadManager::manager()),
     statusBarWidget_(new DownloadStatusBarWidget(this)),
-    infoWidget_(new DownloaderInfoWidget(this, manager_->qaria2()))
+    infoWidget_(new DownloaderInfoWidget(this))
 {
     ui->setupUi(this);
     ui->statusbar->addPermanentWidget(statusBarWidget_);
@@ -41,8 +41,8 @@ DownloadBrowser::DownloadBrowser(QWidget *parent) :
         ui->statusbar->showMessage("Idoling");
     });
     connect(manager_->qaria2(), &QAria2::downloadSpeed, statusBarWidget_, &DownloadStatusBarWidget::setDownloadSpeed);
-    onSelectionChanged();
-    connect(ui->downloaderListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &DownloadBrowser::onSelectionChanged);
+    onCurrentRowChanged();
+    connect(ui->downloaderListView->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &DownloadBrowser::onCurrentRowChanged);
 }
 
 DownloadBrowser::~DownloadBrowser()
@@ -65,13 +65,10 @@ QString DownloadBrowser::name() const
     return tr("Downloader");
 }
 
-void DownloadBrowser::onSelectionChanged()
+void DownloadBrowser::onCurrentRowChanged()
 {
-    disconnect(conn_);
-    QList<AbstractDownloader *> list;
-    for(auto &&index : ui->downloaderListView->selectionModel()->selectedRows())
-        list << manager_->model()->data(index, Qt::UserRole + 1).value<AbstractDownloader*>();
-    if(list.isEmpty()){
+    auto row = ui->downloaderListView->currentIndex().row();
+    if(row < 0){
         ui->actionPause->setEnabled(false);
         ui->actionForce_Pause->setEnabled(false);
         ui->actionStart->setEnabled(false);
@@ -79,12 +76,12 @@ void DownloadBrowser::onSelectionChanged()
         ui->actionForce_Stop->setEnabled(false);
         ui->actionCopy_Download_Link->setEnabled(false);
         ui->actionShow_in_Folder->setEnabled(false);
-        infoWidget_->setDownloader(nullptr);
         return;
+    } else{
+        ui->actionCopy_Download_Link->setEnabled(true);
+        ui->actionShow_in_Folder->setEnabled(true);
     }
-    ui->actionCopy_Download_Link->setEnabled(true);
-    ui->actionShow_in_Folder->setEnabled(true);
-    auto downloader = list.first();
+    auto downloader = manager_->downloaders().at(row);
     infoWidget_->setDownloader(downloader);
     auto updateButtons = [=]{
         ui->actionPause->setEnabled(downloader->isStarted());
@@ -94,6 +91,7 @@ void DownloadBrowser::onSelectionChanged()
         ui->actionForce_Stop->setEnabled(!downloader->isStopped());
     };
     updateButtons();
+    disconnect(conn_);
     conn_ = connect(downloader, &AbstractDownloader::statusChanged, this, updateButtons);
 }
 

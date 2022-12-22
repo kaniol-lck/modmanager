@@ -5,19 +5,12 @@
 #include "download/qaria2downloader.h"
 #include "util/funcutil.h"
 
-DownloaderInfoWidget::DownloaderInfoWidget(QWidget *parent, SpeedRecorder *speedRecorder) :
+DownloaderInfoWidget::DownloaderInfoWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::DownloaderInfoWidget),
-    globalSpeedRecorder_(speedRecorder)
+    ui(new Ui::DownloaderInfoWidget)
 {
     ui->setupUi(this);
     ui->displayNameText->setProperty("class", "Title");
-    if(globalSpeedRecorder_){
-        ui->globalSpeedWidget->setSpeedRecorder(globalSpeedRecorder_);
-        ui->stackedWidget->setCurrentIndex(0);
-        onGlobalDataUpdated();
-        connect(globalSpeedRecorder_, &SpeedRecorder::dataUpdated, this, &DownloaderInfoWidget::onGlobalDataUpdated);
-    }
 }
 
 DownloaderInfoWidget::~DownloaderInfoWidget()
@@ -29,12 +22,8 @@ void DownloaderInfoWidget::setDownloader(AbstractDownloader *downloader)
 {
     downloader_ = downloader;
     emit downloaderChanged();
-    if(!downloader_){
-        ui->stackedWidget->setCurrentIndex(0);
-        return;
-    }
-    ui->stackedWidget->setCurrentIndex(1);
-    ui->speedWidget->setSpeedRecorder(downloader_);
+    if(!downloader_) return;
+    ui->speedWidget->setDownloader(downloader_);
     onInfoChanged();
     connect(this, &DownloaderInfoWidget::downloaderChanged, disconnecter(
                 connect(downloader, &AbstractDownloader::infoChanged, this, &DownloaderInfoWidget::onInfoChanged)));
@@ -49,7 +38,6 @@ void DownloaderInfoWidget::setDownloader(AbstractDownloader *downloader)
 
 void DownloaderInfoWidget::onInfoChanged()
 {
-    ui->url->setText(downloader_->info().url().toString());
     ui->displayNameText->setText(downloader_->info().title() + R"( <span style="color:gray">()" + downloader_->info().displayName() + ")</span>");
     ui->filename->setText(downloader_->info().fileName());
     ui->path->setText(downloader_->info().path());
@@ -94,11 +82,4 @@ void DownloaderInfoWidget::onHandleUpdated()
     ui->connections->setText(QString::number(handle->getConnections()));
     ui->numPieces->setText(QString::number(handle->getNumPieces()));
     ui->pieceLength->setText(QString::number(handle->getPieceLength()));
-    ui->errorCode->setText(QString::number(handle->getErrorCode()));
-}
-
-void DownloaderInfoWidget::onGlobalDataUpdated()
-{
-    ui->globalDownloadSpeed->setText(speedConvert(globalSpeedRecorder_->downSpeed()));
-    ui->globalUploadSpeed->setText(speedConvert(globalSpeedRecorder_->upSpeed()));
 }
