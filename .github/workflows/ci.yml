@@ -105,7 +105,7 @@ jobs:
       - name: package
         run: |
           make INSTALL_ROOT=AppDir -j2 install ; find AppDir/
-          wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+          wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2) #Thanks to github page change.
           chmod +x appimagetool-*.AppImage
           sudo mkdir -p /home/qt/work/install
           sudo ln -s $QT_PLUGIN_PATH /home/qt/work/install/plugins
@@ -205,7 +205,8 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-1_1${{ matrix.x64_suffix }}.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssl-1_1${{ matrix.x64_suffix }}.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libaria2-0.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip5.dll deploy/
+          #cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip5.dll deploy/ url changed
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt5.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libiconv-2.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/
