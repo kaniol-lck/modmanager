@@ -1,4 +1,5 @@
 #include "modwebsitetype.h"
+#include "qobject.h"
 
 QString ModWebsite::toString(ModWebsiteType type)
 {

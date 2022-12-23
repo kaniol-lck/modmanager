@@ -20,7 +20,7 @@ private slots:
 
 protected:
 #ifdef Q_OS_WIN
-    bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
+    virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 #endif //Q_OS_WIN
     void paintEvent(QPaintEvent *event) override;
 

@@ -117,7 +117,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
                     ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), comboBox);
                     for(const auto &fileInfo : mod->modrinthUpdater().updateFileInfos())
                         comboBox->addItem(fileInfo.displayName());
-                    afterItem->setToolTip(getToolTip(mod->curseforgeUpdater().updateFileInfos().first()));
+                    afterItem->setToolTip(getToolTip(mod->modrinthUpdater().updateFileInfos().first()));
                     connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
                         auto &fileInfo = mod->modrinthUpdater().updateFileInfos().at(index);
                         afterItem->setData(index);
@@ -163,11 +163,11 @@ void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
             auto type = mod->updateTypes().at(model_.item(row, SourceColumn)->data().toInt());
             auto fileInfoIndex = model_.item(row, AfterColumn)->data().toInt();
             if(type == ModWebsiteType::Curseforge){
-                curseforgeUpdateList << QPair{ mod, mod->curseforgeUpdater().updateFileInfos().at(fileInfoIndex) };
+                curseforgeUpdateList << QPair<LocalMod *, CurseforgeFileInfo>{ mod, mod->curseforgeUpdater().updateFileInfos().at(fileInfoIndex) };
                 qDebug() << "Curseforge" << mod->curseforgeUpdater().updateFileInfos().at(fileInfoIndex).displayName();
             }
             else if(type == ModWebsiteType::Modrinth){
-                modrinthUpdateList << QPair{ mod, mod->modrinthUpdater().updateFileInfos().at(fileInfoIndex) };
+                modrinthUpdateList << QPair<LocalMod *, ModrinthFileInfo>{ mod, mod->modrinthUpdater().updateFileInfos().at(fileInfoIndex) };
                 qDebug() << "Modrinth" << mod->modrinthUpdater().updateFileInfos().at(fileInfoIndex).displayName();
             }
         }

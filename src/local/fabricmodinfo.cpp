@@ -89,7 +89,7 @@ QList<FabricModInfo> FabricModInfo::fromZip(QuaZip *zip, const QString &mainId)
     }
 
     for(auto &&fileName : zip->getFileNameList()){
-        QRegularExpression re(R"(lang/(.+?)\.json)");
+        static QRegularExpression re(R"(lang/(.+?)\.json)");
         if(auto match = re.match(fileName); match.hasMatch())
             info.languages_ << match.captured(1);
     }

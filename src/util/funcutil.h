@@ -56,5 +56,6 @@ int textEditSize(QTextEdit *textEdit, int minHeight, int maxHeight);
 
 //murmurhash: https://github.com/aappleby/smhasher
 uint32_t filteredMurmurHash2(const QByteArray &bytes);
+uint32_t MurmurHash2 ( const void * key, int len, uint32_t seed );
 
 #endif // FUNCUTIL_H

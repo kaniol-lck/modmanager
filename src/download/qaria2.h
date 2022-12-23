@@ -5,7 +5,8 @@
 #include <QObject>
 #include <QTimer>
 #include <QUrl>
-#include <aria2/aria2.h>
+//#include <aria2/aria2.h>
+#include<aria2.h>
 
 class QAria2Downloader;
 

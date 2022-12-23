@@ -21,7 +21,7 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     modInfo.id_ = value(variant, "id").toInt();
     modInfo.name_ = value(variant, "name").toString();
     modInfo.summary_ = value(variant, "summary").toString();
-    //modInfo.websiteUrl_ = value(variant, "websiteUrl").toUrl();
+    modInfo.websiteUrl_ = value(value(variant, "links"),"websiteUrl").toUrl();
     modInfo.slug_ = value(variant,"slug").toString();
     modInfo.downloadCount_ = value(variant, "downloadCount").toInt();
     modInfo.dateModified_ = value(variant, "dateModified").toDateTime();

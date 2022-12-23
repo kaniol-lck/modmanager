@@ -79,7 +79,7 @@ void LocalFileLinker::linkCurseforge()
 {
     emit linkCurseforgeStarted();
     auto &&murmurhash = localFile_->murmurhash();
-    qDebug() << "try link curseforge:" << murmurhash;
+    qDebug() << "try link curseforge:" << murmurhash << localFile_->fileInfo().fileName();
     CurseforgeAPI *api;
     if(localFile_->modPath())
         api = localFile_->modPath()->curseforgeAPI();
@@ -121,7 +121,7 @@ void LocalFileLinker::linkModrinth()
 {
     emit linkModrinthStarted();
     auto &&sha1 = localFile_->sha1();
-    qDebug() << "try link modrinth:" << sha1;
+    qDebug() << "try link modrinth:" << sha1 << localFile_->fileInfo().fileName();
     ModrinthAPI *api;
     if(localFile_->modPath())
         api = localFile_->modPath()->modrinthAPI();

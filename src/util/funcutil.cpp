@@ -17,6 +17,7 @@
 #include "local/localfilelinker.h"
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
+#include "zconf.h"
 
 QString sizeConvert(qint64 byte, int prec, int limit)
 {
@@ -202,7 +203,7 @@ QString colorCodeFormat(QString str)
     QString newString;
     for(int i = 0; i < str.size(); i++){
         if(i + 1 < str.size()){
-            if(auto ch = str.at(i); ch != "§"){
+            if(auto ch = str.at(i); ch != QChar::fromLatin1('$')){
                 newString += ch;
                 continue;
             }
@@ -269,37 +270,52 @@ void tweakWidgetFontPointSize(QWidget *widget, int pointSize)
     widget->setFont(font);
 }
 
-uint32_t filteredMurmurHash2(const QByteArray &bytes)
+uint32_t filteredMurmurHash2(const QByteArray &array)
 {
+    QByteArray normalArray;
+
+    for (int i = 0; i < array.size(); i++)
+    {
+        Byte b = array[i];
+
+        if (!(b == 9 || b == 10 || b == 13 || b == 32))
+        {
+            normalArray.append(b);
+        }
+    }
+
+    return MurmurHash2(normalArray, normalArray.size(),1);
+}
+
+uint32_t MurmurHash2 ( const void * key, int len, uint32_t seed )
+{
+  // 'm' and 'r' are mixing constants generated offline.
+  // They're not really 'magic', they just happen to work well.
+
   const uint32_t m = 0x5bd1e995;
   const int r = 24;
 
-  QByteArray filteredBytes;
-  for (const char& b : qAsConst(bytes)){
-      if (b == 0x9 || b == 0xa || b == 0xd || b == 0x20) continue;
-      filteredBytes.append(b);
-  }
+  // Initialize the hash to a 'random' value
 
-  auto len = filteredBytes.length();
-  auto data = filteredBytes.constData();
-
-  uint32_t h = 1 ^ len;
+  uint32_t h = seed ^ len;
 
   // Mix 4 bytes at a time into the hash
 
+  const unsigned char * data = (const unsigned char *)key;
+
   while(len >= 4)
   {
-      uint32_t k = *(uint32_t*)data;
+    uint32_t k = *(uint32_t*)data;
 
-      k *= m;
-      k ^= k >> r;
-      k *= m;
+    k *= m;
+    k ^= k >> r;
+    k *= m;
 
-      h *= m;
-      h ^= k;
+    h *= m;
+    h ^= k;
 
-      data += 4;
-      len -= 4;
+    data += 4;
+    len -= 4;
   }
 
   // Handle the last few bytes of the input array
@@ -321,6 +337,60 @@ uint32_t filteredMurmurHash2(const QByteArray &bytes)
 
   return h;
 }
+
+
+//uint32_t filteredMurmurHash2(const QByteArray &bytes)
+//{
+//  const uint32_t m = 0x5bd1e995;
+//  const int r = 24;
+
+//  QByteArray filteredBytes;
+//  for (const char& b : qAsConst(bytes)){
+//      if (b == 0x9 || b == 0xa || b == 0xd || b == 0x20) continue;
+//      filteredBytes.append(b);
+//  }
+
+//  auto len = filteredBytes.length();
+//  auto data = filteredBytes.constData();
+
+//  uint32_t h = 1 ^ len;
+
+//  // Mix 4 bytes at a time into the hash
+
+//  while(len >= 4)
+//  {
+//      uint32_t k = *(uint32_t*)data;
+
+//      k *= m;
+//      k ^= k >> r;
+//      k *= m;
+
+//      h *= m;
+//      h ^= k;
+
+//      data += 4;
+//      len -= 4;
+//  }
+
+//  // Handle the last few bytes of the input array
+
+//  switch(len)
+//  {
+//  case 3: h ^= data[2] << 16;
+//  case 2: h ^= data[1] << 8;
+//  case 1: h ^= data[0];
+//      h *= m;
+//  };
+
+//  // Do a few final mixes of the hash to ensure the last few
+//  // bytes are well-incorporated.
+
+//  h ^= h >> 13;
+//  h *= m;
+//  h ^= h >> 15;
+
+//  return h;
+//}
 
 QString installerSuffix()
 {

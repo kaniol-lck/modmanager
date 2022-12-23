@@ -168,7 +168,7 @@ bool GameVersion::operator!=(const GameVersion &another) const
 
 GameVersion GameVersion::deduceFromString(const QString &string)
 {
-    QRegularExpression re(R"((\d+\.\d+(\.\d+)?))");
+    static QRegularExpression re(R"((\d+\.\d+(\.\d+)?))");
     if(auto match = re.match(string); match.hasMatch()){
         auto str = match.captured(1);
         if(mojangVersionList().contains(GameVersion(str)))

@@ -194,7 +194,7 @@ Reply<CurseforgeModInfo> CurseforgeAPI::getInfo(int id)
             qDebug("%s", error.errorString().toUtf8().constData());
             return CurseforgeModInfo();
         }
-        auto result = jsonDocument.toVariant();
+        auto result = value(jsonDocument.toVariant(),"data");
         return CurseforgeModInfo::fromVariant(result);
     } };
 }

@@ -4,12 +4,14 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
 QMAKE_CXXFLAGS += -std=c++17
-DEFINES += QT_NO_VERSION_TAGGING
+#DEFINES += QT_NO_VERSION_TAGGING
 DEFINES += _LIBCPP_DISABLE_AVAILABILITY
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F00
 
 INCLUDEPATH += $$PWD/src
 
@@ -409,18 +411,31 @@ win32: RC_ICONS = package/modmanager.ico
 #dependencies
 unix {
   message("unix-like build")
-  exists(/usr/lib/x86_64-linux-gnu/libquazip5.a) {
-    LIBS += -L$$quote(/usr/lib/x86_64-linux-gnu) -lquazip5
-  } else {
-    LIBS += -lquazip1-qt5
-  }
-  LIBS += -L$$quote(/usr/local/lib) -laria2
-  INCLUDEPATH += \
-      /usr/include/QuaZip-Qt5-1.3/quazip \ #update for qt513
-      /usr/include/QuaZip-Qt5-1.2/quazip \
-      /usr/include/QuaZip-Qt5-1.1/quazip \
+  equals(QT_MAJOR_VERSION,5){
+    exists(/usr/lib/x86_64-linux-gnu/libquazip5.a) {
+        LIBS += -L$$quote(/usr/lib/x86_64-linux-gnu) -lquazip5
+    } else {
+        LIBS += -lquazip1-qt5
+    }
+    INCLUDEPATH += \
+      /usr/include/QuaZip-Qt5-1.3/quazip \
       /usr/include/quazip \
-      /usr/include/quazip5 # may work?
+      /usr/include/quazip5
+  }
+  equals(QT_MAJOR_VERSION,6){
+    exists(/usr/lib/x86_64-linux-gnu/libquazip6.a) {
+        LIBS += -L$$quote(/usr/lib/x86_64-linux-gnu) -lquazip6
+    } else {
+        LIBS += -lquazip1-qt6
+    }
+    INCLUDEPATH += \
+      /usr/include/QuaZip-Qt6-1.3/quazip \
+      /usr/include/quazip \
+      /usr/include/quazip6
+  }
+
+  INCLUDEPATH += /usr/local/include/aria2
+  LIBS += -L$$quote(/usr/local/lib) -laria2
 
   message(HEADERS)
   exists(/usr/include/KF5/KWindowSystem){
@@ -433,23 +448,32 @@ unix {
 
 macx {
   message("macos build")
-  INCLUDEPATH += /usr/local/include
-  INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.2/quazip
+  equals(QT_MAJOR_VERSION,5):INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.3/quazip
+  equals(QT_MAJOR_VERSION,6):INCLUDEPATH += /usr/local/include/QuaZip-Qt6-1.3/quazip
 }
 
 win32 {
   LIBS += -ldwmapi
   contains(QMAKE_HOST.arch, x86_64) {
     message("win32 x86_64 build")
-    INCLUDEPATH += C:/msys64/mingw64/include
-    INCLUDEPATH += C:/msys64/mingw64/include/QuaZip-Qt5-1.3/quazip #update
-    LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt5
-    #LIBS += "C:/msys64/mingw64/lib/libaria2.dll.a"
-    #LIBS += "C:/msys64/mingw64/lib/libquazip1-qt5.dll.a"
+    #For Qt5
+    equals(QT_MAJOR_VERSION,5): INCLUDEPATH += \
+        C:/msys64/mingw64/include/QuaZip-Qt5-1.3/quazip \
+        C:/msys64/mingw64/include/aria2
+    equals(QT_MAJOR_VERSION,5):LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt5
+
+    #For Qt6
+    equals(QT_MAJOR_VERSION,6): INCLUDEPATH += \
+    C:/msys64/mingw64/include/QuaZip-Qt6-1.3/quazip \
+    C:/msys64/mingw64/include/aria2
+
+    equals(QT_MAJOR_VERSION,6):LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt6
+
   } else {
+  #Deprecated
     message("win32 x86 build")
     INCLUDEPATH += C:/msys64/mingw32/include
-    INCLUDEPATH += C:/msys64/mingw32/include/QuaZip-Qt5-1.3/quazip #update
+    INCLUDEPATH += C:/msys64/mingw32/include/QuaZip-Qt5-1.3/quazip
     LIBS += -L$$quote(C:/msys64/mingw32/bin) -laria2 -lquazip1-qt5
   }
 }
