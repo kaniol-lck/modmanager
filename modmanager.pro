@@ -416,9 +416,11 @@ unix {
   }
   LIBS += -L$$quote(/usr/local/lib) -laria2
   INCLUDEPATH += \
+      /usr/include/QuaZip-Qt5-1.3/quazip \ #update for qt513
       /usr/include/QuaZip-Qt5-1.2/quazip \
       /usr/include/QuaZip-Qt5-1.1/quazip \
-      /usr/include/quazip
+      /usr/include/quazip \
+      /usr/include/quazip5 # may work?
 
   message(HEADERS)
   exists(/usr/include/KF5/KWindowSystem){
@@ -440,14 +442,14 @@ win32 {
   contains(QMAKE_HOST.arch, x86_64) {
     message("win32 x86_64 build")
     INCLUDEPATH += C:/msys64/mingw64/include
-    INCLUDEPATH += C:/msys64/mingw64/include/QuaZip-Qt5-1.3/quazip
+    INCLUDEPATH += C:/msys64/mingw64/include/QuaZip-Qt5-1.3/quazip #update
     LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt5
     #LIBS += "C:/msys64/mingw64/lib/libaria2.dll.a"
     #LIBS += "C:/msys64/mingw64/lib/libquazip1-qt5.dll.a"
   } else {
     message("win32 x86 build")
     INCLUDEPATH += C:/msys64/mingw32/include
-    INCLUDEPATH += C:/msys64/mingw32/include/QuaZip-Qt5-1.3/quazip
+    INCLUDEPATH += C:/msys64/mingw32/include/QuaZip-Qt5-1.3/quazip #update
     LIBS += -L$$quote(C:/msys64/mingw32/bin) -laria2 -lquazip1-qt5
   }
 }

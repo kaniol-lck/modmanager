@@ -201,7 +201,7 @@ jobs:
         shell: pwsh
         run: |
           mkdir deploy
-          mv release/${{github.event.repository.name}}.exe deploy
+          mv release/modmanager.exe deploy
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-1_1${{ matrix.x64_suffix }}.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssl-1_1${{ matrix.x64_suffix }}.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libaria2-0.dll deploy/
@@ -215,7 +215,7 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/
-          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe
+          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/modmanager.exe
       - name: x64 dependencies
         if: contains(matrix.mingw_arch, 'mingw64')
         run : |
@@ -319,7 +319,7 @@ jobs:
       #- name: Perpare package
         #shell: pwsh
         #run: |
-          #mkdir deploy && mv release/${{github.event.repository.name}}.exe deploy
+          #mkdir deploy && mv release/modmanager.exe deploy
           #$client = new-object System.Net.WebClient
           #$client.DownloadFile('${{ matrix.openssl_url }}', 'openssl-bin.zip')
           #Expand-Archive -Path openssl-bin.zip -DestinationPath openssl
@@ -341,23 +341,23 @@ jobs:
         #id: package
         #shell: pwsh
         #run: |
-          #windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe
+          #windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/modmanager.exe
       #- uses: actions/upload-artifact@v2
         #with:
-          #name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}
+          #name: modmanager-${{ matrix.qt_arch }}
           #path: ${{github.workspace}}/deploy/
       #- name: Create zip
         #id: createzip
         #shell: pwsh
         #run: |
-          #Compress-Archive -LiteralPath ${{github.workspace}}/deploy -DestinationPath ${{github.workspace}}/${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
+          #Compress-Archive -LiteralPath ${{github.workspace}}/deploy -DestinationPath ${{github.workspace}}/modmanager-${{ matrix.qt_arch }}.zip
       #- name: Upload Release
         #if: startsWith(github.event.ref, 'refs/tags/')
         #uses: svenstaro/upload-release-action@v2
         #with:
           #repo_token: ${{ secrets.GITHUB_TOKEN }}
-          #file: ${{github.workspace}}/${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
-          #asset_name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
+          #file: ${{github.workspace}}/modmanager-${{ matrix.qt_arch }}.zip
+          #asset_name: modmanager-${{ matrix.qt_arch }}.zip
           #tag: ${{ github.ref }}
           #overwrite: true
   build-on-osx:
