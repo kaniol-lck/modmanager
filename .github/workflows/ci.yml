@@ -62,7 +62,8 @@ jobs:
           title: "Mod Manager Dev ${{ env.VERSION }} (${{ steps.get_short_sha.outputs.short_sha }})"
           files: |
             etc/usr/publish/**
-  name: Build On Ubuntu
+  build-on-ubuntu:
+    name: Build On Ubuntu
     runs-on: ubuntu-latest # for libaria2-0 available
     steps:
       - name: Install Qt
