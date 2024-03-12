@@ -29,7 +29,7 @@ void QAria2Downloader::update()
 //    if(status_ != aria2::DOWNLOAD_ACTIVE) return;
     if(auto files = handle_->getFiles(); !files.empty()){
         auto &&file = files.front();
-        if(QFileInfo path = QString::fromStdString(file.path); path.isFile()){
+        if(QFileInfo path(QString::fromStdString(file.path)); path.isFile()){
             info_.setFileName(path.fileName());
             emit infoChanged();
         }

@@ -94,6 +94,7 @@ void CurseforgeMod::acquireDescription()
 std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> CurseforgeMod::acquireAllFileList()
 {
     if(allFileListGetter_ && allFileListGetter_->isRunning()) return allFileListGetter_;
+    qDebug()<<modInfo_.id()<<modInfo_.name();
     allFileListGetter_ = api_->getFiles(modInfo_.id()).asUnique();
     allFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &fileList){
         modInfo_.allFileList_ = fileList;

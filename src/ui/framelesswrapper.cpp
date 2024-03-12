@@ -31,7 +31,7 @@ FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, WindowsTitl
 
     auto w = new QWidget(this);
     auto layout = new QVBoxLayout;
-    layout->setMargin(0);
+//    layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(titleBar_);
     layout->addWidget(widget);

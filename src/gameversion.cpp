@@ -17,6 +17,11 @@ QList<GameVersion> GameVersion::mojangVersionList_;
 QList<GameVersion> GameVersion::curseforgeVersionList_;
 
 QList<GameVersion> GameVersion::cachedVersionList_{
+    GameVersion(1, 19, 3),
+    GameVersion(1, 19, 2),
+    GameVersion(1, 19, 1),
+    GameVersion(1, 19),
+    GameVersion(1, 18, 2),
     GameVersion(1, 18, 1),
     GameVersion(1, 18),
     GameVersion(1, 17, 1),
@@ -163,7 +168,7 @@ bool GameVersion::operator!=(const GameVersion &another) const
 
 GameVersion GameVersion::deduceFromString(const QString &string)
 {
-    QRegularExpression re(R"((\d+\.\d+(\.\d+)?))");
+    static QRegularExpression re(R"((\d+\.\d+(\.\d+)?))");
     if(auto match = re.match(string); match.hasMatch()){
         auto str = match.captured(1);
         if(mojangVersionList().contains(GameVersion(str)))

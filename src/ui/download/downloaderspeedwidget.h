@@ -5,7 +5,7 @@
 #include <QMap>
 #include <QPen>
 
-#include "download/speedrecorder.h"
+#include "download/abstractdownloader.h"
 
 // Modified from SpeedWidget in Qv2ray
 class DownloaderSpeedWidget : public QGraphicsView
@@ -17,16 +17,15 @@ public:
     void clear();
     void replot();
 
-
-    SpeedRecorder *speedrecorder() const;
-    void setSpeedRecorder(SpeedRecorder *newSpeedRecorder);
+    AbstractDownloader *downloader() const;
+    void setDownloader(AbstractDownloader *newDownloader);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
     qint64 maxYValue();
-    SpeedRecorder *speedRecorder_ = nullptr;
+    AbstractDownloader *downloader_ = nullptr;
     QList<QPair<QString, QPen>> pens_;
 };
 

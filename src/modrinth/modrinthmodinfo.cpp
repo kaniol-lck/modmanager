@@ -24,14 +24,14 @@ ModrinthModInfo ModrinthModInfo::fromSearchVariant(const QVariant &variant)
     ModrinthModInfo modInfo;
     modInfo.basicInfo_ = true;
 
-    modInfo.modId_ = value(variant, "mod_id").toString();
+    modInfo.modId_ = value(variant, "project_id").toString();//update to project_id
     modInfo.modId_.remove("local-");
     modInfo.name_ = value(variant, "title").toString();
     modInfo.author_ = value(variant, "author").toString();
     modInfo.summary_ = value(variant, "description").toString();
     modInfo.downloadCount_ = value(variant, "downloads").toInt();
     modInfo.iconUrl_ = value(variant, "icon_url").toUrl();
-    modInfo.websiteUrl_ = value(variant, "page_url").toUrl();
+    modInfo.websiteUrl_ = "https://modrinth.com/mod"+modInfo.modId_;
     modInfo.categories_ = value(variant, "categories").toStringList();
     modInfo.dateCreated_ = value(variant, "date_created").toDateTime();
     modInfo.dateModified_ = value(variant, "date_modified").toDateTime();

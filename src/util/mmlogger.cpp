@@ -1,4 +1,5 @@
 #include "mmlogger.h"
+#include "qobject.h"
 
 #include <QDebug>
 

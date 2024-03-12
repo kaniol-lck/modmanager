@@ -21,8 +21,8 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     modInfo.id_ = value(variant, "id").toInt();
     modInfo.name_ = value(variant, "name").toString();
     modInfo.summary_ = value(variant, "summary").toString();
-    modInfo.websiteUrl_ = value(variant, "websiteUrl").toUrl();
-    modInfo.slug_ = modInfo.websiteUrl_.fileName();
+    modInfo.websiteUrl_ = value(value(variant, "links"),"websiteUrl").toUrl();
+    modInfo.slug_ = value(variant,"slug").toString();
     modInfo.downloadCount_ = value(variant, "downloadCount").toInt();
     modInfo.dateModified_ = value(variant, "dateModified").toDateTime();
     modInfo.dateCreated_ = value(variant, "dateCreated").toDateTime();
@@ -37,18 +37,18 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
         modInfo.authors_ << value(author, "name").toString();
 
     //thumbnail image
-    for(auto &&attachment : value(variant, "attachments").toList()){
-        if(value(attachment, "isDefault").toBool())
-            modInfo.iconUrl_ = value(attachment, "thumbnailUrl").toUrl();
-        else{
-            Attachment image;
-            image.title = value(attachment, "title").toString();
-            image.description = value(attachment, "description").toString();
-            image.url = value(attachment, "url").toUrl();
-            image.thumbnailUrl = value(attachment, "thumbnailUrl").toUrl();
-            modInfo.images_ << image;
-        }
+    for(auto &&attachment : value(variant, "screenshots").toList()){
+        Attachment image;
+        image.title = value(attachment, "title").toString();
+        image.description = value(attachment, "description").toString();
+        image.url = value(attachment, "url").toUrl();
+        image.thumbnailUrl = value(attachment, "thumbnailUrl").toUrl();
+        modInfo.images_ << image;
     }
+
+    //icon
+    modInfo.iconUrl_ = value(value(variant,"logo"),"thumbnailUrl").toUrl();
+
 
     //latest file url
     for(auto &&variant : value(variant, "latestFiles").toList())
@@ -67,7 +67,7 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
         //import as tags
         modInfo.importTag(Tag(category.name(), TagCategory::CurseforgeCategory, iconAsset.destFilePath()));
     }
-    if(value(variant, "gameSlug") == "minecraft")
+    if(value(variant, "gameId").toInt() == 432)
         CurseforgeModInfoCaches::caches()->addCache(modInfo);
     return modInfo;
 }

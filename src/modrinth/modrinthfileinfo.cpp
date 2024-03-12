@@ -14,7 +14,7 @@ ModrinthFileInfo ModrinthFileInfo::fromVariant(const QVariant &variant)
     ModrinthFileInfo fileInfo;
 
     fileInfo.id_ = value(variant, "id").toString();
-    fileInfo.modId_ = value(variant, "mod_id").toString();
+    fileInfo.modId_ = value(variant, "project_id").toString();//update to project_id
     fileInfo.displayName_ = value(variant, "name").toString();
     fileInfo.releaseType_ = value(variant, "version_type").toString();
     fileInfo.fileDate_ = value(variant, "date_published").toDateTime();

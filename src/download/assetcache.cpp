@@ -24,6 +24,7 @@ bool AssetCache::exists() const
 void AssetCache::download()
 {
     QNetworkRequest request(url_);
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,true); // 允许网址重定向
     static QNetworkAccessManager accessManager;
     auto reply = accessManager.get(request);
     connect(reply, &QNetworkReply::finished, this, [=]{

@@ -37,17 +37,17 @@ jobs:
           path: etc/usr/artifacts/
       - name: Process artifacts
         run: |
-          mkdir -p /home/runner/work/modmanager/modmanager/etc/usr/publish
-          cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-packed
-          zip -q -r ModManager-${{ env.VERSION }}-packed.zip *
-          cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-x64-packed
+          mkdir -p /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish
+          # cd /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-packed
+          # zip -q -r ModManager-${{ env.VERSION }}-packed.zip *
+          cd /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-x64-packed
           zip -q -r ModManager-${{ env.VERSION }}-x64-packed.zip *
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-packed/ModManager-${{ env.VERSION }}-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-packed.zip
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-x64-packed/ModManager-${{ env.VERSION }}-x64-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-packed.zip
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-Installer.exe
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-Installer.exe
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x86_64.AppImage/Mod_Manager-${{ env.VERSION }}-x86_64.AppImage /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.AppImage
+          # mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-packed/ModManager-${{ env.VERSION }}-packed.zip /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}-packed.zip
+          mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-x64-packed/ModManager-${{ env.VERSION }}-x64-packed.zip /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-packed.zip
+          # mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-${{ env.VERSION }}-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}-Installer.exe
+          mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-Installer.exe
+          mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
+          mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x86_64.AppImage/Mod_Manager-${{ env.VERSION }}-x86_64.AppImage /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}.AppImage
       - name: Get short commit sha
         id: get_short_sha
         run: |
@@ -105,7 +105,7 @@ jobs:
       - name: package
         run: |
           make INSTALL_ROOT=AppDir -j2 install ; find AppDir/
-          wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+          wget -c -nv https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2) #Thanks to github page change.
           chmod +x appimagetool-*.AppImage
           sudo mkdir -p /home/qt/work/install
           sudo ln -s $QT_PLUGIN_PATH /home/qt/work/install/plugins
@@ -129,30 +129,35 @@ jobs:
     name: Build On Windows Mingw
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         include:
-          - qt_arch: win32_mingw81
-            qt_ver: 5.15.2
-            qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win32_mingw810"
-            qt_tools_mingw_install: mingw810_32
-            mingw_arch: mingw32
-            msys_arch: i686
-            x64_suffix:
-          - qt_arch: win64_mingw81
-            qt_ver: 5.15.2
-            qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win64_mingw810"
-            qt_tools_mingw_install: mingw810_64
+          # - qt_arch: win32_mingw81
+          #   qt_ver: 5.15.2
+          #   qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win32_mingw810"
+          #   qt_tools_mingw_install: mingw810_32
+          #   mingw_arch: mingw32
+          #   msys_arch: i686
+          #   x64_suffix:
+          - qt_arch: win64_mingw
+            qt_ver: 6.4.1
+            qt_tools: "tools_mingw90"
+            qt_tools_mingw_install: mingw1120_64
             mingw_arch: mingw64
             msys_arch: x86_64
             x64_suffix: -x64
+            modules:
     steps:
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2.13.0
+        uses: jurplel/install-qt-action@v3
         with:
+          host: 'windows'
+          target: 'desktop'
           version: ${{ matrix.qt_ver }}
           arch: ${{ matrix.qt_arch }}
           tools: ${{ matrix.qt_tools }}
           cached: "false"
+          modules: ${{ matrix.modules }}
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
@@ -169,17 +174,18 @@ jobs:
         shell: bash
         run: |
           sed -i "s/$RAW_VERSION/$VERSION/" src/version.h
-      - name: Install dependencies
+      - name: Install dependencies for Qt 6
+        if: ${{ startsWith( matrix.qt_ver, 6 ) }}
         shell: powershell
         run: |
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
-          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip --noconfirm
-      - name: Qt 5 environment configuration
-        if: ${{ startsWith( matrix.qt_ver, 5 ) }}
+          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip-qt6 --noconfirm
+      - name: Qt 6 environment configuration
+        if: ${{ startsWith( matrix.qt_ver, 6 ) }}
         shell: pwsh
         run: |
-          Write-Output "${{ env.Qt5_DIR }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          Write-Output "${{ env.Qt5_DIR }}/../../Tools/${{ matrix.qt_tools_mingw_install }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Write-Output "${{ env.Qt6_DIR }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Write-Output "${{ env.Qt6_DIR }}/../../Tools/${{ matrix.qt_tools_mingw_install }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: where is qmake & where is mingw32-make
         shell: pwsh
         run: |
@@ -195,17 +201,17 @@ jobs:
       - name: list msys dll
         shell: pwsh
         run : |
-          ls C:/msys64/${{ matrix.mingw_arch }}/bin/
+          ls C:/msys64/${{ matrix.mingw_arch }}/bin
       - name: package
         id: package
         shell: pwsh
         run: |
           mkdir deploy
-          mv release/${{github.event.repository.name}}.exe deploy
+          mv release/modmanager.exe deploy
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-1_1${{ matrix.x64_suffix }}.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssl-1_1${{ matrix.x64_suffix }}.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libaria2-0.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip5.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt6.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libiconv-2.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/
@@ -215,15 +221,15 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/
-          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe
+          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.Qt6_DIR }}/qml" deploy/modmanager.exe
       - name: x64 dependencies
         if: contains(matrix.mingw_arch, 'mingw64')
         run : |
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_seh-1.dll deploy/
-      - name: x32 dependencies
-        if: contains(matrix.mingw_arch, 'mingw32')
-        run : |
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_dw2-1.dll deploy/
+      # - name: x32 dependencies
+      #   if: contains(matrix.mingw_arch, 'mingw32')
+      #   run : |
+      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_dw2-1.dll deploy/
       - name: Modify NSIS for x64
         if: contains(matrix.mingw_arch, 'mingw64')
         shell: pwsh
@@ -319,7 +325,7 @@ jobs:
       #- name: Perpare package
         #shell: pwsh
         #run: |
-          #mkdir deploy && mv release/${{github.event.repository.name}}.exe deploy
+          #mkdir deploy && mv release/modmanager.exe deploy
           #$client = new-object System.Net.WebClient
           #$client.DownloadFile('${{ matrix.openssl_url }}', 'openssl-bin.zip')
           #Expand-Archive -Path openssl-bin.zip -DestinationPath openssl
@@ -341,39 +347,44 @@ jobs:
         #id: package
         #shell: pwsh
         #run: |
-          #windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/${{github.event.repository.name}}.exe
+          #windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/modmanager.exe
       #- uses: actions/upload-artifact@v2
         #with:
-          #name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}
+          #name: modmanager-${{ matrix.qt_arch }}
           #path: ${{github.workspace}}/deploy/
       #- name: Create zip
         #id: createzip
         #shell: pwsh
         #run: |
-          #Compress-Archive -LiteralPath ${{github.workspace}}/deploy -DestinationPath ${{github.workspace}}/${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
+          #Compress-Archive -LiteralPath ${{github.workspace}}/deploy -DestinationPath ${{github.workspace}}/modmanager-${{ matrix.qt_arch }}.zip
       #- name: Upload Release
         #if: startsWith(github.event.ref, 'refs/tags/')
         #uses: svenstaro/upload-release-action@v2
         #with:
           #repo_token: ${{ secrets.GITHUB_TOKEN }}
-          #file: ${{github.workspace}}/${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
-          #asset_name: ${{github.event.repository.name}}-${{ matrix.qt_arch }}.zip
+          #file: ${{github.workspace}}/modmanager-${{ matrix.qt_arch }}.zip
+          #asset_name: modmanager-${{ matrix.qt_arch }}.zip
           #tag: ${{ github.ref }}
           #overwrite: true
   build-on-osx:
     name: Build On OSX
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [macos-10.15]
-        qt_ver: [5.15.2]
+        os: [macOS-latest]
+        qt_ver: [6.4.1]
         qt_arch: [clang_64]
     steps:
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2.13.0
+        uses: jurplel/install-qt-action@v3
         with:
+          aqtversion: '==2.1.*'
           version: ${{ matrix.qt_ver }}
-          cached: "false"
+          host: 'mac'
+          target: 'desktop'
+          arch: ${{ matrix.qt_arch }}
+          modules: 'qtwebengine'
       - name: Install libaria2
         run: |
           wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"

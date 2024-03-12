@@ -110,6 +110,7 @@ void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
 
 void LocalMod::setCurseforgeId(int id, bool cache)
 {
+    qDebug()<<"setCurseforgeId "<<id<<LocalMod::commonInfo()->name();
     if(id != 0){
         curseforgeMod_ = new CurseforgeMod(this, id);
         addSubTagable(curseforgeMod_);

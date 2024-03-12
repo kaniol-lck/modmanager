@@ -2,11 +2,12 @@
 #define ABSTRACTDOWNLOADER_H
 
 #include "downloadfileinfo.h"
-#include "speedrecorder.h"
 
+#include <QObject>
+#include <QTimer>
 #include <QUrl>
 
-class AbstractDownloader : public SpeedRecorder
+class AbstractDownloader : public QObject
 {
     Q_OBJECT
 public:
@@ -18,6 +19,17 @@ public:
     virtual bool isStopped() const = 0;
 
     const DownloadFileInfo &info() const;
+
+    enum LineType { Download, Upload };
+    struct PointData
+    {
+        qint64 x;
+        qint64 y[2];
+    };
+
+    const QList<PointData> &dataCollection() const;
+    void setDataCollection(const QList<PointData> &newDataCollection);
+    static constexpr auto DATA_MAXSIZE = 60;
 
 public slots:
     virtual int pause(bool force = false) = 0;
@@ -35,10 +47,22 @@ signals:
     void statusChanged(int);
 
     void redirected(QUrl url);
+    void finished();
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void downloadSpeed(qint64 download, qint64 upload = 0);
+
+    void dataUpdated();
 
 protected:
     DownloadFileInfo info_;
+
+private:
+    void addData(qint64 downSpeed, qint64 upSpeed);
+
+    QTimer timer_;
+    QList<PointData> dataCollection_;
+    qint64 downSpeed_;
+    qint64 upSpeed_;
 };
 
 #endif // ABSTRACTDOWNLOADER_H
