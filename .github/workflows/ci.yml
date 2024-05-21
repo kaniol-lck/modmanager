@@ -67,10 +67,9 @@ jobs:
     runs-on: ubuntu-latest # for libaria2-0 available
     steps:
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2.13.0
+        uses: jurplel/install-qt-action@v4
         with:
           version: 5.15.2
-          cached: "false"
           modules: qtwebengine
       - name: ubuntu install packages
         run: |
@@ -132,16 +131,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - qt_arch: win32_mingw81
-          #   qt_ver: 5.15.2
-          #   qt_tools: "tools_mingw,8.1.0-1-202004170606,qt.tools.win32_mingw810"
-          #   qt_tools_mingw_install: mingw810_32
-          #   mingw_arch: mingw32
-          #   msys_arch: i686
-          #   x64_suffix:
-          - qt_arch: win64_mingw
+          - qt_arch: win64_mingw81
             qt_ver: 5.15.2
-            qt_tools: "tools_mingw81"
             qt_tools_mingw_install: mingw810_64
             mingw_arch: mingw64
             msys_arch: x86_64
@@ -149,14 +140,12 @@ jobs:
             modules:
     steps:
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           host: 'windows'
           target: 'desktop'
           version: ${{ matrix.qt_ver }}
           arch: ${{ matrix.qt_arch }}
-          tools: ${{ matrix.qt_tools }}
-          cached: "false"
           modules: ${{ matrix.modules }}
       - uses: actions/checkout@v2
         with:
@@ -184,8 +173,8 @@ jobs:
         if: ${{ startsWith( matrix.qt_ver, 6 ) }}
         shell: pwsh
         run: |
-          Write-Output "${{ env.Qt6_DIR }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          Write-Output "${{ env.Qt6_DIR }}/../../Tools/${{ matrix.qt_tools_mingw_install }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Write-Output "${{ env.QT_ROOT_DIR }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Write-Output "${{ env.QT_ROOT_DIR }}/../../Tools/${{ matrix.qt_tools_mingw_install }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - name: where is qmake & where is mingw32-make
         shell: pwsh
         run: |
@@ -221,7 +210,7 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/
-          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.Qt6_DIR }}/qml" deploy/modmanager.exe
+          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
       - name: x64 dependencies
         if: contains(matrix.mingw_arch, 'mingw64')
         run : |
@@ -377,7 +366,7 @@ jobs:
         qt_arch: [clang_64]
     steps:
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           aqtversion: '==2.1.*' 
           version: ${{ matrix.qt_ver }}
