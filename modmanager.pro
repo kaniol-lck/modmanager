@@ -418,7 +418,7 @@ unix {
         LIBS += -lquazip1-qt5
     }
     INCLUDEPATH += \
-      /usr/include/QuaZip-Qt5-1.3/quazip \
+      /usr/include/QuaZip-Qt5-1.4/quazip \
       /usr/include/quazip \
       /usr/include/quazip5
   }
@@ -429,12 +429,12 @@ unix {
         LIBS += -lquazip1-qt6
     }
     INCLUDEPATH += \
-      /usr/include/QuaZip-Qt6-1.3/quazip \
+      /usr/include/QuaZip-Qt6-1.4/quazip \
       /usr/include/quazip \
       /usr/include/quazip6
   }
 
-  INCLUDEPATH += /usr/local/include/aria2
+  INCLUDEPATH += /usr/include/aria2
   LIBS += -L$$quote(/usr/local/lib) -laria2
 
   message(HEADERS)
@@ -448,8 +448,8 @@ unix {
 
 macx {
   message("macos build")
-  equals(QT_MAJOR_VERSION,5):INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.3/quazip
-  equals(QT_MAJOR_VERSION,6):INCLUDEPATH += /usr/local/include/QuaZip-Qt6-1.3/quazip
+  equals(QT_MAJOR_VERSION,5):INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.4/quazip
+  equals(QT_MAJOR_VERSION,6):INCLUDEPATH += /usr/local/include/QuaZip-Qt6-1.4/quazip
 }
 
 win32 {
@@ -458,13 +458,13 @@ win32 {
     message("win32 x86_64 build")
     #For Qt5
     equals(QT_MAJOR_VERSION,5): INCLUDEPATH += \
-        C:/msys64/mingw64/include/QuaZip-Qt5-1.3/quazip \
+        C:/msys64/mingw64/include/QuaZip-Qt5-1.4/quazip \
         C:/msys64/mingw64/include/aria2
-    equals(QT_MAJOR_VERSION,5):LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt5
+    equals(QT_MAJOR_VERSION,5):LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip5
 
     #For Qt6
     equals(QT_MAJOR_VERSION,6): INCLUDEPATH += \
-    C:/msys64/mingw64/include/QuaZip-Qt6-1.3/quazip \
+    C:/msys64/mingw64/include/QuaZip-Qt6-1.4/quazip \
     C:/msys64/mingw64/include/aria2
 
     equals(QT_MAJOR_VERSION,6):LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt6
@@ -473,7 +473,7 @@ win32 {
   #Deprecated
     message("win32 x86 build")
     INCLUDEPATH += C:/msys64/mingw32/include
-    INCLUDEPATH += C:/msys64/mingw32/include/QuaZip-Qt5-1.3/quazip
-    LIBS += -L$$quote(C:/msys64/mingw32/bin) -laria2 -lquazip1-qt5
+    INCLUDEPATH += C:/msys64/mingw32/include/QuaZip-Qt5-1.4/quazip
+    LIBS += -L$$quote(C:/msys64/mingw32/bin) -laria2 -lquazip5
   }
 }
