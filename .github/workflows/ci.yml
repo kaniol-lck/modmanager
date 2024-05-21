@@ -141,8 +141,8 @@ jobs:
           #   x64_suffix:
           - qt_arch: win64_mingw
             qt_ver: 5.15.2
-            qt_tools: "tools_mingw90"
-            qt_tools_mingw_install: mingw1120_64
+            qt_tools: "tools_mingw81"
+            qt_tools_mingw_install: mingw810_64
             mingw_arch: mingw64
             msys_arch: x86_64
             x64_suffix: -x64
@@ -379,7 +379,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          aqtversion: '==2.1.*'
+          aqtversion: '==2.1.*' 
           version: ${{ matrix.qt_ver }}
           host: 'mac'
           target: 'desktop'
@@ -387,11 +387,11 @@ jobs:
           modules: 'qtwebengine'
       - name: Install libaria2
         run: |
-          ls /usr/
+          ls /usr/local/
           wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
           unzip *.zip
-          sudo cp -r lib/* /usr/lib/
-          sudo cp -r include/ /usr/include
+          sudo cp -r lib/ /usr/local/lib/
+          sudo cp -r include/ /usr/local/include
           rm -rf lib/ include/ *.zip
       - name: Install dependencies
         run: |
