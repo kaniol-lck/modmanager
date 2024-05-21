@@ -367,7 +367,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macOS-latest]
-        qt_ver: [5.15.2]
+        qt_ver: [6.7.1]
         qt_arch: [clang_64]
     steps:
       - name: Install Qt

@@ -460,7 +460,7 @@ win32 {
     equals(QT_MAJOR_VERSION,5): INCLUDEPATH += \
         C:/msys64/mingw64/include/QuaZip-Qt5-1.4/quazip \
         C:/msys64/mingw64/include/aria2
-    equals(QT_MAJOR_VERSION,5):LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip5
+    equals(QT_MAJOR_VERSION,5):LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt5
 
     #For Qt6
     equals(QT_MAJOR_VERSION,6): INCLUDEPATH += \
