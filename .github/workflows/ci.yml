@@ -225,6 +225,7 @@ jobs:
         run : |
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt6.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libicuuc74.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libicudt74.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/Qt6Core5Compat.dll deploy/
       - name: x64 dependencies
         if: contains(matrix.mingw_arch, 'mingw64')
