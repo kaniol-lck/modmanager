@@ -390,17 +390,27 @@ jobs:
           target: 'desktop'
           arch: ${{ matrix.qt_arch }}
           modules: 'qtwebengine'
+      - uses: actions/checkout@v4
+        with:
+          repository: 'kaniol-lck/aria2'
+          path: 'aria2'
       - name: Install libaria2
         run: |
-          wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
-          unzip *.zip
-          csrutil status
-          sudo cp -r lib/ ${{ env.QT_ROOT_DIR }}/lib/
-          sudo cp -r include/aria2/ ${{ env.QT_ROOT_DIR }}/include/
-          rm -rf lib/ include/ *.zip
+          cd aria2
+          brew install cppunit gettext openssl libssh2 c-ares sqlite3 autoconf automake pkg-config libtool
+          echo 'CC=clang' >> $GITHUB_ENV
+          echo 'CXX=clang++' >> $GITHUB_ENV
+          ./configure \
+          --without-openssl --without-gnutls --with-appletls \
+          --disable-nls --enable-libaria2 \
+          CPPFLAGS="-fsanitize=address" LDFLAGS="-fsanitize=address"
+          make
+          make check
+          sudo make install
+          cd ..
       - name: Install dependencies
         run: |
-          brew install quazip gnu-sed
+          brew install quazip gnu-sed aria2
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
