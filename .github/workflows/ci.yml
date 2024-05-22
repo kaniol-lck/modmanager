@@ -202,20 +202,27 @@ jobs:
         run: |
           mkdir deploy
           mv release/modmanager.exe deploy
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-1_1${{ matrix.x64_suffix }}.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssl-1_1${{ matrix.x64_suffix }}.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-3${{ matrix.x64_suffix }}.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssl-3${{ matrix.x64_suffix }}.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libaria2-0.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt6.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libiconv-2.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/zlib1.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcares-5.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcares-2.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libstdc++-6.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
+      - name: qt5 dependencies
+        if: ${{ startsWith( matrix.qt_ver, 5 ) }}
+        run : |
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt5.dll deploy/
+      - name: qt6 dependencies
+        if: ${{ startsWith( matrix.qt_ver, 6 ) }}
+        run : |
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt6.dll deploy/
       - name: x64 dependencies
         if: contains(matrix.mingw_arch, 'mingw64')
         run : |
@@ -381,11 +388,12 @@ jobs:
           modules: 'qtwebengine'
       - name: Install libaria2
         run: |
-          ls /usr/local/
+          ls /usr/local/include
+          ls /usr/include
           wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
           unzip *.zip
-          sudo cp -r lib/ /usr/local/lib/
-          sudo cp -r include/ /usr/local/include
+          sudo cp -r lib/ /usr/lib/
+          sudo cp -r include/ /usr/include
           rm -rf lib/ include/ *.zip
       - name: Install dependencies
         run: |
