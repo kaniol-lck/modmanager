@@ -196,6 +196,7 @@ jobs:
         shell: pwsh
         run : |
           ls C:/msys64/${{ matrix.mingw_arch }}/bin
+          ls ${{ env.QT_ROOT_DIR }}/bin
       - name: package
         id: package
         shell: pwsh
@@ -389,8 +390,6 @@ jobs:
           modules: 'qtwebengine'
       - name: Install libaria2
         run: |
-          ls /usr/local
-          ls /usr/include
           wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
           unzip *.zip
           sudo cp -r lib/ /usr/lib/
