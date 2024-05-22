@@ -37,17 +37,17 @@ jobs:
           path: etc/usr/artifacts/
       - name: Process artifacts
         run: |
-          mkdir -p /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish
-          # cd /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-packed
+          mkdir -p /home/runner/work/modmanager/modmanager/etc/usr/publish
+          # cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-packed
           # zip -q -r ModManager-${{ env.VERSION }}-packed.zip *
-          cd /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-x64-packed
+          cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-x64-packed
           zip -q -r ModManager-${{ env.VERSION }}-x64-packed.zip *
-          # mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-packed/ModManager-${{ env.VERSION }}-packed.zip /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}-packed.zip
-          mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-x64-packed/ModManager-${{ env.VERSION }}-x64-packed.zip /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-packed.zip
-          # mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-${{ env.VERSION }}-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}-Installer.exe
-          mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-Installer.exe
-          mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
-          mv /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x86_64.AppImage/Mod_Manager-${{ env.VERSION }}-x86_64.AppImage /home/runner/work/modmanager-qt/modmanager-qt/etc/usr/publish/ModManager-${{ env.VERSION }}.AppImage
+          # mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-packed/ModManager-${{ env.VERSION }}-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-packed.zip
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-x64-packed/ModManager-${{ env.VERSION }}-x64-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-packed.zip
+          # mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-Installer.exe
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-Installer.exe
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x86_64.AppImage/Mod_Manager-${{ env.VERSION }}-x86_64.AppImage /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.AppImage
       - name: Get short commit sha
         id: get_short_sha
         run: |
@@ -137,6 +137,13 @@ jobs:
             msys_arch: x86_64
             x64_suffix: -x64
             modules: qt5compat
+          - qt_arch: win64_mingw81
+            qt_ver: 5.15.2
+            qt_tools_mingw_install: mingw810_64
+            mingw_arch: mingw64
+            msys_arch: x86_64
+            x64_suffix: -x64
+            modules:
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -245,11 +252,11 @@ jobs:
           makensis package/modmanager.nsi
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Installer.exe
+          name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Qt${{ matrix.qt_ver }}-Installer.exe
           path: ${{github.workspace}}/package/ModManager*-Installer.exe
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager${{ matrix.x64_suffix }}-win-packed
+          name: ModManager${{ matrix.x64_suffix }}-Qt${{ matrix.qt_ver }}-packed
           path: deploy/*
       - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')
@@ -257,7 +264,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: package/ModManager-Installer.exe
-          asset_name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Installer.exe
+          asset_name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Qt${{ matrix.qt_ver }}-Installer.exe
           tag: ${{ github.ref }}
           overwrite: true
   # enable them if find a way to build libaria2
@@ -377,7 +384,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macOS-latest]
+        os: [macOS-10.15]
         qt_ver: [6.7.1]
         qt_arch: [clang_64]
     steps:
@@ -390,24 +397,14 @@ jobs:
           target: 'desktop'
           arch: ${{ matrix.qt_arch }}
           modules: 'qtwebengine'
-      - uses: actions/checkout@v4
-        with:
-          repository: 'kaniol-lck/aria2'
-          path: 'aria2'
       - name: Install libaria2
         run: |
-          cd aria2
-          brew install cppunit gettext openssl libssh2 c-ares sqlite3 autoconf automake pkg-config libtool
-          echo 'CC=clang' >> $GITHUB_ENV
-          echo 'CXX=clang++' >> $GITHUB_ENV
-          ./configure \
-          --without-openssl --without-gnutls --with-appletls \
-          --disable-nls --enable-libaria2 \
-          CPPFLAGS="-fsanitize=address" LDFLAGS="-fsanitize=address"
-          make
-          make check
-          sudo make install
-          cd ..
+          wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
+          unzip *.zip
+          csrutil status
+          sudo cp -r lib/ usr/local/lib/
+          sudo cp -r include/aria2/ usr/local/include/
+          rm -rf lib/ include/ *.zip
       - name: Install dependencies
         run: |
           brew install quazip gnu-sed aria2
