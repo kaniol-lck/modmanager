@@ -224,6 +224,8 @@ jobs:
         if: ${{ startsWith( matrix.qt_ver, 6 ) }}
         run : |
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt6.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libicuuc74.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/Qt6Core5Compat.dll deploy/
       - name: x64 dependencies
         if: contains(matrix.mingw_arch, 'mingw64')
         run : |
@@ -393,7 +395,7 @@ jobs:
           unzip *.zip
           csrutil status
           sudo cp -r lib/ ${{ env.QT_ROOT_DIR }}/lib/
-          sudo cp -r include/ ${{ env.QT_ROOT_DIR }}/include/
+          sudo cp -r include/aria2/ ${{ env.QT_ROOT_DIR }}/include/
           rm -rf lib/ include/ *.zip
       - name: Install dependencies
         run: |
