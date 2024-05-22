@@ -392,8 +392,8 @@ jobs:
           wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
           unzip *.zip
           csrutil status
-          sudo cp -r lib/ /usr/lib/
-          sudo cp -r include/ /usr/include
+          sudo cp -r lib/ ${{ env.QT_ROOT_DIR }}/lib/
+          sudo cp -r include/ ${{ env.QT_ROOT_DIR }}/include/
           rm -rf lib/ include/ *.zip
       - name: Install dependencies
         run: |
