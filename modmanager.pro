@@ -419,6 +419,9 @@ unix {
     }
     INCLUDEPATH += \
       /usr/include/QuaZip-Qt5-1.4/quazip \
+      /usr/include/QuaZip-Qt5-1.3/quazip \
+      /usr/include/QuaZip-Qt5-1.2/quazip \
+      /usr/include/QuaZip-Qt5-1.1/quazip \
       /usr/include/quazip \
       /usr/include/quazip5
   }
@@ -430,6 +433,9 @@ unix {
     }
     INCLUDEPATH += \
       /usr/include/QuaZip-Qt6-1.4/quazip \
+      /usr/include/QuaZip-Qt6-1.3/quazip \
+      /usr/include/QuaZip-Qt6-1.2/quazip \
+      /usr/include/QuaZip-Qt6-1.1/quazip \
       /usr/include/quazip \
       /usr/include/quazip6
   }

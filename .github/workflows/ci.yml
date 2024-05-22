@@ -205,6 +205,7 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-3${{ matrix.x64_suffix }}.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssl-3${{ matrix.x64_suffix }}.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libaria2-0.dll deploy/
+          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libbz2-1.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libiconv-2.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/
@@ -245,7 +246,7 @@ jobs:
           path: ${{github.workspace}}/package/ModManager*-Installer.exe
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager${{ matrix.x64_suffix }}-packed
+          name: ModManager${{ matrix.x64_suffix }}-win-packed
           path: deploy/*
       - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')

@@ -31,7 +31,7 @@ FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, WindowsTitl
 
     auto w = new QWidget(this);
     auto layout = new QVBoxLayout;
-//    layout->setMargin(0);
+    layout->setMargin(0);
     layout->setSpacing(0);
     layout->addWidget(titleBar_);
     layout->addWidget(widget);
@@ -91,7 +91,12 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
         return true;
     }
     case WM_NCHITTEST:{
-        auto mousePos = mapFromGlobal(QPoint(GET_X_LPARAM(msg->lParam), GET_Y_LPARAM(msg->lParam)));
+        //support highdpi
+        double dpr = this->devicePixelRatioF();
+        long x = GET_X_LPARAM(msg->lParam);
+        long y = GET_Y_LPARAM(msg->lParam);
+
+        auto mousePos = mapFromGlobal(QPoint(x/dpr,y/dpr));
         bool left = mousePos.x() < boundaryWidth;
         bool right = mousePos.x() > width() - boundaryWidth;
         bool top = mousePos.y() < boundaryWidth;
@@ -114,14 +119,8 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
             *result = HTBOTTOM;
         if(*result) return true;
 
-        //support highdpi
-        double dpr = this->devicePixelRatioF();
-        long x = GET_X_LPARAM(msg->lParam);
-        long y = GET_Y_LPARAM(msg->lParam);
-        QPoint pos = titleBar_->mapFromGlobal(QPoint(x/dpr,y/dpr));
-
-        if (!titleBar_->rect().contains(pos)) return false;
-        return titleBar_->hitTest(pos, result);
+        if (!titleBar_->rect().contains(mousePos)) return false;
+        return titleBar_->hitTest(mousePos, result);
     }
     case WM_GETMINMAXINFO: {
         if (::IsZoomed(msg->hwnd)) {
