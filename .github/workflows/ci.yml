@@ -136,7 +136,7 @@ jobs:
             mingw_arch: mingw64
             msys_arch: x86_64
             x64_suffix: -x64
-            modules:
+            modules: qt5compat
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
