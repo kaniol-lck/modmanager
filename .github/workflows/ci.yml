@@ -131,9 +131,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - qt_arch: win64_mingw81
-            qt_ver: 5.15.2
-            qt_tools_mingw_install: mingw810_64
+          - qt_arch: win64_mingw
+            qt_ver: 6.7.1
             mingw_arch: mingw64
             msys_arch: x86_64
             x64_suffix: -x64
@@ -392,6 +391,7 @@ jobs:
         run: |
           wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
           unzip *.zip
+          csrutil status
           sudo cp -r lib/ /usr/lib/
           sudo cp -r include/ /usr/include
           rm -rf lib/ include/ *.zip
