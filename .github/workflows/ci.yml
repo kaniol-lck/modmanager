@@ -36,16 +36,11 @@ jobs:
           path: etc/usr/artifacts/
       - name: Process artifacts
         run: |
-          mkdir -p /home/runner/work/modmanager/modmanager/etc/usr/publish
-          # cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-packed
-          # zip -q -r ModManager-${{ env.VERSION }}-packed.zip *
-          cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-x64-packed
+          cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-packed
           zip -q -r ModManager-${{ env.VERSION }}-x64-packed.zip *
-          # mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-packed/ModManager-${{ env.VERSION }}-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-packed.zip
           mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-x64-packed/ModManager-${{ env.VERSION }}-x64-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-packed.zip
-          # mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-Installer.exe
           mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-Installer.exe
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
+          # mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
           mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x86_64.AppImage/Mod_Manager-${{ env.VERSION }}-x86_64.AppImage /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.AppImage
       - name: Get short commit sha
         id: get_short_sha
@@ -257,11 +252,11 @@ jobs:
           makensis package/modmanager.nsi
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Qt${{ matrix.qt_ver }}-Installer.exe
+          name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Installer.exe
           path: ${{github.workspace}}/package/ModManager*-Installer.exe
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager${{ matrix.x64_suffix }}-Qt${{ matrix.qt_ver }}-packed
+          name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-packed
           path: deploy/*
       - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')
@@ -269,7 +264,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: package/ModManager-Installer.exe
-          asset_name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Qt${{ matrix.qt_ver }}-Installer.exe
+          asset_name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Installer.exe
           tag: ${{ github.ref }}
           overwrite: true
   # enable them if find a way to build libaria2
