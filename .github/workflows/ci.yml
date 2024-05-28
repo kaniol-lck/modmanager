@@ -214,7 +214,6 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/zlib1.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcares-2.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libstdc++-6.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
@@ -226,7 +225,7 @@ jobs:
           iwr "https://github.com/kaniol-lck/modmanager/releases/download/v1.1.1-build.543/ModManager-v1.1.1-build.543-x64-packed.zip" -OutFile ModManager-v1.1.1-build.543-x64-packed.zip
           unzip *.zip -d old
           cp old/libaria2-0.dll deploy/
-          cp old/libcares-4.dll deploy/
+          cp old/libcares-5.dll deploy/
           cp old/libcrypto-1_1-x64.dll deploy/
           cp old/libssl-1_1-x64.dll deploy/
       - name: qt5 dependencies
