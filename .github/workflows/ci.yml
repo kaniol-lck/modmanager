@@ -20,7 +20,6 @@ jobs:
     needs:
       - build-on-ubuntu
       - build-on-win-mingw
-      - build-on-osx
     steps:
       - uses: actions/checkout@v2
         with:
@@ -131,12 +130,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - qt_arch: win64_mingw
-            qt_ver: 6.7.1
-            mingw_arch: mingw64
-            msys_arch: x86_64
-            x64_suffix: -x64
-            modules: qt5compat
+          # - qt_arch: win64_mingw
+          #   qt_ver: 6.7.1
+          #   mingw_arch: mingw64
+          #   msys_arch: x86_64
+          #   x64_suffix: -x64
+          #   modules: qt5compat
           - qt_arch: win64_mingw81
             qt_ver: 5.15.2
             qt_tools_mingw_install: mingw810_64
@@ -210,8 +209,6 @@ jobs:
           mkdir deploy
           mv release/modmanager.exe deploy
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-3${{ matrix.x64_suffix }}.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssl-3${{ matrix.x64_suffix }}.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libaria2-0.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libbz2-1.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libiconv-2.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/
@@ -223,17 +220,25 @@ jobs:
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
+      - name: aria2 dependencies
+        run: |
+          wget "https://github.com/kaniol-lck/modmanager/releases/download/v1.1.1-build.543/ModManager-v1.1.1-build.543-x64-packed.zip"
+          unzip *.zip -d old
+          cp old/libaria2-0.dll deploy/
+          cp old/libcares-4.dll deploy/
+          cp old/libcrypto-1_1-x64.dll deploy/
+          cp old/libssl-1_1-x64.dll deploy/
       - name: qt5 dependencies
         if: ${{ startsWith( matrix.qt_ver, 5 ) }}
         run : |
           cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt5.dll deploy/
-      - name: qt6 dependencies
-        if: ${{ startsWith( matrix.qt_ver, 6 ) }}
-        run : |
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt6.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libicuuc74.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libicudt74.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/Qt6Core5Compat.dll deploy/
+      # - name: qt6 dependencies
+      #   if: ${{ startsWith( matrix.qt_ver, 6 ) }}
+      #   run : |
+      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt6.dll deploy/
+      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/libicuuc74.dll deploy/
+      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/libicudt74.dll deploy/
+      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/Qt6Core5Compat.dll deploy/
       - name: x64 dependencies
         if: contains(matrix.mingw_arch, 'mingw64')
         run : |
@@ -378,69 +383,69 @@ jobs:
           #asset_name: modmanager-${{ matrix.qt_arch }}.zip
           #tag: ${{ github.ref }}
           #overwrite: true
-  build-on-osx:
-    name: Build On OSX
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macOS-10.15]
-        qt_ver: [6.7.1]
-        qt_arch: [clang_64]
-    steps:
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          aqtversion: '==2.1.*' 
-          version: ${{ matrix.qt_ver }}
-          host: 'mac'
-          target: 'desktop'
-          arch: ${{ matrix.qt_arch }}
-          modules: 'qtwebengine'
-      - name: Install libaria2
-        run: |
-          wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
-          unzip *.zip
-          csrutil status
-          sudo cp -r lib/ usr/local/lib/
-          sudo cp -r include/aria2/ usr/local/include/
-          rm -rf lib/ include/ *.zip
-      - name: Install dependencies
-        run: |
-          brew install quazip gnu-sed aria2
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-      - name: Set Env
-        shell: bash
-        run: |
-          export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
-          export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
-          echo "RAW_VERSION=${RAW_VERSION}" >> $GITHUB_ENV
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
-      - name: Modify version number
-        if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
-        shell: bash
-        run: |
-          gsed -i "s/$RAW_VERSION/$VERSION/" src/version.h
-      - name: build macos
-        run: |
-          qmake
-          make
-      - name: package
-        run: |
-          macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
-        shell: sh
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ModManager-${{ env.VERSION }}.dmg
-          path: modmanager.dmg
-      - name: uploadRelease
-        if: startsWith(github.event.ref, 'refs/tags/')
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: modmanager.dmg
-          asset_name: ModManager-${{ env.VERSION }}.dmg
-          tag: ${{ github.ref }}
-          overwrite: true
+  # build-on-osx:
+  #   name: Build On OSX
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [macOS-latest]
+  #       qt_ver: [6.7.1]
+  #       qt_arch: [clang_64]
+  #   steps:
+  #     - name: Install Qt
+  #       uses: jurplel/install-qt-action@v4
+  #       with:
+  #         aqtversion: '==2.1.*' 
+  #         version: ${{ matrix.qt_ver }}
+  #         host: 'mac'
+  #         target: 'desktop'
+  #         arch: ${{ matrix.qt_arch }}
+  #         modules: 'qtwebengine'
+  #     - name: Install libaria2
+  #       run: |
+  #         wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
+  #         unzip *.zip
+  #         csrutil status
+  #         sudo cp -r lib/ usr/local/lib/
+  #         sudo cp -r include/aria2/ usr/local/include/
+  #         rm -rf lib/ include/ *.zip
+  #     - name: Install dependencies
+  #       run: |
+  #         brew install quazip gnu-sed aria2
+  #     - uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 1
+  #     - name: Set Env
+  #       shell: bash
+  #       run: |
+  #         export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
+  #         export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
+  #         echo "RAW_VERSION=${RAW_VERSION}" >> $GITHUB_ENV
+  #         echo "VERSION=${VERSION}" >> $GITHUB_ENV
+  #     - name: Modify version number
+  #       if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
+  #       shell: bash
+  #       run: |
+  #         gsed -i "s/$RAW_VERSION/$VERSION/" src/version.h
+  #     - name: build macos
+  #       run: |
+  #         qmake
+  #         make
+  #     - name: package
+  #       run: |
+  #         macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
+  #       shell: sh
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: ModManager-${{ env.VERSION }}.dmg
+  #         path: modmanager.dmg
+  #     - name: uploadRelease
+  #       if: startsWith(github.event.ref, 'refs/tags/')
+  #       uses: svenstaro/upload-release-action@v2
+  #       with:
+  #         repo_token: ${{ secrets.GITHUB_TOKEN }}
+  #         file: modmanager.dmg
+  #         asset_name: ModManager-${{ env.VERSION }}.dmg
+  #         tag: ${{ github.ref }}
+  #         overwrite: true
