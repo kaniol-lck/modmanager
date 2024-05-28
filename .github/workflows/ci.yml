@@ -223,7 +223,7 @@ jobs:
       - name: aria2 dependencies
         shell: pwsh
         run: |
-          wget "https://github.com/kaniol-lck/modmanager/releases/download/v1.1.1-build.543/ModManager-v1.1.1-build.543-x64-packed.zip"
+          iwr "https://github.com/kaniol-lck/modmanager/releases/download/v1.1.1-build.543/ModManager-v1.1.1-build.543-x64-packed.zip"
           unzip *.zip -d old
           cp old/libaria2-0.dll deploy/
           cp old/libcares-4.dll deploy/
