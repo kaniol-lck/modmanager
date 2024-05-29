@@ -48,6 +48,14 @@ ModrinthModItemWidget::ModrinthModItemWidget(ModrinthModBrowser *parent, Modrint
             label->setText(QString(R"(<img src=":/image/fabric.png" height="22" width="22"/>)"));
         else if(loaderType == ModLoaderType::Forge)
             label->setText(QString(R"(<img src=":/image/forge.svg" height="22" width="22"/>)"));
+        else if(loaderType == ModLoaderType::LiteLoader)
+            label->setText(QString(R"(<img src=":/image/liteloader.png" height="22" width="22"/>)"));
+        else if(loaderType == ModLoaderType::Neoforge)
+            label->setText(QString(R"(<img src=":/image/neoforge.png" height="22" width="22"/>)"));
+        else if(loaderType == ModLoaderType::Quilt)
+            label->setText(QString(R"(<img src=":/image/quilt.svg" height="22" width="22"/>)"));
+        else if(loaderType == ModLoaderType::Rift)
+            label->setText(QString(R"(<img src=":/image/rift.png" height="22" width="22"/>)"));
         else
             label->setText(ModLoaderType::toString(loaderType));
         label->setToolTip(ModLoaderType::toString(loaderType));

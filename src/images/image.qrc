@@ -14,7 +14,6 @@
         <file>modrinth/food.svg</file>
         <file>modrinth/library.svg</file>
         <file>modrinth/magic.svg</file>
-        <file>modrinth/misc.svg</file>
         <file>modrinth/storage.svg</file>
         <file>modrinth/technology.svg</file>
         <file>modrinth/utility.svg</file>
@@ -22,6 +21,16 @@
         <file>modmanager.png</file>
         <file>gitlab.svg</file>
         <file>modrinth/optimization.svg</file>
+        <file>neoforge.png</file>
+        <file>quilt.svg</file>
+        <file>modrinth/economy.svg</file>
+        <file>modrinth/management.svg</file>
+        <file>modrinth/minigame.svg</file>
+        <file>modrinth/mobs.svg</file>
+        <file>modrinth/social.svg</file>
+        <file>modrinth/transportation.svg</file>
+        <file>liteloader.png</file>
+        <file>rift.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

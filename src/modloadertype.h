@@ -11,6 +11,9 @@ enum Type{
     Any,
     Fabric,
     Forge,
+    LiteLoader,
+    Neoforge,
+    Quilt,
     Rift
 };
 
@@ -20,7 +23,7 @@ QString toString(Type loaderType);
 QIcon icon(Type type);
 
 const QList<Type> curseforge{ Any, Fabric, Forge/*, Rift*/ };
-const QList<Type> modrinth{ Any, Fabric, Forge };
+const QList<Type> modrinth{ Any, Fabric, Forge, LiteLoader, Neoforge, Quilt, Rift };
 const QList<Type> replay{ Any, Fabric, Forge };
 const QList<Type> local{ Any, Fabric, Forge };
 

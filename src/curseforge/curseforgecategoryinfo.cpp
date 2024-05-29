@@ -107,12 +107,19 @@ CurseforgeCategoryInfo CurseforgeCategoryInfo::fromVariant(const QVariant &varia
         { "Creation", QObject::tr("Creation") },
         { "Survival", QObject::tr("Survival") },
         { "Adventure", QObject::tr("Adventure") },
-        { "Puzzle", QObject::tr("Puzzle") }
+        { "Puzzle", QObject::tr("Puzzle") },
+        { "KubeJS", QObject::tr("KubeJS") },
+        { "Bug Fixes", QObject::tr("Bug Fixes") },
+        { "Create", QObject::tr("Create") },
+        { "Performance", QObject::tr("Performance") },
+        { "Education", QObject::tr("Education") },
+        { "Galacticraft", QObject::tr("Galacticraft") },
+        { "Integrated Dynamics", QObject::tr("Integrated Dynamics") }
     };
     if(replaceMap.contains(info.name_))
         info.name_ = replaceMap.value(info.name_);
     else
-        qDebug() << "Untranslated category:" << info.name_;
+        qDebug() << "Untranslated Curseforge category:" << info.name_;
 
     return info;
 }

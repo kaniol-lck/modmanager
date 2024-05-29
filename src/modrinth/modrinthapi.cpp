@@ -224,19 +224,24 @@ Reply<ModrinthFileInfo> ModrinthAPI::getVersionFileBySha1(const QString sha1)
 const QList<std::tuple<QString, QString> > &ModrinthAPI::getCategories()
 {
     static const QList<std::tuple<QString, QString>> categories{
-        { tr("World generation"), "worldgen" },
-        { tr("Technology"), "technology" },
-        { tr("Food"), "food" },
-        { tr("Magic"), "magic" },
-        { tr("Storage"), "storage" },
-        { tr("Library"), "library" },
         { tr("Adventure"), "adventure" },
-        { tr("Utility"), "utility" },
+        { tr("Cursed"), "cursed" },
         { tr("Decoration"), "decoration" },
-        { tr("Miscellaneous"), "misc" },
-        { tr("Optimization"), "optimization" },
+        { tr("Economy"), "economy" },
         { tr("Equipment"), "equipment" },
-        { tr("Cursed"), "cursed" }
+        { tr("Food"), "food" },
+        { tr("Library"), "library" },
+        { tr("Magic"), "magic" },
+        { tr("Management"), "management" },
+        { tr("Minigame"), "minigame" },
+        { tr("Mobs"), "mobs" },
+        { tr("Optimization"), "optimization" },
+        { tr("Social"), "social" },
+        { tr("Storage"), "storage" },
+        { tr("Technology"), "technology" },
+        { tr("Transportation"), "transportation" },
+        { tr("Utility"), "utility" },
+        { tr("World generation"), "worldgen" },
     };
     return categories;
 }
