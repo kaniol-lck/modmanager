@@ -6,26 +6,14 @@
 CurseforgeDependencyInfo CurseforgeDependencyInfo::fromVariant(const QVariant &variant)
 {
     CurseforgeDependencyInfo info;
-    info.addonId_ = value(variant, "addonId").toInt();
-    info.fileId_ = value(variant, "fileId").toInt();
-    info.id_ = value(variant, "id").toInt();
-    info.type_ = static_cast<Type>(value(variant, "type").toInt());
+    info.modId_ = value(variant, "modId").toInt();
+    info.type_ = static_cast<Type>(value(variant, "relationType").toInt());
     return info;
 }
 
-int CurseforgeDependencyInfo::addonId() const
+int CurseforgeDependencyInfo::modId() const
 {
-    return addonId_;
-}
-
-int CurseforgeDependencyInfo::fileId() const
-{
-    return fileId_;
-}
-
-int CurseforgeDependencyInfo::id() const
-{
-    return id_;
+    return modId_;
 }
 
 int CurseforgeDependencyInfo::type() const

@@ -154,6 +154,7 @@ Reply<CurseforgeFileInfo> CurseforgeAPI::getFileInfo(int id, int FileID)
 
 Reply<QList<CurseforgeFileInfo> > CurseforgeAPI::getFiles(int id)
 {
+    //TODO: page
     QUrl url = PREFIX + "/v1/mods/" + QString::number(id) + "/files";
 
     QNetworkRequest request(url);

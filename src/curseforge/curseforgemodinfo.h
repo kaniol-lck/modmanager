@@ -63,7 +63,6 @@ private:
     int downloadCount_;
     QList<ModLoaderType::Type> loaderTypes_;
     QList<CurseforgeFileInfo> latestFileList_;
-    QList<QVariant> gameVersionLatestFiles_;
     QList<CurseforgeFileInfo> allFileList_;
     QList<CurseforgeCategoryInfo> categories_;
     QDateTime dateModified_;

@@ -54,10 +54,6 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     for(auto &&variant : value(variant, "latestFiles").toList())
         modInfo.latestFileList_ << CurseforgeFileInfo::fromVariant(variant);
 
-    //latest file url
-    for(auto &&variant : value(variant, "gameVersionLatestFiles").toList())
-        modInfo.gameVersionLatestFiles_ << variant;
-
     //categories
     for(auto &&variant : value(variant, "categories").toList()){
         auto category = CurseforgeCategoryInfo::fromVariant(variant);

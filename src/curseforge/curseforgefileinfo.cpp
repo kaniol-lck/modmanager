@@ -23,13 +23,13 @@ CurseforgeFileInfo CurseforgeFileInfo::fromVariant(const QVariant &variant)
     fileInfo.fileDate_ = value(variant, "fileDate").toDateTime();
 
     //I don't know why curseforge put game verison and modloader together
-    for(auto &&version : value(variant, "sortableGameVersions").toStringList()){
+    for(auto &&version : value(variant, "gameVersions").toStringList()){
         if(auto loaderType = ModLoaderType::fromString(version); loaderType != ModLoaderType::Any)
             fileInfo.loaderTypes_ << loaderType;
         else {
             if(auto gameVersion = GameVersion::deduceFromString(version); gameVersion != GameVersion::Any)
                 fileInfo.gameVersions_ << gameVersion;
-            else
+            else //TODO: client/server
                 fileInfo.gameVersions_ << version;
         }
     }

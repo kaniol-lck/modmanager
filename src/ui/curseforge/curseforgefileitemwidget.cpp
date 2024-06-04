@@ -92,9 +92,9 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
         connect(menu, &QMenu::aboutToShow, this, [=]{
             if(!menu->isEmpty()) return;
             for(auto &dependencyInfo : fileInfo_.dependencies()){
-                if(dependencyInfo.addonId()){
-                    auto action = menu->addAction(tr("%1 Mod: %2").arg(dependencyInfo.typeString()).arg(dependencyInfo.addonId()));
-                    auto reply = CurseforgeAPI::api()->getInfo(dependencyInfo.addonId());
+                if(dependencyInfo.modId()){
+                    auto action = menu->addAction(tr("%1 Mod: %2").arg(dependencyInfo.typeString()).arg(dependencyInfo.modId()));
+                    auto reply = CurseforgeAPI::api()->getInfo(dependencyInfo.modId());
                     reply.setRunBackground(true);
                     reply.setOnFinished(this, [=](const CurseforgeModInfo &modInfo){
                         action->setText(tr("%1 Mod: %2").arg(dependencyInfo.typeString(), modInfo.name()));
@@ -103,14 +103,6 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
                             dialog->show();
                         });
                     });
-                    if(dependencyInfo.fileId()){
-                        auto reply = CurseforgeAPI::api()->getFileInfo(dependencyInfo.addonId(), dependencyInfo.fileId());
-                        reply.setRunBackground(true);
-                        reply.setOnFinished(this, [=](const CurseforgeFileInfo &fileInfo){
-                            action->setText(action->text() + "\n" +
-                                            tr("%1 File: %2").arg(dependencyInfo.typeString(), fileInfo.fileName()));
-                        });
-                    }
                 }
             }
         });

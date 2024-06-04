@@ -12,17 +12,13 @@ public:
     CurseforgeDependencyInfo() = default;
     static CurseforgeDependencyInfo fromVariant(const QVariant &variant);
 
-    int addonId() const;
-    int fileId() const;
-    int id() const;
+    int modId() const;
     int type() const;
 
     QString typeString() const;
 
 private:
-    int addonId_ = 0;
-    int fileId_ = 0;
-    int id_ = 0;
+    int modId_ = 0;
     Type type_;
 };
 
