@@ -4,11 +4,15 @@
 #include <QStandardItemModel>
 #include <QWidget>
 
+#include "gameversion.h"
+
 class CurseforgeMod;
 class CurseforgeModBrowser;
 class LocalModPath;
 class DownloadPathSelectMenu;
 class LocalMod;
+
+class QMenu;
 namespace Ui {
 class CurseforgeFileListWidget;
 }
@@ -38,6 +42,8 @@ private slots:
     void updateFileList();
     void updateIndexWidget();
     void onListSliderChanged(int i);
+    void updateVersionList();
+    void search(bool changed = false);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -48,6 +54,8 @@ private:
     QStandardItemModel model_;
     CurseforgeMod *mod_ = nullptr;
     LocalMod *localMod_ = nullptr;
+    QMenu *versionMenu_ = nullptr;
+    GameVersion currentGameVersion_;
 };
 
 #endif // CURSEFORGEFILELISTWIDGET_H

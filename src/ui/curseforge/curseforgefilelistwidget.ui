@@ -11,22 +11,29 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QListView" name="fileListView">
-     <property name="styleSheet">
-      <string notr="true">QListView{
-  background-color: transparent;
-}</string>
+   <item row="2" column="0">
+    <widget class="QToolButton" name="versionSelect">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+     <property name="popupMode">
+      <enum>QToolButton::InstantPopup</enum>
      </property>
-     <property name="verticalScrollMode">
-      <enum>QAbstractItemView::ScrollPerPixel</enum>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextBesideIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="2" column="1">
+    <widget class="QComboBox" name="loaderTypeSelecct"/>
+   </item>
+   <item row="0" column="0" colspan="2">
     <widget class="QToolButton" name="downloadPathSelect">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -42,6 +49,21 @@
      </property>
      <property name="autoRaise">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QListView" name="fileListView">
+     <property name="styleSheet">
+      <string notr="true">QListView{
+  background-color: transparent;
+}</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="verticalScrollMode">
+      <enum>QAbstractItemView::ScrollPerPixel</enum>
      </property>
     </widget>
    </item>

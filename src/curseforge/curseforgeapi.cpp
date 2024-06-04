@@ -153,12 +153,15 @@ Reply<CurseforgeFileInfo> CurseforgeAPI::getFileInfo(int id, int FileID)
     } };
 }
 
-Reply<QList<CurseforgeFileInfo>, int> CurseforgeAPI::getFiles(int id, int index)
+Reply<QList<CurseforgeFileInfo>, int> CurseforgeAPI::getFiles(int id, int index, GameVersion version)
 {
     //TODO: page
     QUrl url = PREFIX + "/v1/mods/" + QString::number(id) + "/files";
     //url query
     QUrlQuery urlQuery;
+    //version
+    if(version != GameVersion::Any)
+        urlQuery.addQueryItem("gameVersion", version.toString());
     //index
     urlQuery.addQueryItem("index", QString::number(index));
     //page size

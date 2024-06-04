@@ -14,28 +14,38 @@
 
 CurseforgeFileListWidget::CurseforgeFileListWidget(CurseforgeModBrowser *parent) :
     QWidget(parent),
-    ui(new Ui::CurseforgeFileListWidget)
+    ui(new Ui::CurseforgeFileListWidget),
+    versionMenu_(new QMenu(this))
 {
     ui->setupUi(this);
+    ui->versionSelect->setDefaultAction(versionMenu_->menuAction());
+    ui->versionSelect->setPopupMode(QToolButton::InstantPopup);
     ui->fileListView->setModel(&model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setProperty("class", "ModList");
     connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeFileListWidget::updateIndexWidget);
     connect(ui->fileListView->verticalScrollBar(), &QSlider::valueChanged, this, &CurseforgeFileListWidget::onListSliderChanged);
+    updateVersionList();
+    connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeFileListWidget::updateVersionList);
     ui->downloadPathSelect->hide();
     downloadPathSelectMenu_ = parent->downloadPathSelectMenu();
 }
 
 CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent, LocalMod *localMod) :
     QWidget(parent),
-    ui(new Ui::CurseforgeFileListWidget)
+    ui(new Ui::CurseforgeFileListWidget),
+    versionMenu_(new QMenu(this))
 {
     ui->setupUi(this);
+    ui->versionSelect->setDefaultAction(versionMenu_->menuAction());
+    ui->versionSelect->setPopupMode(QToolButton::InstantPopup);
     ui->fileListView->setModel(&model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setProperty("class", "ModList");
     connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged, this, &CurseforgeFileListWidget::updateIndexWidget);
     connect(ui->fileListView->verticalScrollBar(), &QSlider::valueChanged, this, &CurseforgeFileListWidget::onListSliderChanged);
+    updateVersionList();
+    connect(VersionManager::manager(), &VersionManager::curseforgeVersionListUpdated, this, &CurseforgeFileListWidget::updateVersionList);
     ui->downloadPathSelect->hide();
     downloadPathSelectMenu_ = new DownloadPathSelectMenu(this);
     ui->downloadPathSelect->setDefaultAction(downloadPathSelectMenu_->menuAction());
@@ -59,10 +69,7 @@ void CurseforgeFileListWidget::setMod(CurseforgeMod *mod)
                 connect(mod_, &QObject::destroyed, this, [=]{ setMod(nullptr); })));
 
     updateFileList();
-    if(!mod_->modInfo().fileCompleted()){
-        ui->fileListView->setCursor(Qt::BusyCursor);
-        mod_->acquireMoreFileList();
-    }
+    search();
 }
 
 void CurseforgeFileListWidget::updateUi()
@@ -136,9 +143,58 @@ void CurseforgeFileListWidget::updateIndexWidget()
 void CurseforgeFileListWidget::onListSliderChanged(int i)
 {
     if(i >= ui->fileListView->verticalScrollBar()->maximum() - 1000){
-        if(!mod_->modInfo().fileCompleted()){
-            ui->fileListView->setCursor(Qt::BusyCursor);
-            mod_->acquireMoreFileList();
+        search();
+    }
+}
+
+void CurseforgeFileListWidget::updateVersionList()
+{
+    versionMenu_->clear();
+    versionMenu_->setTitle(tr("Select Game Version"));
+    versionMenu_->setStyleSheet("QMenu { menu-scrollable: 1; }");
+    auto anyVersionAction = versionMenu_->addAction(tr("Any"));
+    connect(anyVersionAction, &QAction::triggered, this, [=]{
+        currentGameVersion_ = GameVersion::Any;
+        versionMenu_->setTitle(tr("Game Version : %1").arg(tr("Any")));
+        versionMenu_->setIcon(QIcon());
+        search(true);
+    });
+    versionMenu_->addSeparator();
+    QMap<QString, QMenu*> submenus;
+    QList<QString> keys; //to keep order
+    for(auto &&version : GameVersion::curseforgeVersionList()){
+        if(!submenus.contains(version.majorVersion())){
+            auto submenu = new QMenu(version.majorVersion());
+            submenus[version.majorVersion()] = submenu;
+            keys << version.majorVersion();
         }
+    }
+    for(auto &&version : GameVersion::curseforgeVersionList()){
+        if(submenus.contains(version.majorVersion())){
+            auto submenu = submenus[version.majorVersion()];
+            if(submenu->actions().size() == 1)
+                if(GameVersion version = submenu->actions().at(0)->text(); version == version.majorVersion())
+                    submenu->addSeparator();
+            submenu->addAction(version, this, [=]{
+                currentGameVersion_ = version;
+                versionMenu_->setTitle(tr("Game Version : %1").arg(version));
+                search(true);
+            });
+        }
+    }
+    for(const auto &key : qAsConst(keys)){
+        auto submenu = submenus[key];
+        if(submenu->actions().size() == 1)
+            versionMenu_->addActions(submenu->actions());
+        else
+            versionMenu_->addMenu(submenu);
+    }
+}
+
+void CurseforgeFileListWidget::search(bool changed)
+{
+    if(changed || !mod_->modInfo().fileCompleted()){
+        ui->fileListView->setCursor(Qt::BusyCursor);
+        mod_->acquireMoreFileList(currentGameVersion_, changed);
     }
 }

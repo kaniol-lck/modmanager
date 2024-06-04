@@ -91,14 +91,17 @@ void CurseforgeMod::acquireDescription()
     });
 }
 
-std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> CurseforgeMod::acquireMoreFileList()
+std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> CurseforgeMod::acquireMoreFileList(GameVersion version, bool clear)
 {
     if(allFileListGetter_ && allFileListGetter_->isRunning()) return allFileListGetter_;
-    allFileListGetter_ = api_->getFiles(modInfo_.id(), modInfo().allFileList().size()).asUnique();
+    allFileListGetter_ = api_->getFiles(modInfo_.id(), clear? 0: modInfo().allFileList().size(), version).asUnique();
     allFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &fileList, int count){
-        modInfo_.allFileList_ << fileList;
+        if(clear)
+            modInfo_.allFileList_ = fileList;
+        else
+            modInfo_.allFileList_ << fileList;
         modInfo_.totalFileCount_ = count;
-        emit moreFileListReady(fileList);
+        emit moreFileListReady(modInfo_.allFileList_);
     }, [=](auto){
         emit moreFileListReady({});
     });

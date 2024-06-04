@@ -26,7 +26,7 @@ public:
     void acquireBasicInfo();
     void acquireIcon();
     void acquireDescription();
-    std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> acquireMoreFileList();
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> acquireMoreFileList(GameVersion version = GameVersion::Any, bool clear = false);
 
     const CurseforgeModInfo &modInfo() const;
     void download(const CurseforgeFileInfo &fileInfo, LocalModPath *downloadPath = nullptr);

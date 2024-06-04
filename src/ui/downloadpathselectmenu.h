@@ -20,7 +20,6 @@ private slots:
     void onAboutToShow();
 
 private:
-    QMenu menu_;
     LocalModPath *downloadPath_ = nullptr;
 };
 
