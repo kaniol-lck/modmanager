@@ -98,7 +98,7 @@ void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
     removeSubTagable(modrinthMod_);
     curseforgeMod_ = newCurseforgeMod;
     if(curseforgeMod_){
-        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, &LocalMod::setCurseforgeFileInfos);
+        connect(curseforgeMod_, &CurseforgeMod::moreFileListReady, this, &LocalMod::setCurseforgeFileInfos);
         addSubTagable(curseforgeMod_);
         curseforgeMod_->setParent(this);
         curseforgeMod_->acquireBasicInfo();
@@ -114,7 +114,7 @@ void LocalMod::setCurseforgeId(int id, bool cache)
     if(id != 0){
         curseforgeMod_ = new CurseforgeMod(this, id);
         addSubTagable(curseforgeMod_);
-        connect(curseforgeMod_, &CurseforgeMod::allFileListReady, this, &LocalMod::setCurseforgeFileInfos);
+        connect(curseforgeMod_, &CurseforgeMod::moreFileListReady, this, &LocalMod::setCurseforgeFileInfos);
         emit curseforgeReady(true);
         emit modInfoChanged();
         emit modCacheUpdated();
@@ -162,8 +162,9 @@ void LocalMod::checkCurseforgeUpdate(bool force)
     emit checkCurseforgeUpdateStarted();
     //update file list
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
-        curseforgeFileListGetter_ = curseforgeMod_->acquireAllFileList();
-        curseforgeFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &){
+        //TODO
+        curseforgeFileListGetter_ = curseforgeMod_->acquireMoreFileList();
+        curseforgeFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &, int count){
             curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
             emit curseforgeUpdateReady(true);
         }, [=](auto){

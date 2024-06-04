@@ -153,10 +153,17 @@ Reply<CurseforgeFileInfo> CurseforgeAPI::getFileInfo(int id, int FileID)
     } };
 }
 
-Reply<QList<CurseforgeFileInfo> > CurseforgeAPI::getFiles(int id)
+Reply<QList<CurseforgeFileInfo>, int> CurseforgeAPI::getFiles(int id, int index)
 {
     //TODO: page
     QUrl url = PREFIX + "/v1/mods/" + QString::number(id) + "/files";
+    //url query
+    QUrlQuery urlQuery;
+    //index
+    urlQuery.addQueryItem("index", QString::number(index));
+    //page size
+    urlQuery.addQueryItem("pageSize", QString::number(Config().getSearchResultCount()));
+    url.setQuery(urlQuery);
 
     QNetworkRequest request(url);
     request.setRawHeader("x-api-key",XAPIKEY);
@@ -168,15 +175,16 @@ Reply<QList<CurseforgeFileInfo> > CurseforgeAPI::getFiles(int id)
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return QList<CurseforgeFileInfo>{};
+            return std::make_pair(QList<CurseforgeFileInfo>{}, 0);
         }
-        auto resultList = value(jsonDocument.toVariant(),"data").toList();
+        auto resultList = value(jsonDocument.toVariant(), "data").toList();
+        auto totalCount = value(jsonDocument.toVariant(), "pagination", "totalCount").toInt();
 
         QList<CurseforgeFileInfo> fileInfoList;
         for(const auto &result : qAsConst(resultList))
             fileInfoList << CurseforgeFileInfo::fromVariant(result);
 
-        return fileInfoList;
+        return std::make_pair(fileInfoList, totalCount);
     } };
 }
 

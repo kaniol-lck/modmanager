@@ -26,7 +26,7 @@ public:
     void acquireBasicInfo();
     void acquireIcon();
     void acquireDescription();
-    std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> acquireAllFileList();
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> acquireMoreFileList();
 
     const CurseforgeModInfo &modInfo() const;
     void download(const CurseforgeFileInfo &fileInfo, LocalModPath *downloadPath = nullptr);
@@ -38,7 +38,7 @@ signals:
     void basicInfoReady();
     void iconReady();
     void descriptionReady();
-    void allFileListReady(QList<CurseforgeFileInfo> fileInfos);
+    void moreFileListReady(QList<CurseforgeFileInfo> fileInfos);
 
     void downloadStarted();
 
@@ -50,7 +50,7 @@ private:
     std::shared_ptr<Reply<CurseforgeModInfo>> basicInfoGetter_;
     bool gettingIcon_ = false;
     std::shared_ptr<Reply<QString>> descriptionGetter_;
-    std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> allFileListGetter_;
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> allFileListGetter_;
 };
 
 #endif // CURSEFORGEMOD_H

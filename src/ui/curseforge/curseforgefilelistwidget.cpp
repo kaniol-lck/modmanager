@@ -21,6 +21,7 @@ CurseforgeFileListWidget::CurseforgeFileListWidget(CurseforgeModBrowser *parent)
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setProperty("class", "ModList");
     connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeFileListWidget::updateIndexWidget);
+    connect(ui->fileListView->verticalScrollBar(), &QSlider::valueChanged, this, &CurseforgeFileListWidget::onListSliderChanged);
     ui->downloadPathSelect->hide();
     downloadPathSelectMenu_ = parent->downloadPathSelectMenu();
 }
@@ -33,7 +34,8 @@ CurseforgeFileListWidget::CurseforgeFileListWidget(QWidget *parent, LocalMod *lo
     ui->fileListView->setModel(&model_);
     ui->fileListView->setVerticalScrollBar(new SmoothScrollBar(this));
     ui->fileListView->setProperty("class", "ModList");
-    connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged,  this , &CurseforgeFileListWidget::updateIndexWidget);
+    connect(ui->fileListView->verticalScrollBar(), &QAbstractSlider::valueChanged, this, &CurseforgeFileListWidget::updateIndexWidget);
+    connect(ui->fileListView->verticalScrollBar(), &QSlider::valueChanged, this, &CurseforgeFileListWidget::onListSliderChanged);
     ui->downloadPathSelect->hide();
     downloadPathSelectMenu_ = new DownloadPathSelectMenu(this);
     ui->downloadPathSelect->setDefaultAction(downloadPathSelectMenu_->menuAction());
@@ -53,13 +55,13 @@ void CurseforgeFileListWidget::setMod(CurseforgeMod *mod)
     ui->fileListView->setVisible(mod_);
     if(!mod_) return;
     connect(this, &CurseforgeFileListWidget::modChanged, disconnecter(
-                connect(mod_, &CurseforgeMod::allFileListReady, this, &CurseforgeFileListWidget::updateFileList),
+                connect(mod_, &CurseforgeMod::moreFileListReady, this, &CurseforgeFileListWidget::updateFileList),
                 connect(mod_, &QObject::destroyed, this, [=]{ setMod(nullptr); })));
 
     updateFileList();
-    if(mod_->modInfo().allFileList().isEmpty()){
+    if(!mod_->modInfo().fileCompleted()){
         ui->fileListView->setCursor(Qt::BusyCursor);
-        mod->acquireAllFileList();
+        mod_->acquireMoreFileList();
     }
 }
 
@@ -128,5 +130,15 @@ void CurseforgeFileListWidget::updateIndexWidget()
         auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo);
         ui->fileListView->setIndexWidget(model_.indexFromItem(item), itemWidget);
         item->setSizeHint(QSize(0, itemWidget->height()));
+    }
+}
+
+void CurseforgeFileListWidget::onListSliderChanged(int i)
+{
+    if(i >= ui->fileListView->verticalScrollBar()->maximum() - 1000){
+        if(!mod_->modInfo().fileCompleted()){
+            ui->fileListView->setCursor(Qt::BusyCursor);
+            mod_->acquireMoreFileList();
+        }
     }
 }

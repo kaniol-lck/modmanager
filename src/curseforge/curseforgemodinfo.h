@@ -55,6 +55,10 @@ public:
     void setLatestFiles(const QList<CurseforgeFileInfo> &newLatestFiles);
     bool hasBasicInfo() const;
 
+    bool fileCompleted() const;
+    int totalFileCount() const;
+    void setTotalFileCount(int newTotalFileCount);
+
 private:
     QUrl websiteUrl_;
     QList<Attachment> images_;
@@ -64,6 +68,7 @@ private:
     QList<ModLoaderType::Type> loaderTypes_;
     QList<CurseforgeFileInfo> latestFileList_;
     QList<CurseforgeFileInfo> allFileList_;
+    int totalFileCount_ = 0;
     QList<CurseforgeCategoryInfo> categories_;
     QDateTime dateModified_;
     QDateTime dateCreated_;

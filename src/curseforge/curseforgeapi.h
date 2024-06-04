@@ -28,7 +28,7 @@ public:
     Reply<QString> getChangelog(int id, int FileID);
     Reply<QString> getDownloadUrl(int id, int FileID);
     Reply<CurseforgeFileInfo> getFileInfo(int id, int FileID);
-    Reply<QList<CurseforgeFileInfo> > getFiles(int id);
+    Reply<QList<CurseforgeFileInfo>, int> getFiles(int id, int index);
     Reply<CurseforgeModInfo> getInfo(int id);
     Reply<QString> getTimestamp();
     Reply<QList<GameVersion> > getMinecraftVersionList();

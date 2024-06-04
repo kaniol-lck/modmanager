@@ -144,6 +144,21 @@ bool CurseforgeModInfo::hasBasicInfo() const
     return basicInfo_;
 }
 
+bool CurseforgeModInfo::fileCompleted() const
+{
+    return allFileList_.size() != 0 && allFileList_.size() == totalFileCount_;
+}
+
+int CurseforgeModInfo::totalFileCount() const
+{
+    return totalFileCount_;
+}
+
+void CurseforgeModInfo::setTotalFileCount(int newTotalFileCount)
+{
+    totalFileCount_ = newTotalFileCount;
+}
+
 const QList<CurseforgeCategoryInfo> &CurseforgeModInfo::categories() const
 {
     return categories_;

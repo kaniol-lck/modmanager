@@ -13,8 +13,6 @@ class TagsFlowWidget : public QWidget
 public:
     explicit TagsFlowWidget(QWidget *parent = nullptr);
 
-    void setTagable(const Tagable &tagable);
-
     template<typename T>
     void setTagableObject(T* tagableObject)
     {

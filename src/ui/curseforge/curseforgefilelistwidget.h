@@ -37,6 +37,7 @@ public slots:
 private slots:
     void updateFileList();
     void updateIndexWidget();
+    void onListSliderChanged(int i);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

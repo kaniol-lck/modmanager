@@ -91,16 +91,16 @@ void CurseforgeMod::acquireDescription()
     });
 }
 
-std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> CurseforgeMod::acquireAllFileList()
+std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> CurseforgeMod::acquireMoreFileList()
 {
     if(allFileListGetter_ && allFileListGetter_->isRunning()) return allFileListGetter_;
-    qDebug()<<modInfo_.id()<<modInfo_.name();
-    allFileListGetter_ = api_->getFiles(modInfo_.id()).asUnique();
-    allFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &fileList){
-        modInfo_.allFileList_ = fileList;
-        emit allFileListReady(fileList);
+    allFileListGetter_ = api_->getFiles(modInfo_.id(), modInfo().allFileList().size()).asUnique();
+    allFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &fileList, int count){
+        modInfo_.allFileList_ << fileList;
+        modInfo_.totalFileCount_ = count;
+        emit moreFileListReady(fileList);
     }, [=](auto){
-        emit allFileListReady({});
+        emit moreFileListReady({});
     });
     return allFileListGetter_;
 }
