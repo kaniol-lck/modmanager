@@ -49,7 +49,8 @@ Reply<QList<CurseforgeModInfo> > CurseforgeAPI::searchMods(int sectionId, const 
     //mod
     urlQuery.addQueryItem("classId", QString::number(sectionId));
     //sort, 0 for no sort spec
-    urlQuery.addQueryItem("sortOrder", QString::number(sort + 1));
+    urlQuery.addQueryItem("sortField", QString::number(sort + 1));
+    urlQuery.addQueryItem("sortOrder", "desc");
 
     url.setQuery(urlQuery);
 

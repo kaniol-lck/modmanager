@@ -43,13 +43,13 @@ Reply<QList<ModrinthModInfo>> ModrinthAPI::searchMods(const QString name, int in
         str = "downloads";
         break;
     case 2:
-        str = "follows";//New add
+        str = "follows";
         break;
     case 3:
-        str = "updated";
+        str = "newest";
         break;
     case 4:
-        str = "newest";
+        str = "updated";
         break;
     }
     urlQuery.addQueryItem("index", str);
@@ -72,7 +72,7 @@ Reply<QList<ModrinthModInfo>> ModrinthAPI::searchMods(const QString name, int in
     if(type != ModLoaderType::Any)
         categoryFacets << "categories:" + ModLoaderType::toString(type);
 
-    //loader type
+    //category
     for(const auto &category : categories)
         if(!category.isEmpty())
             categoryFacets << "categories:" + category;

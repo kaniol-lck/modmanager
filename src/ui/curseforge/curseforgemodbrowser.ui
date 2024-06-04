@@ -70,6 +70,11 @@
     </property>
     <item>
      <property name="text">
+      <string>Featured</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
       <string>Popularity</string>
      </property>
     </item>
@@ -101,6 +106,26 @@
     <item>
      <property name="text">
       <string>Game Version</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Early Access</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Featured Released</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Released Date</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Rating</string>
      </property>
     </item>
    </widget>
@@ -139,7 +164,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>27</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Mod">
