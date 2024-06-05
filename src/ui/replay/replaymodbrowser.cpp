@@ -88,7 +88,7 @@ void ReplayModBrowser::refresh()
 void ReplayModBrowser::searchModByPathInfo(LocalModPath *path)
 {
     ui->versionSelect->setCurrentText(path->info().gameVersion());
-    ui->loaderSelect->setCurrentIndex(ModLoaderType::curseforge.indexOf(path->info().loaderType()));
+    ui->loaderSelect->setCurrentIndex(ModLoaderType::optifine.indexOf(path->info().loaderType()));
     downloadPathSelectMenu_->setDownloadPath(path);
 }
 

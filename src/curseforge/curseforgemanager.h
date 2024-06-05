@@ -13,7 +13,7 @@ class CurseforgeManagerModel : public QAbstractTableModel
     Q_OBJECT
     friend class CurseforgeManager;
 public:
-    enum Column { ModColumn, NameColumn, ProjectIDColumn, SlugColumn, AuthorsColumn, CategoryColumn, WebsiteColumn, UpdateDateColumn, CreateDateColumn, ReleaseDateColumn, LoaderTypesColumn, DownloadCountColumn, PopularityScoreColumn, SummaryColumn };
+    enum Column { ModColumn, NameColumn, ProjectIDColumn, SlugColumn, AuthorsColumn, CategoryColumn, WebsiteColumn, UpdateDateColumn, CreateDateColumn, ReleaseDateColumn, DownloadCountColumn, PopularityRankColumn, SummaryColumn };
     CurseforgeManagerModel(CurseforgeManager *manager);
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -58,21 +58,6 @@ private:
     std::unique_ptr<Reply<QList<CurseforgeModInfo> > > searchModsGetter_;
 
     void getModList() override;
-};
-
-class CurseforgeManagerProxyModel : public QSortFilterProxyModel
-{
-    Q_OBJECT
-public:
-    CurseforgeManagerProxyModel(QObject *parent = nullptr);
-
-    void setLoaderType(ModLoaderType::Type newLoaderType);
-
-protected:
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex &) const override;
-
-private:
-    ModLoaderType::Type loaderType_ = ModLoaderType::Any;
 };
 
 #endif // CURSEFORGEMANAGER_H

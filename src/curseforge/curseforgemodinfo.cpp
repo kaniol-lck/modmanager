@@ -27,10 +27,7 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     modInfo.dateModified_ = value(variant, "dateModified").toDateTime();
     modInfo.dateCreated_ = value(variant, "dateCreated").toDateTime();
     modInfo.dateReleased_ = value(variant, "dateReleased").toDateTime();
-    modInfo.popularityScore_ = value(variant, "popularityScore").toDouble();
-
-    for(auto &&str : value(variant, "modLoaders").toStringList())
-        modInfo.loaderTypes_ << ModLoaderType::fromString(str);
+    modInfo.gamePopularityRank_ = value(variant, "gamePopularityRank").toDouble();
 
     //authors
     for(auto &&author : value(variant, "authors").toList())
@@ -91,26 +88,6 @@ const QString &CurseforgeModInfo::description() const
 int CurseforgeModInfo::downloadCount() const
 {
     return downloadCount_;
-}
-
-const QList<ModLoaderType::Type> &CurseforgeModInfo::loaderTypes() const
-{
-    return loaderTypes_;
-}
-
-bool CurseforgeModInfo::isFabricMod() const
-{
-    return loaderTypes_.contains(ModLoaderType::Fabric);
-}
-
-bool CurseforgeModInfo::isForgeMod() const
-{
-    return loaderTypes_.contains(ModLoaderType::Forge);
-}
-
-bool CurseforgeModInfo::isRiftMod() const
-{
-    return loaderTypes_.contains(ModLoaderType::Rift);
 }
 
 const QList<CurseforgeFileInfo> &CurseforgeModInfo::latestFiles() const

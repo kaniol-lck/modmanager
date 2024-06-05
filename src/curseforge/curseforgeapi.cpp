@@ -26,7 +26,7 @@ CurseforgeAPI *CurseforgeAPI::api()
     return &api;
 }
 
-Reply<QList<CurseforgeModInfo> > CurseforgeAPI::searchMods(int sectionId, const GameVersion &version, int index, const QString &searchFilter, int category, int sort)
+Reply<QList<CurseforgeModInfo> > CurseforgeAPI::searchMods(int sectionId, const GameVersion &version, const ModLoaderType::Type &loaderType, int index, const QString &searchFilter, int category, int sort)
 {
     QUrl url = PREFIX + "/v1/mods/search";
 
@@ -40,6 +40,9 @@ Reply<QList<CurseforgeModInfo> > CurseforgeAPI::searchMods(int sectionId, const 
     //game version
     if(version != GameVersion::Any)
         urlQuery.addQueryItem("gameVersion", version);
+    //loader type
+    if(loaderType != ModLoaderType::Any)
+        urlQuery.addQueryItem("modLoaderType", QString::number(ModLoaderType::curseforge.indexOf(loaderType)));
     //index
     urlQuery.addQueryItem("index", QString::number(index));
     //search page size

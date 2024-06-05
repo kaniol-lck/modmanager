@@ -9,10 +9,11 @@ namespace ModLoaderType
 {
 enum Type{
     Any,
+    Cauldron, //is it alive?
     Fabric,
     Forge,
     LiteLoader,
-    Neoforge,
+    NeoForge,
     Quilt,
     Rift
 };
@@ -22,8 +23,9 @@ QString toString(Type loaderType);
 
 QIcon icon(Type type);
 
-const QList<Type> curseforge{ Any, Fabric, Forge/*, Rift*/ };
-const QList<Type> modrinth{ Any, Fabric, Forge, LiteLoader, Neoforge, Quilt, Rift };
+const QList<Type> curseforge{ Any, Forge, Cauldron, LiteLoader, Fabric, Quilt, NeoForge };
+const QList<Type> modrinth{ Any, Fabric, Forge, LiteLoader, NeoForge, Quilt, Rift };
+const QList<Type> optifine{ Any, Fabric, Forge };
 const QList<Type> replay{ Any, Fabric, Forge };
 const QList<Type> local{ Any, Fabric, Forge };
 

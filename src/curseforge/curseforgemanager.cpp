@@ -49,7 +49,7 @@ void CurseforgeManager::setSectionId(CurseforgeAPI::Section newSectionId)
 void CurseforgeManager::getModList()
 {
     emit searchStarted();
-    searchModsGetter_ = api_.searchMods(sectionId_, currentGameVersion_, currentIndex_, currentName_, currentCategoryId_, currentSort_).asUnique();
+    searchModsGetter_ = api_.searchMods(sectionId_, currentGameVersion_, currentLoaderType_, currentIndex_, currentName_, currentCategoryId_, currentSort_).asUnique();
     searchModsGetter_->setOnFinished(this, [=](const QList<CurseforgeModInfo> &infoList){
         //new search
         if(currentIndex_ == 0){
@@ -113,12 +113,10 @@ QVariant CurseforgeManagerModel::headerData(int section, Qt::Orientation orienta
             return tr("Date Created");
         case ReleaseDateColumn:
             return tr("Date Released");
-        case LoaderTypesColumn:
-            return tr("Loader Types");
         case DownloadCountColumn:
             return tr("Download Count");
-        case PopularityScoreColumn:
-            return tr("Popularity Score");
+        case PopularityRankColumn:
+            return tr("Popularity Rank");
         case SummaryColumn:
             return tr("Summary");
             break;
@@ -179,16 +177,10 @@ QVariant CurseforgeManagerModel::data(const QModelIndex &index, int role) const
                 return mod->modInfo().dateCreated().toString(QLocale().dateTimeFormat());
             case ReleaseDateColumn:
                 return mod->modInfo().dateReleased().toString(QLocale().dateTimeFormat());
-            case LoaderTypesColumn:{
-                QStringList stringList;
-                for(auto &&loaderType : mod->modInfo().loaderTypes())
-                    stringList << ModLoaderType::toString(loaderType);
-                return stringList.join(", ");
-            }
             case DownloadCountColumn:
                 return mod->modInfo().downloadCount();
-            case PopularityScoreColumn:
-                return mod->modInfo().popularityScore();
+            case PopularityRankColumn:
+                return mod->modInfo().gamePopularityRank();
             case SummaryColumn:
                 return mod->modInfo().summary();
                 break;
@@ -219,21 +211,4 @@ QVariant CurseforgeManagerModel::data(const QModelIndex &index, int role) const
 void CurseforgeManagerModel::setItemHeight(int newItemHeight)
 {
     itemHeight_ = newItemHeight;
-}
-
-CurseforgeManagerProxyModel::CurseforgeManagerProxyModel(QObject *parent) :
-    QSortFilterProxyModel(parent)
-{}
-
-void CurseforgeManagerProxyModel::setLoaderType(ModLoaderType::Type newLoaderType)
-{
-    loaderType_ = newLoaderType;
-}
-
-bool CurseforgeManagerProxyModel::filterAcceptsRow(int source_row, const QModelIndex &) const
-{
-    if(loaderType_ == ModLoaderType::Any) return true;
-    auto mod = sourceModel()->index(source_row, CurseforgeManagerModel::ModColumn).data(Qt::UserRole + 1).value<CurseforgeMod *>();
-    if(!mod) return false;
-    return mod->modInfo().loaderTypes().contains(loaderType_) || mod->modInfo().loaderTypes().isEmpty();
 }

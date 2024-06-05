@@ -39,10 +39,6 @@ public:
     const QUrl &iconUrl() const;
     const QString &description() const;
     int downloadCount() const;
-    const QList<ModLoaderType::Type> &loaderTypes() const;
-    bool isFabricMod() const;
-    bool isForgeMod() const;
-    bool isRiftMod() const;
     const QList<CurseforgeFileInfo> &latestFiles() const;
     std::optional<CurseforgeFileInfo> latestFileInfo(const GameVersion &version, ModLoaderType::Type &loaderType) const;
     const QList<CurseforgeFileInfo> &allFileList() const;
@@ -65,7 +61,6 @@ private:
     QStringList authors_;
     QString description_;
     int downloadCount_;
-    QList<ModLoaderType::Type> loaderTypes_;
     QList<CurseforgeFileInfo> latestFileList_;
     QList<CurseforgeFileInfo> allFileList_;
     int totalFileCount_ = 0;

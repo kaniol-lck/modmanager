@@ -25,7 +25,7 @@ public:
     const QString &slug() const;
     const QUrl &iconUrl() const;
     const QPixmap &icon() const;
-    double popularityScore() const;
+    double gamePopularityRank() const;
 
 protected:
     int id_;
@@ -34,7 +34,7 @@ protected:
     QString slug_;
     QUrl iconUrl_;
     QPixmap icon_;
-    double popularityScore_;
+    double gamePopularityRank_;
 };
 
 

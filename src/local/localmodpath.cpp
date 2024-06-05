@@ -146,7 +146,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
 
     auto future = QtConcurrent::run([=]{
         int count = 0;
-        QVector<int> modCount(3, 0);
+        QMap<ModLoaderType::Type, int> modCount;
         emit loadStarted();
         for(auto &file : modFileList){
             modCount[file->loadInfo()]++;
@@ -154,7 +154,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
         }
         if(autoLoaderType){
             if(auto iter = std::max_element(modCount.cbegin(), modCount.cend()); iter != modCount.cend()){
-                auto loaderType = ModLoaderType::local.at(iter - modCount.cbegin());
+                auto loaderType = iter.key();
                 info_.setLoaderType(loaderType);
                 emit infoUpdated();
             }

@@ -20,7 +20,7 @@ CurseforgeModCacheInfo CurseforgeModCacheInfo::fromVariant(const QVariant &varia
     if(variant.toMap().contains("slug"))
         info.slug_ = value(variant, "slug").toString();
     info.iconUrl_ = value(variant, "iconUrl").toUrl();
-    info.popularityScore_ = value(variant, "popularityScore").toDouble();
+    info.gamePopularityRank_ = value(variant, "gamePopularityRank").toDouble();
     return info;
 }
 
@@ -32,7 +32,7 @@ QJsonObject CurseforgeModCacheInfo::toJsonObject() const
     object.insert("summary", summary_);
     object.insert("slug", slug_);
     object.insert("iconUrl", iconUrl_.toString());
-    object.insert("popularityScore", popularityScore_);
+    object.insert("gamePopularityRank", gamePopularityRank_);
     return object;
 }
 
@@ -89,7 +89,7 @@ const QPixmap &CurseforgeModCacheInfo::icon() const
     return icon_;
 }
 
-double CurseforgeModCacheInfo::popularityScore() const
+double CurseforgeModCacheInfo::gamePopularityRank() const
 {
-    return popularityScore_;
+    return gamePopularityRank_;
 }

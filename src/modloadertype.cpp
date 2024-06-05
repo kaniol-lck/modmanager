@@ -4,14 +4,16 @@
 
 ModLoaderType::Type ModLoaderType::fromString(const QString &str)
 {
-    if(str.toLower() == "fabric")
+    if(str.toLower() == "cauldron")
+        return Type::Cauldron;
+    else if(str.toLower() == "fabric")
         return Type::Fabric;
     else if(str.toLower() == "forge")
         return Type::Forge;
     else if(str.toLower() == "liteloader")
         return Type::LiteLoader;
     else if(str.toLower() == "neoforge")
-        return Type::Neoforge;
+        return Type::NeoForge;
     else if(str.toLower() == "quilt")
         return Type::Quilt;
     else if(str.toLower() == "rift")
@@ -25,13 +27,15 @@ QString ModLoaderType::toString(Type loaderType)
     switch (loaderType) {
     case Type::Any:
         return QObject::tr("Any");
+    case Type::Cauldron:
+        return "Cauldron";
     case Type::Fabric:
         return "Fabric";
     case Type::Forge:
         return "Forge";
     case Type::LiteLoader:
         return "LiteLoader";
-    case Type::Neoforge:
+    case Type::NeoForge:
         return "NeoForge";
     case Type::Quilt:
         return "Quilt";
@@ -50,7 +54,7 @@ QIcon ModLoaderType::icon(Type type)
         return QIcon(":/image/forge.svg");
     if(type == LiteLoader)
         return QIcon(":/image/liteloader.png");
-    if(type == Neoforge)
+    if(type == NeoForge)
         return QIcon(":/image/neoforge.png");
     if(type == Quilt)
         return QIcon(":/image/quilt.svg");

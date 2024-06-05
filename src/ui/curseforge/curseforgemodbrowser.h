@@ -64,7 +64,6 @@ private slots:
 private:
     Ui::CurseforgeModBrowser *ui;
     CurseforgeManager *manager_;
-    CurseforgeManagerProxyModel *proxyModel_;
     CurseforgeAPI::Section sectionId_;
     CurseforgeModInfoWidget *infoWidget_;
     CurseforgeFileListWidget *fileListWidget_;

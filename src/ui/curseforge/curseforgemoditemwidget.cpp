@@ -68,20 +68,6 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(CurseforgeModBrowser *parent, C
     ui->createDateTime->setText(tr("Created"));
     ui->createDateTime->setDateTime(mod->modInfo().dateCreated());
 
-    //loader type
-    for(auto &&loaderType : mod_->modInfo().loaderTypes()){
-        auto label = new QLabel(this);
-        label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
-        if(loaderType == ModLoaderType::Fabric)
-            label->setText(QString(R"(<img src=":/image/fabric.png" height="22" width="22"/>)"));
-        else if(loaderType == ModLoaderType::Forge)
-            label->setText(QString(R"(<img src=":/image/forge.svg" height="22" width="22"/>)"));
-        else
-            label->setText(ModLoaderType::toString(loaderType));
-        label->setToolTip(ModLoaderType::toString(loaderType));
-        ui->loadersLayout->addWidget(label);
-    }
-
     if(defaultFileInfo_.has_value())
         ui->downloadSpeedText->setText(sizeConvert(defaultDownload.value().size()) + "\n"
                                        + numberConvert(mod->modInfo().downloadCount(), "", 3, 1000) + tr(" Downloads"));

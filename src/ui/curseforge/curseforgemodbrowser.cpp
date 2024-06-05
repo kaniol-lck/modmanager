@@ -36,7 +36,6 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     ExploreBrowser(parent, QIcon(":/image/curseforge.svg"), "Curseforge", QUrl("https://www.curseforge.com/minecraft/mc-mods")),
     ui(new Ui::CurseforgeModBrowser),
     manager_(new CurseforgeManager(this, sectionId)),
-    proxyModel_(new CurseforgeManagerProxyModel(this)),
     sectionId_(sectionId),
     infoWidget_(new CurseforgeModInfoWidget(this)),
     fileListWidget_(new CurseforgeFileListWidget(this)),
@@ -46,8 +45,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     fileListWidget_->hide();
     ui->setupUi(this);
     ui->menu_Curseforge->insertActions(ui->menu_Curseforge->actions().first(), menu_->actions());
-    proxyModel_->setSourceModel(manager_->model());
-    initUi(manager_, proxyModel_);
+    initUi(manager_);
     treeViewIndexWidgetColumn_ = CurseforgeManagerModel::CategoryColumn;
 
     for(auto &&toolBar : findChildren<QToolBar *>())
@@ -298,8 +296,8 @@ QDialog *CurseforgeModBrowser::getDialog(const QModelIndex &index)
 
 void CurseforgeModBrowser::on_loaderSelect_currentIndexChanged(int index)
 {
-    proxyModel_->setLoaderType(ModLoaderType::curseforge.at(index));
-    proxyModel_->invalidate();
+    currentLoaderType_ = ModLoaderType::curseforge.at(index);
+    search();
     updateStatusText();
 }
 
