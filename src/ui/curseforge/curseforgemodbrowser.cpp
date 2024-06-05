@@ -64,6 +64,7 @@ CurseforgeModBrowser::CurseforgeModBrowser(QWidget *parent, LocalMod *mod, Curse
     ui->searchBar->addWidget(ui->loaderSelect);
     ui->searchBar->addWidget(ui->searchText);
     ui->searchBar->addWidget(ui->sortSelect);
+    ui->searchBar->addWidget(ui->sortOrder);
 
     ui->loaderSelect->blockSignals(true);
     for(const auto &type : ModLoaderType::curseforge)
@@ -275,7 +276,8 @@ void CurseforgeModBrowser::search()
     manager_->search(ui->searchText->text(),
                      currentCategoryId_,
                      currentGameVersion_,
-                     ui->sortSelect->currentIndex());
+                     ui->sortSelect->currentIndex(),
+                     sortOrderAsc);
 }
 
 QDialog *CurseforgeModBrowser::getDialog(const QModelIndex &index)
@@ -446,3 +448,14 @@ CurseforgeManager *CurseforgeModBrowser::manager() const
 {
     return manager_;
 }
+
+void CurseforgeModBrowser::on_sortOrder_clicked()
+{
+    sortOrderAsc = !sortOrderAsc;
+    if(sortOrderAsc)
+        ui->sortOrder->setIcon(QIcon::fromTheme("view-sort-ascending"));
+    else
+        ui->sortOrder->setIcon(QIcon::fromTheme("view-sort-descending"));
+    search();
+}
+

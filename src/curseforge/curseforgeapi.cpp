@@ -26,7 +26,7 @@ CurseforgeAPI *CurseforgeAPI::api()
     return &api;
 }
 
-Reply<QList<CurseforgeModInfo> > CurseforgeAPI::searchMods(int sectionId, const GameVersion &version, const ModLoaderType::Type &loaderType, int index, const QString &searchFilter, int category, int sort)
+Reply<QList<CurseforgeModInfo> > CurseforgeAPI::searchMods(int sectionId, const GameVersion &version, const ModLoaderType::Type &loaderType, int index, const QString &searchFilter, int category, int sort, bool sortOrderAsc)
 {
     QUrl url = PREFIX + "/v1/mods/search";
 
@@ -53,7 +53,7 @@ Reply<QList<CurseforgeModInfo> > CurseforgeAPI::searchMods(int sectionId, const 
     urlQuery.addQueryItem("classId", QString::number(sectionId));
     //sort, 0 for no sort spec
     urlQuery.addQueryItem("sortField", QString::number(sort + 1));
-    urlQuery.addQueryItem("sortOrder", "desc");
+    urlQuery.addQueryItem("sortOrder", sortOrderAsc? "asc": "desc");
 
     url.setQuery(urlQuery);
 

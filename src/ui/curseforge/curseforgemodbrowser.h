@@ -61,6 +61,8 @@ private slots:
     void on_actionOpen_Curseforge_Mod_Dialog_triggered();
     void on_actionOpen_Website_Link_triggered();
 
+    void on_sortOrder_clicked();
+
 private:
     Ui::CurseforgeModBrowser *ui;
     CurseforgeManager *manager_;
@@ -75,6 +77,7 @@ private:
     CurseforgeMod* selectedMod_ = nullptr;
     std::unique_ptr<Reply<QList<CurseforgeCategoryInfo> > > sectionCategoriesGetter_;
 
+    bool sortOrderAsc = false;
     int currentCategoryId_ = 0;
     GameVersion currentGameVersion_;
 

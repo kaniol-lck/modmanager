@@ -9,13 +9,14 @@ CurseforgeManager::CurseforgeManager(QObject *parent, CurseforgeAPI::Section sec
     sectionId_(sectionId)
 {}
 
-void CurseforgeManager::search(const QString &name, int categoryId, GameVersion gameVersion, int sort)
+void CurseforgeManager::search(const QString &name, int categoryId, GameVersion gameVersion, int sort, bool sortOrderAsc)
 {
     currentIndex_ = 0;
     currentName_ = name;
     currentCategoryId_ = categoryId;
     currentGameVersion_ = gameVersion;
     currentSort_ = sort;
+    currentSortOrderAsc_ = sortOrderAsc;
     getModList();
 }
 
@@ -49,7 +50,7 @@ void CurseforgeManager::setSectionId(CurseforgeAPI::Section newSectionId)
 void CurseforgeManager::getModList()
 {
     emit searchStarted();
-    searchModsGetter_ = api_.searchMods(sectionId_, currentGameVersion_, currentLoaderType_, currentIndex_, currentName_, currentCategoryId_, currentSort_).asUnique();
+    searchModsGetter_ = api_.searchMods(sectionId_, currentGameVersion_, currentLoaderType_, currentIndex_, currentName_, currentCategoryId_, currentSort_, currentSortOrderAsc_).asUnique();
     searchModsGetter_->setOnFinished(this, [=](const QList<CurseforgeModInfo> &infoList){
         //new search
         if(currentIndex_ == 0){

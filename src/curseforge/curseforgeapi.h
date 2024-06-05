@@ -23,7 +23,7 @@ public:
     explicit CurseforgeAPI(QObject *parent = nullptr);
     static CurseforgeAPI *api();
 
-    Reply<QList<CurseforgeModInfo> > searchMods(int sectionId, const GameVersion &version, const ModLoaderType::Type &loaderType, int index, const QString &searchFilter, int category, int sort);
+    Reply<QList<CurseforgeModInfo> > searchMods(int sectionId, const GameVersion &version, const ModLoaderType::Type &loaderType, int index, const QString &searchFilter, int category, int sort, bool sortOrderAsc);
     Reply<int, CurseforgeFileInfo, QList<CurseforgeFileInfo> > getIdByFingerprint(const QString &fingerprint);
     Reply<QString> getDescription(int id);
     Reply<QString> getChangelog(int id, int FileID);

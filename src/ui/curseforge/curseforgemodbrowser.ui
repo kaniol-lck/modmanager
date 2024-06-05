@@ -129,6 +129,19 @@
      </property>
     </item>
    </widget>
+   <widget class="QToolButton" name="sortOrder">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>100</y>
+      <width>47</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="icon">
+     <iconset theme="view-sort-descending"/>
+    </property>
+   </widget>
   </widget>
   <widget class="MenuToolBar" name="toolBar">
    <property name="windowTitle">
