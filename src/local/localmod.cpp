@@ -110,7 +110,6 @@ void LocalMod::setCurseforgeMod(CurseforgeMod *newCurseforgeMod)
 
 void LocalMod::setCurseforgeId(int id, bool cache)
 {
-    qDebug()<<"setCurseforgeId "<<id<<LocalMod::commonInfo()->name();
     if(id != 0){
         curseforgeMod_ = new CurseforgeMod(this, id);
         addSubTagable(curseforgeMod_);
@@ -534,6 +533,8 @@ QJsonObject LocalMod::toJsonObject() const
 
 void LocalMod::restore(const QVariant &variant)
 {
+    //should not emit any signal to update anything while loading from file
+    blockSignals(true);
     alias_ = value(variant, "alias").toString();
     isFeatured_ = value(variant, "featured").toBool();
     for(auto &&tag : value(variant, "tags").toList())
@@ -582,6 +583,7 @@ void LocalMod::restore(const QVariant &variant)
         if(!modrinthMod_ && !id.modrinthId().isEmpty())
             setModrinthId(id.modrinthId(), false);
     }
+    blockSignals(false);
 }
 
 bool LocalMod::isFeatured() const

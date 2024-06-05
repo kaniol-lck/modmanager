@@ -19,7 +19,13 @@ TagsFlowWidget::TagsFlowWidget(QWidget *parent) :
 
 void TagsFlowWidget::updateUi()
 {
-   if(!tagableObject_) return;
+    //tags
+    for(auto widget : qAsConst(tagWidgets_)){
+        layout()->removeWidget(widget);
+        widget->deleteLater();
+    }
+    tagWidgets_.clear();
+    if(!tagableObject_) return;
     for(auto &&tag : tagableObject_->tags(Config().getShowTagCategories())){
         auto label = new QLabel(this);
         if(!tag.iconName().isEmpty())

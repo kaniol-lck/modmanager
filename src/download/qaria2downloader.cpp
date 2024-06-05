@@ -36,11 +36,6 @@ void QAria2Downloader::update()
     }
     emit downloadProgress(handle_->getCompletedLength(), handle_->getTotalLength());
     emit downloadSpeed(handle_->getDownloadSpeed(), handle_->getUploadSpeed());
-    qDebug() << QString::fromStdString(aria2::gidToHex(gid_))
-             << handle_->getCompletedLength() << handle_->getTotalLength()
-             << handle_->getDownloadSpeed() << handle_->getUploadSpeed()
-             << handle_->getConnections() << handle_->getNumPieces()
-             << handle_->getPieceLength() << handle_->getStatus();
 }
 
 aria2::DownloadStatus QAria2Downloader::status() const

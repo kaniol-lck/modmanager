@@ -166,7 +166,6 @@ void LocalModPath::loadMods(bool autoLoaderType)
     auto watcher = new QFutureWatcher<void>(this);
     watcher->setFuture(future);
     connect(watcher, &QFutureWatcher<void>::finished, this, [=]{
-        qDebug() << "modMap clear";
         for(const auto &mod : qAsConst(modMap_))
             containedTags_.removeSubTagable(mod);
         qDeleteAll(modMap_);
