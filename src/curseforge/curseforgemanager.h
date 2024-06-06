@@ -34,7 +34,7 @@ class CurseforgeManager : public ExploreManager
 public:
     CurseforgeManager(QObject *parent = nullptr, CurseforgeAPI::Section sectionId = CurseforgeAPI::Mod);
 
-    void search(const QString &name, int categoryId, GameVersion version, int sort, bool sortOrderAsc);
+    void search(const QString &name, int categoryId, GameVersion version, ModLoaderType::Type modLoader, int sort, bool sortOrderAsc);
     void searchMore();
     void refresh();
 

@@ -91,10 +91,23 @@ void CurseforgeMod::acquireDescription()
     });
 }
 
-std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> CurseforgeMod::acquireMoreFileList(GameVersion version, bool clear)
+std::shared_ptr<Reply<QList<CurseforgeFileInfo> > > CurseforgeMod::acquireLatestIndexedFileList()
+{
+    if(latestIndexedFileListGetter_ && latestIndexedFileListGetter_->isRunning()) return latestIndexedFileListGetter_;
+    latestIndexedFileListGetter_ = api_->getFiles(modInfo_.latestFileIndexList()).asShared();
+    latestIndexedFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &fileList){
+        modInfo_.latestIndexedFileList_ = fileList;
+        emit latestIndexedFileListReady(fileList);
+    }, [=](auto){
+        emit latestIndexedFileListReady({});
+    });
+    return latestIndexedFileListGetter_;
+}
+
+std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> CurseforgeMod::acquireMoreFileList(GameVersion version, ModLoaderType::Type loaderType, bool clear)
 {
     if(allFileListGetter_ && allFileListGetter_->isRunning()) return allFileListGetter_;
-    allFileListGetter_ = api_->getFiles(modInfo_.id(), clear? 0: modInfo().allFileList().size(), version).asUnique();
+    allFileListGetter_ = api_->getModFiles(modInfo_.id(), clear? 0: modInfo().allFileList().size(), version, loaderType).asShared();
     allFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &fileList, int count){
         if(clear)
             modInfo_.allFileList_ = fileList;

@@ -47,9 +47,14 @@ CurseforgeModInfo CurseforgeModInfo::fromVariant(const QVariant &variant)
     modInfo.iconUrl_ = value(value(variant,"logo"),"thumbnailUrl").toUrl();
 
 
-    //latest file url
+    //latest files
     for(auto &&variant : value(variant, "latestFiles").toList())
         modInfo.latestFileList_ << CurseforgeFileInfo::fromVariant(variant);
+
+    //latest file indexes
+    for(auto &&variant : value(variant, "latestFilesIndexes").toList())
+        if(auto id = value(variant, "fileId").toInt(); !modInfo.latestFileIndexList_.contains(id))
+            modInfo.latestFileIndexList_ << value(variant, "fileId").toInt();
 
     //categories
     for(auto &&variant : value(variant, "categories").toList()){
@@ -134,6 +139,16 @@ int CurseforgeModInfo::totalFileCount() const
 void CurseforgeModInfo::setTotalFileCount(int newTotalFileCount)
 {
     totalFileCount_ = newTotalFileCount;
+}
+
+const QList<int> &CurseforgeModInfo::latestFileIndexList() const
+{
+    return latestFileIndexList_;
+}
+
+const QList<CurseforgeFileInfo> &CurseforgeModInfo::latestIndexedFileList() const
+{
+    return latestIndexedFileList_;
 }
 
 const QList<CurseforgeCategoryInfo> &CurseforgeModInfo::categories() const

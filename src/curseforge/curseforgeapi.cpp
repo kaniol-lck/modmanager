@@ -156,15 +156,17 @@ Reply<CurseforgeFileInfo> CurseforgeAPI::getFileInfo(int id, int FileID)
     } };
 }
 
-Reply<QList<CurseforgeFileInfo>, int> CurseforgeAPI::getFiles(int id, int index, GameVersion version)
+Reply<QList<CurseforgeFileInfo>, int> CurseforgeAPI::getModFiles(int id, int index, GameVersion version, ModLoaderType::Type loaderType)
 {
-    //TODO: page
     QUrl url = PREFIX + "/v1/mods/" + QString::number(id) + "/files";
     //url query
     QUrlQuery urlQuery;
     //version
     if(version != GameVersion::Any)
         urlQuery.addQueryItem("gameVersion", version.toString());
+    //loader tye
+    if(loaderType != ModLoaderType::Any)
+        urlQuery.addQueryItem("modLoaderType", QString::number(ModLoaderType::curseforge.indexOf(loaderType)));
     //index
     urlQuery.addQueryItem("index", QString::number(index));
     //page size
@@ -181,7 +183,7 @@ Reply<QList<CurseforgeFileInfo>, int> CurseforgeAPI::getFiles(int id, int index,
         QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
         if (error.error != QJsonParseError::NoError) {
             qDebug("%s", error.errorString().toUtf8().constData());
-            return std::make_pair(QList<CurseforgeFileInfo>{}, 0);
+            return std::make_tuple(QList<CurseforgeFileInfo>{}, 0);
         }
         auto resultList = value(jsonDocument.toVariant(), "data").toList();
         auto totalCount = value(jsonDocument.toVariant(), "pagination", "totalCount").toInt();
@@ -190,8 +192,41 @@ Reply<QList<CurseforgeFileInfo>, int> CurseforgeAPI::getFiles(int id, int index,
         for(const auto &result : qAsConst(resultList))
             fileInfoList << CurseforgeFileInfo::fromVariant(result);
 
-        return std::make_pair(fileInfoList, totalCount);
-    } };
+        return std::make_tuple(fileInfoList, totalCount);
+        } };
+}
+
+Reply<QList<CurseforgeFileInfo> > CurseforgeAPI::getFiles(QList<int> fileIds)
+{
+    QUrl url = PREFIX + "/v1/mods/files";
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("x-api-key",XAPIKEY);
+    MMLogger::network(this) << url;
+    QJsonArray list;
+    for(auto &&fileId : fileIds)
+        list << fileId;
+    QJsonObject data{
+        { "fileIds", list }
+    };
+    auto reply = accessManager_.post(request, QJsonDocument(data).toJson(QJsonDocument::Compact));
+    return { reply, [=]{
+        //parse json
+        QJsonParseError error;
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(reply->readAll(), &error);
+        if (error.error != QJsonParseError::NoError) {
+            qDebug("%s", error.errorString().toUtf8().constData());
+            return std::make_tuple(QList<CurseforgeFileInfo>{});
+        }
+        auto resultList = value(jsonDocument.toVariant(), "data").toList();
+
+        QList<CurseforgeFileInfo> fileInfoList;
+        for(const auto &result : qAsConst(resultList))
+            fileInfoList << CurseforgeFileInfo::fromVariant(result);
+
+        return std::make_tuple(fileInfoList);
+        } };
 }
 
 Reply<CurseforgeModInfo> CurseforgeAPI::getInfo(int id)

@@ -9,12 +9,13 @@ CurseforgeManager::CurseforgeManager(QObject *parent, CurseforgeAPI::Section sec
     sectionId_(sectionId)
 {}
 
-void CurseforgeManager::search(const QString &name, int categoryId, GameVersion gameVersion, int sort, bool sortOrderAsc)
+void CurseforgeManager::search(const QString &name, int categoryId, GameVersion gameVersion, ModLoaderType::Type modLoader, int sort, bool sortOrderAsc)
 {
     currentIndex_ = 0;
     currentName_ = name;
     currentCategoryId_ = categoryId;
     currentGameVersion_ = gameVersion;
+    currentLoaderType_ = modLoader;
     currentSort_ = sort;
     currentSortOrderAsc_ = sortOrderAsc;
     getModList();

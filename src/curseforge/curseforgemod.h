@@ -26,7 +26,8 @@ public:
     void acquireBasicInfo();
     void acquireIcon();
     void acquireDescription();
-    std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> acquireMoreFileList(GameVersion version = GameVersion::Any, bool clear = false);
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> acquireLatestIndexedFileList();
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> acquireMoreFileList(GameVersion version = GameVersion::Any, ModLoaderType::Type loaderType = ModLoaderType::Any, bool clear = false);
 
     const CurseforgeModInfo &modInfo() const;
     void download(const CurseforgeFileInfo &fileInfo, LocalModPath *downloadPath = nullptr);
@@ -38,6 +39,7 @@ signals:
     void basicInfoReady();
     void iconReady();
     void descriptionReady();
+    void latestIndexedFileListReady(QList<CurseforgeFileInfo> fileInfos);
     void moreFileListReady(QList<CurseforgeFileInfo> fileInfos);
 
     void downloadStarted();
@@ -47,9 +49,10 @@ private:
     CurseforgeModInfo modInfo_;
     QAria2Downloader *downloader_;
 
-    std::shared_ptr<Reply<CurseforgeModInfo>> basicInfoGetter_;
+    std::unique_ptr<Reply<CurseforgeModInfo>> basicInfoGetter_;
     bool gettingIcon_ = false;
-    std::shared_ptr<Reply<QString>> descriptionGetter_;
+    std::unique_ptr<Reply<QString>> descriptionGetter_;
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> latestIndexedFileListGetter_;
     std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> allFileListGetter_;
 };
 

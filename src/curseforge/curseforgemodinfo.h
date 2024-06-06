@@ -55,6 +55,10 @@ public:
     int totalFileCount() const;
     void setTotalFileCount(int newTotalFileCount);
 
+    const QList<int> &latestFileIndexList() const;
+
+    const QList<CurseforgeFileInfo> &latestIndexedFileList() const;
+
 private:
     QUrl websiteUrl_;
     QList<Attachment> images_;
@@ -62,6 +66,8 @@ private:
     QString description_;
     int downloadCount_;
     QList<CurseforgeFileInfo> latestFileList_;
+    QList<CurseforgeFileInfo> latestIndexedFileList_;
+    QList<int> latestFileIndexList_;
     QList<CurseforgeFileInfo> allFileList_;
     int totalFileCount_ = 0;
     QList<CurseforgeCategoryInfo> categories_;

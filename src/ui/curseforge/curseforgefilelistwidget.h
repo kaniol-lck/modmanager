@@ -5,6 +5,7 @@
 #include <QWidget>
 
 #include "gameversion.h"
+#include "modloadertype.h"
 
 class CurseforgeMod;
 class CurseforgeModBrowser;
@@ -40,10 +41,16 @@ public slots:
 
 private slots:
     void updateFileList();
+    void updateFileList2();
     void updateIndexWidget();
+    void updateIndexWidget2();
     void onListSliderChanged(int i);
     void updateVersionList();
     void search(bool changed = false);
+
+    void on_allFile_btn_toggled(bool checked);
+
+    void on_loaderTypeSelecct_currentIndexChanged(int index);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -52,10 +59,12 @@ private:
     Ui::CurseforgeFileListWidget *ui;
     DownloadPathSelectMenu *downloadPathSelectMenu_ = nullptr;
     QStandardItemModel model_;
+    QStandardItemModel model2_;
     CurseforgeMod *mod_ = nullptr;
     LocalMod *localMod_ = nullptr;
     QMenu *versionMenu_ = nullptr;
     GameVersion currentGameVersion_;
+    ModLoaderType::Type currentLoaderType_;
 };
 
 #endif // CURSEFORGEFILELISTWIDGET_H

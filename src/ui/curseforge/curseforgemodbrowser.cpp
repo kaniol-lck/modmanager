@@ -276,6 +276,7 @@ void CurseforgeModBrowser::search()
     manager_->search(ui->searchText->text(),
                      currentCategoryId_,
                      currentGameVersion_,
+                     currentLoaderType_,
                      ui->sortSelect->currentIndex(),
                      sortOrderAsc);
 }
