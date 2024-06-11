@@ -70,7 +70,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get install -y libglew-dev libglfw3-dev
-          sudo apt-get install -y libaria2-0-dev libquazip5-dev
+          sudo apt-get install -y libaria2-0-dev libquazip1-qt5-dev
           sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-util1 libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
           sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx-frontend-qt5 libcurl4-openssl-dev
       - uses: actions/checkout@v2
@@ -87,8 +87,6 @@ jobs:
           echo "RELEASE_TEXT<<EOF" >> $GITHUB_ENV
           echo "${RELEASE_TEXT}" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          echo $PKG_CONFIG_PATH
-          export PKG_CONFIG_PATH='/usr/lib/x86_64-linux-gnu/pkgconfig/'
       - name: Modify version number
         if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
         shell: bash
@@ -96,6 +94,7 @@ jobs:
           sed -i "s/$RAW_VERSION/$VERSION/" src/version.h
       - name: build ubuntu
         run: |
+          export PKG_CONFIG_PATH='/usr/lib/x86_64-linux-gnu/pkgconfig/'
           qmake
           make
       - name: package
@@ -159,8 +158,8 @@ jobs:
         run: |
           export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
           export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
-          echo $PKG_CONFIG_PATH
-          export PKG_CONFIG_PATH='C:/msys64/mingw64/lib/pkgconfig'
+          setx PKG_CONFIG_PATH='C:/msys64/mingw64/lib/pkgconfig'
+          setx PATH "%PATH%;C:/msys64/mingw64/bin"
           echo "RAW_VERSION=${RAW_VERSION}" >> $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Modify version number
@@ -174,12 +173,14 @@ jobs:
         run: |
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip-qt5 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-pkg-config --noconfirm
       - name: Install dependencies for Qt 6
         if: ${{ startsWith( matrix.qt_ver, 6 ) }}
         shell: powershell
         run: |
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip-qt6 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-pkg-config --noconfirm
       - name: environment configuration
         shell: pwsh
         run: |
