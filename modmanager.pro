@@ -411,37 +411,6 @@ win32: RC_ICONS = package/modmanager.ico
 #dependencies
 unix {
   message("unix-like build")
-  equals(QT_MAJOR_VERSION,5){
-    exists(/usr/lib/x86_64-linux-gnu/libquazip5.a) {
-        LIBS += -L$$quote(/usr/lib/x86_64-linux-gnu) -lquazip5
-    } else {
-        LIBS += -lquazip1-qt5
-    }
-    INCLUDEPATH += \
-      /usr/include/QuaZip-Qt5-1.4/quazip \
-      /usr/include/QuaZip-Qt5-1.3/quazip \
-      /usr/include/QuaZip-Qt5-1.2/quazip \
-      /usr/include/QuaZip-Qt5-1.1/quazip \
-      /usr/include/quazip \
-      /usr/include/quazip5
-  }
-  equals(QT_MAJOR_VERSION,6){
-    exists(/usr/lib/x86_64-linux-gnu/libquazip6.a) {
-        LIBS += -L$$quote(/usr/lib/x86_64-linux-gnu) -lquazip6
-    } else {
-        LIBS += -lquazip1-qt6
-    }
-    INCLUDEPATH += \
-      /usr/include/QuaZip-Qt6-1.4/quazip \
-      /usr/include/QuaZip-Qt6-1.3/quazip \
-      /usr/include/QuaZip-Qt6-1.2/quazip \
-      /usr/include/QuaZip-Qt6-1.1/quazip \
-      /usr/include/quazip \
-      /usr/include/quazip6
-  }
-
-  INCLUDEPATH += /usr/include/aria2
-  LIBS += -L$$quote(/usr/local/lib) -laria2
 
   message(HEADERS)
   exists(/usr/include/KF5/KWindowSystem){
@@ -450,39 +419,23 @@ unix {
     LIBS += -lKF5WindowSystem
     INCLUDEPATH += /usr/include/KF5/KWindowSystem
   }
-}
-
-macx {
-  message("macos build")
-  INCLUDEPATH += /usr/include/aria2
-  LIBS += -L$$quote(/usr/local/lib) -laria2
-  equals(QT_MAJOR_VERSION,5):INCLUDEPATH += /usr/include/QuaZip-Qt5-1.4/quazip
-  equals(QT_MAJOR_VERSION,6):INCLUDEPATH += /usr/include/QuaZip-Qt6-1.4/quazip
-  INCLUDEPATH += /usr/include/quazip
+  CONFIG += link_pkgconfig
+  equals(QT_MAJOR_VERSION, 5): PKGCONFIG += libaria2 quazip1-qt5
+  equals(QT_MAJOR_VERSION, 6): PKGCONFIG += libaria2 quazip1-qt6
 }
 
 win32 {
+  #native blur
   LIBS += -ldwmapi
-  contains(QMAKE_HOST.arch, x86_64) {
-    message("win32 x86_64 build")
-    #For Qt5
-    equals(QT_MAJOR_VERSION,5): INCLUDEPATH += \
-        C:/msys64/mingw64/include/QuaZip-Qt5-1.4/quazip \
-        C:/msys64/mingw64/include/aria2
-    equals(QT_MAJOR_VERSION,5):LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt5
 
-    #For Qt6
-    equals(QT_MAJOR_VERSION,6): INCLUDEPATH += \
-    C:/msys64/mingw64/include/QuaZip-Qt6-1.4/quazip \
-    C:/msys64/mingw64/include/aria2
-
-    equals(QT_MAJOR_VERSION,6):LIBS += -L$$quote(C:/msys64/mingw64/bin) -laria2-0 -lquazip1-qt6
-
-  } else {
-  #Deprecated
-    message("win32 x86 build")
-    INCLUDEPATH += C:/msys64/mingw32/include
-    INCLUDEPATH += C:/msys64/mingw32/include/QuaZip-Qt5-1.4/quazip
-    LIBS += -L$$quote(C:/msys64/mingw32/bin) -laria2 -lquazip5
+  QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags libaria)
+  LIBS += $$system($$pkgConfigExecutable() --libs libaria2 | sed 's/\/lib\b/\/bin/' | sed 's/-laria2/-laria2-0/')
+  equals(QT_MAJOR_VERSION, 5){
+    QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags quazip1-qt5)
+    LIBS += $$system($$pkgConfigExecutable() --libs quazip1-qt5)
+  }
+  equals(QT_MAJOR_VERSION, 6){
+    QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags quazip1-qt6)
+    LIBS += $$system($$pkgConfigExecutable() --libs quazip1-qt6)
   }
 }

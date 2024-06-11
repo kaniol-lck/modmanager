@@ -3,8 +3,7 @@
 
 #include "abstractdownloader.h"
 
-//#include <aria2/aria2.h>
-#include <aria2.h>
+#include <aria2/aria2.h>
 
 class QAria2Downloader : public AbstractDownloader
 {
