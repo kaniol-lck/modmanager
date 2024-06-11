@@ -419,6 +419,7 @@ unix {
     LIBS += -lKF5WindowSystem
     INCLUDEPATH += /usr/include/KF5/KWindowSystem
   }
+  LIBS += -lstdc++
   CONFIG += link_pkgconfig
   equals(QT_MAJOR_VERSION, 5): PKGCONFIG += libaria2 quazip1-qt5
   equals(QT_MAJOR_VERSION, 6): PKGCONFIG += libaria2 quazip1-qt6
@@ -428,7 +429,9 @@ win32 {
   #native blur
   LIBS += -ldwmapi
 
-  QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags libaria)
+  message($$system(printenv PKG_CONFIG_PATH))
+  message($$system($$pkgConfigExecutable() --cflags libaria2))
+  QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags libaria2)
   LIBS += $$system($$pkgConfigExecutable() --libs libaria2 | sed 's/\/lib\b/\/bin/' | sed 's/-laria2/-laria2-0/')
   equals(QT_MAJOR_VERSION, 5){
     QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags quazip1-qt5)
