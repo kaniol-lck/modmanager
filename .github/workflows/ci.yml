@@ -87,6 +87,8 @@ jobs:
           echo "RELEASE_TEXT<<EOF" >> $GITHUB_ENV
           echo "${RELEASE_TEXT}" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
+          echo $PKG_CONFIG_PATH
+          export PKG_CONFIG_PATH='/usr/lib/x86_64-linux-gnu/pkgconfig/'
       - name: Modify version number
         if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
         shell: bash
@@ -157,6 +159,8 @@ jobs:
         run: |
           export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
           export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
+          echo $PKG_CONFIG_PATH
+          export PKG_CONFIG_PATH='C:/msys64/mingw64/lib/pkgconfig'
           echo "RAW_VERSION=${RAW_VERSION}" >> $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Modify version number
