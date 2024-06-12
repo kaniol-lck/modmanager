@@ -191,9 +191,10 @@ jobs:
           Get-Command -Name 'mingw32-make' | Format-List
       - name: mingw-build
         id: build
-        shell: bash
+        shell: pwsh
         run: |
-          export PKG_CONFIG_PATH='C:/msys64/mingw64/lib/pkgconfig'
+          set PKG_CONFIG_PATH='C:/msys64/mingw64/lib/pkgconfig'
+          set PATH="%PATH%;C:/msys64/mingw64/bin"
           qmake
           mingw32-make.exe qmake_all
           mingw32-make.exe
