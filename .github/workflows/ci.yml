@@ -158,8 +158,6 @@ jobs:
         run: |
           export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
           export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
-          setx PKG_CONFIG_PATH 'C:/msys64/mingw64/lib/pkgconfig'
-          setx PATH "%PATH%;C:/msys64/mingw64/bin"
           echo "RAW_VERSION=${RAW_VERSION}" >> $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Modify version number
@@ -193,8 +191,10 @@ jobs:
           Get-Command -Name 'mingw32-make' | Format-List
       - name: mingw-build
         id: build
-        shell: cmd
+        shell: bash
         run: |
+          export PKG_CONFIG_PATH='C:/msys64/mingw64/lib/pkgconfig'
+          export PATH="%PATH%;C:/msys64/mingw64/bin"
           qmake
           mingw32-make.exe qmake_all
           mingw32-make.exe

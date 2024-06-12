@@ -419,6 +419,8 @@ unix {
     LIBS += -lKF5WindowSystem
     INCLUDEPATH += /usr/include/KF5/KWindowSystem
   }
+  message($$system(printenv PKG_CONFIG_PATH))
+  message($$system($$pkgConfigExecutable() --cflags libaria2))
   LIBS += -lstdc++
   CONFIG += link_pkgconfig
   equals(QT_MAJOR_VERSION, 5): PKGCONFIG += libaria2 quazip1-qt5
