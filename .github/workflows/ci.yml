@@ -194,7 +194,6 @@ jobs:
         shell: bash
         run: |
           export PKG_CONFIG_PATH='C:/msys64/mingw64/lib/pkgconfig'
-          export PATH="%PATH%;C:/msys64/mingw64/bin"
           qmake
           mingw32-make.exe qmake_all
           mingw32-make.exe

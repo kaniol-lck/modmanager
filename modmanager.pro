@@ -1,6 +1,7 @@
 QT       += core gui network concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
 
 CONFIG += c++17
 QMAKE_CXXFLAGS += -std=c++17
@@ -420,8 +421,8 @@ unix {
     INCLUDEPATH += /usr/include/KF5/KWindowSystem
   }
   message($$system(printenv PKG_CONFIG_PATH))
-  message($$system($$pkgConfigExecutable() --cflags libaria2))
-  LIBS += -lstdc++
+  message($$system($$pkgConfigExecutable() --libs libaria2))
+  LIBS += -L/usr/lib/x86_64-linux-gnu -L/usr/local/lib
   CONFIG += link_pkgconfig
   equals(QT_MAJOR_VERSION, 5): PKGCONFIG += libaria2 quazip1-qt5
   equals(QT_MAJOR_VERSION, 6): PKGCONFIG += libaria2 quazip1-qt6
