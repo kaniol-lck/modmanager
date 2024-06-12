@@ -193,8 +193,8 @@ jobs:
         id: build
         shell: pwsh
         run: |
-          set PKG_CONFIG_PATH='C:/msys64/mingw64/lib/pkgconfig'
-          set PATH="%PATH%;C:/msys64/mingw64/bin"
+          setx PKG_CONFIG_PATH='C:/msys64/mingw64/lib/pkgconfig'
+          setx PATH="%PATH%;C:/msys64/mingw64/bin"
           qmake
           mingw32-make.exe qmake_all
           mingw32-make.exe

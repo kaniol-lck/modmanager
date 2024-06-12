@@ -424,7 +424,7 @@ unix {
   message($$system($$pkgConfigExecutable() --libs libaria2 quazip1-qt5))
   message($$system($$pkgConfigExecutable() --cflags libaria2 quazip1-qt5))
   QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags libaria2 quazip1-qt5)
-  LIBS += -L/usr/lib/x86_64-linux-gnu -lquazip5 -L/usr/local/lib -laria2
+  LIBS += -L/usr/lib/x86_64-linux-gnu -lquazip1-qt5 -L/usr/local/lib -laria2
   # CONFIG += link_pkgconfig
   # equals(QT_MAJOR_VERSION, 5): PKGCONFIG += libaria2 quazip1-qt5
   # equals(QT_MAJOR_VERSION, 6): PKGCONFIG += libaria2 quazip1-qt6
