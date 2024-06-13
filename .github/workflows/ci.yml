@@ -59,7 +59,7 @@ jobs:
             etc/usr/publish/**
   build-on-ubuntu:
     name: Build On Ubuntu
-    runs-on: ubuntu-latest # for libaria2-0 available
+    runs-on: ubuntu-24.04 # for libquazip1-qt5 available
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -70,7 +70,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get install -y libglew-dev libglfw3-dev
-          sudo apt-get install -y libaria2-0-dev libquazip5-dev
+          sudo apt-get install -y libaria2-0-dev libquazip1-qt5-dev
           sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-util1 libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
           sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx-frontend-qt5 libcurl4-openssl-dev
       - uses: actions/checkout@v2
@@ -94,6 +94,7 @@ jobs:
           sed -i "s/$RAW_VERSION/$VERSION/" src/version.h
       - name: build ubuntu
         run: |
+          export PKG_CONFIG_PATH='/usr/lib/x86_64-linux-gnu/pkgconfig/'
           qmake
           make
       - name: package
@@ -170,12 +171,15 @@ jobs:
         run: |
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip-qt5 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-pkg-config --noconfirm
+          C:/msys64/usr/bin/pacman -Q
       - name: Install dependencies for Qt 6
         if: ${{ startsWith( matrix.qt_ver, 6 ) }}
         shell: powershell
         run: |
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip-qt6 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-pkg-config --noconfirm
       - name: environment configuration
         shell: pwsh
         run: |
@@ -188,8 +192,11 @@ jobs:
           Get-Command -Name 'mingw32-make' | Format-List
       - name: mingw-build
         id: build
-        shell: cmd
+        shell: pwsh
+        env:
+          PKG_CONFIG_PATH: 'C:/msys64/mingw64/lib/pkgconfig'
         run: |
+          cp C:/msys64/mingw64/bin/pkg-config.exe ${{ env.QT_ROOT_DIR }}/bin/
           qmake
           mingw32-make.exe qmake_all
           mingw32-make.exe
