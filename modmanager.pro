@@ -435,16 +435,16 @@ win32 {
   LIBS += -ldwmapi
 
   message($$system(printenv PKG_CONFIG_PATH))
-  message($$system($$pkgConfigExecutable() --define-prefix --cflags libaria2))
-  message($$system($$pkgConfigExecutable() --define-prefix --libs libaria2))
-  QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --define-prefix --cflags libaria2)
-  LIBS += $$system($$pkgConfigExecutable() --define-prefix --libs libaria2 | sed 's/\/lib\b/\/bin/' | sed 's/-laria2/-laria2-0/')
+  message($$system($$pkgConfigExecutable() --cflags libaria2))
+  message($$system($$pkgConfigExecutable() --libs libaria2))
+  QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags libaria2)
+  LIBS += $$system($$pkgConfigExecutable() --libs libaria2 | sed 's/\/lib\b/\/bin/' | sed 's/-laria2/-laria2-0/')
   equals(QT_MAJOR_VERSION, 5){
-    QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --define-prefix --cflags quazip1-qt5)
-    LIBS += $$system($$pkgConfigExecutable() --define-prefix --libs quazip1-qt5)
+    QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags quazip1-qt5)
+    LIBS += $$system($$pkgConfigExecutable() --libs quazip1-qt5)
   }
   equals(QT_MAJOR_VERSION, 6){
-    QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --define-prefix --cflags quazip1-qt6)
-    LIBS += $$system($$pkgConfigExecutable() --define-prefix --libs quazip1-qt6)
+    QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags quazip1-qt6)
+    LIBS += $$system($$pkgConfigExecutable() --libs quazip1-qt6)
   }
 }
