@@ -192,9 +192,9 @@ jobs:
       - name: mingw-build
         id: build
         shell: pwsh
-        env: |
-          PKG_CONFIG_PATH 'C:/msys64/mingw64/lib/pkgconfig'
-          PATH "%PATH%;C:/msys64/mingw64/bin"
+        env:
+          PKG_CONFIG_PATH: 'C:/msys64/mingw64/lib/pkgconfig'
+          PATH: "%PATH%;C:/msys64/mingw64/bin"
         run: 
           qmake
           mingw32-make.exe qmake_all
