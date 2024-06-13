@@ -194,8 +194,8 @@ jobs:
         shell: pwsh
         env:
           PKG_CONFIG_PATH: 'C:/msys64/mingw64/lib/pkgconfig'
-          PATH: "%PATH%;C:/msys64/mingw64/bin"
         run: 
+          $env:PATH += ";C:/msys64/mingw64/bin"
           qmake
           mingw32-make.exe qmake_all
           mingw32-make.exe
