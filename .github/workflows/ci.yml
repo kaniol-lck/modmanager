@@ -141,10 +141,6 @@ jobs:
             x64_suffix: -x64
             modules:
     steps:
-      - name: where is pkg-config
-        shell: cmd
-        run : |
-          where pkg-config
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
@@ -200,6 +196,7 @@ jobs:
         env:
           PKG_CONFIG_PATH: 'C:/msys64/mingw64/lib/pkgconfig'
         run: |
+          cp C:/msys64/mingw64/bin/pkg-config.exe ${{ env.QT_ROOT_DIR }}/bin/
           qmake
           mingw32-make.exe qmake_all
           mingw32-make.exe
