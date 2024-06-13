@@ -169,6 +169,8 @@ jobs:
         if: ${{ startsWith( matrix.qt_ver, 5 ) }}
         shell: powershell
         run: |
+          $env:PATH
+          whereis pkg-config
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip-qt5 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-pkg-config --noconfirm
