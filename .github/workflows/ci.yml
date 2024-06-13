@@ -172,6 +172,7 @@ jobs:
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip-qt5 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-pkg-config --noconfirm
+          C:/msys64/usr/bin/pacman -Q
       - name: Install dependencies for Qt 6
         if: ${{ startsWith( matrix.qt_ver, 6 ) }}
         shell: powershell
