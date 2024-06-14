@@ -129,16 +129,10 @@ jobs:
         include:
           # - qt_arch: win64_mingw
           #   qt_ver: 6.7.1
-          #   mingw_arch: mingw64
-          #   msys_arch: x86_64
-          #   x64_suffix: -x64
           #   modules: qt5compat
           - qt_arch: win64_mingw81
             qt_ver: 5.15.2
             qt_tools_mingw_install: mingw810_64
-            mingw_arch: mingw64
-            msys_arch: x86_64
-            x64_suffix: -x64
             modules:
     steps:
       - name: Install Qt
@@ -169,17 +163,17 @@ jobs:
         if: ${{ startsWith( matrix.qt_ver, 5 ) }}
         shell: powershell
         run: |
-          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
-          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip-qt5 --noconfirm
-          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-pkg-config --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-quazip-qt5 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-pkg-config --noconfirm
           C:/msys64/usr/bin/pacman -Q
       - name: Install dependencies for Qt 6
         if: ${{ startsWith( matrix.qt_ver, 6 ) }}
         shell: powershell
         run: |
-          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-aria2 --noconfirm
-          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-quazip-qt6 --noconfirm
-          C:/msys64/usr/bin/pacman -S mingw-w64-${{ matrix.msys_arch }}-pkg-config --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-quazip-qt6 --noconfirm
+          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-pkg-config --noconfirm
       - name: environment configuration
         shell: pwsh
         run: |
@@ -203,7 +197,7 @@ jobs:
       - name: list msys dll
         shell: pwsh
         run : |
-          ls C:/msys64/${{ matrix.mingw_arch }}/bin
+          ls C:/msys64/mingw64/bin
           ls ${{ env.QT_ROOT_DIR }}/bin
       - name: package
         id: package
@@ -211,16 +205,17 @@ jobs:
         run: |
           mkdir deploy
           mv release/modmanager.exe deploy
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libcrypto-3${{ matrix.x64_suffix }}.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libbz2-1.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libiconv-2.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/liblzma-5.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libintl-8.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/zlib1.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libstdc++-6.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libsqlite3-0.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libssh2-1.dll deploy/
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libxml2-2.dll deploy/
+          cp C:/msys64/mingw64/bin/libcrypto-3-x64.dll deploy/
+          cp C:/msys64/mingw64/bin/libbz2-1.dll deploy/
+          cp C:/msys64/mingw64/bin/libiconv-2.dll deploy/
+          cp C:/msys64/mingw64/bin/liblzma-5.dll deploy/
+          cp C:/msys64/mingw64/bin/libintl-8.dll deploy/
+          cp C:/msys64/mingw64/bin/zlib1.dll deploy/
+          cp C:/msys64/mingw64/bin/libstdc++-6.dll deploy/
+          cp C:/msys64/mingw64/bin/libsqlite3-0.dll deploy/
+          cp C:/msys64/mingw64/bin/libssh2-1.dll deploy/
+          cp C:/msys64/mingw64/bin/libxml2-2.dll deploy/
+          cp C:/msys64/mingw64/bin/libgcc_s_seh-1.dll deploy/
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
       - name: aria2 dependencies
         shell: pwsh
@@ -234,24 +229,15 @@ jobs:
       - name: qt5 dependencies
         if: ${{ startsWith( matrix.qt_ver, 5 ) }}
         run : |
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt5.dll deploy/
+          cp C:/msys64/mingw64/bin/libquazip1-qt5.dll deploy/
       # - name: qt6 dependencies
       #   if: ${{ startsWith( matrix.qt_ver, 6 ) }}
       #   run : |
-      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/libquazip1-qt6.dll deploy/
-      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/libicuuc74.dll deploy/
-      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/libicudt74.dll deploy/
-      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/Qt6Core5Compat.dll deploy/
-      - name: x64 dependencies
-        if: contains(matrix.mingw_arch, 'mingw64')
-        run : |
-          cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_seh-1.dll deploy/
-      # - name: x32 dependencies
-      #   if: contains(matrix.mingw_arch, 'mingw32')
-      #   run : |
-      #     cp C:/msys64/${{ matrix.mingw_arch }}/bin/libgcc_s_dw2-1.dll deploy/
+      #     cp C:/msys64/mingw64/bin/libquazip1-qt6.dll deploy/
+      #     cp C:/msys64/mingw64/bin/libicuuc74.dll deploy/
+      #     cp C:/msys64/mingw64/bin/libicudt74.dll deploy/
+      #     cp C:/msys64/mingw64/bin/Qt6Core5Compat.dll deploy/
       - name: Modify NSIS for x64
-        if: contains(matrix.mingw_arch, 'mingw64')
         shell: pwsh
         run: |
           (Get-Content package/modmanager.nsi).replace('PROGRAMFILES', 'PROGRAMFILES64') | Set-Content package/modmanager.nsi
@@ -260,11 +246,11 @@ jobs:
           makensis package/modmanager.nsi
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Installer.exe
+          name: ModManager-${{ env.VERSION }}-x64-Installer.exe
           path: ${{github.workspace}}/package/ModManager*-Installer.exe
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-packed
+          name: ModManager-${{ env.VERSION }}-x64-packed
           path: deploy/*
       - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')
@@ -272,120 +258,9 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: package/ModManager-Installer.exe
-          asset_name: ModManager-${{ env.VERSION }}${{ matrix.x64_suffix }}-Installer.exe
+          asset_name: ModManager-${{ env.VERSION }}-x64-Installer.exe
           tag: ${{ github.ref }}
           overwrite: true
-  # enable them if find a way to build libaria2
-  #build-on-win-msvc:
-    #name: Build On Windows MSVC
-    #runs-on: windows-latest
-    #strategy:
-      #matrix:
-        #include:
-          #- qt_ver: 5.15.2
-          #qt_arch: win32_msvc2019
-          #msvc_arch: x86
-          #qt_arch_install: msvc2019
-          #openssl_url: "https://github.com/kaniol-lck/openssl1.1.1-prebuilt/releases/download/1.1.1l/openssl-1.1.1l-win32.zip"
-          #- qt_ver: 5.15.2
-            #qt_arch: win64_msvc2019_64
-            #msvc_arch: x64
-            #qt_arch_install: msvc2019_64
-            #openssl_url: "https://github.com/kaniol-lck/openssl1.1.1-prebuilt/releases/download/1.1.1l/openssl-1.1.1l-win64.zip"
-    #steps:
-      #- name: Install Qt
-        #uses: jurplel/install-qt-action@v2.13.0
-        #with:
-          #version: ${{ matrix.qt_ver }}
-          #arch: ${{ matrix.qt_arch }}
-          #tools: ${{ matrix.qt_tools }}
-          #cached: "false"
-      #- uses: actions/checkout@v2
-        #with:
-          #fetch-depth: 1
-          #submodules: recursive
-      #- name: Install zlib 32
-        #if: contains(matrix.qt_arch, 'win32_msvc')
-        #shell: pwsh
-        #run: |
-          #set ARCH=Win32
-          #Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat
-          #./install_zlib.bat
-          #del install_zlib.bat
-      #- name: Install zlib
-        #if: contains(matrix.qt_arch, 'win64_msvc')
-        #shell: pwsh
-        #run: |
-          #Invoke-WebRequest -Uri https://git.io/JnHTY -OutFile install_zlib.bat
-          #./install_zlib.bat
-          #del install_zlib.bat
-      #- name: Test zlib
-        #shell: cmd
-        #run: |
-          #if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
-          #if NOT exist "%PROGRAMFILES%"\zlib\bin\zlib.dll exit 1
-          #if NOT exist "%PROGRAMFILES%"\zlib\include\zconf.h exit 1
-          #if NOT exist "%PROGRAMFILES%"\zlib\include\zlib.h exit 1
-          #if NOT exist "%PROGRAMFILES%"\zlib\lib\zlib.lib exit 1
-      #- name: Install aria2
-        #shell: powershell
-        #run: |
-          #C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
-      #- name: msvc-build
-        #id: build
-        #shell: cmd
-        #run: |
-          #call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.msvc_arch }}
-          #qmake
-          #nmake
-          #echo winSdkDir=%WindowsSdkDir% >> %GITHUB_ENV%
-          #echo winSdkVer=%WindowsSdkVersion% >> %GITHUB_ENV%
-          #echo vcToolsInstallDir=%VCToolsInstallDir% >> %GITHUB_ENV%
-          #echo vcToolsRedistDir=%VCToolsRedistDir% >> %GITHUB_ENV%
-      #- name: Perpare package
-        #shell: pwsh
-        #run: |
-          #mkdir deploy && mv release/modmanager.exe deploy
-          #$client = new-object System.Net.WebClient
-          #$client.DownloadFile('${{ matrix.openssl_url }}', 'openssl-bin.zip')
-          #Expand-Archive -Path openssl-bin.zip -DestinationPath openssl
-          #cp openssl/*.dll deploy/
-          #cp C:/msys64/mingw64/bin/libaria2-0.dll deploy/
-          #cp LICENSE* deploy/
-          #cp *md deploy/
-      #- name: Copy zlib 32
-        #if: contains(matrix.qt_arch, 'win32_msvc')
-        #shell: pwsh
-        #run: |
-          #cp "C:/Program Files (x86)/zlib/bin/zlib.dll" deploy/
-      #- name: Copy zlib
-        #if: contains(matrix.qt_arch, 'win64_msvc')
-        #shell: pwsh
-        #run: |
-          #cp "C:/Program Files/zlib/bin/zlib.dll" deploy/
-      #- name: package
-        #id: package
-        #shell: pwsh
-        #run: |
-          #windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle --no-quick-import --qmldir "${{ env.Qt5_DIR }}/qml" deploy/modmanager.exe
-      #- uses: actions/upload-artifact@v2
-        #with:
-          #name: modmanager-${{ matrix.qt_arch }}
-          #path: ${{github.workspace}}/deploy/
-      #- name: Create zip
-        #id: createzip
-        #shell: pwsh
-        #run: |
-          #Compress-Archive -LiteralPath ${{github.workspace}}/deploy -DestinationPath ${{github.workspace}}/modmanager-${{ matrix.qt_arch }}.zip
-      #- name: Upload Release
-        #if: startsWith(github.event.ref, 'refs/tags/')
-        #uses: svenstaro/upload-release-action@v2
-        #with:
-          #repo_token: ${{ secrets.GITHUB_TOKEN }}
-          #file: ${{github.workspace}}/modmanager-${{ matrix.qt_arch }}.zip
-          #asset_name: modmanager-${{ matrix.qt_arch }}.zip
-          #tag: ${{ github.ref }}
-          #overwrite: true
   # build-on-osx:
   #   name: Build On OSX
   #   runs-on: ${{ matrix.os }}
