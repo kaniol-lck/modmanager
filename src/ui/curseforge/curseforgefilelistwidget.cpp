@@ -173,14 +173,21 @@ void CurseforgeFileListWidget::updateIndexWidget()
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_.rowCount(); row++){
+    for(int row = 0; row < model_.rowCount(); row++){
         auto index = model_.index(row, 0);
-        if(ui->fileListView->indexWidget(index)) continue;
-        auto item = model_.item(row);
-        auto &&fileInfo = mod_->modInfo().latestIndexedFileList().at(item->data(Qt::UserRole + 1).toInt());
-        auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo);
-        ui->fileListView->setIndexWidget(model_.indexFromItem(item), itemWidget);
-        item->setSizeHint(QSize(0, itemWidget->height()));
+        if(row >= beginRow && row <= endRow){
+            if(ui->fileListView->indexWidget(index)) continue;
+            auto item = model_.item(row);
+            auto &&fileInfo = mod_->modInfo().latestIndexedFileList().at(item->data(Qt::UserRole + 1).toInt());
+            auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo);
+            ui->fileListView->setIndexWidget(model_.indexFromItem(item), itemWidget);
+            item->setSizeHint(QSize(0, itemWidget->height()));
+        } else{
+            if(auto widget = ui->fileListView->indexWidget(index)){
+                ui->fileListView->setIndexWidget(index, nullptr);
+                delete widget;
+            }
+        }
     }
 }
 
@@ -194,14 +201,21 @@ void CurseforgeFileListWidget::updateIndexWidget2()
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model2_.rowCount(); row++){
+    for(int row = 0; row < model2_.rowCount(); row++){
         auto index = model2_.index(row, 0);
-        if(ui->allFileListView->indexWidget(index)) continue;
-        auto item = model2_.item(row);
-        auto &&fileInfo = mod_->modInfo().allFileList().at(item->data(Qt::UserRole + 1).toInt());
-        auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo);
-        ui->allFileListView->setIndexWidget(model2_.indexFromItem(item), itemWidget);
-        item->setSizeHint(QSize(0, itemWidget->height()));
+        if(row >= beginRow && row <= endRow){
+            if(ui->allFileListView->indexWidget(index)) continue;
+            auto item = model2_.item(row);
+            auto &&fileInfo = mod_->modInfo().allFileList().at(item->data(Qt::UserRole + 1).toInt());
+            auto itemWidget = new CurseforgeFileItemWidget(this, mod_, fileInfo);
+            ui->allFileListView->setIndexWidget(model2_.indexFromItem(item), itemWidget);
+            item->setSizeHint(QSize(0, itemWidget->height()));
+        } else{
+            if(auto widget = ui->fileListView->indexWidget(index)){
+                ui->fileListView->setIndexWidget(index, nullptr);
+                delete widget;
+            }
+        }
     }
 }
 

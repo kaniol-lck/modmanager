@@ -72,14 +72,21 @@ void GitHubFileListWidget::updateIndexWidget()
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
+    for(int row = 0; row < model_->rowCount(); row++){
         auto index = model_->index(row, 0);
-        if(ui->fileListView->indexWidget(index)) continue;
-        auto item = model_->item(row);
-        auto &&fileInfo = release_->info().assets().at(item->data(Qt::UserRole + 1).toInt());
-        auto itemWidget = new GitHubFileItemWidget(this, fileInfo);
-        ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
-        item->setSizeHint(QSize(0, itemWidget->height()));
+        if(row >= beginRow && row <= endRow){
+            if(ui->fileListView->indexWidget(index)) continue;
+            auto item = model_->item(row);
+            auto &&fileInfo = release_->info().assets().at(item->data(Qt::UserRole + 1).toInt());
+            auto itemWidget = new GitHubFileItemWidget(this, fileInfo);
+            ui->fileListView->setIndexWidget(model_->indexFromItem(item), itemWidget);
+            item->setSizeHint(QSize(0, itemWidget->height()));
+        } else{
+            if(auto widget = ui->fileListView->indexWidget(index)){
+                ui->fileListView->setIndexWidget(index, nullptr);
+                delete widget;
+            }
+        }
     }
 }
 

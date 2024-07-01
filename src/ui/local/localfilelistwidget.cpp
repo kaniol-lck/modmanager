@@ -132,18 +132,23 @@ void LocalFileListWidget::updateIndexWidget()
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_->rowCount(); row++){
+    for(int row = 0; row < model_->rowCount(); row++){
         auto index = model_->index(row, 0);
-        if(ui->fileListView->indexWidget(index)) continue;
-//        qDebug() << "new widget at row" << row;
-        auto item = model_->item(row);
-        if(!item) continue;
-        auto mod = item->data().value<LocalMod*>();
-        if(mod){
-            auto modItemWidget = new LocalModItemWidget(ui->fileListView, mod);
-//            modItemWidget->setMinimal(true);
-            ui->fileListView->setIndexWidget(index, modItemWidget);
-            item->setSizeHint(QSize(0, modItemWidget->height()));
+        if(row >= beginRow && row <= endRow){
+            if(ui->fileListView->indexWidget(index)) continue;
+            auto item = model_->item(row);
+            if(!item) continue;
+            auto mod = item->data().value<LocalMod*>();
+            if(mod){
+                auto modItemWidget = new LocalModItemWidget(ui->fileListView, mod);
+                ui->fileListView->setIndexWidget(index, modItemWidget);
+                item->setSizeHint(QSize(0, modItemWidget->height()));
+            }
+        } else{
+            if(auto widget = ui->fileListView->indexWidget(index)){
+                ui->fileListView->setIndexWidget(index, nullptr);
+                delete widget;
+            }
         }
     }
 }
@@ -158,18 +163,23 @@ void LocalFileListWidget::updateUpdateIndexWidget()
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < updateModel_->rowCount(); row++){
+    for(int row = 0; row < updateModel_->rowCount(); row++){
         auto index = updateModel_->index(row, 0);
-        if(ui->updateFileListView->indexWidget(index)) continue;
-//        qDebug() << "new widget at row" << row;
-        auto item = updateModel_->item(row);
-        if(!item) continue;
-        auto mod = item->data().value<LocalMod*>();
-        if(mod){
-            auto modItemWidget = new LocalModItemWidget(ui->updateFileListView, mod);
-//            modItemWidget->setMinimal(true);
-            ui->updateFileListView->setIndexWidget(index, modItemWidget);
-            item->setSizeHint(QSize(0, modItemWidget->height()));
+        if(row >= beginRow && row <= endRow){
+            if(ui->updateFileListView->indexWidget(index)) continue;
+            auto item = updateModel_->item(row);
+            if(!item) continue;
+            auto mod = item->data().value<LocalMod*>();
+            if(mod){
+                auto modItemWidget = new LocalModItemWidget(ui->updateFileListView, mod);
+                ui->updateFileListView->setIndexWidget(index, modItemWidget);
+                item->setSizeHint(QSize(0, modItemWidget->height()));
+            }
+        } else{
+            if(auto widget = ui->fileListView->indexWidget(index)){
+                ui->fileListView->setIndexWidget(index, nullptr);
+                delete widget;
+            }
         }
     }
 }

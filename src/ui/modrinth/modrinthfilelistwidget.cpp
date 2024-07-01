@@ -134,12 +134,19 @@ void ModrinthFileListWidget::updateIndexWidget()
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model_.rowCount(); row++){
+    for(int row = 0; row < model_.rowCount(); row++){
         auto index = model_.index(row, 0);
-        if(ui->fileListView->indexWidget(index)) continue;
-        auto &&fileInfo = mod_->modInfo().fileList().at(index.data(Qt::UserRole + 1).toInt());
-        auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo);
-        ui->fileListView->setIndexWidget(index, itemWidget);
-        model_.itemFromIndex(index)->setSizeHint(QSize(0, itemWidget->height()));
+        if(row >= beginRow && row <= endRow){
+            if(ui->fileListView->indexWidget(index)) continue;
+            auto &&fileInfo = mod_->modInfo().fileList().at(index.data(Qt::UserRole + 1).toInt());
+            auto itemWidget = new ModrinthFileItemWidget(this, mod_, fileInfo);
+            ui->fileListView->setIndexWidget(index, itemWidget);
+            model_.itemFromIndex(index)->setSizeHint(QSize(0, itemWidget->height()));
+        } else{
+            if(auto widget = ui->fileListView->indexWidget(index)){
+                ui->fileListView->setIndexWidget(index, nullptr);
+                delete widget;
+            }
+        }
     }
 }

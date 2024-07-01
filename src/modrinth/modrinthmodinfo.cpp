@@ -85,11 +85,12 @@ ModrinthModInfo ModrinthModInfo::fromVariant(const QVariant &variant)
         if(it != ModrinthAPI::getCategories().end()){
             auto [name, iconName] = *it;
             modInfo.importTag(Tag(name, TagCategory::ModrinthCategory, ":/image/modrinth/" + iconName));
+            qDebug() << iconName;
         } else if(auto loaderType = ModLoaderType::fromString(categoryId);
-                    loaderType != ModLoaderType::Any && ModLoaderType::modrinth.contains(loaderType)){
+                   loaderType != ModLoaderType::Any && ModLoaderType::modrinth.contains(loaderType)){
             modInfo.loaderTypes_ << loaderType;
             } else{
-//                qDebug() << "UNKNOWN MODRINTH CATEGORY ID:" << categoryId;
+               qDebug() << "UNKNOWN MODRINTH CATEGORY ID:" << categoryId;
             }
     }
 

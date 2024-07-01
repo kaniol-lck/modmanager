@@ -129,11 +129,18 @@ void ExploreBrowser::updateListViewIndexWidget()
     else
         //extra 2
         endRow += 2;
-    for(int row = beginRow; row <= endRow && row < model()->rowCount(); row++){
+    for(int row = 0; row < model()->rowCount(); row++){
         auto index = model()->index(row, 0);
-        if(modListView_->indexWidget(index)) continue;
-        if(auto widget = getListViewIndexWidget(index)){
-            modListView_->setIndexWidget(index, widget);
+        if(row >= beginRow && row <= endRow){
+            if(modListView_->indexWidget(index)) continue;
+            if(auto widget = getListViewIndexWidget(index)){
+                modListView_->setIndexWidget(index, widget);
+            }
+        } else{
+            if(auto widget = modListView_->indexWidget(index)){
+                modListView_->setIndexWidget(index, nullptr);
+                delete widget;
+            }
         }
     }
 }
