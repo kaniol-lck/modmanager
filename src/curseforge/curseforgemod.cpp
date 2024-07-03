@@ -106,9 +106,9 @@ std::shared_ptr<Reply<QList<CurseforgeFileInfo> > > CurseforgeMod::acquireLatest
 
 std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> CurseforgeMod::acquireMoreFileList(GameVersion version, ModLoaderType::Type loaderType, bool clear)
 {
-    if(allFileListGetter_ && allFileListGetter_->isRunning()) return allFileListGetter_;
-    allFileListGetter_ = api_->getModFiles(modInfo_.id(), clear? 0: modInfo().allFileList().size(), version, loaderType).asShared();
-    allFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &fileList, int count){
+    if(moreFileListGetter_ && moreFileListGetter_->isRunning()) return moreFileListGetter_;
+    moreFileListGetter_ = api_->getModFiles(modInfo_.id(), clear? 0: modInfo().allFileList().size(), version, loaderType).asShared();
+    moreFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &fileList, int count){
         if(clear)
             modInfo_.allFileList_ = fileList;
         else
@@ -118,7 +118,7 @@ std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> CurseforgeMod::acquireMor
     }, [=](auto){
         emit moreFileListReady({});
     });
-    return allFileListGetter_;
+    return moreFileListGetter_;
 }
 
 const CurseforgeModInfo &CurseforgeMod::modInfo() const

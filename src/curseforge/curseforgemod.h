@@ -53,7 +53,7 @@ private:
     bool gettingIcon_ = false;
     std::unique_ptr<Reply<QString>> descriptionGetter_;
     std::shared_ptr<Reply<QList<CurseforgeFileInfo>>> latestIndexedFileListGetter_;
-    std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> allFileListGetter_;
+    std::shared_ptr<Reply<QList<CurseforgeFileInfo>, int>> moreFileListGetter_;
 };
 
 #endif // CURSEFORGEMOD_H

@@ -135,7 +135,7 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
             titleBar_->setNormal();
         }
         *result = ::DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
-         break;
+        break;
     }
     }
     return false;

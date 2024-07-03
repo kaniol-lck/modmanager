@@ -161,13 +161,19 @@ void LocalMod::checkCurseforgeUpdate(bool force)
     emit checkCurseforgeUpdateStarted();
     //update file list
     if(force || curseforgeMod_->modInfo().allFileList().isEmpty()){
-        //TODO
-        curseforgeFileListGetter_ = curseforgeMod_->acquireMoreFileList();
+        curseforgeFileListGetter_ = curseforgeMod_->acquireMoreFileList(path()->info().gameVersion(), path()->info().loaderType());
         curseforgeFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &, int count){
             curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
             emit curseforgeUpdateReady(true);
         }, [=](auto){
-            emit curseforgeUpdateReady(false);
+            // major version instead
+            curseforgeFileListGetter_ = curseforgeMod_->acquireMoreFileList(path()->info().gameVersion().majorVersion(), path()->info().loaderType());
+            curseforgeFileListGetter_->setOnFinished(this, [=](const QList<CurseforgeFileInfo> &, int count){
+                curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());
+                    emit curseforgeUpdateReady(true);
+            }, [=](auto){
+                emit curseforgeUpdateReady(false);
+            });
         });
     }else {
         curseforgeUpdater_.findUpdate(modFile_->linker()->curseforgeFileInfo());

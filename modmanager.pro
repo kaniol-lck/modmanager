@@ -71,7 +71,7 @@ unix {
 INSTALLS += target
 
 CONFIG(debug, debug|release) {
-#    QMAKE_CXXFLAGS_DEBUG += -g3 -O0
+# QMAKE_CXXFLAGS_DEBUG += -g3 -O0
     message("Currently in DEBUG mode.")
 } else {
     DEFINES += QT_NO_DEBUG QT_NO_DEBUG_OUTPUT
