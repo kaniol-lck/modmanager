@@ -2,13 +2,16 @@
 
 #include <QDir>
 
+#include "config.hpp"
+
 DownloadFileInfo::DownloadFileInfo(const QUrl &url, const QString &path) :
     title_(QObject::tr("Custom Download")),
     displayName_(url.fileName()),
     fileName_(url.fileName()),
-    url_(url),
-    path_(path)
-{}
+    url_(url)
+{
+    path_ = path.isEmpty()? Config().getDownloadPath() : path;
+}
 
 DownloadFileInfo::DownloadFileInfo(const CurseforgeFileInfo &info) :
     DownloadFileInfo(info.url())

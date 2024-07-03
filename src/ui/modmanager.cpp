@@ -59,9 +59,9 @@ ModManager::ModManager(QWidget *parent) :
     Config config;
     enableBlurBehind_ = config_.getEnableBlurBehind();
     ui->setupUi(this);
-    menuBar_ = ui->menubar;
-    if(Config().getUseFramelessWindow()) menuBar_->hide();
-    ui->menubar = new QMenuBar(this);
+    menuBar_ = new QMenuBar(this);
+    menuBar_->addActions(ui->menubar->actions());
+    menuBar_->hide();
     setCentralWidget(&pageSwitcher_);
     DockWidgetContent::lockPanelsAction = ui->actionLock_Panels;
     restoreGeometry(config.getGeometry());
@@ -116,7 +116,6 @@ ModManager::ModManager(QWidget *parent) :
 
     mergeMenuBar();
     updateUi();
-    qApp->setStyleSheet(styleSheetPath(config_.getCustomStyle()));
 }
 
 ModManager::~ModManager()
@@ -229,7 +228,7 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
         if(!widget->isVisible()) continue;
         auto rect = widget->rect();
         rect.translate(widget->pos());
-        p.fillRect(rect, QBrush(QColor(255, 255, 255, 191)));
+        p.fillRect(rect, QBrush(QColor(255, 255, 255, 210)));
     }
 }
 #endif //defined (DE_KDE) || defined (Q_OS_WIN)

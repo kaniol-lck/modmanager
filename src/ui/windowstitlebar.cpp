@@ -13,6 +13,8 @@
 #include <dwmapi.h>
 #endif
 
+#include "config.hpp"
+
 WindowsTitleBar::WindowsTitleBar(QWidget *parent, QMenuBar *menuBar) :
     QWidget(parent),
     ui(new Ui::WindowsTitleBar),
@@ -20,6 +22,7 @@ WindowsTitleBar::WindowsTitleBar(QWidget *parent, QMenuBar *menuBar) :
     menuBar_(menuBar)
 {
     ui->setupUi(this);
+    setMouseTracking(true);
     ui->closeButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarCloseButton));
     ui->maxButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMaxButton));
     ui->minButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMinButton));
@@ -61,19 +64,13 @@ void WindowsTitleBar::setNormal()
     ui->maxButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMaxButton));
 }
 
-#ifdef Q_OS_WIN
-void WindowsTitleBar::mouseMoveEvent(QMouseEvent *event)
+void WindowsTitleBar::paintEvent(QPaintEvent *event)
 {
-    if(event->buttons()&Qt::LeftButton)
-        parentWidget_->move(event->pos() + parentWidget_->pos() - clickPos_);
+    if(!Config().getEnableBlurBehind()) return;
+    QPainter p(this);
+    p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    p.fillRect(rect(), QBrush(QColor(255, 255, 255, 195)));
 }
-
-void WindowsTitleBar::mousePressEvent(QMouseEvent *event)
-{
-    if(event->button()==Qt::LeftButton)
-        clickPos_=event->pos();
-}
-#endif //Q_OS_WIN
 
 void WindowsTitleBar::on_closeButton_clicked()
 {

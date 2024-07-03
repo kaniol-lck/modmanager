@@ -29,10 +29,8 @@ public slots:
     void setNormal();
 
 protected:
-#ifdef Q_OS_WIN
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mousePressEvent(QMouseEvent *event) override;
-#endif //Q_OS_WIN
+    void paintEvent(QPaintEvent *event) override;
+
 private slots:
     void on_closeButton_clicked();
     void on_maxButton_clicked();

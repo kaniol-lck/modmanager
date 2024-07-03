@@ -25,7 +25,7 @@ QAria2Downloader *DownloadManager::download(const DownloadFileInfo &info)
     model_->beginInsertRows(QModelIndex(), downloaders_.size(), downloaders_.size());
     downloaders_ << downloader;
     model_->endInsertRows();
-    qDebug() << "new download job" << info.displayName();
+    qDebug() << "new download job" << info.displayName() << info.filePath();
     emit downloaderAdded(info, downloader);
     //handle redirect
     downloader->handleRedirect();

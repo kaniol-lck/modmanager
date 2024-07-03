@@ -1,49 +1,63 @@
-QWidget:focus{
+QWidget:focus {
   outline: none;
 }
 
-Widget {
-  background-color: #ffffff;
-}
-
-QWidget[enabled=false] {
-  background-color: #cfcfcf;
-}
-
-QTextBrowser, QScrollArea, QScrollArea .QWidget {
-  background-color: transparent;
-  border-color: transparent;
-}
-
-.ModList::item:hover {
-  border-left: 5px solid #eee;
-  background-color: #22eeeeee;
-}
-
-.ModList::item:selected {
-  border-left: 5px solid #37d;
-  background-color: #223377dd;
+QWidget {
   color: black;
 }
 
-.GitHubReleaseItemWidget, .LocalModItemWidget {
+/* DockWidget & Title */
+.QWidget,
+QDialog,
+QLineEdit,
+QSpinBox,
+QDoubleSpinBox {
+  background-color: #fafafa;
+}
+
+/* Browser */
+Browser {
+  background-color: #fafafa;
+}
+
+/* ModList inside */
+Browser .ModList {
+  background-color: #fafafa;
+}
+
+/* Tranparent */
+Browser .QWidget,
+Browser .QWidget .QScrollArea,
+QDockWidget .QWidget,
+QDockWidget .QTextBrowser,
+QDockWidget .QScrollArea,
+QDockWidget .QToolButton,
+QDockWidget .QLabel {
+  background-color: transparent;
+}
+
+/* Label Texts */
+.GitHubReleaseItemWidget,
+.LocalModItemWidget {
   margin-left: 5px;
 }
 
-.DateTimeText > * {
-  color: #777;
+.DateTimeText>* {
+  color: #777777;
   font-size: 9pt;
 }
 
 .Title {
-  color: black;
+  color: #000000;
   font-weight: bold;
   font-size: 13pt;
-  background: transparent;
+  background-color: transparent;
 }
 
-.CurseforgeFileListWidget .Title, .ModrinthFileListWidget .Title,
-.GitHubFileListWidget .Title, .LocalFileListWidget .Title {
+.CurseforgeFileListWidget .Title,
+.ModrinthFileListWidget .Title,
+.GitHubFileListWidget .Title,
+.LocalFileListWidget .Title {
   font-size: 11pt;
 }
 
@@ -53,41 +67,89 @@ QTextBrowser, QScrollArea, QScrollArea .QWidget {
   background: transparent;
 }
 
-.GitHubReleaseItemWidget > .PreRelease {
-  color: #fff;
+.GitHubReleaseItemWidget>.PreRelease {
+  color: #ffffff;
   background-color: #e7ab34;
-  border-radius:2px;
-  padding:1px 2px;
+  border-radius: 2px;
+  padding: 1px 2px;
 }
 
-.GitHubReleaseItemWidget > .TagName {
-  color: gray;
+.GitHubReleaseItemWidget>.TagName {
+  color: #777777;
   font-size: 10pt;
 }
 
-.MenuButton, #maxButton, #minButton, #closeButton{
+/* ModList */
+.ModList::item:hover {
+  border-left: 5px solid #eeeeee;
+  background-color: #22eeeeee;
+}
+
+.ModList::item:selected {
+  border-left: 5px solid #37d;
+  background-color: #223377dd;
+  color: black;
+}
+
+/* TitleBar Button */
+#maxButton,
+#minButton,
+#closeButton {
   border: none;
 }
 
-.MenuButton:hover {
-  background-color: rgb(165, 165, 165);
-  border: none;
-}
-
-.MenuButton:pressed {
-  background-color: rgb(110, 110, 110);
-  color: whitesmoke;
-  border: none;
-}
-
-#maxButton:hover,#minButton:hover {
-  background-color: rgb(218, 218, 218);
+#maxButton:hover,
+#minButton:hover {
+  background-color: #dbdbdb;
   border: none;
 }
 
 #closeButton:hover {
   background-color: red;
   border: none;
+}
+
+/* TitleBar Menu */
+QMenuBar {
+  color: #777777;
+}
+
+QMenuBar::item:selected {
+  background-color: #dbdbdb;
+}
+
+QMenuBar::item:pressed {
+  background-color: #d3d3d3;
+  color: black;
+}
+
+/* Side Bar */
+QTreeView.PageSelector::item {
+  min-height: 40px;
+}
+
+QTreeView.PageSelector::item::selected {
+  border: 1px solid #37d;
+  background-color: #dbdbdb;
+  border-radius: 3px;
+  color: black;
+}
+
+QTreeView.PageSelector::item::hover {
+  border: 1px solid #dbdbdb;
+  background-color: #eeeeee;
+  border-radius: 3px;
+  color: black;
+}
+
+/* Disabled */
+QWidget[enabled=false] {
+  background-color: #cfcfcf;
+}
+
+/* Other Controls */
+QToolBar {
+  border: 1px solid #d3d3d3;
 }
 
 QGroupBox {
@@ -103,72 +165,70 @@ QGroupBox::title {
   padding: 10px 15px;
 }
 
-QToolButton[autoRaise=false], QPushButton, QComboBox {
+QToolButton[autoRaise=false],
+QToolBar:item,
+QPushButton,
+QComboBox {
   background-color: whitesmoke;
-  border: 1px solid #dbdbdb;
+  border: 1px solid #d3d3d3;
   border-radius: 2px;
   padding: 4px;
   padding-right: 10px;
 }
 
-QToolButton[autoRaise=false]:hover, QPushButton:hover, QComboBox:hover {
-  background-color: rgb(204, 204, 204);
-  border: 1px solid rgb(180, 180, 180);
+QToolButton[autoRaise=false]:hover,
+QPushButton:hover,
+QComboBox:hover {
+  background-color: #cccccc;
+  border: 1px solid #b4b4b4;
 }
 
-QToolButton[autoRaise=false]:pressed, QPushButton:pressed, QComboBox:pressed {
-  background-color: rgb(158, 158, 158);
-  border: 1px solid rgb(219, 219, 219);
+QToolButton[autoRaise=false]:pressed,
+QPushButton:pressed,
+QComboBox:pressed {
+  background-color: #9e9e9e;
+  border: 1px solid #dbdbdb;
 }
 
-QToolButton[autoRaise=false][popupMode="2"]::menu-indicator, QPushButton::menu-indicator {
+QToolButton[autoRaise=false][popupMode="2"]::menu-indicator,
+QPushButton::menu-indicator {
   subcontrol-origin: padding;
   subcontrol-position: center right;
 }
 
 QToolButton[autoRaise=true] {
   padding: 4px;
-  padding-right: 10px;
+  padding-right: 9px;
 }
 
-QMenu {
-  background-color: white;
-  border-radius: 1px;
-  border: 1px outset rgb(151, 151, 151);
+QMenu,
+QComboBox QAbstractItemView {
+  font-size: 10pt;
+  background-color: #fafafa;
+  border-radius: 2px;
+  border: 1px solid #979797;
+  padding: 2px;
 }
 
 QMenu::item:selected {
-  background:rgb(115, 115, 115);
-  color:rgb(255, 255, 255);
+  background: #737373;
+  color: #ffffff;
 }
 
-QComboBox{
-  border:1px solid #dbdbdb;
-  border-radius: 2px;
-  padding: 5px;
-  min-width:40px;
-}
-
-QComboBox::drop-down{
-  subcontrol-origin:padding;
-  subcontrol-position:top right;
+QComboBox::drop-down {
+  subcontrol-origin: padding;
+  subcontrol-position: top right;
   border: none;
 }
 
-QToolButton[autoRaise=false][popupMode="2"]::menu-indicator, QPushButton::menu-indicator, QComboBox::down-arrow {
+QToolButton[autoRaise=false][popupMode="2"]::menu-indicator,
+QPushButton::menu-indicator,
+QComboBox::down-arrow {
   image: url(:/icons/breeze-modmanager/16x16/go-down.svg);
 }
 
 QTreeView::item {
   min-height: 35px;
-}
-
-QTreeView.PageSelector::item {
-  min-height: 40px;
-}
-
-QTreeView.PageSelector::item::selected {
-  color: black;
 }
 
 .QTabWidget {
@@ -194,6 +254,6 @@ QTabBar::tab {
 }
 
 QTabBar::tab:selected {
-  border: 1px solid gray;
-  background-color: white;
+  border: 1px solid #777777;
+  background-color: #ffffff;
 }

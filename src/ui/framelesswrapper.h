@@ -22,7 +22,6 @@ protected:
 #ifdef Q_OS_WIN
     virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 #endif //Q_OS_WIN
-    void paintEvent(QPaintEvent *event) override;
 
 private:
     WindowsTitleBar *titleBar_;

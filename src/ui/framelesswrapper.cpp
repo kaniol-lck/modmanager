@@ -141,19 +141,3 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
     return false;
 }
 #endif //Q_OS_WIN
-
-void FramelessWrapper::paintEvent(QPaintEvent *event[[maybe_unused]])
-{
-    if(!Config().getEnableBlurBehind()) return;
-    QPainter p(this);
-    p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    for(auto &&widget : { titleBar_ }){
-        if(!widget->isVisible()) continue;
-        auto rect = widget->rect();
-        auto pos = widget->pos();
-        pos.setX(pos.x() + contentsMargins().left());
-        pos.setY(pos.y() + contentsMargins().top());
-        rect.translate(pos);
-        p.fillRect(rect, QBrush(QColor(255, 255, 255, 215)));
-    }
-}

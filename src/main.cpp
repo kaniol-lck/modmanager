@@ -1,3 +1,4 @@
+#include "qss/stylesheets.h"
 #include "ui/modmanager.h"
 
 #include <QApplication>
@@ -19,6 +20,7 @@ int main(int argc, char *argv[])
     a.setOrganizationName("kaniol");
     a.setApplicationName("Mod Manager");
     a.setApplicationDisplayName(QObject::tr("Mod Manager"));
+    a.setStyleSheet(styleSheetPath(Config().getCustomStyle()));
 
     //setup translator
     QTranslator translator;
@@ -53,7 +55,6 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_WIN
     if(Config().getUseFramelessWindow()){
         auto titleBar = new WindowsTitleBar(&w, w.menuBar());
-//        QObject::connect(&w, &ModManager::menuBarChanged, titleBar, &WindowsTitleBar::updateMenuBar);
         auto frameless = new FramelessWrapper(nullptr, &w, titleBar);
         QObject::connect(&w, &ModManager::closed, frameless, &FramelessWrapper::close);
         titleBar->setParentWidget(frameless);
