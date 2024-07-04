@@ -70,6 +70,7 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
     });
     openDialogAction_ = menu_->addAction(QIcon::fromTheme("window-new"), tr("Open in New Dialog"), this, [=]{
         auto b = another();
+        b->prepareShow();
 #ifdef Q_OS_WIN
         if(Config().getUseFramelessWindow()){
             auto frameless = new FramelessWrapper(b);

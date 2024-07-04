@@ -953,7 +953,7 @@ void LocalModBrowser::on_actionOpen_In_GitHub_triggered()
     qDebug() << list.at(1) << list.at(2);
     GitHubRepoInfo repoInfo(list.at(1), list.at(2));
     auto browser = new GitHubRepoBrowser(this, repoInfo);
-    browser->show();
+    browser->prepareShow();
 }
 
 void LocalModBrowser::on_actionExport_Compressed_File_triggered()

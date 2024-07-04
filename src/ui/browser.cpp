@@ -6,10 +6,10 @@
 
 Browser::Browser(QWidget *parent) : QMainWindow(parent)
 {
-    setDockNestingEnabled(true);
+    setDockOptions(QMainWindow::GroupedDragging);
 }
 
-void Browser::show()
+void Browser::prepareShow()
 {
     setWindowTitle(name());
     setWindowIcon(icon());
@@ -27,7 +27,6 @@ void Browser::show()
         addDockWidget(Qt::RightDockWidgetArea, fileListDock);
     }
     load();
-    QMainWindow::show();
 }
 
 void Browser::load()

@@ -79,7 +79,7 @@ ModManager::ModManager(QWidget *parent) :
 
     ui->pageSelectorDock->setWidget(browserSelector_);
     for(auto &&widget : { ui->pageSelectorDock, ui->modInfoDock, ui->fileListDock })
-        ui->menu_View->insertAction(ui->menu_View->actions().first(), widget->toggleViewAction());
+        ui->menu_View->insertAction(ui->menu_View->actions().at(0), widget->toggleViewAction());
 
     //Download
     pageSwitcher_.addDownloadPage();
