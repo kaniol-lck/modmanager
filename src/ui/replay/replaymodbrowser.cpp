@@ -97,9 +97,9 @@ void ReplayModBrowser::updateUi()
 
 }
 
-ExploreBrowser *ReplayModBrowser::another()
+ExploreBrowser *ReplayModBrowser::another(QWidget *parent)
 {
-    return new ReplayModBrowser;
+    return new ReplayModBrowser(parent);
 }
 
 QWidget *ReplayModBrowser::getListViewIndexWidget(const QModelIndex &index)

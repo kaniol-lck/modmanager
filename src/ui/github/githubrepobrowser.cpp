@@ -76,9 +76,9 @@ void GitHubRepoBrowser::updateUi()
 
 }
 
-ExploreBrowser *GitHubRepoBrowser::another()
+ExploreBrowser *GitHubRepoBrowser::another(QWidget *parent)
 {
-    return new GitHubRepoBrowser(nullptr, info_);
+    return new GitHubRepoBrowser(parent, info_);
 }
 
 void GitHubRepoBrowser::loadMore()

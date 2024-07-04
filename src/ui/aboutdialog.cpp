@@ -18,6 +18,14 @@ AboutDialog::AboutDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->versionText->setText(kVersion);
+    ui->credit_label->setText(QString("Built with Qt %1\n"
+                                      "3rd-Party Libraries:\n"
+                                      "libaria2   https://aria2.github.io/\n"
+                                      "Quazip     https://github.com/stachenov/quazip\n"
+                                      "cpp-semver https://github.com/easz/cpp-semver\n"
+                                      "toml++     https://github.com/marzer/tomlplusplus")
+                                  .arg(QT_VERSION_STR));
+
     setAttribute(Qt::WA_DeleteOnClose);
 #ifdef DE_KDE
     //TODO: window not blur in next show

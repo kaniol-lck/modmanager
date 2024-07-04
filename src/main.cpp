@@ -54,10 +54,10 @@ int main(int argc, char *argv[])
 
 #ifdef Q_OS_WIN
     if(Config().getUseFramelessWindow()){
-        auto titleBar = new WindowsTitleBar(&w, w.menuBar());
-        auto frameless = new FramelessWrapper(nullptr, &w, titleBar);
+        QApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+        QApplication::setAttribute(Qt::AA_NativeWindows, false);
+        auto frameless = new FramelessWrapper(&w);
         QObject::connect(&w, &ModManager::closed, frameless, &FramelessWrapper::close);
-        titleBar->setParentWidget(frameless);
         frameless->show();
     } else
 #endif

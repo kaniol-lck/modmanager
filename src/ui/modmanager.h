@@ -30,8 +30,6 @@ public:
     ModManager(QWidget *parent = nullptr);
     ~ModManager();
 
-    QMenuBar *menuBar() const;
-
 signals:
     void menuBarChanged();
     void closed();

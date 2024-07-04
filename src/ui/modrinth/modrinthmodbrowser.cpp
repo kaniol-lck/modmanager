@@ -452,9 +452,9 @@ ModrinthMod *ModrinthModBrowser::selectedMod() const
     return selectedMod_;
 }
 
-ExploreBrowser *ModrinthModBrowser::another()
+ExploreBrowser *ModrinthModBrowser::another(QWidget *parent)
 {
-    return new ModrinthModBrowser;
+    return new ModrinthModBrowser(parent);
 }
 
 void ModrinthModBrowser::on_menuDownload_aboutToShow()

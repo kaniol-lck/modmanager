@@ -95,9 +95,9 @@ void OptifineModBrowser::updateUi()
 //        widget->updateUi();
 }
 
-ExploreBrowser *OptifineModBrowser::another()
+ExploreBrowser *OptifineModBrowser::another(QWidget *parent)
 {
-    return new OptifineModBrowser;
+    return new OptifineModBrowser(parent);
 }
 
 QWidget *OptifineModBrowser::getListViewIndexWidget(const QModelIndex &index)

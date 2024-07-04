@@ -33,7 +33,7 @@ public:
     QWidget *fileListWidget() const override;
     ModrinthMod *selectedMod() const;
 
-    ExploreBrowser *another() override;
+    ExploreBrowser *another(QWidget *parent = nullptr) override;
 
     ModrinthManager *manager() const;
 

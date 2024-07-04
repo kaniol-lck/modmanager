@@ -17,6 +17,7 @@
 #include "exploremanager.h"
 #include "local/localmodpath.h"
 #include "local/localmodpathmanager.h"
+#include "ui/framelesswrapper.h"
 #include "util/smoothscrollbar.h"
 
 ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString &name, const QUrl &url) :
@@ -68,7 +69,14 @@ ExploreBrowser::ExploreBrowser(QWidget *parent, const QIcon &icon, const QString
         QDesktopServices::openUrl(url);
     });
     openDialogAction_ = menu_->addAction(QIcon::fromTheme("window-new"), tr("Open in New Dialog"), this, [=]{
-        another()->show();
+        auto b = another();
+#ifdef Q_OS_WIN
+        if(Config().getUseFramelessWindow()){
+            auto frameless = new FramelessWrapper(b);
+            frameless->show();
+        } else
+#endif
+            b->show();
     });
     menu_->addMenu(downloadPathSelectMenu_);
 }

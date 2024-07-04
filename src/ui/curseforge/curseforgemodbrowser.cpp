@@ -354,9 +354,9 @@ CurseforgeMod *CurseforgeModBrowser::selectedMod() const
     return selectedMod_;
 }
 
-ExploreBrowser *CurseforgeModBrowser::another()
+ExploreBrowser *CurseforgeModBrowser::another(QWidget *parent)
 {
-    return new CurseforgeModBrowser;
+    return new CurseforgeModBrowser(parent);
 }
 
 void CurseforgeModBrowser::on_sortSelect_currentIndexChanged(int)

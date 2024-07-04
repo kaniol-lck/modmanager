@@ -33,7 +33,7 @@ public:
     QWidget *fileListWidget() const override;
     CurseforgeMod *selectedMod() const;
 
-    ExploreBrowser *another() override;
+    ExploreBrowser *another(QWidget *parent = nullptr) override;
 
     CurseforgeManager *manager() const;
 

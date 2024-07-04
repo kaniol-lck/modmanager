@@ -126,11 +126,6 @@ ModManager::~ModManager()
     delete ui;
 }
 
-QMenuBar *ModManager::menuBar() const
-{
-    return ui->menubar;
-}
-
 void ModManager::updateUi()
 {
     pageSwitcher_.updateUi();
@@ -255,7 +250,14 @@ void ModManager::on_actionPreferences_triggered()
     connect(preferences, &Preferences::accepted, this, &ModManager::updateUi, Qt::UniqueConnection);
     connect(preferences, &Preferences::accepted, this, &ModManager::setProxy, Qt::UniqueConnection);
     connect(preferences, &Preferences::accepted, QAria2::qaria2(), &QAria2::updateOptions, Qt::UniqueConnection);
-    preferences->exec();
+
+#ifdef Q_OS_WIN
+    if(config_.getUseFramelessWindow()){
+        auto frameless = new FramelessWrapper(preferences);
+        frameless->show();
+    } else
+#endif
+        preferences->exec();
 }
 
 void ModManager::on_actionManage_Browser_triggered()
@@ -319,7 +321,7 @@ void ModManager::on_action_About_Mod_Manager_triggered()
     auto dialog = new AboutDialog(this);
 #ifdef Q_OS_WIN
     if(config_.getUseFramelessWindow()){
-        auto frameless = new FramelessWrapper(this, dialog);
+        auto frameless = new FramelessWrapper(dialog);
         frameless->show();
     } else
 #endif

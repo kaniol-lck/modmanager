@@ -17,17 +17,21 @@
 #include "windowstitlebar.h"
 #include "config.hpp"
 
-FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, QMenuBar *menuBar) :
-    FramelessWrapper(parent, widget, new WindowsTitleBar(widget, menuBar))
+FramelessWrapper::FramelessWrapper(QMainWindow *window) :
+    FramelessWrapper(window, window->menuBar())
+{}
+
+FramelessWrapper::FramelessWrapper(QDialog *dialog) :
+    FramelessWrapper((QWidget*)dialog)
 {
-    titleBar_->setParentWidget(this);
+    connect(dialog, &QDialog::finished, this, &FramelessWrapper::close);
 }
 
-FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, WindowsTitleBar *titleBar) :
-    QMainWindow(parent),
-    titleBar_(titleBar)
+FramelessWrapper::FramelessWrapper(QWidget *widget, QMenuBar *menuBar) :
+    QMainWindow(widget->parentWidget()),
+    titleBar_(new WindowsTitleBar(widget, menuBar))
 {
-//    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowMaximizeButtonHint);
+    titleBar_->setParentWidget(this);
 
     auto w = new QWidget(this);
     auto layout = new QVBoxLayout;
@@ -39,12 +43,6 @@ FramelessWrapper::FramelessWrapper(QWidget *parent, QWidget *widget, WindowsTitl
     setCentralWidget(w);
 
     updateBlur();
-
-#ifdef Q_OS_WIN
-//    HWND hwnd = (HWND)winId();
-//    DWORD style = ::GetWindowLong(hwnd, GWL_STYLE);
-//    ::SetWindowLong(hwnd, GWL_STYLE, style | WS_MAXIMIZEBOX | WS_THICKFRAME | WS_CAPTION);
-#endif //Q_OS_WIN
 }
 
 void FramelessWrapper::updateBlur()
@@ -56,11 +54,7 @@ void FramelessWrapper::updateBlur()
         if(setWindowCompositionAttribute){
             ACCENT_STATE as;
             if(Config().getEnableBlurBehind()){
-//                qDebug() << isMoving_;
-//                if(isMoving_)
                     as = ACCENT_ENABLE_BLURBEHIND;
-//                else
-//                    as = ACCENT_ENABLE_ACRYLICBLURBEHIND;
             }
             else
                 as = ACCENT_ENABLE_GRADIENT;

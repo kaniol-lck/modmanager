@@ -38,7 +38,7 @@ public slots:
     void searchModByPathInfo(LocalModPath *path) override;
     void updateUi() override;
 
-    ExploreBrowser *another() override;
+    ExploreBrowser *another(QWidget *parent = nullptr) override;
 
 signals:
     void downloadPathChanged(LocalModPath *path);
