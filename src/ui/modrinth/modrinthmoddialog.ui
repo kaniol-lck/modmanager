@@ -55,7 +55,6 @@
        <property name="font">
         <font>
          <pointsize>15</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
@@ -179,7 +178,7 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="QTextBrowser" name="modDescription">
+        <widget class="WebTextBrowser" name="modDescription">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -203,8 +202,13 @@
   <customwidget>
    <class>TagsFlowWidget</class>
    <extends>QWidget</extends>
-   <header>ui/tagsflowwidget.h</header>
+   <header location="global">ui/tagsflowwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WebTextBrowser</class>
+   <extends>QTextBrowser</extends>
+   <header location="global">ui/webtextbrowser.h</header>
   </customwidget>
   <customwidget>
    <class>ModrinthFileListWidget</class>

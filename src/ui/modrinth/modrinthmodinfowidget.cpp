@@ -24,7 +24,6 @@ ModrinthModInfoWidget::ModrinthModInfoWidget(ModrinthModBrowser *parent) :
     ui->modName->addAction(ui->actionOpen_Website_Link);
     ui->modName->addAction(ui->actionCopy_Website_Link);
     ui->scrollArea->setVisible(false);
-    ui->modDescription->setVerticalScrollBar(new SmoothScrollBar(this));
 }
 
 ModrinthModInfoWidget::~ModrinthModInfoWidget()

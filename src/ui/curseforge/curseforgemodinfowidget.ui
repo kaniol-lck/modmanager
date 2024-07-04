@@ -51,7 +51,6 @@
            <property name="font">
             <font>
              <pointsize>15</pointsize>
-             <weight>75</weight>
              <bold>true</bold>
             </font>
            </property>
@@ -135,7 +134,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextBrowser" name="modDescription">
+        <widget class="WebTextBrowser" name="modDescription">
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
          </property>
@@ -168,8 +167,7 @@
   </action>
   <action name="actionCopy_Website_Link">
    <property name="icon">
-    <iconset theme="edit-copy">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset theme="edit-copy"/>
    </property>
    <property name="text">
     <string>Copy Website Link</string>
@@ -182,6 +180,11 @@
    <extends>QWidget</extends>
    <header location="global">ui/tagsflowwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WebTextBrowser</class>
+   <extends>QTextBrowser</extends>
+   <header location="global">ui/webtextbrowser.h</header>
   </customwidget>
  </customwidgets>
  <resources>
