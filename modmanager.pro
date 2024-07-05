@@ -107,6 +107,17 @@ unix {
   # equals(QT_MAJOR_VERSION, 6): PKGCONFIG += libaria2 quazip1-qt6
 }
 
+macx {
+  message("macos build")
+
+  INCLUDEPATH += /usr/local/include/aria2
+  LIBS += -L/usr/local/lib -libaria2
+  equals(QT_MAJOR_VERSION,5):INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.4/quazip
+  equals(QT_MAJOR_VERSION,6):INCLUDEPATH += /usr/local/include/QuaZip-Qt6-1.4/quazip
+  equals(QT_MAJOR_VERSION,5):LIBS += -L/usr/local/lib -lquazip1-qt5
+  equals(QT_MAJOR_VERSION,6):LIBS += -L/usr/local/lib -lquazip1-qt6
+}
+
 win32 {
   #native blur
   LIBS += -ldwmapi
