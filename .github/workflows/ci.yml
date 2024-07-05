@@ -267,7 +267,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macOS-12]
+        os: [macOS-latest]
         qt_ver: [6.7.1]
         qt_arch: [clang_64]
     steps:
@@ -285,8 +285,8 @@ jobs:
           wget "https://github.com/kaniol-lck/aria2/releases/download/release-1.36.0/libaria2-clang-macos-10.15.zip"
           unzip *.zip
           csrutil status
-          sudo cp -r lib/ usr/local/lib/
-          sudo cp -r include/aria2/ usr/local/include/
+          sudo cp -r lib/ /usr/local/lib/
+          sudo cp -r include/aria2/ /usr/local/include/
           rm -rf lib/ include/ *.zip
       - name: Install dependencies
         run: |
