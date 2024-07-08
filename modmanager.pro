@@ -86,7 +86,7 @@ DISTFILES += \
 win32: RC_ICONS = package/modmanager.ico
 
 #dependencies
-unix {
+unix:!macx {
   message("unix-like build")
 
   message(HEADERS)
