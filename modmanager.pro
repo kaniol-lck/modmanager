@@ -125,6 +125,7 @@ win32 {
   #native blur
   LIBS += -ldwmapi
 
+
   QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags libaria2)
   LIBS += $$system($$pkgConfigExecutable() --libs libaria2 | sed 's/\/lib\b/\/bin/' | sed 's/-laria2/-laria2-0/')
   equals(QT_MAJOR_VERSION, 5){

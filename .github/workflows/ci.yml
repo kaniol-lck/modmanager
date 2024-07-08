@@ -286,7 +286,7 @@ jobs:
           unzip *.zip
           csrutil status
           sudo cp -r lib/ /usr/local/lib/
-          sudo cp -r include/aria2/ /usr/local/include/
+          sudo cp -r include/ /usr/local/include/
           rm -rf lib/ include/ *.zip
       - name: Install dependencies
         run: |
