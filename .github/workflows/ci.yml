@@ -20,6 +20,7 @@ jobs:
     needs:
       - build-on-ubuntu
       - build-on-win-mingw
+      - build-on-osx
     steps:
       - uses: actions/checkout@v2
         with:
@@ -41,7 +42,7 @@ jobs:
           zip -q -r ModManager-${{ env.VERSION }}-x64-packed.zip *
           mv ModManager-${{ env.VERSION }}-x64-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-packed.zip
           mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-Installer.exe
-          # mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
+          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
           mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x86_64.AppImage/Mod_Manager-${{ env.VERSION }}-x86_64.AppImage /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.AppImage
       - name: Get short commit sha
         id: get_short_sha
@@ -261,69 +262,68 @@ jobs:
           asset_name: ModManager-${{ env.VERSION }}-x64-Installer.exe
           tag: ${{ github.ref }}
           overwrite: true
-  # build-on-osx:
-  #   name: Build On OSX
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       os: [macOS-latest]
-  #       qt_ver: [6.7.1]
-  #       qt_arch: [clang_64]
-  #   steps:
-  #     - name: Install Qt
-  #       uses: jurplel/install-qt-action@v4
-  #       with:
-  #         aqtversion: '==2.1.*' 
-  #         version: ${{ matrix.qt_ver }}
-  #         host: 'mac'
-  #         target: 'desktop'
-  #         arch: ${{ matrix.qt_arch }}
-  #         modules: 'qtwebengine'
-  #     - name: Install libaria2
-  #       run: |
-  #         wget "https://github.com/kaniol-lck/aria2/releases/download/libaria2-release-1.36.0/libaria2-clang-macos-10.15.zip"
-  #         unzip *.zip
-  #         csrutil status
-  #         sudo cp -r lib/ usr/local/lib/
-  #         sudo cp -r include/aria2/ usr/local/include/
-  #         rm -rf lib/ include/ *.zip
-  #     - name: Install dependencies
-  #       run: |
-  #         brew install quazip gnu-sed aria2
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 1
-  #     - name: Set Env
-  #       shell: bash
-  #       run: |
-  #         export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
-  #         export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
-  #         echo "RAW_VERSION=${RAW_VERSION}" >> $GITHUB_ENV
-  #         echo "VERSION=${VERSION}" >> $GITHUB_ENV
-  #     - name: Modify version number
-  #       if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
-  #       shell: bash
-  #       run: |
-  #         gsed -i "s/$RAW_VERSION/$VERSION/" src/version.h
-  #     - name: build macos
-  #       run: |
-  #         qmake
-  #         make
-  #     - name: package
-  #       run: |
-  #         macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
-  #       shell: sh
-  #     - uses: actions/upload-artifact@v2
-  #       with:
-  #         name: ModManager-${{ env.VERSION }}.dmg
-  #         path: modmanager.dmg
-  #     - name: uploadRelease
-  #       if: startsWith(github.event.ref, 'refs/tags/')
-  #       uses: svenstaro/upload-release-action@v2
-  #       with:
-  #         repo_token: ${{ secrets.GITHUB_TOKEN }}
-  #         file: modmanager.dmg
-  #         asset_name: ModManager-${{ env.VERSION }}.dmg
-  #         tag: ${{ github.ref }}
-  #         overwrite: true
+  build-on-osx:
+    name: Build On OSX
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macOS-13]
+        qt_ver: [6.7.1]
+        qt_arch: [clang_64]
+    steps:
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ matrix.qt_ver }}
+          host: 'mac'
+          target: 'desktop'
+          arch: ${{ matrix.qt_arch }}
+          modules: 'qt5compat'
+      - name: Install libaria2
+        run: |
+          wget "https://github.com/kaniol-lck/aria2/releases/download/release-1.36.0/libaria2-clang-macos-10.15.zip"
+          unzip *.zip
+          csrutil status
+          sudo cp -r lib/ /usr/local/lib/
+          sudo cp -r include/ /usr/local/include/
+          rm -rf lib/ include/ *.zip
+      - name: Install dependencies
+        run: |
+          brew install quazip gnu-sed aria2
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Set Env
+        shell: bash
+        run: |
+          export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
+          export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
+          echo "RAW_VERSION=${RAW_VERSION}" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+      - name: Modify version number
+        if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
+        shell: bash
+        run: |
+          gsed -i "s/$RAW_VERSION/$VERSION/" src/version.h
+      - name: build macos
+        run: |
+          qmake
+          make
+      - name: package
+        run: |
+          macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
+        shell: sh
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ModManager-${{ env.VERSION }}.dmg
+          path: modmanager.dmg
+      - name: uploadRelease
+        if: startsWith(github.event.ref, 'refs/tags/')
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: modmanager.dmg
+          asset_name: ModManager-${{ env.VERSION }}.dmg
+          tag: ${{ github.ref }}
+          overwrite: true
