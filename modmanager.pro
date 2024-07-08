@@ -110,7 +110,7 @@ unix {
 macx {
   message("macos build")
 
-  INCLUDEPATH += /usr/local/include/aria2
+  INCLUDEPATH += /usr/local/include
   LIBS += -L/usr/local/lib -libaria2
   equals(QT_MAJOR_VERSION,5):INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.4/quazip
   equals(QT_MAJOR_VERSION,6):INCLUDEPATH += /usr/local/include/QuaZip-Qt6-1.4/quazip
