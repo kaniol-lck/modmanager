@@ -309,6 +309,8 @@ jobs:
           gsed -i "s/$RAW_VERSION/$VERSION/" src/version.h
       - name: build macos
         run: |
+          xcode-select -print-path
+          sudo xcode-select --switch /Applications/Xcode.app
           qmake
           make
       - name: package
