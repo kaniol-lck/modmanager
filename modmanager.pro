@@ -109,6 +109,9 @@ unix {
 
 macx {
   message("macos build")
+  
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
+  CONFIG += sdk_no_version_check
 
   INCLUDEPATH += /usr/local/include
   LIBS += -L/usr/local/lib -libaria2
