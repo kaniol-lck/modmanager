@@ -109,12 +109,9 @@ unix:!macx {
 
 macx {
   message("macos build")
-  
-  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
-  CONFIG += sdk_no_version_check
 
   INCLUDEPATH += /usr/local/include
-  LIBS += -L/usr/local/lib -llibaria2
+  LIBS += -L/usr/local/lib -laria2
   equals(QT_MAJOR_VERSION,5):INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.4/quazip
   equals(QT_MAJOR_VERSION,6):INCLUDEPATH += /usr/local/include/QuaZip-Qt6-1.4/quazip
   equals(QT_MAJOR_VERSION,5):LIBS += -L/usr/local/lib -lquazip1-qt5
