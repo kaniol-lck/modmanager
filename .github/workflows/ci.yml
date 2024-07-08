@@ -290,6 +290,10 @@ jobs:
       - name: Install dependencies
         run: |
           brew install quazip gnu-sed aria2
+      - name: "Select the latest stable Xcode 14"
+        uses: BoundfoxStudios/action-xcode-select@v1
+        with:
+          version: "14.3.1"
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
