@@ -269,13 +269,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [macOS-13]
-        qt_ver: [5.15.2]
+        qt_ver: [6.7.1]
         qt_arch: [clang_64]
     steps:
-      - name: "Select the latest stable Xcode 14"
-        uses: BoundfoxStudios/action-xcode-select@v1
-        with:
-          version: "14.3.1"
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
