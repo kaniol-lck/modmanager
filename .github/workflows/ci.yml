@@ -275,12 +275,10 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          aqtversion: '==2.1.*' 
           version: ${{ matrix.qt_ver }}
           host: 'mac'
           target: 'desktop'
           arch: ${{ matrix.qt_arch }}
-          modules: 'qtwebengine'
       - name: Install libaria2
         run: |
           wget "https://github.com/kaniol-lck/aria2/releases/download/release-1.36.0/libaria2-clang-macos-10.15.zip"
@@ -309,8 +307,6 @@ jobs:
           gsed -i "s/$RAW_VERSION/$VERSION/" src/version.h
       - name: build macos
         run: |
-          xcode-select -print-path
-          sudo xcode-select --switch /Applications/Xcode.app
           qmake
           make
       - name: package
