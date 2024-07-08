@@ -279,6 +279,7 @@ jobs:
           host: 'mac'
           target: 'desktop'
           arch: ${{ matrix.qt_arch }}
+          modules: 'qt5compat'
       - name: Install libaria2
         run: |
           wget "https://github.com/kaniol-lck/aria2/releases/download/release-1.36.0/libaria2-clang-macos-10.15.zip"
