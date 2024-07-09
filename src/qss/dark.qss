@@ -130,14 +130,12 @@ QTreeView.PageSelector::item {
 
 QTreeView.PageSelector::item::selected {
   border: 1px solid #37d;
-  background-color: #4b4b4b;
   border-radius: 3px;
   color: white;
 }
 
 QTreeView.PageSelector::item::hover {
   border: 1px solid #dbdbdb;
-  background-color: #626262;
   border-radius: 3px;
   color: white;
 }
