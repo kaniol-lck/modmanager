@@ -100,7 +100,11 @@ void WindowsTitleBar::setParentWidget(QWidget *newParentWidget)
 }
 
 #ifdef Q_OS_WIN
+#if QT_VERSION_MAJOR == 6
+bool WindowsTitleBar::hitTest(QPoint pos, qintptr *result)
+#else
 bool WindowsTitleBar::hitTest(QPoint pos, long *result)
+#endif  // QT_VERSION_MAJOR
 {
     QWidget* child = childAt(pos);
     if(auto label = qobject_cast<QLabel*>(child); label == ui->icon){

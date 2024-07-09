@@ -6,6 +6,7 @@
 #include <QMdiArea>
 #include <QPainter>
 #include <QPushButton>
+#include <QResizeEvent>
 #include <QToolButton>
 #include <QVBoxLayout>
 #ifdef Q_OS_WIN
@@ -32,6 +33,7 @@ FramelessWrapper::FramelessWrapper(QWidget *widget, QMenuBar *menuBar) :
     titleBar_(new WindowsTitleBar(widget, menuBar))
 {
     titleBar_->setParentWidget(this);
+    setAttribute(Qt::WA_Hover);
 
     auto w = new QWidget(this);
     auto layout = new QVBoxLayout;
@@ -70,31 +72,36 @@ void FramelessWrapper::updateBlur()
 }
 
 #ifdef Q_OS_WIN
+
+#if QT_VERSION_MAJOR == 6
+bool FramelessWrapper::nativeEvent(const QByteArray& eventType, void* message, qintptr* result)
+#else
 bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, long *result)
+#endif  // QT_VERSION_MAJOR
 {
     MSG* msg = (MSG*)message;
     float boundaryWidth = 4;
-//    qDebug() << msg->message;
+
+    //support highdpi
+    double dpr = this->devicePixelRatioF();
+
     switch(msg->message){
     case WM_NCCALCSIZE:{
-        NCCALCSIZE_PARAMS& params = *reinterpret_cast<NCCALCSIZE_PARAMS*>(msg->lParam);
-        if (params.rgrc[0].top != 0)
-            params.rgrc[0].top -= 1;
+        if(msg->wParam == FALSE) return false;
 
         *result = WVR_REDRAW;
         return true;
     }
     case WM_NCHITTEST:{
-        //support highdpi
-        double dpr = this->devicePixelRatioF();
-        long x = GET_X_LPARAM(msg->lParam);
-        long y = GET_Y_LPARAM(msg->lParam);
+        POINT nativeLocalPos{  GET_X_LPARAM(msg->lParam), GET_Y_LPARAM(msg->lParam) };
+        ::ScreenToClient(msg->hwnd, &nativeLocalPos);
+        auto mousePos =  QPoint(nativeLocalPos.x / dpr, nativeLocalPos.y / dpr);
 
-        auto mousePos = mapFromGlobal(QPoint(x/dpr,y/dpr));
         bool left = mousePos.x() < boundaryWidth;
         bool right = mousePos.x() > width() - boundaryWidth;
         bool top = mousePos.y() < boundaryWidth;
         bool bottom = mousePos.y() > height() - boundaryWidth;
+
         if(left && top)
             *result = HTTOPLEFT;
         else if(right && top)
@@ -111,27 +118,30 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
             *result = HTTOP;
         else if(bottom)
             *result = HTBOTTOM;
+
         if(*result) return true;
 
-        if (!titleBar_->rect().contains(mousePos)) return false;
+        *result = HTNOWHERE;
+        if(!titleBar_->rect().contains(mousePos)) return false;
         return titleBar_->hitTest(mousePos, result);
     }
     case WM_GETMINMAXINFO: {
+        MINMAXINFO* minmaxInfo = reinterpret_cast<MINMAXINFO*>(msg->lParam);
+        RECT rect;
+        SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
         if (::IsZoomed(msg->hwnd)) {
-            RECT frame = { 0, 0, 0, 0 };
-            AdjustWindowRectEx(&frame, WS_OVERLAPPEDWINDOW, FALSE, 0);
-            frame.left = abs(frame.left);
-            frame.top = abs(frame.bottom);
-            setContentsMargins(frame.left, frame.top, frame.right, frame.bottom);
+            int i = abs(minmaxInfo->ptMaxPosition.x / dpr);
+            setContentsMargins(i, i, i, i);
             titleBar_->setMaximumed();
         } else{
             setContentsMargins(0, 0, 0, 0);
             titleBar_->setNormal();
         }
         *result = ::DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
-        break;
+        return true;
     }
     }
     return false;
 }
+
 #endif //Q_OS_WIN

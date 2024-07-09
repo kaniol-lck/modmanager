@@ -223,7 +223,7 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
         if(!widget->isVisible()) continue;
         auto rect = widget->rect();
         rect.translate(widget->pos());
-        p.fillRect(rect, QBrush(QColor(255, 255, 255, 210)));
+        p.fillRect(rect, QBrush(QColor(255, 50, 255, 210)));
     }
 }
 #endif //defined (DE_KDE) || defined (Q_OS_WIN)
@@ -295,16 +295,15 @@ void ModManager::customContextMenuRequested(const QModelIndex &index, const QPoi
         connect(menu->addAction(QIcon::fromTheme("entry-edit"), tr("Edit")), &QAction::triggered, this, [=]{
             editLocalPath(index.row());
         });
-        auto reloadAction = menu->addAction(QIcon::fromTheme("view-refresh"), tr("Reload"));
+        auto reloadAction = menu->addAction(QIcon::fromTheme("view-refresh"), tr("Reload"), [=]{
+            localBrowser->reload();
+        });
         if(localBrowser->isLoading()){
             reloadAction->setEnabled(false);
             connect(localBrowser, &LocalModBrowser::loadFinished, this, [=]{
                 reloadAction->setEnabled(true);
             });
         }
-        connect(reloadAction, &QAction::triggered, this, [=]{
-            localBrowser->reload();
-        });
         connect(menu->addAction(QIcon::fromTheme("delete"), tr("Delete")), &QAction::triggered, this, [=]{
             if(QMessageBox::No == QMessageBox::question(this, tr("Delete"), tr("Delete this mod path?"))) return;
             LocalModPathManager::removePathAt(index.row());

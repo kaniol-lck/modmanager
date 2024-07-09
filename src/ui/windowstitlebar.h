@@ -20,7 +20,11 @@ public:
     void setIconVisible(bool bl);
     void setParentWidget(QWidget *newParentWidget);
 #ifdef Q_OS_WIN
+#if QT_VERSION_MAJOR == 6
+    bool hitTest(QPoint pos, qintptr *result);
+#else
     bool hitTest(QPoint pos, long *result);
+#endif  // QT_VERSION_MAJOR
 #endif //Q_OS_WIN
 
 public slots:

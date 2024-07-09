@@ -19,8 +19,12 @@ private slots:
 
 protected:
 #ifdef Q_OS_WIN
-    virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result);
-#endif //Q_OS_WIN
+#if QT_VERSION_MAJOR == 6
+    virtual bool nativeEvent(const QByteArray& eventType, void* message, qintptr* result) override;
+#else
+    virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
+#endif // QT_VERSION_MAJOR
+#endif // Q_OS_WIN
 
 private:
     WindowsTitleBar *titleBar_;
