@@ -84,6 +84,7 @@ DISTFILES += \
     src/qss/qdarkstyle-light/style.qss
 
 win32: RC_ICONS = package/modmanager.ico
+macx: ICON = package/modmanager.icns
 
 #dependencies
 unix:!macx {
