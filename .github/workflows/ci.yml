@@ -313,6 +313,12 @@ jobs:
       - name: package
         run: |
           macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
+          otool -L modmanager.app/Contents/MacOS/ModManager
+          install_name_tool -change "/usr/lib/libaria2.0.dylib" "@rpath/libaria2.0.dylib" modmanager.app/Contents/MacOS/ModManager
+          install_name_tool -change "/usr/lib/libcares.2.dylib" "@rpath/libcares.2.dylib" modmanager.app/Contents/MacOS/ModManager
+          install_name_tool -change "/usr/lib/libgmp.10.dylib" "@rpath/libgmp.10.dylib" modmanager.app/Contents/MacOS/ModManager
+          install_name_tool -change "/usr/lib/libquazip1-qt6.1.4.0.dylib" "@rpath/libquazip1-qt6.1.4.0.dylib" modmanager.app/Contents/MacOS/ModManager
+          otool -L modmanager.app/Contents/MacOS/ModManager
         shell: sh
       - uses: actions/upload-artifact@v2
         with:
