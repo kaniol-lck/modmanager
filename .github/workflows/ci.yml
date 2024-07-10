@@ -235,9 +235,10 @@ jobs:
         run: |
           (Get-Content package/modmanager.nsi).replace('PROGRAMFILES', 'PROGRAMFILES64') | Set-Content package/modmanager.nsi
       - name: Create installer
+        shell: pwsh
         run: |
           makensis package/modmanager.nsi
-          zip -q -r ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed.zip deploy/*
+          Compress-Archive -DestinationPath ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed.zip -Path deploy/*
       - uses: actions/upload-artifact@v2
         with:
           name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
