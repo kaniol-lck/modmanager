@@ -120,9 +120,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - qt_arch: win64_mingw
-            qt_ver: 6.7.1
-            modules: qt5compat
+          # - qt_arch: win64_mingw
+          #   qt_ver: 6.7.1
+          #   modules: qt5compat
           - qt_arch: win64_mingw81
             qt_ver: 5.15.2
             qt_tools_mingw_install: mingw810_64
@@ -232,8 +232,8 @@ jobs:
           cp C:/msys64/mingw64/bin/libbrotlicommon.dll deploy/
           cp C:/msys64/mingw64/bin/libbrotlidec.dll deploy/
           cp C:/msys64/mingw64/bin/libbz2-1.dll deploy/
-          cp C:/msys64/mingw64/bin/libcares-5.dll deploy/
-          cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll deploy/
+          cp C:/msys64/mingw64/bin/libcares-2.dll deploy/
+          # cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll deploy/
           cp C:/msys64/mingw64/bin/libcrypto-3-x64.dll deploy/
           cp C:/msys64/mingw64/bin/libdouble-conversion.dll deploy/
           cp C:/msys64/mingw64/bin/libfreetype-6.dll deploy/
@@ -253,7 +253,7 @@ jobs:
           cp C:/msys64/mingw64/bin/libquazip1-qt6.dll deploy/
           cp C:/msys64/mingw64/bin/libsqlite3-0.dll deploy/
           cp C:/msys64/mingw64/bin/libssh2-1.dll deploy/
-          cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll deploy/
+          # cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll deploy/
           cp C:/msys64/mingw64/bin/libxml2-2.dll deploy/
           cp C:/msys64/mingw64/bin/libzstd.dll deploy/
           cp C:/msys64/mingw64/bin/zlib1.dll deploy/
@@ -270,7 +270,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
-          path: ${{github.workspace}}/package/ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
+          path: ${{github.workspace}}/ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
       - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed
