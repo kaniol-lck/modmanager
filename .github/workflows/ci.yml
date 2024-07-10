@@ -32,24 +32,16 @@ jobs:
           export VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')-build.$GITHUB_RUN_NUMBER
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
-          path: etc/usr/artifacts/
-      - name: Process artifacts
-        run: |
-          mkdir -p /home/runner/work/modmanager/modmanager/etc/usr/publish
-          cd /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-packed
-          zip -q -r ModManager-${{ env.VERSION }}-x64-packed.zip *
-          mv ModManager-${{ env.VERSION }}-x64-packed.zip /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-packed.zip
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x64-Installer.exe/ModManager-Installer.exe /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}-x64-Installer.exe
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}.dmg/modmanager.dmg /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.dmg
-          mv /home/runner/work/modmanager/modmanager/etc/usr/artifacts/ModManager-${{ env.VERSION }}-x86_64.AppImage/Mod_Manager-${{ env.VERSION }}-x86_64.AppImage /home/runner/work/modmanager/modmanager/etc/usr/publish/ModManager-${{ env.VERSION }}.AppImage
+          path: artifacts/
+          merge-multiple: true
       - name: Get short commit sha
         id: get_short_sha
         run: |
           short_sha=$(echo ${GITHUB_SHA} | cut -c1-7)
           echo "::set-output name=short_sha::$short_sha"
-      - name: Create Github release
+      - name: Create Github pre-release
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -57,7 +49,7 @@ jobs:
           prerelease: true
           title: "Mod Manager Dev ${{ env.VERSION }} (${{ steps.get_short_sha.outputs.short_sha }})"
           files: |
-            etc/usr/publish/**
+            artifacts/**
   build-on-ubuntu:
     name: Build On Ubuntu
     runs-on: ubuntu-24.04 # for libquazip1-qt5 available
@@ -128,9 +120,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - qt_arch: win64_mingw
-          #   qt_ver: 6.7.1
-          #   modules: qt5compat
+          - qt_arch: win64_mingw
+            qt_ver: 6.7.1
+            modules: qt5compat
           - qt_arch: win64_mingw81
             qt_ver: 5.15.2
             qt_tools_mingw_install: mingw810_64
@@ -231,13 +223,13 @@ jobs:
         if: ${{ startsWith( matrix.qt_ver, 5 ) }}
         run : |
           cp C:/msys64/mingw64/bin/libquazip1-qt5.dll deploy/
-      # - name: qt6 dependencies
-      #   if: ${{ startsWith( matrix.qt_ver, 6 ) }}
-      #   run : |
-      #     cp C:/msys64/mingw64/bin/libquazip1-qt6.dll deploy/
-      #     cp C:/msys64/mingw64/bin/libicuuc74.dll deploy/
-      #     cp C:/msys64/mingw64/bin/libicudt74.dll deploy/
-      #     cp C:/msys64/mingw64/bin/Qt6Core5Compat.dll deploy/
+      - name: qt6 dependencies
+        if: ${{ startsWith( matrix.qt_ver, 6 ) }}
+        run : |
+          cp C:/msys64/mingw64/bin/libquazip1-qt6.dll deploy/
+          cp C:/msys64/mingw64/bin/libicuuc74.dll deploy/
+          cp C:/msys64/mingw64/bin/libicudt74.dll deploy/
+          cp C:/msys64/mingw64/bin/Qt6Core5Compat.dll deploy/
       - name: Modify NSIS for x64
         shell: pwsh
         run: |
@@ -245,14 +237,15 @@ jobs:
       - name: Create installer
         run: |
           makensis package/modmanager.nsi
+          zip -q -r ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed.zip deploy/*
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager-${{ env.VERSION }}-x64-Installer.exe
+          name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
           path: ${{github.workspace}}/package/ModManager*-Installer.exe
       - uses: actions/upload-artifact@v2
         with:
-          name: ModManager-${{ env.VERSION }}-x64-packed
-          path: deploy/*
+          name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed
+          path: ${{github.workspace}}/ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed.zip
       - name: Upload Release
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
