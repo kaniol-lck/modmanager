@@ -227,8 +227,6 @@ jobs:
         if: ${{ startsWith( matrix.qt_ver, 6 ) }}
         run : |
           cp C:/msys64/mingw64/bin/libquazip1-qt6.dll deploy/
-          cp C:/msys64/mingw64/bin/libicuuc74.dll deploy/
-          cp C:/msys64/mingw64/bin/libicudt74.dll deploy/
           cp C:/msys64/mingw64/bin/Qt6Core5Compat.dll deploy/
       - name: Modify NSIS for x64
         shell: pwsh
