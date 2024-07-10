@@ -192,12 +192,21 @@ jobs:
         run : |
           ls C:/msys64/mingw64/bin
           ls ${{ env.QT_ROOT_DIR }}/bin
-      - name: package
-        id: package
+      - name: package Qt5
+        if: ${{ startsWith( matrix.qt_ver, 5 ) }}
+        id: package-qt5
         shell: pwsh
         run: |
           mkdir deploy
           mv release/modmanager.exe deploy
+          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
+          iwr "https://github.com/kaniol-lck/modmanager/releases/download/v1.1.1-build.543/ModManager-v1.1.1-build.543-x64-packed.zip" -OutFile ModManager-v1.1.1-build.543-x64-packed.zip
+          unzip *.zip -d old
+          cp old/libaria2-0.dll deploy/
+          cp old/libcares-5.dll deploy/
+          cp old/libcrypto-1_1-x64.dll deploy/
+          cp old/libssl-1_1-x64.dll deploy/
+          cp C:/msys64/mingw64/bin/libquazip1-qt5.dll deploy/
           cp C:/msys64/mingw64/bin/libcrypto-3-x64.dll deploy/
           cp C:/msys64/mingw64/bin/libbz2-1.dll deploy/
           cp C:/msys64/mingw64/bin/libiconv-2.dll deploy/
@@ -209,25 +218,45 @@ jobs:
           cp C:/msys64/mingw64/bin/libssh2-1.dll deploy/
           cp C:/msys64/mingw64/bin/libxml2-2.dll deploy/
           cp C:/msys64/mingw64/bin/libgcc_s_seh-1.dll deploy/
-          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
-      - name: aria2 dependencies
+      - name: package Qt6
+        if: ${{ startsWith( matrix.qt_ver, 6 ) }}
+        id: package-qt6
         shell: pwsh
         run: |
-          iwr "https://github.com/kaniol-lck/modmanager/releases/download/v1.1.1-build.543/ModManager-v1.1.1-build.543-x64-packed.zip" -OutFile ModManager-v1.1.1-build.543-x64-packed.zip
-          unzip *.zip -d old
-          cp old/libaria2-0.dll deploy/
-          cp old/libcares-5.dll deploy/
-          cp old/libcrypto-1_1-x64.dll deploy/
-          cp old/libssl-1_1-x64.dll deploy/
-      - name: qt5 dependencies
-        if: ${{ startsWith( matrix.qt_ver, 5 ) }}
-        run : |
-          cp C:/msys64/mingw64/bin/libquazip1-qt5.dll deploy/
-      - name: qt6 dependencies
-        if: ${{ startsWith( matrix.qt_ver, 6 ) }}
-        run : |
-          cp C:/msys64/mingw64/bin/libquazip1-qt6.dll deploy/
+          mkdir deploy
+          mv release/modmanager.exe deploy
+          windeployqt6.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
           cp C:/msys64/mingw64/bin/Qt6Core5Compat.dll deploy/
+          cp C:/msys64/mingw64/bin/libaria2-0.dll deploy/
+          cp C:/msys64/mingw64/bin/libb2-1.dll deploy/
+          cp C:/msys64/mingw64/bin/libbrotlicommon.dll deploy/
+          cp C:/msys64/mingw64/bin/libbrotlidec.dll deploy/
+          cp C:/msys64/mingw64/bin/libbz2-1.dll deploy/
+          cp C:/msys64/mingw64/bin/libcares-5.dll deploy/
+          cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll deploy/
+          cp C:/msys64/mingw64/bin/libcrypto-3-x64.dll deploy/
+          cp C:/msys64/mingw64/bin/libdouble-conversion.dll deploy/
+          cp C:/msys64/mingw64/bin/libfreetype-6.dll deploy/
+          cp C:/msys64/mingw64/bin/libglib-2.0-0.dll deploy/
+          cp C:/msys64/mingw64/bin/libgraphite2.dll deploy/
+          cp C:/msys64/mingw64/bin/libharfbuzz-0.dll deploy/
+          cp C:/msys64/mingw64/bin/libiconv-2.dll deploy/
+          cp C:/msys64/mingw64/bin/libicudt75.dll deploy/
+          cp C:/msys64/mingw64/bin/libicuin75.dll deploy/
+          cp C:/msys64/mingw64/bin/libicuuc75.dll deploy/
+          cp C:/msys64/mingw64/bin/libintl-8.dll deploy/
+          cp C:/msys64/mingw64/bin/liblzma-5.dll deploy/
+          cp C:/msys64/mingw64/bin/libmd4c.dll deploy/
+          cp C:/msys64/mingw64/bin/libpcre2-16-0.dll deploy/
+          cp C:/msys64/mingw64/bin/libpcre2-8-0.dll deploy/
+          cp C:/msys64/mingw64/bin/libpng16-16.dll deploy/
+          cp C:/msys64/mingw64/bin/libquazip1-qt6.dll deploy/
+          cp C:/msys64/mingw64/bin/libsqlite3-0.dll deploy/
+          cp C:/msys64/mingw64/bin/libssh2-1.dll deploy/
+          cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll deploy/
+          cp C:/msys64/mingw64/bin/libxml2-2.dll deploy/
+          cp C:/msys64/mingw64/bin/libzstd.dll deploy/
+          cp C:/msys64/mingw64/bin/zlib1.dll deploy/
       - name: Modify NSIS for x64
         shell: pwsh
         run: |
@@ -236,11 +265,12 @@ jobs:
         shell: pwsh
         run: |
           makensis package/modmanager.nsi
+          mv package/ModManager-Installer.exe ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
           Compress-Archive -DestinationPath ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed.zip -Path deploy/*
       - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
-          path: ${{github.workspace}}/package/ModManager*-Installer.exe
+          path: ${{github.workspace}}/package/ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
       - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed
@@ -250,8 +280,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: package/ModManager-Installer.exe
-          asset_name: ModManager-${{ env.VERSION }}-x64-Installer.exe
+          file: package/ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-Installer.exe
+          asset_name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
           tag: ${{ github.ref }}
           overwrite: true
   build-on-osx:
@@ -305,17 +335,18 @@ jobs:
       - name: package
         run: |
           macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
+          mv modmanager.dmg ModManager-${{ env.VERSION }}.dmg
         shell: sh
       - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}.dmg
-          path: modmanager.dmg
+          path: ModManager-${{ env.VERSION }}.dmg
       - name: uploadRelease
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: modmanager.dmg
+          file: ModManager-${{ env.VERSION }}.dmg
           asset_name: ModManager-${{ env.VERSION }}.dmg
           tag: ${{ github.ref }}
           overwrite: true
