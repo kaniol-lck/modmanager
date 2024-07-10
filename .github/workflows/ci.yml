@@ -66,7 +66,7 @@ jobs:
           sudo apt-get install -y libaria2-0-dev libquazip1-qt5-dev
           sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-util1 libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
           sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx-frontend-qt5 libcurl4-openssl-dev
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Set Env
@@ -99,7 +99,7 @@ jobs:
           sudo ln -s $QT_PLUGIN_PATH /home/qt/work/install/plugins
           ./appimagetool-*.AppImage -s deploy AppDir/usr/share/applications/*.desktop
           ./appimagetool-*.AppImage AppDir
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}-x86_64.AppImage
           path: Mod_Manager*.AppImage
@@ -136,7 +136,7 @@ jobs:
           version: ${{ matrix.qt_ver }}
           arch: ${{ matrix.qt_arch }}
           modules: ${{ matrix.modules }}
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
           submodules: recursive
@@ -237,11 +237,11 @@ jobs:
         run: |
           makensis package/modmanager.nsi
           Compress-Archive -DestinationPath ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed.zip -Path deploy/*
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
           path: ${{github.workspace}}/package/ModManager*-Installer.exe
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed
           path: ${{github.workspace}}/ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed.zip
@@ -283,7 +283,7 @@ jobs:
       - name: Install dependencies
         run: |
           brew install quazip gnu-sed aria2
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Set Env
@@ -306,7 +306,7 @@ jobs:
         run: |
           macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
         shell: sh
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}.dmg
           path: modmanager.dmg
