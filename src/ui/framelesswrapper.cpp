@@ -88,7 +88,6 @@ bool FramelessWrapper::nativeEvent(const QByteArray &eventType, void *message, l
     switch(msg->message){
     case WM_NCCALCSIZE:{
         if(msg->wParam == FALSE) return false;
-
         *result = WVR_REDRAW;
         return true;
     }

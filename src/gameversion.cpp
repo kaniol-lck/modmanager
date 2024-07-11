@@ -8,8 +8,6 @@
 
 #include "curseforge/curseforgeapi.h"
 #include "util/tutil.hpp"
-#include "util/funcutil.h"
-#include "config.hpp"
 
 GameVersion GameVersion::Any = GameVersion("");
 
@@ -17,6 +15,7 @@ QList<GameVersion> GameVersion::mojangVersionList_;
 QList<GameVersion> GameVersion::curseforgeVersionList_;
 
 QList<GameVersion> GameVersion::cachedVersionList_{
+    GameVersion(1, 21),
     GameVersion(1, 20, 6),
     GameVersion(1, 20, 5),
     GameVersion(1, 20, 4),

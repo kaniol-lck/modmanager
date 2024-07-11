@@ -36,20 +36,34 @@ QMap<QString, QString> styleSheets()
     return styleSheets;
 }
 
-QString styleSheetPath(const QString &name)
+QString styleSheetPath(QString name)
 {
-    if(!styleSheets().contains(name))
-        return QString("file:///:/stylesheet/%1.qss").arg("basic");
-    auto fileName = QDir(styleSheetsPath()).absoluteFilePath(name + ".qss");
-    if(!QFileInfo::exists(fileName) && builtinStyleSheets().contains(name)){
-        QFile builtinFile(QString(":/stylesheet/%1.qss").arg(name));
-        QFile newFile(fileName);
-        if(builtinFile.open(QIODevice::ReadOnly) && newFile.open(QIODevice::WriteOnly)){
-            newFile.write("/* This file is auto generated from built-in stylesheet\n"
-                          " * you can create you own qss based on this file.\n"
-                          " */\n\n");
-            newFile.write(builtinFile.readAll());
-        }
+    if(!styleSheets().keys().contains(name))
+        name = "basic";
+    if(builtinStyleSheets().keys().contains(name)){
+        QFile f(QString(":/stylesheet/%1.qss").arg(name));
+        if(f.open(QIODevice::ReadOnly))
+            return f.readAll();
     }
+    auto fileName = QDir(styleSheetsPath()).absoluteFilePath(name + ".qss");
     return fileName.prepend("file:///");
+}
+
+QString copyStyleSheet(const QString &name)
+{
+    QFile oldFile;
+    if(builtinStyleSheets().keys().contains(name))
+        oldFile.setFileName(QString(":/stylesheet/%1.qss").arg(name));
+    else
+        oldFile.setFileName(QString("file:///:/stylesheet/%1.qss").arg(name));
+    auto newName = name+"-copy";
+    auto fileName = QDir(styleSheetsPath()).absoluteFilePath(newName + ".qss");
+    QFile newFile(fileName);
+    if(!newFile.exists() && oldFile.open(QIODevice::ReadOnly) && newFile.open(QIODevice::WriteOnly)){
+        newFile.write("/* This file is auto generated from existed stylesheet\n"
+                      " * you can create you own qss based on this file.\n"
+                      " */\n\n");
+        newFile.write(oldFile.readAll());
+    }
+    return newName;
 }

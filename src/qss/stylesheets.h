@@ -7,5 +7,6 @@ const QString &styleSheetsPath();
 const QMap<QString, QString> &builtinStyleSheets();
 QMap<QString, QString> styleSheets();
 
-QString styleSheetPath(const QString &name);
+QString styleSheetPath(QString name);
+QString copyStyleSheet(const QString &name);
 #endif // STYLESHEETS_H

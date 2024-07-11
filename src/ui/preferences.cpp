@@ -1,6 +1,7 @@
 #include "preferences.h"
 #include "ui_preferences.h"
 
+#include <QDesktopServices>
 #include <QFileDialog>
 
 #include "config.hpp"
@@ -19,8 +20,7 @@ Preferences::Preferences(QWidget *parent) :
 #endif
     auto s = styleSheets();
     for(auto it = s.cbegin(); it != s.cend(); it++){
-        ui->customStyle->addItem(it.value());
-        ui->customStyle->setItemData(ui->customStyle->count() - 1, it.key());
+        ui->customStyle->addItem(it.value(), it.key());
     }
 
     ui->language->addItem(tr("Follow System"));
@@ -186,6 +186,13 @@ void Preferences::on_proxyType_currentIndexChanged(int index)
     ui->proxyPassword->setEnabled(!noProxy);
 }
 
+void Preferences::on_copyQSSButton_clicked()
+{
+    auto name = copyStyleSheet(ui->customStyle->currentData().toString());
+    ui->customStyle->insertItem(ui->customStyle->currentIndex() + 1, name, name);
+    ui->customStyle->setCurrentText(name);
+    QDesktopServices::openUrl(QUrl(styleSheetPath(name)));
+}
 
 void Preferences::on_useFramelessWindow_toggled(bool checked[[maybe_unused]])
 {

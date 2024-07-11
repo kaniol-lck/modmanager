@@ -223,7 +223,7 @@ void ModManager::paintEvent(QPaintEvent *event[[maybe_unused]])
         if(!widget->isVisible()) continue;
         auto rect = widget->rect();
         rect.translate(widget->pos());
-        p.fillRect(rect, QBrush(QColor(255, 50, 255, 210)));
+        p.fillRect(rect, QBrush(QColor(255, 255, 255, 210)));
     }
 }
 #endif //defined (DE_KDE) || defined (Q_OS_WIN)
@@ -242,11 +242,12 @@ void ModManager::editLocalPath(int index)
 void ModManager::on_actionPreferences_triggered()
 {
     auto preferences = new Preferences(this);
-    auto style = config_.getCustomStyle();
-    connect(preferences, &Preferences::accepted, this, [=]{
-        if(auto afterStyle = config_.getCustomStyle(); afterStyle != style)
-            qApp->setStyleSheet(styleSheetPath(afterStyle));
-    });
+    // TODO: mass performance
+    // auto style = config_.getCustomStyle();
+    // connect(preferences, &Preferences::accepted, this, [=]{
+    //     if(auto afterStyle = config_.getCustomStyle(); afterStyle != style)
+    //         qApp->setStyleSheet(styleSheetPath(afterStyle));
+    // });
     connect(preferences, &Preferences::accepted, this, &ModManager::updateUi, Qt::UniqueConnection);
     connect(preferences, &Preferences::accepted, this, &ModManager::setProxy, Qt::UniqueConnection);
     connect(preferences, &Preferences::accepted, QAria2::qaria2(), &QAria2::updateOptions, Qt::UniqueConnection);

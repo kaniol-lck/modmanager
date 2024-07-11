@@ -22,6 +22,8 @@ private slots:
 
     void on_proxyType_currentIndexChanged(int index);
 
+    void on_copyQSSButton_clicked();
+
 private:
     Ui::Preferences *ui;
 };
