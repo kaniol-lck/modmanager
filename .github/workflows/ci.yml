@@ -280,7 +280,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: package/ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-Installer.exe
+          file: package/ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
           asset_name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
           tag: ${{ github.ref }}
           overwrite: true
