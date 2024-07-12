@@ -206,7 +206,7 @@ void ModManager::updateLockPanels()
 void ModManager::closeEvent(QCloseEvent *event[[maybe_unused]])
 {
     emit closed();
-//    qDebug() << "closed";
+    qDebug() << "closed";
 }
 
 #if defined (DE_KDE) || defined (Q_OS_WIN)

@@ -190,7 +190,7 @@ void LocalModPath::loadMods(bool autoLoaderType)
         //delete unused files
         nonModFiles_.clear();
         for(const auto &file : qAsConst(modFileList)){
-            if(!file->parent()){
+            if(file->parent() == this){
                 nonModFiles_ << file->fileInfo().fileName();
                 file->deleteLater();
             }

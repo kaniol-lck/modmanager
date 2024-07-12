@@ -671,27 +671,27 @@ void LocalMod::updateIcon()
         emit modIconUpdated();
         return;
     }
-    auto applyIcon = [=]{
-        if(isDisabled()){
-            QImage image(icon_.toImage());
+    static auto applyIcon = [](LocalMod *p){
+        if(p->isDisabled()){
+            QImage image(p->icon_.toImage());
             auto alphaChannel = image.convertToFormat(QImage::Format_Alpha8);
             image = image.convertToFormat(QImage::Format_Grayscale8);
             image.setAlphaChannel(alphaChannel);
-            icon_.convertFromImage(image);
+            p->icon_.convertFromImage(image);
         }
-        emit modIconUpdated();
+        emit p->modIconUpdated();
     };
 
     if(!commonInfo()->iconBytes().isEmpty()){
         icon_.loadFromData(commonInfo()->iconBytes());
-        applyIcon();
+        applyIcon(this);
     }else if(commonInfo()->id() == "optifine") {
         icon_.load(":/image/optifine.png");
-        applyIcon();
+        applyIcon(this);
     }else if(curseforgeMod_){
         auto setCurseforgeIcon = [=]{
             icon_ = curseforgeMod_->modInfo().icon();
-            applyIcon();
+            applyIcon(this);
         };
         if(!curseforgeMod_->modInfo().icon().isNull())
             setCurseforgeIcon();
@@ -705,7 +705,7 @@ void LocalMod::updateIcon()
     } else if(modrinthMod_){
         auto setModrinthIcon = [=]{
             icon_ = modrinthMod_->modInfo().icon();
-            applyIcon();
+            applyIcon(this);
         };
         if(!modrinthMod_->modInfo().icon().isNull())
             setModrinthIcon();
@@ -718,7 +718,7 @@ void LocalMod::updateIcon()
         }
     } else{
         icon_.load(":/image/modmanager.png");
-        applyIcon();
+        applyIcon(this);
     }
 }
 

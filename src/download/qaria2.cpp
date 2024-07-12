@@ -46,6 +46,9 @@ QAria2::QAria2(QObject *parent) : QObject(parent)
     connect(qApp, &QCoreApplication::aboutToQuit, this, [=]{
         aria2::shutdown(session_);
         MMLogger() << "aria2 shutdown.";
+        // FIXME: sometime app donot exit after close
+        // (when local mod linked)
+        qTerminate();
     });
     updateOptions();
 }

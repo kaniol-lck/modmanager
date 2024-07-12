@@ -31,8 +31,8 @@ LocalModFile::~LocalModFile()
 
 ModLoaderType::Type LocalModFile::loadInfo()
 {
-    auto timer = new QElapsedTimer;
-    timer->start();
+    // auto timer = new QElapsedTimer;
+    // timer->start();
     if(type() == NotMod) return ModLoaderType::Any;
     QFile modFile(path_);
 
@@ -86,7 +86,6 @@ ModLoaderType::Type LocalModFile::loadInfo()
             importTag(Tag(language, TagCategory::LanguageCategory));
         }
     }
-
 
     //qDebug() << "finish" << timer->elapsed();
 
