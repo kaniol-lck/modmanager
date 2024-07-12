@@ -2,6 +2,40 @@
 
 ## 正式发布 Release
 
+### v1.1.1
+
+*2024.07.12*
+
+Update to the lateset API(Curseforge/Modrinth). Thanks to @Forgot-Dream .
+更新了最新的网站API（Curseforge/Modrinth），感谢：@Forgot-Dream 
+
+Added speed chart display for downloader.
+添加了下载器的速度图表绘制。
+
+Web Images in mod descriptions can be displayed now.
+mod描述中在线图片也能显示了。
+
+Added more frameless windows.
+添加了更多窗口的无边框显示。
+
+Tweaked windows title bar.
+调整了标题栏样式。
+
+Tweaked QSS Stylesheet.
+调整了QSS样式表。
+
+Changed  default download path for self-update.
+更改了Mod管理器自我更新的下载位置。
+
+Improved performance for list widget.
+优化了列表窗体的性能。
+
+Fixed display issues when open a subwindow under frameless mode.
+修复了无边框窗口模式下打开子窗口时出现的问题。
+
+Fixed menubar under native window.
+修复了原生窗口下的菜单栏问题。
+
 ### v1.1.0
 
 *2022.03.02*
