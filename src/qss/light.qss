@@ -6,6 +6,12 @@ QWidget {
   color: black;
 }
 
+/* Disabled */
+QWidget:disabled,
+QGroupBox:disabled {
+  background-color: #cfcfcf;
+}
+
 /* DockWidget & Title */
 .QWidget,
 QDialog,
@@ -29,9 +35,8 @@ Browser .ModList {
 Browser .QWidget,
 Browser .QWidget .QScrollArea,
 QDockWidget .QWidget,
-QDockWidget .QTextBrowser,
+QDockWidget .WebTextBrowser,
 QDockWidget .QScrollArea,
-QDockWidget .QToolButton,
 QDockWidget .QLabel {
   background-color: transparent;
 }
@@ -140,11 +145,6 @@ QTreeView.PageSelector::item::hover {
   color: black;
 }
 
-/* Disabled */
-QWidget[enabled=false] {
-  background-color: #cfcfcf;
-}
-
 /* Other Controls */
 QToolBar {
   border: 1px solid #d3d3d3;
@@ -200,6 +200,7 @@ QToolButton[autoRaise=true] {
 }
 
 QMenu,
+QMenu:disabled,
 QComboBox QAbstractItemView {
   font-size: 10pt;
   background-color: #fafafa;
