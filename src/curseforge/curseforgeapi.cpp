@@ -137,11 +137,11 @@ Reply<QString> CurseforgeAPI::getDescription(int id)
 
 Reply<CurseforgeFileInfo> CurseforgeAPI::getFileInfo(int id, int FileID)
 {
-    QUrl url = PREFIX + "/v1/mods/" + QString::number(id) + "/file/" + QString::number(FileID);
+    QUrl url = PREFIX + "/v1/mods/" + QString::number(id) + "/files/" + QString::number(FileID);
 
     QNetworkRequest request(url);
     MMLogger::network(this) << url;
-    request.setRawHeader("x-api-key",XAPIKEY);
+    request.setRawHeader("x-api-key", XAPIKEY);
     auto reply = accessManager_.get(request);
     return { reply, [=]{
         //parse json
