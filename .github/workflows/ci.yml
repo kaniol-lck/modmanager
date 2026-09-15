@@ -169,6 +169,31 @@ jobs:
           C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-pkg-config --noconfirm
           C:/msys64/usr/bin/pacman -Q
+      - name: Install NSIS（windows-2025 镜像不再预装）
+        shell: pwsh
+        run: |
+          trap { Write-Output "::error::$($_.Exception.Message)"; exit 1 }
+          # 为什么需要这一步：`windows-latest` 正在迁到 windows-2025 镜像，而
+          #   windows-2022 的软件清单里有 NSIS 3.10、windows-2025 里**没有**
+          #   （只剩 InnoSetup 6.7.1 / WiX 3.14.1）。
+          # 于是 `makensis` 不在 PATH 上 → run #660 的注解原话：
+          #   "The term 'makensis' is not recognized as a name of a cmdlet, ..."。
+          # 这个故障以前被前面步骤的失败掩盖着（#658 死在 Build QuaZip、
+          # #659 死在收集 DLL），直到那两处修好、这一步第一次真正跑到才暴露。
+          # Chocolatey 2.7.4 是镜像自带的，用它装。
+          $choco = (Get-Command choco -ErrorAction SilentlyContinue).Source
+          if (-not $choco) { $choco = 'C:\ProgramData\chocolatey\bin\choco.exe' }
+          if (-not (Test-Path $choco)) { throw 'runner 上找不到 choco（Chocolatey 不是镜像自带的吗？）' }
+          & $choco install nsis -y --no-progress
+          if ($LASTEXITCODE -ne 0) { throw "choco install nsis 失败（exit=$LASTEXITCODE）" }
+          # 装到哪了不写死：x86 与 x64 两个 Program Files 都试一遍
+          $nsis = Join-Path ${env:ProgramFiles(x86)} 'NSIS'
+          if (-not (Test-Path (Join-Path $nsis 'makensis.exe'))) { $nsis = Join-Path $env:ProgramFiles 'NSIS' }
+          $mk = Join-Path $nsis 'makensis.exe'
+          if (-not (Test-Path $mk)) { throw "装完仍找不到 makensis.exe（试过 $nsis）" }
+          Add-Content -Path $env:GITHUB_PATH -Value $nsis
+          Write-Output "NSIS: $nsis"
+          & $mk /VERSION
       # PATH 必须在 Build QuaZip 之前配好：那一步的 cmake -G "MinGW Makefiles"
       # 要求 mingw32-make 已在 PATH 上，而 install-qt-action 的 addToolsToPath
       # 属于"别人帮我们做对的事"，靠它是运气，写明白是确定性。
