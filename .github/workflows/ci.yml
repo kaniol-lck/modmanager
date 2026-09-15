@@ -169,36 +169,9 @@ jobs:
           C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-pkg-config --noconfirm
           C:/msys64/usr/bin/pacman -Q
-      - name: Build QuaZip（必须自建，不能用 MSYS2 的）
-        shell: pwsh
-        run: |
-          # 为什么不能 brew/pacman 拿现成 quazip：
-          # MSYS2 的 libquazip1-qt6.dll 是针对 qt6-base 6.11 编的，导入表里有
-          #   qt_version_tag_6_11 / QDir::mkpath(..., std::optional<QFlags<...>>)
-          #   / QString::arg_impl(long long, int, int, QChar)
-          # 而官方 Qt 6.7.2 的 Qt6Core.dll 只导出到 qt_version_tag_6_7
-          # → 进程加载 libquazip1-qt6.dll 时会直接失败（DLL 里的依赖解析不了）。
-          # 自建一份拿同一套 qmake/Qt 编，ABI 必然一致（.pro 用 pkg-config 找 quazip1-qt6）。
-          iwr "https://github.com/stachenov/quazip/archive/refs/tags/v1.7.2.tar.gz" -OutFile quazip.tar.gz
-          tar -xf quazip.tar.gz
-          cmake -S quazip-1.7.2 -B quazip-build -G "MinGW Makefiles" `
-            -DCMAKE_BUILD_TYPE=Release `
-            -DCMAKE_PREFIX_PATH="${{ env.QT_ROOT_DIR }}" `
-            -DZLIB_ROOT="C:/msys64/mingw64" `
-            -DQUAZIP_QT_MAJOR_VERSION=6 `
-            -DQUAZIP_ENABLE_QTEXTCODEC=OFF `
-            -DQUAZIP_ENABLE_TESTS=OFF `
-            -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/quazip-install"
-          cmake --build quazip-build --parallel
-          cmake --install quazip-build
-          # Qt 官方包不带 Qt6Core.pc，pkg-config 解析不了生成的
-          # "Requires: zlib, Qt6Core"；Qt 的 include/lib 本来由 qmake 提供，
-          # 去掉这条 Requires 才能让 pkg-config --cflags/--libs 正常工作。
-          $pc = "${{ github.workspace }}/quazip-install/lib/pkgconfig/quazip1-qt6.pc"
-          (Get-Content $pc -Raw) -replace ', Qt6Core', '' | Set-Content $pc -NoNewline
-          Get-Content $pc
-          # 顺带确认：pkg-config 真的能解析到它（不然 qmake 阶段会缺 quazip.h）
-          C:/msys64/mingw64/bin/pkg-config.exe --modversion quazip1-qt6
+      # PATH 必须在 Build QuaZip 之前配好：那一步的 cmake -G "MinGW Makefiles"
+      # 要求 mingw32-make 已在 PATH 上，而 install-qt-action 的 addToolsToPath
+      # 属于"别人帮我们做对的事"，靠它是运气，写明白是确定性。
       - name: environment configuration
         shell: pwsh
         run: |
@@ -211,11 +184,85 @@ jobs:
               Write-Output "$($_.FullName)/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
               Write-Output "  工具链: $($_.Name)"
             }
-      - name: where is qmake & where is mingw32-make
+      - name: where is qmake & where is mingw32-make & where is cmake
         shell: pwsh
         run: |
           Get-Command -Name 'qmake' | Format-List
-          Get-Command -Name 'mingw32-make' | Format-List
+          # -ErrorAction Stop：缺工具链要在这里就炸，别拖到后面报成"cmake 配置失败"
+          Get-Command -Name 'mingw32-make' -ErrorAction Stop | Format-List
+          Get-Command -Name 'g++' -ErrorAction Stop | Format-List
+          Get-Command -Name 'cmake' -ErrorAction Stop | Format-List
+      - name: Build QuaZip（必须自建，不能用 MSYS2 的）
+        shell: pwsh
+        env:
+          # 这个 env 是本步曾经翻车的原因：pkg-config 自检在最后一行，
+          # 没有 PKG_CONFIG_PATH 时它必然 exit 1，而 pwsh 会把"最后一条原生命令"
+          # 的退出码当作整步的退出码 → 整步报红（quazip 其实已经编好了）。
+          PKG_CONFIG_PATH: 'C:/msys64/mingw64/lib/pkgconfig;${{ github.workspace }}/quazip-install/lib/pkgconfig'
+          QT_VER: ${{ matrix.qt_ver }}
+        run: |
+          # 为什么不能 brew/pacman 拿现成 quazip：
+          # MSYS2 的 libquazip1-qt6.dll 是针对 qt6-base 6.11 编的，导入表里有
+          #   qt_version_tag_6_11 / QDir::mkpath(..., std::optional<QFlags<...>>)
+          #   / QString::arg_impl(long long, int, int, QChar)
+          # 而官方 Qt 6.7.2 的 Qt6Core.dll 只导出到 qt_version_tag_6_7
+          # → 进程加载 libquazip1-qt6.dll 时会直接失败（DLL 里的依赖解析不了）。
+          # 自建一份拿同一套 qmake/Qt 编，ABI 必然一致（.pro 用 pkg-config 找 quazip1-qt6）。
+          #
+          # ⚠️ pwsh 里原生命令非零退出**不会**中断脚本（$ErrorActionPreference
+          # 只管 cmdlet）；Actions 最后只会拿"最后一条命令"的 $LASTEXITCODE 当整步退出码。
+          # 所以每条原生命令后面都必须显式断言 —— 否则中间失败会被后面碰巧成功的
+          # 命令掩盖，报错点会完全错到别的地方去。
+          $ErrorActionPreference = 'Stop'
+          function AssertOk([string]$what) {
+            if ($LASTEXITCODE -ne 0) { throw "$what 失败（exit=$LASTEXITCODE）" }
+          }
+
+          iwr "https://github.com/stachenov/quazip/archive/refs/tags/v1.7.2.tar.gz" -OutFile quazip.tar.gz
+          tar -xf quazip.tar.gz; AssertOk '解压 quazip 源码'
+          if (-not (Test-Path quazip-1.7.2)) { throw 'quazip-1.7.2 目录不存在' }
+
+          cmake -S quazip-1.7.2 -B quazip-build -G "MinGW Makefiles" `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_PREFIX_PATH="${{ env.QT_ROOT_DIR }}" `
+            -DZLIB_ROOT="C:/msys64/mingw64" `
+            -DQUAZIP_QT_MAJOR_VERSION=6 `
+            -DQUAZIP_ENABLE_QTEXTCODEC=OFF `
+            -DQUAZIP_ENABLE_TESTS=OFF `
+            -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/quazip-install"
+          AssertOk 'cmake configure'
+          cmake --build quazip-build --parallel; AssertOk 'cmake build'
+          cmake --install quazip-build; AssertOk 'cmake install'
+
+          # Qt 官方包不带 Qt6Core.pc，pkg-config 解析不了生成的
+          # "Requires: zlib, Qt6Core"；Qt 的 include/lib 本来由 qmake 提供，
+          # 去掉这条 Requires 才能让 pkg-config --cflags/--libs 正常工作。
+          $pc = "${{ github.workspace }}/quazip-install/lib/pkgconfig/quazip1-qt6.pc"
+          if (-not (Test-Path $pc)) { throw "没有生成 $pc（cmake install 没落到 prefix？）" }
+          (Get-Content $pc -Raw) -replace ', Qt6Core', '' | Set-Content $pc -NoNewline
+          if ((Get-Content $pc -Raw) -match 'Qt6Core') { throw 'quazip1-qt6.pc 的 Requires 里仍有 Qt6Core' }
+          Get-Content $pc
+
+          # 确认 pkg-config 真能解析到它（不然 qmake 阶段会缺 quazip.h）
+          # 必须写全路径：runner 的 PATH 上没有 MSYS2 的 bin（后面的 mingw-build
+          # 之所以要把 pkg-config.exe 拷进 Qt/bin，就是因为同一件事）。
+          C:/msys64/mingw64/bin/pkg-config.exe --modversion libaria2 quazip1-qt6
+          AssertOk 'pkg-config 解析 libaria2/quazip1-qt6'
+
+          # 自建的全部意义就是这个 ABI 标签 —— 必须显式核对，否则"自建"只是口号。
+          # 期望值从 matrix 的 qt_ver 推出（6.7.2 → qt_version_tag_6_7）。
+          $expected = 'qt_version_tag_' + ($env:QT_VER -replace '^(\d+)\.(\d+)\..*', '$1_$2')
+          $objdump = (Get-ChildItem "${{ env.QT_ROOT_DIR }}/../../Tools" -Recurse `
+            -Filter objdump.exe -ErrorAction SilentlyContinue | Select-Object -First 1).FullName
+          if (-not $objdump) { throw 'objdump.exe 未找到：MinGW 工具链没装上？' }
+          $dll = "${{ github.workspace }}/quazip-install/bin/libquazip1-qt6.dll"
+          if (-not (Test-Path $dll)) { throw "没有生成 $dll" }
+          $tags = @(& $objdump -p $dll | Select-String 'qt_version_tag_[0-9_]+' -AllMatches |
+            ForEach-Object { $_.Matches.Value } | ForEach-Object { $_.TrimEnd('_') } | Sort-Object -Unique)
+          Write-Output "自建 quazip 的 Qt ABI 标签: $($tags -join ', ')（期望 $expected，来自 Qt $env:QT_VER）"
+          if ($tags -notcontains $expected) {
+            throw "自建 quazip 的 ABI 标签与 Qt $env:QT_VER 不匹配：拿到的 $($tags -join ', ')"
+          }
       - name: mingw-build
         id: build
         shell: pwsh
@@ -267,8 +314,18 @@ jobs:
         shell: pwsh
         run: |
           makensis package/modmanager.nsi
+          if ($LASTEXITCODE -ne 0) { throw "makensis 失败（exit=$LASTEXITCODE）" }
+          if (-not (Test-Path package/ModManager-Installer.exe)) { throw 'NSIS 没产出 ModManager-Installer.exe' }
           mv package/ModManager-Installer.exe ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
           Compress-Archive -DestinationPath ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed.zip -Path deploy/*
+          # 两个产物都必须真的落地：upload-artifact 找不到文件时默认只 warn 不报错
+          # （if-no-files-found: warn），否则"打包失败"会以"绿 job + 没有附件"的形式溜过去。
+          foreach ($f in @(
+              "ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe",
+              "ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-packed.zip")) {
+            if (-not (Test-Path $f)) { throw "缺少产物 $f" }
+            Write-Output ("产物 {0}  {1:N1} MiB" -f $f, ((Get-Item $f).Length / 1MB))
+          }
       - uses: actions/upload-artifact@v4
         with:
           name: ModManager-${{ env.VERSION }}-${{ matrix.qt_ver }}-x64-Installer.exe
