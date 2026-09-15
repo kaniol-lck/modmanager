@@ -57,6 +57,11 @@ QDockWidget .QLabel {
 }
 
 /* ModList */
+/* 默认就保留左边框，否则 hover 时盒模型突变会让内容整体右移 5px */
+.ModList::item {
+  border-left: 5px solid transparent;
+}
+
 .ModList::item:hover {
   border-left: 5px solid #eeeeee;
   background-color: #22eeeeee;
@@ -82,13 +87,13 @@ QDockWidget .QLabel {
 }
 
 #closeButton:hover {
-  background-color: red;
+  background-color: #e81123;
   border: none;
 }
 
 /* TitleBar Menu */
 QMenuBar {
-  color: #777777;
+  color: #333333;
 }
 
 QMenuBar::item:selected {
@@ -115,4 +120,10 @@ QTreeView.PageSelector::item::hover {
   border: 1px solid #dbdbdb;
   border-radius: 3px;
   color: black;
+}
+
+/* 已禁用的 mod 条目（动态属性由 LocalModItemWidget 设置）。
+   放在文件末尾是为了让它压过 .Title / .Description 等同优先级的类选择器。 */
+QLabel[modDisabled="true"] {
+  color: #777777;
 }

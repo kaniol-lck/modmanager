@@ -8,6 +8,7 @@
 #include <QMenu>
 
 #include "tag/tagable.h"
+#include "tagchip.h"
 #include "local/localmodmenu.h"
 #include "config.hpp"
 
@@ -34,18 +35,9 @@ void TagsWidget::updateUi()
     tagWidgets_.clear();
     if(!tagableObject_) return;
     for(auto &&tag : tagableObject_->tags(Config().getShowTagCategories())){
-        auto label = new QLabel(this);
-        if(!tag.iconName().isEmpty())
-            if(iconOnly_)
-                label->setText(QString(R"(<img src="%1" height="16" width="16"/>)").arg(tag.iconName()));
-            else
-                label->setText(QString(R"(<img src="%1" height="16" width="16"/> %2)").arg(tag.iconName(), tag.name()));
-        else
-            label->setText(tag.name());
-        label->setToolTip(tr("%1: %2").arg(tag.category().name(), tag.name()));
-        if(!iconOnly_ || tag.iconName().isEmpty())
-            label->setStyleSheet(QString("color: #fff; background-color: %1; border-radius:10px; padding:2px 4px;").arg(tag.category().color().name()));
-        ui->tagsLayout->addWidget(label);
+        auto label = TagChip::create(tag, this, iconOnly_, "TagsWidget");
+        // AlignVCenter：芯片已定死高度，不加对齐会被 QHBoxLayout 纵向拉伸
+        ui->tagsLayout->addWidget(label, 0, Qt::AlignVCenter);
         tagWidgets_ << label;
     }
 }

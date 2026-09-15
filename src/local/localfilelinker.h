@@ -47,6 +47,7 @@ private:
 
     bool curseforgeLinked_ = false;
     bool modrinthLinked_ = false;
+    bool isLinking_ = false;
     std::unique_ptr<Reply<int, CurseforgeFileInfo, QList<CurseforgeFileInfo>>> curseforgeSearcher_;
     std::unique_ptr<Reply<ModrinthFileInfo>> modrinthSearcher_;
 };

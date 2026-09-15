@@ -9,6 +9,8 @@ namespace Ui {
 class LocalModItemWidget;
 }
 
+class QMenu;
+
 class LocalModItemWidget : public QWidget
 {
     Q_OBJECT
@@ -60,6 +62,12 @@ protected:
 private:
     Ui::LocalModItemWidget *ui;
     LocalMod *mod_;
+    // 菜单只建一次、每次刷新时清空内容。
+    // 原来 updateInfo()/updateReady() 每次都 new 一个 QMenu 并 setMenu()，旧菜单从不 delete，
+    // 而 modInfoChanged 触发得相当频繁 —— 子对象会持续累积。
+    QMenu *rollbackMenu_ = nullptr;
+    QMenu *updateMenu_ = nullptr;
+    QMenu *ignoreUpdateMenu_ = nullptr;
 };
 
 #endif // MODENTRYWIDGET_H

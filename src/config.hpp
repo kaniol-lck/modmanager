@@ -44,7 +44,6 @@ public:
     getterAndSetter(ShowModLoaderType, Bool, showModLoaderType, true)
     getterAndSetter(ShowModReleaseType, Bool, showModReleaseType, true)
     getterAndSetter(ShowModGameVersion, Bool, showModGameVersion, true)
-    getterAndSetter(AutoTranslate, Bool, autoTranslate, false)
     getterAndSetter(Language, String, language, "")
 
 #ifdef DE_KDE
@@ -77,7 +76,8 @@ public:
     getterAndSetter(AutoFetchModrinthFileList, Bool, autoFetchModrinthFileList, false)
     getterAndSetter(SearchResultCount, Int, searchResultCount, 30)
     enum OptifineSourceType{ Official, BMCLAPI };
-    getterAndSetter(OptifineSource, Int, optifineSource, Official)
+    //optifine.net 已被 Cloudflare 拦截，官方源暂不可用，默认走 BMCLAPI 镜像
+    getterAndSetter(OptifineSource, Int, optifineSource, BMCLAPI)
     getterAndSetter(ShowCatVerInToolBar, Bool, showCatVerInToolBar, false)
     getterAndSetter(ShowModrinthSnapshot, Bool, showModrinthSnapshot, false)
     getterAndSetter(ShowCurseforge, Bool, ShowCurseforge, true)

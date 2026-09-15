@@ -22,6 +22,7 @@ public:
 
 signals:
     void downloadUrlReady();
+    void downloadUrlFailed();
 
 private:
     OptifineAPI *api_;

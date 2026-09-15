@@ -21,6 +21,7 @@ public:
 
 public slots:
     void onDownloadPathChanged();
+    void onDownloadUrlFailed();
 
 private slots:
     void on_downloadButton_clicked();

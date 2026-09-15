@@ -57,7 +57,7 @@ Reply<QUrl> OptifineAPI::getDownloadUrl(const QString &fileName)
         reply->deleteLater();
         //TODO: workaround for multiline match
         webPage.replace('\n', "");
-        auto str = capture(webPage, R"(<a href='(.*?)' onclick='.*?'>.*?</a>)");
+        auto str = capture(webPage, R"(<a href=["'](.*?)["'] onclick=["'].*?["']>.*?</a>)");
         QUrl downloadUrl = "https://optifine.net/" + str;
         return downloadUrl;
     } };

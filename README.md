@@ -32,7 +32,7 @@ git clone git@github.com:kaniol-lck/modmanager.git
 
 This project has these external dependencies:
 
-- Qt (5.15.2 or maybe other versions)
+- Qt (5.15.2 or 6.x)
 - quazip
 - libaria2
 
@@ -41,13 +41,13 @@ Depends on your OS and package managers:
 - Ubuntu (apt-get):
 
   ```sh
-  apt-get install libaria2-0-dev libquazip5-dev
+  apt-get install libaria2-0-dev libquazip1-qt5-dev
   ```
 
 - Archlinux:
 
   ```sh
-  pacman -S aria2 quazip
+  pacman -S aria2 quazip-qt6
   ```
 
 - Windows (MSYS2):
@@ -55,11 +55,12 @@ Depends on your OS and package managers:
   ```sh
   pacman -S mingw-w64-x86_64-aria2 mingw-w64-x86_64-quazip
   ```
+  (the MSYS2 `quazip` package only ships the Qt 6 flavour, so build with Qt 6 there)
 
 - MacOS:
   
   ```sh
-  brew install quazip
+  brew install quazip aria2
   ```
   libaria2: see [kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases/tag/release-1.36.0) for install instructions.
   
@@ -82,6 +83,7 @@ You can browse and download mod from:
 - Modrinth
 - OptiFine
 - ReplayMod
+- GitHub
 
 ![curseforge_browser](images/curseforge_browser.png)
 

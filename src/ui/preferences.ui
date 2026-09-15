@@ -180,13 +180,6 @@
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="autoTranslate">
-             <property name="text">
-              <string>Auto translate</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QCheckBox" name="useFramelessWindow">
              <property name="text">
               <string>Use frameless window</string>
@@ -390,11 +383,6 @@
              </item>
              <item row="5" column="1">
               <widget class="QComboBox" name="optifineVersionSource">
-               <item>
-                <property name="text">
-                 <string>Official Website</string>
-                </property>
-               </item>
                <item>
                 <property name="text">
                  <string>BMCLAPI</string>

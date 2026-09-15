@@ -2,6 +2,37 @@
 
 ## 正式发布 Release
 
+### v1.2.0
+
+*2026.09.15*
+
+Removed the deprecated auto-translate feature.
+移除了已失效的自动翻译功能。
+
+Reworked mod tags and the tag editor.
+重做了模组标签的展示与编辑。
+
+Reworked smooth scrolling, wheel input is no longer dropped.
+重做了平滑滚动，滚轮不再出现无响应。
+
+Improved the frameless window: multi-monitor, unified title bar metrics, and the blur switch now takes effect immediately.
+改进了无边框窗口：多屏幕适配、统一标题栏尺寸，模糊开关即时生效。
+
+Polished light/dark stylesheets and the font scale.
+完善了浅色/深色样式表与字号层级。
+
+Fixed the OptiFine source, download links can be resolved now.
+修复了 OptiFine 源，下载链接现在可以正常解析。
+
+Fixed bugs in local mod refresh, linking and updating, where an update could get stuck.
+修复了本地模组刷新、链接与更新的缺陷，例如更新流程可能卡在「更新中」。
+
+Fixed bugs in the aria2 downloader, where a failed download was never reported.
+修复了 aria2 下载器的缺陷，例如下载失败从不反馈结果。
+
+Fixed a crash when no mod path is configured.
+修复了未配置任何模组路径时的崩溃。
+
 ### v1.1.1
 
 *2024.07.12*

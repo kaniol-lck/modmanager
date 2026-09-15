@@ -34,13 +34,13 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(ModrinthFileListWidget *parent, M
 
     if(fileInfo_.releaseType() == ModrinthFileInfo::Release){
         ui->releaseType->setText(tr("Release"));
-        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #14b866; border-radius:2px; padding:1px 2px;"));
+        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #0d7a43; border-radius:2px; padding:1px 2px;"));
     } else if(fileInfo_.releaseType() == ModrinthFileInfo::Beta){
         ui->releaseType->setText(tr("Beta"));
-        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #0e9bd8; border-radius:2px; padding:1px 2px;"));
+        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #0b6f9c; border-radius:2px; padding:1px 2px;"));
     }  else if(fileInfo_.releaseType() == ModrinthFileInfo::Alpha){
         ui->releaseType->setText(tr("Alpha"));
-        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #d3cae8; border-radius:2px; padding:1px 2px;"));
+        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #6b5ea8; border-radius:2px; padding:1px 2px;"));
     } else{
         ui->releaseType->setText(fileInfo_.releaseType());
     }
@@ -56,7 +56,7 @@ ModrinthFileItemWidget::ModrinthFileItemWidget(ModrinthFileListWidget *parent, M
         if(version.isDev())
             label->setStyleSheet(QString("color: #fff; background-color: #735e82; border-radius:8px; padding:1px 2px;"));
         else
-            label->setStyleSheet(QString("color: #fff; background-color: #827965; border-radius:8px; padding:1px 2px;"));
+            label->setStyleSheet(QString("color: #fff; background-color: #6f6754; border-radius:8px; padding:1px 2px;"));
         auto font = label->font();
         font.setPointSize(9);
         label->setFont(font);
@@ -120,6 +120,12 @@ void ModrinthFileItemWidget::on_downloadButton_clicked()
         ui->downloadProgress->setVisible(false);
         ui->downloadSpeedText->setText(sizeConvert(fileInfo_.size()));
         ui->downloadButton->setText(tr("Downloaded"));
+    });
+    // 失败也必须把按钮还原，否则会永久停在 "Downloading" 且不可点（见 curseforgefileitemwidget）
+    connect(downloader, &AbstractDownloader::downloadFailed, this, [=]{
+        ui->downloadProgress->setVisible(false);
+        ui->downloadSpeedText->clear();
+        onDownloadPathChanged();
     });
 }
 

@@ -2,6 +2,7 @@
 
 #include <QDir>
 #include <QFuture>
+#include <QSet>
 #include <QtConcurrent/QtConcurrent>
 
 #include "localmodpathmanager.h"
@@ -22,24 +23,14 @@ LocalModPath::LocalModPath(const LocalModPathInfo &info) :
 {
     watcher_.addPath(info_.path());
     connect(&watcher_, &QFileSystemWatcher::directoryChanged, this, &LocalModPath::onDirectoryChanged);
-    connect(this, &LocalModPath::loadFinished, [=]{
-        auto conn = connect(&modsLinker_, &CheckSheet::finished, this, [=]{
-            auto interval = Config().getUpdateCheckInterval();
-            if(interval == Config::Always || !latestUpdateCheck_.isValid() ||
-                    (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1))
-                checkModUpdates();
-            else if(interval != Config::Never){
-            }
-        });
-        qDebug() << "load finished";
-        linkAllFiles();
-        connect(&modsLinker_, &CheckSheet::finished, this, disconnecter(conn));
-        connect(&updateChecker_, &CheckSheet::finished, this, [=]{
-            latestUpdateCheck_ = QDateTime::currentDateTime();
-            writeToFile();
-        });
-//        connect(&modsLinker_, &CheckSheet::finished, this, &LocalModPath::updatesReady);
+    connect(this, &LocalModPath::loadFinished, this, &LocalModPath::autoCheckWhenIdle);
+    // 这个连接只注册一次。原来是写在 loadFinished 的 lambda 里，reload N 次就多出 N 条，
+    // 一次检查完成会重复写 N 遍 mods.json。
+    connect(&updateChecker_, &CheckSheet::finished, this, [=]{
+        latestUpdateCheck_ = QDateTime::currentDateTime();
+        writeToFile();
     });
+//        connect(&modsLinker_, &CheckSheet::finished, this, &LocalModPath::updatesReady);
 }
 
 LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
@@ -54,6 +45,47 @@ LocalModPath::LocalModPath(LocalModPath *path, const QString &subDir) :
     importTag(Tag(subDir, TagCategory::SubDirCategory));
     info_.path_.append("/").append(relative_.join("/"));
     watcher_.addPath(info_.path());
+    // 子路径自己不触发自动链接/检查，统一交给最外层路径（见 autoCheckWhenIdle）；
+    // 但要在最外层路径空闲时把它"唤醒"，因为我们可能比父路径更晚才扫描完。
+    connect(this, &LocalModPath::loadFinished, rootPath(), &LocalModPath::autoCheckWhenIdle);
+    // 可更新计数逐层向上传播，否则只有子目录里有可更新项时顶层 UI 永远不显示 "N mods need update"
+    connect(this, &LocalModPath::updatableCountChanged, path, &LocalModPath::updateUpdatableCount);
+}
+
+LocalModPath *LocalModPath::rootPath() const
+{
+    // 根路径的 parent 是 LocalModPathManager，不是 LocalModPath
+    if(auto path = qobject_cast<LocalModPath *>(parent()))
+        return path->rootPath();
+    return const_cast<LocalModPath *>(this);
+}
+
+void LocalModPath::autoCheckWhenIdle()
+{
+    // 自动链接 + 自动检查更新只在最外层路径上跑一次。
+    // modList() 已经递归包含子路径的 mod，父子各跑一遍会让同一个 linker / mod
+    // 被两个 CheckSheet 各注册一次：网络请求翻倍、计数语义被打乱，
+    // 还可能提前 finished —— 而提前 finished 会让一部分 mod 还没 link 完就开始检查更新，
+    // 那些 mod 因为 curseforgeFileInfo() 还是空的而被静默跳过。
+    if(auto *root = rootPath(); root != this){
+        root->autoCheckWhenIdle();
+        return;
+    }
+
+    if(isLoading() || modsLinker_.isWaiting()) return;
+    for(auto &&subPath : qAsConst(subPaths_))
+        if(subPath->isLoading()) return;    // 子路径还在扫描，它完成时会再次调用本函数
+    if(modList().isEmpty()) return;
+
+    auto conn = connect(&modsLinker_, &CheckSheet::finished, this, [=]{
+        auto interval = Config().getUpdateCheckInterval();
+        if(interval == Config::Always || !latestUpdateCheck_.isValid() ||
+                (interval == Config::EveryDay && latestUpdateCheck_.daysTo(QDateTime::currentDateTime()) >= 1))
+            checkModUpdates();
+    });
+    qDebug() << "load finished";
+    linkAllFiles();
+    connect(&modsLinker_, &CheckSheet::finished, this, disconnecter(conn));
 }
 
 const QStringList &LocalModPath::nonModFiles() const
@@ -126,18 +158,42 @@ void LocalModPath::loadMods(bool autoLoaderType)
     updateChecker_.reset();
     isUpdating_ = false;
     QDir dir(info_.path());
+    QSet<QString> existingSubDirs;
     for(auto &&fileInfo : dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot)){
         bool containsMod = false;
         for(auto &&fileInfo2 : fileInfo.dir().entryInfoList(QDir::Files))
             if((containsMod = LocalModFile::availableSuffix.contains(fileInfo2.suffix())))
                 break;
-        if(auto fileName = fileInfo.fileName(); !subPaths_.contains(fileName) && containsMod){
+        if(!containsMod) continue;
+        auto fileName = fileInfo.fileName();
+        existingSubDirs << fileName;
+        if(auto existingSubPath = subPaths_.value(fileName)){
+            // 已存在的子路径也必须重扫：只在"首次发现"时 load 的话，
+            // 子目录里手工增删的 jar 在 Refresh 之后不会生效。
+            existingSubPath->loadMods();
+        } else {
             auto subPath = new LocalModPath(this, fileName);
             subPaths_.insert(fileName, subPath);
             containedTags_.addSubTagable(subPath);
             containedTags_.addSubTagable(&subPath->containedTags_);
             subPath->loadMods();
         }
+    }
+    // 被删除/改名的子目录要从 subPaths_ 里摘掉，
+    // 否则它的旧内容会一直挂在 modList() 里显示，标签筛选里也会留下已不存在的目录标签。
+    for(auto it = subPaths_.begin(); it != subPaths_.end();){
+        auto subPath = it.value();
+        // 正在扫描的子路径不能删：它的 QtConcurrent 任务还持有 this，
+        // 这里 deleteLater 会让另一个线程访问已析构对象。留到下一轮刷新再清理。
+        if(existingSubDirs.contains(it.key()) || subPath->isLoading()){
+            ++it;
+            continue;
+        }
+        containedTags_.removeSubTagable(subPath);
+        containedTags_.removeSubTagable(&subPath->containedTags_);
+        it = subPaths_.erase(it);
+        subPath->setParent(nullptr);
+        subPath->deleteLater();
     }
     QList<LocalModFile*> modFileList;
     for(auto &&fileInfo : dir.entryInfoList(QDir::Files))
@@ -245,17 +301,24 @@ void LocalModPath::addModFile(LocalModFile *file)
 
 void LocalModPath::removeModFile(LocalModFile *file)
 {
+    // 注意：这里不能 deleteLater 那个被掏空的 LocalMod —— 调用方（LocalModFile::moveTo）
+    // 是先 removeModFile(this) 再 path->addModFile(this)，此刻文件还是旧 mod 的子对象，
+    // 删掉 mod 会连带删掉正在被移动的文件。只把它从标签集合里摘掉就够了。
     for(const auto &mod : qAsConst(modMap_))
         if(mod->files().contains(file)){
             mod->removeModFile(file);
-            if(!mod->modFile())
+            if(!mod->modFile()){
                 modMap_.remove(file->commonInfo()->id());
+                containedTags_.removeSubTagable(mod);
+            }
             return;
         }
     if(optiFineMod_ && optiFineMod_->files().contains(file)){
         optiFineMod_->removeModFile(file);
-        if(!optiFineMod_->modFile())
+        if(!optiFineMod_->modFile()){
+            containedTags_.removeSubTagable(optiFineMod_);
             optiFineMod_ = nullptr;
+        }
     }
 }
 
@@ -388,9 +451,13 @@ LocalMod *LocalModPath::optiFineMod() const
 
 void LocalModPath::updateUpdatableCount()
 {
-    int count = std::count_if(modMap_.cbegin(), modMap_.cend(), [=](LocalMod *mod){
+    int count = std::count_if(modMap_.cbegin(), modMap_.cend(), [](LocalMod *mod){
         return !mod->updateTypes().isEmpty();
     });
+    // OptiFine 单独挂在 optiFineMod_ 上，不在 modMap_ 里；
+    // 漏掉它会让"只有 optifine 有更新"时计数恒为 0。
+    if(optiFineMod_ && !optiFineMod_->updateTypes().isEmpty())
+        count++;
     for(auto subPath : qAsConst(subPaths_))
         count += subPath->updatableCount();
     if(count == updatableCount_) return;
@@ -519,9 +586,14 @@ LocalMod *LocalModPath::findLocalMod(const QString &id)
 
 void LocalModPath::linkAllFiles()
 {
-    if(modMap_.isEmpty() || modsLinker_.isWaiting()) return;
+    // 守卫必须基于 modList()（递归含子路径），不能用 modMap_：
+    // 主 mods 目录里只放目录结构、jar 全在子目录时 modMap_ 是空的，
+    // 用 modMap_ 会让工具栏的 Link / Check 变成空操作。
+    if(modsLinker_.isWaiting()) return;
+    auto mods = modList();
+    if(mods.isEmpty()) return;
     modsLinker_.start();
-    for(auto &&mod : modList()) for(const auto &file : mod->files()){
+    for(auto &&mod : mods) for(const auto &file : mod->files()){
         auto linker = file->linker();
         modsLinker_.add(linker, &LocalFileLinker::linkStarted, &LocalFileLinker::linkFinished);
         linker->link();
@@ -531,9 +603,11 @@ void LocalModPath::linkAllFiles()
 
 void LocalModPath::checkModUpdates() // force = true by default
 {
-    if(modMap_.isEmpty() || updateChecker_.isWaiting()) return;
+    if(updateChecker_.isWaiting()) return;
+    auto mods = modList();
+    if(mods.isEmpty()) return;
     updateChecker_.start();
-    for(auto &&mod : modList()){
+    for(auto &&mod : mods){
         updateChecker_.add(mod, &LocalMod::checkUpdateStarted, &LocalMod::checkUpdateFinished);
         mod->checkUpdates();
     }
@@ -554,6 +628,9 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curs
 {
     auto size = curseforgeUpdateList.size() + modrinthUpdateList.size();
     if(!size) return;
+    // 一批还没跑完就不要再接一批：否则两批共用同一批 mod 的信号，
+    // 计数会互相干扰（上一批的闭包被重新触发，updatesDone 提前或重复发射）。
+    if(isUpdating_) return;
     isUpdating_ = true;
     emit updatesStarted();
     auto count = std::make_shared<int>(0);
@@ -561,17 +638,20 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curs
     auto failCount = std::make_shared<int>(0);
     auto bytesReceivedList = std::make_shared<QVector<qint64>>(size);
     auto totalSize = std::make_shared<qint64>(0);
+    // 本批建立的连接要在批次结束时统一断开。原来这些连接建在 mod 上、从不清理，
+    // 第二次 Update All 时第一批遗留的闭包会再次触发（捕获的还是上一批的计数）。
+    auto connections = std::make_shared<QList<QMetaObject::Connection>>();
 
     int i = 0;
     auto updateList = [=, &i](auto &&list){
         for(auto &&[mod, info] : list){
             auto downloader = mod->update(info);
-            connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64){
+            connections->append(connect(downloader, &AbstractDownloader::downloadProgress, this, [=](qint64 bytesReceived, qint64){
                 (*bytesReceivedList)[i] = bytesReceived;
                 auto sumReceived = std::accumulate(bytesReceivedList->cbegin(), bytesReceivedList->cend(), 0);
                 emit updatesProgress(sumReceived, *totalSize);
-            });
-            connect(mod, &LocalMod::updateFinished, this, [=](bool success){
+            }));
+            connections->append(connect(mod, &LocalMod::updateFinished, this, [=](bool success){
                 (*count)++;
                 if(success)
                     (*successCount)++;
@@ -580,9 +660,12 @@ void LocalModPath::updateMods(QList<QPair<LocalMod *, CurseforgeFileInfo> > curs
                 emit updatesDoneCountUpdated(*count, size);
                 if(*count == size){
                     isUpdating_ = false;
+                    for(auto &&conn : *connections)
+                        QObject::disconnect(conn);
+                    connections->clear();
                     emit updatesDone(*successCount, *failCount);
                 }
-            });
+            }));
             i++;
         }
     };
@@ -646,10 +729,15 @@ void LocalModPath::setInfo(const LocalModPathInfo &newInfo, bool deduceLoader)
     }
 
     //path, game version or loader type change will trigger mod reload
-    if(info_.path() != newInfo.path() || info_.gameVersion() != newInfo.gameVersion() || info_.loaderType() != newInfo.loaderType())
+    if(info_.path() != newInfo.path() || info_.gameVersion() != newInfo.gameVersion() || info_.loaderType() != newInfo.loaderType()){
+        // info_ 必须在 loadMods() 之前更新：loadMods 用的是 info_.path() 去扫描目录。
+        // 原来放在 loadMods 之后，改完路径扫的还是旧目录（异步段又用新 info 过滤），
+        // 于是必须再手动 Reload 一次才对。
+        info_ = newInfo;
         loadMods(deduceLoader);
+    } else
+        info_ = newInfo;
 
-    info_ = newInfo;
     emit infoUpdated();
 }
 

@@ -38,7 +38,17 @@ void DownloaderInfoWidget::setDownloader(AbstractDownloader *downloader)
 
 void DownloaderInfoWidget::onInfoChanged()
 {
-    ui->displayNameText->setText(downloader_->info().title() + R"( <span style="color:gray">()" + downloader_->info().displayName() + ")</span>");
+    // 同 QAria2DownloaderItemWidget：title / displayName 都为空时原来会显示成 " ()"
+    auto title = downloader_->info().title();
+    auto displayName = downloader_->info().displayName();
+    if(!title.isEmpty())
+        ui->displayNameText->setText(displayName.isEmpty()
+                                     ? title
+                                     : title + R"( <span style="color:gray">()" + displayName + ")</span>");
+    else if(!displayName.isEmpty())
+        ui->displayNameText->setText(displayName);
+    else
+        ui->displayNameText->setText(tr("Unnamed"));
     ui->filename->setText(downloader_->info().fileName());
     ui->path->setText(downloader_->info().path());
 }

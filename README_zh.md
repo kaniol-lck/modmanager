@@ -32,7 +32,7 @@ git clone git@github.com:kaniol-lck/modmanager.git
 
 该项目有以下外部依赖库：
 
-- Qt（5.15.2或也许其他版本）
+- Qt（5.15.2 或 6.x）
 - quazip
 - libaria2
 
@@ -41,13 +41,13 @@ git clone git@github.com:kaniol-lck/modmanager.git
 - Ubuntu:
 
   ```sh
-  apt-get install libaria2-0-dev libquazip5-dev
+  apt-get install libaria2-0-dev libquazip1-qt5-dev
   ```
 
 - Archlinux:
 
   ```sh
-  pacman -S aria2 quazip
+  pacman -S aria2 quazip-qt6
   ```
 
 - Windows (MSYS2):
@@ -55,11 +55,12 @@ git clone git@github.com:kaniol-lck/modmanager.git
   ```sh
   pacman -S mingw-w64-x86_64-aria2 mingw-w64-x86_64-quazip
   ```
+  （MSYS2 的 `quazip` 包只提供 Qt6 版本，Windows 下请用 Qt6 构建）
 
 - MacOS
   
   ```sh
-  brew install quazip
+  brew install quazip aria2
   ```
   libaria2：请在[kaniol-lck/aria2 Releases](https://github.com/kaniol-lck/aria2/releases/tag/release-1.36.0) 查看安装说明
   
@@ -82,6 +83,7 @@ qmake && make
 - Modrinth
 - OptiFine
 - ReplayMod
+- GitHub
 
 ![curseforge_browser](images/curseforge_browser_zh.png)
 

@@ -34,14 +34,12 @@ private slots:
     void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void onDownloadSpeed(qint64 bytesPerSec);
     void onDownloadFinished();
-    void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::CurseforgeModItemWidget *ui;
     CurseforgeModBrowser *browser_ = nullptr;
     CurseforgeMod *mod_;
     std::optional<CurseforgeFileInfo> defaultFileInfo_;
-    bool transltedSummary_ = false;
 };
 
 #endif // CURSEFORGEMODITEMWIDGET_H

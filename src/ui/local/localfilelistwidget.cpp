@@ -176,8 +176,11 @@ void LocalFileListWidget::updateUpdateIndexWidget()
                 item->setSizeHint(QSize(0, modItemWidget->height()));
             }
         } else{
-            if(auto widget = ui->fileListView->indexWidget(index)){
-                ui->fileListView->setIndexWidget(index, nullptr);
+            // index 来自 updateModel_，必须查 updateFileListView。
+            // 原来查的是 fileListView —— 更新列表里滚出可视区的条目永不回收，
+            // 而 fileListView 那边反而会被误删。
+            if(auto widget = ui->updateFileListView->indexWidget(index)){
+                ui->updateFileListView->setIndexWidget(index, nullptr);
                 delete widget;
             }
         }

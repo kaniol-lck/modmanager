@@ -78,6 +78,8 @@ void CurseforgeMod::acquireIcon()
     else{
         iconAsset->download();
         connect(iconAsset, &AssetCache::assetReady, this, foo);
+        //失败要复位标记，否则该 mod 的图标会永久卡在「正在获取」、再也不重试
+        connect(iconAsset, &AssetCache::assetFailed, this, [=]{ gettingIcon_ = false; });
     }
 }
 

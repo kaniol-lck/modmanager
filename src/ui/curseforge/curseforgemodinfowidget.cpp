@@ -5,12 +5,10 @@
 
 #include <QDesktopServices>
 #include <QClipboard>
-#include <QMenu>
 
 #include "curseforgemodbrowser.h"
 #include "curseforge/curseforgemod.h"
 #include "util/funcutil.h"
-#include "util/youdaotranslator.h"
 #include "curseforge/curseforgemanager.h"
 
 CurseforgeModInfoWidget::CurseforgeModInfoWidget(CurseforgeModBrowser *parent) :
@@ -60,13 +58,6 @@ void CurseforgeModInfoWidget::updateBasicInfo()
 {
     ui->modName->setText(mod_->modInfo().name());
     ui->modSummary->setText(mod_->modInfo().summary());
-    if(Config().getAutoTranslate()){
-        YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const auto &translted){
-            if(!translted.isEmpty())
-                ui->modSummary->setText(translted);
-            transltedSummary_ = true;
-        });
-    }
 //    ui->modAuthors->setText(mod_->modInfo().authors().join(", "));
 
     //update thumbnail
@@ -90,27 +81,6 @@ void CurseforgeModInfoWidget::updateDescription()
 
     ui->modDescription->setHtml(desc);
     ui->modDescription->setCursor(Qt::ArrowCursor);
-}
-
-void CurseforgeModInfoWidget::on_modSummary_customContextMenuRequested(const QPoint &pos)
-{
-    auto menu = new QMenu(this);
-    if(!transltedSummary_)
-        menu->addAction(tr("Translate summary"), this, [=]{
-            YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const QString &translated){
-                if(!translated.isEmpty()){
-                    ui->modSummary->setText(translated);
-                transltedSummary_ = true;
-                }
-            });
-        });
-    else{
-        transltedSummary_ = false;
-        menu->addAction(tr("Untranslate summary"), this, [=]{
-            ui->modSummary->setText(mod_->modInfo().summary());
-        });
-    }
-    menu->exec(ui->modSummary->mapToGlobal(pos));
 }
 
 void CurseforgeModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)

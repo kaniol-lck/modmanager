@@ -24,7 +24,6 @@ private slots:
     void updateBasicInfo();
     void updateFullInfo();
     void updateIcon();
-    void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
     void on_actionOpen_Website_Link_triggered();
 
@@ -39,7 +38,6 @@ private:
     Ui::ModrinthModInfoWidget *ui;
     ModrinthModBrowser *browser_;
     ModrinthMod *mod_ = nullptr;
-    bool transltedSummary_ = false;
 };
 
 #endif // MODRINTHMODINFOWIDGET_H

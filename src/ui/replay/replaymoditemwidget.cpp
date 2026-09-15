@@ -86,5 +86,11 @@ void ReplayModItemWidget::on_downloadButton_clicked()
         ui->downloadProgress->setVisible(false);
         ui->downloadButton->setText(tr("Downloaded"));
     });
+    // 失败也必须把按钮还原，否则会永久停在 "Downloading" 且不可点（见 curseforgefileitemwidget）
+    connect(downloader, &AbstractDownloader::downloadFailed, this, [=]{
+        ui->downloadProgress->setVisible(false);
+        ui->downloadSpeedText->clear();
+        onDownloadPathChanged();
+    });
 }
 

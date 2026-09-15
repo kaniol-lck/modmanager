@@ -28,8 +28,11 @@ OptifineModItemWidget::OptifineModItemWidget(OptifineModBrowser *parent, Optifin
 
     ui->displayNameText->setText(mod_->modInfo().name());
     ui->gameVersion->setText("Minecraft " + mod_->modInfo().gameVersion());
-    mod->acquireDownloadUrl();
+    // 先接好信号再发起解析：acquireDownloadUrl() 在"已有直链"（BMCLAPI 走的同步路径）
+    // 和"连文件名都没有"两种情况下是**同步** emit 的，连晚了这条通知会直接丢掉。
     connect(mod_, &OptifineMod::downloadUrlReady, this, &OptifineModItemWidget::onDownloadPathChanged);
+    connect(mod_, &OptifineMod::downloadUrlFailed, this, &OptifineModItemWidget::onDownloadUrlFailed);
+    mod->acquireDownloadUrl();
 }
 
 OptifineModItemWidget::~OptifineModItemWidget()
@@ -39,6 +42,8 @@ OptifineModItemWidget::~OptifineModItemWidget()
 
 void OptifineModItemWidget::on_downloadButton_clicked()
 {
+    // 兜底：没有 URL 时 downloadNewMod 会拿着空地址去建任务（必然失败），不如不点
+    if(mod_->modInfo().downloadUrl().isEmpty()) return;
     ui->downloadButton->setEnabled(false);
     ui->downloadProgress->setVisible(true);
     QAria2Downloader *downloader;
@@ -60,11 +65,25 @@ void OptifineModItemWidget::on_downloadButton_clicked()
         ui->downloadProgress->setVisible(false);
         ui->downloadButton->setText(tr("Downloaded"));
     });
+    // 失败也必须把按钮还原，否则会永久停在 "Downloading" 且不可点（见 curseforgefileitemwidget）
+    connect(downloader, &AbstractDownloader::downloadFailed, this, [=]{
+        ui->downloadProgress->setVisible(false);
+        ui->downloadSpeedText->clear();
+        onDownloadPathChanged();
+    });
 }
 
 void OptifineModItemWidget::onDownloadPathChanged()
 {
-    if(mod_->modInfo().downloadUrl().isEmpty()) return;
+    // 下载地址还没拿到时不能点：downloadNewMod 需要一个真实 URL。
+    // 原来这里直接 return，按钮就停在构造函数里设的"禁用"状态、且没有任何提示，
+    // 而配套的 acquireDownloadUrl() 又把失败路径吞掉了 —— 于是按钮永远不亮。
+    if(mod_->modInfo().downloadUrl().isEmpty()){
+        ui->downloadButton->setEnabled(false);
+        ui->downloadButton->setText(tr("Download"));
+        return;
+    }
+    ui->downloadButton->setToolTip({});
     bool bl = false;
     if(auto downloadPath = browser_->downloadPath())
         bl = hasFile(downloadPath->info().path(), mod_->modInfo().fileName()); //TODO
@@ -83,5 +102,13 @@ void OptifineModItemWidget::onDownloadPathChanged()
 OptifineMod *OptifineModItemWidget::mod() const
 {
     return mod_;
+}
+
+void OptifineModItemWidget::onDownloadUrlFailed()
+{
+    // 取不到直链时给个明确状态，别让用户对着一个没反应的灰按钮猜
+    ui->downloadButton->setEnabled(false);
+    ui->downloadButton->setText(tr("Download"));
+    ui->downloadButton->setToolTip(tr("Failed to acquire the download url."));
 }
 

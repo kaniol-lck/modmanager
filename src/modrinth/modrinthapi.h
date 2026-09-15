@@ -15,6 +15,8 @@ class ModrinthAPI : public QObject
 {
     Q_OBJECT
     static const QString PREFIX;
+    //Modrinth 要求所有请求带可辨识的 User-Agent，否则可能被限流
+    static const QByteArray USER_AGENT;
 
 public:
     explicit ModrinthAPI(QObject *parent = nullptr);
@@ -29,6 +31,8 @@ public:
 
     static const QList<std::tuple<QString, QString>> &getCategories();
 private:
+    static QNetworkRequest createRequest(const QUrl &url);
+
     QNetworkAccessManager accessManager_;
 };
 

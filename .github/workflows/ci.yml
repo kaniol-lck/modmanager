@@ -5,12 +5,14 @@ on:
       - "*.pro"
       - "package/**"
       - "src/**"
+      - "Changelog.md"
       - ".github/workflows/ci.yml"
   pull_request:
     paths:
       - "*.pro"
       - "package/**"
       - "src/**"
+      - "Changelog.md"
       - ".github/workflows/ci.yml"
 jobs:
   create-release:
@@ -22,7 +24,7 @@ jobs:
       - build-on-win-mingw
       - build-on-osx
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
           submodules: recursive
@@ -39,8 +41,8 @@ jobs:
       - name: Get short commit sha
         id: get_short_sha
         run: |
-          short_sha=$(echo ${GITHUB_SHA} | cut -c1-7)
-          echo "::set-output name=short_sha::$short_sha"
+          # ::set-output 已被弃用，改用 $GITHUB_OUTPUT
+          echo "short_sha=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
       - name: Create Github pre-release
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
@@ -74,7 +76,10 @@ jobs:
           export ARCH=x86_64
           export RAW_VERSION=$(grep -o '".*"' src/version.h | sed 's/"//g')
           export VERSION=$RAW_VERSION-build.$GITHUB_RUN_NUMBER
-          export RELEASE_TEXT=$(grep -Pzo "### ${VERSION}\n(\n|.)+?\n##" Changelog.md | sed '$ d')
+          # 这里必须用 RAW_VERSION：上面的 VERSION 带 -build.<run_number> 后缀，
+          # 而 Changelog 的小节标题只有 vX.Y.Z，用 VERSION 永远匹配不到，
+          # RELEASE_TEXT 恒为空 ⇒ release 说明一直是一张白纸。
+          export RELEASE_TEXT=$(grep -Pzo "### ${RAW_VERSION}\n(\n|.)+?\n##" Changelog.md | sed '$ d')
           echo "RAW_VERSION=${RAW_VERSION}" >> $GITHUB_ENV
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "RELEASE_TEXT<<EOF" >> $GITHUB_ENV
@@ -120,13 +125,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - qt_arch: win64_mingw
-          #   qt_ver: 6.7.1
-          #   modules: qt5compat
-          - qt_arch: win64_mingw81
-            qt_ver: 5.15.2
-            qt_tools_mingw_install: mingw810_64
+          - qt_arch: win64_mingw
+            qt_ver: 6.7.2
+            # 必须显式装工具链：install-qt-action v4 不会为 mingw 架构自动装编译器，
+            # 而 runner 镜像里既没有 Qt 也没有 MinGW（MSYS2 只是预装但不在 PATH）。
+            # qt.tools.win64_mingw900 就是 Qt 6.7.x 官方配套的 MinGW（实测装的 7z 是
+            # mingw-w64-x86_64-11.2.0-...，展开到 Qt/Tools/mingw1120_64）。
+            qt_tools: 'tools_mingw90,qt.tools.win64_mingw900'
+            # quazip 不再从 MSYS2 装（见 Build QuaZip 那步的说明），所以不需要 qt5compat
             modules:
+          # Qt5 分支已不可行：MSYS2 把 quazip 合并成了 Qt6 单包
+          # （mingw-w64-x86_64-quazip → Provides/Conflicts: ...-quazip-qt6，
+          #   只出 libquazip1-qt6.dll 和 quazip1-qt6.pc），Qt5 在 Windows 上拿不到 quazip。
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -135,6 +145,7 @@ jobs:
           target: 'desktop'
           version: ${{ matrix.qt_ver }}
           arch: ${{ matrix.qt_arch }}
+          tools: ${{ matrix.qt_tools }}
           modules: ${{ matrix.modules }}
       - uses: actions/checkout@v4
         with:
@@ -152,26 +163,54 @@ jobs:
         shell: bash
         run: |
           sed -i "s/$RAW_VERSION/$VERSION/" src/version.h
-      - name: Install dependencies for Qt 5
-        if: ${{ startsWith( matrix.qt_ver, 5 ) }}
+      - name: Install dependencies（MSYS2 提供 libaria2 与 pkg-config；zlib 由 aria2 的依赖带入）
         shell: powershell
         run: |
           C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
-          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-quazip-qt5 --noconfirm
           C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-pkg-config --noconfirm
           C:/msys64/usr/bin/pacman -Q
-      - name: Install dependencies for Qt 6
-        if: ${{ startsWith( matrix.qt_ver, 6 ) }}
-        shell: powershell
+      - name: Build QuaZip（必须自建，不能用 MSYS2 的）
+        shell: pwsh
         run: |
-          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-aria2 --noconfirm
-          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-quazip-qt6 --noconfirm
-          C:/msys64/usr/bin/pacman -S mingw-w64-x86_64-pkg-config --noconfirm
+          # 为什么不能 brew/pacman 拿现成 quazip：
+          # MSYS2 的 libquazip1-qt6.dll 是针对 qt6-base 6.11 编的，导入表里有
+          #   qt_version_tag_6_11 / QDir::mkpath(..., std::optional<QFlags<...>>)
+          #   / QString::arg_impl(long long, int, int, QChar)
+          # 而官方 Qt 6.7.2 的 Qt6Core.dll 只导出到 qt_version_tag_6_7
+          # → 进程加载 libquazip1-qt6.dll 时会直接失败（DLL 里的依赖解析不了）。
+          # 自建一份拿同一套 qmake/Qt 编，ABI 必然一致（.pro 用 pkg-config 找 quazip1-qt6）。
+          iwr "https://github.com/stachenov/quazip/archive/refs/tags/v1.7.2.tar.gz" -OutFile quazip.tar.gz
+          tar -xf quazip.tar.gz
+          cmake -S quazip-1.7.2 -B quazip-build -G "MinGW Makefiles" `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_PREFIX_PATH="${{ env.QT_ROOT_DIR }}" `
+            -DZLIB_ROOT="C:/msys64/mingw64" `
+            -DQUAZIP_QT_MAJOR_VERSION=6 `
+            -DQUAZIP_ENABLE_QTEXTCODEC=OFF `
+            -DQUAZIP_ENABLE_TESTS=OFF `
+            -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/quazip-install"
+          cmake --build quazip-build --parallel
+          cmake --install quazip-build
+          # Qt 官方包不带 Qt6Core.pc，pkg-config 解析不了生成的
+          # "Requires: zlib, Qt6Core"；Qt 的 include/lib 本来由 qmake 提供，
+          # 去掉这条 Requires 才能让 pkg-config --cflags/--libs 正常工作。
+          $pc = "${{ github.workspace }}/quazip-install/lib/pkgconfig/quazip1-qt6.pc"
+          (Get-Content $pc -Raw) -replace ', Qt6Core', '' | Set-Content $pc -NoNewline
+          Get-Content $pc
+          # 顺带确认：pkg-config 真的能解析到它（不然 qmake 阶段会缺 quazip.h）
+          C:/msys64/mingw64/bin/pkg-config.exe --modversion quazip1-qt6
       - name: environment configuration
         shell: pwsh
         run: |
           Write-Output "${{ env.QT_ROOT_DIR }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          Write-Output "${{ env.QT_ROOT_DIR }}/../../Tools/${{ matrix.qt_tools_mingw_install }}/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          # 工具链目录名别写死（历史上叫过 mingw810_64 / mingw900_64，现在是 mingw1120_64）：
+          # 把 Tools 下每个工具目录的 bin 都加进 PATH，install-qt-action 自带的那次
+          # addToolsToPath 也是一样的 glob，这里只是双保险。
+          Get-ChildItem "${{ env.QT_ROOT_DIR }}/../../Tools" -Directory -ErrorAction SilentlyContinue |
+            ForEach-Object {
+              Write-Output "$($_.FullName)/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+              Write-Output "  工具链: $($_.Name)"
+            }
       - name: where is qmake & where is mingw32-make
         shell: pwsh
         run: |
@@ -181,82 +220,45 @@ jobs:
         id: build
         shell: pwsh
         env:
-          PKG_CONFIG_PATH: 'C:/msys64/mingw64/lib/pkgconfig'
+          # MSYS2 的 pkg-config 是原生程序，分隔符是 ';'（不是 ':'）。
+          # quazip 用上一步自建的那份，libaria2/zlib 用 MSYS2 的。
+          PKG_CONFIG_PATH: 'C:/msys64/mingw64/lib/pkgconfig;${{ github.workspace }}/quazip-install/lib/pkgconfig'
         run: |
           cp C:/msys64/mingw64/bin/pkg-config.exe ${{ env.QT_ROOT_DIR }}/bin/
+          pkg-config --modversion libaria2 quazip1-qt6
           qmake
           mingw32-make.exe qmake_all
           mingw32-make.exe
-      - name: list msys dll
-        shell: pwsh
-        run : |
-          ls C:/msys64/mingw64/bin
-          ls ${{ env.QT_ROOT_DIR }}/bin
-      - name: package Qt5
-        if: ${{ startsWith( matrix.qt_ver, 5 ) }}
-        id: package-qt5
+      - name: package（windeployqt 铺 Qt 本体 + 插件）
+        id: package
         shell: pwsh
         run: |
           mkdir deploy
           mv release/modmanager.exe deploy
-          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
-          iwr "https://github.com/kaniol-lck/modmanager/releases/download/v1.1.1-build.543/ModManager-v1.1.1-build.543-x64-packed.zip" -OutFile ModManager-v1.1.1-build.543-x64-packed.zip
-          unzip *.zip -d old
-          cp old/libaria2-0.dll deploy/
-          cp old/libcares-5.dll deploy/
-          cp old/libcrypto-1_1-x64.dll deploy/
-          cp old/libssl-1_1-x64.dll deploy/
-          cp C:/msys64/mingw64/bin/libquazip1-qt5.dll deploy/
-          cp C:/msys64/mingw64/bin/libcrypto-3-x64.dll deploy/
-          cp C:/msys64/mingw64/bin/libbz2-1.dll deploy/
-          cp C:/msys64/mingw64/bin/libiconv-2.dll deploy/
-          cp C:/msys64/mingw64/bin/liblzma-5.dll deploy/
-          cp C:/msys64/mingw64/bin/libintl-8.dll deploy/
-          cp C:/msys64/mingw64/bin/zlib1.dll deploy/
-          cp C:/msys64/mingw64/bin/libstdc++-6.dll deploy/
-          cp C:/msys64/mingw64/bin/libsqlite3-0.dll deploy/
-          cp C:/msys64/mingw64/bin/libssh2-1.dll deploy/
-          cp C:/msys64/mingw64/bin/libxml2-2.dll deploy/
-          cp C:/msys64/mingw64/bin/libgcc_s_seh-1.dll deploy/
-      - name: package Qt6
-        if: ${{ startsWith( matrix.qt_ver, 6 ) }}
-        id: package-qt6
+          # --no-compiler-runtime：MinGW 运行时（libgcc_s_seh-1 / libstdc++-6 /
+          # libwinpthread-1）留给下一步统一从 MSYS2 取 —— libaria2 是 MSYS2 的新
+          # GCC 编出来的，配它那一份最稳；下一步会做符号级校验，不会漏。
+          # windeployqt.exe 就是 Qt6 的（QT_ROOT_DIR/bin 在 PATH 最前），
+          # 官方 MinGW 包里没有 windeployqt6.exe 这个名字。
+          windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --no-compiler-runtime --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
+      - name: 收集并校验运行时 DLL（按导入表递归 + 符号级 ABI 校验）
         shell: pwsh
         run: |
-          mkdir deploy
-          mv release/modmanager.exe deploy
-          windeployqt6.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
-          cp C:/msys64/mingw64/bin/Qt6Core5Compat.dll deploy/
-          cp C:/msys64/mingw64/bin/libaria2-0.dll deploy/
-          cp C:/msys64/mingw64/bin/libb2-1.dll deploy/
-          cp C:/msys64/mingw64/bin/libbrotlicommon.dll deploy/
-          cp C:/msys64/mingw64/bin/libbrotlidec.dll deploy/
-          cp C:/msys64/mingw64/bin/libbz2-1.dll deploy/
-          cp C:/msys64/mingw64/bin/libcares-2.dll deploy/
-          # cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll deploy/
-          cp C:/msys64/mingw64/bin/libcrypto-3-x64.dll deploy/
-          cp C:/msys64/mingw64/bin/libdouble-conversion.dll deploy/
-          cp C:/msys64/mingw64/bin/libfreetype-6.dll deploy/
-          cp C:/msys64/mingw64/bin/libglib-2.0-0.dll deploy/
-          cp C:/msys64/mingw64/bin/libgraphite2.dll deploy/
-          cp C:/msys64/mingw64/bin/libharfbuzz-0.dll deploy/
-          cp C:/msys64/mingw64/bin/libiconv-2.dll deploy/
-          cp C:/msys64/mingw64/bin/libicudt75.dll deploy/
-          cp C:/msys64/mingw64/bin/libicuin75.dll deploy/
-          cp C:/msys64/mingw64/bin/libicuuc75.dll deploy/
-          cp C:/msys64/mingw64/bin/libintl-8.dll deploy/
-          cp C:/msys64/mingw64/bin/liblzma-5.dll deploy/
-          cp C:/msys64/mingw64/bin/libmd4c.dll deploy/
-          cp C:/msys64/mingw64/bin/libpcre2-16-0.dll deploy/
-          cp C:/msys64/mingw64/bin/libpcre2-8-0.dll deploy/
-          cp C:/msys64/mingw64/bin/libpng16-16.dll deploy/
-          cp C:/msys64/mingw64/bin/libquazip1-qt6.dll deploy/
-          cp C:/msys64/mingw64/bin/libsqlite3-0.dll deploy/
-          cp C:/msys64/mingw64/bin/libssh2-1.dll deploy/
-          # cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll deploy/
-          cp C:/msys64/mingw64/bin/libxml2-2.dll deploy/
-          cp C:/msys64/mingw64/bin/libzstd.dll deploy/
-          cp C:/msys64/mingw64/bin/zlib1.dll deploy/
+          # 手写一长串 cp 的做法已经废掉：上游改个 soname（libxml2-2 → libxml2-16、
+          # libcares-5 → libcares-2）或换了 SSL 实现（libssl-1_1 → libssl-3）就会
+          # 静默漏文件（Copy-Item 的报错是非终止性的，job 照样绿）。
+          # package/collect-deploy-deps.py 直接按每个 PE 的导入表递归补齐，
+          # 并逐个符号比对导出表，缺东西就 exit 1。
+          $toolsRoot = "$env:IQTA_TOOLS"
+          if (-not $toolsRoot) { $toolsRoot = "${{ env.QT_ROOT_DIR }}/../../Tools" }
+          $toolBin = (Get-ChildItem "$toolsRoot/*" -Directory | Select-Object -First 1).FullName + "/bin"
+          Write-Output "工具链 bin: $toolBin"
+          python package/collect-deploy-deps.py --deploy deploy `
+            --search C:/msys64/mingw64/bin `
+            --search "${{ github.workspace }}/quazip-install/bin" `
+            --search "${{ env.QT_ROOT_DIR }}/bin" `
+            --search "$toolBin" `
+            --json deploy-manifest.json
       - name: Modify NSIS for x64
         shell: pwsh
         run: |
@@ -290,7 +292,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macOS-13]
+        # macOS-13 已于 2025-12-04 退役，写它会导致 job 直接调度失败。
+        # 必须留在 Intel 镜像上：.pro 里 macx 段写的是 /usr/local 前缀，
+        # 而 ARM64 镜像上 Homebrew 前缀是 /opt/homebrew；
+        # 现有 libaria2 预编译包（clang-macos-13 产物）也是 x86_64。
+        # macos-15-intel 是最后一个 Intel 镜像，官方支持到 2027-08。
+        os: [macos-15-intel]
         qt_ver: [6.7.1]
         qt_arch: [clang_64]
     steps:
@@ -312,7 +319,23 @@ jobs:
           rm -rf lib/ include/ *.zip
       - name: Install dependencies
         run: |
-          brew install quazip gnu-sed aria2
+          # quazip 不再走 brew：brew 的 quazip 是拿 brew 自己的 qt 编的，
+          # 与本 job 用的官方 Qt 6.7.1 版本错配时，链接期就会缺
+          # qt_version_tag_6_xx / 新加的 QtCore 符号。改为自建（见下一步）。
+          brew install gnu-sed aria2 cmake
+      - name: Build QuaZip（与官方 Qt 同 ABI）
+        run: |
+          curl -L -o quazip.tar.gz https://github.com/stachenov/quazip/archive/refs/tags/v1.7.2.tar.gz
+          tar -xf quazip.tar.gz
+          cmake -S quazip-1.7.2 -B quazip-build -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_PREFIX_PATH="$QT_ROOT_DIR" \
+                -DQUAZIP_QT_MAJOR_VERSION=6 \
+                -DQUAZIP_ENABLE_QTEXTCODEC=OFF \
+                -DQUAZIP_ENABLE_TESTS=OFF \
+                -DCMAKE_INSTALL_PREFIX=/usr/local
+          cmake --build quazip-build --parallel 3
+          sudo cmake --install quazip-build
+          ls -l /usr/local/lib/libquazip1-qt6* /usr/local/include/QuaZip-Qt6-*/
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1

@@ -4,6 +4,7 @@
 #include "local/localmodpath.h"
 #include "local/localmod.h"
 #include "local/localfilelinker.h"
+#include "qss/stylesheets.h"
 
 #include <QComboBox>
 
@@ -72,7 +73,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
             beforeItem->setToolTip(getToolTip(*mod->modFile()->linker()->modrinthFileInfo()));
 
         afterItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        afterItem->setForeground(Qt::darkGreen);
+        afterItem->setForeground(themeColor(ThemeColor::UpdateAvailable));
         auto setAfterItem = [=](const auto &fileInfo){
             afterItem->setText(fileInfo.displayName());
             afterItem->setToolTip(getToolTip(fileInfo));
@@ -94,7 +95,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
                 }else if(mod->curseforgeUpdater().updateFileInfos().size() > 1){
                     unsetAfterItem();
                     auto comboBox = new QComboBox(this);
-                    comboBox->setStyleSheet("color: darkgreen");
+                    comboBox->setStyleSheet(QString("color: %1").arg(themeColor(ThemeColor::UpdateAvailable).name()));
                     ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), comboBox);
                     for(const auto &fileInfo : mod->curseforgeUpdater().updateFileInfos())
                         comboBox->addItem(fileInfo.displayName());
@@ -113,7 +114,7 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
                 }else if(mod->modrinthUpdater().updateFileInfos().size() > 1){
                     unsetAfterItem();
                     auto comboBox = new QComboBox(this);
-                    comboBox->setStyleSheet("color: darkgreen");
+                    comboBox->setStyleSheet(QString("color: %1").arg(themeColor(ThemeColor::UpdateAvailable).name()));
                     ui->updateTreeView->setIndexWidget(model_.indexFromItem(afterItem), comboBox);
                     for(const auto &fileInfo : mod->modrinthUpdater().updateFileInfos())
                         comboBox->addItem(fileInfo.displayName());
@@ -128,7 +129,10 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
             }
         };
 
-        sourceItem->setData(0);
+        // Source 列存"真正的来源类型"，而不是 updateTypes() 的下标：
+        // 下标是对话框打开时算出来的，期间若有后台检查完成改了 updateTypes()，
+        // accept 时按它去取就会取错来源甚至越界。
+        sourceItem->setData(int(type));
         setType(type);
         if(types.size() == 1){
             sourceItem->setText(ModWebsite::toString(type));
@@ -140,8 +144,9 @@ LocalModUpdateDialog::LocalModUpdateDialog(QWidget *parent, LocalModPath *modPat
             for(auto &&type : types)
                 comboBox->addItem(ModWebsite::icon(type), ModWebsite::toString(type));
             connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
+                if(index < 0 || index >= types.size()) return;
                 auto type = types.at(index);
-                sourceItem->setData(index);
+                sourceItem->setData(int(type));
                 setType(type);
             });
         }
@@ -160,15 +165,28 @@ void LocalModUpdateDialog::on_LocalModUpdateDialog_accepted()
     for(int row = 0; row < model_.rowCount(); row++)
         if(auto item = model_.item(row); item->checkState() == Qt::Checked){
             auto mod = item->data().value<LocalMod*>();
-            auto type = mod->updateTypes().at(model_.item(row, SourceColumn)->data().toInt());
+            // Source 列存的是来源类型本身，并做了范围校验；
+            // After 列的下标是打开对话框时算的，取之前必须再核一次范围
+            // （QList::at 越界是 UB，不是抛异常）。
+            auto type = static_cast<ModWebsiteType>(model_.item(row, SourceColumn)->data().toInt());
             auto fileInfoIndex = model_.item(row, AfterColumn)->data().toInt();
             if(type == ModWebsiteType::Curseforge){
-                curseforgeUpdateList << QPair<LocalMod *, CurseforgeFileInfo>{ mod, mod->curseforgeUpdater().updateFileInfos().at(fileInfoIndex) };
-                qDebug() << "Curseforge" << mod->curseforgeUpdater().updateFileInfos().at(fileInfoIndex).displayName();
+                const auto &list = mod->curseforgeUpdater().updateFileInfos();
+                if(fileInfoIndex < 0 || fileInfoIndex >= list.size()){
+                    qWarning() << "update source changed while dialog was open, skip" << mod->displayName();
+                    continue;
+                }
+                curseforgeUpdateList << QPair<LocalMod *, CurseforgeFileInfo>{ mod, list.at(fileInfoIndex) };
+                qDebug() << "Curseforge" << list.at(fileInfoIndex).displayName();
             }
             else if(type == ModWebsiteType::Modrinth){
-                modrinthUpdateList << QPair<LocalMod *, ModrinthFileInfo>{ mod, mod->modrinthUpdater().updateFileInfos().at(fileInfoIndex) };
-                qDebug() << "Modrinth" << mod->modrinthUpdater().updateFileInfos().at(fileInfoIndex).displayName();
+                const auto &list = mod->modrinthUpdater().updateFileInfos();
+                if(fileInfoIndex < 0 || fileInfoIndex >= list.size()){
+                    qWarning() << "update source changed while dialog was open, skip" << mod->displayName();
+                    continue;
+                }
+                modrinthUpdateList << QPair<LocalMod *, ModrinthFileInfo>{ mod, list.at(fileInfoIndex) };
+                qDebug() << "Modrinth" << list.at(fileInfoIndex).displayName();
             }
         }
     modPath_->updateMods(curseforgeUpdateList, modrinthUpdateList);

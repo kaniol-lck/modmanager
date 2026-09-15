@@ -355,6 +355,10 @@ LocalModBrowser::LocalModBrowser(QWidget *parent, LocalModPath *modPath) :
     connect(modPath_, &LocalModPath::checkCancelled, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_->updateChecker(), &CheckSheet::progress, this, &LocalModBrowser::updateProgressBar);
     connect(modPath_->updateChecker(), &CheckSheet::finished, this, &LocalModBrowser::updateProgressBar);
+    // 更新批次也要驱动进度条可见性：原来没连这两个信号，
+    // 更新开始时进度条是否可见完全取决于上一个动作（通常刚检查完是隐藏的）。
+    connect(modPath_, &LocalModPath::updatesStarted, this, &LocalModBrowser::updateProgressBar);
+    connect(modPath_, &LocalModPath::updatesDone, this, &LocalModBrowser::updateProgressBar);
 
     connect(ui->searchText, &QLineEdit::textChanged, this, [=]{
         proxyModel_->setText(ui->searchText->text().toLower());
@@ -393,6 +397,13 @@ bool LocalModBrowser::isLoading() const
 void LocalModBrowser::reload()
 {
     if(modPath_->isLoading()) return;
+    // 更新下载中不能 reload：loadMods 会 qDeleteAll(modMap_)，
+    // 正在跑的更新回调（以及还没下载完的 jar）就失去了归属 ——
+    // 轻则这次更新静默丢失，重则回调打到已析构对象上。
+    if(modPath_->isUpdating()){
+        QMessageBox::information(this, tr("Updating"), tr("Mods are being updated. Please reload after it finishes."));
+        return;
+    }
     modPath_->loadMods();
 }
 
@@ -506,7 +517,10 @@ void LocalModBrowser::onCheckUpdatesFinished(bool success)
 
 void LocalModBrowser::onUpdatableCountChanged()
 {
-    if(modPath_->isChecking()) return;
+    // 更新进行中也必须挡住：每完成一条更新，updateTypes() 变空 -> 计数变化 -> 信号发射，
+    // 原来只挡 isChecking()，于是批次进行中 "Update All" 会被重新启用、
+    // "N mods need update" 横幅重现，用户还能再开一次更新对话框（对同一批 mod 并发下载）。
+    if(modPath_->isChecking() || modPath_->isUpdating()) return;
     if(auto count = modPath_->updatableCount()){
         ui->updateWidget->setVisible(true);
         ui->updateAllButton->setVisible(true);

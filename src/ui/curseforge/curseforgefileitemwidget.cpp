@@ -38,13 +38,13 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
 
     if(fileInfo_.releaseType() == CurseforgeFileInfo::Release){
         ui->releaseType->setText(tr("Release"));
-        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #14b866; border-radius:2px; padding:1px 2px;"));
+        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #0d7a43; border-radius:2px; padding:1px 2px;"));
     } else if(fileInfo_.releaseType() == CurseforgeFileInfo::Beta){
         ui->releaseType->setText(tr("Beta"));
-        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #0e9bd8; border-radius:2px; padding:1px 2px;"));
+        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #0b6f9c; border-radius:2px; padding:1px 2px;"));
     }  else if(fileInfo_.releaseType() == CurseforgeFileInfo::Alpha){
         ui->releaseType->setText(tr("Alpha"));
-        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #d3cae8; border-radius:2px; padding:1px 2px;"));
+        ui->releaseType->setStyleSheet(QString("color: #fff; background-color: #6b5ea8; border-radius:2px; padding:1px 2px;"));
     } else{
         ui->releaseType->setText(QString::number(fileInfo_.releaseType()));
     }
@@ -60,7 +60,7 @@ CurseforgeFileItemWidget::CurseforgeFileItemWidget(CurseforgeFileListWidget *par
         if(version.isDev())
             label->setStyleSheet(QString("color: #fff; background-color: #735e82; border-radius:8px; padding:1px 2px;"));
         else
-            label->setStyleSheet(QString("color: #fff; background-color: #827965; border-radius:8px; padding:1px 2px;"));
+            label->setStyleSheet(QString("color: #fff; background-color: #6f6754; border-radius:8px; padding:1px 2px;"));
         auto font = label->font();
         font.setPointSize(9);
         label->setFont(font);
@@ -151,6 +151,15 @@ void CurseforgeFileItemWidget::on_downloadButton_clicked()
         ui->downloadProgress->setVisible(false);
         ui->downloadSpeedText->setText(sizeConvert(fileInfo_.size()));
         ui->downloadButton->setText(tr("Downloaded"));
+    });
+    // 失败也必须把按钮还原。
+    // 原来只在 finished 里恢复状态（finished 只在真正完成时才发），
+    // 下载失败时按钮会永久停在 "Downloading" 且不可点 —— 用户连重试都做不到。
+    // 这里交给 onDownloadPathChanged() 按"文件到底在不在"重新判定，两种情况都对。
+    connect(downloader, &AbstractDownloader::downloadFailed, this, [=]{
+        ui->downloadProgress->setVisible(false);
+        ui->downloadSpeedText->clear();
+        onDownloadPathChanged();
     });
 }
 

@@ -80,6 +80,9 @@ public:
 
     const QMap<QString, LocalModPath *> &subPaths() const;
 
+    // 最外层路径（子路径会一直向上找；根路径的 parent 是 LocalModPathManager）
+    LocalModPath *rootPath() const;
+
     const QStringList &relative() const;
 
     const QStringList &nonModFiles() const;
@@ -114,6 +117,9 @@ private:
     enum FindResultType{ Environmant, Missing, Mismatch, Match, RangeSemverError, VersionSemverError };
     std::tuple<FindResultType, std::optional<FabricModInfo>> findFabricMod(const QString &modid, const QString &range_str) const;
 
+    // 加载完成后的自动链接 / 自动检查更新。只在最外层路径上真正执行，子路径调用会转发给根路径。
+    void autoCheckWhenIdle();
+
     explicit LocalModPath(LocalModPath *path, const QString &subDir);
 
     QFileSystemWatcher watcher_;
@@ -133,7 +139,6 @@ private:
     CheckSheet modsLinker_;
     int updatableCount_ = 0;
     bool loaded_ = false;
-    bool initialUpdateChecked_ = false;
     bool isLoading_ = false;
     bool isUpdating_ = false;
 };

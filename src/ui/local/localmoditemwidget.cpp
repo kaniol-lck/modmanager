@@ -5,7 +5,9 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QGraphicsDropShadowEffect>
+#include <QLabel>
 #include <QPainter>
+#include <QStyle>
 
 #include "curseforge/curseforgemod.h"
 #include "modrinth/modrinthmod.h"
@@ -14,6 +16,22 @@
 #include "ui/local/localmodmenu.h"
 #include "util/tutil.hpp"
 #include "util/funcutil.h"
+
+namespace {
+//「已禁用」的灰化交给 QSS（QLabel[modDisabled="true"]），颜色随主题走。
+//原来在这里写死 color:#777，深色主题下对比度只有约 2.2:1，几乎读不出来。
+//动态属性改了之后必须重新 polish，否则样式不会重新求值。
+void setDisabledLook(const QList<QLabel *> &labels, bool disabled)
+{
+    for(auto *label : labels){
+        if(label->property("modDisabled").toBool() == disabled)
+            continue;
+        label->setProperty("modDisabled", disabled);
+        label->style()->unpolish(label);
+        label->style()->polish(label);
+    }
+}
+}
 
 LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     QWidget(parent),
@@ -36,6 +54,13 @@ LocalModItemWidget::LocalModItemWidget(QWidget *parent, LocalMod *mod) :
     this->setAttribute(Qt::WA_Hover, true);
     setAttribute(Qt::WA_StyledBackground, true);
     setProperty("class", "LocalModItemWidget");
+
+    // 三个菜单只建一次，内容在 updateInfo()/updateReady() 里清空重建
+    rollbackMenu_ = new QMenu(this);
+    ui->rollbackButton->setMenu(rollbackMenu_);
+    updateMenu_ = new QMenu(this);
+    ignoreUpdateMenu_ = new QMenu(tr("Ignore update"), this);
+    ui->updateButton->setMenu(updateMenu_);
 
     onIconChanged();
     connect(mod_, &LocalMod::modIconUpdated, this, &LocalModItemWidget::onIconChanged);
@@ -130,18 +155,17 @@ void LocalModItemWidget::updateInfo()
     updateReady();
 
     //rollback
+    rollbackMenu_->clear();
     if (mod_->oldFiles().isEmpty())
         ui->rollbackButton->setVisible(false);
     else{
         ui->rollbackButton->setVisible(true);
         ui->rollbackButton->setEnabled(true);
-        auto menu = new QMenu(this);
         for (const auto &file : mod_->oldFiles())
-            connect(menu->addAction(file->commonInfo()->version()), &QAction::triggered, this, [=]{
+            connect(rollbackMenu_->addAction(file->commonInfo()->version()), &QAction::triggered, this, [=]{
                         ui->rollbackButton->setEnabled(false);
                         mod_->rollback(file);
                     });
-        ui->rollbackButton->setMenu(menu);
     }
 
     //warning
@@ -155,19 +179,12 @@ void LocalModItemWidget::updateInfo()
     if (mod_->isDisabled()){
         ui->disableButton->setChecked(true);
         ui->disableButton->setVisible(true);
-        ui->modName->setStyleSheet("color: #777");
-        ui->modAuthors->setStyleSheet("color: #777");
-        ui->modDescription->setStyleSheet("color: #777;");
-        ui->modVersion->setStyleSheet("color: #777");
         displayName = clearFormat(displayName);
         description = clearFormat(description);
     } else{
         ui->disableButton->setChecked(false);
-        ui->modName->setStyleSheet("");
-        ui->modAuthors->setStyleSheet("");
-        ui->modDescription->setStyleSheet("");
-        ui->modVersion->setStyleSheet("");
     }
+    setDisabledLook({ui->modName, ui->modAuthors, ui->modDescription, ui->modVersion}, mod_->isDisabled());
     setEffect(ui->modName, displayName);
     ui->modName->setText(displayName);
     setEffect(ui->modDescription, description);
@@ -201,45 +218,45 @@ void LocalModItemWidget::on_updateButton_clicked()
 
 void LocalModItemWidget::updateReady()
 {
+    // 两个菜单都要清空：QMenu::clear() 只删除"父对象是本菜单"的 action，
+    // 子菜单里的 action 归子菜单所有，不清就会一直累积。
+    updateMenu_->clear();
+    ignoreUpdateMenu_->clear();
+
     if (mod_->updateTypes().isEmpty()){
         ui->updateButton->setVisible(false);
-        if(ui->updateButton->menu())
-            ui->updateButton->menu()->clear();
         return;
     }
     ui->updateButton->setVisible(true);
     ui->updateButton->setText(tr("Update"));
     ui->updateButton->setEnabled(true);
 
-    auto menu = new QMenu(this);
-    auto ignoreMenu = new QMenu(tr("Ignore update"), this);
     for(auto &&fileInfo : mod_->curseforgeUpdater().updateFileInfos()){
         auto name = fileInfo.displayName();
-        auto action = menu->addAction(QIcon(":/image/curseforge.svg"), name);
+        auto action = updateMenu_->addAction(QIcon(":/image/curseforge.svg"), name);
         connect(action, &QAction::triggered, this, [=]{
             mod_->update(fileInfo);
         });
-        connect(ignoreMenu->addAction(QIcon(":/image/curseforge.svg"), name), &QAction::triggered, this, [=]{
+        connect(ignoreUpdateMenu_->addAction(QIcon(":/image/curseforge.svg"), name), &QAction::triggered, this, [=]{
             mod_->ignoreUpdate(fileInfo);
         });
     }
     for(auto &&fileInfo : mod_->modrinthUpdater().updateFileInfos()){
         auto name = fileInfo.displayName();
-        auto action = menu->addAction(QIcon(":/image/modrinth.svg"), name);
+        auto action = updateMenu_->addAction(QIcon(":/image/modrinth.svg"), name);
         connect(action, &QAction::triggered, this, [=]{
             mod_->update(fileInfo);
         });
-        connect(ignoreMenu->addAction(QIcon(":/image/modrinth.svg"), name), &QAction::triggered, this, [=]{
+        connect(ignoreUpdateMenu_->addAction(QIcon(":/image/modrinth.svg"), name), &QAction::triggered, this, [=]{
             mod_->ignoreUpdate(fileInfo);
         });
     }
-    menu->addSeparator();
+    updateMenu_->addSeparator();
     if(!mod_->curseforgeUpdater().ignores().isEmpty() || !mod_->modrinthUpdater().ignores().isEmpty())
-        menu->addAction(tr("Clear Update Ignores"), this, [=]{
+        updateMenu_->addAction(tr("Clear Update Ignores"), this, [=]{
             mod_->clearIgnores();
         });
-    menu->addMenu(ignoreMenu);
-    ui->updateButton->setMenu(menu);
+    updateMenu_->addMenu(ignoreUpdateMenu_);
 }
 
 void LocalModItemWidget::startCheckCurseforge()

@@ -45,7 +45,6 @@ Preferences::Preferences(QWidget *parent) :
     ui->useFramelessWindow->setChecked(config.getUseFramelessWindow());
     on_useFramelessWindow_toggled(ui->useFramelessWindow->isChecked());
     ui->customStyle->setCurrentText(styleSheets().value(config.getCustomStyle()));
-    ui->autoTranslate->setChecked(config.getAutoTranslate());
     ui->useSystemIconTheme->setChecked(config.getUseSystemIconTheme());
     ui->autoCheckModManagerUpdate->setCurrentIndex(config.getAutoCheckModManagerUpdate());
     for(int i = 0; i < ui->language->count(); i++){
@@ -60,7 +59,8 @@ Preferences::Preferences(QWidget *parent) :
     ui->searchResultCount->setValue(config.getSearchResultCount());
     ui->searchModsOnStartup->setChecked(config.getSearchModsOnStartup());
     ui->autoFetchModrinthFileList->setChecked(config.getAutoFetchModrinthFileList());
-    ui->optifineVersionSource->setCurrentIndex(config.getOptifineSource());
+    //官方源已被 Cloudflare 拦截并移除，下标 0 固定为 BMCLAPI
+    ui->optifineVersionSource->setCurrentIndex(0);
     ui->showCatVerInToolBar->setChecked(config.getShowCatVerInToolBar());
     ui->showCurseforge->setChecked(config.getShowCurseforge());
     ui->showModrinth->setChecked(config.getShowModrinth());
@@ -118,7 +118,6 @@ void Preferences::on_Preferences_accepted()
     config.setEnableBlurBehind(ui->enableBlurBehind->isChecked());
     config.setUseFramelessWindow(ui->useFramelessWindow->isChecked());
     config.setCustomStyle(ui->customStyle->currentData().toString());
-    config.setAutoTranslate(ui->autoTranslate->isChecked());
     config.setUseSystemIconTheme(ui->useSystemIconTheme->isChecked());
     config.setAutoCheckModManagerUpdate(ui->autoCheckModManagerUpdate->currentIndex());
     config.setLanguage(ui->language->currentData().toString());
@@ -128,7 +127,7 @@ void Preferences::on_Preferences_accepted()
     config.setSearchResultCount(ui->searchResultCount->value());
     config.setSearchModsOnStartup(ui->searchModsOnStartup->isChecked());
     config.setAutoFetchModrinthFileList(ui->autoFetchModrinthFileList->isChecked());
-    config.setOptifineSource(ui->optifineVersionSource->currentIndex());
+    config.setOptifineSource(Config::OptifineSourceType::BMCLAPI);
     config.setShowCatVerInToolBar(ui->showCatVerInToolBar->isChecked());
     config.setShowCurseforge(ui->showCurseforge->isChecked());
     config.setShowModrinth(ui->showModrinth->isChecked());

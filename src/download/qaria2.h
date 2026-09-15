@@ -37,6 +37,9 @@ signals:
     void globalDownloadStat(int inactive, int active, int gdl, int gup);
     void downloadStatPerItem(uint id, int completed, int total,int perDl, int perUp);
 private:
+    // 在 aria2 工作线程里被调用：只负责把事件投递回本对象线程（不要在这里碰成员）
+    void dispatchDownloadEvent(int event, qulonglong gid);
+
     //we only use one session
     aria2::Session* session_;
     aria2::SessionConfig config_;

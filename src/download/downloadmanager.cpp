@@ -43,7 +43,6 @@ QAria2Downloader *DownloadManager::download(CurseforgeMod *mod, CurseforgeFile *
     model_->beginInsertRows(QModelIndex(), downloaders_.size(), downloaders_.size());
     downloaders_ << downloader;
     model_->endInsertRows();
-    emit downloaderAdded(info, downloader);
     auto setIcon = [=]{
         downloader->setIcon(mod->modInfo().icon().scaled(96, 96, Qt::KeepAspectRatio));
     };
@@ -60,12 +59,25 @@ QAria2Downloader *DownloadManager::download(CurseforgeMod *mod, CurseforgeFile *
         info.setPath(path);
         if(hasIcon) info.setIcon(icon);
         downloader->setInfo(info);
-        //handle redirect
-        downloader->handleRedirect();
+        if(info.url().isEmpty()){
+            // 连下载地址都没拿到（文件信息接口失败 / 文件已被删除）。
+            // 这时候再去 handleRedirect + addUri 只会拿空地址去撞，直接报失败更干脆，
+            // 也让"下载列表里挂着一条永远不会动的任务"不至于发生。
+            downloader->reportFailure();
+        } else
+            //handle redirect
+            downloader->handleRedirect();
+        // 信息补齐之后才对外通告，监听者拿到的才是一条完整（含 url / path / 文件名）的下载任务
+        emit downloaderAdded(info, downloader);
     };
-    if(file->info().url().isEmpty())
+    if(file->info().url().isEmpty()){
         connect(file, &CurseforgeFile::infoReady, this, setFileInfo);
-    else
+        // infoReady 在"取信息失败"时同样会发一次，之后就再也不会发。
+        // 如果调用到这里的这一刻早先那次取信息已经失败过，上面这行 connect 就永远等不到信号：
+        // downloader 的 url 一直为空 → 既不 addUri 也不报错 → 这个下载静默卡死。
+        // 这里补一次重取（正在取时 acquireFileInfo 会直接返回空，不会重复请求）。
+        file->acquireFileInfo();
+    } else
         setFileInfo();
     connect(downloader, &AbstractDownloader::redirected, this, [=]{
         qaria2_->download(downloader);

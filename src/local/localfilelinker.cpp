@@ -15,13 +15,16 @@ LocalFileLinker::LocalFileLinker(LocalModFile *localFile) :
     //TODO: update mod info
     connect(this, &LocalFileLinker::curseforgeFileInfoChanged, localFile_, &LocalModFile::fileChanged);
     connect(this, &LocalFileLinker::modrinthFileInfoChanged, localFile_, &LocalModFile::fileChanged);
+    // 这里刻意不置 linked 标志位。
+    // 原来无论 success 与否都置位，于是"一次网络抖动"就被当成"已链接"：
+    // link() 从此早退，本会话内再也无法重试；LocalMod::checkUpdates 也会因为
+    // curseforgeFileInfo() 为空而静默跳过这个 mod 的 CF 更新检查。
+    // 标志位只在两种确定的情况下置位（成功，或确定"无匹配"）—— 见下面各函数。
     connect(this, &LocalFileLinker::linkCurseforgeFinished, this, [=](bool success, int id){
-        curseforgeLinked_ = true;
         if(success && id && localFile_->mod() && !localFile_->mod()->curseforgeMod())
             localFile_->mod()->setCurseforgeId(id);
     });
     connect(this, &LocalFileLinker::linkModrinthFinished, this, [=](bool success, QString id){
-        modrinthLinked_ = true;
         if(success && !id.isEmpty() && localFile_->mod() && !localFile_->mod()->modrinthMod())
             localFile_->mod()->setModrinthId(id);
     });
@@ -36,12 +39,19 @@ void LocalFileLinker::link()
 {
     if(localFile_->loaderTypes().isEmpty()) return;
     if(curseforgeLinked_  && modrinthLinked_) return;
+    // 同一个 linker 只允许一轮在途请求。重复 link() 会对同一个文件发两遍请求，
+    // 两轮的 linkFinished 会把 CheckSheet 的计数彻底打乱（提前 finished）。
+    if(isLinking_) return;
+    isLinking_ = true;
     emit linkStarted();
     auto count = std::make_shared<int>(0);
     auto hasWeb = std::make_shared<bool>(false);
     auto foo = [=](bool bl){
         if(bl) *hasWeb = true;
-        if(--(*count) == 0) emit linkFinished(*hasWeb);
+        if(--(*count) == 0){
+            isLinking_ = false;
+            emit linkFinished(*hasWeb);
+        }
     };
     if(!curseforgeLinked_){
         (*count) ++;
@@ -92,13 +102,18 @@ void LocalFileLinker::linkCurseforge()
             IdMapper::addCurseforge(localFile_->commonInfo()->id(), id);
             qDebug() << "success link curseforge:" << murmurhash;
             KnownFile::addCurseforge(murmurhash, fileInfo);
+            curseforgeLinked_ = true;
             emit linkCurseforgeFinished(true, id);
         } else{
             qDebug() << "fail link curseforge:" << murmurhash;
             KnownFile::addUnmatchedCurseforge(murmurhash);
+            // 确定"无匹配"（不是请求失败）：本会话内不再重试，缓存里也记下了
+            curseforgeLinked_ = true;
             emit linkCurseforgeFinished(false);
         }
     }, [=](auto){
+        // 请求失败（网络错误等）：不置位、不写 unmatched 缓存，
+        // 这样重新 link / 下次加载时还能再试一次
         emit linkCurseforgeFinished(false);
     });
 }
@@ -133,12 +148,15 @@ void LocalFileLinker::linkModrinth()
         IdMapper::addModrinth(localFile_->commonInfo()->id(), fileInfo.modId());
         KnownFile::addModrinth(sha1, fileInfo);
         qDebug() << "success link modrinth:" << sha1;
+        modrinthLinked_ = true;
         emit linkModrinthFinished(true, fileInfo.modId());
     }, [=](const auto &error){
         if(error == QNetworkReply::ContentNotFoundError){
             qDebug() << "fail link modrinth:" << sha1;
             KnownFile::addUnmatchedModrinth(sha1);
+            modrinthLinked_ = true;      // 确定无匹配，本会话内不再重试
         }
+        // 其它错误（网络等）不置位，留给下一次重试
         emit linkModrinthFinished(false);
     });
 }

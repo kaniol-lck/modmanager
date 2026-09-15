@@ -130,6 +130,10 @@ void ModManager::updateUi()
 {
     pageSwitcher_.updateUi();
     updateBlur();
+#ifdef Q_OS_WIN
+    //偏好里的模糊开关要立刻作用到已打开的无边框窗口上（原来必须重启才生效）
+    FramelessWrapper::updateAllBlur();
+#endif
 }
 
 void ModManager::setProxy()
@@ -146,7 +150,10 @@ void ModManager::setProxy()
 void ModManager::mergeMenuBar()
 {
     ui->menubar->clear();
-    QMenu *menuPath;
+    // 必须初始化：menuBar_ 里没有 Path 菜单时（例如一个 mod 路径都还没配置），
+    // 它就一直保持未初始化，下面插入新浏览器菜单时 menuPath->menuAction()
+    // 是在解引用一个野指针。
+    QMenu *menuPath = nullptr;
     for(auto &&menuAction : menuBar_->actions()){
         auto menu = ui->menubar->addMenu(menuAction->icon(), menuAction->text());
         connect(menu, &QMenu::aboutToShow, menuAction->menu(), &QMenu::aboutToShow);
@@ -169,7 +176,11 @@ void ModManager::mergeMenuBar()
                 }
             if(!merged){
                 auto menu = new QMenu(menuAction->text());
-                ui->menubar->insertMenu(menuPath->menuAction(), menu);
+                // menuPath 为空时退回"追加到末尾"，而不是拿空指针去定位插入点。
+                if(menuPath)
+                    ui->menubar->insertMenu(menuPath->menuAction(), menu);
+                else
+                    ui->menubar->addMenu(menu);
                 menu->addActions(menuAction->menu()->actions());
             }
         }

@@ -3,7 +3,6 @@
 
 #include <QDesktopServices>
 #include <QClipboard>
-#include <QMenu>
 
 #include "modrinthmodbrowser.h"
 #include "modrinth/modrinthmanager.h"
@@ -12,7 +11,6 @@
 #include "local/localmodpath.h"
 #include "util/smoothscrollbar.h"
 #include "util/funcutil.h"
-#include "util/youdaotranslator.h"
 
 ModrinthModInfoWidget::ModrinthModInfoWidget(ModrinthModBrowser *parent) :
     QWidget(parent),
@@ -63,13 +61,6 @@ void ModrinthModInfoWidget::updateBasicInfo()
 {
     ui->modName->setText(mod_->modInfo().name());
     ui->modSummary->setText(mod_->modInfo().summary());
-    if(Config().getAutoTranslate()){
-        YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const auto &translted){
-            if(!translted.isEmpty())
-                ui->modSummary->setText(translted);
-            transltedSummary_ = true;
-        });
-    }
     if(!mod_->modInfo().author().isEmpty()){
 //            ui->modAuthors->setText(mod->modInfo().author());
 //            ui->modAuthors->setVisible(true);
@@ -102,27 +93,6 @@ void ModrinthModInfoWidget::updateIcon()
 {
     ui->modIcon->setPixmap(mod_->modInfo().icon().scaled(80, 80, Qt::KeepAspectRatio));
     ui->modIcon->setCursor(Qt::ArrowCursor);
-}
-
-void ModrinthModInfoWidget::on_modSummary_customContextMenuRequested(const QPoint &pos)
-{
-    auto menu = new QMenu(this);
-    if(!transltedSummary_)
-        menu->addAction(tr("Translate summary"), this, [=]{
-            YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const QString &translated){
-                if(!translated.isEmpty()){
-                    ui->modSummary->setText(translated);
-                transltedSummary_ = true;
-                }
-            });
-        });
-    else{
-        transltedSummary_ = false;
-        menu->addAction(tr("Untranslate summary"), this, [=]{
-            ui->modSummary->setText(mod_->modInfo().summary());
-        });
-    }
-    menu->exec(ui->modSummary->mapToGlobal(pos));
 }
 
 void ModrinthModInfoWidget::mouseDoubleClickEvent(QMouseEvent *event)

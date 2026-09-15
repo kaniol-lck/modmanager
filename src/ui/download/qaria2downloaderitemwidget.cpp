@@ -45,12 +45,17 @@ void QAria2DownloaderItemWidget::onInfoChanged()
     else
         ui->downloadIcon->setPixmap(QPixmap(":/image/modmanager.png").scaled(80, 80, Qt::KeepAspectRatio));
 
-    if(!downloader_->info().title().isEmpty())
-        ui->displayNameText->setText(downloader_->info().title() + R"( <span style="color:gray">()" + downloader_->info().displayName() + ")</span>");
-    else if(!downloader_->info().title().isEmpty())
-        ui->displayNameText->setText(downloader_->info().title());
-    else if(!downloader_->info().displayName().isEmpty())
-        ui->displayNameText->setText(downloader_->info().displayName());
+    // 原来是 "title 非空 → title (displayName)" 后面又跟一个 "title 非空 → title" 的分支，
+    // 第二个分支的条件和第一个完全一样，永远不会走到；而 title 非空、displayName 为空时
+    // 会显示成 "title ()"。这里按本意拆开。
+    auto title = downloader_->info().title();
+    auto displayName = downloader_->info().displayName();
+    if(!title.isEmpty())
+        ui->displayNameText->setText(displayName.isEmpty()
+                                     ? title
+                                     : title + R"( <span style="color:gray">()" + displayName + ")</span>");
+    else if(!displayName.isEmpty())
+        ui->displayNameText->setText(displayName);
     else
         ui->displayNameText->setText("Unnamed");
 }

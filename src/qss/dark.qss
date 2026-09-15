@@ -7,7 +7,14 @@ QWidget {
 }
 
 /* Disabled */
-QWidget:disabled,
+/*原来这里是 QWidget:disabled，会命中*所有*禁用控件（含 QLabel 等），
+  把它们整块背景刷灰，既与其它规则打架也不是原意；收窄到真正需要灰底的输入类控件。*/
+QLineEdit:disabled,
+QSpinBox:disabled,
+QDoubleSpinBox:disabled,
+QComboBox:disabled,
+QPushButton:disabled,
+QToolButton:disabled,
 QGroupBox:disabled {
   background-color: #525252;
 }
@@ -85,6 +92,11 @@ QDockWidget .QLabel {
 }
 
 /* ModList */
+/* 默认就保留左边框，否则 hover 时盒模型突变会让内容整体右移 5px */
+.ModList::item {
+  border-left: 5px solid transparent;
+}
+
 .ModList::item:hover {
   border-left: 5px solid #eeeeee;
   background-color: #22eeeeee;
@@ -230,29 +242,205 @@ QTreeView::item {
   min-height: 35px;
 }
 
+/* TabWidget */
+/* 与 light.qss 同步：底槽内四边均衡留白，药丸式选中态，10pt 对齐全局字号。 */
 .QTabWidget {
   border: none;
 }
 
+QTabWidget::pane {
+  border: none;
+}
+
 QTabBar {
-  background-color: #525252;
-  border-radius: 2px;
-  margin: 2px;
-  padding: none;
+  background-color: #383838;
+  border: none;
+  border-radius: 7px;
+  margin: 0;
+  padding: 0;
+  qproperty-drawBase: 0; /* 去掉标签条底部那条横线 */
+  /* 与 light.qss 同步：关掉"挤压时改用滚动按钮"，让窗口最小宽度跟着标签所需宽度走，
+     否则两端会插入两个 QToolButton 压住最后一个标签。 */
+  qproperty-usesScrollButtons: 0;
 }
 
 QTabBar::tab {
-  border: none;
+  /* 未选中也留同宽透明边框，选中时盒模型不突变、文字不会位移 */
+  border: 1px solid transparent;
+  border-radius: 5px;
   background-color: transparent;
-  max-width: 75px;
-  min-width: 75px;
-  min-height: 25px;
-  font-size: 11pt;
-  padding: 5px 10px;
-  margin: 4px 10px;
+  color: #a9a9a9;
+  /*原来同时写死 min-width 与 max-width:75px，内容宽度被硬性卡住，
+    "Description"/"Infomation" 这类较长的标签会被截断。
+    现在只保留下限（短标签宽度一致），长标签按内容自然撑开。*/
+  font-size: 10pt;
+  min-width: 44px;
+  padding: 5px 16px;
+  margin: 4px 6px;
+}
+
+QTabBar::tab:hover:!selected {
+  background-color: #4a4a4a;
+  color: #ffffff;
 }
 
 QTabBar::tab:selected {
-  border: 1px solid #777777;
-  background-color: #656565;
+  border: 1px solid #6b6b6b;
+  background-color: #555555;
+  color: #ffffff;
+}
+
+/* 已禁用的 mod 条目（动态属性由 LocalModItemWidget 设置）。
+   放在文件末尾是为了让它压过 .Title / .Description 等同优先级的类选择器。 */
+QLabel[modDisabled="true"] {
+  color: #b0b0b0;
+}
+
+/* ---- 以下控件原来没有任何样式，会回落到 Qt 原生外观，与整体风格割裂 ---- */
+
+/* ScrollBar */
+QScrollBar:vertical {
+  background: transparent;
+  width: 12px;
+  margin: 0;
+}
+
+QScrollBar:horizontal {
+  background: transparent;
+  height: 12px;
+  margin: 0;
+}
+
+QScrollBar::handle:vertical,
+QScrollBar::handle:horizontal {
+  background-color: #6e6e6e;
+  border-radius: 6px;
+}
+
+QScrollBar::handle:vertical {
+  min-height: 32px;
+}
+
+QScrollBar::handle:horizontal {
+  min-width: 32px;
+}
+
+QScrollBar::handle:vertical:hover,
+QScrollBar::handle:horizontal:hover {
+  background-color: #8a8a8a;
+}
+
+QScrollBar::add-line,
+QScrollBar::sub-line {
+  width: 0;
+  height: 0;
+  border: none;
+  background: none;
+}
+
+QScrollBar::add-page,
+QScrollBar::sub-page {
+  background: none;
+}
+
+/* ProgressBar */
+QProgressBar {
+  background-color: #424242;
+  border: 1px solid #d3d3d3;
+  border-radius: 2px;
+  text-align: center;
+  color: white;
+}
+
+QProgressBar::chunk {
+  background-color: #3377dd;
+  border-radius: 1px;
+}
+
+/* CheckBox & RadioButton */
+QCheckBox::indicator,
+QRadioButton::indicator {
+  width: 15px;
+  height: 15px;
+}
+
+QCheckBox::indicator {
+  background-color: #424242;
+  border: 1px solid #b4b4b4;
+  border-radius: 2px;
+}
+
+QCheckBox::indicator:disabled,
+QRadioButton::indicator:disabled {
+  background-color: #525252;
+  border: 1px solid #6a6a6a;
+}
+
+QCheckBox::indicator:hover,
+QRadioButton::indicator:hover {
+  border: 1px solid #dbdbdb;
+}
+
+QCheckBox::indicator:checked {
+  background-color: #3377dd;
+  border: 1px solid #3377dd;
+  image: url(:/icons/breeze-modmanager/16x16/checkmark.svg);
+}
+
+QRadioButton::indicator {
+  background-color: #424242;
+  border: 1px solid #b4b4b4;
+  border-radius: 8px;
+}
+
+QRadioButton::indicator:checked {
+  border: 1px solid #3377dd;
+  background: qradialgradient(cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5,
+                              stop:0 #3377dd, stop:0.4 #3377dd,
+                              stop:0.45 #424242, stop:1 #424242);
+}
+
+/* HeaderView */
+QHeaderView::section {
+  background-color: #4b4b4b;
+  color: #dbdbdb;
+  border: none;
+  border-right: 1px solid #d3d3d3;
+  border-bottom: 1px solid #d3d3d3;
+  padding: 4px 6px;
+}
+
+/* ToolTip */
+QToolTip {
+  background-color: #424242;
+  color: white;
+  border: 1px solid #979797;
+  padding: 2px 4px;
+}
+
+/* StatusBar */
+QStatusBar {
+  background-color: #424242;
+  color: #dbdbdb;
+}
+
+QStatusBar::item {
+  border: none;
+}
+
+/* Splitter */
+QSplitter::handle {
+  background-color: #424242;
+}
+
+QSplitter::handle:horizontal {
+  width: 3px;
+}
+
+QSplitter::handle:vertical {
+  height: 3px;
+}
+
+QSplitter::handle:hover {
+  background-color: #4b4b4b;
 }

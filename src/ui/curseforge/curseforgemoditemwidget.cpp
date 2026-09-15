@@ -10,7 +10,6 @@
 #include "download/downloadmanager.h"
 #include "download/qaria2downloader.h"
 #include "util/funcutil.h"
-#include "util/youdaotranslator.h"
 
 #include <ui/downloadpathselectmenu.h>
 
@@ -55,13 +54,6 @@ CurseforgeModItemWidget::CurseforgeModItemWidget(CurseforgeModBrowser *parent, C
 
     ui->modName->setText(mod->modInfo().name());
     ui->modSummary->setText(mod->modInfo().summary());
-    if(Config().getAutoTranslate()){
-        YoudaoTranslator::translator()->translate(mod->modInfo().summary(), [=](const auto &translted){
-            if(!translted.isEmpty())
-                ui->modSummary->setText(translted);
-            transltedSummary_ = true;
-        });
-    }
     ui->modAuthors->setText(mod->modInfo().authors().join("</b>, <b>").prepend("by <b>").append("</b>"));
     ui->updateDateTime->setText(tr("Updated"));
     ui->updateDateTime->setDateTime(mod->modInfo().dateModified());
@@ -159,26 +151,5 @@ void CurseforgeModItemWidget::updateUi()
     ui->modDateTime->setVisible(config.getShowModDateTime());
     ui->tagsWidget->setVisible(config.getShowModCategory());
     ui->loaderTypes->setVisible(config.getShowModLoaderType());
-}
-
-void CurseforgeModItemWidget::on_modSummary_customContextMenuRequested(const QPoint &pos)
-{
-    auto menu = new QMenu(this);
-    if(!transltedSummary_)
-        menu->addAction(tr("Translate summary"), this, [=]{
-            YoudaoTranslator::translator()->translate(mod_->modInfo().summary(), [=](const QString &translated){
-                if(!translated.isEmpty()){
-                    ui->modSummary->setText(translated);
-                transltedSummary_ = true;
-                }
-            });
-        });
-    else{
-        transltedSummary_ = false;
-        menu->addAction(tr("Untranslate summary"), this, [=]{
-            ui->modSummary->setText(mod_->modInfo().summary());
-        });
-    }
-    menu->exec(ui->modSummary->mapToGlobal(pos));
 }
 

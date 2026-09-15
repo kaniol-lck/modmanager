@@ -30,6 +30,11 @@ AbstractDownloader::AbstractDownloader(QObject *parent, const DownloadFileInfo &
 AbstractDownloader::~AbstractDownloader()
 {}
 
+void AbstractDownloader::stopSpeedTimer()
+{
+    timer_.stop();
+}
+
 void AbstractDownloader::handleRedirect()
 {
     auto watcher = new QFutureWatcher<QUrl>(this);
@@ -62,7 +67,12 @@ QUrl AbstractDownloader::handleRedirect(const QUrl &url)
         connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
         loop.exec();
 
-        if(reply->error() != QNetworkReply::NoError) continue;
+        if(reply->error() != QNetworkReply::NoError){
+            // 这里原来直接 continue，reply 就再也没人删了
+            // （本函数跑在线程池线程上，没有事件循环，deleteLater() 也不会被处理）。
+            delete reply;
+            continue;
+        }
 
         //size_ = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
         QUrl redirected;
@@ -70,7 +80,8 @@ QUrl AbstractDownloader::handleRedirect(const QUrl &url)
             redirected = handleRedirect(redirection.toUrl());
         else
             redirected = url;
-        reply->deleteLater();
+        // 同上：这是工作线程，没有事件循环来执行 deleteLater，直接删。
+        delete reply;
         qDebug() << "rediect ended";
         return redirected;
     }

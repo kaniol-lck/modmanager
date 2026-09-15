@@ -14,7 +14,11 @@ public:
     FramelessWrapper(QDialog *dialog);
     FramelessWrapper(QWidget *widget, QMenuBar *menuBar = nullptr);
 
-private slots:
+    //外观开关（模糊/无边框）改动后刷新所有存活实例。
+    //标题栏与模糊状态都是按需读 Config 的，所以只需要通知它们重绘/重设一次。
+    static void updateAllBlur();
+
+public slots:
     void updateBlur();
 
 protected:

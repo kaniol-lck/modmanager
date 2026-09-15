@@ -137,12 +137,16 @@ void ImportCurseforgeModpackDialog::on_ImportCurseforgeModpackDialog_accepted()
         path->loadMods();
 
         for(int row = 0; row < model_->rowCount(); row++){
+            // 非必需（可选）的条目是可以取消勾选的，之前不管勾没勾都会下载，
+            // 用户在列表里取消勾选等于没生效。
+            if(model_->item(row, 0)->checkState() == Qt::Unchecked) continue;
             auto mod = model_->item(row, 0)->data().value<CurseforgeMod *>();
             auto file = model_->item(row, 1)->data().value<CurseforgeFile *>();
             path->downloadNewMod(mod, file);
         }
     } else{
         for(int row = 0; row < model_->rowCount(); row++){
+            if(model_->item(row, 0)->checkState() == Qt::Unchecked) continue;
             auto mod = model_->item(row, 0)->data().value<CurseforgeMod *>();
             auto file = model_->item(row, 1)->data().value<CurseforgeFile *>();
             DownloadManager::manager()->download(mod, file, ui->name->text(), ui->savePath->text() + "/mods");

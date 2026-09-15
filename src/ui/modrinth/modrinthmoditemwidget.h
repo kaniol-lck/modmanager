@@ -34,13 +34,11 @@ private slots:
     void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void onDownloadSpeed(qint64 bytesPerSec);
     void onDownloadFinished();
-    void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::ModrinthModItemWidget *ui;
     ModrinthModBrowser *browser_ = nullptr;
     ModrinthMod *mod_;
-    bool transltedSummary_ = false;
 
     void downloadFile(const ModrinthFileInfo &fileInfo);
 };

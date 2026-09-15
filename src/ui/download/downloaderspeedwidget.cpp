@@ -138,9 +138,13 @@ AbstractDownloader *DownloaderSpeedWidget::downloader() const
 
 void DownloaderSpeedWidget::setDownloader(AbstractDownloader *newDownloader)
 {
-    disconnect(downloader_, &AbstractDownloader::dataUpdated, this, &DownloaderSpeedWidget::replot);
+    // downloader_ 初始为 nullptr，不带这个判断会触发
+    // "QObject::disconnect: Null sender" 的运行时告警。
+    if(downloader_)
+        disconnect(downloader_, &AbstractDownloader::dataUpdated, this, &DownloaderSpeedWidget::replot);
     downloader_ = newDownloader;
-    connect(downloader_, &AbstractDownloader::dataUpdated, this, &DownloaderSpeedWidget::replot);
+    if(downloader_)
+        connect(downloader_, &AbstractDownloader::dataUpdated, this, &DownloaderSpeedWidget::replot);
     replot();
 }
 

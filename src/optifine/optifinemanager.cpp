@@ -39,7 +39,10 @@ void OptifineManager::getModList()
             if(mod->parent() == this) mod->deleteLater();
         mods_.clear();
         for(auto &&modInfo : list){
-            auto mod = new OptifineMod(nullptr, modInfo);
+            // parent 必须是 this：下面清理旧 mod 时判断的就是 parent() == this，
+            // 原实现传的是 nullptr，于是那个 if 永远不成立 ——
+            // 每次 refresh 都把上一次的 OptifineMod 全泄漏掉（连带它们挂着的 Reply）。
+            auto mod = new OptifineMod(this, modInfo);
             mods_ << mod;
         }
         model_->endResetModel();

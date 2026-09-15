@@ -129,6 +129,15 @@ void LocalMod::setCurseforgeId(int id, bool cache)
 
 void LocalMod::checkUpdates(bool force)
 {
+    // 已经在检查中就不重复发起请求。
+    // 没有这个短路的话，第二次调用会 reset 掉尚在途中的请求，
+    // 让等待它的那个 CheckSheet 永远等不到结果（isChecking() 卡住）。
+    // 这里刻意不发 checkUpdateStarted/Finished：本对象在调用方的 CheckSheet 里
+    // 只会有"开始过了、结束信号丢失"这一种情况，而 CheckSheet::done() 的空表判断
+    // 不会因此卡住（详见 checksheet.cpp 的 allFinished）。
+    if(updateChecker_->isWaiting())
+        return;
+
     //clear update cache
     modrinthUpdater_.reset();
     curseforgeUpdater_.reset();
@@ -253,7 +262,14 @@ QAria2Downloader *LocalMod::update()
         return update(curseforgeUpdater_.updateFileInfos().first());
     case ModWebsiteType::Modrinth:
         return update(modrinthUpdater_.updateFileInfos().first());
+    default:
+        break;
     }
+    // 走到这里说明 defaultUpdateType() 给了本函数不认识的站点类型。
+    // 原来函数末尾没有 return（编译器警告 control reaches end of non-void function），
+    // 落到这里就是未定义行为（返回值是栈上的垃圾指针）。
+    qWarning() << "unhandled update type:" << defaultUpdateType();
+    return nullptr;
 }
 
 bool LocalMod::updateTo(LocalModFile *file)
@@ -262,6 +278,8 @@ bool LocalMod::updateTo(LocalModFile *file)
     file->linker()->linkCached();
     //loader type mismatch
     if(!file->loaderTypes().contains(modFile_->loaderType())){
+        // 新文件已经下载到磁盘上了，不能装作没发生过：登记为 duplicate 让用户能看见、能处理。
+        keepAsDuplicate(file);
         emit updateFinished(false);
         return false;
     }
@@ -272,15 +290,29 @@ bool LocalMod::updateTo(LocalModFile *file)
     auto postUpdate = Config().getPostUpdate();
     if(postUpdate == Config::Delete){
         //remove old file
-        if(!modFile_->remove())
+        if(!modFile_->remove()){
+            // 旧文件删不掉（被占用 / 只读）：新旧两份都留在磁盘上，
+            // 登记新文件为 duplicate，同样必须报告本次更新结束。
+            keepAsDuplicate(file);
+            emit updateFinished(false);
             return false;
+        }
         modFile_->deleteLater();
     } else if(postUpdate == Config::Keep){
         if(isDisabled)
             modFile_->setEnabled(true);
-        if(!modFile_->addOld())
+        if(!modFile_->addOld()){
+            keepAsDuplicate(file);
+            emit updateFinished(false);
             return false;
+        }
         oldFiles_ << modFile_;
+    } else {
+        // Config::DoNothing：旧文件原地保留（不改名、不删除）。
+        // 但它仍然是同一个 mod 的另一份 jar，必须显式登记下来，
+        // 否则刷新时它会被当成"另一个文件"重新扫进来（幽灵重复）。
+        addDuplicateFile(modFile_);
+        emit modInfoChanged();
     }
 
     modrinthUpdater_.reset();
@@ -292,6 +324,16 @@ bool LocalMod::updateTo(LocalModFile *file)
     emit modInfoChanged();
 
     return true;
+}
+
+// 更新失败时把已下载的新文件登记为 duplicate，并刷新一次 UI。
+// 更新失败的三条出口都要走这里，并且调用方必须紧接着 emit updateFinished(false)：
+// LocalModPath::updateMods 只在收到 updateFinished 时才累加计数，
+// 漏发一次就会让 isUpdating_ 永久为 true（进度条常驻、Update All 不再恢复、单条目按钮卡在 Updating）。
+void LocalMod::keepAsDuplicate(LocalModFile *file)
+{
+    addDuplicateFile(file);
+    emit modInfoChanged();
 }
 
 CurseforgeAPI *LocalMod::curseforgeAPI() const

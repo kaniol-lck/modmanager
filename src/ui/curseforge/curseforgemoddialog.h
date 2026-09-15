@@ -33,13 +33,11 @@ private slots:
     void updateDescription();
     void on_websiteButton_clicked();
     void on_galleryListWidget_itemClicked(QListWidgetItem *item);
-    void on_modSummary_customContextMenuRequested(const QPoint &pos);
 
 private:
     Ui::CurseforgeModDialog *ui;
     CurseforgeMod *mod_;
     LocalMod *localMod_ = nullptr;
-    bool transltedSummary_ = false;
 };
 
 #endif // CURSEFORGEMODDIALOG_H

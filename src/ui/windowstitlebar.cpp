@@ -22,10 +22,16 @@ WindowsTitleBar::WindowsTitleBar(QWidget *parent, QMenuBar *menuBar) :
     menuBar_(menuBar)
 {
     ui->setupUi(this);
+    //高度由这里的常量统一决定（.ui 里不再写死）
+    setFixedHeight(kTitleBarHeight);
     setMouseTracking(true);
     ui->closeButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarCloseButton));
     ui->maxButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMaxButton));
     ui->minButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_TitleBarMinButton));
+    //统一尺寸并在标题栏内垂直居中。setFixedSize 同时收紧 maximumSize，
+    //所以 .ui 里 vsizetype=MinimumExpanding（撑满标题栏高度）不会再把它拉开。
+    for(auto *button : { ui->minButton, ui->maxButton, ui->closeButton })
+        button->setFixedSize(kTitleButtonWidth, kTitleButtonHeight);
     updateMenuBar();
     auto updateWindowTitle = [=]{
         ui->titleText->setText(parent->windowTitle() + " - " +
@@ -49,8 +55,12 @@ void WindowsTitleBar::updateMenuBar()
 {
     if(menuBar_){
         ui->verticalLayout->addWidget(menuBar_);
-        // I don't know why 5px + 31px, but it works!
-        menuBar_->setStyleSheet("QMenuBar {background-color: transparent; margin-bottom: 5px; min-height:31px;}");
+        //标题栏高度与菜单栏高度只在头文件里定义一次；底部留白由两者之差推导，
+        //保持原观感（31 + 5 = 36）但不再散落魔法数
+        menuBar_->setStyleSheet(
+                    QString("QMenuBar {background-color: transparent; margin-bottom: %1px; min-height:%2px;}")
+                    .arg(kTitleBarHeight - kMenuBarHeight)
+                    .arg(kMenuBarHeight));
     }
 }
 
@@ -66,6 +76,7 @@ void WindowsTitleBar::setNormal()
 
 void WindowsTitleBar::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event)
     if(!Config().getEnableBlurBehind()) return;
     QPainter p(this);
     p.setCompositionMode(QPainter::CompositionMode_DestinationIn);

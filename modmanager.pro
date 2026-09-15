@@ -113,8 +113,10 @@ macx {
 
   INCLUDEPATH += /usr/local/include
   LIBS += -L/usr/local/lib -laria2
-  equals(QT_MAJOR_VERSION,5):INCLUDEPATH += /usr/local/include/QuaZip-Qt5-1.4/quazip
-  equals(QT_MAJOR_VERSION,6):INCLUDEPATH += /usr/local/include/QuaZip-Qt6-1.4/quazip
+  # QuaZip 的头文件目录带版本号（QuaZip-Qt6-1.4 / QuaZip-Qt6-1.7.2 ...），别写死版本：
+  # Homebrew 装的是 1.4，CI 里自建的是 1.7.2，两种前缀都要能找到。
+  QUAZIP_INC = $$system(ls -d /usr/local/include/QuaZip-Qt$${QT_MAJOR_VERSION}-*/quazip 2>/dev/null)
+  !isEmpty(QUAZIP_INC): INCLUDEPATH += $$QUAZIP_INC
   equals(QT_MAJOR_VERSION,5):LIBS += -L/usr/local/lib -lquazip1-qt5
   equals(QT_MAJOR_VERSION,6):LIBS += -L/usr/local/lib -lquazip1-qt6
 }

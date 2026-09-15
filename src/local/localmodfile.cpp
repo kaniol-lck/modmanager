@@ -93,6 +93,14 @@ ModLoaderType::Type LocalModFile::loadInfo()
     return loaderType_;
 }
 
+void LocalModFile::setPath(const QString &newPath)
+{
+    path_ = newPath;
+    fileInfo_.setFile(path_);
+    updateFileNameTags();
+    emit fileChanged();
+}
+
 bool LocalModFile::moveTo(LocalModPath *path)
 {
     QFile file(path_);
@@ -101,7 +109,12 @@ bool LocalModFile::moveTo(LocalModPath *path)
     qDebug() << bl << newPath;
     if(bl){
         modPath_->removeModFile(this);
+        // 原来只改了归属，没更新 path_ / fileInfo_ / modPath_：
+        // 移动后三列显示的是已不存在的旧文件、"Show in Folder" 打开旧目录、
+        // LocalMod::update() 又会把新版本下载回旧目录。
+        setModPath(path);
         path->addModFile(this);
+        setPath(newPath);
     }
     return bl;
 }
@@ -124,10 +137,7 @@ bool LocalModFile::rename(const QString newBaseName)
     QFile file(path_);
     auto newPath = QDir(fileInfo_.absolutePath()).absoluteFilePath(newBaseName + suffix);
     if(file.rename(newPath)){
-        path_ = newPath;
-        fileInfo_.setFile(path_);
-        updateFileNameTags();
-        emit fileChanged();
+        setPath(newPath);
         return true;
     } else
     return false;
@@ -139,11 +149,8 @@ bool LocalModFile::addOld()
     QFile file(path_);
     auto newPath = path_ + ".old";
     bool bl = file.rename(newPath);
-    if(bl){
-        path_ = newPath;
-        fileInfo_.setFile(path_);
-        emit fileChanged();
-    }
+    if(bl)
+        setPath(newPath);
     return bl;
 }
 
@@ -155,11 +162,8 @@ bool LocalModFile::removeOld()
     auto newPath = path_;
     newPath.remove(".old");
     bool bl = file.rename(newPath);
-    if(bl){
-        path_ = newPath;
-        fileInfo_.setFile(path_);
-        emit fileChanged();
-    }
+    if(bl)
+        setPath(newPath);
     return bl;
 }
 
@@ -173,11 +177,8 @@ bool LocalModFile::setEnabled(bool enabled)
         auto newPath = path_;
         newPath.remove(".disabled");
         bool bl = file.rename(newPath);
-        if(bl){
-            path_ = newPath;
-            fileInfo_.setFile(path_);
-            emit fileChanged();
-        }
+        if(bl)
+            setPath(newPath);
         return bl;
     }else {
         //only disable a normal(enabled) file
@@ -185,11 +186,8 @@ bool LocalModFile::setEnabled(bool enabled)
         QFile file(path_);
         auto newPath = path_ + ".disabled";
         bool bl = file.rename(newPath);
-        if(bl){
-            path_ = newPath;
-            fileInfo_.setFile(path_);
-            emit fileChanged();
-        }
+        if(bl)
+            setPath(newPath);
         return bl;
     }
 }

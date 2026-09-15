@@ -9,8 +9,20 @@
 #include "util/tutil.hpp"
 #include "util/mmlogger.h"
 #include "config.hpp"
+#include "version.h"
+
+namespace {
+QByteArray modrinthUserAgent()
+{
+    QByteArray version(kVersion);
+    if(version.startsWith('v'))
+        version.remove(0, 1);
+    return "kaniol-lck/modmanager/" + version + " (+https://github.com/kaniol-lck/modmanager)";
+}
+}
 
 const QString ModrinthAPI::PREFIX = "https://api.modrinth.com";
+const QByteArray ModrinthAPI::USER_AGENT = modrinthUserAgent();
 
 ModrinthAPI::ModrinthAPI(QObject *parent) :
     QObject(parent)
@@ -22,6 +34,13 @@ ModrinthAPI *ModrinthAPI::api()
 {
     static ModrinthAPI api;
     return &api;
+}
+
+QNetworkRequest ModrinthAPI::createRequest(const QUrl &url)
+{
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::UserAgentHeader, USER_AGENT);
+    return request;
 }
 
 Reply<QList<ModrinthModInfo>> ModrinthAPI::searchMods(const QString name, int index, const QList<GameVersion> &versions, ModLoaderType::Type type, const QList<QString> &categories, int sort)
@@ -84,7 +103,7 @@ Reply<QList<ModrinthModInfo>> ModrinthAPI::searchMods(const QString name, int in
         urlQuery.addQueryItem("facets", QJsonDocument(facets).toJson(QJsonDocument::Compact));
 
     url.setQuery(urlQuery);
-    QNetworkRequest request(url);
+    auto request = createRequest(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     return { reply,  [=]{
@@ -110,7 +129,7 @@ Reply<ModrinthModInfo> ModrinthAPI::getInfo(const QString &id)
     //id: "local-xxxxx" ???
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
     QUrl url = PREFIX + "/v2/project/" + modId;
-    QNetworkRequest request(url);
+    auto request = createRequest(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     return { reply,  [=]{
@@ -135,7 +154,7 @@ Reply<QList<ModrinthFileInfo> > ModrinthAPI::getVersions(const QString &id)
     auto modId = id.startsWith("local-")? id.right(id.size() - 6) : id;
     QUrl url = PREFIX + "/v2/project/" + modId + "/version";
 
-    QNetworkRequest request(url);
+    auto request = createRequest(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     return { reply, [=]{
@@ -158,7 +177,7 @@ Reply<QList<ModrinthFileInfo> > ModrinthAPI::getVersions(const QString &id)
 Reply<ModrinthFileInfo> ModrinthAPI::getVersion(const QString &version)
 {
     QUrl url = PREFIX + "/v2/version/" + version;
-    QNetworkRequest request(url);
+    auto request = createRequest(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     return { reply, [=]{
@@ -178,7 +197,7 @@ Reply<ModrinthFileInfo> ModrinthAPI::getVersion(const QString &version)
 Reply<QString> ModrinthAPI::getAuthor(const QString &authorId)
 {
     QUrl url = PREFIX + "/v2/user/" + authorId;
-    QNetworkRequest request(url);
+    auto request = createRequest(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     return { reply, [=]{
@@ -205,7 +224,7 @@ Reply<ModrinthFileInfo> ModrinthAPI::getVersionFileBySha1(const QString sha1)
     urlQuery.addQueryItem("algorithm", "sha1");
 
     url.setQuery(urlQuery);
-    QNetworkRequest request(url);
+    auto request = createRequest(url);
     MMLogger::network(this) << url;
     auto reply = accessManager_.get(request);
     return { reply, [=]{

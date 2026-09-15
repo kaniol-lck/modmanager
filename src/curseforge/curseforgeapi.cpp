@@ -33,8 +33,11 @@ Reply<QList<CurseforgeModInfo> > CurseforgeAPI::searchMods(int sectionId, const 
     //url query
     QUrlQuery urlQuery;
 
-    //?
-    urlQuery.addQueryItem("categoryId", QString::number(category));
+    //分类。0 是「全部分类」的哨兵值，但 CF v1 会把 categoryId=0 当成一个不存在的分类去过滤，
+    //返回空列表（实测 totalCount=0）；所以只有选中了具体分类（>0）时才发送该参数。
+    //这是 CF v1 迁移引入的回归：默认搜索因此一直没有任何结果。
+    if(category > 0)
+        urlQuery.addQueryItem("categoryId", QString::number(category));
     //minecraft
     urlQuery.addQueryItem("gameId", "432");
     //game version

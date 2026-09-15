@@ -189,6 +189,8 @@ private:
     QList<std::tuple<QString, QString, FabricModInfo>> breaks_;
 
     void updateIcon();
+    // 更新失败时把已下载的新文件登记为 duplicate（失败出口统一走这里）
+    void keepAsDuplicate(LocalModFile *file);
 };
 
 template<typename FileInfoT>
@@ -224,8 +226,13 @@ QAria2Downloader *LocalMod::update(const FileInfoT &fileInfo)
         emit modCacheUpdated();
         emit updateFinished(true);
     };
+    auto callbackFail = [=]{
+        // 下载失败：新文件根本不存在，把那个占位对象收掉，然后照样报告本次更新已结束
+        file->deleteLater();
+        emit updateFinished(false);
+    };
 
-    auto downloader = updater<FileInfoT::Type>().update(path, modFile_->commonInfo()->iconBytes(), fileInfo, callback1, callback2);
+    auto downloader = updater<FileInfoT::Type>().update(path, modFile_->commonInfo()->iconBytes(), fileInfo, callback1, callback2, callbackFail, this);
     connect(downloader, &AbstractDownloader::downloadProgress, this, &LocalMod::updateProgress);
     return downloader;
 }

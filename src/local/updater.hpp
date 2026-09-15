@@ -113,18 +113,30 @@ public:
         return true;
     }
 
-    QAria2Downloader *update(const QString &path, const QByteArray &iconBytes, const FileInfoT &fileInfo , std::function<bool ()> callback1, std::function<void ()> callback2)
+    // context 必须传：downloader 挂在（只增不减的）DownloadManager::downloaders_ 上，
+    // 比 LocalMod 活得久。没有 context 的话，更新下载期间 reload（loadMods 会 qDeleteAll(modMap_)）
+    // 之后回调仍会在已析构的 LocalMod / Updater 上跑。
+    // 带 context 时 Qt 会在 context 析构时自动断开，回调不再触发。
+    QAria2Downloader *update(const QString &path, const QByteArray &iconBytes, const FileInfoT &fileInfo,
+                            std::function<bool ()> callback1, std::function<void ()> callback2,
+                            std::function<void ()> callbackFail, QObject *context)
     {
         DownloadFileInfo info(fileInfo);
         info.setPath(path);
         info.setIconBytes(iconBytes);
         auto downloader = DownloadManager::manager()->download(info);
-        QObject::connect(downloader, &QAria2Downloader::finished, [=]{
+        QObject::connect(downloader, &QAria2Downloader::finished, context, [=]{
             if(callback1()){
                 updateFileInfos_.clear();
                 updatableId_ = typename CommonClass<type>::Id();
                 callback2();
             }
+        });
+        // 下载失败也要报告一次。aria2 出错时只发 downloadFailed 不发 finished，
+        // 少了这一条，上层（LocalModPath::updateMods 的计数）会永远差一条，
+        // isUpdating_ 卡在 true，进度条常驻、Update All 不再恢复。
+        QObject::connect(downloader, &QAria2Downloader::downloadFailed, context, [=]{
+            callbackFail();
         });
         return downloader;
     }

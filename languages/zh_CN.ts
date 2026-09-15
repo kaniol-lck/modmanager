@@ -983,24 +983,22 @@
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="43"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="41"/>
         <source>Copy website link</source>
         <translation>复制网站链接</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="88"/>
+        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="86"/>
         <source> - Curseforge</source>
         <translation> - Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="175"/>
         <source>Translate summary</source>
-        <translation>翻译简介</translation>
+        <translation type="vanished">翻译简介</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoddialog.cpp" line="185"/>
         <source>Untranslate summary</source>
-        <translation>取消翻译简介</translation>
+        <translation type="vanished">取消翻译简介</translation>
     </message>
 </context>
 <context>
@@ -1018,27 +1016,25 @@
         <translation type="vanished">%1：%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="99"/>
         <source>Translate summary</source>
-        <translation>翻译简介</translation>
+        <translation type="vanished">翻译简介</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodinfowidget.cpp" line="109"/>
         <source>Untranslate summary</source>
-        <translation>取消翻译简介</translation>
+        <translation type="vanished">取消翻译简介</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodinfowidget.ui" line="160"/>
+        <location filename="../src/ui/curseforge/curseforgemodinfowidget.ui" line="157"/>
         <source>Open Curseforge Mod Dialog</source>
         <translation>打开Curseforge mod对话框</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodinfowidget.ui" line="165"/>
+        <location filename="../src/ui/curseforge/curseforgemodinfowidget.ui" line="162"/>
         <source>Open Website Link</source>
         <translation>打开网站链接</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemodinfowidget.ui" line="173"/>
+        <location filename="../src/ui/curseforge/curseforgemodinfowidget.ui" line="170"/>
         <source>Copy Website Link</source>
         <translation>复制网站链接</translation>
     </message>
@@ -1047,7 +1043,7 @@
     <name>CurseforgeModItemWidget</name>
     <message>
         <location filename="../src/ui/curseforge/curseforgemoditemwidget.ui" line="49"/>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="151"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="143"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
@@ -1062,12 +1058,12 @@
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="66"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="58"/>
         <source>Updated</source>
         <translation>更新于</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="68"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="60"/>
         <source>Created</source>
         <translation>创建于</translation>
     </message>
@@ -1080,31 +1076,29 @@
         <translation type="vanished">%1：%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="73"/>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="75"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="65"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="67"/>
         <source> Downloads</source>
         <translation> 次下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="93"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="85"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="117"/>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="148"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="109"/>
+        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="140"/>
         <source>Downloaded</source>
         <translation>已下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="168"/>
         <source>Translate summary</source>
-        <translation>翻译简介</translation>
+        <translation type="vanished">翻译简介</translation>
     </message>
     <message>
-        <location filename="../src/ui/curseforge/curseforgemoditemwidget.cpp" line="178"/>
         <source>Untranslate summary</source>
-        <translation>取消翻译简介</translation>
+        <translation type="vanished">取消翻译简介</translation>
     </message>
 </context>
 <context>
@@ -3451,87 +3445,87 @@ By doing this, we will recheck those files unmatched before.</source>
 <context>
     <name>ModrinthAPI</name>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="245"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="264"/>
         <source>World generation</source>
         <translation>世界生成</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="242"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="261"/>
         <source>Technology</source>
         <translation>科技</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="230"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="249"/>
         <source>Economy</source>
         <translation>经济</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="232"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="251"/>
         <source>Food</source>
         <translation>食物</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="233"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="252"/>
         <source>Game Mechanics</source>
         <translation>游戏机制</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="235"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="254"/>
         <source>Magic</source>
         <translation>魔法</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="236"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="255"/>
         <source>Management</source>
         <translation>管理</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="237"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="256"/>
         <source>Minigame</source>
         <translation>小游戏</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="238"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="257"/>
         <source>Mobs</source>
         <translation>生物</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="239"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="258"/>
         <source>Optimization</source>
         <translation>优化</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="240"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="259"/>
         <source>Social</source>
         <translation>社会</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="241"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="260"/>
         <source>Storage</source>
         <translation>仓储</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="234"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="253"/>
         <source>Library</source>
         <translation>库</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="227"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="246"/>
         <source>Adventure</source>
         <translation>冒险</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="243"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="262"/>
         <source>Transportation</source>
         <translation>交通运输</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="244"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="263"/>
         <source>Utility</source>
         <translation>工具</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="229"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="248"/>
         <source>Decoration</source>
         <translation>装饰</translation>
     </message>
@@ -3540,12 +3534,12 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">杂项</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="231"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="250"/>
         <source>Equipment</source>
         <translation>装备</translation>
     </message>
     <message>
-        <location filename="../src/modrinth/modrinthapi.cpp" line="228"/>
+        <location filename="../src/modrinth/modrinthapi.cpp" line="247"/>
         <source>Cursed</source>
         <translation>Cursed</translation>
     </message>
@@ -3908,39 +3902,37 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation>作者：</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="165"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="162"/>
         <source>Description</source>
         <translation>描述</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="194"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="191"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="140"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.ui" line="137"/>
         <source>Website</source>
         <translation>网站</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="60"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="58"/>
         <source>Copy website link</source>
         <translation>复制网站链接</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="66"/>
+        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="64"/>
         <source> - Modrinth</source>
         <translation> - Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="120"/>
         <source>Translate summary</source>
-        <translation>翻译简介</translation>
+        <translation type="vanished">翻译简介</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoddialog.cpp" line="130"/>
         <source>Untranslate summary</source>
-        <translation>取消翻译简介</translation>
+        <translation type="vanished">取消翻译简介</translation>
     </message>
 </context>
 <context>
@@ -3958,27 +3950,25 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">%1：%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodinfowidget.cpp" line="111"/>
         <source>Translate summary</source>
-        <translation>翻译简介</translation>
+        <translation type="vanished">翻译简介</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodinfowidget.cpp" line="121"/>
         <source>Untranslate summary</source>
-        <translation>取消翻译简介</translation>
+        <translation type="vanished">取消翻译简介</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodinfowidget.ui" line="153"/>
+        <location filename="../src/ui/modrinth/modrinthmodinfowidget.ui" line="150"/>
         <source>Copy Website Link</source>
         <translation>复制网站链接</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodinfowidget.ui" line="158"/>
+        <location filename="../src/ui/modrinth/modrinthmodinfowidget.ui" line="155"/>
         <source>Open Website Link</source>
         <translation>打开网站链接</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmodinfowidget.ui" line="167"/>
+        <location filename="../src/ui/modrinth/modrinthmodinfowidget.ui" line="164"/>
         <source>Open Modrinth Mod Dialog</source>
         <translation>打开Modrinth mod对话框</translation>
     </message>
@@ -3999,12 +3989,12 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation>by xxx</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="38"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="30"/>
         <source>Updated</source>
         <translation>更新于</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="40"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="32"/>
         <source>Created</source>
         <translation>创建于</translation>
     </message>
@@ -4013,24 +4003,24 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">Summary: balabalabalabalabalabala</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.ui" line="236"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.ui" line="233"/>
         <source>Preparing</source>
         <translation>准备中</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.ui" line="255"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.ui" line="252"/>
         <source>0 KB/s</source>
         <translation>0 KB/s</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="117"/>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="182"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="109"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="174"/>
         <source>Download</source>
         <translation>下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="73"/>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="149"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="65"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="141"/>
         <source> Downloads</source>
         <translation> 次下载</translation>
     </message>
@@ -4043,25 +4033,23 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">%1：%2</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="125"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="117"/>
         <source>Downloading</source>
         <translation>下载中</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="150"/>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="179"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="142"/>
+        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="171"/>
         <source>Downloaded</source>
         <translation>已下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="199"/>
         <source>Translate summary</source>
-        <translation>翻译简介</translation>
+        <translation type="vanished">翻译简介</translation>
     </message>
     <message>
-        <location filename="../src/ui/modrinth/modrinthmoditemwidget.cpp" line="209"/>
         <source>Untranslate summary</source>
-        <translation>取消翻译简介</translation>
+        <translation type="vanished">取消翻译简介</translation>
     </message>
 </context>
 <context>
@@ -4261,38 +4249,38 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation>常规</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="408"/>
+        <location filename="../src/ui/preferences.ui" line="396"/>
         <source>Search mods on startup</source>
         <translation>在启动时搜索mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="422"/>
+        <location filename="../src/ui/preferences.ui" line="410"/>
         <source>Show categories and versions selector in tool bar</source>
         <translation>在工具栏中显示类编和版本选择器</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="564"/>
+        <location filename="../src/ui/preferences.ui" line="552"/>
         <source>Your common mods folder...</source>
         <translation>你常用的mod文件夹...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="364"/>
-        <location filename="../src/ui/preferences.ui" line="574"/>
+        <location filename="../src/ui/preferences.ui" line="357"/>
+        <location filename="../src/ui/preferences.ui" line="562"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="415"/>
+        <location filename="../src/ui/preferences.ui" line="403"/>
         <source>Auto fetch Modrinth file list</source>
         <translation>自动获取Modrinth文件列表</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="549"/>
+        <location filename="../src/ui/preferences.ui" line="537"/>
         <source>Common path:</source>
         <translation>常用路径：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="342"/>
+        <location filename="../src/ui/preferences.ui" line="335"/>
         <source>Download path:</source>
         <translation>下载路径：</translation>
     </message>
@@ -4336,82 +4324,80 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">在启动时检查Mod管理器更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="185"/>
         <source>Auto translate</source>
-        <translation>自动翻译</translation>
+        <translation type="vanished">自动翻译</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="199"/>
+        <location filename="../src/ui/preferences.ui" line="192"/>
         <source>Enable blur behind</source>
         <translation>启用背景模糊</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="206"/>
+        <location filename="../src/ui/preferences.ui" line="199"/>
         <source>Use system icon theme</source>
         <translation>使用系统图标主题</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="241"/>
+        <location filename="../src/ui/preferences.ui" line="234"/>
         <source>UI style:</source>
         <translation>UI风格：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="265"/>
+        <location filename="../src/ui/preferences.ui" line="258"/>
         <source>Language:</source>
         <translation>语言：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="223"/>
+        <location filename="../src/ui/preferences.ui" line="216"/>
         <source>No Update</source>
         <translation>不更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="228"/>
+        <location filename="../src/ui/preferences.ui" line="221"/>
         <source>Release</source>
         <translation>正式版</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="233"/>
+        <location filename="../src/ui/preferences.ui" line="226"/>
         <source>Develop</source>
         <translation>开发版</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="215"/>
+        <location filename="../src/ui/preferences.ui" line="208"/>
         <source>Mod Manager update:</source>
         <translation>Mod管理器更新：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="253"/>
+        <location filename="../src/ui/preferences.ui" line="246"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="295"/>
+        <location filename="../src/ui/preferences.ui" line="288"/>
         <source>Explore</source>
         <translation>探索</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="354"/>
+        <location filename="../src/ui/preferences.ui" line="347"/>
         <source>Your mods download folder...</source>
         <translation>你的mod下载文件夹...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="373"/>
+        <location filename="../src/ui/preferences.ui" line="366"/>
         <source>Search result count:</source>
         <translation>搜索结果数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="387"/>
+        <location filename="../src/ui/preferences.ui" line="380"/>
         <source>OptiFine version source:</source>
         <translation>OptiFine版本来源：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="395"/>
         <source>Official Website</source>
-        <translation>官方网站</translation>
+        <translation type="vanished">官方网站</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="400"/>
+        <location filename="../src/ui/preferences.ui" line="388"/>
         <source>BMCLAPI</source>
         <translation>BMCLAPI</translation>
     </message>
@@ -4420,27 +4406,27 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">在Modrinth选项卡中显示快照版本</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="431"/>
+        <location filename="../src/ui/preferences.ui" line="419"/>
         <source>Pages</source>
         <translation>页面</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="437"/>
+        <location filename="../src/ui/preferences.ui" line="425"/>
         <source>Show Curseforge</source>
         <translation>显示Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="448"/>
+        <location filename="../src/ui/preferences.ui" line="436"/>
         <source>Show Modrinth</source>
         <translation>显示Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="459"/>
+        <location filename="../src/ui/preferences.ui" line="447"/>
         <source>Show OptiFine</source>
         <translation>显示OptiFine</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="470"/>
+        <location filename="../src/ui/preferences.ui" line="458"/>
         <source>Show ReplayMod</source>
         <translation>显示ReplayMod</translation>
     </message>
@@ -4482,7 +4468,7 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">自动翻译</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="192"/>
+        <location filename="../src/ui/preferences.ui" line="185"/>
         <source>Use frameless window</source>
         <translation>使用无边框窗口</translation>
     </message>
@@ -4495,172 +4481,172 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">UI风格：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="502"/>
+        <location filename="../src/ui/preferences.ui" line="490"/>
         <source>Local</source>
         <translation>本地</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="604"/>
+        <location filename="../src/ui/preferences.ui" line="592"/>
         <source>Load mods on startup</source>
         <translation>在启动时加载mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="613"/>
+        <location filename="../src/ui/preferences.ui" line="601"/>
         <source>Mod List</source>
         <translation>mod列表</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="636"/>
+        <location filename="../src/ui/preferences.ui" line="624"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="642"/>
+        <location filename="../src/ui/preferences.ui" line="630"/>
         <source>Game version match:</source>
         <translation>游戏版本匹配：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="659"/>
+        <location filename="../src/ui/preferences.ui" line="647"/>
         <source>Minor Version</source>
         <translation>小版本号</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="664"/>
+        <location filename="../src/ui/preferences.ui" line="652"/>
         <source>Major Version</source>
         <translation>大版本号</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="672"/>
+        <location filename="../src/ui/preferences.ui" line="660"/>
         <source>Update check interval:</source>
         <translation>更新检查间隔：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="680"/>
+        <location filename="../src/ui/preferences.ui" line="668"/>
         <source>Always</source>
         <translation>总是</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="685"/>
+        <location filename="../src/ui/preferences.ui" line="673"/>
         <source>Every Day</source>
         <translation>每天</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="690"/>
+        <location filename="../src/ui/preferences.ui" line="678"/>
         <source>Never</source>
         <translation>从不</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="729"/>
+        <location filename="../src/ui/preferences.ui" line="717"/>
         <source>Operation on old files after update:</source>
         <translation>旧文件在更新后：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="737"/>
+        <location filename="../src/ui/preferences.ui" line="725"/>
         <source>Delete Immediately</source>
         <translation>立即删除</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="742"/>
+        <location filename="../src/ui/preferences.ui" line="730"/>
         <source>Keep Until Confirm</source>
         <translation>保留直至确认</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="747"/>
+        <location filename="../src/ui/preferences.ui" line="735"/>
         <source>Do Nothing</source>
         <translation>不做任何事</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="776"/>
+        <location filename="../src/ui/preferences.ui" line="764"/>
         <source>Update Release Type</source>
         <translation>更新发布类型</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="782"/>
+        <location filename="../src/ui/preferences.ui" line="770"/>
         <source>Beta</source>
         <translation>Beta</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="789"/>
+        <location filename="../src/ui/preferences.ui" line="777"/>
         <source>Alpha</source>
         <translation>Alpha</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="859"/>
+        <location filename="../src/ui/preferences.ui" line="847"/>
         <source>Aria2</source>
         <translation>Aria2</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="865"/>
+        <location filename="../src/ui/preferences.ui" line="853"/>
         <source>Timeout:</source>
         <translation>超时：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="879"/>
+        <location filename="../src/ui/preferences.ui" line="867"/>
         <source>Max tries:</source>
         <translation>最大尝试次数：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="889"/>
+        <location filename="../src/ui/preferences.ui" line="877"/>
         <source>Max concurrent downloads:</source>
         <translation>最大并行下载数：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="904"/>
+        <location filename="../src/ui/preferences.ui" line="892"/>
         <source>Network request timeout:</source>
         <translation>网络请求超时：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="922"/>
+        <location filename="../src/ui/preferences.ui" line="910"/>
         <source>Type:</source>
         <translation>类型：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="930"/>
+        <location filename="../src/ui/preferences.ui" line="918"/>
         <source>Default</source>
         <translation>默认</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="935"/>
+        <location filename="../src/ui/preferences.ui" line="923"/>
         <source>SOCKS 5</source>
         <translation>SOCKS 5</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="940"/>
+        <location filename="../src/ui/preferences.ui" line="928"/>
         <source>No Proxy</source>
         <translation>无代理</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="945"/>
+        <location filename="../src/ui/preferences.ui" line="933"/>
         <source>HTTP</source>
         <translation>HTTP</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="950"/>
+        <location filename="../src/ui/preferences.ui" line="938"/>
         <source>Caching-only HTTP</source>
         <translation>Caching-only HTTP</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="955"/>
+        <location filename="../src/ui/preferences.ui" line="943"/>
         <source>Caching FTP</source>
         <translation>Caching FTP</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="963"/>
+        <location filename="../src/ui/preferences.ui" line="951"/>
         <source>Host name:</source>
         <translation>主机名：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="970"/>
+        <location filename="../src/ui/preferences.ui" line="958"/>
         <source>Port:</source>
         <translation>端口：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="987"/>
+        <location filename="../src/ui/preferences.ui" line="975"/>
         <source>User:</source>
         <translation>用户：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="994"/>
+        <location filename="../src/ui/preferences.ui" line="982"/>
         <source>Password:</source>
         <translation>密码：</translation>
     </message>
@@ -4669,27 +4655,27 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">网络请求超时：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="583"/>
+        <location filename="../src/ui/preferences.ui" line="571"/>
         <source>Right-click tag menu:</source>
         <translation>右键标签菜单：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="591"/>
+        <location filename="../src/ui/preferences.ui" line="579"/>
         <source>All available tags</source>
         <translation>所有可用标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="596"/>
+        <location filename="../src/ui/preferences.ui" line="584"/>
         <source>Tags in currentt path</source>
         <translation>当前路径中的标签</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="626"/>
+        <location filename="../src/ui/preferences.ui" line="614"/>
         <source>Disabled mods at bottom</source>
         <translation>已禁用的mod置底</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="619"/>
+        <location filename="../src/ui/preferences.ui" line="607"/>
         <source>Starred mods at top</source>
         <translation>星标mod置顶</translation>
     </message>
@@ -4702,37 +4688,37 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">下载线程数量：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="698"/>
+        <location filename="../src/ui/preferences.ui" line="686"/>
         <source>Update Source</source>
         <translation>更新来源</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="704"/>
+        <location filename="../src/ui/preferences.ui" line="692"/>
         <source>Curseforge</source>
         <translation>Curseforge</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="715"/>
+        <location filename="../src/ui/preferences.ui" line="703"/>
         <source>Modrinth</source>
         <translation>Modrinth</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="755"/>
+        <location filename="../src/ui/preferences.ui" line="743"/>
         <source>Mod loader match:</source>
         <translation>mod加载器匹配：</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="763"/>
+        <location filename="../src/ui/preferences.ui" line="751"/>
         <source>Exact Match</source>
         <translation>精确匹配</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="768"/>
+        <location filename="../src/ui/preferences.ui" line="756"/>
         <source>Include Unmarked</source>
         <translation>包含未标注的</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="820"/>
+        <location filename="../src/ui/preferences.ui" line="808"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
@@ -4741,7 +4727,7 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation type="vanished">下载</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.ui" line="916"/>
+        <location filename="../src/ui/preferences.ui" line="904"/>
         <source>Proxy</source>
         <translation>代理</translation>
     </message>
@@ -4751,12 +4737,12 @@ By doing this, we will recheck those files unmatched before.</source>
         <translation>跟随系统</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.cpp" line="167"/>
+        <location filename="../src/ui/preferences.cpp" line="166"/>
         <source>Select your mod directory...</source>
         <translation>选择你的mod目录...</translation>
     </message>
     <message>
-        <location filename="../src/ui/preferences.cpp" line="174"/>
+        <location filename="../src/ui/preferences.cpp" line="173"/>
         <source>Select default mod download directory...</source>
         <translation>选择默认的mod下载路径...</translation>
     </message>

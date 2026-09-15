@@ -81,6 +81,11 @@ private slots:
     void updateFileNameTags();
 
 private:
+    // 路径信息的唯一入口：改名 / 移动 / 启用停用 / 转 old 都必须走这里，
+    // 否则 path_ 与 fileInfo_ 会与实际文件位置脱节（列表显示不存在的旧文件、
+    // "Show in Folder" 打开旧目录、下次更新又写回旧目录）。
+    void setPath(const QString &newPath);
+
     LocalFileLinker *linker_;
     LocalModPath *modPath_ = nullptr;
     LocalMod *mod_ = nullptr;
