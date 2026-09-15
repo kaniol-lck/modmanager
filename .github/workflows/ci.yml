@@ -201,6 +201,10 @@ jobs:
           PKG_CONFIG_PATH: 'C:/msys64/mingw64/lib/pkgconfig;${{ github.workspace }}/quazip-install/lib/pkgconfig'
           QT_VER: ${{ matrix.qt_ver }}
         run: |
+          # 未捕获的终止性错误 / throw 一律提升成 ::error:: 注解。
+          # 理由同"收集并校验"那步：job 日志正文匿名读不到，annotations 可以读。
+          # trap 必须放在脚本最前面才拦得住后面所有语句。
+          trap { Write-Output "::error::$($_.Exception.Message)"; exit 1 }
           # 为什么不能 brew/pacman 拿现成 quazip：
           # MSYS2 的 libquazip1-qt6.dll 是针对 qt6-base 6.11 编的，导入表里有
           #   qt_version_tag_6_11 / QDir::mkpath(..., std::optional<QFlags<...>>)
@@ -280,6 +284,7 @@ jobs:
         id: package
         shell: pwsh
         run: |
+          trap { Write-Output "::error::$($_.Exception.Message)"; exit 1 }
           mkdir deploy
           mv release/modmanager.exe deploy
           # --no-compiler-runtime：MinGW 运行时（libgcc_s_seh-1 / libstdc++-6 /
@@ -290,22 +295,51 @@ jobs:
           windeployqt.exe --no-translations --no-opengl-sw --no-system-d3d-compiler --no-quick-import --no-compiler-runtime --qmldir "${{ env.QT_ROOT_DIR }}/qml" deploy/modmanager.exe
       - name: 收集并校验运行时 DLL（按导入表递归 + 符号级 ABI 校验）
         shell: pwsh
+        env:
+          # Windows 的 Python 在 stdout 被重定向（管道/文件）时按 ANSI 代码页编码，
+          # 脚本里有中文 → 第一句 print 就 UnicodeEncodeError、traceback 直接 exit 1
+          # （run #659 就是这么红的：只剩"exit code 1"，没有任何上下文）。
+          # 脚本内已 reconfigure 成 UTF-8，这里再显式设一遍，双保险。
+          PYTHONUTF8: '1'
+          PYTHONIOENCODING: 'utf-8'
         run: |
+          trap { Write-Output "::error::$($_.Exception.Message)"; exit 1 }
+          # pwsh 解码原生命令的 stdout 用的是 [Console]::OutputEncoding；显式钉成 UTF-8，
+          # 才能与上面 PYTHONUTF8 让 Python 输出的 UTF-8 对上 —— 否则中文在日志里变乱码，
+          # 而"读得懂失败原因"恰恰是这步存在的意义。
+          [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
           # 手写一长串 cp 的做法已经废掉：上游改个 soname（libxml2-2 → libxml2-16、
           # libcares-5 → libcares-2）或换了 SSL 实现（libssl-1_1 → libssl-3）就会
           # 静默漏文件（Copy-Item 的报错是非终止性的，job 照样绿）。
           # package/collect-deploy-deps.py 直接按每个 PE 的导入表递归补齐，
           # 并逐个符号比对导出表，缺东西就 exit 1。
+          #
+          # 工具链 bin 不要"取 Tools 下的第一个目录"：那取决于装了什么、以及字母序，
+          # 而脚本对不存在的 --search 目录是直接 [FATAL] 退出的。改成找含 objdump.exe 的那个。
           $toolsRoot = "$env:IQTA_TOOLS"
           if (-not $toolsRoot) { $toolsRoot = "${{ env.QT_ROOT_DIR }}/../../Tools" }
-          $toolBin = (Get-ChildItem "$toolsRoot/*" -Directory | Select-Object -First 1).FullName + "/bin"
+          $toolBin = (Get-ChildItem "$toolsRoot/*/bin/objdump.exe" -ErrorAction SilentlyContinue |
+                      Select-Object -First 1).DirectoryName
+          if (-not $toolBin) { throw "在 $toolsRoot 下找不到 objdump.exe（MinGW 工具链没装上？）" }
           Write-Output "工具链 bin: $toolBin"
-          python package/collect-deploy-deps.py --deploy deploy `
+
+          # 捕获全部输出：失败时既原样进日志，也提升成 ::error:: 注解。
+          # 为什么必须做注解：job 日志正文经 API 要 admin 权限（匿名 403），
+          # 而 check-run 的 annotations 是**匿名可读**的 —— 注解让下次失败无需凭据就能定位。
+          $out = & python package/collect-deploy-deps.py --deploy deploy `
             --search C:/msys64/mingw64/bin `
             --search "${{ github.workspace }}/quazip-install/bin" `
             --search "${{ env.QT_ROOT_DIR }}/bin" `
             --search "$toolBin" `
-            --json deploy-manifest.json
+            --json deploy-manifest.json 2>&1
+          $code = $LASTEXITCODE
+          $out | ForEach-Object { Write-Output "$_" }
+          if ($code -ne 0) {
+            $out | Select-String -Pattern '\[FAIL\]|\[FATAL\]|\[MISS\]|Traceback|Error' |
+              Select-Object -First 12 | ForEach-Object { Write-Output "::error::$($_.Line)" }
+            Write-Output "::error::collect-deploy-deps.py 退出码 $code"
+            exit 1
+          }
       - name: Modify NSIS for x64
         shell: pwsh
         run: |
@@ -313,6 +347,7 @@ jobs:
       - name: Create installer
         shell: pwsh
         run: |
+          trap { Write-Output "::error::$($_.Exception.Message)"; exit 1 }
           makensis package/modmanager.nsi
           if ($LASTEXITCODE -ne 0) { throw "makensis 失败（exit=$LASTEXITCODE）" }
           if (-not (Test-Path package/ModManager-Installer.exe)) { throw 'NSIS 没产出 ModManager-Installer.exe' }

@@ -58,6 +58,17 @@ SYSTEM_NAMES = {
 
 PE_EXT = (".exe", ".dll")
 
+# Windows 上 Python 的 stdout/stderr 在**被重定向**（管道 / 文件）时按 **ANSI 代码页**
+# 编码 —— en-US 的 runner 上是 cp1252，本脚本要打中文，于是第一行 print 就
+# UnicodeEncodeError、traceback 直接 exit 1（CI 里表现为"只看到 exit code 1，
+# 完全没有上下文"，极难定位）。强制 UTF-8 与 CI 日志的编码对齐，并让不可编码的字符
+# 降级而不是抛异常；控制台代码页是多少都与本脚本无关。
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError, ValueError):  # 老 Python / 非标准流
+        pass
+
 
 def log(msg):
     print(msg, flush=True)
