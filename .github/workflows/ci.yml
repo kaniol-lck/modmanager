@@ -56,15 +56,8 @@ jobs:
             artifacts/**
   build-on-ubuntu:
     name: Build On Ubuntu
-    # 必须留在 24.04：libquazip1-qt6-dev（quazip 1.4）在 24.04 才有，
-    # 22.04 的 quazip 只有 Qt5 变体。
-    # 用系统的 quazip 1.4 而不是像 Win/macOS 那样自建，是因为：
-    #   ① 它是拿 Ubuntu 自己的 Qt 6.4.2 编的，只导出到 qt_version_tag_6_4，
-    #      而官方 Qt 6.7.2 仍然导出更旧的标签（Qt 保证同 major 内向前兼容）⇒ 能加载；
-    #      Win/macOS 之所以不行，正是反过来 —— MSYS2/brew 的 quazip 拿 Qt 6.11 编，
-    #      标签 6_11 在 6.7.2 里根本不存在。
-    #   ② 本项目只用 JlCompress::compressFiles / extractFile，两个 API 在 1.4 就有
-    #      （已对上游 v1.4 的 JlCompress.h 逐个核对过）。
+    # 留在 24.04 是因为 install-qt-action 的官方 Qt 6.7.2 与这个镜像的组合已验证过，
+    # 不是为了 libquazip1-qt6-dev —— 那个包已经不用了（见 Build QuaZip 那步）。
     runs-on: ubuntu-24.04
     steps:
       - name: Install Qt
@@ -82,40 +75,47 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get install -y libglew-dev libglfw3-dev
-          # zlib1g-dev 是 libquazip1-qt6-dev 的依赖，但要靠它的 zlib.pc 解析 .pc 里的 Requires
-          sudo apt-get install -y libaria2-0-dev libquazip1-qt6-dev zlib1g-dev
+          # 不再装 libquazip1-qt6-dev：它 Depends: qt6-base-dev + libqt6core5compat6-dev，
+          # 会把 Ubuntu 自带的 Qt 6.4.2 头文件和 Qt5Compat 一起拖进来（详见下一步）。
+          # 改成自建 quazip，只需要 zlib 的开发头文件。
+          sudo apt-get install -y libaria2-0-dev zlib1g-dev
           # libxcb-cursor0 是 Qt 6.5+ 的 xcb 平台插件硬依赖，缺了 AppImage 打出来在用户机上起不来
           sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-util1 libxcb-cursor0 libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
           sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx5-frontend-qt6 libcurl4-openssl-dev
-      - name: 给 Ubuntu 的 quazip1-qt6.pc 去掉 Qt6Core 依赖（否则会把 Ubuntu 的 Qt 头文件拖进编译行）
+      - name: Build QuaZip（与官方 Qt 同 ABI，且关掉 QTextCodec）
         run: |
           set -e
-          # Ubuntu 的 quazip1-qt6.pc 写着 "Requires: zlib, Qt6Core"，
-          # 而 libquazip1-qt6-dev Depends: qt6-base-dev ⇒ 那个 Qt6Core.pc 属于
-          # Ubuntu 自带的 Qt 6.4.2。于是 pkg-config --cflags 会展开出
-          #   -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/x86_64-linux-gnu/qt6
-          # 而 qmake 生成的编译命令里 QMAKE_CXXFLAGS 排在 INCPATH **之前** ⇒
-          # 这些 -I 会盖过官方 Qt 6.7.2 的头文件，变成"用 6.4 的头编、链 6.7.2 的库"。
-          # 反过来若 Qt6Core.pc 不存在，pkg-config 直接失败、$$system() 拿到空串，
-          # 连 quazip 自己的 -I 都没了（症状是 quazip.h: No such file or directory）。
-          # 两种情况由同一次修改一起解决：quazip 的公开头只依赖 QtCore，而 Qt 的
-          # include 路径本来就由 qmake 提供，这条 Requires 纯属多余。
-          # Windows 的「Build QuaZip」那步早就这么做了，这里对齐。
-          PC=/usr/lib/x86_64-linux-gnu/pkgconfig/quazip1-qt6.pc
-          [ -f "$PC" ] || { echo "::error::找不到 $PC"; exit 1; }
-          sudo sed -i 's/^Requires: zlib, Qt6Core$/Requires: zlib/' "$PC"
+          # 原本想直接用 Ubuntu 的 libquazip1-qt6-dev，run #662/#663 连着翻两次车说明不行：
+          #  ① 它的 .pc 写着 "Requires: zlib, Qt6Core"，而它 Depends: qt6-base-dev
+          #     ⇒ pkg-config --cflags 会展开出 -I/usr/include/x86_64-linux-gnu/qt6/...
+          #     而 qmake 把 QMAKE_CXXFLAGS 排在 INCPATH **之前** ⇒ 拿 Ubuntu 的 Qt 6.4.2
+          #     头文件去编、却链官方 Qt 6.7.2 的库。（#662 的症状就是这个，注解只有 exit 2）
+          #  ② 它是带 QUAZIP_ENABLE_QTEXTCODEC=ON 编的，quazip_qt_compat.h 第 18 行有
+          #     #include <QtCore5Compat/QTextCodec>，于是反过来要求官方 Qt 装 qt5compat。
+          #     #663 加上 ::error:: 自曝后拿到的原文：
+          #       fatal error: QtCore5Compat/QTextCodec: No such file or directory
+          # 自建一份并把 QTEXTCODEC 关掉，两条一起消失；而且与 Win/macOS 用同一套配方，
+          # 三个平台的 quazip 从此同版本（1.7.2）同 ABI。
+          curl -L -o quazip.tar.gz https://github.com/stachenov/quazip/archive/refs/tags/v1.7.2.tar.gz
+          tar -xf quazip.tar.gz
+          cmake -S quazip-1.7.2 -B quazip-build -DCMAKE_BUILD_TYPE=Release \
+                -DCMAKE_PREFIX_PATH="$QT_ROOT_DIR" \
+                -DQUAZIP_QT_MAJOR_VERSION=6 \
+                -DQUAZIP_ENABLE_QTEXTCODEC=OFF \
+                -DQUAZIP_ENABLE_TESTS=OFF \
+                -DCMAKE_INSTALL_PREFIX=/usr/local
+          cmake --build quazip-build --parallel 3
+          sudo cmake --install quazip-build
+          # Qt 官方包不带 Qt6Core.pc，pkg-config 解析不了 "Requires: zlib, Qt6Core"
+          # （Qt 的 include/lib 本来就由 qmake 提供），去掉它 —— 与 Windows 那步一致。
+          PC=/usr/local/lib/pkgconfig/quazip1-qt6.pc
+          [ -f "$PC" ] || { echo "::error::cmake install 没有生成 $PC"; exit 1; }
+          sudo sed -i 's/, Qt6Core//' "$PC"
           grep -E '^Requires:' "$PC"
           if grep -q 'Qt6Core' "$PC"; then echo "::error::$PC 的 Requires 里仍有 Qt6Core"; exit 1; fi
-          # 断言展开后的 cflags 里不含任何 Ubuntu Qt 的 include 目录
-          CF="$(PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/ pkg-config --cflags libaria2 quazip1-qt6)"
-          echo "cflags = $CF"
-          case "$CF" in
-            *x86_64-linux-gnu/qt6*) echo "::error::cflags 里混进了 Ubuntu 的 Qt include：$CF"; exit 1 ;;
-          esac
-          case "$CF" in
-            *QuaZip-Qt6-*) : ;;
-            *) echo "::error::cflags 里没有 quazip 的 include 路径：$CF"; exit 1 ;;
-          esac
+          # 让 ldd 能解析到新装的 .so —— 后面 appimagetool -s deploy 全靠 ldd 收集依赖
+          sudo ldconfig
+          ls -l /usr/local/lib/libquazip1-qt6*
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
@@ -143,13 +143,25 @@ jobs:
           # bash 在这个 runner 上默认带 -e，失败会中断；但注解里只会留一句 exit code，
           # 而 job 日志正文经 API 需要 admin 权限（匿名 403）。所以这里显式把失败输出
           # 摘成 ::error:: 注解 —— 与 Windows 各步一致，下次翻车不用凭据就能定位。
-          export PKG_CONFIG_PATH='/usr/lib/x86_64-linux-gnu/pkgconfig/'
+          # 自建的那份 quazip 装在 /usr/local，所以要把它的 pkgconfig 目录带上
+          export PKG_CONFIG_PATH='/usr/local/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig/'
           # 先显式验证 pkg-config：它在 .pro 里是被 $$system() 调用的，失败只会静默返回空串，
           # 症状会伪装成 "quazip.h: No such file or directory" 这种编译错误。
           if ! pkg-config --modversion libaria2 quazip1-qt6; then
             echo "::error::pkg-config 解析不到 libaria2 / quazip1-qt6"
             exit 1
           fi
+          # cflags 必须给出 quazip 的 include，且不得混进任何系统 Qt6 的 include ——
+          # 后者会盖过官方 Qt 6.7.2 的头文件（run #662 就是这么翻的）。
+          CF="$(pkg-config --cflags libaria2 quazip1-qt6)"
+          echo "cflags = $CF"
+          case "$CF" in
+            *QuaZip-Qt6-*) : ;;
+            *) echo "::error::cflags 里没有 quazip 的 include 路径：$CF"; exit 1 ;;
+          esac
+          case "$CF" in
+            *x86_64-linux-gnu/qt6*) echo "::error::cflags 里混进了系统 Qt 的 include：$CF"; exit 1 ;;
+          esac
           set +e
           qmake > qmake.log 2>&1; QM=$?
           make    > make.log  2>&1; MK=$?
