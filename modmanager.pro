@@ -99,7 +99,7 @@ unix:!macx {
   }
 
   equals(QT_MAJOR_VERSION, 5): QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags libaria2 quazip1-qt5)
-  equals(QT_MAJOR_VERSION, 6): QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags libaria2 quazip1-qt5)
+  equals(QT_MAJOR_VERSION, 6): QMAKE_CXXFLAGS += $$system($$pkgConfigExecutable() --cflags libaria2 quazip1-qt6)
   # pkg-config works wrongly, help me
   equals(QT_MAJOR_VERSION, 5): LIBS += -L/usr/lib/x86_64-linux-gnu -lquazip1-qt5 -L/usr/local/lib -laria2
   equals(QT_MAJOR_VERSION, 6): LIBS += -L/usr/lib/x86_64-linux-gnu -lquazip1-qt6 -L/usr/local/lib -laria2

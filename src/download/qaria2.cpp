@@ -1,5 +1,8 @@
 #include "qaria2.h"
 
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
 #include <QTimer>
 #include <QDebug>
 #include <QtConcurrent>
@@ -37,8 +40,36 @@ void QAria2::dispatchDownloadEvent(int event, qulonglong gid)
     qDebug() << "download event for unknown gid" << gid << "event" << event;
 }
 
+// OpenSSL 3 把 provider（legacy / default）做成**运行时才 LoadLibrary 的独立模块**，
+// 由 OSSL_PROVIDER_load() 按 OPENSSL_MODULES 环境变量、或编译期写死的 MODULESDIR 去找。
+// aria2 的 Platform::setUp() 在 OpenSSL 3.x 下会无条件加载 legacy provider，
+// 加载不到就抛异常 ⇒ aria2::libraryInit() 返回 -1 ⇒ 用户一启动就看到"下载功能可能不可用"。
+//
+// 而那两个路径在分发包里都不成立：
+//   * MSYS2 给 libcrypto 编进去的是 MSYS 风格的 "/mingw64/lib/ossl-modules"，
+//     Windows 上会被当成"当前盘符根下的 mingw64\lib\ossl-modules" ⇒ 必然不存在；
+//   * Homebrew 编进去的是它自己的 /usr/local/opt/openssl@3/lib/ossl-modules，
+//     用户机器上没装 brew 的 openssl@3 就同样不存在。
+// 所以把搜索路径显式指到随程序分发的 ossl-modules 目录。
+//
+// 两个要点：
+//   1. 只在用户/发行版没有显式设置 OPENSSL_MODULES 时接管，别覆盖别人的配置；
+//   2. 目录不存在就什么都不做 —— 否则会把"系统本来能用的 provider 路径"指成空目录，
+//      在 Linux（libssl3 装在 /usr/lib/x86_64-linux-gnu/ossl-modules）上反而弄坏。
+static void ensureOpensslModulesPath()
+{
+    if(!qEnvironmentVariableIsEmpty("OPENSSL_MODULES"))
+        return;
+    const QString dir = QCoreApplication::applicationDirPath() + QStringLiteral("/ossl-modules");
+    if(!QFileInfo::exists(dir))
+        return;
+    qputenv("OPENSSL_MODULES", QDir::toNativeSeparators(dir).toLocal8Bit());
+    MMLogger() << "OPENSSL_MODULES set to" << dir;
+}
+
 QAria2::QAria2(QObject *parent) : QObject(parent)
 {
+    ensureOpensslModulesPath();
     if(auto code = aria2::libraryInit())
         QMessageBox::warning(0, tr("Aria2 Error"), tr("Aria2 downloader init failed, download function may not work.") +
                              "\n" + tr("Error code: %1").arg(code));

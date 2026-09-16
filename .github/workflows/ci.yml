@@ -16,7 +16,9 @@ on:
       - ".github/workflows/ci.yml"
 jobs:
   create-release:
-    if: ${{ !startsWith(github.event.ref, 'refs/tags/') }}
+    # 必须显式限定 push：pull_request 事件里没有 github.event.ref，
+    # 它取空串 ⇒ !startsWith('', 'refs/tags/') 恒为真 ⇒ PR 也会走到这里建 pre-release。
+    if: ${{ github.event_name == 'push' && !startsWith(github.event.ref, 'refs/tags/') }}
     name: Create Pre-Release
     runs-on: ubuntu-latest
     needs:
@@ -54,20 +56,36 @@ jobs:
             artifacts/**
   build-on-ubuntu:
     name: Build On Ubuntu
-    runs-on: ubuntu-24.04 # for libquazip1-qt5 available
+    # 必须留在 24.04：libquazip1-qt6-dev（quazip 1.4）在 24.04 才有，
+    # 22.04 的 quazip 只有 Qt5 变体。
+    # 用系统的 quazip 1.4 而不是像 Win/macOS 那样自建，是因为：
+    #   ① 它是拿 Ubuntu 自己的 Qt 6.4.2 编的，只导出到 qt_version_tag_6_4，
+    #      而官方 Qt 6.7.2 仍然导出更旧的标签（Qt 保证同 major 内向前兼容）⇒ 能加载；
+    #      Win/macOS 之所以不行，正是反过来 —— MSYS2/brew 的 quazip 拿 Qt 6.11 编，
+    #      标签 6_11 在 6.7.2 里根本不存在。
+    #   ② 本项目只用 JlCompress::compressFiles / extractFile，两个 API 在 1.4 就有
+    #      （已对上游 v1.4 的 JlCompress.h 逐个核对过）。
+    runs-on: ubuntu-24.04
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: 5.15.2
-          modules: qtwebengine
+          # 与 Windows job 对齐。以前是 5.15.2 —— Qt5 已停止开源支持，
+          # 且代码里 3 处 Qt5/Qt6 条件编译里两处在 #ifdef Q_OS_WIN 内、
+          # 第三处（localmoditemwidget 的 QEnterEvent）本就是 Qt6 分支，
+          # 所以 Linux 走 Qt6 不引入任何新代码路径。
+          version: 6.7.2
+          # 不再装 qtwebengine：代码里只有 websiteicon.cpp 的注释残留，
+          # 没有任何实际引用，而它是这个 job 里最大的一块下载。
+          # （install-qt-action 的 modules 为空即不装额外模块，无需写 modules: ''）
       - name: ubuntu install packages
         run: |
           sudo apt update
           sudo apt-get install -y libglew-dev libglfw3-dev
-          sudo apt-get install -y libaria2-0-dev libquazip1-qt5-dev
-          sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-util1 libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
-          sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx-frontend-qt5 libcurl4-openssl-dev
+          sudo apt-get install -y libaria2-0-dev libquazip1-qt6-dev
+          # libxcb-cursor0 是 Qt 6.5+ 的 xcb 平台插件硬依赖，缺了 AppImage 打出来在用户机上起不来
+          sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-util1 libxcb-cursor0 libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
+          sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx5-frontend-qt6 libcurl4-openssl-dev
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
@@ -365,6 +383,29 @@ jobs:
             Write-Output "::error::collect-deploy-deps.py 退出码 $code"
             exit 1
           }
+      - name: 补 OpenSSL 3 的 provider 模块（运行时 LoadLibrary，PE 导入表里看不见）
+        shell: pwsh
+        run: |
+          trap { Write-Output "::error::$($_.Exception.Message)"; exit 1 }
+          # 为什么上一步的 collect-deploy-deps.py 抓不到它：
+          # 它按"每个 PE 的导入表"递归补依赖，而 OpenSSL 3 的 provider 是
+          # OSSL_PROVIDER_load() 在运行时才 LoadLibrary 的 —— 不出现在任何导入表里，
+          # 所以静态分析必然漏掉。漏掉的后果不是"下载慢"，是 aria2::libraryInit()
+          # 直接失败、启动即弹"下载功能可能不可用"，且主窗口被模态框挡住。
+          # 详见 src/download/qaria2.cpp 里 ensureOpensslModulesPath() 的注释。
+          $src = 'C:/msys64/mingw64/lib/ossl-modules'
+          if (-not (Test-Path $src)) { throw "找不到 $src（MSYS2 的 openssl 变了布局？）" }
+          $dst = 'deploy/ossl-modules'
+          New-Item -ItemType Directory -Force -Path $dst | Out-Null
+          Copy-Item "$src/*" $dst -Force
+          # 必须是 legacy.dll 这一份：aria2 的 Platform::setUp() 加载的就是 legacy provider
+          $legacy = Join-Path $dst 'legacy.dll'
+          if (-not (Test-Path $legacy)) { throw "缺少 openssl legacy provider：$legacy" }
+          Get-ChildItem $dst | ForEach-Object {
+            Write-Output ("provider {0}  {1:N0} B" -f $_.Name, $_.Length)
+          }
+          # 程序是按 <exe 所在目录>/ossl-modules 找的，路径写死会漂
+          if ($dst -ne 'deploy/ossl-modules') { throw 'provider 落点变了，qaria2.cpp 里的相对路径要同步改' }
       - name: Modify NSIS for x64
         shell: pwsh
         run: |
@@ -474,6 +515,29 @@ jobs:
           make
       - name: package
         run: |
+          # OpenSSL 3 的 provider（legacy）是运行时 dlopen 的独立模块，macdeployqt 只按
+          # dylib 依赖收集、看不见它。缺了就是与 Windows 同一个症状：aria2::libraryInit()
+          # 失败 → 启动即弹"下载功能可能不可用"，且主窗口被模态框挡住。
+          OSSL="$(brew --prefix openssl@3)/lib/ossl-modules"
+          [ -d "$OSSL" ] || { echo "::error::找不到 $OSSL（brew 的 openssl@3 没装？）"; exit 1; }
+          mkdir -p modmanager.app/Contents/MacOS/ossl-modules
+          cp "$OSSL"/*.dylib modmanager.app/Contents/MacOS/ossl-modules/
+          # 光复制不够：provider 自己仍依赖 Homebrew 的绝对路径（/usr/local/opt/openssl@3/...），
+          # 用户机器上没装 brew 就 dlopen 失败。改成指向 bundle 内的 Frameworks
+          # （@executable_path 恒为 Contents/MacOS，与 provider 放在哪个子目录无关）。
+          for f in modmanager.app/Contents/MacOS/ossl-modules/*.dylib; do
+            otool -L "$f" | awk 'NR > 1 { print $1 }' | grep '^/usr/local/' | while read -r dep; do
+              install_name_tool -change "$dep" \
+                "@executable_path/../Frameworks/$(basename "$dep")" "$f"
+            done
+          done
+          # 断言：不许再有指向 /usr/local 的依赖残留（否则这个修复只是"看起来做了"）
+          if otool -L modmanager.app/Contents/MacOS/ossl-modules/*.dylib | grep -qE '^\s*/usr/local/'; then
+            echo "::error::provider 仍依赖 Homebrew 绝对路径，用户机器上会 dlopen 失败"
+            otool -L modmanager.app/Contents/MacOS/ossl-modules/*.dylib
+            exit 1
+          fi
+          ls -l modmanager.app/Contents/MacOS/ossl-modules/
           macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
           mv modmanager.dmg ModManager-${{ env.VERSION }}.dmg
         shell: sh

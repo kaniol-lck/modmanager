@@ -38,6 +38,11 @@ Thumbs.db
 # qtcreator generated files
 *.pro.user*
 
+# 本地工作数据：WorkBuddy 的记忆/报告/干跑夹具、VS Code 配置。
+# 不进版本库，但必须以 ignore 的形式排除 —— 否则每次都得靠"手工列新文件"避免误提交。
+.workbuddy/
+.vscode/
+
 # xemacs temporary files
 *.flc
 
