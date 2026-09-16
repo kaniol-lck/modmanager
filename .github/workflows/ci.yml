@@ -82,10 +82,40 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get install -y libglew-dev libglfw3-dev
-          sudo apt-get install -y libaria2-0-dev libquazip1-qt6-dev
+          # zlib1g-dev 是 libquazip1-qt6-dev 的依赖，但要靠它的 zlib.pc 解析 .pc 里的 Requires
+          sudo apt-get install -y libaria2-0-dev libquazip1-qt6-dev zlib1g-dev
           # libxcb-cursor0 是 Qt 6.5+ 的 xcb 平台插件硬依赖，缺了 AppImage 打出来在用户机上起不来
           sudo apt install -y libgl-dev libx11-dev libxkbcommon-x11-dev libxcb-util1 libxcb-cursor0 libxcb-image0-dev libxcb-icccm4-dev libssl-dev libxcb-keysyms1 libxcb-render-util0 libxcb-xinerama0
           sudo apt install -y libprotobuf-dev protobuf-compiler protobuf-c-compiler libgrpc++-dev protobuf-compiler-grpc ninja-build fcitx5-frontend-qt6 libcurl4-openssl-dev
+      - name: 给 Ubuntu 的 quazip1-qt6.pc 去掉 Qt6Core 依赖（否则会把 Ubuntu 的 Qt 头文件拖进编译行）
+        run: |
+          set -e
+          # Ubuntu 的 quazip1-qt6.pc 写着 "Requires: zlib, Qt6Core"，
+          # 而 libquazip1-qt6-dev Depends: qt6-base-dev ⇒ 那个 Qt6Core.pc 属于
+          # Ubuntu 自带的 Qt 6.4.2。于是 pkg-config --cflags 会展开出
+          #   -I/usr/include/x86_64-linux-gnu/qt6/QtCore -I/usr/include/x86_64-linux-gnu/qt6
+          # 而 qmake 生成的编译命令里 QMAKE_CXXFLAGS 排在 INCPATH **之前** ⇒
+          # 这些 -I 会盖过官方 Qt 6.7.2 的头文件，变成"用 6.4 的头编、链 6.7.2 的库"。
+          # 反过来若 Qt6Core.pc 不存在，pkg-config 直接失败、$$system() 拿到空串，
+          # 连 quazip 自己的 -I 都没了（症状是 quazip.h: No such file or directory）。
+          # 两种情况由同一次修改一起解决：quazip 的公开头只依赖 QtCore，而 Qt 的
+          # include 路径本来就由 qmake 提供，这条 Requires 纯属多余。
+          # Windows 的「Build QuaZip」那步早就这么做了，这里对齐。
+          PC=/usr/lib/x86_64-linux-gnu/pkgconfig/quazip1-qt6.pc
+          [ -f "$PC" ] || { echo "::error::找不到 $PC"; exit 1; }
+          sudo sed -i 's/^Requires: zlib, Qt6Core$/Requires: zlib/' "$PC"
+          grep -E '^Requires:' "$PC"
+          if grep -q 'Qt6Core' "$PC"; then echo "::error::$PC 的 Requires 里仍有 Qt6Core"; exit 1; fi
+          # 断言展开后的 cflags 里不含任何 Ubuntu Qt 的 include 目录
+          CF="$(PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/ pkg-config --cflags libaria2 quazip1-qt6)"
+          echo "cflags = $CF"
+          case "$CF" in
+            *x86_64-linux-gnu/qt6*) echo "::error::cflags 里混进了 Ubuntu 的 Qt include：$CF"; exit 1 ;;
+          esac
+          case "$CF" in
+            *QuaZip-Qt6-*) : ;;
+            *) echo "::error::cflags 里没有 quazip 的 include 路径：$CF"; exit 1 ;;
+          esac
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
@@ -110,9 +140,33 @@ jobs:
           sed -i "s/$RAW_VERSION/$VERSION/" src/version.h
       - name: build ubuntu
         run: |
+          # bash 在这个 runner 上默认带 -e，失败会中断；但注解里只会留一句 exit code，
+          # 而 job 日志正文经 API 需要 admin 权限（匿名 403）。所以这里显式把失败输出
+          # 摘成 ::error:: 注解 —— 与 Windows 各步一致，下次翻车不用凭据就能定位。
           export PKG_CONFIG_PATH='/usr/lib/x86_64-linux-gnu/pkgconfig/'
-          qmake
-          make
+          # 先显式验证 pkg-config：它在 .pro 里是被 $$system() 调用的，失败只会静默返回空串，
+          # 症状会伪装成 "quazip.h: No such file or directory" 这种编译错误。
+          if ! pkg-config --modversion libaria2 quazip1-qt6; then
+            echo "::error::pkg-config 解析不到 libaria2 / quazip1-qt6"
+            exit 1
+          fi
+          set +e
+          qmake > qmake.log 2>&1; QM=$?
+          make    > make.log  2>&1; MK=$?
+          set -e
+          if [ "$QM" -ne 0 ]; then
+            cat qmake.log
+            grep -aE 'error|Cannot find' qmake.log | head -20 | while IFS= read -r l; do echo "::error::$l"; done
+            echo "::error::qmake 失败（exit=$QM）"
+            exit 1
+          fi
+          if [ "$MK" -ne 0 ]; then
+            cat make.log
+            grep -aE 'error:|Error [0-9]+|undefined reference|No such file' make.log | head -25 | while IFS= read -r l; do echo "::error::$l"; done
+            echo "::error::make 失败（exit=$MK）"
+            exit 1
+          fi
+          tail -3 make.log
       - name: package
         run: |
           make INSTALL_ROOT=AppDir -j2 install ; find AppDir/
@@ -538,7 +592,17 @@ jobs:
             exit 1
           fi
           ls -l modmanager.app/Contents/MacOS/ossl-modules/
-          macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg
+          # 失败也要能被远程读到：注解匿名可读，job 日志正文要 admin。
+          set +e
+          macdeployqt modmanager.app -qmldir=. -verbose=1 -dmg > mdq.log 2>&1; MDQ=$?
+          set -e
+          tail -30 mdq.log
+          if [ "$MDQ" -ne 0 ]; then
+            grep -aE 'ERROR|error:|failed' mdq.log | head -20 | while IFS= read -r l; do echo "::error::$l"; done
+            echo "::error::macdeployqt 失败（exit=$MDQ）"
+            exit 1
+          fi
+          [ -f modmanager.dmg ] || { echo "::error::没产出 modmanager.dmg"; exit 1; }
           mv modmanager.dmg ModManager-${{ env.VERSION }}.dmg
         shell: sh
       - uses: actions/upload-artifact@v4
